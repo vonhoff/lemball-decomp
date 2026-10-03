@@ -328,13 +328,13 @@ void CPlayerLemming::Die()
 		CGameObject** inventoryObject = m_inventoryObjects;
 		do {
 			switch ((*inventoryObject)->m_objectType) {
-			case 0x15:
-			case 0x16:
-			case 0x17:
-			case 0x27:
-			case 0x29:
-			case 0x2b:
-			case 0x2d:
+			case OBJECT_KEY_1:
+			case OBJECT_KEY_2:
+			case OBJECT_KEY_3:
+			case OBJECT_BALLOON_0:
+			case OBJECT_BALLOON_2:
+			case OBJECT_BALLOON_4:
+			case OBJECT_BALLOON_6:
 				((CBaseGlobalObject*) *inventoryObject)->OldRestart();
 				break;
 			}
@@ -577,21 +577,21 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 int CPlayerLemming::GetLastBalloon()
 {
 	if (m_inventoryCount == 0) {
-		return 0xffff;
+		return OBJECT_INVALID;
 	}
 	for (int i = m_inventoryCount - 1; i >= 0; i--) {
 		switch (m_inventoryTypes[i]) {
-		case 0x27:
-			return 0x27;
-		case 0x29:
-			return 0x29;
-		case 0x2b:
-			return 0x2b;
-		case 0x2d:
-			return 0x2d;
+		case OBJECT_BALLOON_0:
+			return OBJECT_BALLOON_0;
+		case OBJECT_BALLOON_2:
+			return OBJECT_BALLOON_2;
+		case OBJECT_BALLOON_4:
+			return OBJECT_BALLOON_4;
+		case OBJECT_BALLOON_6:
+			return OBJECT_BALLOON_6;
 		}
 	}
-	return 0xffff;
+	return OBJECT_INVALID;
 }
 
 // FUNCTION: LEMBALL 0x0040fc50
@@ -721,7 +721,7 @@ void CPlayerLemming::RequestBalloon()
 	postPos.m_zFixed = DEBUG_SENTINEL;
 	int lastBalloon = GetLastBalloon();
 	switch (lastBalloon) {
-	case 0xffff:
+	case OBJECT_INVALID:
 		m_balloonPostActive = 0;
 		return;
 	case OBJECT_BALLOON_0:

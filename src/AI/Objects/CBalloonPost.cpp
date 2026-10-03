@@ -179,19 +179,19 @@ void CBalloonPost::ActivatePostAtPosition(int p_x, int p_y, int p_z, eObjectType
 	int mask;
 	int index;
 	switch (p_type) {
-	case 0x28:
+	case OBJECT_BALLOON_1:
 		mask = 1;
 		index = 0;
 		break;
-	case 0x2a:
+	case OBJECT_BALLOON_3:
 		mask = 2;
 		index = 1;
 		break;
-	case 0x2c:
+	case OBJECT_BALLOON_5:
 		mask = 4;
 		index = 2;
 		break;
-	case 0x2e:
+	case OBJECT_BALLOON_7:
 		mask = 8;
 		index = 3;
 		break;
@@ -215,19 +215,19 @@ void CBalloonPost::DeactivatePost(CTheBalloonPost* p_post)
 	int mask;
 	int index;
 	switch (p_post->m_objectType) {
-	case 0x28:
+	case OBJECT_BALLOON_1:
 		mask = ~1;
 		index = 0;
 		break;
-	case 0x2a:
+	case OBJECT_BALLOON_3:
 		mask = ~2;
 		index = 1;
 		break;
-	case 0x2c:
+	case OBJECT_BALLOON_5:
 		mask = ~4;
 		index = 2;
 		break;
-	case 0x2e:
+	case OBJECT_BALLOON_7:
 		mask = ~8;
 		index = 3;
 		break;

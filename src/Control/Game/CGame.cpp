@@ -343,14 +343,14 @@ void CGame::NextProcess(eFlowProcesses p_flow)
 	}
 
 	switch (p_flow) {
-	case 1:
+	case FLOW_INTRO_ANIM:
 		UnLoadFrontendResources();
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		m_process = new CIntroAnim(this);
 		m_flowTicks = 0;
 		goto done;
-	case 2:
+	case FLOW_MAIN_OPTIONS_1:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		LoadFrontendResources(3);
@@ -359,17 +359,17 @@ void CGame::NextProcess(eFlowProcesses p_flow)
 		}
 		m_process = new CMainOptions1(this);
 		goto done;
-	case 3:
+	case FLOW_MAIN_OPTIONS_2:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		m_process = new CMainOptions2(this);
 		goto done;
-	case 4:
+	case FLOW_PREVIEW:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		m_process = new CPreview(this);
 		goto done;
-	case 0x13:
+	case FLOW_DEMO:
 		if (g_nDemoMode != 0) {
 			g_pDemo->m_filePath = g_szDemoFilePath;
 		}
@@ -377,42 +377,42 @@ void CGame::NextProcess(eFlowProcesses p_flow)
 			g_pDemo->m_filePath = 0;
 		}
 		g_nDemoMode = 1;
-	case 5:
+	case FLOW_GAMEPLAY:
 		UnLoadFrontendResources();
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		m_process = new CAI(this);
 		goto done;
-	case 10:
+	case FLOW_ABOUT:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		m_process = new CAbout(this);
 		goto done;
-	case 0xc:
+	case FLOW_NETWORK_OPTIONS:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		m_process = new CNetworkOptionsProc(this);
 		goto done;
-	case 0xe:
+	case FLOW_SUCCESS:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		LoadFrontendResources(2);
 		m_process = new CSuccFail(this, 1);
 		m_flowTicks = 0;
 		goto done;
-	case 0xf:
+	case FLOW_FAILURE:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		LoadFrontendResources(2);
 		m_process = new CSuccFail(this, 0);
 		m_flowTicks = 0;
 		goto done;
-	case 0x10:
+	case FLOW_PASSWORD:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
 		m_process = new CPasswordProc(this);
 		goto done;
-	case 0x12:
+	case FLOW_LEVEL_INTRO:
 		UnLoadFrontendResources();
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
@@ -438,7 +438,7 @@ void CGame::Process()
 	m_mainDisplay->Process();
 	if (m_process != 0) {
 		timing = 0;
-		if ((m_currentFlow == 5 || m_currentFlow == 0x13) && 0x32 < (int) m_flowTicks) {
+		if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) && 0x32 < (int) m_flowTicks) {
 			timing = 1;
 			stat = m_processingStat;
 			stat->m_timingStart = timeGetTime();
@@ -496,7 +496,7 @@ void CGame::RefreshViews()
 	unsigned long now;
 
 	timing = 0;
-	if ((m_currentFlow == 5 || m_currentFlow == 0x13) && 0x32 < (int) m_flowTicks) {
+	if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) && 0x32 < (int) m_flowTicks) {
 		timing = 1;
 		stat = m_refreshingStat;
 		now = timeGetTime();
@@ -525,7 +525,7 @@ void CGame::Run()
 	}
 
 	while (m_quit == 0) {
-		if (m_currentFlow == 5 || m_currentFlow == 0x13) {
+		if (m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) {
 			m_flowTicks = m_flowTicks + 1;
 		}
 		if (g_pDemo != 0) {

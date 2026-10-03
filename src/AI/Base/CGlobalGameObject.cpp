@@ -12,6 +12,7 @@
 #include "../Messages/CRequestReplyMess.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Messages/CGameObjectMess.h"
+#include "AI/Messages/GameMessageIds.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x0040ce40
@@ -101,42 +102,42 @@ bool CGlobalGameObject::Receive(unsigned short p_messageId, CNetworkMessage* p_m
 	CGameObjectMess* msg;
 
 	switch (p_messageId) {
-	case 0x23:
+	case MESSAGE_OBJECT_CHANGE_STATE:
 		msg = g_pObjectChangeStateMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
-	case 0x24:
+	case MESSAGE_OBJECT_POS:
 		msg = g_pObjectPosMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
-	case 0x25:
+	case MESSAGE_OBJECT_HIT:
 		msg = g_pObjectHitMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
-	case 0x27:
+	case MESSAGE_REQUEST_ACTION:
 		msg = g_pRequestActionMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
-	case 0x28:
+	case MESSAGE_REQUEST_REPLY:
 		msg = g_pRequestReplyMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
 		return 1;
-	case 0x29:
+	case MESSAGE_REQUEST_CANCEL:
 		CancelRequest();
 		return 1;
 	default:

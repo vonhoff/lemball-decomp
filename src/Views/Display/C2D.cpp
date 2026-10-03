@@ -505,72 +505,72 @@ bool C2D::FindGameObject(const CVSPoint& p_point, int& p_index, int p_preferLemm
 			int y = m_viewData[index].m_positionY;
 			int left, top, right, bottom;
 			switch (type) {
-			case 0x2:
+			case OBJECT_PLAYER_2:
 				left = x + g_anC2DHitBounds[0][0];
 				top = y + g_anC2DHitBounds[0][1];
 				right = x + g_anC2DHitBounds[0][2];
 				bottom = y + g_anC2DHitBounds[0][3];
 				break;
-			case 0x4:
+			case OBJECT_CATAPULT:
 				left = x + g_anC2DHitBounds[2][0];
 				top = y + g_anC2DHitBounds[2][1];
 				right = x + g_anC2DHitBounds[2][2];
 				bottom = y + g_anC2DHitBounds[2][3];
 				break;
-			case 0x5:
+			case OBJECT_AMMO:
 				left = x + g_anC2DHitBounds[3][0];
 				top = y + g_anC2DHitBounds[3][1];
 				right = x + g_anC2DHitBounds[3][2];
 				bottom = y + g_anC2DHitBounds[3][3];
 				break;
-			case 0xc:
+			case OBJECT_FLAG_2:
 				left = x + g_anC2DHitBounds[10][0];
 				top = y + g_anC2DHitBounds[10][1];
 				right = x + g_anC2DHitBounds[10][2];
 				bottom = y + g_anC2DHitBounds[10][3];
 				break;
-			case 0x11:
+			case OBJECT_CRATE:
 				left = x + g_anC2DHitBounds[1][0];
 				top = y + g_anC2DHitBounds[1][1];
 				right = x + g_anC2DHitBounds[1][2];
 				bottom = y + g_anC2DHitBounds[1][3];
 				break;
-			case 0x14:
+			case OBJECT_SWITCH:
 				left = x + g_anC2DHitBounds[4][0];
 				top = y + g_anC2DHitBounds[4][1];
 				right = x + g_anC2DHitBounds[4][2];
 				bottom = y + g_anC2DHitBounds[4][3];
 				break;
-			case 0x15:
-			case 0x16:
-			case 0x17:
+			case OBJECT_KEY_1:
+			case OBJECT_KEY_2:
+			case OBJECT_KEY_3:
 				left = x + g_anC2DHitBounds[5][0];
 				top = y + g_anC2DHitBounds[5][1];
 				right = x + g_anC2DHitBounds[5][2];
 				bottom = y + g_anC2DHitBounds[5][3];
 				break;
-			case 0x1c:
+			case OBJECT_DUPLICATOR:
 				left = x + g_anC2DHitBounds[6][0];
 				top = y + g_anC2DHitBounds[6][1];
 				right = x + g_anC2DHitBounds[6][2];
 				bottom = y + g_anC2DHitBounds[6][3];
 				break;
-			case 0x22:
+			case OBJECT_TRAMPOLINE:
 				left = x + g_anC2DHitBounds[9][0];
 				top = y + g_anC2DHitBounds[9][1];
 				right = x + g_anC2DHitBounds[9][2];
 				bottom = y + g_anC2DHitBounds[9][3];
 				break;
-			case 0x27:
-			case 0x29:
-			case 0x2b:
-			case 0x2d:
+			case OBJECT_BALLOON_0:
+			case OBJECT_BALLOON_2:
+			case OBJECT_BALLOON_4:
+			case OBJECT_BALLOON_6:
 				left = x + g_anC2DHitBounds[7][0];
 				top = y + g_anC2DHitBounds[7][1];
 				right = x + g_anC2DHitBounds[7][2];
 				bottom = y + g_anC2DHitBounds[7][3];
 				break;
-			case 0x34:
+			case OBJECT_MOVER:
 				left = x + g_anC2DHitBounds[8][0];
 				top = y + g_anC2DHitBounds[8][1];
 				right = x + g_anC2DHitBounds[8][2];
@@ -581,11 +581,11 @@ bool C2D::FindGameObject(const CVSPoint& p_point, int& p_index, int p_preferLemm
 			}
 			if (left <= pointX && pointX < right && top <= pointY && pointY < bottom) {
 				if (p_preferLemming != 0) {
-					if (type == 2 && bottom > -1) {
+					if (type == OBJECT_PLAYER_2 && bottom > -1) {
 						selected = index;
 					}
 				}
-				else if (type == 2) {
+				else if (type == OBJECT_PLAYER_2) {
 					if (bottom > -1) {
 						lemming = index;
 					}
@@ -780,7 +780,7 @@ void C2D::GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gam
 	int index;
 	if (FindGameObject(p_screenPoint, index, 0)) {
 		switch (m_viewData[index].m_objectType) {
-		case 2:
+		case OBJECT_PLAYER_2:
 			if (p_alternate == 0) {
 				if (InGroupByObjectNo(m_viewData[index].m_objectId)) {
 					RemoveFromGroupByObjectNo(m_viewData[index].m_objectId);
@@ -792,26 +792,26 @@ void C2D::GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gam
 				return;
 			}
 			break;
-		case 4:
-		case 5:
-		case 0xc:
-		case 0x11:
-		case 0x14:
-		case 0x15:
-		case 0x16:
-		case 0x17:
-		case 0x1c:
-		case 0x22:
-		case 0x27:
-		case 0x29:
-		case 0x2b:
-		case 0x2d:
+		case OBJECT_CATAPULT:
+		case OBJECT_AMMO:
+		case OBJECT_FLAG_2:
+		case OBJECT_CRATE:
+		case OBJECT_SWITCH:
+		case OBJECT_KEY_1:
+		case OBJECT_KEY_2:
+		case OBJECT_KEY_3:
+		case OBJECT_DUPLICATOR:
+		case OBJECT_TRAMPOLINE:
+		case OBJECT_BALLOON_0:
+		case OBJECT_BALLOON_2:
+		case OBJECT_BALLOON_4:
+		case OBJECT_BALLOON_6:
 			if (m_groupCount > 0) {
 				FormGroup();
 			}
 			SelectObject(index);
 			return;
-		case 0x34:
+		case OBJECT_MOVER:
 			break;
 		default:
 			return;
@@ -3895,7 +3895,7 @@ void C2D::DrawObjectsZBuff()
 unsigned short C2D::CalcZValue_Sprite(int p_index)
 {
 	eObjectType objectType = m_viewData[p_index].m_objectType;
-	if (objectType == 0x18) {
+	if (objectType == OBJECT_TRAP_DOOR) {
 		return 0x7fff;
 	}
 
