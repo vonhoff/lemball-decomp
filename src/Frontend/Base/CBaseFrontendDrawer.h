@@ -111,8 +111,7 @@ protected:
 	int m_flowProcess;                     // 0x370
 	int m_returnState;                     // 0x374
 	int m_quitYet;                         // 0x378
-	short m_width;                         // 0x37c
-	short m_height;                        // 0x37e
+	CVSSize m_size;                        // 0x37c
 	CVSPoint m_animPosition;               // 0x380
 	unsigned int m_chalkFontId;            // 0x384
 	unsigned int m_topFrameAnimId;         // 0x388

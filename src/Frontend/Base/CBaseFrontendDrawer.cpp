@@ -64,14 +64,13 @@ CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 										 int p_zrleCapacity,
 										 int p_textPrimitiveCapacity,
 										 int p_maxStringLen)
-	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, p_resourceCapacity + 3, p_animCapacity + 200, p_zrleCapacity, 0),
-	  m_width(0), m_height(0)
+	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, p_resourceCapacity + 3, p_animCapacity + 200, p_zrleCapacity, 0)
 {
 	m_flowProcess = p_flowProcess;
 	m_display = p_display;
 	m_gdi = p_gdi;
-	m_width = p_rect.m_width;
-	m_height = p_rect.m_height;
+	m_size.m_width = p_rect.m_width;
+	m_size.m_height = p_rect.m_height;
 	m_textPrimitiveCapacity = p_textPrimitiveCapacity;
 	m_maxStringLen = p_maxStringLen;
 	m_framePrimitiveCount = 0;
@@ -223,7 +222,7 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 	}
 	g_pCursor->SetActive(0);
 	m_display->Render();
-	CVSRect source(0, 0, m_width, m_height);
+	CVSRect source(0, 0, m_size.m_width, m_size.m_height);
 	const CVSSize* size = &source;
 	const CVSPoint* origin = &source;
 	CCopyToBackBuff* bitmap = &m_primitiveBundle[m_primitiveBank].m_bitmap;
@@ -273,7 +272,7 @@ void CBaseFrontendDrawer::ReplaceBackground()
 	m_gdi->AddToList(&m_primitiveBundle[m_primitiveBank].m_drawingMark);
 	if (m_drawingBackBuffer != 0) {
 		if (m_drawFrame == 0) {
-			CVSRect frame(0, 0, m_width, m_height);
+			CVSRect frame(0, 0, m_size.m_width, m_size.m_height);
 			const CVSSize* size = &frame;
 			const CVSPoint* origin = &frame;
 			CSolidRect& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
@@ -310,8 +309,8 @@ void CBaseFrontendDrawer::_DrawBackGround()
 	if (m_drawFrame != 0) {
 		const CVSSize& tileSize = *(const CVSSize*) &m_tileBitmap->m_x;
 		CVSRect tiles;
-		tiles.m_width = m_width;
-		tiles.m_height = m_height;
+		tiles.m_width = m_size.m_width;
+		tiles.m_height = m_size.m_height;
 		CVSSize& count = tiles;
 		CVSPoint& start = tiles;
 		short height = (short) (tiles.m_height + tileSize.m_height - 1) / tileSize.m_height;
@@ -593,8 +592,8 @@ bool CBaseFrontendDrawer::QuitYet()
 // FUNCTION: LEMBALL 0x00446fd0
 void CBaseFrontendDrawer::OnSize(const CVSRect& p_rect)
 {
-	m_width = p_rect.m_width;
-	m_height = p_rect.m_height;
+	m_size.m_width = p_rect.m_width;
+	m_size.m_height = p_rect.m_height;
 	Restart();
 }
 

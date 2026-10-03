@@ -221,14 +221,14 @@ void CSuccFailDrawer::Load()
 	else {
 		m_secondaryBitmap = 0;
 	}
-	bitmapX = (int) m_width - (int) (short) m_primaryBitmap->m_x;
+	bitmapX = (int) m_size.m_width - (int) (short) m_primaryBitmap->m_x;
 	primitive = m_primitiveBundle;
 	primary = m_primitives;
 	i = 1;
 	do {
 		resource = m_backgroundBitmap;
 		position = m_layout->m_backgroundPosition.m_y;
-		primitive->m_primitive.m_x = m_width - resource->m_x;
+		primitive->m_primitive.m_x = m_size.m_width - resource->m_x;
 		primitive->m_primitive.m_y = position;
 		primitive->m_primitive.m_resource = resource;
 		primitive->m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
