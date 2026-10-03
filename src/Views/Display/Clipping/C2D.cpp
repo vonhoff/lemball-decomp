@@ -275,8 +275,10 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				m_map->GameToScreen(gameX, gameY);
 				CFixed heightFixed((unsigned int) groundHeight << 12);
 				const int& projectedY = gameY - (heightFixed.m_value >> 12);
-				int left = ((gameX - m_viewOriginX) << 12) >> 12;
-				int top = ((projectedY - m_viewOriginY) << 12) >> 12;
+				CFixed topFixed((projectedY - m_viewOriginY) << 12);
+				CFixed leftFixed((gameX - m_viewOriginX) << 12);
+				int left = leftFixed.m_value >> 12;
+				int top = topFixed.m_value >> 12;
 				bounds.m_x = (short) left - 10;
 				bounds.m_y = (short) top - 5;
 				bounds.m_width = 20;
