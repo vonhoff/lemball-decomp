@@ -172,7 +172,7 @@ class ThunkTests(unittest.TestCase):
 
     def test_comparison_flags_must_be_overwritten_on_both_paths(self):
         for observer in ("11c0", "19c0", "9c", "9f", "0f92c0", "7200",
-                         "40", "d3e0", "c3", "ff10", "e800000000"):
+                         "40", "c3", "ff10", "e800000000"):
             for taken in (False, True):
                 with self.subTest(observer=observer, taken=taken):
                     blocks = ["39c0c3", observer + "39c0c3"]
@@ -182,7 +182,7 @@ class ThunkTests(unittest.TestCase):
                     self.assertEqual(compare(*fixture("3bc7 72" + tail, "3bf8 77" + tail)), {})
 
     def test_comparison_proof_follows_preserving_instructions_and_direct_jumps(self):
-        for path in ("89c1 50 5a 8d09 90", "eb00", "663bc0"):
+        for path in ("89c1 50 5a 8d09 90", "eb00", "663bc0", "d3e0"):
             with self.subTest(path=path):
                 tail = " 7200 " + path + " 39c0c3"
                 self.assertTrue(compare(*fixture("3bc7" + tail,
@@ -191,6 +191,33 @@ class ThunkTests(unittest.TestCase):
             with self.subTest(unproven_path=path):
                 self.assertEqual(compare(*fixture("3bc7 7200 " + path,
                                                  "3bf8 7700 " + path)), {})
+
+    def test_memory_comparison_keeps_the_same_address_and_width(self):
+        for original, rebuilt in (("39442420", "3b442420"),
+                                  ("6639442420", "663b442420"),
+                                  ("38442420", "3a442420")):
+            with self.subTest(original=original):
+                self.assertTrue(compare(*fixture(original + " 7203 39c0c3 39c0c3",
+                                                 rebuilt + " 7703 39c0c3 39c0c3")))
+        for rebuilt in ("3b442424", "3b442520", "3b4c2420"):
+            with self.subTest(changed_memory_operand=rebuilt):
+                self.assertEqual(compare(*fixture("39442420 7203 39c0c3 39c0c3",
+                                                 rebuilt + " 7703 39c0c3 39c0c3")), {})
+
+    def test_logical_writes_leave_auxiliary_flag_live_on_every_successor(self):
+        for logical in ("85c0", "83e007", "09c0", "31c0"):
+            with self.subTest(logical=logical):
+                body = logical + " 7403 39c0c3 39c0c3"
+                self.assertTrue(compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body)))
+            for observer in ("9f", "9c", "27", "c3", "7503 39c0c3 9f", "75fe"):
+                with self.subTest(logical=logical, observer=observer):
+                    body = logical + " " + observer + " 39c0c3"
+                    self.assertEqual(compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body)), {})
+
+    def test_shifts_do_not_prove_that_incoming_flags_were_overwritten(self):
+        for body in ("d3e0 c3", "d3e0 7200 39c0c3", "d1e0 9f 39c0c3"):
+            with self.subTest(body=body):
+                self.assertEqual(compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body)), {})
 
     def test_full_arithmetic_writes_end_the_comparison_flag_lifetime(self):
         for writer in ("01c0", "29c0", "f7d8", "39c0"):
