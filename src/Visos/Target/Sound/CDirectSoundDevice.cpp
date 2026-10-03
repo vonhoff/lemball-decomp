@@ -73,8 +73,9 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 				versionLow = ((VS_FIXEDFILEINFO*) versionInfo)->dwFileVersionLS;
 				unsigned short major = (unsigned short) (versionHigh >> 16);
 				unsigned short minor = (unsigned short) versionHigh;
-				*g_pDebugOutput << "DSOUND version " << (unsigned int) major << "." << (unsigned int) minor << "."
-								<< versionLow << "\n";
+				CVSOStream& debug = *g_pDebugOutput << "DSOUND version ";
+				CVSOStream& version = debug << (unsigned int) major << ".";
+				version << (unsigned int) minor << "." << versionLow << "\n";
 				if (major >= 4 && (major != 4 || minor >= 2)) {
 					valid = 1;
 				}
