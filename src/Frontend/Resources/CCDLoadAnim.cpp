@@ -35,8 +35,7 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager
 		unsigned int m_value;
 		short m_coordinate[2];
 	} packed;
-	int offset;
-	CVSPoint* dest;
+	int index;
 	CResPALETTE* palette;
 	unsigned long animCount;
 
@@ -68,15 +67,15 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager
 					(short) ((short) (windowRect.m_height - m_backgroundBitmap->m_y) / 2));
 	m_centre.m_x = centre.m_x;
 	m_centre.m_y = centre.m_y;
-	offset = 0;
+	index = 0;
 	do {
 		packed.m_value = *points;
-		dest = (CVSPoint*) ((int) &m_points->m_x + offset);
-		dest->m_x = packed.m_coordinate[0];
-		dest->m_y = packed.m_coordinate[1];
-		offset = offset + 4;
+		CVSPoint& dest = m_points[index];
+		dest.m_x = packed.m_coordinate[0];
+		dest.m_y = packed.m_coordinate[1];
+		index++;
 		points = points + 1;
-	} while (offset < 0x14);
+	} while (index < 5);
 	m_progress = 0;
 	m_initialDraw = 1;
 	animCount = GetnAnims(m_animResourceId);
