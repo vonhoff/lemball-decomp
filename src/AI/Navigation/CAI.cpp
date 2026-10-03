@@ -92,6 +92,10 @@ CAI::CAI(CGame* p_game)
 void CAI::Restart()
 {
 	int i;
+	unsigned int network;
+	CMap* map;
+	int level;
+	eSkill skill;
 	CGameObject::Init(this);
 	g_pActiveAI = this;
 	m_objectCount = 0;
@@ -104,7 +108,7 @@ void CAI::Restart()
 	m_isSinglePlayer = 0;
 	ResetGameTimes();
 	m_clockSourceReady = 0;
-	unsigned int network = g_pGameStatus->m_skill == 4;
+	network = g_pGameStatus->m_skill == 4;
 	m_started = 0;
 	m_gameStatePending = 0;
 	m_isHost = 0;
@@ -152,7 +156,7 @@ void CAI::Restart()
 	}
 	m_map->Restart();
 	g_pMap = m_map;
-	CMap* map = m_map;
+	map = m_map;
 	map->m_ai = this;
 	map->m_ownerAI = this;
 	if (m_initialised == 0) {
@@ -276,8 +280,6 @@ void CAI::Restart()
 		m_levelLoader = new CLevelLoader(this);
 	}
 
-	int level;
-	eSkill skill;
 	if (g_nDemoMode != 0) {
 		unsigned char packet[2];
 		unsigned long packetSize;

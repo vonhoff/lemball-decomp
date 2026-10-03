@@ -44,6 +44,22 @@ CLaserManager::~CLaserManager()
 	delete[] m_lasers;
 }
 
+// FUNCTION: LEMBALL 0x00429470
+void CLaserManager::RemoveLaser(CLaser* p_laser)
+{
+	int count = m_count;
+	for (int index = 0; index < count; index++) {
+		if (p_laser == &m_lasers[index]) {
+			m_lasers[index++].SetId(0xffff);
+			for (int next = index; next < m_count; next++) {
+				m_lasers[next - 1] = m_lasers[next];
+			}
+			m_count--;
+			return;
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x004297f0
 bool CLaserManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
