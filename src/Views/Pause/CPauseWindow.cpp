@@ -220,11 +220,11 @@ CVSRect CPauseWindow::CalculateWindow()
 	windowSize = paddedTextSize;
 	positionY = (short) (parentHeight - paddedTextSize.m_height) / 2;
 
-	horizontalBorder = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
-	verticalBorder = &m_verticalBorderAnim->m_animationEntries[0].m_width;
 	verticalCorner = &m_verticalBorderAnim->m_animationEntries[2].m_width;
-	horizontalWidth = verticalBorder[0];
 	verticalHeight = verticalCorner[1];
+	verticalBorder = &m_verticalBorderAnim->m_animationEntries[0].m_width;
+	horizontalWidth = verticalBorder[0];
+	horizontalBorder = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
 	windowSize.m_width = (short) (((int) windowSize.m_width + horizontalWidth - 1) / horizontalWidth);
 	windowSize.m_width = (short) (windowSize.m_width * horizontalWidth);
 	windowSize.m_height = (short) (((int) windowSize.m_height + verticalHeight - 1) / verticalHeight);
