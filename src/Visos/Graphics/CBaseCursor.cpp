@@ -314,6 +314,16 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 	return 0;
 }
 
+inline CVSPoint operator-(const CVSPoint& p_left, const CVSPoint& p_right)
+{
+	return CVSPoint((short) (p_left.m_x - p_right.m_x), (short) (p_left.m_y - p_right.m_y));
+}
+
+inline CVSPoint operator/(const CVSPoint& p_point, int p_divisor)
+{
+	return CVSPoint((short) (p_point.m_x / p_divisor), (short) (p_point.m_y / p_divisor));
+}
+
 // FUNCTION: LEMBALL 0x0046b5c0
 void CBaseCursor::Draw(CGWnd* p_window)
 {
@@ -365,14 +375,18 @@ void CBaseCursor::Draw(CGWnd* p_window)
 				x = clipX;
 			}
 			if ((short) (innerWidth + clipX) < (short) (x + width)) {
-				width = (short) ((clipX - x) + innerWidth);
+				clipX = (short) (clipX - x);
+				clipX = (short) (clipX + innerWidth);
+				width = clipX;
 			}
 			if (y < clipY) {
 				height = (short) (height + (y - clipY));
 				y = clipY;
 			}
 			if ((short) (clipY + innerHeight) < (short) (height + y)) {
-				height = (short) ((innerHeight - y) + clipY);
+				innerHeight = (short) (innerHeight - y);
+				innerHeight = (short) (innerHeight + clipY);
+				height = innerHeight;
 			}
 			if (width <= 0 || height <= 0) {
 				height = 0;
@@ -394,11 +408,8 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	}
 	zoom = (int) p_window->m_zoom;
 	{
-		CVSPoint destinationValue;
-		CVSPoint& destination = destinationValue;
-		destination.m_x = (short) ((int) (short) (m_position.m_x - x) / zoom) - m_hotspot.m_x;
+		CVSPoint destination = (m_position - bounds) / zoom - m_hotspot;
 		gdi = p_window->m_gdi;
-		destination.m_y = (short) ((int) (short) (m_position.m_y - y) / zoom) - m_hotspot.m_y;
 		surface = gdi->m_renderTarget;
 		surface->GetChangeList();
 		surface->GetCurrDB();
