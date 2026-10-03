@@ -34,7 +34,8 @@ void CInvisibleSwitchManager::Initialise(int p_capacity)
 	if (m_switches == 0) {
 		m_switches = new CInvisibleSwitch[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
-			m_switches[i].Restart();
+			CInvisibleSwitch& entry = m_switches[i];
+			entry.Restart();
 			m_switches[i].m_manager = this;
 		}
 	}
