@@ -57,6 +57,41 @@ void CEnemyGroupManager::Restart()
 	}
 }
 
+// FUNCTION: LEMBALL 0x00420c10
+void CEnemyGroupManager::AddEnemyGroup(int p_x,
+									   int p_y,
+									   int p_z,
+									   eEnemyStateActions p_action0,
+									   eEnemyStateRules p_rule0,
+									   eEnemyStateActions p_action1,
+									   eEnemyStateRules p_rule1,
+									   eEnemyStateActions p_action2,
+									   eEnemyStateRules p_rule2,
+									   unsigned short p_waypointStart,
+									   int p_waypointCount)
+{
+	CEnemyGroup* group =
+		new CEnemyGroup(g_pGenericGroupAI, g_pGenericGroupObjectManager, g_pGenericGroupFormationManager);
+	CGenericGroupManager::AddNewGroup(group);
+	group->SetFormationIndex(1);
+	CEnemy* enemy = new CEnemy(g_pGenericGroupAI, p_x, p_y, p_z, 0);
+	enemy->Restart();
+	enemy->SetEnemyType(p_action0, p_rule0, p_action1, p_rule1, p_action2, p_rule2);
+	CGenericGroupManager::AddElementToGroup(enemy, group);
+	if (p_action0 == ENEMY_ACTION_PATROL) {
+		tagWaypointInformation* waypoint = new tagWaypointInformation;
+		waypoint->m_patrolMode = WAYPOINT_PATROL_LOOP;
+		waypoint->m_waypointCount = p_waypointCount;
+		waypoint->m_waypointIndex = 0;
+		waypoint->m_waypointStep = 1;
+		waypoint->m_waypoints = new unsigned short[p_waypointCount];
+		for (int i = 0; i < p_waypointCount; i++) {
+			waypoint->m_waypoints[i] = (unsigned short) (p_waypointStart + i);
+		}
+		enemy->m_state0Data.m_waypointInformation = waypoint;
+	}
+}
+
 // FUNCTION: LEMBALL 0x00420dd0
 void CEnemyGroupManager::LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip)
 {

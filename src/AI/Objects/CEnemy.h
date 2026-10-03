@@ -3,25 +3,10 @@
 
 #include "../Base/AICOORD.h"
 #include "../Base/CGameObject.h"
+#include "../Base/EnemyStates.h"
 #include "../Base/tEnemyLemmingUnion.h"
 
 class CAI;
-enum eEnemyStateActions {
-	ENEMY_ACTION_STOP = 0,
-	ENEMY_ACTION_PATROL = 1,
-	ENEMY_ACTION_TURN_AND_FIRE_RAPID = 2,
-	ENEMY_ACTION_TURN_AND_FIRE_SLOW = 3,
-	ENEMY_ACTION_TURN_AND_FIRE_RANDOM = 4
-};
-
-enum eEnemyStateRules {
-	ENEMY_RULE_NONE = 0,
-	ENEMY_RULE_RADIUS50 = 2,
-	ENEMY_RULE_NOT_RADIUS50 = 3,
-	ENEMY_RULE_RADIUS50_AND_LOS = 4,
-	ENEMY_RULE_NOT_RADIUS50_AND_LOS = 5
-};
-
 // SIZE 0x170
 // VTABLE: LEMBALL 0x00495110
 class CEnemy : public CGameObject {

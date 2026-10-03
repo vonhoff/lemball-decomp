@@ -1,6 +1,7 @@
 #ifndef LEMBALL_AI_GROUPS_CENEMYGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_CENEMYGROUPMANAGER_H
 
+#include "../Base/EnemyStates.h"
 #include "CGenericGroupManager.h"
 
 class CAI;
@@ -18,6 +19,17 @@ public:
 																   tagWaypointInformation*& p_waypointInfo);
 	void LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip);
 	void Restart();
+	void AddEnemyGroup(int p_x,
+					   int p_y,
+					   int p_z,
+					   eEnemyStateActions p_action0,
+					   eEnemyStateRules p_rule0,
+					   eEnemyStateActions p_action1,
+					   eEnemyStateRules p_rule1,
+					   eEnemyStateActions p_action2,
+					   eEnemyStateRules p_rule2,
+					   unsigned short p_waypointStart,
+					   int p_waypointCount);
 };
 
 unsigned long ENEMY_GetLONG(unsigned long* p_data);
