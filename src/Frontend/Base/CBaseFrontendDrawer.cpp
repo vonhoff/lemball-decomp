@@ -64,13 +64,9 @@ CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 										 int p_zrleCapacity,
 										 int p_textPrimitiveCapacity,
 										 int p_maxStringLen)
-	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, p_resourceCapacity + 3, p_animCapacity + 200, p_zrleCapacity, 0)
+	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, p_resourceCapacity + 3, p_animCapacity + 200, p_zrleCapacity, 0),
+	  m_width(0), m_height(0)
 {
-	m_height = 0;
-	m_width = 0;
-	m_staticAnim.m_frameState = 0;
-	m_animPosition.m_y = 0;
-	m_animPosition.m_x = 0;
 	m_flowProcess = p_flowProcess;
 	m_display = p_display;
 	m_gdi = p_gdi;
