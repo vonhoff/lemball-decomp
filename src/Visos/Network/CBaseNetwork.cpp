@@ -630,7 +630,7 @@ int CBaseNetwork::ProcessMsg(Message* p_message)
 	message = p_message;
 	type = message->m_type;
 	switch (type) {
-	case 0xb:
+	case NETWORK_QUEUE_SEND_ONE:
 		if (message->m_code == 1) {
 			stream = (CNetworkMessage*) message->m_payload;
 			peer = (CConnect*) message->m_source;
@@ -638,7 +638,7 @@ int CBaseNetwork::ProcessMsg(Message* p_message)
 			stream->CloseDataStream();
 		}
 		return 1;
-	case 0xc:
+	case NETWORK_QUEUE_SEND_ALL:
 		if (message->m_code == 1) {
 			stream = (CNetworkMessage*) message->m_payload;
 			SendAll(*stream);

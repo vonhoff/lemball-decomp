@@ -578,7 +578,7 @@ void CGunController::SelectOption()
 	int* offsets;
 	unsigned int delta;
 
-	m_selectionMessage.m_type = 0xc;
+	m_selectionMessage.m_type = MESSAGE_BUTTON_RELEASED;
 	if (m_gunY == m_targetY && m_selectionState == 0) {
 		i = 0;
 		while (i < 8) {

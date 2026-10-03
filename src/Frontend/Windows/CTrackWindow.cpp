@@ -108,7 +108,7 @@ void CTrackWindow::SetButtonValue(int p_value)
 {
 	if (m_value != p_value) {
 		Message message;
-		message.m_type = 12;
+		message.m_type = MESSAGE_BUTTON_RELEASED;
 		m_value = p_value;
 		message.m_time = CurrentQueueTimer();
 		message.m_code = m_contextId;

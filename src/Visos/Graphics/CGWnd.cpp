@@ -246,7 +246,7 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 			m_gdi->m_renderTarget->SetDefaultCtable();
 		}
 		break;
-	case 0x311:
+	case WM_PALETTECHANGED:
 		paintWidth = m_rect.m_width;
 		paintHeight = m_rect.m_height;
 		if ((int) paintHeight * (int) paintWidth != 0) {

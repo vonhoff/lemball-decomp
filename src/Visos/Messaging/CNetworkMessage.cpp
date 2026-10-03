@@ -288,7 +288,7 @@ void CNetworkMessage::Send(CConnect* p_connection)
 	Message message;
 
 	if (p_connection != 0) {
-		message.m_type = 0xb;
+		message.m_type = NETWORK_QUEUE_SEND_ONE;
 		message.m_code = 1;
 		message.m_payload = this;
 		message.m_source = p_connection;

@@ -4,6 +4,9 @@
 #include "../Foundation/CBaseQueueHandler.h"
 #include "CConnect.h"
 
+#define NETWORK_QUEUE_SEND_ONE 0x0b
+#define NETWORK_QUEUE_SEND_ALL 0x0c
+
 class CBroadcast;
 class CNetworkAddress;
 class CNetworkMessage;

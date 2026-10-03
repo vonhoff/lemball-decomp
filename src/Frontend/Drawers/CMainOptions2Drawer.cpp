@@ -23,6 +23,9 @@
 #define MAIN_OPTIONS2_RETURN_MESSAGE 0xacef0008
 #define MAIN_OPTIONS2_MAX_VOLUME 255
 
+#define MAIN_OPTIONS2_EFFECTS_VOLUME_CHANGED_MESSAGE 0xacff0000
+#define MAIN_OPTIONS2_MUSIC_VOLUME_CHANGED_MESSAGE 0xacff0001
+
 // GLOBAL: LEMBALL 0x0049f578
 unsigned long g_dwMainOptions2AnimIds[10] = {RES_NEWFRONT_ICONS_HIRES_ZOOM_OFF,
 											 RES_NEWFRONT_ICONS_HIRES_ZOOM_ON,
@@ -232,7 +235,7 @@ CMainOptions2Drawer::~CMainOptions2Drawer()
 bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 {
 	switch (p_message->m_type) {
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		break;
 	default:
 		m_processedCount++;
@@ -251,13 +254,13 @@ bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 		m_quitYet = 1;
 		m_returnState = 0x11;
 		return 1;
-	case 0xacff0000:
+	case MAIN_OPTIONS2_EFFECTS_VOLUME_CHANGED_MESSAGE:
 		g_nPendingEffectsVolume = (int) p_message->m_payload;
 		g_pSoundView->SetEffectsVolume(
 			(unsigned char) (((unsigned int) p_message->m_payload * MAIN_OPTIONS2_MAX_VOLUME) /
 							 (unsigned int) p_message->m_source));
 		return 1;
-	case 0xacff0001: {
+	case MAIN_OPTIONS2_MUSIC_VOLUME_CHANGED_MESSAGE: {
 		g_nPendingMusicVolume = (int) p_message->m_payload;
 		unsigned char volume = (unsigned char) (((unsigned int) p_message->m_payload * MAIN_OPTIONS2_MAX_VOLUME) /
 												(unsigned int) p_message->m_source);

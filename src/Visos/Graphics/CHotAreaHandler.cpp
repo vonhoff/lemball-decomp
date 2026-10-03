@@ -146,22 +146,22 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, c
 	case 6:
 		payload = (unsigned int) p_message->m_payload;
 		switch (payload) {
-		case 0x43:
+		case INPUT_MOUSE_LEFT:
 			button = 0;
 			break;
-		case 0x44:
+		case INPUT_MOUSE_RIGHT:
 			button = 1;
 			break;
-		case 0x45:
+		case INPUT_MOUSE_MIDDLE:
 			button = 2;
 			break;
-		case 0x46:
+		case INPUT_MOUSE_LEFT_DOUBLE_CLICK:
 			button = 3;
 			break;
-		case 0x47:
+		case INPUT_MOUSE_RIGHT_DOUBLE_CLICK:
 			button = 4;
 			break;
-		case 0x48:
+		case INPUT_MOUSE_MIDDLE_DOUBLE_CLICK:
 			button = 5;
 			break;
 		}

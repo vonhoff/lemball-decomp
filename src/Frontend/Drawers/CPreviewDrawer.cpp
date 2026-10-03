@@ -449,7 +449,7 @@ bool CPreviewDrawer::ProcessMessages(Message* p_message)
 	default:
 		m_processedCount = m_processedCount + 1;
 		return 0;
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		break;
 	}
 	switch (p_message->m_code) {

@@ -131,11 +131,25 @@ void CMainOptions1Drawer::Load()
 							   0,
 							   0,
 							   &m_previousModeButton,
-							   0xacef00a6);
-	m_gunController
-		->AddButton(m_buttonLayout[2], m_buttonLayout[3], playAnim, 1, 0, 0, 0, &m_navigationButton, 0xacef0001);
-	m_gunController
-		->AddButton(m_buttonLayout[4], m_buttonLayout[5], nextModeAnim, 1, 0, 0, 0, &m_nextModeButton, 0xacef00a7);
+							   MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW);
+	m_gunController->AddButton(m_buttonLayout[2],
+							   m_buttonLayout[3],
+							   playAnim,
+							   1,
+							   0,
+							   0,
+							   0,
+							   &m_navigationButton,
+							   MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS);
+	m_gunController->AddButton(m_buttonLayout[4],
+							   m_buttonLayout[5],
+							   nextModeAnim,
+							   1,
+							   0,
+							   0,
+							   0,
+							   &m_nextModeButton,
+							   MAIN_OPTIONS1_BUTTON_MESSAGE_NETWORK);
 	m_gunController->AddButton(m_buttonLayout[8],
 							   m_buttonLayout[9],
 							   toggleAnim,
@@ -144,11 +158,18 @@ void CMainOptions1Drawer::Load()
 							   0,
 							   0,
 							   &m_toggleResolutionButton,
-							   0xacef00a5);
+							   MAIN_OPTIONS1_BUTTON_MESSAGE_RESOLUTION);
 	m_gunController
 		->AddButton(m_buttonLayout[6], m_buttonLayout[7], modeAnim, 0, 0, 3, 0, &m_selectedDisplayMode, 0xffffffff);
-	m_gunController
-		->AddButton(m_buttonLayout[10], m_buttonLayout[11], quitAnim, 1, 0, 0, 0, &m_navigationButton, 0xacef00a4);
+	m_gunController->AddButton(m_buttonLayout[10],
+							   m_buttonLayout[11],
+							   quitAnim,
+							   1,
+							   0,
+							   0,
+							   0,
+							   &m_navigationButton,
+							   MAIN_OPTIONS1_BUTTON_MESSAGE_PASSWORD);
 	m_gunController->SetGun(0);
 	m_gunController->SetSpriteWindow();
 }

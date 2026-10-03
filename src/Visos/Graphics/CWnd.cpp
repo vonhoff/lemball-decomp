@@ -390,22 +390,22 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		if ((style & 0x1000) != 0) {
 			switch (p_message) {
 			case WM_LBUTTONDOWN:
-				posted.m_payload = (void*) 0x43;
+				posted.m_payload = (void*) INPUT_MOUSE_LEFT;
 				break;
 			case WM_LBUTTONDBLCLK:
-				posted.m_payload = (void*) 0x46;
+				posted.m_payload = (void*) INPUT_MOUSE_LEFT_DOUBLE_CLICK;
 				break;
 			case WM_RBUTTONDOWN:
-				posted.m_payload = (void*) 0x44;
+				posted.m_payload = (void*) INPUT_MOUSE_RIGHT;
 				break;
 			case WM_RBUTTONDBLCLK:
-				posted.m_payload = (void*) 0x47;
+				posted.m_payload = (void*) INPUT_MOUSE_RIGHT_DOUBLE_CLICK;
 				break;
 			case WM_MBUTTONDOWN:
-				posted.m_payload = (void*) 0x45;
+				posted.m_payload = (void*) INPUT_MOUSE_MIDDLE;
 				break;
 			case WM_MBUTTONDBLCLK:
-				posted.m_payload = (void*) 0x48;
+				posted.m_payload = (void*) INPUT_MOUSE_MIDDLE_DOUBLE_CLICK;
 				break;
 			}
 		}
@@ -413,15 +413,15 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			switch (p_message) {
 			case WM_LBUTTONDOWN:
 			case WM_LBUTTONDBLCLK:
-				posted.m_payload = (void*) 0x43;
+				posted.m_payload = (void*) INPUT_MOUSE_LEFT;
 				break;
 			case WM_RBUTTONDOWN:
 			case WM_RBUTTONDBLCLK:
-				posted.m_payload = (void*) 0x44;
+				posted.m_payload = (void*) INPUT_MOUSE_RIGHT;
 				break;
 			case WM_MBUTTONDOWN:
 			case WM_MBUTTONDBLCLK:
-				posted.m_payload = (void*) 0x45;
+				posted.m_payload = (void*) INPUT_MOUSE_MIDDLE;
 				break;
 			}
 		}
@@ -442,13 +442,13 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		posted.m_type = 5;
 		switch (p_message) {
 		case WM_LBUTTONUP:
-			posted.m_payload = (void*) 0x43;
+			posted.m_payload = (void*) INPUT_MOUSE_LEFT;
 			break;
 		case WM_RBUTTONUP:
-			posted.m_payload = (void*) 0x44;
+			posted.m_payload = (void*) INPUT_MOUSE_RIGHT;
 			break;
 		case WM_MBUTTONUP:
-			posted.m_payload = (void*) 0x45;
+			posted.m_payload = (void*) INPUT_MOUSE_MIDDLE;
 			break;
 		}
 		mouseX = window->m_rect.m_x + (short) p_lParam;
@@ -467,7 +467,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		menuAction = window->SelectMenu(p_message, p_wParam, p_lParam);
 		if (menuAction != 0) {
 			Message command;
-			command.m_type = 0xf;
+			command.m_type = MESSAGE_WINDOW_COMMAND;
 			command.m_time = CurrentQueueTimer();
 			command.m_code = menuAction;
 			g_pMasterInputQueue->Post(command);

@@ -8,11 +8,6 @@
 class CGWnd;
 class CRemap;
 
-#define PREVIEW_BUTTON_MESSAGE_GO 0xacef000c
-#define PREVIEW_BUTTON_MESSAGE_RETURN 0xacef000d
-#define PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL 0xacef000e
-#define PREVIEW_BUTTON_MESSAGE_PREVIOUS_LEVEL 0xacef000f
-
 extern int g_previewRemapSourceIndices[10];
 extern int g_previewRemapTargetIndices[10];
 

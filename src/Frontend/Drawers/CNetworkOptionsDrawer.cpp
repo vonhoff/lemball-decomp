@@ -35,6 +35,10 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 extern char* g_szBroadcastPeerName;
 
+#define NETWORK_OPTIONS_BUTTON_MESSAGE_LAN 0xacef000c
+#define NETWORK_OPTIONS_BUTTON_MESSAGE_SPECIFIC_HOST 0xacef000d
+#define NETWORK_OPTIONS_BUTTON_MESSAGE_RETURN 0xacef000e
+
 // GLOBAL: LEMBALL 0x004a0180
 NetworkOptionsLayout g_networkOptionsLayoutIp = {
 	{{60, 375}, {258, 375}, {455, 375}, {8, 11}, {624, 192}, {8, 213}, {624, 48}, {8, 271}, {624, 96}},
@@ -271,7 +275,7 @@ void CNetworkOptionsDrawer::Load()
 								  0,
 								  0,
 								  &m_handlerCount,
-								  0xacef000c);
+								  NETWORK_OPTIONS_BUTTON_MESSAGE_LAN);
 	m_hiliteController->AddButton(m_layoutTable->m_framePos[1].m_x,
 								  m_layoutTable->m_framePos[1].m_y,
 								  animIds1,
@@ -280,7 +284,7 @@ void CNetworkOptionsDrawer::Load()
 								  0,
 								  0,
 								  &m_handlerCount,
-								  0xacef000d);
+								  NETWORK_OPTIONS_BUTTON_MESSAGE_SPECIFIC_HOST);
 	m_hiliteController->AddButton(m_layoutTable->m_framePos[2].m_x,
 								  m_layoutTable->m_framePos[2].m_y,
 								  animIds2,
@@ -289,7 +293,7 @@ void CNetworkOptionsDrawer::Load()
 								  0,
 								  0,
 								  &m_handlerCount,
-								  0xacef000e);
+								  NETWORK_OPTIONS_BUTTON_MESSAGE_RETURN);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
 	InitialiseHandlers();
@@ -490,19 +494,19 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			}
 		}
 		return 0;
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		switch (p_message->m_code) {
-		case 0xacef000c:
+		case NETWORK_OPTIONS_BUTTON_MESSAGE_LAN:
 			if (m_locked == 0) {
 				Start(0);
 			}
 			break;
-		case 0xacef000d:
+		case NETWORK_OPTIONS_BUTTON_MESSAGE_SPECIFIC_HOST:
 			if (m_locked == 0) {
 				Start(1);
 			}
 			break;
-		case 0xacef000e:
+		case NETWORK_OPTIONS_BUTTON_MESSAGE_RETURN:
 			Stop();
 			m_quitYet = 1;
 			m_returnState = 2;

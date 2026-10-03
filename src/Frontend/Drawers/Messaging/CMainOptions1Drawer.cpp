@@ -25,31 +25,31 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 	case 4:
 		m_idleDeadline = timeGetTime() + 20000;
 		break;
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		m_idleDeadline = timeGetTime() + 20000;
 		switch (p_message->m_code) {
-		case 0xacef0001:
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS:
 			m_returnState = FLOW_MAIN_OPTIONS_2;
 			m_quitYet = 1;
 			g_nFrontendAutoFlowToggle = 1;
 			return true;
-		case 0xacef00a4:
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_PASSWORD:
 			m_returnState = FLOW_PASSWORD;
 			m_quitYet = 1;
 			g_nFrontendAutoFlowToggle = 1;
 			return true;
-		case 0xacef00a5:
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_RESOLUTION:
 			m_display->ToggleResolution();
 			return true;
-		case 0xacef00a6:
-		case 0xacef00a7: {
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW:
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_NETWORK: {
 			mode = m_selectedDisplayMode;
 			status = g_pGameStatus;
 			status->m_level = status->m_lastLevels[mode];
 			status->m_skill = mode;
 			m_quitYet = 1;
 			g_nFrontendAutoFlowToggle = 1;
-			if (p_message->m_code == 0xacef00a6) {
+			if (p_message->m_code == MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW) {
 				m_returnState = FLOW_PREVIEW;
 			}
 			else {

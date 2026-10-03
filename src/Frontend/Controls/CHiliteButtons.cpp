@@ -77,7 +77,7 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 {
 	Message posted;
 	int nextValue;
-	posted.m_type = 0xc;
+	posted.m_type = MESSAGE_BUTTON_RELEASED;
 	posted.m_time = CurrentQueueTimer();
 	posted.m_code = 0;
 	posted.m_payload = 0;
@@ -89,10 +89,10 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 	switch ((int) p_message->m_type) {
 	default:
 		return 0;
-	case 0xb:
+	case MESSAGE_BUTTON_PRESSED:
 		g_pSoundView->PlayEffect(SFX_DRUM1);
 		return 0;
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		if (m_mode == 1) {
 			posted.m_code = (int) m_actionMessage;
 			g_pMasterInputQueue->Post(posted);

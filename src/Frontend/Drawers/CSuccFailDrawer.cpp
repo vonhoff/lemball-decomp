@@ -30,6 +30,9 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 class CGWnd;
 
+#define SUCC_FAIL_BUTTON_MESSAGE_GO 0xacef0010
+#define SUCC_FAIL_BUTTON_MESSAGE_RETURN 0xacef0011
+
 // GLOBAL: LEMBALL 0x0049fcb4
 char g_szSuccFailCollectedAllFlags[] = "You collected all the flags!";
 
@@ -257,7 +260,7 @@ void CSuccFailDrawer::Load()
 								  0,
 								  0,
 								  &m_buttonBinding,
-								  0xacef0010);
+								  SUCC_FAIL_BUTTON_MESSAGE_GO);
 	m_hiliteController->AddButton(m_layout->m_goButton.m_x,
 								  m_layout->m_goButton.m_y,
 								  returnAnim,
@@ -266,7 +269,7 @@ void CSuccFailDrawer::Load()
 								  0,
 								  0,
 								  &m_buttonBinding,
-								  0xacef0011);
+								  SUCC_FAIL_BUTTON_MESSAGE_RETURN);
 	m_hiliteController->SetHilite(0);
 	m_hiliteController->SetHiliteWindow();
 	short animY;
@@ -352,7 +355,7 @@ void CSuccFailDrawer::DrawText()
 bool CSuccFailDrawer::ProcessMessages(Message* p_message)
 {
 	switch ((unsigned int) p_message->m_type) {
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		break;
 	default:
 		m_processedCount++;
@@ -360,7 +363,7 @@ bool CSuccFailDrawer::ProcessMessages(Message* p_message)
 	}
 
 	switch ((unsigned int) p_message->m_code) {
-	case 0xacef0010:
+	case SUCC_FAIL_BUTTON_MESSAGE_GO:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
 			return 1;
@@ -368,7 +371,7 @@ bool CSuccFailDrawer::ProcessMessages(Message* p_message)
 		Go();
 		return 1;
 
-	case 0xacef0011:
+	case SUCC_FAIL_BUTTON_MESSAGE_RETURN:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_2, USER_ACTION_STAGE_REQUEST);
 			return 1;

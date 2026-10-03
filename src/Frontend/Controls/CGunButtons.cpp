@@ -129,7 +129,7 @@ int CGunButtons::ProcessMsg(Message* p_message)
 	int nextValue;
 	unsigned long animId;
 
-	posted.m_type = 0xc;
+	posted.m_type = MESSAGE_BUTTON_RELEASED;
 	posted.m_time = CurrentQueueTimer();
 	posted.m_code = 0;
 	posted.m_payload = 0;
@@ -138,7 +138,7 @@ int CGunButtons::ProcessMsg(Message* p_message)
 		return 0;
 	}
 	switch ((unsigned int) p_message->m_type) {
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		switch (m_mode) {
 		case 0:
 			if (m_postAction == 1) {

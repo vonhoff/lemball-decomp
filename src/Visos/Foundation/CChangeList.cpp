@@ -82,7 +82,7 @@ void CChangeList::Reset()
 	zero = 0;
 	m_currentArea.m_width = (short) zero;
 	m_area = zero;
-	m_activeMark = 0x50;
+	m_activeMark = 'P';
 	m_currentArea.m_height = (short) zero;
 	m_currentArea.m_x = (short) zero;
 	m_currentArea.m_y = (short) zero;
@@ -172,11 +172,11 @@ void CChangeList::SetDrawMark()
 
 	mark = m_activeMark;
 	switch (mark) {
-	case 0x50:
-		m_activeMark = 0x41;
+	case 'P':
+		m_activeMark = 'A';
 		break;
-	case 0x70:
-		m_activeMark = 0x61;
+	case 'p':
+		m_activeMark = 'a';
 		break;
 	}
 }

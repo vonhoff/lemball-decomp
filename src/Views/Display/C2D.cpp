@@ -1546,7 +1546,7 @@ void C2D::DoClipWidth(int p_mapX, int p_mapY, int p_count)
 				case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
 					zOffset = 0;
 					break;
-				case 0x214:
+				case TERRAIN_0x214:
 				case TERRAIN_EMBERS:
 					zOffset = 0;
 					break;
@@ -1689,7 +1689,7 @@ void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 				case TERRAIN_BLOX_8_SLOPE_SE_STEEP:
 				case TERRAIN_BLOX_14_SLOPE_SW_SHALLOW:
 				case TERRAIN_BLOX_15_SLOPE_SE_SHALLOW:
-				case 0x214:
+				case TERRAIN_0x214:
 				case TERRAIN_EMBERS:
 					if (height > 0) {
 						DrawCliff(screenX, screenY, heightValue, (short) cliff);
@@ -2671,7 +2671,7 @@ void C2D::DrawSlinky(CViewData& p_viewData)
 	int y = p_viewData.m_positionY - g_slinkyOffsets[direction][1];
 	int frame;
 	switch (p_viewData.m_action) {
-	case 0x18:
+	case ACTION_READY:
 		switch (direction) {
 		case 0:
 			m_lemmingAnims->DrawAnim(x, y, RES_GAME_SLINKY_EAST, 0, 0, 0);
@@ -2687,7 +2687,7 @@ void C2D::DrawSlinky(CViewData& p_viewData)
 			break;
 		}
 		break;
-	case 0x1b:
+	case ACTION_RUNNING:
 		frame = (int) ((p_viewData.m_animationTime - p_viewData.m_stateTimer) * 15) / 1000;
 		if (frame > 12) {
 			frame = 12;
@@ -3075,16 +3075,16 @@ void C2D::DrawDoor(CViewData& p_viewData)
 	switch (action) {
 	case ACTION_DOOR_LOCKED_FEEDBACK:
 		switch ((unsigned short) p_viewData.m_actionArgument) {
-		case 0x14:
+		case OBJECT_SWITCH:
 			playerIndex = -1;
 			break;
-		case 0x15:
+		case OBJECT_KEY_1:
 			playerIndex = 3;
 			break;
-		case 0x16:
+		case OBJECT_KEY_2:
 			playerIndex = 1;
 			break;
-		case 0x17:
+		case OBJECT_KEY_3:
 			playerIndex = 4;
 			break;
 		}

@@ -167,7 +167,7 @@ void CPanel::SetPause(unsigned int p_paused)
 unsigned long CPanel::TranslateKey(unsigned long p_key)
 {
 	switch (p_key) {
-	case 0x14:
+	case INPUT_KEY_P:
 		return 8;
 	default:
 		return 0;

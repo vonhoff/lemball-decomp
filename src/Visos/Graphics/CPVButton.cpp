@@ -271,7 +271,7 @@ void CPVButton::_OnReleased(int p_flags)
 		posted.m_time = timeGetTime();
 		posted.m_code = (int) m_controlMessage;
 		posted.m_payload = this;
-		posted.m_type = 0xc;
+		posted.m_type = MESSAGE_BUTTON_RELEASED;
 		posted.m_source = (void*) converted;
 		m_messageQueue->Post(posted);
 	}
@@ -291,7 +291,7 @@ void CPVButton::_OnPressed(int p_flags)
 		posted.m_time = timeGetTime();
 		posted.m_code = (int) m_controlMessage;
 		posted.m_payload = this;
-		posted.m_type = 0xb;
+		posted.m_type = MESSAGE_BUTTON_PRESSED;
 		posted.m_source = (void*) converted;
 		m_messageQueue->Post(posted);
 	}
@@ -305,7 +305,7 @@ void CPVButton::_OnEnterButton()
 	if (m_messageQueue != 0) {
 		posted.m_time = timeGetTime();
 		posted.m_code = (int) m_controlMessage;
-		posted.m_type = 0xd;
+		posted.m_type = MESSAGE_BUTTON_ENTERED;
 		posted.m_payload = this;
 		m_messageQueue->Post(posted);
 	}
@@ -319,7 +319,7 @@ void CPVButton::_OnExitButton()
 	if (m_messageQueue != 0) {
 		posted.m_time = timeGetTime();
 		posted.m_code = (int) m_controlMessage;
-		posted.m_type = 0xe;
+		posted.m_type = MESSAGE_BUTTON_EXITED;
 		posted.m_payload = this;
 		m_messageQueue->Post(posted);
 	}

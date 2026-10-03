@@ -76,7 +76,7 @@ int C2D::ProcessMsg(Message* p_message)
 
 	switch ((unsigned int) p_message->m_type) {
 	case 4:
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		switch (p_message->m_code) {
 		case INPUT_KEY_LEFT:
 			PrevGroup();

@@ -11,6 +11,9 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+#define TEXT_WINDOW_APPEND_MESSAGE (WM_USER + 32)
+#define TEXT_WINDOW_COPY_COMMAND 0x421
+
 extern void* g_pDebugAcceleratorTable;
 extern void* g_pDebugSyncEvent;
 
@@ -136,7 +139,7 @@ void CTextWnd::PostText(const char* p_text, unsigned int p_colour)
 		}
 		strcpy(copy, p_text);
 		if (m_windowHandle != 0) {
-			PostMessageA((HWND) m_windowHandle, 0x420, (unsigned int) copy, p_colour);
+			PostMessageA((HWND) m_windowHandle, TEXT_WINDOW_APPEND_MESSAGE, (unsigned int) copy, p_colour);
 		}
 		LeaveCritical();
 	}
@@ -520,7 +523,8 @@ void CTextWnd::CopySelection()
 }
 
 // GLOBAL: LEMBALL 0x004a2b80
-static ACCEL g_textWindowAccelerators[2] = {{9, 0x2d, 0x421}, {9, 0x43, 0x421}};
+static ACCEL g_textWindowAccelerators[2] = {{FCONTROL | FVIRTKEY, VK_INSERT, TEXT_WINDOW_COPY_COMMAND},
+											{FCONTROL | FVIRTKEY, 'C', TEXT_WINDOW_COPY_COMMAND}};
 
 // FUNCTION: LEMBALL 0x00474750
 long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsigned int p_wParam, long p_lParam)
@@ -568,7 +572,7 @@ long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsi
 	}
 	case WM_COMMAND:
 		switch (p_wParam & 0xffff) {
-		case 0x421:
+		case TEXT_WINDOW_COPY_COMMAND:
 			window->CopySelection();
 			break;
 		}
@@ -594,7 +598,7 @@ long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsi
 		window->EndSelection(x, y, p_wParam);
 		break;
 	}
-	case 0x420:
+	case TEXT_WINDOW_APPEND_MESSAGE:
 		window->AppendPostedText((char*) p_wParam, p_lParam);
 		break;
 	}

@@ -5,6 +5,12 @@
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
 #include "../Base/CBaseFrontendDrawer.h"
 
+#define MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS 0xacef0001
+#define MAIN_OPTIONS1_BUTTON_MESSAGE_PASSWORD 0xacef00a4
+#define MAIN_OPTIONS1_BUTTON_MESSAGE_RESOLUTION 0xacef00a5
+#define MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW 0xacef00a6
+#define MAIN_OPTIONS1_BUTTON_MESSAGE_NETWORK 0xacef00a7
+
 class CGDI;
 class CMain2DDisplay;
 class CVSRect;

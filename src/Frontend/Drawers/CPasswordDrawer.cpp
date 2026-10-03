@@ -376,10 +376,10 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 			}
 		}
 		break;
-	case 0xb:
+	case MESSAGE_BUTTON_PRESSED:
 		g_pSoundView->PlayEffect(SFX_DRUM1);
 		break;
-	case 0xc:
+	case MESSAGE_BUTTON_RELEASED:
 		code = message->m_code;
 		if (code >= PASSWORD_BUTTON_MESSAGE_FIRST && code <= PASSWORD_BUTTON_MESSAGE_LAST) {
 			ButtonNumeric(code + PASSWORD_BUTTON_MESSAGE_TO_INDEX_OFFSET);

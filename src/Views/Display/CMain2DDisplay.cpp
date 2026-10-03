@@ -382,12 +382,12 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 
 	switch ((int) p_message->m_type) {
 	case 4:
-		if (p_message->m_code != 0x25) {
+		if (p_message->m_code != INPUT_KEY_F4) {
 			break;
 		}
 		ToggleResolution();
 		return 1;
-	case 0xf:
+	case MESSAGE_WINDOW_COMMAND:
 		switch (p_message->m_code) {
 		default:
 			return 1;
@@ -399,7 +399,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 			cdDir = g_pTargetPlatformServices->GetCDDir(g_szLemballHelpFile);
 			strcpy(helpPath, cdDir);
 			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
-			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x101, (unsigned long) g_szHelpContentsKey);
+			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, HELP_KEY, (unsigned long) g_szHelpContentsKey);
 			if (helpOk == 0) {
 				*g_pErrorOutput << g_szCouldntHelpYa;
 			}
@@ -409,7 +409,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 			cdDir = g_pTargetPlatformServices->GetCDDir("lemball\\lemball.hlp");
 			strcpy(helpPath, cdDir);
 			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
-			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, 0x105, (unsigned long) "");
+			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, HELP_PARTIALKEY, (unsigned long) "");
 			if (helpOk == 0) {
 				*g_pErrorOutput << searchHelpError;
 			}
@@ -421,7 +421,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 			ToggleResolution();
 			break;
 		case 6:
-			helpOk = WinHelpA((HWND) m_nativeWindow, 0, 4, 0);
+			helpOk = WinHelpA((HWND) m_nativeWindow, 0, HELP_HELPONHELP, 0);
 			if (helpOk == 0) {
 				*g_pErrorOutput << quitHelpError;
 			}
