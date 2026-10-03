@@ -315,6 +315,8 @@ CGameObject::CGameObject(eObjectType p_objectType,
 						 unsigned short p_collisionFlags,
 						 unsigned short p_destinationCapacity)
 {
+	bool found;
+	int i;
 	m_objectType = p_objectType;
 	m_collisionFlags = p_collisionFlags;
 	CAiDestinationList* list;
@@ -328,8 +330,8 @@ CGameObject::CGameObject(eObjectType p_objectType,
 		m_destinationList = 0;
 	}
 	m_linkedObjectId = INVALID_OBJECT_ID;
-	bool found = false;
-	int i = 0;
+	found = false;
+	i = 0;
 	if (0 < g_wObjectCount) {
 		do {
 			if (g_pObjects[i] == 0) {
