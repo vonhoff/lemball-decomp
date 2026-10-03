@@ -19,6 +19,12 @@ class ThunkParseAsm(ParseAsm):
         super().__init__(addr_test=upstream.addr_test, name_lookup=upstream.name_lookup)
         self.image, self.targets = image, targets
         self.used_thunk, self.signature = False, None
+        self.local_tables = {}
+
+    def lookup(self, addr, exact=False, indirect=False):
+        if not indirect and addr in self.local_tables:
+            return self.local_tables[addr]
+        return super().lookup(addr, exact=exact, indirect=indirect)
 
     def sanitize(self, inst):
         _, _, mnemonic, operands = inst
@@ -42,27 +48,55 @@ class ThunkParseAsm(ParseAsm):
     def parse_asm(self, data, start_addr):
         self.used_thunk, self.signature = False, None
         data = bytes(data)
+        sections = InstructGen(data, start_addr).sections
+        self.local_tables = {
+            section.contents[0][0]: f"{section.type.name} at +0x{section.contents[0][0] - start_addr:x}"
+            for section in sections
+            if section.type != SectionType.CODE and section.contents
+        }
         asm = super().parse_asm(data, start_addr)
         cursor = start_addr
-        for section in InstructGen(data, start_addr).sections:
-            if section.type != SectionType.CODE:
-                return asm
-            for address, size, _, _ in section.contents:
+        instruction_ends = {}
+        table_targets = []
+        for section in sections:
+            for entry in section.contents:
+                address = entry[0]
+                if section.type == SectionType.CODE:
+                    size = entry[1]
+                    instruction_ends[address] = address + size
+                elif section.type == SectionType.ADDR_TAB:
+                    size = 4
+                    table_targets.append(entry[1])
+                else:
+                    size = 1
                 if address != cursor:
                     return asm
                 cursor += size
         if cursor != start_addr + len(data) or any("<OFFSET" in line for _, line in asm):
             return asm
-        addresses = {address for address, _ in asm}
-        for index, (_, line) in enumerate(asm):
+        if any(target not in instruction_ends for target in table_targets):
+            return asm
+        for section in sections:
+            if section.type != SectionType.CODE or not section.contents:
+                continue
+            last = section.contents[-1]
+            if instruction_ends[last[0]] in self.local_tables and last[2] not in ("ret", "jmp"):
+                return asm
+            for _, _, mnemonic, operands in section.contents:
+                if re.fullmatch(r"(?:call|j\w+|loop\w*)", mnemonic) and operands.startswith("0x"):
+                    target = int(operands, 16)
+                    if start_addr <= target < cursor and target not in instruction_ends:
+                        return asm
+        for address, line in asm:
             jump = re.fullmatch(r"(?:j\w+|loop\w*) (-?0x[0-9a-f]+)", line)
             if jump:
-                following = asm[index + 1][0] if index + 1 < len(asm) else cursor
-                if following + int(jump[1], 16) not in addresses:
+                if instruction_ends[address] + int(jump[1], 16) not in instruction_ends:
                     return asm
         # Equal instruction offsets preserve relative branches and return sites.
         # Capture actual operands before FunctionComparator's assertion fixup.
-        self.signature = (len(data), [(address - start_addr, line) for address, line in asm])
+        self.signature = (len(data), [
+            (address - start_addr if address is not None else None, line) for address, line in asm
+        ])
         return asm
 
 

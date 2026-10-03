@@ -53,6 +53,33 @@ def compare(comparator, match, **flags):
     return additional_effective_matches(engine, {match.orig_addr: comparison})
 
 
+def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
+                   indices=b"\x00\x01", rebuilt_indices=None, suffix=b"",
+                   branch_to_table=False, fallthrough=False):
+    table_offset = 39 if indexed else 32
+    targets = targets or ((24, 27) if indexed else (17, 20))
+    tails = []
+    for start, destinations, index_bytes in (
+        (0x1000, targets, indices),
+        (0x2000, targets if rebuilt_targets is None else rebuilt_targets,
+         indices if rebuilt_indices is None else rebuilt_indices),
+    ):
+        default_offset = table_offset - 6
+        displacement = (table_offset if branch_to_table else default_offset) - 10
+        tail = bytes.fromhex("83f80177") + bytes([displacement])
+        if indexed:
+            tail += bytes.fromhex("0fb680") + struct.pack("<I", start + table_offset + 8)
+        tail += bytes.fromhex("ff2485") + struct.pack("<I", start + table_offset)
+        tail += bytes.fromhex("31c0c3 b801000000c3 b802000000")
+        tail += b"\x90" if fallthrough else b"\xc3"
+        tail += b"".join(struct.pack("<I", start + offset) for offset in destinations)
+        tails.append((tail + (index_bytes if indexed else b"") + suffix).hex())
+    comparator, match = fixture(*tails)
+    for start, image in ((0x1000, comparator.orig_bin), (0x2000, comparator.recomp_bin)):
+        image.is_relocated_addr = lambda address, start=start: start <= address < start + 100
+    return comparator, match
+
+
 class ThunkTests(unittest.TestCase):
     def test_direct_calls_and_tail_jumps_reach_the_paired_function(self):
         for opcode in ("e8", "e9"):
@@ -141,6 +168,37 @@ class ThunkTests(unittest.TestCase):
         self.assertIsNotNone(parser.signature)
         parser.parse_asm(b"\x0f", 0x1100)
         self.assertFalse(parser.used_thunk)
+        self.assertIsNone(parser.signature)
+
+    def test_relocated_switch_tables_preserve_every_target_and_index(self):
+        for indexed in (False, True):
+            with self.subTest(indexed=indexed):
+                comparator, match = switch_fixture(indexed=indexed)
+                raw = comparator.compare_function(match)
+                self.assertLess(raw.match_ratio, 1)
+                self.assertTrue(compare(comparator, match))
+        self.assertEqual(compare(*switch_fixture(rebuilt_targets=(20, 17))), {})
+        self.assertEqual(compare(*switch_fixture(indexed=True, rebuilt_indices=b"\x01\x00")), {})
+
+    def test_switch_targets_must_be_decoded_code_boundaries(self):
+        for targets in ((18, 20), (32, 20), (0x5000, 20)):
+            with self.subTest(targets=targets):
+                self.assertEqual(compare(*switch_fixture(targets=targets)), {})
+        self.assertEqual(compare(*switch_fixture(branch_to_table=True)), {})
+        self.assertEqual(compare(*switch_fixture(fallthrough=True)), {})
+
+    def test_switch_tables_cannot_hide_partial_entries_or_stale_names(self):
+        for suffix in (b"\x00", b"\x00\x00", b"\x00\x00\x00"):
+            with self.subTest(suffix=suffix):
+                self.assertEqual(compare(*switch_fixture(suffix=suffix)), {})
+        comparator, match = switch_fixture()
+        parser = ThunkParseAsm(comparator.orig_bin, {0x4015}, comparator.orig_sanitize)
+        size = match.size(ImageId.ORIG)
+        parser.parse_asm(comparator.orig_bin.read(0x1000, size), 0x1000)
+        self.assertIsNotNone(parser.signature)
+        self.assertTrue(parser.local_tables)
+        parser.parse_asm(b"\x0f", 0x1100)
+        self.assertEqual(parser.local_tables, {})
         self.assertIsNone(parser.signature)
 
     def test_actual_assertion_arguments_are_compared(self):
