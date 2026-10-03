@@ -7,6 +7,7 @@
 #include "AI/Objects/LiftEndpointRecord.h"
 #include "Control/Game/GameMain.h"
 #include "Map/Base/CMap.h"
+#include "Visos/Foundation/CFixed.h"
 #include "Visos/Foundation/CObjSq.h"
 
 #include <string.h>
@@ -272,8 +273,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				gameX = (gameX << 12) >> 12;
 				gameY = (gameY << 12) >> 12;
 				m_map->GameToScreen(gameX, gameY);
-				int heightFixed = (unsigned int) groundHeight << 12;
-				const int& projectedY = gameY - (heightFixed >> 12);
+				CFixed heightFixed((unsigned int) groundHeight << 12);
+				const int& projectedY = gameY - (heightFixed.m_value >> 12);
 				int left = ((gameX - m_viewOriginX) << 12) >> 12;
 				int top = ((projectedY - m_viewOriginY) << 12) >> 12;
 				bounds.m_x = (short) left - 10;
