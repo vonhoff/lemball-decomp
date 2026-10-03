@@ -611,8 +611,9 @@ void CAI::SetPlayerIDs()
 
 		int* offset = offsets;
 		do {
+			int count;
 			CPlayerLemming** lemming = m_networkLemmings + *offset;
-			int count = 4;
+			count = 4;
 			do {
 				(*lemming)->SetId(CGameObject::NextLoadingId());
 				lemming++;
