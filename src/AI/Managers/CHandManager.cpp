@@ -54,6 +54,23 @@ void CHandManager::ResetCount()
 	m_count = 0;
 }
 
+// FUNCTION: LEMBALL 0x00427fd0
+void CHandManager::RemoveHand(CGameObject* p_object)
+{
+	int index = 0;
+	short id = p_object->GetId();
+	for (; index < m_count; index++) {
+		if (m_hands[index].GetId() == id) {
+			m_hands[index++].SetId(0xffff);
+			for (int next = index; next < m_count; next++) {
+				m_hands[next - 1] = m_hands[next];
+			}
+			m_count--;
+			return;
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x00428360
 bool CHandManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {

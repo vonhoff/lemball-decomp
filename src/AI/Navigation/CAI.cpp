@@ -515,17 +515,20 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 				g_pGameStatus->m_skillState = 4;
 				m_gameStatus = GAME_STATUS_FAILURE;
 			}
-			else if ((unsigned int) m_score > message.m_score) {
-				g_pGameStatus->m_skillState = 1;
-				m_gameStatus = GAME_STATUS_SUCCESS;
-			}
-			else if ((unsigned int) m_score < message.m_score) {
-				g_pGameStatus->m_skillState = 1;
-				m_gameStatus = GAME_STATUS_FAILURE;
-			}
 			else {
-				g_pGameStatus->m_skillState = 4;
-				m_gameStatus = GAME_STATUS_FAILURE;
+				unsigned int score = m_score;
+				if (score > message.m_score) {
+					g_pGameStatus->m_skillState = 1;
+					m_gameStatus = GAME_STATUS_SUCCESS;
+				}
+				else if (score < message.m_score) {
+					g_pGameStatus->m_skillState = 1;
+					m_gameStatus = GAME_STATUS_FAILURE;
+				}
+				else {
+					g_pGameStatus->m_skillState = 4;
+					m_gameStatus = GAME_STATUS_FAILURE;
+				}
 			}
 			break;
 		case GAME_STATE_8:
