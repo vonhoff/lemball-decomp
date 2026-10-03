@@ -61,8 +61,9 @@ CMover* CMoverManager::Find(int p_x, int p_y, int& p_height)
 // FUNCTION: LEMBALL 0x0042f350
 void CMoverManager::RemoveMover(CMover* p_mover)
 {
+	int count;
 	int index = 0;
-	int count = m_count;
+	count = m_count;
 	if (index < count) {
 		while (p_mover != &m_movers[index]) {
 			index++;
