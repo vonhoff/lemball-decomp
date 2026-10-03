@@ -71,16 +71,20 @@ void CLiftManager::RemoveLift(CLift* p_lift)
 {
 	int i = 0;
 	int count = m_count;
-	while (i < count) {
-		if (&m_lifts[i] == p_lift) {
-			m_lifts[i].SetId(0xffff);
-			for (int next = i + 1; next < m_count; next++) {
-				m_lifts[next - 1] = m_lifts[next];
+	if (i < count) {
+		CLift* lift = m_lifts;
+		do {
+			if (lift == p_lift) {
+				m_lifts[i].SetId(0xffff);
+				for (int next = i + 1; next < m_count; next++) {
+					m_lifts[next - 1] = m_lifts[next];
+				}
+				m_count--;
+				return;
 			}
-			m_count--;
-			return;
-		}
-		i++;
+			lift++;
+			i++;
+		} while (i < count);
 	}
 }
 
