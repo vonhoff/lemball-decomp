@@ -1529,14 +1529,30 @@ void CSurface::DrawCircleSpans(int p_centreX, int p_centreY, int p_halfWidth, in
 // FUNCTION: LEMBALL 0x00476190
 void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radius, int p_colour)
 {
-	int x = 0;
-	int err = 0;
-	int step = 1;
-	int errLimit = p_radius * 2 - 1;
+	int x;
+	int err;
+	int step;
+	int errLimit;
+	int poleY;
+	int x1;
+	int x2;
+	int changed;
+	int doubleErr;
+	int yTop;
+	int yBottom;
+	int clipY;
+	int xLeft;
+	int xRight;
+	int clipX;
+	x = 0;
+	err = 0;
+	step = 1;
+	errLimit = p_radius * 2 - 1;
 
 	if (p_centreX >= m_clipRect.m_x && p_centreX <= (int) (m_clipRect.m_width + m_clipRect.m_x - 1)) {
-		int poleY = p_centreY + p_radius;
-		if (poleY >= m_clipRect.m_y && poleY <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+		clipY = m_clipRect.m_y;
+		poleY = p_centreY + p_radius;
+		if (poleY >= clipY && poleY <= (int) (m_clipRect.m_height + clipY - 1)) {
 			*((unsigned char*) m_lines[poleY] + p_centreX) = (unsigned char) p_colour;
 		}
 	}
@@ -1547,8 +1563,8 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 		}
 	}
 	if (p_centreY >= m_clipRect.m_y && p_centreY <= (int) (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-		int x1 = p_centreX - p_radius;
-		int x2 = p_centreX + p_radius;
+		x1 = p_centreX - p_radius;
+		x2 = p_centreX + p_radius;
 		if (x1 < m_clipRect.m_x) {
 			x1 = m_clipRect.m_x;
 		}
@@ -1560,11 +1576,11 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 
 	if (p_radius > 1) {
 		while (x < p_radius) {
-			int changed = 0;
+			changed = 0;
 			x++;
 			err += step;
 			step += 2;
-			int doubleErr = err * 2;
+			doubleErr = err * 2;
 			if (errLimit < doubleErr) {
 				p_radius--;
 				changed = 1;
@@ -1573,13 +1589,13 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 			}
 			if (x <= p_radius) {
 				if (changed != 0) {
-					int yTop = p_centreY - p_radius;
-					int yBottom = p_centreY + p_radius;
-					int clipY = m_clipRect.m_y;
+					yTop = p_centreY - p_radius;
+					yBottom = p_centreY + p_radius;
+					clipY = m_clipRect.m_y;
 					if (yTop <= (int) (m_clipRect.m_height + clipY - 1) && yBottom >= clipY) {
-						int xLeft = p_centreX - x;
-						int xRight = p_centreX + x;
-						int clipX = m_clipRect.m_x;
+						xLeft = p_centreX - x;
+						xRight = p_centreX + x;
+						clipX = m_clipRect.m_x;
 						if (clipX <= xRight && (int) (m_clipRect.m_width + clipX - 1) >= xLeft) {
 							if (xRight > (int) (m_clipRect.m_width + clipX - 1)) {
 								xRight = m_clipRect.m_width + clipX - 1;
