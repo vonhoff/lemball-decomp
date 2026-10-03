@@ -88,7 +88,8 @@ void CFileReadSocket::Process()
 				int index;
 				for (index = m_pendingReadSlot; index < CFileCommonSocket::m_headerSlotCount; index++) {
 					header = &m_file->m_headers[index];
-					if (header->m_mirroredSequence < header->m_sequence) {
+					unsigned short sequence = header->m_sequence;
+					if (header->m_mirroredSequence < sequence) {
 						m_pendingReadSlot = index;
 						break;
 					}
