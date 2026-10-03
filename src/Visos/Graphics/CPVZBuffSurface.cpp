@@ -41,20 +41,20 @@ void CPVZBuffSurface::AllocateZBuff()
 	CVSSize size =
 		m_bitmap.SetSize(CVSRect(0, 0, (short) (m_windowRect.m_width * 2), m_windowRect.m_height), m_reserved40 * 2);
 	allocatedArea = (unsigned int) m_allocatedWidth * (unsigned int) m_allocatedHeight * 2;
-	neededArea = (unsigned int) ((int) size.m_height * (int) size.m_width);
+	neededArea = (unsigned int) (size.m_height * size.m_width);
 	if (allocatedArea < neededArea) {
 		FreeZBuff();
 	}
-	if ((int) m_windowRect.m_width * (int) m_windowRect.m_height != 0) {
+	if (m_windowRect.m_width * m_windowRect.m_height != 0) {
 		if (m_buffer == NULL) {
 			m_allocatedHeight = (unsigned short) size.m_height;
-			m_allocatedWidth = (unsigned short) ((unsigned int) (int) size.m_width >> 1);
+			m_allocatedWidth = (unsigned short) ((unsigned int) size.m_width >> 1);
 			m_buffer = new unsigned short[(unsigned int) m_allocatedWidth * (unsigned int) m_allocatedHeight];
 		}
 		if (m_buffer == NULL) {
 			m_enabled = 0;
 		}
-		m_bitmap.SetBitsBase((unsigned char*) m_buffer, (int) size.m_width);
+		m_bitmap.SetBitsBase((unsigned char*) m_buffer, size.m_width);
 	}
 }
 

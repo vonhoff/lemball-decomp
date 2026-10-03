@@ -632,7 +632,7 @@ void CAI::SetPlayerIDs()
 // FUNCTION: LEMBALL 0x00412100
 void CAI::DecideAnimsRequired()
 {
-	int count = (unsigned int) g_wObjectCount;
+	int count = g_wObjectCount;
 	int i = 0;
 	for (;;) {
 		if (i >= count) {
@@ -1189,7 +1189,7 @@ void CAI::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 // FUNCTION: LEMBALL 0x00412fb0
 void CAI::FixUpLevel()
 {
-	int count = (unsigned int) g_wObjectCount;
+	int count = g_wObjectCount;
 	for (int i = 0; i < count; i++) {
 		CGameObject* object = g_pObjects[(unsigned short) i];
 		if (object->GetId() == (short) 0xffff) {

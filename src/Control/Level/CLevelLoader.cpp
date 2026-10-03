@@ -341,10 +341,10 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 		}
 		case LEVEL_BLOCK_NETWORK_STARTS: {
 			total = 0;
-			count = (unsigned int) *data16++;
+			count = *data16++;
 			while (count > 0) {
 				data16 += LEVEL_START_COORDINATE_WORDS;
-				total += (unsigned int) *data16++;
+				total += *data16++;
 				count--;
 			}
 			if (g_pActiveConnection == NULL) {
@@ -364,10 +364,10 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 			break;
 		case LEVEL_BLOCK_PLAYER_STARTS: {
 			total = 0;
-			count = (unsigned int) *data16++;
+			count = *data16++;
 			while (count > 0) {
 				data16 += LEVEL_START_COORDINATE_WORDS;
-				total += (unsigned int) *data16++;
+				total += *data16++;
 				count--;
 			}
 			if (g_pActiveConnection == NULL) {

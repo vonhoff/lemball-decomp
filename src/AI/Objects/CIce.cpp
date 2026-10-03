@@ -206,7 +206,7 @@ bool CIce::Process()
 		}
 		if (m_velocityX != 0) {
 			if (m_velocityY == 0) {
-				int fraction = (position.m_yFixed & 0xf000U) >> 12;
+				int fraction = (position.m_yFixed & 0xf000) >> 12;
 				if (fraction > 8) {
 					position.m_yFixed -= 4096;
 				}
@@ -216,7 +216,7 @@ bool CIce::Process()
 			}
 		}
 		else {
-			int fraction = (position.m_xFixed & 0xf000U) >> 12;
+			int fraction = (position.m_xFixed & 0xf000) >> 12;
 			if (fraction > 8) {
 				position.m_xFixed -= 4096;
 			}
