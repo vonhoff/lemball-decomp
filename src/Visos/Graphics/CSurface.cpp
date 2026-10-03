@@ -1949,13 +1949,10 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 							}
 						}
 						else {
-							unsigned char* copyDst;
-							unsigned short* copyZ;
-							unsigned char* copySrc;
 							unsigned char count = (unsigned char) width;
-							copyZ = zlines;
-							copySrc = src + runCount + clipX;
-							copyDst = dst;
+							unsigned short* copyZ = zlines;
+							unsigned char* copySrc = src + runCount + clipX;
+							unsigned char* copyDst = dst;
 							while (count != 0) {
 								count--;
 								if (*copyZ <= p_depth) {
