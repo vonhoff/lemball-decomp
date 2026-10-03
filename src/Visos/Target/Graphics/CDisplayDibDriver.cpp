@@ -88,12 +88,7 @@ int CDisplayDibDriver::BitBltContexts(CDrawingContext* p_destination,
 					  p_position->m_y,
 					  SRCCOPY);
 	}
-	CVSRect clipped;
-	clipped.m_width = p_rect->m_width;
-	clipped.m_height = p_rect->m_height;
-	CVSPoint* point = p_rect;
-	clipped.m_x = point->m_x;
-	clipped.m_y = point->m_y;
+	CVSRect clipped(*p_rect);
 	CVSSize limits;
 	limits.m_width = m_screenSize.m_width;
 	limits.m_height = m_screenSize.m_height;
@@ -125,8 +120,7 @@ int CDisplayDibDriver::BitBltContexts(CDrawingContext* p_destination,
 	int stride = ((CDibContext*) ((CGdiContext*) p_source)->m_hBitmap)->GetStride();
 	unsigned char* destination = m_frameBuffer + clipped.m_y * m_screenSize.m_width + clipped.m_x;
 	unsigned char* source = ((CDibContext*) ((CGdiContext*) p_source)->m_hBitmap)->GetBits();
-	source += p_position->m_y * stride;
-	source += p_position->m_x;
+	source += p_position->m_y * stride + p_position->m_x;
 	int i = 0;
 	while (1) {
 		if (i >= rows) {
