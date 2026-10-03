@@ -33,12 +33,9 @@ CRocket::~CRocket()
 void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 {
 	SetId(p_id);
-	m_position.m_xFixed = p_position.m_xFixed;
-	m_position.m_yFixed = p_position.m_yFixed;
-	int z = p_position.m_zFixed;
+	m_position = p_position;
 	m_active = 1;
 	m_action = ACTION_READY;
-	m_position.m_zFixed = z;
 	int x = p_position.m_xFixed >> 12;
 	int y = p_position.m_yFixed >> 12;
 	int blockX = x / 16;
