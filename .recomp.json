@@ -13,8 +13,8 @@
   "targets": [
     "Windows"
   ],
-  "toolchain": "reccmp",
-  "approach": "Matching MSVC 4.0 decompilation using reccmp for verification",
+  "toolchain": "Reccmp",
+  "approach": "Matching MSVC 4.0 decompilation",
   "maintainers": [
     {
       "name": "vonhoff",
