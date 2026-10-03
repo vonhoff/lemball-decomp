@@ -315,9 +315,9 @@ bool PlayerNotFacingCursor(CAI* p_ai, CGameObject* p_object, Info* p_info)
 bool PlayerNotFacingTarget(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	if (p_object->IsRequestingFire() && p_object->FacingTarget() == 0) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00419b00
@@ -330,9 +330,9 @@ bool PlayerRequestingFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
 bool PlayerWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	if (p_object->IsRequestingFire() && p_object->m_actionDeadline > g_dwGameTick) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00419b40
@@ -345,9 +345,9 @@ bool PlayerBored(CAI* p_ai, CGameObject* p_object, Info* p_info)
 bool EnemyNotFacingTarget(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	if (p_object->IsRequestingFire() && p_object->FacingTarget() == 0) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00419b80
@@ -360,18 +360,18 @@ bool EnemyRequestingFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
 bool EnemyWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	if (p_object->IsRequestingFire() && p_object->m_actionDeadline > g_dwGameTick) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00419bc0
 bool GameOver(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	if (g_nGameOver != 0 && p_ai->m_gameStatus == 4) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00419be0
@@ -390,7 +390,7 @@ bool RequestDeath(CAI* p_ai, CGameObject* p_object, Info* p_info)
 bool NotFacingDestination(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	if (GotDestination(p_ai, p_object, p_info) == 0) {
-		return 0;
+		return false;
 	}
 	return p_object->FacingDestination() == 0;
 }

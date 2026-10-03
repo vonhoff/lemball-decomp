@@ -279,13 +279,13 @@ bool INIT_CheckOptions(char* p_option)
 					*value = *value ^ 1;
 				}
 				g_afInitOptionSelected[index] = 1;
-				return 1;
+				return true;
 			}
 			option++;
 			index++;
 		} while (option < g_aInitCmdOptions + 14);
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x004596b0

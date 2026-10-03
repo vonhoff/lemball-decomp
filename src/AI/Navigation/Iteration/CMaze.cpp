@@ -9,7 +9,7 @@ bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 {
 	p_reached = 0;
 	if (m_endY < 0 || m_endX < 0 || m_height <= m_endY || m_width <= m_endX || m_distances[m_endY][m_endX] == 0xffff) {
-		return 1;
+		return true;
 	}
 
 	bool changed = false;
@@ -69,7 +69,7 @@ bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 	p_reached = m_distances[m_endY][m_endX] != 0xff00;
 	p_noChanges = !p_reached || changed ? 0 : 1;
 	if (!p_reached && changed && m_radius < 0x14) {
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }

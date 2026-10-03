@@ -469,30 +469,30 @@ bool CPlayerLemming::HasObject(eObjectType p_objectType)
 		if (count != PLAYER_INVENTORY_CAPACITY) {
 			for (int i = 0; i < count; i++) {
 				if (m_inventoryTypes[i] == p_objectType) {
-					return 1;
+					return true;
 				}
 			}
 		}
 	}
 	else if (m_ammoCount == PLAYER_MAX_AMMO) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040f9b0
 bool CPlayerLemming::AddObject(eObjectType p_objectType, CGameObject* p_object)
 {
 	if (m_inventoryCount == PLAYER_INVENTORY_CAPACITY) {
-		return 0;
+		return false;
 	}
 	if (HasObject(p_objectType)) {
-		return 0;
+		return false;
 	}
 	m_inventoryTypes[m_inventoryCount] = p_objectType;
 	m_inventoryObjects[m_inventoryCount] = p_object;
 	m_inventoryCount++;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040fa10
@@ -826,15 +826,15 @@ void CPlayerLemming::OnConveyor(unsigned int p_onConveyor, CIce* p_ice, unsigned
 bool CPlayerLemming::IsSelectable()
 {
 	if (!CGameObject::IsSelectable()) {
-		return 0;
+		return false;
 	}
 	if (m_action == ACTION_EXTERNAL_CONTROL) {
 		int actionArgument = (unsigned short) m_actionArgument;
 		if (actionArgument >= 1 && actionArgument <= 2) {
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004109f0

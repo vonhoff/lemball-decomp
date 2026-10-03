@@ -448,51 +448,51 @@ bool CPreviewDrawer::ProcessMessages(Message* p_message)
 	switch ((int) p_message->m_type) {
 	default:
 		m_processedCount = m_processedCount + 1;
-		return 0;
+		return false;
 	case MESSAGE_BUTTON_RELEASED:
 		break;
 	}
-	switch (p_message->m_code) {
+	switch ((unsigned int) p_message->m_code) {
 	default:
-		return 0;
+		return false;
 	case PREVIEW_BUTTON_MESSAGE_GO:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_2, USER_ACTION_STAGE_REQUEST);
-			return 1;
+			return true;
 		}
 		m_quitYet = 1;
 		m_returnState = 2;
-		return 1;
+		return true;
 	case PREVIEW_BUTTON_MESSAGE_RETURN:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
-			return 1;
+			return true;
 		}
 		m_quitYet = 1;
 		m_returnState = 5;
-		return 1;
+		return true;
 	case PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL:
 		if (m_nextDisabled == 1) {
 			m_ready = 1;
-			return 1;
+			return true;
 		}
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_0, USER_ACTION_STAGE_REQUEST);
-			return 1;
+			return true;
 		}
 		NextLevel();
-		return 1;
+		return true;
 	case PREVIEW_BUTTON_MESSAGE_PREVIOUS_LEVEL:
 		if (m_previousDisabled == 1) {
 			m_ready = 1;
-			return 1;
+			return true;
 		}
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_1, USER_ACTION_STAGE_REQUEST);
-			return 1;
+			return true;
 		}
 		PreviousLevel();
-		return 1;
+		return true;
 	}
 }
 
@@ -530,18 +530,18 @@ bool CPreviewDrawer::ConfirmedAction(eUserActions p_action)
 	switch (p_action) {
 	case USER_ACTION_0:
 		NextLevel();
-		return 1;
+		return true;
 	case USER_ACTION_1:
 		PreviousLevel();
-		return 1;
+		return true;
 	case USER_ACTION_2:
 		Return();
-		return 1;
+		return true;
 	case USER_ACTION_3:
 		Go();
-		return 1;
+		return true;
 	default:
-		return 0;
+		return false;
 	}
 }
 
@@ -692,10 +692,10 @@ bool CPreviewDrawer::AddWord(char* p_source, char* p_line, int& p_sourcePos, int
 	}
 	p_line[p_linePos] = 0;
 	if (p_source[p_sourcePos] == 0) {
-		return 1;
+		return true;
 	}
 	p_sourcePos = p_sourcePos + 1;
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0044a3c0

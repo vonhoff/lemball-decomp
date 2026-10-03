@@ -92,7 +92,7 @@ bool CCrate::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	switch (m_action) {
 	case ACTION_ACTIVATING:
@@ -109,7 +109,7 @@ bool CCrate::Process()
 		}
 		break;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0041ce50
@@ -119,9 +119,9 @@ bool CCrate::Activate(CGameObject* p_object)
 		m_actionPhase1Deadline = 16;
 		m_actionPhase2Deadline = 30;
 		RequestAction(ACTION_ACTIVATING);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041ce90

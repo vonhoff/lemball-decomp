@@ -53,7 +53,7 @@ bool CCatapult::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	m_actionArgument = 0;
 	switch (m_action) {
@@ -96,7 +96,7 @@ bool CCatapult::Process()
 		}
 		break;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0041c9b0
@@ -109,9 +109,9 @@ bool CCatapult::Activate(CGameObject* p_object)
 		m_actionPhase2Deadline = 46;
 		m_actionDeadline = 94;
 		RequestAction(ACTION_ACTIVATING);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041ca00

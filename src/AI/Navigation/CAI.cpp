@@ -1220,7 +1220,7 @@ CPlayerLemming* CAI::GetDead()
 // FUNCTION: LEMBALL 0x00413090
 bool CAI::GetObjectRequired(eObjectType p_objectType)
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004130a0

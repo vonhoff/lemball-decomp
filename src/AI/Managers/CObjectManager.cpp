@@ -447,9 +447,9 @@ bool CObjectManager::Receive(unsigned short p_message, CGlobalGameObject* p_obje
 	switch (p_message) {
 	case MESSAGE_REMOVE_OBJECT:
 		Remove(p_object);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // GLOBAL: LEMBALL 0x004a74c0

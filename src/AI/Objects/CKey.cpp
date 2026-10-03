@@ -46,13 +46,13 @@ bool CKey::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	if (m_action == ACTION_ACTIVATED) {
 		Action(ACTION_READY);
 		m_objectActive = 0;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0041d560
@@ -61,9 +61,9 @@ bool CKey::Activate(CGameObject* p_object)
 	m_activator = p_object;
 	if (m_activator->HasObject(m_objectType) == 0) {
 		RequestAction(ACTION_ACTIVATED);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041d5a0

@@ -306,20 +306,20 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
 			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
-			return 1;
+			return true;
 		}
 		case INPUT_KEY_RETURN: {
 			CPVButton* button = m_buttons[11];
 			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
-			return 1;
+			return true;
 		}
 		case INPUT_KEY_DELETE:
 		case INPUT_KEY_BACKSPACE: {
 			CPVButton* button = m_buttons[PASSWORD_CLEAR_BUTTON_INDEX];
 			CVSPoint pt(0, 0);
 			button->OnButtonUp(pt, 0);
-			return 1;
+			return true;
 		}
 		}
 		if (code >= INPUT_KEY_0 && code <= INPUT_KEY_9) {
@@ -327,7 +327,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 				CPVButton* button = m_buttons[code - INPUT_KEY_0];
 				CVSPoint pt(0, 0);
 				button->OnButtonUp(pt, 0);
-				return 1;
+				return true;
 			}
 		}
 		break;
@@ -336,35 +336,35 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		switch (code) {
 		case INPUT_KEY_UP:
 			ShiftHilite(-3);
-			return 1;
+			return true;
 		case INPUT_KEY_DOWN:
 			ShiftHilite(3);
-			return 1;
+			return true;
 		case INPUT_KEY_LEFT:
 			ShiftHilite(-1);
-			return 1;
+			return true;
 		case INPUT_KEY_RIGHT:
 			ShiftHilite(1);
-			return 1;
+			return true;
 		case INPUT_KEY_SPACE:
 		case 0x22: {
 			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
 			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
-			return 1;
+			return true;
 		}
 		case INPUT_KEY_RETURN: {
 			CPVButton* button = m_buttons[11];
 			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
-			return 1;
+			return true;
 		}
 		case INPUT_KEY_DELETE:
 		case INPUT_KEY_BACKSPACE: {
 			CPVButton* button = m_buttons[PASSWORD_CLEAR_BUTTON_INDEX];
 			CVSPoint pt(0, 0);
 			button->OnButtonDown(pt, 0);
-			return 1;
+			return true;
 		}
 		}
 		if (code >= INPUT_KEY_0 && code <= INPUT_KEY_9) {
@@ -372,7 +372,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 				CPVButton* button = m_buttons[code - INPUT_KEY_0];
 				CVSPoint pt(0, 0);
 				button->OnButtonDown(pt, 0);
-				return 1;
+				return true;
 			}
 		}
 		break;
@@ -383,14 +383,14 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		code = message->m_code;
 		if (code >= PASSWORD_BUTTON_MESSAGE_FIRST && code <= PASSWORD_BUTTON_MESSAGE_LAST) {
 			ButtonNumeric(code + PASSWORD_BUTTON_MESSAGE_TO_INDEX_OFFSET);
-			return 1;
+			return true;
 		}
 		break;
 	default:
 		m_processedCount = m_processedCount + 1;
-		return 0;
+		return false;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00451a70

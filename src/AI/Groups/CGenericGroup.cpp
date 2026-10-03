@@ -63,7 +63,7 @@ bool CGenericGroup::Process()
 	for (int i = 0; i < m_elementCount; i++) {
 		m_elements[i]->Process();
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041def0
@@ -174,10 +174,10 @@ bool CGenericGroup::ConfirmElementIsInGroup(CGameObject* p_object)
 {
 	for (int i = 0; i < m_elementCount; i++) {
 		if (m_elements[i] == p_object) {
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041e100
@@ -186,10 +186,10 @@ bool CGenericGroup::ConfirmElementIsInGroup(unsigned short p_objectId)
 	for (int i = 0; i < m_elementCount; i++) {
 		CGameObject* object = m_elements[i];
 		if (object != 0 && object->m_objectId == p_objectId) {
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041e140
@@ -388,12 +388,12 @@ bool CGenericGroup::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinat
 				p_coordinate->m_xFixed = object->m_position.m_xFixed;
 				p_coordinate->m_yFixed = object->m_position.m_yFixed;
 				p_coordinate->m_zFixed = object->m_position.m_zFixed;
-				return 1;
+				return true;
 			}
 			object = GetNextElementInGroup();
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041e640

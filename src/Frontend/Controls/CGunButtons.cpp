@@ -117,9 +117,9 @@ bool CGunButtons::DrawBackBuffer()
 {
 	if (g_nGunButtonsRedrawPending != 0) {
 		g_nGunButtonsRedrawPending = 0;
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0044c460

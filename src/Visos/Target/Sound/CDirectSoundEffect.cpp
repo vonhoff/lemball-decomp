@@ -235,13 +235,13 @@ bool CDirectSoundEffect::IsPlaying()
 		if (result != 0) {
 			*g_pErrorOutput << "Effect Buffer Status Request failed: " << DescribeDirectSoundError(result & 0xfff)
 							<< "\n";
-			return 0;
+			return false;
 		}
 		if (((unsigned char) status & 1) != 0) {
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0047d8c0
@@ -311,7 +311,7 @@ bool CDirectSoundEffect::SetBufferVolume(int p_index, int p_volume)
 	if (result != 0) {
 		*g_pErrorOutput << "Effect Buffer Set Volume Request failed: " << DescribeDirectSoundError(result & 0xfff)
 						<< "\n";
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }

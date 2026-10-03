@@ -50,22 +50,22 @@ void CPVGDIBitmap::Initialise()
 // FUNCTION: LEMBALL 0x00472340
 void CPVGDIBitmap::CreateLinePtrs()
 {
-	if ((int) m_lineCapacity < (int) (short) m_height) {
+	if ((int) m_lineCapacity < m_height) {
 		if (m_lines != 0) {
 			operator delete(m_lines);
 			m_lines = 0;
 		}
-		if ((short) m_height > 0) {
+		if (m_height > 0) {
 			short heightWord;
 			unsigned int size;
 
 			heightWord = m_height;
-			size = (unsigned int) (int) heightWord;
-			size = size << 2;
+			size = (unsigned int) heightWord;
+			size = size * sizeof(*m_lines);
 			m_lines = (void**) operator new(size);
 			ResetLinePtrs();
 		}
-		m_lineCapacity = (unsigned int) (int) (short) m_height;
+		m_lineCapacity = (unsigned int) m_height;
 		return;
 	}
 	ResetLinePtrs();
@@ -79,7 +79,7 @@ void CPVGDIBitmap::ResetLinePtrs()
 	SetLinePtrs();
 	if ((int) m_rowPadding > 0) {
 		memset(m_bitsBase, 0, m_rowPadding);
-		memset(m_bitsBase + abs(m_stride) * (int) (short) m_height + m_rowPadding, 0, m_rowPadding);
+		memset(m_bitsBase + abs(m_stride) * m_height + m_rowPadding, 0, m_rowPadding);
 	}
 }
 
@@ -93,18 +93,18 @@ void CPVGDIBitmap::SetLinePtrs()
 	bits = m_bits;
 	line = m_firstLine;
 	row = 0;
-	if ((short) m_height <= 0) {
+	if (m_height <= 0) {
 		return;
 	}
 	do {
 		m_lines[line] = bits + m_xOffset;
 		line = line + 1;
 		bits = bits + m_stride;
-		if ((int) line >= (int) (short) m_height) {
-			line = line - (unsigned int) (short) m_height;
+		if ((int) line >= m_height) {
+			line = line - (unsigned int) m_height;
 		}
 		row = row + 1;
-	} while (row < (int) (short) m_height);
+	} while (row < m_height);
 }
 
 // FUNCTION: LEMBALL 0x00472440
@@ -130,16 +130,16 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 		}
 		deltaY = (short) (xy[1] - p_destination->m_y);
 		m_xOffset = m_xOffset - (unsigned int) (short) (xy[0] - p_destination->m_x);
-		height = (int) (short) deltaY + (int) m_firstLine;
+		height = deltaY + (int) m_firstLine;
 		m_firstLine = (unsigned int) height;
-		width = (unsigned int) (int) (short) m_height;
-		if ((int) m_firstLine < (int) width) {
+		width = m_height;
+		if ((int) m_firstLine < width) {
 			if ((int) m_firstLine < 0) {
-				m_firstLine = (unsigned int) ((int) width + (int) m_firstLine);
+				m_firstLine = (unsigned int) (width + (int) m_firstLine);
 			}
 		}
 		else {
-			m_firstLine = (unsigned int) ((int) m_firstLine - (int) width);
+			m_firstLine = (unsigned int) ((int) m_firstLine - width);
 		}
 		SetLinePtrs();
 		return;
@@ -233,7 +233,7 @@ void CPVGDIBitmap::SetBitsBase(unsigned char* p_bits, int p_stride)
 	m_bits = m_rowPadding + p_bits;
 	m_stride = p_stride;
 	if (p_stride < 0) {
-		m_bits += (1 - (int) (short) m_height) * p_stride;
+		m_bits += (1 - m_height) * p_stride;
 	}
 	CreateLinePtrs();
 }

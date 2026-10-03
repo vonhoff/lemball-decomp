@@ -71,7 +71,7 @@ bool CGdiDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 	info->bmiHeader.biHeight = -1;
 	info->bmiHeader.biBitCount = 8;
 	info->bmiHeader.biClrImportant = 0;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00456b90

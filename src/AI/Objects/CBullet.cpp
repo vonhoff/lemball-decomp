@@ -123,11 +123,11 @@ bool CBullet::Process()
 		if ((int) currentTick >= (int) tick) {
 			do {
 				if (m_actionDeadline < tick) {
-					return 0;
+					return false;
 				}
 				m_movement.Position(pos, tick);
 				if (pos.m_x < 0 || pos.m_x > 0x3ff || pos.m_y < 0 || pos.m_y > 0x3ff) {
-					return 0;
+					return false;
 				}
 				int tileX = pos.m_x / 16;
 				int tileY;
@@ -143,7 +143,7 @@ bool CBullet::Process()
 					collision = g_pMap->m_ground.m_ground[width * tileY + tileX].m_collision;
 				}
 				if ((collision & 2) != 0) {
-					return 0;
+					return false;
 				}
 				if (m_isRemoteObject == 0) {
 					unsigned short groundZ;
@@ -165,7 +165,7 @@ bool CBullet::Process()
 						m_position.m_yFixed = pos.m_y << 12;
 						m_position.m_zFixed = pos.m_z << 12;
 						g_pAI->StepOn(m_position, this, m_collisionFlags);
-						return 0;
+						return false;
 					}
 				}
 				ai = g_pAI;
@@ -188,7 +188,7 @@ bool CBullet::Process()
 					if (m_owner != OWNER_REMOTE_PLAYER || hitObject->m_objectType == 2) {
 						hitObject->HitBullet(this);
 					}
-					return 0;
+					return false;
 				}
 				tick++;
 			} while ((int) currentTick >= (int) tick);
@@ -197,10 +197,10 @@ bool CBullet::Process()
 		m_position.m_yFixed = pos.m_y << 12;
 		m_position.m_zFixed = pos.m_z << 12;
 		m_lastMovementTick = currentTick;
-		return 1;
+		return true;
 	}
 	case ACTION_DEAD:
-		return 0;
+		return false;
 	}
 }
 
@@ -277,7 +277,7 @@ bool CBullet::Receive(unsigned short p_messageId, CNetworkMessage* p_message)
 	}
 	((CBulletManager*) m_manager)->RequestRemoteBullet(this);
 	TriggerBullet();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0041af00

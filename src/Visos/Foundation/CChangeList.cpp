@@ -223,7 +223,7 @@ bool CChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark,
 		scanX = 0;
 		scanY = scanY + 1;
 	}
-	return 0;
+	return false;
 
 found:
 	startX = scanX;
@@ -284,7 +284,7 @@ found:
 		m_scanX = scanX;
 	}
 	m_scanY = scanY;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00466ef0

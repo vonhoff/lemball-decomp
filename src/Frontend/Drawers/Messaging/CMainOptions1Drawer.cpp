@@ -27,7 +27,7 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 		break;
 	case MESSAGE_BUTTON_RELEASED:
 		m_idleDeadline = timeGetTime() + 20000;
-		switch (p_message->m_code) {
+		switch ((unsigned int) p_message->m_code) {
 		case MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS:
 			m_returnState = FLOW_MAIN_OPTIONS_2;
 			m_quitYet = 1;

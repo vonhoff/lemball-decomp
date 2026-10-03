@@ -144,12 +144,12 @@ bool CGodManager::TransportReceive(CReadPacket* p_packet)
 	unsigned char* data = p_packet->m_data;
 	BasePacketHeader* header = (BasePacketHeader*) data;
 	if (header->m_messageId < 0xb) {
-		return 0;
+		return false;
 	}
 	CBaseObjectManager* manager = m_managers[m_transportMap[header->m_messageId - 0xb]];
 	manager->CNetworkMessage::Set(data + sizeof(BasePacketHeader));
 	p_packet->m_used = 0;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040b2e0

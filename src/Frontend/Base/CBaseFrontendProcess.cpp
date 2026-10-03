@@ -16,7 +16,7 @@ void CBaseFrontendProcess::Processing()
 // FUNCTION: LEMBALL 0x00407f30
 bool CBaseFrontendProcess::ProcessMessages(Message* p_message)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x004467d0
@@ -64,7 +64,7 @@ void CBaseFrontendProcess::Action(eUserActions p_action, eUserActionStages p_sta
 // FUNCTION: LEMBALL 0x00446990
 bool CBaseFrontendProcess::ReceiveCritical(unsigned long p_id, CReadPacket* p_packet, CConnect* p_connection)
 {
-	return 0;
+	return false;
 }
 
 // GLOBAL: LEMBALL 0x0049f140

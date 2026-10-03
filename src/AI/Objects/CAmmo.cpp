@@ -52,7 +52,7 @@ bool CAmmo::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	switch (m_action) {
 	case ACTION_ACTIVATED:
@@ -72,7 +72,7 @@ bool CAmmo::Process()
 		}
 		break;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0041cbe0
@@ -82,9 +82,9 @@ bool CAmmo::Activate(CGameObject* p_object)
 		m_actionPhase2Deadline = 8;
 		m_activator = p_object;
 		RequestAction(ACTION_ACTIVATED);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041cc30

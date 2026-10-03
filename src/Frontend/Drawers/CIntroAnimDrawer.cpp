@@ -90,16 +90,16 @@ bool CIntroAnimDrawer::ProcessMessages(Message* p_message)
 		case INPUT_KEY_ESCAPE:
 		case INPUT_KEY_RETURN:
 			EndPhase();
-			return 1;
+			return true;
 		default:
-			return 0;
+			return false;
 		}
 	case 6:
 		EndPhase();
-		return 1;
+		return true;
 	default:
 		m_processedCount++;
-		return 0;
+		return false;
 	}
 }
 

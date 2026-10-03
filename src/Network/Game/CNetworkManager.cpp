@@ -79,9 +79,9 @@ bool CNetworkManager::Start()
 		network->m_activeStatusItem = this;
 		network->ForceProcess();
 		g_pNetworkPacketQueue->Attach(this, 0x19);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00452780

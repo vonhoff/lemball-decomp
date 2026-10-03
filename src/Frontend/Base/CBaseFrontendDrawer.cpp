@@ -550,7 +550,7 @@ void CBaseFrontendDrawer::Processing()
 // FUNCTION: LEMBALL 0x00446f60
 bool CBaseFrontendDrawer::ProcessMessages(Message* p_message)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00446f70
@@ -571,7 +571,7 @@ void CBaseFrontendDrawer::DrawBackGround()
 // FUNCTION: LEMBALL 0x00446fa0
 bool CBaseFrontendDrawer::ConfirmedAction(eUserActions p_action)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00446fb0

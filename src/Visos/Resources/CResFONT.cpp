@@ -68,10 +68,10 @@ bool CResFONT::DirectResources(unsigned long p_index, unsigned char*& p_headerCu
 	bool failed = m_fontEntries[p_index].Direct(p_headerCursor, p_dataCursor, this) != 0;
 	if (!failed) {
 		if (m_animationEntries[p_index].Direct(p_headerCursor, p_dataCursor, this) == 0) {
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045d9f0
@@ -80,10 +80,10 @@ bool CResFONT::DirectResources(unsigned long p_index, unsigned char*& p_cursor)
 	bool failed = m_fontEntries[p_index].Direct(p_cursor, this) != 0;
 	if (!failed) {
 		if (m_animationEntries[p_index].Direct(p_cursor, this) == 0) {
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045da50

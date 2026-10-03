@@ -138,20 +138,20 @@ bool CMine::Process()
 			}
 		}
 		m_pendingAction = m_action;
-		return 1;
+		return true;
 	}
 
 	switch (action) {
 	case ACTION_ACTIVATING:
 		m_terrainSet = 0;
-		return 0;
+		return false;
 	case ACTION_ACTIVATED:
 		if (m_lastMovementTick < g_dwGameTick) {
 			SetTerrain();
 			m_stateTimer = g_dwSimulationTimestamp;
 			m_actionDeadline = g_dwGameTick + 20;
 			Action(ACTION_RUNNING);
-			return 0;
+			return false;
 		}
 		break;
 	case ACTION_RUNNING:
@@ -163,9 +163,9 @@ bool CMine::Process()
 		}
 		break;
 	default:
-		return 0;
+		return false;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00423fa0

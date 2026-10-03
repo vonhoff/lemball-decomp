@@ -239,37 +239,37 @@ bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 		break;
 	default:
 		m_processedCount++;
-		return 0;
+		return false;
 	}
 
 	switch ((unsigned int) p_message->m_code) {
 	case MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE:
 	case MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE:
-		return 1;
+		return true;
 	case MAIN_OPTIONS2_RETURN_MESSAGE:
 		m_quitYet = 1;
 		m_returnState = 2;
-		return 1;
+		return true;
 	case 0xacef0009:
 		m_quitYet = 1;
 		m_returnState = 0x11;
-		return 1;
+		return true;
 	case MAIN_OPTIONS2_EFFECTS_VOLUME_CHANGED_MESSAGE:
 		g_nPendingEffectsVolume = (int) p_message->m_payload;
 		g_pSoundView->SetEffectsVolume(
 			(unsigned char) (((unsigned int) p_message->m_payload * MAIN_OPTIONS2_MAX_VOLUME) /
 							 (unsigned int) p_message->m_source));
-		return 1;
+		return true;
 	case MAIN_OPTIONS2_MUSIC_VOLUME_CHANGED_MESSAGE: {
 		g_nPendingMusicVolume = (int) p_message->m_payload;
 		unsigned char volume = (unsigned char) (((unsigned int) p_message->m_payload * MAIN_OPTIONS2_MAX_VOLUME) /
 												(unsigned int) p_message->m_source);
 		*g_pSysOutput << "Setting music volume " << volume << "\n";
 		g_pSoundView->SetMusicVolume(volume);
-		return 1;
+		return true;
 	}
 	default:
-		return 0;
+		return false;
 	}
 }
 

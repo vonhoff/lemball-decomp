@@ -15,7 +15,7 @@ bool InitSound(unsigned int p_musicEnabled,
 			   unsigned int p_platformFlag)
 {
 	g_pSoundManager = new CSoundManager(p_musicEnabled, p_effectsEnabled, 1, p_channelCount, p_window);
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045b7c0

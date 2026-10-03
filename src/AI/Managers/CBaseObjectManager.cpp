@@ -23,7 +23,7 @@ void CBaseObjectManager::Process()
 // FUNCTION: LEMBALL 0x0040ab80
 bool CBaseObjectManager::Receive(unsigned short p_messageId, CGlobalGameObject* p_object, CNetworkMessage* p_message)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040ab90

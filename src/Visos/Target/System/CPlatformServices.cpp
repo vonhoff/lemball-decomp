@@ -39,14 +39,14 @@ extern "C" __declspec(dllimport) long __stdcall RegQueryValueExA(void* p_key,
 bool InitInput()
 {
 	g_pMasterInput->m_state = g_pMasterInput->m_state | 3;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00456670
 bool QuitInput()
 {
 	g_pMasterInput->m_state = g_pMasterInput->m_state & 0xfffffffc;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00456680
@@ -67,7 +67,7 @@ bool InitPlatformServices()
 	if (g_szCurrentDirectory[length] == '\\') {
 		g_szCurrentDirectory[length] = 0;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004566f0
@@ -79,7 +79,7 @@ bool QuitPlatformServices()
 	if (g_pTargetPlatformServices != 0) {
 		delete services;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045ec90
@@ -105,7 +105,7 @@ bool CPlatformServices::WriteRegistryFlag(const char* p_subkey, int p_enabled)
 	strcat(keyPath, p_subkey);
 	status = RegOpenKeyExA((void*) 0x80000002, keyPath, 0, 0xf003f, &key);
 	if (status != 0) {
-		return 0;
+		return false;
 	}
 	value = g_szRegistryRunning;
 	if (p_enabled == 0) {

@@ -10,7 +10,7 @@ bool CFileOpenManagement::IncOpenCount()
 {
 	Seek(0);
 	if (!CFileReadSocket::Read(m_message, 1, 0)) {
-		return 0;
+		return false;
 	}
 	m_message.m_openCount++;
 	Seek(0);
@@ -22,7 +22,7 @@ bool CFileOpenManagement::DecOpenCount()
 {
 	Seek(0);
 	if (!CFileReadSocket::Read(m_message, 1, 0)) {
-		return 0;
+		return false;
 	}
 	m_message.m_openCount--;
 	Seek(0);

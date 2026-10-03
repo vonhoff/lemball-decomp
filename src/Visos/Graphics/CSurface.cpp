@@ -951,37 +951,37 @@ void CSurface::SetDefaultCtable()
 bool CSurface::BeginRender()
 {
 	if (m_lines == 0) {
-		return 0;
+		return false;
 	}
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
 		CDibContext* dib = (CDibContext*) m_platformBitmap;
 		if (dib == 0) {
-			return 0;
+			return false;
 		}
 		if (!dib->Lock()) {
-			return 0;
+			return false;
 		}
 		unsigned char* bits = ((CDibContext*) m_platformBitmap)->GetBits();
 		if (bits != 0 && m_bitsBase != bits) {
 			m_bitsBase = bits;
 			CreateLinePtrs();
-			return 1;
+			return true;
 		}
 	}
 	else {
 		if (m_parentSurface == 0) {
-			return 0;
+			return false;
 		}
 		if (!m_parentSurface->BeginRender()) {
-			return 0;
+			return false;
 		}
 		unsigned char* expected = (unsigned char*) m_parentSurface->m_lines[m_windowRect.m_y] + m_windowRect.m_x;
 		if (expected != m_bitsBase) {
 			CreateLinePtrs();
-			return 1;
+			return true;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0046daa0

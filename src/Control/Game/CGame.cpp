@@ -274,7 +274,7 @@ bool CGame::IsValidResource()
 	key = g_szWeatherManKey;
 	resource = CResSTRING::Load(RES_REGISTRATION_FINGERPRINT);
 	if (resource == 0) {
-		return 0;
+		return false;
 	}
 	if (resource->m_loaded != 0) {
 		resource->m_age = 0;

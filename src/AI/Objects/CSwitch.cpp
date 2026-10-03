@@ -113,14 +113,14 @@ bool CSwitch::Activate(CGameObject* p_object)
 		m_actionPhase2Deadline = 20;
 		m_actionArgument = 1;
 		RequestAction(ACTION_ACTIVATED);
-		return 1;
+		return true;
 	case 1:
 		m_actionPhase2Deadline = 20;
 		m_actionArgument = 0;
 		RequestAction(ACTION_ACTIVATED);
-		return 1;
+		return true;
 	default:
-		return 1;
+		return true;
 	}
 }
 

@@ -24,7 +24,7 @@ CSmallMemory::CSmallMemory()
 		m_bucketLimit = 7;
 	}
 	memset(m_buckets, 0, sizeof(m_buckets));
-	for (int j = g_preInitActive.m_startBucket; j < (int) m_bucketLimit; j++) {
+	for (int j = g_preInitActive.m_startBucket; j < m_bucketLimit; j++) {
 		m_sizeLimits[j] = 1 << baseShift;
 		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
@@ -44,7 +44,7 @@ CSmallMemory::~CSmallMemory()
 {
 	g_nSmallMemoryEnabled = 0;
 	int i = g_preInitActive.m_startBucket;
-	if (i < (int) m_bucketLimit) {
+	if (i < m_bucketLimit) {
 		CBucket** slot = &m_buckets[i];
 		CBucket* bucket;
 		do {
@@ -54,7 +54,7 @@ CSmallMemory::~CSmallMemory()
 			}
 			*slot++ = 0;
 			i++;
-		} while (i < (int) m_bucketLimit);
+		} while (i < m_bucketLimit);
 	}
 }
 
@@ -86,7 +86,7 @@ unsigned char* CSmallMemory::Allocate(int p_size, char* p_description)
 // FUNCTION: LEMBALL 0x00473340
 bool CSmallMemory::Free(unsigned char* p_memory)
 {
-	for (int i = g_preInitActive.m_startBucket; i < (int) m_bucketLimit; i++) {
+	for (int i = g_preInitActive.m_startBucket; i < m_bucketLimit; i++) {
 		if (m_buckets[i] != 0 && m_buckets[i]->CheckValidPointer(p_memory)) {
 			m_buckets[i]->Free(p_memory);
 			return true;

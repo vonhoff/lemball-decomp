@@ -42,12 +42,12 @@ bool CDirectDrawSurface::Lock()
 	long result;
 	while ((result = m_surface->Lock(0, &m_surfaceDescription, 0, 0)) != 0) {
 		if (result == (long) 0x887601c2) {
-			return 0;
+			return false;
 		}
 	}
 	m_bits = (unsigned char*) m_surfaceDescription.lpSurface;
 	m_width = m_surfaceDescription.lPitch;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004573e0
@@ -56,8 +56,8 @@ bool CDirectDrawSurface::Unlock()
 	long result;
 	while ((result = m_surface->Unlock(m_bits)) != 0) {
 		if (result == (long) 0x887601c2) {
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }

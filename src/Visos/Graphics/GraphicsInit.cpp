@@ -53,9 +53,9 @@ bool _GDI_Init()
 	}
 
 	if (g_pGdiDevice != 0 && g_pGdiHelperTarget != 0) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0046bb70
@@ -85,5 +85,5 @@ bool _GDI_Quit()
 		}
 		operator delete(system);
 	}
-	return 1;
+	return true;
 }

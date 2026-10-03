@@ -75,16 +75,16 @@ bool CPlayerLemmingGroupManager::GetLeaderPos(AICOORD& p_position)
 {
 	CPlayerLemmingGroup* group = GetPlayerControlledGroup();
 	if (group == 0) {
-		return 0;
+		return false;
 	}
 	CGameObject* object = group->CGenericGroup::GetFirstElementInGroup();
 	if (object == 0) {
-		return 0;
+		return false;
 	}
 	p_position.m_xFixed = object->m_position.m_xFixed;
 	p_position.m_yFixed = object->m_position.m_yFixed;
 	p_position.m_zFixed = object->m_position.m_zFixed;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00418640
@@ -155,7 +155,7 @@ bool CPlayerLemmingGroupManager::IsLemmingPlayerControlled(CPlayerLemming* p_lem
 	if (group != 0) {
 		return group->CheckPlayerControlled();
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00418860
@@ -172,12 +172,12 @@ bool CPlayerLemmingGroupManager::MakeNextGroupPlayerControlled()
 			CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) m_groups[m_controlledGroupIndex];
 			if (group != 0 && group->GetElementsInGroup() > 0) {
 				((CPlayerLemmingGroup*) m_groups[m_controlledGroupIndex])->SetPlayerControlled(1, 0);
-				return 1;
+				return true;
 			}
 			checked++;
 		} while (checked < m_groupCount);
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x004188e0
@@ -195,12 +195,12 @@ bool CPlayerLemmingGroupManager::MakePreviousGroupPlayerControlled()
 			CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) m_groups[m_controlledGroupIndex];
 			if (group != 0 && group->GetElementsInGroup() > 0) {
 				((CPlayerLemmingGroup*) m_groups[m_controlledGroupIndex])->SetPlayerControlled(1, 0);
-				return 1;
+				return true;
 			}
 			checked++;
 		} while (checked < m_groupCount);
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00418960
@@ -216,12 +216,12 @@ bool CPlayerLemmingGroupManager::MakeParticularGroupPlayerControlled(CPlayerLemm
 				return MakeNextGroupPlayerControlled();
 			}
 			p_group->SetPlayerControlled(1, 0);
-			return 1;
+			return true;
 		}
 		groups++;
 		index++;
 	} while (index < 8);
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x004189c0
@@ -232,7 +232,7 @@ bool CPlayerLemmingGroupManager::MakeNoGroupsPlayerControlled()
 			((CPlayerLemmingGroup*) m_groups[i])->SetPlayerControlled(0, 0);
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004189f0

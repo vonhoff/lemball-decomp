@@ -77,12 +77,12 @@ bool CHandManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 	int i = 0;
 	for (;;) {
 		if (i >= m_count) {
-			return 0;
+			return false;
 		}
 		CHand& hand = m_hands[i];
 		if (hand.m_enabled != 0 && hand.m_activated == 0 && hand.m_isRemoteObject == 0 &&
 			hand.StepOn(p_position, p_object)) {
-			return 1;
+			return true;
 		}
 		i++;
 	}

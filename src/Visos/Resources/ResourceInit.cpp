@@ -55,7 +55,7 @@ bool _RES_Init()
 	g_pPreloadedResourceTypes = list;
 
 	g_pBasePalManager = new CPaletteManager(0x20);
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045ba50
@@ -79,5 +79,5 @@ bool _RES_Quit()
 		operator delete(list->m_typeCodes);
 		operator delete(list);
 	}
-	return 1;
+	return true;
 }

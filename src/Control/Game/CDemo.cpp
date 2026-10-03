@@ -113,7 +113,7 @@ bool CDemo::LoadBuffer()
 	if (m_filePath != 0) {
 		_Filet* file = vsOpen(m_filePath, "rb");
 		if (file == 0) {
-			return 0;
+			return false;
 		}
 		unsigned long size = vsGetFileSize(file);
 		m_buffer = new unsigned char[size];
@@ -146,7 +146,7 @@ bool CDemo::LoadBuffer()
 	m_bytesRemaining |= (unsigned int) cursor[2] << 16;
 	m_bytesRemaining |= (unsigned int) cursor[3] << 24;
 	m_readCursor = cursor + 4;
-	return 1;
+	return true;
 }
 
 #include "Visos/Foundation/CVSPoint.h"

@@ -98,14 +98,14 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 		break;
 	default:
 		*g_pErrorOutput << "No valid driver selected to initialise\n";
-		return 0;
+		return false;
 	}
 	if (g_pTargetGraphicsDriver->m_ready == 0) {
 		delete g_pTargetGraphicsDriver;
 		g_pTargetGraphicsDriver = new CGdiDriver();
 		if (g_pTargetGraphicsDriver->m_ready == 0) {
 			*g_pErrorOutput << "No valid driver available\n";
-			return 0;
+			return false;
 		}
 		if (m_fallbackWarningShown == 0) {
 			CString warning(g_graphicsDriverErrors[resolvedDriverMode]);
@@ -119,7 +119,7 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 		*g_pDebugOutput << "[ Auto selected: " << g_graphicsDriverNames[resolvedDriverMode] << " ]\n";
 	}
 	m_driverMode = resolvedDriverMode;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004580c0
@@ -155,9 +155,9 @@ bool CGraphicsState::ChangeDriver(int p_driverMode)
 		}
 		SelectDriver(p_driverMode);
 		NotifyDriverChange();
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00458180
@@ -168,9 +168,9 @@ bool CGraphicsState::IsFullscreenDriver()
 	case 3:
 	case 4:
 	case 5:
-		return 1;
+		return true;
 	default:
-		return 0;
+		return false;
 	}
 }
 
@@ -179,9 +179,9 @@ bool CGraphicsState::IsDirectDrawDriver()
 {
 	switch (m_driverMode) {
 	case 4:
-		return 1;
+		return true;
 	default:
-		return 0;
+		return false;
 	}
 }
 
@@ -192,9 +192,9 @@ bool CGraphicsState::IsDisplayDibDriver()
 	case 2:
 	case 3:
 	case 5:
-		return 1;
+		return true;
 	default:
-		return 0;
+		return false;
 	}
 }
 

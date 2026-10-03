@@ -359,28 +359,28 @@ bool CSuccFailDrawer::ProcessMessages(Message* p_message)
 		break;
 	default:
 		m_processedCount++;
-		return 0;
+		return false;
 	}
 
 	switch ((unsigned int) p_message->m_code) {
 	case SUCC_FAIL_BUTTON_MESSAGE_GO:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
-			return 1;
+			return true;
 		}
 		Go();
-		return 1;
+		return true;
 
 	case SUCC_FAIL_BUTTON_MESSAGE_RETURN:
 		if (m_networkMode != 0) {
 			Action(USER_ACTION_2, USER_ACTION_STAGE_REQUEST);
-			return 1;
+			return true;
 		}
 		Return();
-		return 1;
+		return true;
 
 	default:
-		return 0;
+		return false;
 	}
 }
 
@@ -410,12 +410,12 @@ bool CSuccFailDrawer::ConfirmedAction(eUserActions p_action)
 	switch (p_action) {
 	case USER_ACTION_2:
 		Go();
-		return 1;
+		return true;
 	case USER_ACTION_3:
 		Return();
-		return 1;
+		return true;
 	default:
-		return 0;
+		return false;
 	}
 }
 

@@ -116,11 +116,11 @@ bool CSheepGroup::Process()
 	}
 	CheckAgainstLemmings();
 	CheckAgainstCatapults();
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041f870
 bool CSheepGroup::CheckAgainstCatapults()
 {
-	return 0;
+	return false;
 }

@@ -34,12 +34,12 @@ bool CBalloon::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	if (m_action == ACTION_ACTIVATED) {
 		Action(ACTION_READY);
 		m_objectActive = 0;
-		return 1;
+		return true;
 	}
-	return 1;
+	return true;
 }

@@ -86,7 +86,7 @@ void CPVWnd::RemoveChild(class CPVWnd* p_child)
 // FUNCTION: LEMBALL 0x0043a4c0
 bool CPVWnd::GetMenu(int& p_menuResourceId, MenuList*** p_menuLists)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00465a70
@@ -463,7 +463,7 @@ void CPVWnd::OnDriverChange()
 // FUNCTION: LEMBALL 0x00466350
 bool CPVWnd::IsFocusWindow()
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00466360

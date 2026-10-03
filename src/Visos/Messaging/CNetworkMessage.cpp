@@ -14,13 +14,13 @@
 // FUNCTION: LEMBALL 0x0040abd0
 bool CNetworkMessage::CheckMessage(const unsigned char* p_arg0)
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040abe0
 bool CNetworkMessage::GetHeader()
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040abf0
@@ -277,9 +277,9 @@ bool CNetworkMessage::Set(unsigned char* p_data)
 	m_readCursor = p_data;
 	if (GetHeader() != 0) {
 		GetData();
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0045f2b0

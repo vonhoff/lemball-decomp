@@ -173,7 +173,7 @@ bool CInvisibleSwitch::Process()
 	VerifyObjects();
 	if (m_isRemoteObject) {
 		if (m_pendingAction != m_action && m_action != ACTION_ACTIVATED) {
-			return 1;
+			return true;
 		}
 	}
 
@@ -198,7 +198,7 @@ bool CInvisibleSwitch::Process()
 		SetSndEffect(SFX_SWITCH);
 		Action(ACTION_READY);
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040a110

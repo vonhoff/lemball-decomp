@@ -238,10 +238,10 @@ bool CLevelLoader::LocateStartOfLevelFile()
 		g_pLevelFileData = operator new(size);
 		vsRead(file, g_pLevelFileData, size);
 		vsClose(file);
-		return 1;
+		return true;
 	}
 	MessageBoxA(0, g_szOkSmartarse, g_szYouStupidStupidMan, 0);
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00408830

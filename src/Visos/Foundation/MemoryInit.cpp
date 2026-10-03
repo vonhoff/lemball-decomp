@@ -41,12 +41,12 @@ bool _MEM_Init()
 
 	g_pMasterArenaMemory = GlobalAlloc(2, g_preInitActive.m_memoryBudget);
 	if (g_pMasterArenaMemory == 0) {
-		return 0;
+		return false;
 	}
 
 	locked = GlobalLock(g_pMasterArenaMemory);
 	if (locked == 0) {
-		return 0;
+		return false;
 	}
 
 	g_pMasterArena = new (locked) CRAMArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
@@ -61,9 +61,9 @@ bool _MEM_Init()
 	g_pSmallMemory = smallMemory;
 	g_nSmallMemoryEnabled = smallEnabled;
 	if (g_pMasterArena != 0 && (smallEnabled == 0 || smallMemory != 0)) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0046f120
@@ -90,7 +90,7 @@ bool _MEM_Quit()
 		*g_pErrorOutput << g_szMasterArenaFreeFailed;
 		*g_pErrorOutput << g_szGetLastErrorEq << (unsigned long) lastError << g_szColonHexPrefix << Hex(lastError)
 						<< g_szGetLastErrorNewline;
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }

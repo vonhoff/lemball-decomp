@@ -147,13 +147,13 @@ done:
 			m_workingPath = 0;
 		}
 		m_workingPath = copy;
-		return 1;
+		return true;
 	}
 	SetWD(oldPath);
 	if (copy != 0) {
 		CMogloadArena::operator delete(copy);
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0045c940
@@ -304,12 +304,12 @@ CResBase* CMogRes::Find(unsigned int p_resourceId)
 bool CMogRes::Load(CResBase* p_resource, Chunk p_chunk)
 {
 	if (p_chunk.m_info->m_type != p_resource->m_chunkType) {
-		return 0;
+		return false;
 	}
 	p_resource->m_dataSize = p_chunk.m_info->m_size;
 	p_resource->m_fileOffset = p_chunk.m_info->m_fileOffset;
 	p_resource->m_name = p_chunk.m_info->m_name;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045cb80
@@ -331,7 +331,7 @@ bool CMogRes::Load(unsigned int p_resourceId, CResBase* p_resource, unsigned int
 		m_resourceCount++;
 		return Load(p_resource, chunk);
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0045cd60
@@ -389,7 +389,7 @@ bool CMogRes::Load(const CVSRange& p_range, unsigned char*& p_data, CResBase* p_
 	p_data = AllocateMainMem(p_range.m_size);
 	vsSeek(g_pMogFile, p_range.m_offset + 8, 0);
 	vsRead(g_pMogFile, p_data, p_range.m_size);
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045ce50

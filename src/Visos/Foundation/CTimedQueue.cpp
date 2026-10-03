@@ -33,7 +33,7 @@ bool CTimedQueue::Post(Message& p_message)
 		} while (index < count);
 	}
 	PutNth(&p_message, index);
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00458ef0

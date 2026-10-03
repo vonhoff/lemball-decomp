@@ -6,13 +6,13 @@
 // FUNCTION: LEMBALL 0x004582b0
 bool CDibContext::Lock()
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004582c0
 bool CDibContext::Unlock()
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004582d0

@@ -66,12 +66,12 @@ bool CHotAreaHandler::InArea(const CVSPoint& p_point)
 			top = m_bounds.m_y;
 			if (py >= top) {
 				if (py < (short) (m_bounds.m_height + top)) {
-					return 1;
+					return true;
 				}
 			}
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0046a290

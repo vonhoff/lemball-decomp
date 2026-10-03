@@ -51,7 +51,7 @@ void CBaseSoundDevice::SetEffectVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047f9e0
 bool CBaseSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, unsigned char p_volume)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0047f9f0
@@ -105,5 +105,5 @@ unsigned char CBaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned ch
 // FUNCTION: LEMBALL 0x0047fa80
 bool CBaseSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect)
 {
-	return 1;
+	return true;
 }

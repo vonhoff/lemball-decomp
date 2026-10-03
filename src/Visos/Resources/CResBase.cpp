@@ -32,7 +32,7 @@ bool CResBase::Direct(unsigned char*& p_cursor, CResBaseLIST* p_list)
 	m_loaded = 1;
 	m_age = 0;
 	OnLoad();
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0045cfb0
@@ -44,7 +44,7 @@ bool CResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCurs
 	entry = (unsigned int*) p_headerCursor;
 	if (m_chunkType != entry[0]) {
 		m_error = 1;
-		return 1;
+		return true;
 	}
 	m_dataSize = entry[1];
 	m_name = (char*) &entry[2];
@@ -58,7 +58,7 @@ bool CResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCurs
 	m_loaded = 1;
 	m_age = 0;
 	OnLoad();
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0045d040
@@ -210,7 +210,7 @@ bool CResBase::GetfAnyVramLoaded()
 // FUNCTION: LEMBALL 0x0045e5e0
 bool CResBase::ForceLoadVram()
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0045e5f0

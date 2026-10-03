@@ -62,13 +62,13 @@ void CPVSurface::Resize(const CVSSize& p_size)
 // FUNCTION: LEMBALL 0x00466930
 bool CPVSurface::HasBackBuff()
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00466940
 bool CPVSurface::HasZBuff()
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00466950

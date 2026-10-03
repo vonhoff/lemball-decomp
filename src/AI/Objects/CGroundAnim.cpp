@@ -108,13 +108,13 @@ bool CGroundAnim::Check(const tCoord3d& p_coordinate)
 		GroundAnimEntry* entry = m_entries;
 		do {
 			if (entry->m_coordinate.m_x == p_coordinate.m_x && entry->m_coordinate.m_y == p_coordinate.m_y) {
-				return 1;
+				return true;
 			}
 			entry++;
 			index++;
 		} while (index < m_count);
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040d130

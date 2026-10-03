@@ -309,9 +309,9 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 	cursorX = m_position.m_x;
 	if (x <= cursorX && cursorX < (short) (x + width) && y <= (cursorY = m_position.m_y) &&
 		cursorY < (short) (height + y)) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 inline CVSPoint operator-(const CVSPoint& p_left, const CVSPoint& p_right)

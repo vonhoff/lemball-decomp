@@ -67,15 +67,15 @@ bool CTrampoline::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	if (m_enabled == 0) {
-		return 1;
+		return true;
 	}
 	if (m_action == ACTION_RUNNING && m_actionDeadline < g_dwGameTick) {
 		Action(ACTION_READY);
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0042aaf0

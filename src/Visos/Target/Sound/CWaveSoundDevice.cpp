@@ -440,7 +440,7 @@ void CWaveSoundDevice::SetEffectVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047d150
 bool CWaveSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, unsigned char p_volume)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0047d160
@@ -481,5 +481,5 @@ unsigned char CWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned ch
 bool CWaveSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect)
 {
 	waveOutReset(m_waveOut);
-	return 0;
+	return false;
 }

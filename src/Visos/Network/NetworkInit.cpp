@@ -74,7 +74,7 @@ bool VSFNET_Init()
 	}
 	if (g_pBaseNetwork == 0) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
-		return 0;
+		return false;
 	}
 
 	startTime = timeGetTime();
@@ -82,10 +82,10 @@ bool VSFNET_Init()
 	}
 	if (g_pNetworkStatusQueue == 0) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0046f480
@@ -101,11 +101,11 @@ bool VSFNET_Quit()
 		}
 		if (g_pBaseNetwork != 0) {
 			*g_pErrorOutput << "Network quit timed out\n";
-			return 0;
+			return false;
 		}
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0046fa10
@@ -171,7 +171,7 @@ bool VSNET_Init()
 	}
 	if (g_pBaseNetwork == 0) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
-		return 0;
+		return false;
 	}
 
 	startTime = timeGetTime();
@@ -179,10 +179,10 @@ bool VSNET_Init()
 	}
 	if (g_pNetworkStatusQueue == 0) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0046fc80
@@ -198,9 +198,9 @@ bool VSNET_Quit()
 		}
 		if (g_pBaseNetwork != 0) {
 			*g_pErrorOutput << "Network quit timed out\n";
-			return 0;
+			return false;
 		}
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }

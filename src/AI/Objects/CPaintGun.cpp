@@ -83,13 +83,13 @@ bool CPaintGun::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
-		return 1;
+		return true;
 	}
 	if (m_enabled == 0) {
-		return 1;
+		return true;
 	}
 	switch (m_action) {
 	case ACTION_FIRING:
@@ -159,7 +159,7 @@ bool CPaintGun::Process()
 		}
 		break;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0042c9a0

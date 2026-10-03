@@ -70,10 +70,10 @@ bool CIceManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	for (int index = 0; index < m_count; ++index) {
 		if (m_ice[index].StepOn(p_position, p_object)) {
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0042dd90

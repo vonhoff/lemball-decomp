@@ -69,7 +69,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 			WaitProcess();
 		} while (m_initialised == 0);
 		if (m_initialised == 0) {
-			return 0;
+			return false;
 		}
 	}
 
@@ -87,7 +87,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 			if (m_broadcast != 0) {
 				if (m_broadcast->m_readReady != 0) {
 					if (g_lastNetworkError == 0) {
-						return 1;
+						return true;
 					}
 				}
 			}
@@ -99,7 +99,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 	start = timeGetTime();
 	while (m_initialised != 0 && timeGetTime() - start < 10000) {
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00461bd0
@@ -108,7 +108,7 @@ bool CBaseNetwork::DoInitialise()
 	m_initialisePending = 0;
 	Initialise();
 	if (g_lastNetworkError != 0) {
-		return 0;
+		return false;
 	}
 
 	g_pMessReqConnect = new CMessReqConnect("Request Connect");
@@ -125,12 +125,12 @@ bool CBaseNetwork::DoInitialise()
 	if (m_serverMode != 0 && g_lastNetworkError == 0) {
 		if (m_broadcast->Start(m_networkName) == 0) {
 			m_serverMode = 0;
-			return 0;
+			return false;
 		}
 		return g_lastNetworkError == 0;
 	}
 	m_serverMode = 0;
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00461db0
@@ -316,17 +316,17 @@ bool CBaseNetwork::Exists(CConnect* p_connection)
 	while (peer != 0) {
 		if (p_connection == peer) {
 			if (peer->CheckConnectTime() == 0) {
-				return 0;
+				return false;
 			}
 			if (peer->m_killRequested == 0) {
 				peer->SetConnectTime();
-				return 1;
+				return true;
 			}
-			return 0;
+			return false;
 		}
 		peer = peer->m_nextConnect;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00462180
@@ -597,9 +597,9 @@ bool CBaseNetwork::SendAll(CNetworkMessage& p_message)
 	while (1) {
 		if (peer == 0) {
 			if (sendBlocked == 0 && activeCount > 0) {
-				return 1;
+				return true;
 			}
-			return 0;
+			return false;
 		}
 
 		if (peer->m_killRequested == 0) {

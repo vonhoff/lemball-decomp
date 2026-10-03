@@ -212,10 +212,10 @@ void CBucket::RemoveThis()
 bool CBucket::CheckValidPointer(unsigned char* p_memory)
 {
 	if (p_memory >= m_memory && m_totalBytes + m_memory > p_memory) {
-		return 1;
+		return true;
 	}
 	if (m_child != 0) {
 		return m_child->CheckValidPointer(p_memory);
 	}
-	return 0;
+	return false;
 }

@@ -100,7 +100,7 @@ bool CBaseQueue::Post(Message& p_message)
 		m_writeCursor = m_messageBuffer;
 	}
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00463230
@@ -115,10 +115,10 @@ bool CBaseQueue::Send(Message& p_message)
 	result = Process(&p_message);
 	if (result != 0) {
 		LeaveCritical();
-		return 1;
+		return true;
 	}
 	LeaveCritical();
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00463280
@@ -146,7 +146,7 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 		node->m_next = 0;
 		m_handlerCount = 1;
 		LeaveCritical();
-		return 1;
+		return true;
 	}
 	previous = current;
 	count = m_handlerCount;
@@ -154,7 +154,7 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 		m_handlerList = node;
 		m_handlerCount = count + 1;
 		LeaveCritical();
-		return 1;
+		return true;
 	}
 	index = 0;
 	if (count != 0) {
@@ -170,7 +170,7 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 				}
 				m_handlerCount = m_handlerCount + 1;
 				LeaveCritical();
-				return 1;
+				return true;
 			}
 			previous = current;
 			current = current->m_next;
@@ -179,13 +179,13 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 				previous->m_next = node;
 				m_handlerCount = m_handlerCount + 1;
 				LeaveCritical();
-				return 1;
+				return true;
 			}
 			index = index + 1;
 		} while (index < count);
 	}
 	LeaveCritical();
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x004633b0
@@ -207,13 +207,13 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 					operator delete(current);
 					m_handlerCount = m_handlerCount - 1;
 					LeaveCritical();
-					return 1;
+					return true;
 				}
 				previous->m_next = current->m_next;
 				operator delete(current);
 				m_handlerCount = m_handlerCount - 1;
 				LeaveCritical();
-				return 1;
+				return true;
 			}
 			previous = current;
 			index = index + 1;
@@ -221,7 +221,7 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 		} while (index < m_handlerCount);
 	}
 	LeaveCritical();
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00463570
@@ -231,7 +231,7 @@ bool CBaseQueue::GetNth(Message* p_message, unsigned int p_index)
 	PeekNth(p_message, p_index);
 	DeleteNth(p_index);
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004635b0
@@ -246,7 +246,7 @@ bool CBaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 	}
 	*p_message = *slot;
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00463610
@@ -285,7 +285,7 @@ bool CBaseQueue::PutNth(Message* p_message, unsigned int p_index)
 	}
 	m_messageCount = m_messageCount + 1;
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004636e0
@@ -309,7 +309,7 @@ bool CBaseQueue::DeleteNth(unsigned int p_index)
 		m_messageCount = 0;
 		m_readCursor = m_writeCursor;
 		LeaveCritical();
-		return 1;
+		return true;
 	}
 	if (slot == read) {
 		m_readCursor = read + sizeof(Message);
@@ -318,7 +318,7 @@ bool CBaseQueue::DeleteNth(unsigned int p_index)
 		}
 		m_messageCount = count - 1;
 		LeaveCritical();
-		return 1;
+		return true;
 	}
 	src = slot;
 	slot += sizeof(Message);
@@ -346,7 +346,7 @@ bool CBaseQueue::DeleteNth(unsigned int p_index)
 	}
 	m_messageCount = m_messageCount - 1;
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00463810
@@ -366,17 +366,17 @@ bool CBaseQueue::ProcessNMsgs(unsigned int p_count)
 			}
 			if (GetNth(&message, 0) == 0) {
 				LeaveCritical();
-				return 0;
+				return false;
 			}
 			if (Process(&message) == 0) {
 				LeaveCritical();
-				return 0;
+				return false;
 			}
 			index = index + 1;
 		} while (index < p_count);
 	}
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004638a0
@@ -390,13 +390,13 @@ bool CBaseQueue::Process(Message* p_message)
 	for (index = 0; index < m_handlerCount; index++) {
 		if (node->m_handler->ProcessMsg(p_message) == 1) {
 			LeaveCritical();
-			return 1;
+			return true;
 		}
 		node = node->m_next;
 	}
 	m_unhandledCount = m_unhandledCount + 1;
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // GLOBAL: LEMBALL 0x004a9360

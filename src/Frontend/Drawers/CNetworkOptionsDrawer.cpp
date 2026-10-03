@@ -355,7 +355,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 	unsigned int code;
 
 	if (m_startPending != 0 || (unsigned int) m_message != m_drawnMessage) {
-		return 0;
+		return false;
 	}
 
 	switch ((int) p_message->m_type) {
@@ -365,7 +365,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		if (code == INPUT_KEY_SHIFT) {
 			g_nNetworkOptionsShiftHeld = 1;
 			g_nNetworkOptionsCapsOrShift |= 1;
-			return 1;
+			return true;
 		}
 
 		if (m_editingActive != 0) {
@@ -445,7 +445,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 				m_lastDrawTime = CurrentMilliTimer();
 				m_redrawPending = 0;
 				g_pSoundView->PlayEffect(SFX_DRUM1);
-				return 1;
+				return true;
 			}
 		}
 
@@ -453,13 +453,13 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		case INPUT_KEY_UP:
 			if (HighlightPreviousEntry()) {
 				g_pSoundView->PlayEffect(SFX_CHANGEOP);
-				return 1;
+				return true;
 			}
 			break;
 		case INPUT_KEY_DOWN:
 			if (HighlightNextEntry()) {
 				g_pSoundView->PlayEffect(SFX_CHANGEOP);
-				return 1;
+				return true;
 			}
 			break;
 		case INPUT_KEY_SPACE:
@@ -468,7 +468,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			if (m_highlightedPlayer != -1) {
 				CVSPoint pt;
 				m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, 0);
-				return 1;
+				return true;
 			}
 			break;
 		}
@@ -478,11 +478,11 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		if (code == INPUT_KEY_SHIFT) {
 			g_nNetworkOptionsCapsOrShift &= ~1;
 			g_nNetworkOptionsShiftHeld = 0;
-			return 1;
+			return true;
 		}
 		if (m_editingActive != 0) {
 			if (code >= INPUT_KEY_A && code <= INPUT_KEY_Z) {
-				return 1;
+				return true;
 			}
 			switch (code) {
 			case INPUT_KEY_UP:
@@ -490,12 +490,12 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			case INPUT_KEY_RETURN:
 			case INPUT_KEY_DELETE:
 			case INPUT_KEY_BACKSPACE:
-				return 1;
+				return true;
 			}
 		}
-		return 0;
+		return false;
 	case MESSAGE_BUTTON_RELEASED:
-		switch (p_message->m_code) {
+		switch ((unsigned int) p_message->m_code) {
 		case NETWORK_OPTIONS_BUTTON_MESSAGE_LAN:
 			if (m_locked == 0) {
 				Start(0);
@@ -510,12 +510,12 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			Stop();
 			m_quitYet = 1;
 			m_returnState = 2;
-			return 1;
+			return true;
 		}
-		return 0;
+		return false;
 	default:
 		m_processedCount++;
-		return 0;
+		return false;
 	}
 }
 
@@ -736,7 +736,7 @@ bool CNetworkOptionsDrawer::HighlightPreviousEntry()
 	int i;
 
 	if (m_visibleEntryCount == 0 || m_highlightedPlayer == 0) {
-		return 0;
+		return false;
 	}
 
 	if (m_highlightedPlayer == -1) {
@@ -755,7 +755,7 @@ bool CNetworkOptionsDrawer::HighlightPreviousEntry()
 	}
 
 	if (selected < 0) {
-		return 0;
+		return false;
 	}
 
 	m_highlightedPlayer = selected;
@@ -768,7 +768,7 @@ bool CNetworkOptionsDrawer::HighlightPreviousEntry()
 
 	m_playerEntries[m_highlightedPlayer].m_entered = 1;
 	m_playerEntries[m_highlightedPlayer].OnEnter();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00454cf0
@@ -779,14 +779,14 @@ bool CNetworkOptionsDrawer::HighlightNextEntry()
 
 	if (m_visibleEntryCount == 0) {
 		if (m_highlightedPlayer == -1) {
-			return 0;
+			return false;
 		}
 		m_hiliteController->m_active = 1;
 		m_highlightedPlayer = -1;
 	}
 
 	if (m_highlightedPlayer == -1) {
-		return 0;
+		return false;
 	}
 
 	selected = m_highlightedPlayer + 1;
@@ -810,12 +810,12 @@ bool CNetworkOptionsDrawer::HighlightNextEntry()
 	if (m_highlightedPlayer == 10) {
 		m_hiliteController->m_active = 1;
 		m_highlightedPlayer = -1;
-		return 1;
+		return true;
 	}
 
 	m_playerEntries[m_highlightedPlayer].m_entered = 1;
 	m_playerEntries[m_highlightedPlayer].OnEnter();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00454df0
@@ -929,5 +929,5 @@ bool CNetworkOptionsDrawer::AcceptingLock()
 	}
 	m_locked = 0;
 	UnLock();
-	return 0;
+	return false;
 }

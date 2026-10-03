@@ -116,7 +116,7 @@ bool CResBaseLIST::ForceLoadVram()
 		if (m_totalSize / m_listHeader->m_headerSize != 0) {
 			do {
 				if (!ForceLoadVram(i)) {
-					return 0;
+					return false;
 				}
 				i++;
 			} while (i < m_totalSize / m_listHeader->m_headerSize);
@@ -205,5 +205,5 @@ void CResBaseLIST::UnLoadVramData(unsigned int p_index, unsigned int p_force)
 // FUNCTION: LEMBALL 0x0045e6f0
 bool CResBaseLIST::ForceLoadVram(unsigned int p_index)
 {
-	return 0;
+	return false;
 }

@@ -178,17 +178,17 @@ void CMain2DDisplay::OnMove()
 bool CMain2DDisplay::IsWindowValid()
 {
 	if (!GetSizeStatus()) {
-		return 0;
+		return false;
 	}
 	short height = m_rect.m_height;
 	short width = m_rect.m_width;
 	if (m_lowWidth == width && m_lowHeight == height) {
-		return 1;
+		return true;
 	}
 	if (m_highWidth == width && m_highHeight == height) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00431910
@@ -436,7 +436,7 @@ bool CMain2DDisplay::GetMenu(int& p_count, MenuList*** p_menu)
 {
 	p_count = 0x73;
 	*p_menu = g_apMainDisplayMenus;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00431ed0

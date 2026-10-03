@@ -27,5 +27,5 @@ bool _STAT_Quit()
 	CStatManager* manager = g_pStatManager;
 	manager->StreamOut(*g_pSysOutput);
 	delete g_pStatManager;
-	return 1;
+	return true;
 }

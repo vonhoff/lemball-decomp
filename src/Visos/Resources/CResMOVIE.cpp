@@ -62,10 +62,10 @@ bool CResMOVIE::DirectResources(unsigned long p_index, unsigned char*& p_headerC
 	bool failed = m_movieEntries[p_index].Direct(p_headerCursor, p_dataCursor, this) != 0;
 	if (!failed) {
 		if (!m_fontEntries[p_index].Direct(p_headerCursor, p_dataCursor, this)) {
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045e0c0
@@ -74,10 +74,10 @@ bool CResMOVIE::DirectResources(unsigned long p_index, unsigned char*& p_cursor)
 	bool failed = m_movieEntries[p_index].Direct(p_cursor, this) != 0;
 	if (!failed) {
 		if (m_fontEntries[p_index].Direct(p_cursor, this) == 0) {
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045e120

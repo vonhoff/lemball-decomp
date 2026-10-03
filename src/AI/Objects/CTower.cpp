@@ -36,13 +36,13 @@ bool CTower::Process()
 		z = 0;
 	}
 	m_position.m_zFixed = z << 12;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0041d000
 bool CTower::Activate(CGameObject* p_object)
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0041d010

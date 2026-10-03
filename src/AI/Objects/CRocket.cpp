@@ -79,14 +79,14 @@ bool CRocket::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 
 	switch (action) {
 	case ACTION_FLYING:
 		if ((m_position.m_zFixed & -4096) > 0xc8000) {
 			Action(ACTION_READY);
-			return 1;
+			return true;
 		}
 		break;
 	case ACTION_RUNNING:
@@ -95,9 +95,9 @@ bool CRocket::Process()
 		}
 		break;
 	default:
-		return 1;
+		return true;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004269d0

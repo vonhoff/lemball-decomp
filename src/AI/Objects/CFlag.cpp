@@ -42,7 +42,7 @@ bool CFlag::Process()
 			const int height = (int) z << 12;
 			m_position.m_zFixed = height;
 		}
-		return 1;
+		return true;
 	}
 	return CCollectable::Process();
 }

@@ -108,40 +108,40 @@ bool CGlobalGameObject::Receive(unsigned short p_messageId, CNetworkMessage* p_m
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
-		return 1;
+		return true;
 	case MESSAGE_OBJECT_POS:
 		msg = g_pObjectPosMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
-		return 1;
+		return true;
 	case MESSAGE_OBJECT_HIT:
 		msg = g_pObjectHitMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
-		return 1;
+		return true;
 	case MESSAGE_REQUEST_ACTION:
 		msg = g_pRequestActionMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
-		return 1;
+		return true;
 	case MESSAGE_REQUEST_REPLY:
 		msg = g_pRequestReplyMessage;
 		msg->m_object = this;
 		if (msg->Set(p_message->m_readCursor)) {
 			p_message->m_readCursor = msg->m_readCursor;
 		}
-		return 1;
+		return true;
 	case MESSAGE_REQUEST_CANCEL:
 		CancelRequest();
-		return 1;
+		return true;
 	default:
-		return 0;
+		return false;
 	}
 }
 

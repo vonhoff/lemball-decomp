@@ -215,7 +215,7 @@ bool CEnemy::ProcessRule(eEnemyStateRules p_rule)
 {
 	switch (p_rule) {
 	case ENEMY_RULE_NONE:
-		return 1;
+		return true;
 	case ENEMY_RULE_RADIUS50:
 		return EnemyRule_RADIUS50();
 	case ENEMY_RULE_NOT_RADIUS50:
@@ -225,7 +225,7 @@ bool CEnemy::ProcessRule(eEnemyStateRules p_rule)
 	case ENEMY_RULE_NOT_RADIUS50_AND_LOS:
 		return EnemyRule_RADIUS50ANDLINEOFSIGHT() == 0;
 	default:
-		return 0;
+		return false;
 	}
 }
 
@@ -233,7 +233,7 @@ bool CEnemy::ProcessRule(eEnemyStateRules p_rule)
 bool CEnemy::EnemyRule_RADIUS50()
 {
 	if (g_pAI->m_gameplayEnabled == 0) {
-		return 0;
+		return false;
 	}
 	return CheckRadius(50);
 }
@@ -242,11 +242,11 @@ bool CEnemy::EnemyRule_RADIUS50()
 bool CEnemy::EnemyRule_RADIUS50ANDLINEOFSIGHT()
 {
 	if (g_pAI->m_gameplayEnabled == 0) {
-		return 0;
+		return false;
 	}
 	int inRadius = CheckRadius(50);
 	if (inRadius == 0) {
-		return 0;
+		return false;
 	}
 	inRadius &= LineOfSight(m_targetPosition);
 	return inRadius;
@@ -314,7 +314,7 @@ bool CEnemy::CheckRadius(int p_radius)
 	size->m_width = size->m_height = p_radius * 2;
 
 	if (g_pAI->PlayerCheckGroupIntersection(&rect, &m_targetPosition) == 1) {
-		return 1;
+		return true;
 	}
 	return g_pAI->SheepCheckGroupIntersection(&rect, &m_targetPosition) == 1;
 }
@@ -331,10 +331,10 @@ bool CEnemy::LineOfSight(AICOORD p_target)
 	int high = absY >> 12;
 	if (high * 0x6a0 + fraction < absX) {
 		if ((high * 0x1350 + low) * 2 + fraction > absX) {
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00420350

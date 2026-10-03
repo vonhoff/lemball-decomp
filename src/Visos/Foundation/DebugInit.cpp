@@ -34,7 +34,7 @@ bool _DBG_Init()
 		WaitForSingleObject(g_pDebugSyncEvent, 0xffffffff);
 	}
 
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00472c70
@@ -48,11 +48,11 @@ bool _DBG_Quit(unsigned int p_force)
 			TerminateThread(g_pDebugThread, 0xaaaa);
 		}
 		g_nAsyncDebugEnabled = 0;
-		return 1;
+		return true;
 	}
 	if (g_pDebugOutputFile != 0) {
 		vsClose((_Filet*) g_pDebugOutputFile);
 		g_pDebugOutputFile = 0;
 	}
-	return 1;
+	return true;
 }

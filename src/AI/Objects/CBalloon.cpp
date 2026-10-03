@@ -31,9 +31,9 @@ bool CBalloon::Activate(CGameObject* p_object)
 	m_activator = p_object;
 	if (m_activator->HasObject(m_objectType) == 0) {
 		RequestAction(ACTION_ACTIVATED);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041d780

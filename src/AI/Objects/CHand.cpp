@@ -90,7 +90,7 @@ bool CHand::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 
 	m_actionArgument = 0;
@@ -101,7 +101,7 @@ bool CHand::Process()
 				m_enabled = 1;
 				m_activated = 0;
 				Action(ACTION_READY);
-				return 1;
+				return true;
 			}
 			break;
 		case ACTION_ACTIVATING:
@@ -110,7 +110,7 @@ bool CHand::Process()
 				m_target->m_actionDeadline = g_dwGameTick + 40;
 				Action(ACTION_ACTIVATED);
 				SetSndEffect(SFX_EEEEH);
-				return 1;
+				return true;
 			}
 			break;
 		case ACTION_ACTIVATED:
@@ -121,10 +121,10 @@ bool CHand::Process()
 			}
 			break;
 		default:
-			return 1;
+			return true;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00427d70
@@ -141,10 +141,10 @@ bool CHand::StepOn(const AICOORD& p_position, CGameObject* p_object)
 			m_activator->Action(ACTION_NONE);
 			m_activator->m_actionDeadline = g_dwGameTick + 1000;
 			RequestAction(ACTION_ACTIVATING);
-			return 1;
+			return true;
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00427e10

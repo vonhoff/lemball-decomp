@@ -229,13 +229,13 @@ void CGenericGroupManager::AddElementToGroup(CGameObject* p_object, CGenericGrou
 // FUNCTION: LEMBALL 0x0041ed40
 bool CGenericGroupManager::RemoveElementFromGroup(CGameObject* p_object, CGenericGroup* p_group)
 {
-	bool groupExists = 1;
+	bool groupExists = true;
 	if (p_group != 0) {
 		p_group->RemoveElementFromGroup(p_object);
 		if (m_state != 0 && p_group->GetElementsInGroup() < 1) {
 			delete p_group;
 			m_groupCount--;
-			groupExists = 0;
+			groupExists = false;
 			for (int index = 0; index < 40; index++) {
 				if (m_groups[index] == p_group) {
 					int destination = index;
@@ -306,9 +306,9 @@ bool CGenericGroupManager::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_co
 	CGenericGroup* group = GetFirstGroup();
 	while (group != 0) {
 		if (group->CheckGroupIntersection(p_rect, p_coordinate) == 1) {
-			return 1;
+			return true;
 		}
 		group = GetNextGroup();
 	}
-	return 0;
+	return false;
 }

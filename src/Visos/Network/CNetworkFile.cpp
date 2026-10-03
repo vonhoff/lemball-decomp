@@ -73,12 +73,12 @@ bool CNetworkFile::Open(const char* p_filename, unsigned char p_mode, int p_crea
 	handle = CreateFileA(p_filename, 0xc0000000, 3, 0, creation, 0x80, 0);
 	m_handle = handle;
 	if (handle == (void*) -1) {
-		return 0;
+		return false;
 	}
 
 	m_closed = 0;
 	m_position = 0;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0047f640
@@ -108,11 +108,11 @@ bool CNetworkFile::CheckExists(const char* p_filename)
 	handle = CreateFileA(p_filename, 0xc0000000, 3, 0, 3, 0x80, 0);
 	m_handle = handle;
 	if (handle == (void*) -1) {
-		return 0;
+		return false;
 	}
 
 	CloseHandle(handle);
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0047f6c0
@@ -125,15 +125,15 @@ bool CNetworkFile::Write(const unsigned char* p_data, int p_size)
 	if (success == 0) {
 		int error = (int) GetLastError();
 		*g_pErrorOutput << "Write error: " << error << "\n";
-		return 0;
+		return false;
 	}
 
 	m_position += written;
 	if (written != (unsigned int) p_size) {
 		*g_pErrorOutput << "Write error: " << (unsigned long) written << " bytes written instead of " << p_size << "\n";
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0047f780
@@ -149,7 +149,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 		if (error != 0x21) {
 			*g_pErrorOutput << "Read error: " << (int) error << "\n";
 		}
-		return 0;
+		return false;
 	}
 
 	m_position += got;
@@ -157,9 +157,9 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 		*g_pErrorOutput << "Read error: " << (unsigned long) got << " bytes read instead of " << p_size << "\n";
 		*g_pErrorOutput << "in file " << m_filename << " which is " << (unsigned long) GetFileSize()
 						<< " bytes long.\n";
-		return 0;
+		return false;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0047f890

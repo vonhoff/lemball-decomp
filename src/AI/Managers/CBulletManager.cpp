@@ -111,9 +111,9 @@ bool CBulletManager::RequestBullet(unsigned short p_id,
 			m_activeBullets[m_activeCount]->FireBullet();
 			m_activeCount = m_activeCount + 1;
 		}
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00418040
@@ -188,9 +188,9 @@ bool CBulletManager::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordina
 			p_coordinate->m_xFixed = bullet->m_position.m_xFixed;
 			p_coordinate->m_yFixed = bullet->m_position.m_yFixed;
 			p_coordinate->m_zFixed = bullet->m_position.m_zFixed;
-			return 1;
+			return true;
 		}
 		bullet = GetNextBullet();
 	}
-	return 0;
+	return false;
 }

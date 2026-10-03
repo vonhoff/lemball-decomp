@@ -52,10 +52,10 @@ bool CConnect::CheckConnectTime()
 		now = timeGetTime();
 		if (4000 < now - m_connectTime) {
 			Kill();
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00460d10
@@ -132,7 +132,7 @@ bool CConnect::Send(CNetworkMessage& p_message)
 		return sent;
 	}
 	p_message.m_pendingSendCount = 0;
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00460f00

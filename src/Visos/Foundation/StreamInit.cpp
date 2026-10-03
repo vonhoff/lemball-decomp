@@ -61,7 +61,7 @@ bool _STRM_Init()
 		g_pErrorOutput = 0;
 	}
 
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004590b0
@@ -73,5 +73,5 @@ bool _STRM_Quit()
 	delete g_pErrorStreambuf;
 	delete g_pSysStreambuf;
 	delete g_pDebugStreambuf;
-	return 1;
+	return true;
 }

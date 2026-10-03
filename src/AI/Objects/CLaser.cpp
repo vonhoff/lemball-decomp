@@ -211,10 +211,10 @@ bool CLaser::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
-		return 1;
+		return true;
 	}
 	if (m_active != 0) {
 		switch (m_action) {
@@ -225,18 +225,18 @@ bool CLaser::Process()
 				m_target = 0;
 			}
 			Action(ACTION_READY);
-			return 1;
+			return true;
 		case ACTION_READY:
 			if (m_actionDeadline < g_dwGameTick) {
 				Activate();
-				return 1;
+				return true;
 			}
 			break;
 		case ACTION_ACTIVATING:
 			if (m_actionPhase1Deadline < g_dwGameTick) {
 				m_target = 0;
 				Action(ACTION_ACTIVATED);
-				return 1;
+				return true;
 			}
 			break;
 		case ACTION_ACTIVATED:
@@ -255,7 +255,7 @@ bool CLaser::Process()
 			}
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00428ec0
@@ -263,7 +263,7 @@ bool CLaser::Activate()
 {
 	m_active = 1;
 	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
-		return 0;
+		return false;
 	}
 	m_lastMovementTick = g_dwGameTick;
 	m_actionPhase1Deadline = g_dwGameTick + 6;
@@ -271,7 +271,7 @@ bool CLaser::Activate()
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_target = 0;
 	Action(ACTION_ACTIVATING);
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00428f30
@@ -283,9 +283,9 @@ bool CLaser::StepOn(const AICOORD& p_position, CGameObject* p_object)
 																	p_position.m_yFixed >> 12) < 0x30) {
 		Activate();
 		m_target = p_object;
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00428f90

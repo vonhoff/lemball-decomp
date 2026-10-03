@@ -38,7 +38,7 @@ bool CGraphicsDriver::RealizePalette(CDrawingContext* p_drawingContext)
 		SelectPalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC, (HPALETTE) m_palette, 0);
 		::RealizePalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC);
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00456970
@@ -53,13 +53,13 @@ bool CGraphicsDriver::BlitWrappedBitmap(CDrawingContext* p_destination,
 	CVSRect* rect1;
 	bool copied;
 
-	copied = 0;
+	copied = false;
 	rect0 = 0;
 	rect1 = 0;
 	m_currentBitmap = p_bitmap;
 	scale = (short) (p_destinationRect->m_width / p_sourceRect->m_width);
 	p_bitmap->GetRects(*p_sourceRect, rect0, rect1);
-	bool copiedSecond = 0;
+	bool copiedSecond = false;
 	if (rect0 != 0) {
 		CVSPoint* point = p_destinationRect;
 		short height = (short) (rect0->m_height * scale);

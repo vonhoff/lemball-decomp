@@ -24,7 +24,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		*g_pErrorOutput << "CArena::Allocate : Not enough free memory : " << p_description << " : 0x" << hexSize
 						<< " : Free Size is " << (unsigned long) m_freeSize << "\n";
 		LeaveCritical();
-		return 0;
+		return false;
 	}
 	block = FindSmallestBlock(needed, p_description);
 	if (block == 0) {
@@ -38,7 +38,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 			master->StreamOut(*g_pErrorOutput);
 		}
 		LeaveCritical();
-		return 0;
+		return false;
 	}
 	if (GetSizeOfBlock() + needed + 4 <= block->m_size) {
 		unsigned long oldSize = block->m_size;
@@ -72,5 +72,5 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		((CBaseStat*) m_usageStat)->Update(data - m_arenaBase);
 	}
 	LeaveCritical();
-	return 1;
+	return true;
 }

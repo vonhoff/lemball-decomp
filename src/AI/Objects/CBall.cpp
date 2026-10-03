@@ -148,7 +148,7 @@ found:
 		m_action = ACTION_BALL_EXPLODING;
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionDeadline = g_dwGameTick + 0x16;
-		return 1;
+		return true;
 	}
 
 	if ((m_position.m_zFixed >> 12) + 12 < (int) z) {
@@ -156,19 +156,19 @@ found:
 		case 2:
 			m_actionArgument = 5;
 			StartMovement(0);
-			return 1;
+			return true;
 		case 5:
 			m_actionArgument = 2;
 			StartMovement(1);
-			return 1;
+			return true;
 		}
-		return 1;
+		return true;
 	}
 
 	m_position.m_zFixed = (unsigned int) z << 12;
 	m_position.m_xFixed = x << 12;
 	m_position.m_yFixed = y << 12;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00421aa0
@@ -278,15 +278,15 @@ bool CBall::Process()
 			break;
 		}
 		UpdateCollision();
-		return 1;
+		return true;
 	case ACTION_BALL_EXPLODING:
 		if (m_actionDeadline < g_dwGameTick) {
 			g_pBallManager->Delete(this);
-			return 0;
+			return false;
 		}
-		return 1;
+		return true;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00421da0

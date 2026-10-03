@@ -584,7 +584,7 @@ static bool RegisterBaseWindowClass()
 	if (atom == 0) {
 		FatalWin32Error(g_szUnableToRegisterBaseWindowClass);
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x004651d0

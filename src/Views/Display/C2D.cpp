@@ -600,13 +600,13 @@ bool C2D::FindGameObject(const CVSPoint& p_point, int& p_index, int p_preferLemm
 	}
 	if (selected != -1) {
 		p_index = selected;
-		return 1;
+		return true;
 	}
 	if (lemming != -1) {
 		p_index = lemming;
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00437130

@@ -57,7 +57,7 @@ bool CheckValidPointer(void* p_pointer)
 		register CBucket** buckets = (CBucket**) g_pSmallMemory;
 		do {
 			if (*buckets != 0 && (*buckets)->CheckValidPointer(ptr)) {
-				return 1;
+				return true;
 			}
 			buckets++;
 			i++;

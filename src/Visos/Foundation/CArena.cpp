@@ -53,7 +53,7 @@ CArena::~CArena()
 bool CArena::CheckAndAmalgamate(CMBlock* p_block1, CMBlock* p_block2)
 {
 	if (p_block1->m_data + p_block1->m_size != (unsigned char*) p_block2) {
-		return 0;
+		return false;
 	}
 	unsigned long size2 = p_block2->m_size;
 	int blockSize = GetSizeOfBlock();
@@ -62,7 +62,7 @@ bool CArena::CheckAndAmalgamate(CMBlock* p_block1, CMBlock* p_block2)
 	RemoveFromFreeList(p_block2);
 	delete p_block2;
 	m_freeSize += GetSizeOfBlock();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00459bd0
@@ -77,7 +77,7 @@ bool CArena::AddToFreeList(CMBlock* p_block)
 	p_block->m_previousFree = 0;
 	p_block->m_nextFree = m_firstFreeBlock;
 	m_firstFreeBlock = p_block;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00459c00
@@ -100,7 +100,7 @@ bool CArena::AddToBlockList(CMBlock* p_block, CMBlock* p_previous)
 	else {
 		next->m_previousBlock = p_block;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00459c40
@@ -119,7 +119,7 @@ bool CArena::AddToArenaList(class CArena* p_arena)
 		previous->m_nextArena = p_arena;
 	}
 	p_arena->m_nextArena = current;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00459c80
@@ -139,7 +139,7 @@ bool CArena::RemoveFromFreeList(CMBlock* p_block)
 	else {
 		m_lastFreeBlock = prev;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00459cb0
@@ -159,7 +159,7 @@ bool CArena::RemoveFromBlockList(CMBlock* p_block)
 	else {
 		m_firstBlock = next;
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00459ce0
@@ -175,12 +175,12 @@ bool CArena::RemoveFromArenaList(class CArena* p_arena)
 			else {
 				m_nextArena = current->m_nextArena;
 			}
-			return 1;
+			return true;
 		}
 		previous = current;
 		current = current->m_nextArena;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00459d20
@@ -202,7 +202,7 @@ CMBlock* CArena::FindSmallestBlock(unsigned long p_size, char* p_description)
 bool CArena::Free(unsigned char* p_memory)
 {
 	if (!CheckValidPointer(p_memory)) {
-		return 0;
+		return false;
 	}
 	EnterCritical();
 	CMBlock* block = (CMBlock*) (p_memory - GetSizeOfBlock());
@@ -220,7 +220,7 @@ bool CArena::Free(unsigned char* p_memory)
 		CheckAndAmalgamate(block, next);
 	}
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045a010
@@ -231,7 +231,7 @@ bool CArena::AllocateArena(CArena** p_arena, unsigned long p_size, char* p_descr
 	CArena* arena;
 
 	if (!Allocate(&memory, (*p_arena = 0, p_size), "Arena container")) {
-		return 0;
+		return false;
 	}
 	EnterCritical();
 	block = (CMBlock*) (memory - GetSizeOfBlock());
@@ -239,7 +239,7 @@ bool CArena::AllocateArena(CArena** p_arena, unsigned long p_size, char* p_descr
 	AddToArenaList(arena);
 	*p_arena = arena;
 	LeaveCritical();
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045a0a0
@@ -247,7 +247,7 @@ bool CArena::FreeArena(class CArena* p_arena)
 {
 	EnterCritical();
 	if (!RemoveFromArenaList(p_arena)) {
-		return 0;
+		return false;
 	}
 	LeaveCritical();
 	return Free((unsigned char*) p_arena);
@@ -257,14 +257,14 @@ bool CArena::FreeArena(class CArena* p_arena)
 bool CArena::CheckValidPointer(void* p_pointer)
 {
 	if (p_pointer == 0) {
-		return 0;
+		return false;
 	}
 	unsigned char* start = (unsigned char*) this + GetSizeOf();
 	unsigned char* end = (unsigned char*) this + GetSizeOf() + m_arenaSize;
 	if (start <= p_pointer && p_pointer < end) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0045a1e0
@@ -277,9 +277,9 @@ bool CArena::CheckMemoryBlock(CMBlock* p_block)
 bool CArena::CheckFreeMemoryBlock(CMBlock* p_block)
 {
 	if (CheckMemoryBlock(p_block) && (p_block->m_flags & 1) != 0) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0045a260
@@ -309,7 +309,7 @@ CVSOStream& CArena::StreamOut(CVSOStream& p_stream)
 // FUNCTION: LEMBALL 0x0045a330
 bool CArena::CheckIntegrity()
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0045a340

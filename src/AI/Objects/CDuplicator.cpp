@@ -97,7 +97,7 @@ bool CDuplicator::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	m_actionArgument = 0;
 	if (m_action == ACTION_ACTIVATED && m_actionDeadline < g_dwGameTick) {
@@ -115,7 +115,7 @@ bool CDuplicator::Process()
 		}
 		Action(ACTION_READY);
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00427890
@@ -131,15 +131,15 @@ AICOORD CDuplicator::ActivatePosition()
 bool CDuplicator::Activate(CGameObject* p_object)
 {
 	if (!g_pAI->nDead()) {
-		return 0;
+		return false;
 	}
 	if (p_object->m_objectType == OBJECT_PLAYER_2 && m_action == ACTION_READY) {
 		m_actionDeadline = 82;
 		m_activator = p_object;
 		RequestAction(ACTION_ACTIVATED);
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00427910

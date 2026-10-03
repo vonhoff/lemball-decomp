@@ -135,20 +135,20 @@ bool CGameStatus::DecodePassword(char* p_password)
 			g_pGameStatus->SetMaxLevel(i, 0x40);
 			i++;
 		} while (i < 4);
-		return 1;
+		return true;
 	}
 
 	unsigned int value = StringToDWord();
 	if (value == 0) {
-		return 0;
+		return false;
 	}
 	unsigned int checksum = CalcCheckSum(value);
 	if (((value & 0x1f000000) >> 24) != checksum) {
-		return 0;
+		return false;
 	}
 	value &= 0xffffff;
 	UnJiggleLevelData(value);
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00406d80
@@ -298,9 +298,9 @@ bool CGameStatus::NextLevelAvailable()
 {
 	if (m_skill == 4) {
 		if (m_level < 11) {
-			return 1;
+			return true;
 		}
-		return 0;
+		return false;
 	}
 	return m_maxLevels[m_skill] != m_level;
 }

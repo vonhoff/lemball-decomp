@@ -404,7 +404,7 @@ unsigned char CDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned 
 // FUNCTION: LEMBALL 0x0047e860
 bool CDirectSoundDevice::EffectStop(unsigned char p_channel, unsigned char p_effect)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0047e8b0

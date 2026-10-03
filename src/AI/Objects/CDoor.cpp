@@ -199,15 +199,15 @@ bool CDoor::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 
 	if (!m_activationPending) {
-		return 1;
+		return true;
 	}
 
 	if (m_actionDeadline > g_dwGameTick) {
-		return 1;
+		return true;
 	}
 
 	m_stateTimer = g_dwSimulationTimestamp;
@@ -229,7 +229,7 @@ bool CDoor::Process()
 			SetCollision();
 			SetSndEffect(SFX_DOOROPEN);
 			Action(ACTION_DOOR_CLOSING);
-			return 1;
+			return true;
 		}
 		m_activationPending = 0;
 		break;
@@ -241,7 +241,7 @@ bool CDoor::Process()
 		break;
 	}
 
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040dd00
@@ -266,12 +266,12 @@ bool CDoor::TryBeginActivation()
 	unsigned int tick;
 
 	if (m_activationPending != 0) {
-		return 0;
+		return false;
 	}
 	tick = g_dwGameTick;
 	m_activationPending = 1;
 	m_setTick = tick;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040dd80

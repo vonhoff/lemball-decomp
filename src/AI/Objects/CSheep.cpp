@@ -50,7 +50,7 @@ void CSheep::Restart()
 bool CSheep::Process()
 {
 	SheepState(g_pAI, this);
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0041fab0

@@ -57,7 +57,7 @@ bool CCollectable::Process()
 			}
 			m_pendingAction = m_action;
 		}
-		return 1;
+		return true;
 	}
 	if (m_enabled != 0) {
 		switch (m_action) {
@@ -119,7 +119,7 @@ bool CCollectable::Process()
 			break;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00422fa0

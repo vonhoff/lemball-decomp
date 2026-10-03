@@ -24,7 +24,7 @@ void CGameObject::ForgetObjectLink(unsigned short p_arg0)
 // FUNCTION: LEMBALL 0x0040a800
 bool CGameObject::Activate(class CGameObject* p_object)
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040a810
@@ -74,9 +74,9 @@ bool CGameObject::Collision(const CPt3& p_point)
 	if (m_collisionBounds.m_x1 <= p_point.m_x && p_point.m_x <= m_collisionBounds.m_x2 &&
 		m_collisionBounds.m_y1 <= p_point.m_y && p_point.m_y <= m_collisionBounds.m_y2 &&
 		m_collisionBounds.m_z1 <= p_point.m_z && p_point.m_z <= m_collisionBounds.m_z2) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040a8e0
@@ -85,9 +85,9 @@ bool CGameObject::Collision(const CRect3& p_bounds)
 	if (m_collisionBounds.m_x1 <= p_bounds.m_x2 && p_bounds.m_x1 <= m_collisionBounds.m_x2 &&
 		m_collisionBounds.m_y1 <= p_bounds.m_y2 && p_bounds.m_y1 <= m_collisionBounds.m_y2 &&
 		m_collisionBounds.m_z1 <= p_bounds.m_z2 && p_bounds.m_z1 <= m_collisionBounds.m_z2) {
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040a930
@@ -129,7 +129,7 @@ void CGameObject::Land()
 // FUNCTION: LEMBALL 0x0040a9a0
 bool CGameObject::FacingCursor()
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040a9b0
@@ -140,7 +140,7 @@ void CGameObject::TurnToFaceCursor()
 // FUNCTION: LEMBALL 0x0040a9c0
 bool CGameObject::IsRequestingFire()
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040a9d0
@@ -177,7 +177,7 @@ void CGameObject::RandomAction()
 // FUNCTION: LEMBALL 0x0040aa30
 bool CGameObject::FacingTarget()
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040aa40
@@ -188,19 +188,19 @@ void CGameObject::TurnToFaceTarget()
 // FUNCTION: LEMBALL 0x0040aa50
 bool CGameObject::PossiblyOnLift()
 {
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x0040aa60
 bool CGameObject::HasObject(eObjectType p_objectType)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040aa70
 bool CGameObject::AddObject(eObjectType p_objectType, class CGameObject* p_object)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040aa80
@@ -211,7 +211,7 @@ void CGameObject::ReNumberNode(int p_arg0, int p_arg1)
 // FUNCTION: LEMBALL 0x0040aa90
 bool CGameObject::NeedsNode(int p_arg0)
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040aaa0
@@ -644,7 +644,7 @@ bool CGameObject::StartRoute()
 							 (m_destination.m_xFixed >> 12) / 16,
 							 (m_destination.m_yFixed >> 12) / 16);
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x004158b0
@@ -703,7 +703,7 @@ bool CGameObject::SearchRoute()
 								 (m_destination.m_yFixed >> 12) / 16);
 		}
 	}
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00415a20
@@ -1148,10 +1148,10 @@ bool CGameObject::IsSelectable()
 		goto selectable;
 	}
 	if (m_action <= ACTION_DEAD || m_action == ACTION_WAITING_TO_DIE) {
-		return 0;
+		return false;
 	}
 selectable:
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00416590
@@ -1291,7 +1291,7 @@ void CGameObject::StartLand()
 // FUNCTION: LEMBALL 0x00417aa0
 bool CGameObject::Process()
 {
-	return 0;
+	return false;
 }
 
 // GLOBAL: LEMBALL 0x0049cf4c

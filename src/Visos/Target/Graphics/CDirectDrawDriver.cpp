@@ -177,7 +177,7 @@ bool CDirectDrawDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 	header->biHeight = -1;
 	header->biBitCount = 8;
 	header->biClrImportant = 0;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00457800
@@ -378,14 +378,14 @@ bool CDirectDrawDriver::CreatePalette(void* p_paletteDescription)
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Initial rectangle blit failed : "
 						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
-		return 0;
+		return false;
 	}
 	if (m_paletteInterface != 0) {
 		result = m_paletteInterface->SetEntries(0, 0, palette->palNumEntries, palette->palPalEntry);
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Draw Set Palette Entries failed: "
 							<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
-			return 0;
+			return false;
 		}
 	}
 	else {
@@ -393,17 +393,17 @@ bool CDirectDrawDriver::CreatePalette(void* p_paletteDescription)
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Draw Create Palette failed: " << FormatUnknownDirectDrawError(result & 0xfff)
 							<< "\n";
-			return 0;
+			return false;
 		}
 		primary = (IDirectDrawSurface*) m_primarySurface;
 		result = primary->SetPalette(m_paletteInterface);
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Draw Set Palette failed: " << FormatUnknownDirectDrawError(result & 0xfff)
 							<< "\n";
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00458350

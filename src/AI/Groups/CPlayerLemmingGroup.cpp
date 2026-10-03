@@ -235,7 +235,7 @@ bool CPlayerLemmingGroup::Process()
 			break;
 		}
 	}
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00414600
@@ -328,7 +328,7 @@ bool CPlayerLemmingGroup::RemoveLemmingFromGroup(CPlayerLemming* p_lemming)
 		leader->SetGroupLeader(1);
 	}
 	m_altered = 1;
-	return 1;
+	return true;
 }
 
 // FUNCTION: LEMBALL 0x00414810
