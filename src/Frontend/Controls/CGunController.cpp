@@ -665,9 +665,9 @@ void CGunController::Process()
 			else {
 				elapsed = (now - m_selectStartTime) >> 1;
 				step = m_projectileX;
-				int direction = sgn(m_projectileTargetX - step);
+				unsigned long displacement = sgn(m_projectileTargetX - step) * elapsed;
 				m_selectStartTime = now;
-				m_projectileX = direction * elapsed + step;
+				m_projectileX = displacement + step;
 			}
 			break;
 		case 3:
