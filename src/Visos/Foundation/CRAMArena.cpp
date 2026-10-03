@@ -12,9 +12,9 @@ CRAMArena::CRAMArena(unsigned long p_arenaSize, char* p_description, CArena* p_p
 	m_arenaSize = p_arenaSize - GetSizeOf();
 	m_freeSize = m_arenaSize - GetSizeOfBlock();
 	m_arenaBase = (unsigned char*) this + GetSizeOf();
-	CMBlock* block = CreateNewBlock(m_arenaBase, this, 0, "Free", m_arenaSize);
+	CMBlock* block = CreateNewBlock(m_arenaBase, this, NULL, "Free", m_arenaSize);
 	block->m_flags |= 1;
-	AddToBlockList(block, 0);
+	AddToBlockList(block, NULL);
 	AddToFreeList(block);
 }
 

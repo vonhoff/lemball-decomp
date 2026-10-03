@@ -42,7 +42,7 @@ char g_szStringFileInfoPrefix[28] = "\\StringFileInfo\\080904e4\\";
 MEMORYSTATUS g_memoryStatus;
 
 // GLOBAL: LEMBALL 0x004a7ba8
-HFONT g_hAboutFont = 0;
+HFONT g_hAboutFont = NULL;
 
 // GLOBAL: LEMBALL 0x004a7bb0
 char g_szAboutSystemInfo[ABOUT_SYSTEM_INFO_BUFFER_SIZE];
@@ -98,7 +98,7 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 	else if (screenHeight < height + y) {
 		y = screenHeight - height;
 	}
-	SetWindowPos((HWND) p_window, 0, x, y, 0, 0, 5);
+	SetWindowPos((HWND) p_window, NULL, x, y, 0, 0, 5);
 }
 
 #include <string.h>
@@ -196,9 +196,9 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 				*queryEnd = 0;
 				lstrcatA(queryPath, itemText);
 				queryLen = 0;
-				queryValue = 0;
+				queryValue = NULL;
 				queryOk = VerQueryValueA(versionData, queryPath, (void**) &queryValue, &queryLen);
-				if (queryOk != 0 && queryLen != 0 && queryValue != 0) {
+				if (queryOk != 0 && queryLen != 0 && queryValue != NULL) {
 					lstrcpyA(itemText, queryValue);
 					SetDlgItemTextA((HWND) p_dlg, controlId, itemText);
 					SendMessageA(GetDlgItem((HWND) p_dlg, controlId), WM_SETFONT, (unsigned int) g_hAboutFont, 1);

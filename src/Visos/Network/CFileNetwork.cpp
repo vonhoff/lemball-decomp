@@ -25,7 +25,7 @@ void CFileNetwork::Initialise()
 {
 	*g_pDebugOutput << "Network Initialised:\n";
 	*g_pDebugOutput << "Windows file-based networking\n";
-	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, FILE_NETWORK_TIMER_INTERVAL_MS, 0);
+	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, FILE_NETWORK_TIMER_INTERVAL_MS, NULL);
 }
 
 // FUNCTION: LEMBALL 0x0046f730
@@ -40,7 +40,7 @@ void CFileNetwork::ResetTimer(unsigned int p_interval)
 	*g_pDebugOutput << "Setting next timer event to " << (unsigned long) p_interval << "ms from now\n";
 
 	KillTimer((HWND) m_windowHandle, m_timerId);
-	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, p_interval, 0);
+	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, p_interval, NULL);
 	m_alternateTimer = m_alternateTimer == 0;
 }
 
@@ -75,7 +75,7 @@ int CFileNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p_
 		if (m_alternateTimer != 0) {
 			ResetTimer(FILE_NETWORK_TIMER_INTERVAL_MS);
 		}
-		if (g_pNetworkStatusQueue != 0 && ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount() != 0) {
+		if (g_pNetworkStatusQueue != NULL && ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount() != 0) {
 			((CBaseQueue*) g_pNetworkStatusQueue)
 				->ProcessNMsgs(((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount());
 		}
@@ -97,12 +97,12 @@ void* CFileNetwork::GetNewNetworkAddress()
 	CFileNetworkAddress* address;
 
 	storage = operator new(sizeof(CFileNetworkAddress));
-	if (storage != 0) {
+	if (storage != NULL) {
 		address = new (storage) CFileNetworkAddress();
 		address->m_text[0] = '\0';
 		return address;
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0046f930
@@ -111,10 +111,10 @@ void* CFileNetwork::GetNewConnect()
 	void* storage;
 
 	storage = operator new(sizeof(CFileConnect));
-	if (storage != 0) {
+	if (storage != NULL) {
 		return new (storage) CFileConnect();
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0046f950
@@ -123,20 +123,20 @@ void* CFileNetwork::GetNewBroadcast()
 	void* storage;
 
 	storage = operator new(sizeof(CFileBroadcast));
-	if (storage != 0) {
+	if (storage != NULL) {
 		return new (storage) CFileBroadcast();
 	}
-	return 0;
+	return NULL;
 }
 
 // GLOBAL: LEMBALL 0x004a2260
 unsigned long g_dwFileNetworkThreadId = 0x12345678;
 
 // GLOBAL: LEMBALL 0x004a2264
-void* g_hFileNetworkThread = 0;
+void* g_hFileNetworkThread = NULL;
 
 // GLOBAL: LEMBALL 0x004a2268
 int g_fileNetworkWindowClassRegistered = 0;
 
 // GLOBAL: LEMBALL 0x004a2de4
-char* g_pFileBroadcastData = 0;
+char* g_pFileBroadcastData = NULL;

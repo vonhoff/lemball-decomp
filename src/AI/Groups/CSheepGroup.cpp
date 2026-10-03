@@ -13,6 +13,8 @@
 #include "Visos/Foundation/CFixed.h"
 #include "Visos/Foundation/CVector.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0041f500
 CSheepGroup::CSheepGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager)
 	: CGenericGroup(p_ai, p_objectManager, p_formationManager)
@@ -28,7 +30,7 @@ void CSheepGroup::RunAway(AICOORD p_threatPosition)
 	CVector escapeVector(0x32000, 0);
 	membersWithDestination = 0;
 	groupMember = GetFirstElementInGroup();
-	while (groupMember != 0) {
+	while (groupMember != NULL) {
 		if (groupMember->DestinationExists() == 1) {
 			membersWithDestination++;
 		}
@@ -36,7 +38,7 @@ void CSheepGroup::RunAway(AICOORD p_threatPosition)
 	}
 	if (membersWithDestination == 0) {
 		CGameObject* firstMember = GetFirstElementInGroup();
-		if (firstMember != 0) {
+		if (firstMember != NULL) {
 			firstMember->SetSndEffect(SFX_SHEEP);
 			int positionY = firstMember->m_position.m_yFixed;
 			int positionZ = firstMember->m_position.m_zFixed;

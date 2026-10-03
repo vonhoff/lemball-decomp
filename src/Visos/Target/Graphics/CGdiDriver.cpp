@@ -30,16 +30,16 @@ CDrawingContext* CGdiDriver::CreateDrawingContext()
 	void* storage;
 	CDrawingContext* context;
 
-	hdc = CreateCompatibleDC(0);
-	if (hdc != 0) {
+	hdc = CreateCompatibleDC(NULL);
+	if (hdc != NULL) {
 		storage = operator new(0xc);
-		if (storage != 0) {
+		if (storage != NULL) {
 			context = new (storage) CGdiContext(hdc);
 			return context;
 		}
-		return 0;
+		return NULL;
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x00456b20
@@ -47,7 +47,7 @@ int CGdiDriver::DestroyDrawingContext(CDrawingContext* p_drawingContext)
 {
 	int deleted;
 
-	if (p_drawingContext == 0) {
+	if (p_drawingContext == NULL) {
 		return 0;
 	}
 	deleted = DeleteDC((HDC) ((CGdiContext*) p_drawingContext)->m_hDC);
@@ -83,9 +83,9 @@ CDibContext* CGdiDriver::CreateDibContext(CDrawingContext* p_drawingContext, voi
 	BITMAPINFO* info;
 
 	info = (BITMAPINFO*) p_bitmapInfo;
-	bitmap = CreateDIBSection((HDC) ((CGdiContext*) p_drawingContext)->m_hDC, info, 0, &bits, 0, 0);
-	if (bitmap == 0) {
-		return 0;
+	bitmap = CreateDIBSection((HDC) ((CGdiContext*) p_drawingContext)->m_hDC, info, 0, &bits, NULL, 0);
+	if (bitmap == NULL) {
+		return NULL;
 	}
 	context = new CGdiDibContext(bitmap);
 	context->m_width = info->bmiHeader.biWidth;
@@ -99,7 +99,7 @@ int CGdiDriver::DestroyDibContext(CDibContext* p_dibContext)
 {
 	int deleted;
 
-	if (p_dibContext == 0) {
+	if (p_dibContext == NULL) {
 		return 1;
 	}
 	deleted = DeleteObject((HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_hBitmap);
@@ -162,8 +162,8 @@ CDibContext* CGdiDriver::SelectDibContext(CDrawingContext* p_drawingContext, CDi
 
 	prior = SelectObject((HDC) ((CGdiContext*) p_drawingContext)->m_hDC,
 						 (HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_hBitmap);
-	if (prior == 0) {
-		return 0;
+	if (prior == NULL) {
+		return NULL;
 	}
 	((CGdiDibContext*) p_dibContext)->m_previousBitmap = prior;
 	return p_dibContext;
@@ -176,8 +176,8 @@ CDibContext* CGdiDriver::RestoreDibContext(CDrawingContext* p_drawingContext, CD
 
 	prior = SelectObject((HDC) ((CGdiContext*) p_drawingContext)->m_hDC,
 						 (HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_previousBitmap);
-	if (prior == 0) {
-		return 0;
+	if (prior == NULL) {
+		return NULL;
 	}
 	return p_dibContext;
 }

@@ -4,6 +4,7 @@
 #include "Visos/Foundation/VsInit.h"
 
 #include <new.h>
+#include <stddef.h>
 
 // GLOBAL: LEMBALL 0x004a93b0
 char g_szStreamFixedBuffer[0x400];
@@ -14,51 +15,51 @@ bool _STRM_Init()
 	void* storage;
 
 	storage = operator new(0x1c);
-	if (storage != 0) {
+	if (storage != NULL) {
 		g_pDebugStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_DebugString);
 	}
 	else {
-		g_pDebugStreambuf = 0;
+		g_pDebugStreambuf = NULL;
 	}
 
 	storage = operator new(0x1c);
-	if (storage != 0) {
+	if (storage != NULL) {
 		g_pSysStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_SysString);
 	}
 	else {
-		g_pSysStreambuf = 0;
+		g_pSysStreambuf = NULL;
 	}
 
 	storage = operator new(0x1c);
-	if (storage != 0) {
+	if (storage != NULL) {
 		g_pErrorStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_ErrorString);
 	}
 	else {
-		g_pErrorStreambuf = 0;
+		g_pErrorStreambuf = NULL;
 	}
 
 	storage = operator new(0x14c);
-	if (storage != 0) {
+	if (storage != NULL) {
 		g_pDebugOutput = new (storage) CVSOStream(g_pDebugStreambuf);
 	}
 	else {
-		g_pDebugOutput = 0;
+		g_pDebugOutput = NULL;
 	}
 
 	storage = operator new(0x14c);
-	if (storage != 0) {
+	if (storage != NULL) {
 		g_pSysOutput = new (storage) CVSOStream(g_pSysStreambuf);
 	}
 	else {
-		g_pSysOutput = 0;
+		g_pSysOutput = NULL;
 	}
 
 	storage = operator new(0x14c);
-	if (storage != 0) {
+	if (storage != NULL) {
 		g_pErrorOutput = new (storage) CVSOStream(g_pErrorStreambuf);
 	}
 	else {
-		g_pErrorOutput = 0;
+		g_pErrorOutput = NULL;
 	}
 
 	return true;

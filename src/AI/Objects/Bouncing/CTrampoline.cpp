@@ -11,6 +11,8 @@
 #include "AI/Base/ObjectActions.h"
 #include "Views/Sound/SoundEffects.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0042ab90
 int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 {
@@ -104,7 +106,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 
 	AICOORD position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
 	p_object->m_position = position;
-	p_object->StartFly(flightVelocity, 0);
+	p_object->StartFly(flightVelocity, NULL);
 	p_object->m_balloonPostId = 1;
 	p_object->ResetInstructions();
 	m_actionDeadline = g_dwGameTick + 0x10;

@@ -23,14 +23,14 @@ void CResBaseLIST::SetHeader()
 void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size)
 {
 	if (p_data == &m_headerData) {
-		if (m_headerData == 0) {
+		if (m_headerData == NULL) {
 			m_headerData = g_pActiveMogRes->AllocateMainMem(p_size);
 			memcpy(m_headerData, p_source, p_size);
 		}
 		m_headerLoaded = 1;
 	}
 	else {
-		if (m_data == 0) {
+		if (m_data == NULL) {
 			m_data = g_pActiveMogRes->AllocateMainMem(p_size);
 			memcpy(m_data, p_source, p_size);
 		}
@@ -58,7 +58,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 				}
 			}
 			g_pActiveMogRes->DeallocateMem(m_headerData, 1);
-			m_headerData = 0;
+			m_headerData = NULL;
 			m_vramReady = 1;
 		}
 		else {
@@ -138,7 +138,7 @@ void CResBaseLIST::UnLoadData(unsigned int p_force)
 	}
 	m_loaded = 0;
 	g_pActiveMogRes->DeallocateMem(m_data, 1);
-	m_data = 0;
+	m_data = NULL;
 unload_entries:
 	unsigned int i = 0;
 	if (m_totalSize / m_listHeader->m_headerSize != 0) {

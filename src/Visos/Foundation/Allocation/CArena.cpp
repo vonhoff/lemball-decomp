@@ -14,7 +14,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 	unsigned char* data;
 
 	EnterCritical();
-	*p_data = 0;
+	*p_data = NULL;
 	aligned = (p_size + 3) & 0xfffffffc;
 	headerSize = GetSizeOfBlock();
 	needed = aligned + headerSize;
@@ -27,7 +27,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		return false;
 	}
 	block = FindSmallestBlock(needed, p_description);
-	if (block == 0) {
+	if (block == NULL) {
 		unsigned long freeSize = m_freeSize;
 		Hex hexSize;
 		hexSize.m_value = aligned;
@@ -48,7 +48,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		block->m_flags &= ~1;
 		RemoveFromFreeList(block);
 		unsigned char* nextData = block->m_data + aligned;
-		leftover = CreateNewBlock(nextData, block->m_ownerArena, 0, "Free", oldSize - aligned);
+		leftover = CreateNewBlock(nextData, block->m_ownerArena, NULL, "Free", oldSize - aligned);
 		leftover->m_flags |= 1;
 		AddToFreeList(leftover);
 		AddToBlockList(leftover, block);
@@ -64,7 +64,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		unsigned char* blockData = block->m_data;
 		*p_data = blockData;
 	}
-	if (m_usageStat != 0) {
+	if (m_usageStat != NULL) {
 		data = *p_data + aligned;
 		if (g_pArenaHighWater < data) {
 			g_pArenaHighWater = data;

@@ -73,14 +73,14 @@ void CSurface::Move(const CVSPoint& p_position)
 		if (newSize.m_width != oldRect.m_width || oldRect.m_height != height) {
 			Resize(newSize);
 		}
-		if (m_platformBitmap != 0) {
+		if (m_platformBitmap != NULL) {
 			g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
-			m_platformBitmap = 0;
+			m_platformBitmap = NULL;
 		}
 		m_bitmapPixelCount = 0;
 		CreateLinePtrs();
 		LeaveCriticalSection(lock);
-		for (SurfaceListNode* node = m_childSurfaceHead; node != 0; node = node->m_next) {
+		for (SurfaceListNode* node = m_childSurfaceHead; node != NULL; node = node->m_next) {
 			node->m_surface->MoveRel(delta);
 		}
 	}

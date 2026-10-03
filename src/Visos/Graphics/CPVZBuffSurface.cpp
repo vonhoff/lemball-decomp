@@ -4,13 +4,15 @@
 #include "Visos/Foundation/CVSSize.h"
 #include "Visos/Graphics/CPVGDIBitmap.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00466670
 CPVZBuffSurface::CPVZBuffSurface()
 {
 	m_allocatedWidth = 0;
 	m_enabled = 0;
 	m_allocatedHeight = 0;
-	m_buffer = 0;
+	m_buffer = NULL;
 }
 
 // FUNCTION: LEMBALL 0x004666e0
@@ -21,9 +23,9 @@ CPVZBuffSurface::~CPVZBuffSurface()
 // FUNCTION: LEMBALL 0x00466710
 void CPVZBuffSurface::FreeZBuff()
 {
-	if (m_buffer != 0) {
+	if (m_buffer != NULL) {
 		operator delete(m_buffer);
-		m_buffer = 0;
+		m_buffer = NULL;
 		m_allocatedHeight = 0;
 		m_allocatedWidth = 0;
 	}
@@ -44,12 +46,12 @@ void CPVZBuffSurface::AllocateZBuff()
 		FreeZBuff();
 	}
 	if ((int) m_windowRect.m_width * (int) m_windowRect.m_height != 0) {
-		if (m_buffer == 0) {
+		if (m_buffer == NULL) {
 			m_allocatedHeight = (unsigned short) size.m_height;
 			m_allocatedWidth = (unsigned short) ((unsigned int) (int) size.m_width >> 1);
 			m_buffer = new unsigned short[(unsigned int) m_allocatedWidth * (unsigned int) m_allocatedHeight];
 		}
-		if (m_buffer == 0) {
+		if (m_buffer == NULL) {
 			m_enabled = 0;
 		}
 		m_bitmap.SetBitsBase((unsigned char*) m_buffer, (int) size.m_width);

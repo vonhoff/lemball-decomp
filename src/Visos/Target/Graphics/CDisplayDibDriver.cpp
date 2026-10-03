@@ -18,7 +18,7 @@
 typedef int(__stdcall* DisplayDibProc)(void*, void*, unsigned short);
 
 // GLOBAL: LEMBALL 0x004a8290
-DisplayDibProc g_pDisplayDib = 0;
+DisplayDibProc g_pDisplayDib = NULL;
 
 // FUNCTION: LEMBALL 0x00456d70
 CDisplayDibDriver::CDisplayDibDriver(const CVSSize& p_size)
@@ -26,12 +26,12 @@ CDisplayDibDriver::CDisplayDibDriver(const CVSSize& p_size)
 	m_ready = 0;
 	m_screenSize.m_width = p_size.m_width;
 	m_screenSize.m_height = p_size.m_height;
-	m_displayDibStart = 0;
-	m_displayDibEnd = 0;
-	m_displayDibGetAddress = 0;
-	g_pDisplayDib = 0;
+	m_displayDibStart = NULL;
+	m_displayDibEnd = NULL;
+	m_displayDibGetAddress = NULL;
+	g_pDisplayDib = NULL;
 	m_driverModule = LoadLibraryA("DSPDIB32.DLL");
-	if (m_driverModule != 0) {
+	if (m_driverModule != NULL) {
 		m_displayDibStart = (void(__stdcall*)()) GetProcAddress((HMODULE) m_driverModule, "DisplayDibStart32");
 		m_displayDibEnd = (void(__stdcall*)()) GetProcAddress((HMODULE) m_driverModule, "DisplayDibEnd32");
 		m_displayDibGetAddress =
@@ -46,8 +46,8 @@ CDisplayDibDriver::CDisplayDibDriver(const CVSSize& p_size)
 // FUNCTION: LEMBALL 0x00456e20
 CDisplayDibDriver::~CDisplayDibDriver()
 {
-	if (m_displayDibEnd != 0) {
-		g_pDisplayDib(0, 0, 0x4000);
+	if (m_displayDibEnd != NULL) {
+		g_pDisplayDib(NULL, NULL, 0x4000);
 		m_displayDibEnd();
 	}
 }

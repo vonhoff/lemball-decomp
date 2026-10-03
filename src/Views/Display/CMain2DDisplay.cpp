@@ -61,13 +61,13 @@ CMain2DDisplay::CMain2DDisplay(CGame* p_game)
 	m_highHeight = 0;
 	m_quitRequested = 0;
 	m_highWidth = 0;
-	m_loadingDraw = 0;
+	m_loadingDraw = NULL;
 	m_frameCount = 0;
 	m_game = p_game;
-	m_ai = 0;
+	m_ai = NULL;
 	m_windowReady = 1;
-	m_map = 0;
-	m_drawer = 0;
+	m_map = NULL;
+	m_drawer = NULL;
 	m_drawerClosing = 1;
 	m_gdiFlags = 0x258;
 	m_currentFlow = FLOW_MAIN_OPTIONS_2;
@@ -116,33 +116,33 @@ void CMain2DDisplay::OnCreate()
 	SetZoom(1);
 	AttachPalette(RES_GAME_GAMEPALETTE);
 	m_gdi->m_renderTarget->EnableBackBuff(1);
-	m_drawer = 0;
+	m_drawer = NULL;
 }
 
 // FUNCTION: LEMBALL 0x004317c0
 void CMain2DDisplay::OnDestroy()
 {
 	CursorChangeType(CURSOR_DISPLAY_NONE, 0);
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		m_drawer->ShutDown();
 		m_drawer->DestroyDrawer();
 		delete m_drawer;
-		m_drawer = 0;
+		m_drawer = NULL;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00431810
 void CMain2DDisplay::OnPaint(const CVSRect& p_rect)
 {
-	if (m_gdi != 0) {
+	if (m_gdi != NULL) {
 		if (IsWindowValid() != 0) {
-			if (m_loadingDraw != 0) {
+			if (m_loadingDraw != NULL) {
 				((CCdLoadAnimDraw*) m_loadingDraw)->Draw();
 			}
-			if (m_drawer != 0) {
+			if (m_drawer != NULL) {
 				m_drawer->Draw(p_rect);
 			}
-			if (m_drawer != 0) {
+			if (m_drawer != NULL) {
 				m_frameCount = m_frameCount + 1;
 				m_drawer->ResetPrimitives();
 			}
@@ -153,7 +153,7 @@ void CMain2DDisplay::OnPaint(const CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x00431860
 void CMain2DDisplay::OnSize()
 {
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		((CDrawer*) m_drawer)->OnSize(m_rect);
 	}
 }
@@ -161,7 +161,7 @@ void CMain2DDisplay::OnSize()
 // FUNCTION: LEMBALL 0x00431880
 void CMain2DDisplay::OnZoom(int p_zoom)
 {
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		m_drawer->OnZoom(m_rect);
 	}
 }
@@ -169,7 +169,7 @@ void CMain2DDisplay::OnZoom(int p_zoom)
 // FUNCTION: LEMBALL 0x004318a0
 void CMain2DDisplay::OnMove()
 {
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		m_drawer->OnMove(m_rect);
 	}
 }
@@ -196,9 +196,9 @@ void CMain2DDisplay::RefreshView()
 {
 	if (IsWindowValid() != 0) {
 		if (m_lifecycleRefs == 1) {
-			Refresh(0);
+			Refresh(NULL);
 		}
-		if (m_drawer != 0) {
+		if (m_drawer != NULL) {
 			((CDrawer*) m_drawer)->RefreshView();
 		}
 	}
@@ -207,7 +207,7 @@ void CMain2DDisplay::RefreshView()
 // FUNCTION: LEMBALL 0x00431940
 void CMain2DDisplay::Process()
 {
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		m_drawer->Process();
 	}
 }
@@ -216,12 +216,12 @@ void CMain2DDisplay::Process()
 void CMain2DDisplay::KillDrawer(eFlowProcesses p_flow)
 {
 	m_drawerClosing = 1;
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		((CDrawer*) m_drawer)->DestroyDrawer();
-		if (m_drawer != 0) {
+		if (m_drawer != NULL) {
 			delete (CDrawer*) m_drawer;
 		}
-		m_drawer = 0;
+		m_drawer = NULL;
 	}
 }
 
@@ -250,8 +250,8 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 	switch (p_flow) {
 	case FLOW_INTRO_ANIM:
 		storage = operator new(sizeof(CIntroAnimDrawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		variant = 0;
@@ -259,24 +259,24 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		break;
 	case FLOW_MAIN_OPTIONS_1:
 		storage = operator new(sizeof(CMainOptions1Drawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) CMainOptions1Drawer(this, m_gdi, localRect);
 		break;
 	case FLOW_MAIN_OPTIONS_2:
 		storage = operator new(sizeof(CMainOptions2Drawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) CMainOptions2Drawer(this, m_gdi, localRect);
 		break;
 	case FLOW_PREVIEW:
 		storage = operator new(sizeof(CPreviewDrawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) CPreviewDrawer(this, m_gdi, localRect);
@@ -289,8 +289,8 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		ai = (CAI*) m_game->m_process;
 		m_map = ai->m_map;
 		storage = operator new(sizeof(C2D));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) C2D(this, (CAI*) m_ai, m_gdi, (CMap*) m_map, localRect);
@@ -298,48 +298,48 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 	}
 	case FLOW_ABOUT:
 		storage = operator new(sizeof(CAboutScreen));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) CAboutScreen(this, m_gdi, localRect);
 		break;
 	case FLOW_NETWORK_OPTIONS:
 		storage = operator new(sizeof(CNetworkOptionsDrawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) CNetworkOptionsDrawer(this, m_gdi, localRect);
 		break;
 	case FLOW_SUCCESS:
 		storage = operator new(sizeof(CSuccFailDrawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) CSuccFailDrawer(this, m_gdi, localRect, 1);
 		break;
 	case FLOW_FAILURE:
 		storage = operator new(sizeof(CSuccFailDrawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) CSuccFailDrawer(this, m_gdi, localRect, 0);
 		break;
 	case FLOW_PASSWORD:
 		storage = operator new(sizeof(CPasswordDrawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		m_drawer = new (storage) CPasswordDrawer(this, m_gdi, localRect);
 		break;
 	case FLOW_LEVEL_INTRO:
 		storage = operator new(sizeof(CIntroAnimDrawer));
-		if (storage == 0) {
-			m_drawer = 0;
+		if (storage == NULL) {
+			m_drawer = NULL;
 			break;
 		}
 		variant = 1;
@@ -347,7 +347,7 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		break;
 	}
 
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		m_drawer->Initialise();
 		m_drawer->ResetPrimitives();
 	}
@@ -356,7 +356,7 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 // FUNCTION: LEMBALL 0x00431c90
 void CMain2DDisplay::ToggleResolution()
 {
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		((CDrawer*) m_drawer)->DestroyDrawer();
 	}
 	switch (g_pTargetGraphicsSystem->m_driverMode) {
@@ -421,7 +421,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 			ToggleResolution();
 			break;
 		case 6:
-			helpOk = WinHelpA((HWND) m_nativeWindow, 0, HELP_HELPONHELP, 0);
+			helpOk = WinHelpA((HWND) m_nativeWindow, NULL, HELP_HELPONHELP, 0);
 			if (helpOk == 0) {
 				*g_pErrorOutput << quitHelpError;
 			}
@@ -442,7 +442,7 @@ bool CMain2DDisplay::GetMenu(int& p_count, MenuList*** p_menu)
 // FUNCTION: LEMBALL 0x00431ed0
 void CMain2DDisplay::OnDriverChange()
 {
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		m_drawer->OnDriverChange();
 	}
 }
@@ -453,7 +453,7 @@ int CMain2DDisplay::QuitYet()
 	if (m_quitRequested != 0) {
 		return 2;
 	}
-	if (m_drawer != 0) {
+	if (m_drawer != NULL) {
 		return m_drawer->QuitYet();
 	}
 	return 0;
@@ -462,7 +462,7 @@ int CMain2DDisplay::QuitYet()
 // FUNCTION: LEMBALL 0x00431f10
 int CMain2DDisplay::GetReturnState()
 {
-	if (m_quitRequested == 0 && m_drawer != 0) {
+	if (m_quitRequested == 0 && m_drawer != NULL) {
 		return m_drawer->GetReturnState();
 	}
 	return 0;
@@ -537,26 +537,26 @@ typedef void* MenuListStorage[6];
 
 // GLOBAL: LEMBALL 0x0049e5f8
 MenuListStorage g_aFileMenuItems[3] = {
-	{g_szMenuFile, 0, 0, (void*) 1, 0, 0},
-	{g_szMenuExit, (void*) 40001, (void*) 1, (void*) 1, 0, 0},
-	{0, 0, 0, 0, 0, 0},
+	{g_szMenuFile, NULL, NULL, (void*) 1, NULL, NULL},
+	{g_szMenuExit, (void*) 40001, (void*) 1, (void*) 1, NULL, NULL},
+	{NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
 // GLOBAL: LEMBALL 0x0049e640
 MenuListStorage g_aOptionsMenuItems[3] = {
-	{g_szMenuOptions, 0, 0, (void*) 1, 0, 0},
-	{g_szMenuFullScreen, (void*) 40012, (void*) 5, (void*) 1, 0, 0},
-	{0, 0, 0, 0, 0, 0},
+	{g_szMenuOptions, NULL, NULL, (void*) 1, NULL, NULL},
+	{g_szMenuFullScreen, (void*) 40012, (void*) 5, (void*) 1, NULL, NULL},
+	{NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
 // GLOBAL: LEMBALL 0x0049e688
 MenuListStorage g_aHelpMenuItems[6] = {
-	{g_szMenuHelp, 0, 0, (void*) 1, 0, 0},
-	{g_szMenuContents, (void*) 40003, (void*) 2, (void*) 1, 0, 0},
-	{g_szMenuSearchTopic, (void*) 40016, (void*) 3, (void*) 1, 0, 0},
-	{g_szMenuHelpOnHelp, (void*) 40013, (void*) 6, (void*) 1, 0, 0},
-	{g_szMenuAbout, (void*) 40011, (void*) 4, (void*) 1, 0, 0},
-	{0, 0, 0, 0, 0, 0},
+	{g_szMenuHelp, NULL, NULL, (void*) 1, NULL, NULL},
+	{g_szMenuContents, (void*) 40003, (void*) 2, (void*) 1, NULL, NULL},
+	{g_szMenuSearchTopic, (void*) 40016, (void*) 3, (void*) 1, NULL, NULL},
+	{g_szMenuHelpOnHelp, (void*) 40013, (void*) 6, (void*) 1, NULL, NULL},
+	{g_szMenuAbout, (void*) 40011, (void*) 4, (void*) 1, NULL, NULL},
+	{NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
 // GLOBAL: LEMBALL 0x0049e718
@@ -564,5 +564,5 @@ MenuList* g_apMainDisplayMenus[4] = {
 	(MenuList*) g_aFileMenuItems,
 	(MenuList*) g_aOptionsMenuItems,
 	(MenuList*) g_aHelpMenuItems,
-	0,
+	NULL,
 };

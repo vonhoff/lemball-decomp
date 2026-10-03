@@ -11,7 +11,7 @@ DDSURFACEDESC* CDirectDrawSurface::RefreshDescription()
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Surface Get Description failed: "
 						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
-		return 0;
+		return NULL;
 	}
 	return &m_surfaceDescription;
 }
@@ -19,7 +19,7 @@ DDSURFACEDESC* CDirectDrawSurface::RefreshDescription()
 // FUNCTION: LEMBALL 0x00457360
 unsigned char* CDirectDrawSurface::GetBits()
 {
-	if (m_bits == 0) {
+	if (m_bits == NULL) {
 		Lock();
 		Unlock();
 	}
@@ -40,7 +40,7 @@ int CDirectDrawSurface::GetStride()
 bool CDirectDrawSurface::Lock()
 {
 	long result;
-	while ((result = m_surface->Lock(0, &m_surfaceDescription, 0, 0)) != 0) {
+	while ((result = m_surface->Lock(NULL, &m_surfaceDescription, 0, NULL)) != 0) {
 		if (result == (long) 0x887601c2) {
 			return false;
 		}

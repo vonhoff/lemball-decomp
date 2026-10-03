@@ -60,7 +60,7 @@ CLevelLoader::CLevelLoader(CAI* p_ai)
 {
 	m_ai = p_ai;
 	m_fallbackLevel = 0;
-	g_pLevelFileData = 0;
+	g_pLevelFileData = NULL;
 	g_pActiveLevelFile = (char*) m_ai->LevelName();
 }
 
@@ -68,7 +68,7 @@ CLevelLoader::CLevelLoader(CAI* p_ai)
 void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 {
 	bool endFound = false;
-	CResBIN* binResource = 0;
+	CResBIN* binResource = NULL;
 	tagLoadBlockHeader* header;
 	unsigned int dataSize;
 	unsigned int blockType;
@@ -92,7 +92,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 		LocateStartOfLevelFile();
 	}
 
-	header = GetNextBlockHeader(0);
+	header = GetNextBlockHeader(NULL);
 	do {
 		dataSize = header->m_size;
 		blockType = header->m_type;
@@ -232,7 +232,7 @@ bool CLevelLoader::LocateStartOfLevelFile()
 	unsigned int size;
 
 	file = vsOpen(g_pActiveLevelFile, g_szReadBinaryMode);
-	if (file != 0) {
+	if (file != NULL) {
 		size = vsSeek(file, 0, 2);
 		vsSeek(file, 0, 0);
 		g_pLevelFileData = operator new(size);
@@ -240,7 +240,7 @@ bool CLevelLoader::LocateStartOfLevelFile()
 		vsClose(file);
 		return true;
 	}
-	MessageBoxA(0, g_szOkSmartarse, g_szYouStupidStupidMan, 0);
+	MessageBoxA(NULL, g_szOkSmartarse, g_szYouStupidStupidMan, 0);
 	return false;
 }
 
@@ -249,7 +249,7 @@ tagLoadBlockHeader* CLevelLoader::GetNextBlockHeader(tagLoadBlockHeader* p_heade
 {
 	unsigned int size;
 
-	if (p_header == 0) {
+	if (p_header == NULL) {
 		return (tagLoadBlockHeader*) g_pLevelFileData;
 	}
 	size = p_header->m_size;
@@ -265,7 +265,7 @@ tagLoadBlockHeader* CLevelLoader::GetNextBlockHeader(tagLoadBlockHeader* p_heade
 void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData* p_preview)
 {
 	bool endFound = false;
-	CResBIN* binResource = 0;
+	CResBIN* binResource = NULL;
 	tagLoadBlockHeader* header;
 	unsigned short* data16;
 	unsigned int dataSize;
@@ -290,7 +290,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 		LocateStartOfLevelFile();
 	}
 
-	header = GetNextBlockHeader(0);
+	header = GetNextBlockHeader(NULL);
 	do {
 		dataSize = header->m_size - sizeof(*header);
 		data16 = (unsigned short*) (header + 1);
@@ -347,7 +347,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 				total += (unsigned int) *data16++;
 				count--;
 			}
-			if (g_pActiveConnection == 0) {
+			if (g_pActiveConnection == NULL) {
 				p_preview->m_opponentLemmingCount = total;
 			}
 			else if (g_pActiveConnection->m_isHost == 1) {
@@ -370,7 +370,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 				total += (unsigned int) *data16++;
 				count--;
 			}
-			if (g_pActiveConnection == 0) {
+			if (g_pActiveConnection == NULL) {
 				p_preview->m_lemmingCount = total;
 			}
 			else {
@@ -453,7 +453,7 @@ int g_nPlayLevelMode = 0;
 char g_szCommandLineLevelFile[232] = {0};
 
 // GLOBAL: LEMBALL 0x004a63fc
-char* g_pActiveLevelFile = 0;
+char* g_pActiveLevelFile = NULL;
 
 // GLOBAL: LEMBALL 0x004a6400
 void* g_pLevelFileData;

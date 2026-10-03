@@ -5,13 +5,15 @@
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Graphics/CBaseCursor.h"
 
+#include <stddef.h>
+
 extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void* p_instance, const char* p_name);
 extern "C" __declspec(dllimport) int __stdcall GetCursorPos(void* p_point);
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* p_cursor);
 extern "C" __declspec(dllimport) int __stdcall ShowCursor(int p_show);
 
 // GLOBAL: LEMBALL 0x004a9bf4
-CCursor* g_pCursor = 0;
+CCursor* g_pCursor = NULL;
 
 // GLOBAL: LEMBALL 0x0049ee10
 unsigned int g_cursorResourceIds[4] = {0, RES_CURSORS_HAND, RES_CURSORS_PAW_CURSOR, 0};
@@ -33,7 +35,7 @@ void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType]);
 		break;
 	case CURSOR_DISPLAY_HAND:
-		if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+		if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
 			p_frame = 0;
 		}
 		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType], p_frame);
@@ -64,8 +66,8 @@ void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 // FUNCTION: LEMBALL 0x00474b50
 void CCursor::InitialiseSystemCursor()
 {
-	m_systemCursor = 0;
-	m_systemCursor = LoadCursorA(0, (char*) 0x7f00);
+	m_systemCursor = NULL;
+	m_systemCursor = LoadCursorA(NULL, (char*) 0x7f00);
 	RefreshPos();
 }
 
@@ -94,7 +96,7 @@ CCursor::~CCursor()
 // FUNCTION: LEMBALL 0x00474be0
 void CCursor::KillSystemCursor()
 {
-	SetCursor(0);
+	SetCursor(NULL);
 	ShowCursor(0);
 	m_systemCursorVisible = 0;
 }

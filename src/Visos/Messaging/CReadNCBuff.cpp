@@ -5,6 +5,8 @@
 #include "CReadPacket.h"
 #include "Visos/Messaging/CReadPacketBuff.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00461560
 CReadNCBuff::CReadNCBuff(unsigned long p_lastMessageId, unsigned short p_packetSize)
 	: CReadPacketBuff(p_lastMessageId - 2, p_packetSize)
@@ -34,7 +36,7 @@ CReadPacket* CReadNCBuff::UpdatePacket()
 	if (isNew) {
 		return (CReadPacket*) m_packets[index];
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x004615f0

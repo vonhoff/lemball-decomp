@@ -21,4 +21,4 @@ void CMessFAILEDConnect::AddData()
 }
 
 // GLOBAL: LEMBALL 0x004a1e60
-CMessFAILEDConnect* g_pMessFAILEDConnect = 0;
+CMessFAILEDConnect* g_pMessFAILEDConnect = NULL;

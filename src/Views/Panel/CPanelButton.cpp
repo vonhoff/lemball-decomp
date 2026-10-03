@@ -48,20 +48,20 @@ void CPanelButton::OnInside(const CVSPoint& p_point)
 void CPanelButton::DrawButton()
 {
 	CBaseRemap* playerRemap;
-	CBaseRemap* balloonRemap = 0;
+	CBaseRemap* balloonRemap = NULL;
 	CPanelLemming* lemming = m_lemming;
 	if ((int) lemming->m_playerIndex < 4) {
 		playerRemap = lemming->m_panel->m_game->m_remaps[lemming->m_playerIndex];
 	}
 	else {
-		playerRemap = 0;
+		playerRemap = NULL;
 	}
 	if (lemming->m_balloonType != -1) {
 		if ((int) lemming->m_balloonType < 4) {
 			balloonRemap = lemming->m_panel->m_game->m_remaps[lemming->m_balloonType];
 		}
 		else {
-			balloonRemap = 0;
+			balloonRemap = NULL;
 		}
 	}
 	unsigned int frame;
@@ -128,7 +128,7 @@ void CPanelButton::DrawButton()
 		inventoryPosition.m_y++;
 	}
 	unsigned int mappedColour;
-	if (playerRemap != 0) {
+	if (playerRemap != NULL) {
 		mappedColour = playerRemap->m_remap[colour];
 	}
 	else {
@@ -147,9 +147,9 @@ void CPanelButton::DrawButton()
 				remap = m_lemming->m_panel->m_game->m_remaps[type];
 			}
 			else {
-				remap = 0;
+				remap = NULL;
 			}
-			if (remap == 0) {
+			if (remap == NULL) {
 				mappedColour = colour;
 			}
 			else {
@@ -278,7 +278,7 @@ alternate:
 	group = m_lemming->m_lemming->GetGroup();
 	controlledGroup = groupManager->GetPlayerControlledGroup();
 	if (group != controlledGroup) {
-		groupManager->GetPlayerControlledGroup()->SetPlayerControlled(0, 0);
+		groupManager->GetPlayerControlledGroup()->SetPlayerControlled(0, NULL);
 	}
 	m_lemming->m_lemming->GetGroup()->SetPlayerControlled(1, m_lemming->m_lemming);
 

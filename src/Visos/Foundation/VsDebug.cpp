@@ -123,6 +123,6 @@ void FatalWin32Error(char* p_context)
 		CDebugOStream stream(buffer, sizeof(buffer));
 		stream << p_context << '\n' << " GetLastError()=" << (long) error << ", " << Hex8(error);
 	}
-	MessageBoxA(0, buffer, "FATAL ERROR", 0);
+	MessageBoxA(NULL, buffer, "FATAL ERROR", 0);
 	ExitProcess(0xaaaa);
 }

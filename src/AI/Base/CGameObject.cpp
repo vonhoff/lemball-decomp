@@ -272,7 +272,7 @@ int CGameObject::OnConveyor()
 // FUNCTION: LEMBALL 0x0040ab40
 CIce* CGameObject::Conveyor()
 {
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0040ab50
@@ -320,21 +320,21 @@ CGameObject::CGameObject(eObjectType p_objectType,
 	m_objectType = p_objectType;
 	m_collisionFlags = p_collisionFlags;
 	CAiDestinationList* list;
-	if (p_destinationCapacity != 0 && (list = new CAiDestinationList) != 0) {
+	if (p_destinationCapacity != 0 && (list = new CAiDestinationList) != NULL) {
 		list->m_count = 0;
 		list->m_capacity = p_destinationCapacity;
 		list->m_entries = new CAiDestinationEntry[p_destinationCapacity];
 		m_destinationList = list;
 	}
 	else {
-		m_destinationList = 0;
+		m_destinationList = NULL;
 	}
 	m_linkedObjectId = INVALID_OBJECT_ID;
 	found = false;
 	i = 0;
 	if (0 < g_wObjectCount) {
 		do {
-			if (g_pObjects[i] == 0) {
+			if (g_pObjects[i] == NULL) {
 				m_objectId = (unsigned short) i;
 				found = true;
 				break;
@@ -364,7 +364,7 @@ void CGameObject::Restart()
 	m_liftId = 0xffff;
 	m_position.m_yFixed = 0;
 	m_position.m_xFixed = 0;
-	if (m_destinationList != 0) {
+	if (m_destinationList != NULL) {
 		m_destinationList->m_count = 0;
 	}
 	switch (m_objectType) {
@@ -381,9 +381,9 @@ void CGameObject::Restart()
 CGameObject::~CGameObject()
 {
 	ReSetId();
-	g_pObjects[m_objectId] = 0;
+	g_pObjects[m_objectId] = NULL;
 	CAiDestinationList* destinationList = m_destinationList;
-	if (destinationList != 0) {
+	if (destinationList != NULL) {
 		operator delete(destinationList->m_entries);
 		operator delete(destinationList);
 	}
@@ -430,7 +430,7 @@ void CGameObject::StartFly(C3DVector& p_velocity, C3DVector* p_origin)
 	m_isFalling = 0;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
-	if (p_origin != 0) {
+	if (p_origin != NULL) {
 		int x = p_origin->m_xFixed;
 		m_flightOrigin.m_xFixed = x;
 		int y = p_origin->m_yFixed;
@@ -474,7 +474,7 @@ void CGameObject::Fly()
 		if (m_flightVelocity.m_zFixed < -0xa000) {
 			m_flightVelocity.m_zFixed = -0xa000;
 		}
-		CMover* mover = 0;
+		CMover* mover = NULL;
 		int groundZ = g_pMap->GetZ(x >> 12, y >> 12, &mover);
 		int flightZ = z >> 12;
 		if (flightZ <= groundZ) {
@@ -509,7 +509,7 @@ void CGameObject::Fly()
 				else {
 					m_isFlying = 1;
 				}
-				if (m_onMover == 0 && mover != 0) {
+				if (m_onMover == 0 && mover != NULL) {
 					mover->GetOn(this);
 				}
 			}
@@ -549,11 +549,11 @@ void CGameObject::RotateAnticlockwise()
 // FUNCTION: LEMBALL 0x00415580
 void CGameObject::StartMoving()
 {
-	if (m_destinationList != 0) {
-		CMover* mover = 0;
+	if (m_destinationList != NULL) {
+		CMover* mover = NULL;
 		int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
 		int objectZ = m_position.m_zFixed >> 12;
-		if (m_onMover == 0 && mover != 0) {
+		if (m_onMover == 0 && mover != NULL) {
 			mover->GetOn(this);
 		}
 		if (objectZ == groundZ) {
@@ -732,9 +732,9 @@ bool CGameObject::Move()
 	int height;
 	unsigned short currentGroundZ;
 	{
-		CMover* mover = 0;
+		CMover* mover = NULL;
 		height = map->GetZ(x, y, &mover);
-		if (m_onMover == 0 && mover != 0) {
+		if (m_onMover == 0 && mover != NULL) {
 			mover->GetOn(this);
 		}
 		if ((MapCheck(x, y) & 1) != 0) {
@@ -871,7 +871,7 @@ void CGameObject::DeleteFirstEntryFromDestinationList()
 void CGameObject::AddDestination(const AICOORD& p_destination)
 {
 	CAiDestinationList* list = m_destinationList;
-	if (list != 0 && list->m_count < list->m_capacity) {
+	if (list != NULL && list->m_count < list->m_capacity) {
 		unsigned short count = list->m_count;
 		list->m_count = count + 1;
 		CAiDestinationEntry* entry = &list->m_entries[count];
@@ -955,7 +955,7 @@ void CGameObject::GetBoundingBox(CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x00416130
 void CGameObject::Jump()
 {
-	CMover* mover = 0;
+	CMover* mover = NULL;
 	unsigned int actionArgumentValue = (unsigned short) m_actionArgument;
 	const unsigned int& actionArgument = actionArgumentValue;
 	if (actionArgument != 0) {
@@ -974,7 +974,7 @@ void CGameObject::Jump()
 		m_position = m_groundPosition;
 		m_position.m_zFixed = groundZ;
 		m_isJumping = 0;
-		if (m_onMover == 0 && mover != 0) {
+		if (m_onMover == 0 && mover != NULL) {
 			if (!mover->GetOn(this)) {
 				g_pAI->StepOn(*position, this, m_collisionFlags);
 			}
@@ -988,7 +988,7 @@ void CGameObject::Jump()
 // FUNCTION: LEMBALL 0x00416220
 bool CGameObject::Fall()
 {
-	CMover* mover = 0;
+	CMover* mover = NULL;
 	unsigned int actionArgument = (unsigned short) m_actionArgument;
 	if (actionArgument != 0) {
 		return (bool) actionArgument;
@@ -1028,7 +1028,7 @@ bool CGameObject::Fall()
 			m_flightVelocity.m_yFixed = 0;
 			m_flightVelocity.m_zFixed = 0;
 			m_isFalling = 0;
-			if (m_onMover == 0 && mover != 0 && mover->GetOn(this)) {
+			if (m_onMover == 0 && mover != NULL && mover->GetOn(this)) {
 				ResetInstructions();
 			}
 		}
@@ -1157,7 +1157,7 @@ selectable:
 // FUNCTION: LEMBALL 0x00416590
 void CGameObject::ResetInstructions()
 {
-	if (m_action != ACTION_FLYING && m_action != ACTION_WAITING_TO_SPAWN && m_destinationList != 0) {
+	if (m_action != ACTION_FLYING && m_action != ACTION_WAITING_TO_SPAWN && m_destinationList != NULL) {
 		if (IsSelectable()) {
 			m_actionDeadline = g_dwGameTick;
 		}
@@ -1251,7 +1251,7 @@ void CGameObject::RegisterId()
 		if ((mask & bitmapByte) != 0) {
 			unsigned int objectCount = g_wObjectCount;
 			for (unsigned int objectIndex = 0; (int) objectIndex < (int) objectCount; objectIndex++) {
-				if (g_pObjects[(unsigned short) objectIndex] != 0) {
+				if (g_pObjects[(unsigned short) objectIndex] != NULL) {
 					g_pObjects[(unsigned short) objectIndex]->GetId();
 				}
 			}

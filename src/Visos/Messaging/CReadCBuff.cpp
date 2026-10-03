@@ -5,6 +5,8 @@
 #include "CReadPacket.h"
 #include "Visos/Messaging/CReadPacketBuff.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00461780
 CReadCBuff::CReadCBuff(int p_packetCount, unsigned short p_packetSize) : CReadPacketBuff(p_packetCount, p_packetSize)
 {
@@ -27,11 +29,11 @@ CReadPacket* CReadCBuff::StorePacket()
 			return packet;
 		}
 		packet->m_ready = 0;
-		return 0;
+		return NULL;
 	}
 
 	m_outOfOrder = 1;
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x00461810
@@ -45,5 +47,5 @@ CReadPacket* CReadCBuff::NextPacketReady()
 		packet->m_ready = 1;
 		return packet;
 	}
-	return 0;
+	return NULL;
 }

@@ -8,6 +8,8 @@
 #include "CBaseFrontendDrawer.h"
 #include "Visos/Foundation/Message.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00407f20
 void CBaseFrontendProcess::Processing()
 {
@@ -22,11 +24,11 @@ bool CBaseFrontendProcess::ProcessMessages(Message* p_message)
 // FUNCTION: LEMBALL 0x004467d0
 CBaseFrontendProcess::~CBaseFrontendProcess()
 {
-	g_pCurrentFrontendProcess = 0;
-	if (g_pBaseNetwork != 0) {
+	g_pCurrentFrontendProcess = NULL;
+	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->DetachMessageQueue();
 	}
-	if (m_userActionMessage != 0) {
+	if (m_userActionMessage != NULL) {
 		delete (CUserActionMessage*) m_userActionMessage;
 	}
 }
@@ -34,7 +36,7 @@ CBaseFrontendProcess::~CBaseFrontendProcess()
 // FUNCTION: LEMBALL 0x00446830
 void CBaseFrontendProcess::Process()
 {
-	if (m_networkWasActive != 0 && g_pActiveConnection == 0) {
+	if (m_networkWasActive != 0 && g_pActiveConnection == NULL) {
 		g_pBaseFrontendDrawer->LostConnection();
 	}
 	Processing();
@@ -68,7 +70,7 @@ bool CBaseFrontendProcess::ReceiveCritical(unsigned long p_id, CReadPacket* p_pa
 }
 
 // GLOBAL: LEMBALL 0x0049f140
-CBaseFrontendProcess* g_pCurrentFrontendProcess = 0;
+CBaseFrontendProcess* g_pCurrentFrontendProcess = NULL;
 
 // GLOBAL: LEMBALL 0x0049ca30
 int g_nTestAllLevels = 0;

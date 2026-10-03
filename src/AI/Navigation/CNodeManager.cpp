@@ -3,10 +3,12 @@
 #include "AI/Base/CPt3.h"
 #include "CNode.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00421180
 CNodeManager::CNodeManager(int p_capacity)
 {
-	m_nodes = 0;
+	m_nodes = NULL;
 	m_capacity = p_capacity;
 }
 
@@ -14,7 +16,7 @@ CNodeManager::CNodeManager(int p_capacity)
 void CNodeManager::Restart()
 {
 	int i = 0;
-	if (m_nodes != 0 && i < m_capacity) {
+	if (m_nodes != NULL && i < m_capacity) {
 		do {
 			m_nodes[i].Restart();
 			i++;
@@ -27,10 +29,10 @@ void CNodeManager::Initialise(int p_count)
 {
 	m_count = 0;
 	if (p_count == 0) {
-		m_nodes = 0;
+		m_nodes = NULL;
 		return;
 	}
-	if (m_nodes == 0) {
+	if (m_nodes == NULL) {
 		m_nodes = new CNode[m_capacity];
 
 		int i = 0;
@@ -46,7 +48,7 @@ void CNodeManager::Initialise(int p_count)
 // FUNCTION: LEMBALL 0x00421260
 CNodeManager::~CNodeManager()
 {
-	if (m_nodes != 0) {
+	if (m_nodes != NULL) {
 		delete[] m_nodes;
 	}
 }

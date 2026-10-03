@@ -95,13 +95,13 @@ void CCursorMotion::Draw(unsigned int p_unused)
 {
 	int x = (m_fixedX >> 12) - m_drawOffsetX;
 	int y = (m_fixedY >> 12) - m_drawOffsetY;
-	m_anims->DrawAnim((short) x, (short) y, RES_CURSORS_HAND, 0, 0, 0);
+	m_anims->DrawAnim((short) x, (short) y, RES_CURSORS_HAND, 0, 0, NULL);
 }
 
 // FUNCTION: LEMBALL 0x004327e0
 void CCursorMotion::DrawAt(unsigned int p_unused, const CVSPoint& p_position)
 {
-	m_anims->DrawAnim(p_position.m_x, p_position.m_y, RES_CURSORS_HAND, 0, 0, 0);
+	m_anims->DrawAnim(p_position.m_x, p_position.m_y, RES_CURSORS_HAND, 0, 0, NULL);
 }
 
 // FUNCTION: LEMBALL 0x00432810

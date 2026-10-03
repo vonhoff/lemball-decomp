@@ -118,19 +118,19 @@ CGame::CGame(char* p_runtimeFileName)
 	void* storage;
 	char titleBuf[80];
 
-	m_frontendResources = 0;
-	g_pGameStatus = 0;
-	m_mainDisplay = 0;
-	g_pMogRes = 0;
-	g_pSoundView = 0;
+	m_frontendResources = NULL;
+	g_pGameStatus = NULL;
+	m_mainDisplay = NULL;
+	g_pMogRes = NULL;
+	g_pSoundView = NULL;
 	m_quit = 1;
-	m_process = 0;
+	m_process = NULL;
 
 	if (g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintball, 1) == 0) {
 #if !LEMBALL_ENFORCE_STARTUP_CHECKS
 		if (0) {
 #endif
-			MessageBoxA(0, g_szInstallPrompt, g_szPaintballNotInstalled, 0);
+			MessageBoxA(NULL, g_szInstallPrompt, g_szPaintballNotInstalled, 0);
 			return;
 #if !LEMBALL_ENFORCE_STARTUP_CHECKS
 		}
@@ -139,8 +139,8 @@ CGame::CGame(char* p_runtimeFileName)
 
 #if LEMBALL_ENFORCE_STARTUP_CHECKS
 	int cdResponse = 0;
-	while (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) == 0) {
-		cdResponse = MessageBoxA(0, g_szInsertCdPrompt, g_szUnableToFindCd, 1);
+	while (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) == NULL) {
+		cdResponse = MessageBoxA(NULL, g_szInsertCdPrompt, g_szUnableToFindCd, 1);
 		if (cdResponse != 1) {
 			break;
 		}
@@ -163,11 +163,11 @@ CGame::CGame(char* p_runtimeFileName)
 	g_pStatManager->Register(refreshingStat);
 
 	storage = CMogloadArena::operator new(0x28);
-	if (storage != 0) {
+	if (storage != NULL) {
 		g_pMogRes = new (storage) CMogRes(g_szPbaimogVsr, 0x177000);
 	}
 	else {
-		g_pMogRes = 0;
+		g_pMogRes = NULL;
 	}
 
 	if (IsValidResource() == 0) {
@@ -179,7 +179,7 @@ CGame::CGame(char* p_runtimeFileName)
 	CDebugOStream stream(titleBuf, 80);
 	stream << g_szLemmingsPaintballTitle;
 
-	m_mainDisplay->Create(m_mainDisplay->GetUseRect(-1, -1), 0, titleBuf);
+	m_mainDisplay->Create(m_mainDisplay->GetUseRect(-1, -1), NULL, titleBuf);
 
 	InitSound(g_nMusicVolume, g_nEffectsVolume, 0x32, m_mainDisplay, 0);
 	if (g_nMusicVolume != 0) {
@@ -189,12 +189,12 @@ CGame::CGame(char* p_runtimeFileName)
 
 	g_pSoundView = new CSoundView();
 
-	m_process = 0;
+	m_process = NULL;
 	m_currentFlow = FLOW_INTRO_ANIM;
 	NextProcess(FLOW_INTRO_ANIM);
 
 	strcpy(m_runtimeName, g_szDefaultRuntimeDir);
-	if (p_runtimeFileName == 0) {
+	if (p_runtimeFileName == NULL) {
 		strcat(m_runtimeName, g_szDefaultRuntimeFile);
 	}
 	else {
@@ -214,14 +214,14 @@ CGame::~CGame()
 	unsigned long now;
 
 	resources = (CFrontendResourceLoader*) m_frontendResources;
-	if (resources != 0) {
+	if (resources != NULL) {
 		resources->~CFrontendResourceLoader();
 		operator delete(resources);
 	}
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		g_pNetworkManager->Stop();
 	}
-	if (g_pBaseNetwork != 0) {
+	if (g_pBaseNetwork != NULL) {
 		started = CurrentMilliTimer();
 		do {
 			now = CurrentMilliTimer();
@@ -230,34 +230,34 @@ CGame::~CGame()
 			}
 		} while (g_pBaseNetwork->m_queueTransitionPending != 0);
 	}
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		delete g_pNetworkManager;
-		g_pNetworkManager = 0;
+		g_pNetworkManager = NULL;
 	}
-	if (m_mainDisplay != 0) {
+	if (m_mainDisplay != NULL) {
 		m_mainDisplay->Destroy();
-		if (m_mainDisplay != 0) {
+		if (m_mainDisplay != NULL) {
 			delete m_mainDisplay;
 		}
 	}
-	if (m_process != 0) {
+	if (m_process != NULL) {
 		delete m_process;
 	}
-	if (g_pSoundView != 0) {
+	if (g_pSoundView != NULL) {
 		soundView = g_pSoundView;
 		soundView->~CSoundView();
 		operator delete(soundView);
 		EndSound();
 	}
-	if (g_pMogRes != 0) {
+	if (g_pMogRes != NULL) {
 		mogRes = g_pMogRes;
 		mogRes->~CMogRes();
 		CMogloadArena::operator delete(mogRes);
-		g_pMogRes = 0;
+		g_pMogRes = NULL;
 	}
-	if (g_pGameStatus != 0) {
+	if (g_pGameStatus != NULL) {
 		operator delete(g_pGameStatus);
-		g_pGameStatus = 0;
+		g_pGameStatus = NULL;
 	}
 	g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintballRegistry, 0);
 }
@@ -273,7 +273,7 @@ bool CGame::IsValidResource()
 
 	key = g_szWeatherManKey;
 	resource = CResSTRING::Load(RES_REGISTRATION_FINGERPRINT);
-	if (resource == 0) {
+	if (resource == NULL) {
 		return false;
 	}
 	if (resource->m_loaded != 0) {
@@ -303,13 +303,13 @@ void CGame::LoadFrontendResources(int p_mode)
 {
 	void* storage;
 
-	if (m_frontendResources == 0) {
+	if (m_frontendResources == NULL) {
 		storage = operator new(0x58);
-		if (storage != 0) {
+		if (storage != NULL) {
 			m_frontendResources = new (storage) CFrontendResourceLoader(m_mainDisplay, p_mode);
 		}
 		else {
-			m_frontendResources = 0;
+			m_frontendResources = NULL;
 		}
 	}
 }
@@ -317,9 +317,9 @@ void CGame::LoadFrontendResources(int p_mode)
 // FUNCTION: LEMBALL 0x004073f0
 void CGame::UnLoadFrontendResources()
 {
-	if (m_frontendResources != 0) {
+	if (m_frontendResources != NULL) {
 		delete (CFrontendResourceLoader*) m_frontendResources;
-		m_frontendResources = 0;
+		m_frontendResources = NULL;
 	}
 }
 
@@ -327,12 +327,12 @@ void CGame::UnLoadFrontendResources()
 void CGame::NextProcess(eFlowProcesses p_flow)
 {
 
-	if (m_mainDisplay->m_drawer != 0) {
+	if (m_mainDisplay->m_drawer != NULL) {
 		m_mainDisplay->m_drawer->ShutDown();
 	}
-	if (m_process != 0) {
+	if (m_process != NULL) {
 		delete m_process;
-		m_process = 0;
+		m_process = NULL;
 	}
 
 	if (p_flow == FLOW_INTRO_ANIM && g_nAnimationsDisabled == 1) {
@@ -374,7 +374,7 @@ void CGame::NextProcess(eFlowProcesses p_flow)
 			g_pDemo->m_filePath = g_szDemoFilePath;
 		}
 		else {
-			g_pDemo->m_filePath = 0;
+			g_pDemo->m_filePath = NULL;
 		}
 		g_nDemoMode = 1;
 	case FLOW_GAMEPLAY:
@@ -436,7 +436,7 @@ void CGame::Process()
 	int quitState;
 
 	m_mainDisplay->Process();
-	if (m_process != 0) {
+	if (m_process != NULL) {
 		timing = 0;
 		if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) && 0x32 < (int) m_flowTicks) {
 			timing = 1;
@@ -453,7 +453,7 @@ void CGame::Process()
 				stat->m_timingActive = 0;
 			}
 		}
-		if (g_pNetworkManager != 0) {
+		if (g_pNetworkManager != NULL) {
 			g_pNetworkManager->GameProcess();
 		}
 		switch (m_process->m_processState) {
@@ -477,12 +477,12 @@ void CGame::Process()
 	}
 
 	if (m_quit != 0) {
-		if (m_mainDisplay->m_drawer != 0) {
+		if (m_mainDisplay->m_drawer != NULL) {
 			m_mainDisplay->m_drawer->ShutDown();
 		}
-		if (m_process != 0) {
+		if (m_process != NULL) {
 			delete m_process;
-			m_process = 0;
+			m_process = NULL;
 		}
 		m_mainDisplay->KillDrawer(FLOW_NONE);
 	}
@@ -517,7 +517,7 @@ void CGame::RefreshViews()
 // FUNCTION: LEMBALL 0x00407950
 void CGame::Run()
 {
-	if (g_pDemo != 0 && g_nDemoMode == 0) {
+	if (g_pDemo != NULL && g_nDemoMode == 0) {
 		CDemo* demo = g_pDemo;
 		demo->m_currentResourceId = RES_DEMOS_DEMO_00;
 		demo->m_firstResourceId = RES_DEMOS_DEMO_00;
@@ -528,7 +528,7 @@ void CGame::Run()
 		if (m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) {
 			m_flowTicks = m_flowTicks + 1;
 		}
-		if (g_pDemo != 0) {
+		if (g_pDemo != NULL) {
 			g_pDemo->Process();
 		}
 		switch (PumpEvents()) {
@@ -554,7 +554,7 @@ void CGame::StreamRuntimeStats()
 }
 
 // GLOBAL: LEMBALL 0x004a1bcc
-int* g_pRandomSeed = 0;
+int* g_pRandomSeed = NULL;
 
 // GLOBAL: LEMBALL 0x0049ce04
 unsigned int g_dwGameTick = 0;

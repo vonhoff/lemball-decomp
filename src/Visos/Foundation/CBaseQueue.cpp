@@ -3,6 +3,8 @@
 #include "CBaseQueueHandler.h"
 #include "Visos/Foundation/Message.h"
 
+#include <stddef.h>
+
 struct QueueHandlerNode {
 	CBaseQueueHandler* m_handler;
 	int m_priority;
@@ -27,7 +29,7 @@ CBaseQueue::CBaseQueue(unsigned int p_capacity)
 	m_sendCount = 0;
 	m_unhandledCount = 0;
 	m_nextSequence = 0;
-	m_handlerList = 0;
+	m_handlerList = NULL;
 }
 
 // FUNCTION: LEMBALL 0x004630a0
@@ -49,7 +51,7 @@ CBaseQueue::CBaseQueue(unsigned int p_capacity, char* p_name)
 	m_sendCount = 0;
 	m_unhandledCount = 0;
 	m_nextSequence = 0;
-	m_handlerList = 0;
+	m_handlerList = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00463120
@@ -141,9 +143,9 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 	current = m_handlerList;
 	node->m_handler = p_handler;
 	node->m_priority = p_priority;
-	if (m_handlerList == 0) {
+	if (m_handlerList == NULL) {
 		m_handlerList = node;
-		node->m_next = 0;
+		node->m_next = NULL;
 		m_handlerCount = 1;
 		LeaveCritical();
 		return true;
@@ -174,8 +176,8 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 			}
 			previous = current;
 			current = current->m_next;
-			if (current == 0) {
-				node->m_next = 0;
+			if (current == NULL) {
+				node->m_next = NULL;
 				previous->m_next = node;
 				m_handlerCount = m_handlerCount + 1;
 				LeaveCritical();

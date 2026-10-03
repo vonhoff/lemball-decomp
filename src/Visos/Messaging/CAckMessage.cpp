@@ -1,5 +1,7 @@
 #include "CAckMessage.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00462b40
 void CAckMessage::AddData()
 {
@@ -15,4 +17,4 @@ void CAckMessage::GetData()
 }
 
 // GLOBAL: LEMBALL 0x004a1e14
-CAckMessage* g_pAckMessage = 0;
+CAckMessage* g_pAckMessage = NULL;

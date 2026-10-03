@@ -4,12 +4,14 @@
 #include "CMogRes.h"
 #include "ResourceTypeList.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045d7b0
 CResFONT::CResFONT(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g_pResourceTypes)
 {
-	m_animationEntries = 0;
-	m_fontEntries = 0;
-	m_fontTable = 0;
+	m_animationEntries = NULL;
+	m_fontEntries = NULL;
+	m_fontTable = NULL;
 	DoLoad(p_resourceId);
 	m_initialised = 1;
 }
@@ -17,13 +19,13 @@ CResFONT::CResFONT(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g
 // FUNCTION: LEMBALL 0x0045d810
 CResFONT::~CResFONT()
 {
-	if (m_animationEntries != 0) {
+	if (m_animationEntries != NULL) {
 		delete[] m_animationEntries;
 	}
-	if (m_fontEntries != 0) {
+	if (m_fontEntries != NULL) {
 		delete[] m_fontEntries;
 	}
-	if (m_fontTable != 0) {
+	if (m_fontTable != NULL) {
 		delete m_fontTable;
 	}
 }
@@ -32,12 +34,12 @@ CResFONT::~CResFONT()
 CResFONT* CResFONT::Load(unsigned int p_resourceId)
 {
 	CResFONT* res = (CResFONT*) g_pActiveMogRes->Find(p_resourceId);
-	if (res == 0) {
+	if (res == NULL) {
 		return (CResFONT*) (new CResFONT(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x4c495354) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }
@@ -111,7 +113,7 @@ bool CResFONT::ForceLoadVram(unsigned int p_index)
 // FUNCTION: LEMBALL 0x0045daf0
 void CResFONT::OnLoad()
 {
-	if (m_fontTable == 0) {
+	if (m_fontTable == NULL) {
 		m_fontTable = new CFontTable(this);
 	}
 }

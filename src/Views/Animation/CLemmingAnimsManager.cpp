@@ -18,6 +18,8 @@
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Resources/ResourceLimits.h"
 
+#include <stddef.h>
+
 class CLoadUpdate;
 
 // GLOBAL: LEMBALL 0x00496f78
@@ -27,7 +29,7 @@ const unsigned int g_style1ObjectClip[4] = {34, 96, 68, 96};
 // GLOBAL: LEMBALL 0x00496f98
 const unsigned int g_style2ObjectClip[4] = {34, 96, 68, 96};
 // GLOBAL: LEMBALL 0x0049e8b4
-const unsigned int* g_styleObjectClip = 0;
+const unsigned int* g_styleObjectClip = NULL;
 
 // GLOBAL: LEMBALL 0x004a7850
 unsigned int g_groundBlox1ResourceId;
@@ -54,7 +56,7 @@ CLemmingAnimsManager::CLemmingAnimsManager(CGDI* p_gdi, CMain2DDisplay* p_displa
 	m_animFrames = (CAnimFrameBASE**) operator new(RESOURCE_ID_COUNT * sizeof(*m_animFrames));
 	m_drawFlags = 0;
 	for (int i = 0; i < RESOURCE_ID_COUNT; i++) {
-		m_animFrames[i] = 0;
+		m_animFrames[i] = NULL;
 	}
 	m_loaded = 0;
 	m_loadAnim = new CCDLoadAnim(m_gdi, m_display);
@@ -65,13 +67,13 @@ CLemmingAnimsManager::CLemmingAnimsManager(CGDI* p_gdi, CMain2DDisplay* p_displa
 // FUNCTION: LEMBALL 0x00432c20
 CLemmingAnimsManager::~CLemmingAnimsManager()
 {
-	if (m_loadAnim != 0) {
+	if (m_loadAnim != NULL) {
 		delete m_loadAnim;
-		m_loadAnim = 0;
+		m_loadAnim = NULL;
 	}
 
 	Unload();
-	if (m_animFrames != 0) {
+	if (m_animFrames != NULL) {
 		operator delete(m_animFrames);
 	}
 }
@@ -278,9 +280,9 @@ void CLemmingAnimsManager::LoadVrammed()
 	LoadAnimation(RES_GAME_BUTPAWS, 2);
 	if (m_countingLoads == 0) {
 		CResFONT** fontResources = m_interfaceFonts;
-		fontResources[0] = 0;
-		fontResources[1] = 0;
-		fontResources[2] = 0;
+		fontResources[0] = NULL;
+		fontResources[1] = NULL;
+		fontResources[2] = NULL;
 		LoadAnims(RES_BORDERS_LORES_BORDERCORNERS);
 		LoadAnims(RES_BORDERS_LORES_BORDEREDGES);
 		fontResources[0] = CResFONT::Load(RES_BORDERS_LORES_CUTFONT);
@@ -381,7 +383,7 @@ void CLemmingAnimsManager::LoadMainRammed()
 void CLemmingAnimsManager::Load(int p_groundStyle)
 {
 	m_groundStyle = p_groundStyle;
-	if (m_loadAnim != 0) {
+	if (m_loadAnim != NULL) {
 		m_loadAnim->InitialiseScreen();
 	}
 	m_nonCacheState = 0;
@@ -394,9 +396,9 @@ void CLemmingAnimsManager::Load(int p_groundStyle)
 	SetupStyleSensitive();
 	LoadVrammed();
 	LoadMainRammed();
-	if (m_loadAnim != 0) {
+	if (m_loadAnim != NULL) {
 		delete m_loadAnim;
-		m_loadAnim = 0;
+		m_loadAnim = NULL;
 	}
 	m_display->AttachPalette(RES_GAME_GAMEPALETTE);
 	m_loaded = 1;
@@ -412,7 +414,7 @@ void CLemmingAnimsManager::Unload()
 		UnLoadAnims(RES_BORDERS_HIRES_BORDERCORNERS);
 		for (int fontIndex = 0; fontIndex < 3; fontIndex++) {
 			CResFONT* font = m_interfaceFonts[fontIndex];
-			if (font != 0) {
+			if (font != NULL) {
 				font->UnLoad();
 			}
 		}
@@ -1061,7 +1063,7 @@ void CLemmingAnimsManager::UpdateNonCacheLoad()
 {
 	int loaded = m_nonCacheState + 1;
 	m_nonCacheState = loaded;
-	if (m_loadAnim != 0) {
+	if (m_loadAnim != NULL) {
 		m_loadAnim->Draw((short) ((loaded * 100) / m_loadProgress));
 	}
 }
@@ -1103,9 +1105,9 @@ void CLemmingAnimsManager::LoadAnimation(unsigned long p_firstResourceId,
 void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_resourceId)
 {
 	CAnimFrameBASE* frames = m_animFrames[m_resourceSlots[p_resourceId]];
-	if (frames != 0) {
+	if (frames != NULL) {
 		delete frames;
-		m_animFrames[m_resourceSlots[p_resourceId]] = 0;
+		m_animFrames[m_resourceSlots[p_resourceId]] = NULL;
 	}
 	UnLoadAnims(p_resourceId);
 }
@@ -1116,9 +1118,9 @@ void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_firstResourceId, unsi
 	unsigned long resourceId = p_firstResourceId;
 	for (; (int) resourceId <= (int) p_lastResourceId; resourceId++) {
 		CAnimFrameBASE* frame = m_animFrames[m_resourceSlots[resourceId]];
-		if (frame != 0) {
+		if (frame != NULL) {
 			delete frame;
-			m_animFrames[m_resourceSlots[resourceId]] = 0;
+			m_animFrames[m_resourceSlots[resourceId]] = NULL;
 		}
 		UnLoadAnims(resourceId);
 	}

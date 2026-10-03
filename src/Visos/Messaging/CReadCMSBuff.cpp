@@ -4,6 +4,8 @@
 #include "BasePacketHeader.h"
 #include "Visos/Messaging/CReadMSBuff.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00461840
 CReadCMSBuff::CReadCMSBuff(int p_messageCount, int p_messageCapacity, unsigned short p_packetSize)
 	: CReadMSBuff(p_messageCount, p_messageCapacity, p_packetSize)
@@ -18,14 +20,14 @@ CReadCMSBuff::CReadCMSBuff(int p_messageCount, int p_messageCapacity, unsigned s
 		}
 	}
 	else {
-		m_messages = 0;
+		m_messages = NULL;
 	}
 }
 
 // FUNCTION: LEMBALL 0x004618e0
 CReadCMSBuff::~CReadCMSBuff()
 {
-	if (m_messages != 0) {
+	if (m_messages != NULL) {
 		int index;
 
 		for (index = 0; index < m_messageCount; index++) {

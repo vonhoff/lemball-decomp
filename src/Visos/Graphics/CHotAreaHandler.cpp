@@ -6,6 +6,8 @@
 #include "CHotAreaList.h"
 #include "Visos/Foundation/Message.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00439960
 void CHotAreaHandler::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
@@ -82,11 +84,11 @@ CHotAreaHandler::CHotAreaHandler(const CVSRect& p_bounds)
 	m_bounds.m_height = p_bounds.m_height;
 	const CVSRect* rect = &p_bounds;
 	const short* position;
-	if (rect != 0) {
+	if (rect != NULL) {
 		position = &rect->m_x;
 	}
 	else {
-		position = 0;
+		position = NULL;
 	}
 	m_bounds.m_x = *position;
 	m_bounds.m_y = position[1];
@@ -105,7 +107,7 @@ void CHotAreaHandler::Initialise()
 	m_active = 0;
 	m_externalEnabled = 0;
 	m_reserved = 0;
-	m_parent = 0;
+	m_parent = NULL;
 	Reset();
 }
 
@@ -203,7 +205,7 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, c
 	}
 	m_entered = 1;
 	OnEnter();
-	if (p_currentHandler == 0) {
+	if (p_currentHandler == NULL) {
 		return;
 	}
 	if (p_currentHandler->m_entered == 0) {
@@ -222,7 +224,7 @@ void CHotAreaHandler::SetActive(unsigned int p_active)
 		Reset();
 		return;
 	}
-	if (m_parent != 0) {
+	if (m_parent != NULL) {
 		m_parent->UpdateHandlers();
 	}
 }

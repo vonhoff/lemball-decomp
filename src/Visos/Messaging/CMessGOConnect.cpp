@@ -24,4 +24,4 @@ void CMessGOConnect::AddData()
 }
 
 // GLOBAL: LEMBALL 0x004a1e5c
-CMessGOConnect* g_pMessGOConnect = 0;
+CMessGOConnect* g_pMessGOConnect = NULL;

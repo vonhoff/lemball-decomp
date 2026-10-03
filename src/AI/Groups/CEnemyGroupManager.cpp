@@ -9,6 +9,8 @@
 #include "AI/Groups/CGenericGroupManager.h"
 #include "CEnemyGroup.h"
 
+#include <stddef.h>
+
 #define ENEMY_LEVEL_HEADER_BYTES (2 * sizeof(unsigned short))
 #define ENEMY_WAYPOINT_DESCRIPTOR_BYTES 4
 #define ENEMY_WAYPOINT_STEP_SIGN_BIT 0x80
@@ -109,7 +111,7 @@ void CEnemyGroupManager::RemoveEnemyGroup(CEnemyGroup* p_group)
 					objects[i] = objects[i + 1];
 					i++;
 				}
-				objects[count] = 0;
+				objects[count] = NULL;
 				break;
 			}
 			i++;

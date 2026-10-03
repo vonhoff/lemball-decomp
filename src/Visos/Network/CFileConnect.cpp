@@ -57,7 +57,7 @@ void CFileConnect::InitSocket()
 {
 	char* path = g_pFileBroadcastData;
 	char* extension = strchr(path, '.');
-	if (extension != 0) {
+	if (extension != NULL) {
 		strcpy(extension, ".con");
 	}
 	else {

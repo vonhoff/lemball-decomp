@@ -2,6 +2,8 @@
 
 #include "CMogRes.h"
 
+#include <stddef.h>
+
 // SIZE 0x10
 struct ImageResourceHeader {
 	unsigned int m_width;
@@ -18,12 +20,12 @@ CResImage* CResImage::Load(unsigned int p_resourceId)
 {
 	register unsigned int id = p_resourceId;
 	CResImage* res = (CResImage*) g_pActiveMogRes->Find(id);
-	if (res == 0) {
+	if (res == NULL) {
 		return (CResImage*) (new CResImage(id))->CheckError();
 	}
 	if (res->m_chunkType != 0x494d4147) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }

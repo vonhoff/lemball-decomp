@@ -67,11 +67,11 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_panelPosition.m_y = y;
 	CVSPoint position(x, y);
 	void* storage = operator new(sizeof(CPanelPauseButton));
-	if (storage != 0) {
+	if (storage != NULL) {
 		m_pauseButton = new (storage) CPanelPauseButton(this, position, m_window, RES_GAME_BUTPAWS, 3);
 	}
 	else {
-		m_pauseButton = 0;
+		m_pauseButton = NULL;
 	}
 
 	position.m_x = position.m_x + m_pauseSize.m_x;
@@ -79,11 +79,11 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	lemming = m_lemmings;
 	do {
 		storage = operator new(sizeof(CPanelLemming));
-		if (storage != 0) {
+		if (storage != NULL) {
 			*lemming = new (storage) CPanelLemming(m_ai->m_networkLemmings[i], position, this);
 		}
 		else {
-			*lemming = 0;
+			*lemming = NULL;
 		}
 		i++;
 		lemming++;
@@ -107,7 +107,7 @@ CPanel::~CPanel()
 	m_resources[2]->UnLoad();
 	m_resources[1]->UnLoad();
 	m_resources[0]->UnLoad();
-	if (m_pauseButton != 0) {
+	if (m_pauseButton != NULL) {
 		delete m_pauseButton;
 	}
 }

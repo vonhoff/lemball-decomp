@@ -6,16 +6,18 @@
 #include "Visos/Resources/CResINT.h"
 #include "Visos/Resources/CResSTRING.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045de70
 CResMOVIE* CResMOVIE::Load(unsigned int p_resourceId)
 {
 	CResMOVIE* res = (CResMOVIE*) g_pActiveMogRes->Find(p_resourceId);
-	if (res == 0) {
+	if (res == NULL) {
 		return (CResMOVIE*) (new CResMOVIE(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x4c495354) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }
@@ -23,8 +25,8 @@ CResMOVIE* CResMOVIE::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045ded0
 CResMOVIE::CResMOVIE() : CResBaseLIST((ResListHeader*) g_pPreloadedResourceTypes)
 {
-	m_movieEntries = 0;
-	m_fontEntries = 0;
+	m_movieEntries = NULL;
+	m_fontEntries = NULL;
 	Initialise();
 	m_initialised = 0;
 }
@@ -32,8 +34,8 @@ CResMOVIE::CResMOVIE() : CResBaseLIST((ResListHeader*) g_pPreloadedResourceTypes
 // FUNCTION: LEMBALL 0x0045df20
 CResMOVIE::CResMOVIE(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g_pPreloadedResourceTypes)
 {
-	m_movieEntries = 0;
-	m_fontEntries = 0;
+	m_movieEntries = NULL;
+	m_fontEntries = NULL;
 	DoLoad(p_resourceId);
 	m_initialised = 0;
 }
@@ -41,10 +43,10 @@ CResMOVIE::CResMOVIE(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*)
 // FUNCTION: LEMBALL 0x0045df70
 CResMOVIE::~CResMOVIE()
 {
-	if (m_movieEntries != 0) {
+	if (m_movieEntries != NULL) {
 		delete[] m_movieEntries;
 	}
-	if (m_fontEntries != 0) {
+	if (m_fontEntries != NULL) {
 		delete[] m_fontEntries;
 	}
 }

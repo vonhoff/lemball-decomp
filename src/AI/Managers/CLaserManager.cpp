@@ -8,13 +8,13 @@ CLaserManager::CLaserManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x1
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_lasers = 0;
+	m_lasers = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00429380
 void CLaserManager::Restart()
 {
-	if (m_lasers != 0) {
+	if (m_lasers != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_lasers[i].Restart();
 		}
@@ -26,10 +26,10 @@ void CLaserManager::Initialise(int p_capacity)
 {
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_lasers = 0;
+		m_lasers = NULL;
 		return;
 	}
-	if (m_lasers == 0) {
+	if (m_lasers == NULL) {
 		m_lasers = new CLaser[m_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_lasers[i].m_manager = this;

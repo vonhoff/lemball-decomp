@@ -6,6 +6,8 @@
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0041c670
 void CBaseGlobalObject::OldRestart()
 {
@@ -13,7 +15,7 @@ void CBaseGlobalObject::OldRestart()
 	m_position.m_yFixed = m_initialPosition.m_yFixed;
 	m_objectActive = 1;
 	m_position.m_zFixed = m_initialPosition.m_zFixed;
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		g_pObjectPosMessage->Send(this);
 	}
 }

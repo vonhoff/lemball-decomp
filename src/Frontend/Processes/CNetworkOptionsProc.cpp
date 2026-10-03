@@ -18,6 +18,7 @@
 #include "Visos/Messaging/CNetworkMessage.h"
 
 #include <new.h>
+#include <stddef.h>
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -27,15 +28,15 @@ CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p
 	void* storage;
 
 	storage = operator new(0x30);
-	if (storage == 0) {
-		m_rejectMessage = 0;
+	if (storage == NULL) {
+		m_rejectMessage = NULL;
 	}
 	else {
 		m_rejectMessage = new (storage) CGameRejectMessage();
 	}
 	storage = operator new(0x30);
-	if (storage == 0) {
-		m_acceptMessage = 0;
+	if (storage == NULL) {
+		m_acceptMessage = NULL;
 	}
 	else {
 		m_acceptMessage = new (storage) CGameAcceptMessage();
@@ -48,8 +49,8 @@ CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p
 // FUNCTION: LEMBALL 0x004550c0
 CNetworkOptionsProc::~CNetworkOptionsProc()
 {
-	g_pNetworkOptionsProc = 0;
-	if (g_pNetworkOptionsDrawer != 0) {
+	g_pNetworkOptionsProc = NULL;
+	if (g_pNetworkOptionsDrawer != NULL) {
 		if (g_pNetworkOptionsDrawer->GetReturnState() == 0) {
 			Stop();
 		}
@@ -57,10 +58,10 @@ CNetworkOptionsProc::~CNetworkOptionsProc()
 			StopBroadcast();
 		}
 	}
-	if (m_rejectMessage != 0) {
+	if (m_rejectMessage != NULL) {
 		delete m_rejectMessage;
 	}
-	if (m_acceptMessage != 0) {
+	if (m_acceptMessage != NULL) {
 		delete m_acceptMessage;
 	}
 }
@@ -70,11 +71,11 @@ void CNetworkOptionsProc::Start()
 {
 	m_startFailed = 0;
 	if (m_started == 0) {
-		g_pNetworkManager = new CNetworkManager(0);
+		g_pNetworkManager = new CNetworkManager(NULL);
 		if (!g_pNetworkManager->Start()) {
 			g_pNetworkManager->Stop();
 			delete g_pNetworkManager;
-			g_pNetworkManager = 0;
+			g_pNetworkManager = NULL;
 			m_startFailed = 1;
 			return;
 		}
@@ -90,11 +91,11 @@ void CNetworkOptionsProc::StopBroadcast()
 	CConnect** connections;
 	unsigned long startTime;
 
-	if (g_pBaseNetwork != 0) {
+	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->m_broadcast->Suspend();
 		g_pBaseNetwork->m_broadcast->StopListen();
 	}
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		connections = g_pNetworkManager->m_connections;
 		m_rejectMessage->m_flag = 1;
 		index = 0;
@@ -102,7 +103,7 @@ void CNetworkOptionsProc::StopBroadcast()
 			if (index < 10) {
 				g_pNetworkOptionsDrawer->GameNotReady(index);
 			}
-			if (*connections != 0 && *connections != g_pActiveConnection) {
+			if (*connections != NULL && *connections != g_pActiveConnection) {
 				startTime = timeGetTime();
 				while (m_rejectMessage->m_pendingSendCount != 0 && timeGetTime() - startTime < 1000) {
 				}
@@ -124,17 +125,17 @@ void CNetworkOptionsProc::Stop()
 	unsigned long startTime;
 
 	StopBroadcast();
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		g_pNetworkManager->Stop();
 	}
-	if (g_pBaseNetwork != 0) {
+	if (g_pBaseNetwork != NULL) {
 		startTime = timeGetTime();
 		while (timeGetTime() - startTime < 2000 && g_pBaseNetwork->m_queueTransitionPending != 0) {
 		}
 	}
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		delete g_pNetworkManager;
-		g_pNetworkManager = 0;
+		g_pNetworkManager = NULL;
 	}
 	m_startFailed = 0;
 	m_started = 0;
@@ -143,7 +144,7 @@ void CNetworkOptionsProc::Stop()
 // FUNCTION: LEMBALL 0x00455320
 void CNetworkOptionsProc::NetworkEvent(NetworkEvents p_event)
 {
-	if (g_pNetworkOptionsDrawer != 0) {
+	if (g_pNetworkOptionsDrawer != NULL) {
 		switch (p_event) {
 		case 10:
 			g_pNetworkOptionsDrawer->ResetHandlers();
@@ -165,7 +166,7 @@ bool CNetworkOptionsProc::ReceiveCritical(unsigned long p_id, CReadPacket* p_pac
 	switch (p_id) {
 	case 5: {
 		CNetworkMessage* message = (CNetworkMessage*) g_pNetworkManager->GetGameMessage(connection);
-		if (message != 0) {
+		if (message != NULL) {
 			message->Set(packet->m_data + sizeof(BasePacketHeader));
 		}
 		packet->m_used = 0;
@@ -218,4 +219,4 @@ void CNetworkOptionsProc::Processing()
 }
 
 // GLOBAL: LEMBALL 0x004a0128
-CNetworkOptionsProc* g_pNetworkOptionsProc = 0;
+CNetworkOptionsProc* g_pNetworkOptionsProc = NULL;

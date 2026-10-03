@@ -25,6 +25,8 @@
 #include "Visos/Graphics/CSolidRect.h"
 #include "Visos/Resources/ResourceLimits.h"
 
+#include <stddef.h>
+
 class CAnimFrameBASE;
 
 // FUNCTION: LEMBALL 0x0044aa80
@@ -90,7 +92,7 @@ CCDLoadAnim::~CCDLoadAnim()
 	delete[] m_points;
 	delete m_repeatAnim;
 	UnLoadAnims(m_animResourceId);
-	if (m_backgroundBitmap != 0) {
+	if (m_backgroundBitmap != NULL) {
 		m_backgroundBitmap->UnLoad();
 	}
 	m_foregroundBitmap->UnLoad();
@@ -107,12 +109,12 @@ void CCDLoadAnim::InitialiseScreen()
 	remaining = 1;
 	do {
 		if (m_display->m_lifecycleRefs == 1) {
-			m_display->Refresh(0);
+			m_display->Refresh(NULL);
 		}
 		remaining = remaining - 1;
 	} while (remaining != 0);
 	m_backgroundBitmap->UnLoad();
-	m_backgroundBitmap = 0;
+	m_backgroundBitmap = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0044aec0
@@ -135,7 +137,7 @@ void CCDLoadAnim::Draw()
 		m_bitmapRes[0].CVSPoint::operator=(m_centre);
 		m_bitmapRes[0].m_resource = background;
 		m_bitmapRes[0].m_flags = 0;
-		m_bitmapRes[0].m_remap = 0;
+		m_bitmapRes[0].m_remap = NULL;
 		m_bitmapRes[0].Draw(m_gdi);
 		const CVSRect& clearRect = m_display->m_rect;
 		CVSRect rect(clearRect);
@@ -149,13 +151,13 @@ void CCDLoadAnim::Draw()
 		CVSPoint((short) (m_points->m_x + m_centre.m_x), (short) (m_points->m_y + m_centre.m_y)));
 	m_fgBlit[0].m_resource = foreground;
 	m_fgBlit[0].m_flags = 0;
-	m_fgBlit[0].m_remap = 0;
+	m_fgBlit[0].m_remap = NULL;
 	m_fgBlit[0].Draw(m_gdi);
 	DrawAnim(CVSPoint((short) (m_points[1].m_x + m_centre.m_x), (short) (m_points[1].m_y + m_centre.m_y)),
 			 m_animResourceId,
 			 0,
 			 (CAnimFrameBASE*) m_repeatAnim,
-			 0);
+			 NULL);
 	short originStorage[2];
 	originStorage[0] = (short) (m_points[2].m_x + m_centre.m_x);
 	originStorage[1] = (short) (m_points[2].m_y + m_centre.m_y);

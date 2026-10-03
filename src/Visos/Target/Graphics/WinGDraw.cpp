@@ -149,19 +149,19 @@ WinGDrawState* __stdcall WinGDrawOpen(void* p_openInfo)
 
 	openInfo = (IcOpen*) p_openInfo;
 	if (openInfo->fccType != streamtypeVIDEO) {
-		return 0;
+		return NULL;
 	}
 	if (openInfo->dwFlags == ICMODE_COMPRESS) {
-		return 0;
+		return NULL;
 	}
 	if (openInfo->dwFlags == ICMODE_DECOMPRESS) {
-		return 0;
+		return NULL;
 	}
 	mem = GlobalAlloc(GHND, sizeof(WinGDrawState));
 	state = (WinGDrawState*) GlobalLock(mem);
-	if (state == 0) {
+	if (state == NULL) {
 		openInfo->dwError = ICERR_MEMORY;
-		return 0;
+		return NULL;
 	}
 	state->m_window = (CGWnd*) g_pAnimWnd;
 	state->m_surface = ((CGWnd*) g_pAnimWnd)->m_gdi->m_renderTarget;
@@ -174,19 +174,19 @@ int __stdcall WinGDrawClose(WinGDrawState* p_state)
 {
 	void* handle;
 
-	if (p_state->m_memoryDC != 0) {
-		if (p_state->m_previousDibBitmap != 0) {
+	if (p_state->m_memoryDC != NULL) {
+		if (p_state->m_previousDibBitmap != NULL) {
 			SelectObject((HDC) p_state->m_memoryDC, (HGDIOBJ) p_state->m_previousDibBitmap);
 		}
-		if (p_state->m_previousAuxBitmap != 0) {
+		if (p_state->m_previousAuxBitmap != NULL) {
 			SelectObject((HDC) p_state->m_memoryDC, (HGDIOBJ) p_state->m_previousAuxBitmap);
 		}
 		DeleteDC((HDC) p_state->m_memoryDC);
 	}
-	if (p_state->m_dibBitmap != 0) {
+	if (p_state->m_dibBitmap != NULL) {
 		DeleteObject((HGDIOBJ) p_state->m_dibBitmap);
 	}
-	if (p_state->m_auxBitmap != 0) {
+	if (p_state->m_auxBitmap != NULL) {
 		DeleteObject((HGDIOBJ) p_state->m_auxBitmap);
 	}
 	handle = GlobalHandle(p_state);
@@ -209,7 +209,7 @@ unsigned int __stdcall WinGDrawGetInfo(void* p_info, unsigned int p_size)
 	WCHAR* description;
 
 	info = (IcInfo*) p_info;
-	if (info == 0) {
+	if (info == NULL) {
 		return sizeof(IcInfo);
 	}
 	if (p_size < sizeof(IcInfo)) {
@@ -233,7 +233,7 @@ int __stdcall WinGDrawQueryFormat(WinGDrawState* p_state, void* p_format)
 	BITMAPINFOHEADER* format;
 
 	format = (BITMAPINFOHEADER*) p_format;
-	if (format == 0) {
+	if (format == NULL) {
 		return ICERR_BADFORMAT;
 	}
 	if (format->biCompression != BI_RGB) {
@@ -251,7 +251,7 @@ int __stdcall WinGDrawSuggestFormat(WinGDrawState* p_state, void* p_request, lon
 
 	request = (IcDrawSuggest*) p_request;
 	dest = request->lpbiSuggest;
-	if (dest == 0) {
+	if (dest == NULL) {
 		return sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD);
 	}
 	source = request->lpbiIn;
@@ -311,7 +311,7 @@ int __stdcall WinGDrawFrame(WinGDrawState* p_state, void* p_request, long p_para
 	window = (CPVWnd*) p_state->m_window;
 	if (window->m_lifecycleRefs == 1) {
 		p_state->m_surface->CopyDibBits(request->lpFormat, (unsigned char*) request->lpData);
-		p_state->m_window->CGWnd::Refresh(0);
+		p_state->m_window->CGWnd::Refresh(NULL);
 	}
 	return 0;
 }

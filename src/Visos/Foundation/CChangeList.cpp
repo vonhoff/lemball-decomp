@@ -13,7 +13,7 @@ CChangeList::CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize)
 		m_items = new ChangeListItem[p_capacity];
 	}
 	else {
-		m_items = 0;
+		m_items = NULL;
 	}
 	m_capacity = p_capacity;
 	m_cellSize.m_width = p_cellSize.m_width;
@@ -23,7 +23,7 @@ CChangeList::CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize)
 	m_mapSize.m_width = (short) (p_viewSize.m_width + p_cellSize.m_width - 1) / p_cellSize.m_width;
 	m_mapSize.m_height = (short) (p_viewSize.m_height + p_cellSize.m_height - 1) / p_cellSize.m_height;
 	m_activeDepth = 0;
-	m_map = 0;
+	m_map = NULL;
 	AllocMap();
 	Reset();
 }
@@ -31,9 +31,9 @@ CChangeList::CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize)
 // FUNCTION: LEMBALL 0x00466a90
 void CChangeList::FreeMap()
 {
-	if (m_map != 0) {
+	if (m_map != NULL) {
 		operator delete(m_map);
-		m_map = 0;
+		m_map = NULL;
 	}
 	Reset();
 }
@@ -43,7 +43,7 @@ void CChangeList::AllocMap()
 {
 	unsigned int capacity;
 
-	if (m_map == 0) {
+	if (m_map == NULL) {
 		capacity = (unsigned int) ((int) m_mapSize.m_width * (int) m_mapSize.m_height);
 		m_mapCapacity = capacity;
 		m_map = (unsigned char*) operator new(capacity);
@@ -93,9 +93,9 @@ void CChangeList::Reset()
 // FUNCTION: LEMBALL 0x00466b90
 CChangeList::~CChangeList()
 {
-	if (m_items != 0) {
+	if (m_items != NULL) {
 		operator delete(m_items);
-		m_items = 0;
+		m_items = NULL;
 	}
 	FreeMap();
 }
@@ -127,7 +127,7 @@ void CChangeList::Add(const CVSRect& p_area)
 	int mapWidth;
 	unsigned char* row;
 
-	if (m_map != 0) {
+	if (m_map != NULL) {
 		cellWidth = m_cellSize.m_width;
 		cellHeight = m_cellSize.m_height;
 		cellX = (int) (p_area.m_x / cellWidth);
@@ -290,10 +290,10 @@ found:
 // FUNCTION: LEMBALL 0x00466ef0
 int CChangeList::GetNumItems()
 {
-	if (m_map == 0) {
+	if (m_map == NULL) {
 		return 0;
 	}
-	if (m_items == 0) {
+	if (m_items == NULL) {
 		return 0;
 	}
 	if (m_itemCount == -1) {
@@ -337,7 +337,7 @@ ChangeListItem* CChangeList::GetNItem(int p_index)
 // FUNCTION: LEMBALL 0x00467020
 int CChangeList::GetDrawMark()
 {
-	if (m_map == 0) {
+	if (m_map == NULL) {
 		return 0;
 	}
 	if (m_itemCount == -1) {

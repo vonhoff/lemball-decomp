@@ -22,11 +22,11 @@ bool InitSound(unsigned int p_musicEnabled,
 void EndSound()
 {
 	CSoundManager* manager = g_pSoundManager;
-	if (manager != 0) {
+	if (manager != NULL) {
 		manager->~CSoundManager();
 		operator delete(manager);
 	}
-	g_pSoundManager = 0;
+	g_pSoundManager = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00473390
@@ -41,14 +41,14 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 	unsigned int* musicAvailable = p_musicAvailable;
 	int count = 0;
 	*musicAvailable = 0;
-	*p_musicDevice = 0;
+	*p_musicDevice = NULL;
 	if (p_useMusicCD == 1) {
 		CPVMusicDevice* music = new CMciMusicDevice();
 		if (music->IsAvailable() == 1) {
 			*musicAvailable = 1;
 			*p_musicDevice = music;
 		}
-		else if (music != 0) {
+		else if (music != NULL) {
 			delete music;
 		}
 		if (p_effectsEnabled == 1) {
@@ -57,7 +57,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 				*p_devices = device;
 				return 1;
 			}
-			if (device != 0) {
+			if (device != NULL) {
 				delete device;
 			}
 			CBaseSoundDevice* wave = new CWaveSoundDevice(p_deviceParameter);
@@ -75,7 +75,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 			count = 1;
 			*p_devices = wave;
 		}
-		else if (wave != 0) {
+		else if (wave != NULL) {
 			delete wave;
 		}
 	}

@@ -14,6 +14,8 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+#include <stddef.h>
+
 extern unsigned short g_wMovingLiftCount;
 
 // FUNCTION: LEMBALL 0x00424d00
@@ -69,7 +71,7 @@ void CLift::Edit(int p_height,
 	m_action = ACTION_READY;
 	m_activationLatched = 0;
 	for (int i = 0; i < 8; i++) {
-		m_objects[i] = 0;
+		m_objects[i] = NULL;
 	}
 	m_start.m_z = p_height;
 	m_end.m_z = p_height;
@@ -155,7 +157,7 @@ void CLift::Set(tCoord3d& p_start,
 bool CLift::Process()
 {
 	unsigned int time;
-	if (g_pActiveConnection != 0 && !g_pActiveConnection->m_isHost) {
+	if (g_pActiveConnection != NULL && !g_pActiveConnection->m_isHost) {
 		time = g_dwRemoteGameTick;
 	}
 	else {
@@ -170,7 +172,7 @@ bool CLift::Process()
 		m_active = 1;
 		m_activationLatched = 1;
 		SetSndEffect(SFX_LIFT);
-		if (m_active && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
+		if (m_active && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 			m_stateTimer = time;
 			if (m_direction == 1) {
 				Action(ACTION_LIFT_START_RISING);
@@ -195,7 +197,7 @@ bool CLift::Process()
 			m_start.m_z = m_highHeight;
 			m_active = m_defaultActive;
 			m_direction = -1;
-			if (m_defaultActive && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
+			if (m_defaultActive && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
 				Action(ACTION_LIFT_START_LOWERING);
 			}
@@ -210,7 +212,7 @@ bool CLift::Process()
 			m_start.m_z = m_lowHeight;
 			m_active = m_defaultActive;
 			m_direction = 1;
-			if (m_defaultActive && (g_pActiveConnection == 0 || g_pActiveConnection->m_isHost)) {
+			if (m_defaultActive && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
 				Action(ACTION_LIFT_START_RISING);
 			}
@@ -246,10 +248,10 @@ void CLift::CheckObjects()
 	int count = 8;
 	CGameObject** object = m_objects;
 	do {
-		if (*object != 0) {
+		if (*object != NULL) {
 			if ((*object)->QOnBalloon() || !(*object)->OnLift(m_start, m_end)) {
 				(*object)->m_liftId = 0xffff;
-				*object = 0;
+				*object = NULL;
 			}
 		}
 		object++;

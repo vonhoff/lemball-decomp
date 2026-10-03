@@ -92,7 +92,7 @@ void CTCPIPConnect::HandleServiceLookupResult(bool p_failed)
 		*g_pErrorOutput << "Service port number specified was not found\n";
 	}
 	operator delete(m_asyncBuffer);
-	m_asyncBuffer = 0;
+	m_asyncBuffer = NULL;
 	if (!p_failed) {
 		Connect();
 	}

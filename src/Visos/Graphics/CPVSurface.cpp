@@ -2,6 +2,8 @@
 
 #include "Visos/Foundation/CVSRect.h"
 
+#include <stddef.h>
+
 struct CVSSize;
 
 // FUNCTION: LEMBALL 0x004663d0
@@ -43,11 +45,11 @@ void CPVSurface::SetDontUpdateRect(const CVSRect& p_rect)
 		(int) p_rect.m_height * (int) p_rect.m_width == 0) {
 		m_dontUpdateRect.m_width = p_rect.m_width;
 		m_dontUpdateRect.m_height = p_rect.m_height;
-		if (&p_rect != 0) {
+		if (&p_rect != NULL) {
 			coords = &p_rect.m_x;
 		}
 		else {
-			coords = 0;
+			coords = NULL;
 		}
 		m_dontUpdateRect.m_x = *coords;
 		m_dontUpdateRect.m_y = coords[1];

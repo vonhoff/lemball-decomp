@@ -31,7 +31,7 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 	CRemap* remap;
 	int len;
 
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		CConnect** connections = g_pNetworkManager->m_connections;
 		if (g_pNetworkManager->m_gameMessages[p_index].m_valid != 0) {
 			font = m_textManager->GetFont(m_chalkFontId);
@@ -47,7 +47,7 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 			posName.m_y += yOffset;
 			posAddress.m_y += yOffset;
 			posPeer.m_y += yOffset;
-			remap = 0;
+			remap = NULL;
 			if (p_remap != 6) {
 				remap = (CRemap*) m_remaps[p_remap];
 			}

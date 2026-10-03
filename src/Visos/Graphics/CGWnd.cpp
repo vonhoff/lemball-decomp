@@ -37,7 +37,7 @@ void CGWnd::OnSize()
 CGWnd::CGWnd()
 {
 	m_refreshWidth = 0;
-	m_gdi = 0;
+	m_gdi = NULL;
 	m_refreshY = 0;
 	m_gdiFlags = 0;
 	m_refreshX = 0;
@@ -65,7 +65,7 @@ void CGWnd::_OnCreate()
 	unsigned int style;
 
 	CPVWnd::_OnCreate();
-	if (m_parent == 0) {
+	if (m_parent == NULL) {
 		parentSurface = (CSurface*) g_pGdiHelperTarget;
 	}
 	else {
@@ -84,7 +84,7 @@ void CGWnd::_OnCreate()
 		localRect.m_x += m_relativeTopLeft.m_x;
 		localRect.m_y += m_relativeTopLeft.m_y;
 	}
-	if (m_parent == 0) {
+	if (m_parent == NULL) {
 		localRect.m_width = (short) ((int) localRect.m_width / (int) m_zoom);
 		localRect.m_height = (short) ((int) localRect.m_height / (int) m_zoom);
 	}
@@ -93,13 +93,13 @@ void CGWnd::_OnCreate()
 	*gdi = new CGDI(localRect, m_gdiFlags, parentSurface);
 
 	target = (*gdi)->m_renderTarget;
-	if (m_parent == 0) {
+	if (m_parent == NULL) {
 		target->m_zoom = (short) m_zoom;
 	}
 	CVSPoint* innerOrigin = &m_innerRect;
 	originX = innerOrigin->m_x;
 	originY = innerOrigin->m_y;
-	if (m_parent != 0) {
+	if (m_parent != NULL) {
 		CVSPoint* parentOrigin = &m_parent->m_relativeTopLeft;
 		originX = (short) (originX - parentOrigin->m_x);
 		originY = (short) (originY - parentOrigin->m_y);
@@ -108,7 +108,7 @@ void CGWnd::_OnCreate()
 	surface.m_relOriginX = originX;
 	surface.m_relOriginY = originY;
 	style = GetStyle();
-	if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
+	if ((style & 0x40000000) != 0 && m_nativeWindow != NULL) {
 		style = GetWindowLongA((HWND) m_nativeWindow, -16);
 		if ((style & 0x40000000) != 0) {
 			CVSPoint* createOrigin = &m_createRect->m_relativeTopLeft;
@@ -134,13 +134,13 @@ void CGWnd::_OnDestroy()
 	unsigned int style;
 
 	gdi = m_gdi;
-	if (gdi != 0) {
+	if (gdi != NULL) {
 		gdi->~CGDI();
 		operator delete(gdi);
-		m_gdi = 0;
+		m_gdi = NULL;
 	}
 	style = GetStyle();
-	if ((style & 0x40000000) != 0 && m_nativeWindow != 0) {
+	if ((style & 0x40000000) != 0 && m_nativeWindow != NULL) {
 		if ((GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE) & 0x40000000) != 0) {
 			CVSRect emptyRect(0, 0, 0, 0);
 			m_createRect->SetDontUpdateRect(emptyRect);
@@ -159,7 +159,7 @@ void CGWnd::_OnSize()
 	short relY;
 
 	CPVWnd::_OnSize();
-	if (m_gdi == 0) {
+	if (m_gdi == NULL) {
 		return;
 	}
 	CVSSize size(m_rect);
@@ -168,7 +168,7 @@ void CGWnd::_OnSize()
 		size.m_height = m_innerRect.m_height;
 	}
 	target = m_gdi->m_renderTarget;
-	if (m_parent == 0) {
+	if (m_parent == NULL) {
 		size.m_width = (short) ((int) size.m_width / (int) m_zoom);
 		size.m_height = (short) ((int) size.m_height / (int) m_zoom);
 	}
@@ -176,7 +176,7 @@ void CGWnd::_OnSize()
 	innerOrigin = &m_innerRect;
 	relX = innerOrigin->m_x;
 	relY = innerOrigin->m_y;
-	if (m_parent != 0) {
+	if (m_parent != NULL) {
 		parentOrigin = &m_parent->m_relativeTopLeft;
 		relX = (short) (relX - parentOrigin->m_x);
 		relY = (short) (relY - parentOrigin->m_y);
@@ -242,7 +242,7 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 		}
 		}
 	case WM_ACTIVATEAPP:
-		if (p_wParam != 0 && m_gdi != 0) {
+		if (p_wParam != 0 && m_gdi != NULL) {
 			m_gdi->m_renderTarget->SetDefaultCtable();
 		}
 		break;
@@ -267,7 +267,7 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 		}
 		break;
 	}
-	if (m_nativeWindow != 0) {
+	if (m_nativeWindow != NULL) {
 		return DefWindowProcA((HWND) m_nativeWindow, p_message, p_wParam, p_lParam);
 	}
 	return 0;
@@ -285,13 +285,13 @@ void CGWnd::Render()
 	m_gdi->m_primitiveCount = 0;
 	void** childNode = (void**) m_childList;
 	for (;;) {
-		if (childNode == 0) {
+		if (childNode == NULL) {
 			break;
 		}
 		((CGWnd*) childNode[0])->Render();
 		childNode = (void**) childNode[1];
 	}
-	if (m_parent == 0 && g_pCursor != 0) {
+	if (m_parent == NULL && g_pCursor != NULL) {
 		g_pCursor->Draw(this);
 		m_gdi->Render();
 		m_gdi->m_primitiveCount = 0;
@@ -307,21 +307,21 @@ void CGWnd::Flush()
 	if (m_lifecycleRefs == 0) {
 		return;
 	}
-	if (m_nativeWindow != 0) {
+	if (m_nativeWindow != NULL) {
 		dc = GetDC((HWND) m_nativeWindow);
 		EnterCriticalSection((CRITICAL_SECTION*) ((CSurface*) g_pGdiHelperTarget)->m_lock);
 		((CSurface*) g_pGdiHelperTarget)->SetWindowPtr(dc);
 	}
 	childNode = (void**) m_childList;
 	for (;;) {
-		if (childNode == 0) {
+		if (childNode == NULL) {
 			break;
 		}
 		((CGWnd*) childNode[0])->Flush();
 		childNode = (void**) childNode[1];
 	}
 	m_gdi->m_renderTarget->Flush();
-	if (m_nativeWindow != 0) {
+	if (m_nativeWindow != NULL) {
 		ReleaseDC((HWND) m_nativeWindow, dc);
 		LeaveCriticalSection((CRITICAL_SECTION*) ((CSurface*) g_pGdiHelperTarget)->m_lock);
 	}

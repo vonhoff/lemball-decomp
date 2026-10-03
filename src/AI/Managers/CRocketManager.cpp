@@ -12,13 +12,13 @@ CRocketManager::CRocketManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_rockets = 0;
+	m_rockets = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00426b20
 void CRocketManager::Restart()
 {
-	if (m_rockets != 0) {
+	if (m_rockets != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_rockets[i].Restart();
 		}
@@ -31,10 +31,10 @@ void CRocketManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_rockets = 0;
+		m_rockets = NULL;
 		return;
 	}
-	if (m_rockets == 0) {
+	if (m_rockets == NULL) {
 		m_rockets = new CRocket[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_rockets[i].Restart();

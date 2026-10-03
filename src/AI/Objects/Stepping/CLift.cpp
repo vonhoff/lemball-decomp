@@ -7,6 +7,8 @@
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
+#include <stddef.h>
+
 extern unsigned short g_wMovingLiftCount;
 
 // FUNCTION: LEMBALL 0x004254a0
@@ -44,7 +46,7 @@ int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 			int i = 0;
 			CGameObject** object = m_objects;
 			do {
-				if (*object == 0) {
+				if (*object == NULL) {
 					m_objects[i] = p_object;
 					p_object->m_liftId = m_liftId;
 					if (m_activateType == LIFT_ACTIVATE_STEP) {

@@ -1,4 +1,6 @@
 #include "CBaseQueueHandler.h"
+
+#include <stddef.h>
 struct Message;
 
 // FUNCTION: LEMBALL 0x00462ea0
@@ -23,7 +25,7 @@ CVSOStream& CBaseQueueHandler::StreamOut(CVSOStream& p_stream)
 }
 
 // GLOBAL: LEMBALL 0x004a1e1c
-CBaseQueue* g_pNetworkStatusQueue = 0;
+CBaseQueue* g_pNetworkStatusQueue = NULL;
 
 // GLOBAL: LEMBALL 0x004a1e20
-CBaseQueue* g_pNetworkPacketQueue = 0;
+CBaseQueue* g_pNetworkPacketQueue = NULL;

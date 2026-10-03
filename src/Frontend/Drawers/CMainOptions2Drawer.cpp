@@ -15,6 +15,7 @@
 #include "Visos/Graphics/CBigBitmap.h"
 
 #include <new.h>
+#include <stddef.h>
 
 #define MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE 0xacef0004
 #define MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE 0xacef0005
@@ -120,14 +121,14 @@ void CMainOptions2Drawer::Load()
 		m_primitiveBundle[i].m_primitive.m_y = 0;
 		m_primitiveBundle[i].m_primitive.m_resource = background;
 		m_primitiveBundle[i].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
-		m_primitiveBundle[i].m_primitive.m_remap = 0;
+		m_primitiveBundle[i].m_primitive.m_remap = NULL;
 		i++;
 	} while (--remaining);
 
 	storage = operator new(sizeof(CGunController));
 	CGunController** gunController = &m_gunController;
-	if (storage == 0) {
-		*gunController = 0;
+	if (storage == NULL) {
+		*gunController = NULL;
 	}
 	else {
 		*gunController = new (storage) CGunController(m_display, m_gdi, 8, m_mode);
@@ -196,7 +197,7 @@ void CMainOptions2Drawer::Load()
 // FUNCTION: LEMBALL 0x00448dc0
 void CMainOptions2Drawer::UnLoad()
 {
-	if (m_gunController != 0) {
+	if (m_gunController != NULL) {
 		delete m_gunController;
 	}
 }

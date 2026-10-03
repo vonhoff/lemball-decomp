@@ -9,6 +9,8 @@
 #include "Visos/Foundation/CString.h"
 #include "Visos/Graphics/CZRLE.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00469a50
 void CText::Set(int p_x, int p_y, CResFONT* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
 {
@@ -113,12 +115,12 @@ void CText::Render(CGDI* p_gdi)
 	if (*text != '\0') {
 		do {
 			m_glyph = m_font->ASCIItoZRLE((unsigned char) *text);
-			if (m_glyph == 0) {
+			if (m_glyph == NULL) {
 				m_glyph = m_font->ASCIItoZRLE('I');
-				if (m_glyph == 0) {
+				if (m_glyph == NULL) {
 					m_glyph = m_font->m_animationEntries;
 				}
-				if (*text != ' ' || m_glyph == 0) {
+				if (*text != ' ' || m_glyph == NULL) {
 					*g_pDebugOutput << "Letter '" << *text << "' not found in font " << Rname(m_font->m_resourceId)
 									<< "\n";
 				}

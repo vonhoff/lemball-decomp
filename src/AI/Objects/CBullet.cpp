@@ -95,7 +95,7 @@ void CBullet::FireBullet()
 {
 	m_lastMovementTick = g_dwGameTick;
 	TriggerBullet();
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		m_manager->Add(this);
 	}
 }
@@ -169,7 +169,7 @@ bool CBullet::Process()
 					}
 				}
 				ai = g_pAI;
-				ai->m_collisionExclude = 0;
+				ai->m_collisionExclude = NULL;
 				ai->m_collisionPoint = pos;
 				ai->m_collisionIndex = 0;
 				while (ai->m_collisionIndex < ai->m_objectCount) {
@@ -181,10 +181,10 @@ bool CBullet::Process()
 					}
 					ai->m_collisionIndex++;
 				}
-				candidate = 0;
+				candidate = NULL;
 			hitFound:
 				CGameObject* hitObject = candidate;
-				if (hitObject != 0 && (unsigned short) hitObject->GetId() != m_sourceObjectId) {
+				if (hitObject != NULL && (unsigned short) hitObject->GetId() != m_sourceObjectId) {
 					if (m_owner != OWNER_REMOTE_PLAYER || hitObject->m_objectType == 2) {
 						hitObject->HitBullet(this);
 					}

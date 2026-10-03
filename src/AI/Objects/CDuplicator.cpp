@@ -15,6 +15,8 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x004275b0
 CDuplicator::CDuplicator(const AICOORD& p_position) : CGlobalGameObject(OBJECT_DUPLICATOR, 0, 0)
 {
@@ -107,7 +109,7 @@ bool CDuplicator::Process()
 		m_duplicatedObject->Action(ACTION_NONE);
 		m_duplicatedObject->ResetInstructions();
 		CPlayerLemming* dead = g_pAI->GetDead();
-		if (dead != 0) {
+		if (dead != NULL) {
 			AICOORD pos(m_position.m_xFixed, m_position.m_yFixed - 0x34000, m_position.m_zFixed);
 			dead->Resurrect(pos);
 			CPlayerLemmingGroup* group = ((CPlayerLemming*) m_duplicatedObject)->GetGroup();

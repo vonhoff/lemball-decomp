@@ -21,7 +21,7 @@
 // clang-format on
 
 // GLOBAL: LEMBALL 0x004a20c0
-CAnimWnd* g_pAnimWnd = 0;
+CAnimWnd* g_pAnimWnd = NULL;
 
 // GLOBAL: LEMBALL 0x004a2100
 char g_szAnimWndError[] = "!!ERROR!!";
@@ -63,9 +63,9 @@ void CAnimWnd::Initialise()
 	m_playing = 0;
 	m_paused = 0;
 	m_animResourceId = 0;
-	m_movieWindow = 0;
-	if (g_pAnimWnd != 0) {
-		MessageBoxA(0, g_szUnableToSupportMoreThanOneAnimWindow, g_szAnimWndError, MB_SYSTEMMODAL);
+	m_movieWindow = NULL;
+	if (g_pAnimWnd != NULL) {
+		MessageBoxA(NULL, g_szUnableToSupportMoreThanOneAnimWindow, g_szAnimWndError, MB_SYSTEMMODAL);
 		_VSExit(0xaaaa);
 	}
 	g_pAnimWnd = this;
@@ -83,10 +83,10 @@ CAnimWnd::~CAnimWnd()
 	if (m_lifecycleRefs == 1) {
 		Destroy();
 	}
-	g_pAnimWnd = 0;
-	if (m_movieWindow != 0) {
+	g_pAnimWnd = NULL;
+	if (m_movieWindow != NULL) {
 		SendMessageA((HWND) m_movieWindow, WM_CLOSE, 0, 0);
-		m_movieWindow = 0;
+		m_movieWindow = NULL;
 	}
 }
 
@@ -94,14 +94,14 @@ CAnimWnd::~CAnimWnd()
 void CAnimWnd::_OnCreate()
 {
 	CGWnd::_OnCreate();
-	if (m_movieWindow != 0) {
+	if (m_movieWindow != NULL) {
 		SendMessageA((HWND) m_movieWindow, WM_CLOSE, 0, 0);
-		m_movieWindow = 0;
+		m_movieWindow = NULL;
 	}
 	m_movieWindow = MCIWndCreateA((HWND) m_nativeWindow,
 								  (HINSTANCE) g_pApplicationInstance,
 								  WS_CHILD | WS_VISIBLE | MCIWNDF_NOPLAYBAR | MCIWNDF_NOMENU | MCIWNDF_NOTIFYALL,
-								  0);
+								  NULL);
 	SendMessageA((HWND) m_movieWindow, MCIWNDM_OPENA, 0, (LPARAM) m_moviePath.m_text);
 }
 
@@ -109,9 +109,9 @@ void CAnimWnd::_OnCreate()
 void CAnimWnd::_OnDestroy()
 {
 	Stop();
-	if (m_movieWindow != 0) {
+	if (m_movieWindow != NULL) {
 		SendMessageA((HWND) m_movieWindow, WM_CLOSE, 0, 0);
-		m_movieWindow = 0;
+		m_movieWindow = NULL;
 	}
 	CGWnd::_OnDestroy();
 	m_paused = 0;
@@ -152,7 +152,7 @@ void CAnimWnd::SetMovieWindow(unsigned int p_lParam)
 	if (mciId != 0) {
 		error = mciSendCommandA(mciId, MCI_SETVIDEO, MCI_DGV_SETVIDEO_ITEM | MCI_DGV_SETVIDEO_VALUE, (DWORD) &params);
 		if (error != 0) {
-			MessageBoxA(0, g_szUnableToSetMciDrawProcedure, g_szMciError, MB_ICONHAND);
+			MessageBoxA(NULL, g_szUnableToSetMciDrawProcedure, g_szMciError, MB_ICONHAND);
 		}
 	}
 }
@@ -192,7 +192,7 @@ int CAnimWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam
 		OnNotifyError((int) p_lParam);
 		return 0;
 	}
-	if (m_nativeWindow != 0) {
+	if (m_nativeWindow != NULL) {
 		return DefWindowProcA((HWND) m_nativeWindow, p_message, p_wParam, p_lParam);
 	}
 	return 0;
@@ -210,7 +210,7 @@ void CAnimWnd::SetAnim(unsigned int p_resourceId)
 	char* fileName;
 	char* cdDir;
 
-	movie = 0;
+	movie = NULL;
 	fileName = "test";
 	if (p_resourceId != 0) {
 		m_animResourceId = p_resourceId;
@@ -241,7 +241,7 @@ void CAnimWnd::SetAnim(unsigned int p_resourceId)
 	}
 	else {
 		cdDir = g_pTargetPlatformServices->GetCDDir(relative.m_text);
-		if (cdDir != 0) {
+		if (cdDir != NULL) {
 			m_moviePath = cdDir;
 		}
 		else {
@@ -256,7 +256,7 @@ void CAnimWnd::SetAnim(unsigned int p_resourceId)
 		movie->m_directUseCount = movie->m_directUseCount - 1;
 		movie->UnLoad();
 	}
-	if (m_movieWindow != 0) {
+	if (m_movieWindow != NULL) {
 		SendMessageA((HWND) m_movieWindow, MCIWNDM_OPENA, 0, (LPARAM) m_moviePath.m_text);
 	}
 	m_animSet = 1;

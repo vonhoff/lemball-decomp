@@ -87,19 +87,19 @@ int VSmain(int p_argc, char** p_argv)
 	g_pVSTrig = new VSTrig();
 
 	seed = (int*) operator new(4);
-	if (seed != 0) {
+	if (seed != NULL) {
 		*seed = 0xad28;
 		g_pRandomSeed = seed;
 	}
 	else {
-		g_pRandomSeed = 0;
+		g_pRandomSeed = NULL;
 	}
 
 	_DEMO_Init(0x19000);
 	SetGameDefaults();
 	if (DoCommandLine(p_argc, p_argv) == 1) {
-		game = 0;
-		game = new CGame(0);
+		game = NULL;
+		game = new CGame(NULL);
 		if (g_nEditLevelMode != 0) {
 			strcpy(game->m_runtimeName, g_szCommandLineLevelFile);
 		}
@@ -107,7 +107,7 @@ int VSmain(int p_argc, char** p_argv)
 			strcpy(game->m_runtimeName, g_szCommandLineLevelFile);
 		}
 		game->Run();
-		if (game != 0) {
+		if (game != NULL) {
 			delete game;
 		}
 	}

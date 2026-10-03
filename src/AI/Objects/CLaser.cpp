@@ -98,13 +98,15 @@ void CLaser::Set(unsigned short p_id, const AICOORD& p_position, eObjectType p_o
 
 #include "../Navigation/CAI.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00428ab0
 bool CLaser::CheckHits()
 {
 	int x = m_position.m_xFixed >> 12;
 	int y = m_position.m_yFixed >> 12;
 	int z = m_position.m_zFixed >> 12;
-	CGameObject* hit = 0;
+	CGameObject* hit = NULL;
 	int stepX;
 	int stepY;
 	switch (m_objectType) {
@@ -157,7 +159,7 @@ bool CLaser::CheckHits()
 		point.m_y = y;
 		CAI* ai = g_pAI;
 		point.m_z = z;
-		ai->m_collisionExclude = 0;
+		ai->m_collisionExclude = NULL;
 		ai->m_collisionPoint = point;
 		ai->m_collisionIndex = 0;
 		if (ai->m_objectCount > 0) {
@@ -171,13 +173,13 @@ bool CLaser::CheckHits()
 				ai->m_collisionIndex++;
 			} while (ai->m_collisionIndex < ai->m_objectCount);
 		}
-		hit = 0;
+		hit = NULL;
 	found:
-		if (hit != 0 && hit->m_objectType == OBJECT_PLAYER_2) {
+		if (hit != NULL && hit->m_objectType == OBJECT_PLAYER_2) {
 			break;
 		}
 	}
-	if (hit != 0) {
+	if (hit != NULL) {
 		m_target = hit;
 		hit->m_action = ACTION_EXTERNAL_CONTROL;
 		hit->m_actionArgument = 1;
@@ -193,36 +195,36 @@ bool CLaser::Process()
 {
 	if (m_isRemoteObject != 0) {
 		m_active = m_action != ACTION_READY;
-		if (m_action == ACTION_ACTIVATED && m_target == 0) {
+		if (m_action == ACTION_ACTIVATED && m_target == NULL) {
 			CheckHits();
 		}
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
 			case ACTION_RECOVERY:
-				if (m_target != 0) {
+				if (m_target != NULL) {
 					m_target->m_deathRequested = 1;
-					m_target = 0;
+					m_target = NULL;
 				}
 				Action(ACTION_READY);
 				break;
 			case ACTION_ACTIVATING:
-				m_target = 0;
+				m_target = NULL;
 				break;
 			}
 			m_pendingAction = m_action;
 		}
 		return true;
 	}
-	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
+	if (g_pActiveConnection != NULL && g_pActiveConnection->m_isHost != 0) {
 		return true;
 	}
 	if (m_active != 0) {
 		switch (m_action) {
 		case ACTION_RECOVERY:
-			if (m_target != 0) {
+			if (m_target != NULL) {
 				m_target->SetSndEffect(SFX_ELECCY);
 				m_target->m_deathRequested = 1;
-				m_target = 0;
+				m_target = NULL;
 			}
 			Action(ACTION_READY);
 			return true;
@@ -234,22 +236,22 @@ bool CLaser::Process()
 			break;
 		case ACTION_ACTIVATING:
 			if (m_actionPhase1Deadline < g_dwGameTick) {
-				m_target = 0;
+				m_target = NULL;
 				Action(ACTION_ACTIVATED);
 				return true;
 			}
 			break;
 		case ACTION_ACTIVATED:
-			if (m_target == 0) {
+			if (m_target == NULL) {
 				CheckHits();
 			}
 			if (m_actionDeadline < g_dwGameTick) {
 				m_enabled = 1;
 				m_active = m_autoActivate;
 				m_actionDeadline = g_dwGameTick + 0x3c;
-				if (m_target != 0) {
+				if (m_target != NULL) {
 					m_target->m_deathRequested = 1;
-					m_target = 0;
+					m_target = NULL;
 				}
 				Action(ACTION_RECOVERY);
 			}
@@ -262,14 +264,14 @@ bool CLaser::Process()
 bool CLaser::Activate()
 {
 	m_active = 1;
-	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
+	if (g_pActiveConnection != NULL && g_pActiveConnection->m_isHost != 0) {
 		return false;
 	}
 	m_lastMovementTick = g_dwGameTick;
 	m_actionPhase1Deadline = g_dwGameTick + 6;
 	m_actionDeadline = g_dwGameTick + 0x18;
 	m_stateTimer = g_dwSimulationTimestamp;
-	m_target = 0;
+	m_target = NULL;
 	Action(ACTION_ACTIVATING);
 	return true;
 }

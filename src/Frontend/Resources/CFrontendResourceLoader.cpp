@@ -57,8 +57,8 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	m_strings = (CResSTRING**) operator new(sizeof(*m_strings));
 	m_movies = (CResMOVIE**) operator new(6 * sizeof(*m_movies));
 	CCDLoadAnim* loadAnim = (CCDLoadAnim*) operator new(sizeof(CCDLoadAnim));
-	if (loadAnim == 0) {
-		m_loadAnim = 0;
+	if (loadAnim == NULL) {
+		m_loadAnim = NULL;
 	}
 	else {
 		m_loadAnim = new (loadAnim) CCDLoadAnim(p_display->m_gdi, p_display);
@@ -94,8 +94,8 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	for (i = 0; i < 3; i++) {
 		LoadMOVIE(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1);
 	}
-	p_display->m_loadingDraw = 0;
-	if (m_loadAnim != 0) {
+	p_display->m_loadingDraw = NULL;
+	if (m_loadAnim != NULL) {
 		delete m_loadAnim;
 	}
 }
@@ -106,7 +106,7 @@ CFrontendResourceLoader::~CFrontendResourceLoader()
 	unsigned int i;
 	unsigned int* id;
 
-	g_pSoundView->ChangeState(0, 0);
+	g_pSoundView->ChangeState(0, NULL);
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
 		UnLoadANIM(m_animResourceIds[i]);
 	}
@@ -128,7 +128,7 @@ CFrontendResourceLoader::~CFrontendResourceLoader()
 	} while (id < g_dwFrontendStringIds + 1);
 	for (i = 0; i < 6; i++) {
 		m_movies[i]->UnLoad();
-		m_movies[i] = 0;
+		m_movies[i] = NULL;
 	}
 	operator delete(m_movies);
 	operator delete(m_strings);
@@ -165,9 +165,9 @@ void CFrontendResourceLoader::UnLoadANIM(unsigned long p_resourceId)
 
 	for (i = 0; i < (unsigned int) m_loadedAnims; i++) {
 		slot = &m_anims[i];
-		if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+		if (*slot != NULL && (*slot)->m_resourceId == p_resourceId) {
 			m_anims[i]->UnLoad();
-			m_anims[i] = 0;
+			m_anims[i] = NULL;
 			break;
 		}
 	}
@@ -187,9 +187,9 @@ void CFrontendResourceLoader::UnLoadFONT(unsigned long p_resourceId)
 	unsigned int i;
 
 	for (i = 0; i < (unsigned int) m_loadedFonts; i++) {
-		if (m_fonts[i] != 0 && m_fonts[i]->m_resourceId == p_resourceId) {
+		if (m_fonts[i] != NULL && m_fonts[i]->m_resourceId == p_resourceId) {
 			m_fonts[i]->UnLoad();
-			m_fonts[i] = 0;
+			m_fonts[i] = NULL;
 			break;
 		}
 	}

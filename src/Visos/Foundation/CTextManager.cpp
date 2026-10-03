@@ -6,6 +6,8 @@
 #include "CVSSize.h"
 #include "Visos/Foundation/CString.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00469c60
 CTextManager::CTextManager(unsigned long p_fontIdCount,
 						   int p_fontCapacity,
@@ -19,7 +21,7 @@ CTextManager::CTextManager(unsigned long p_fontIdCount,
 	m_fonts = new CResFONT*[m_fontCapacity];
 	m_fontIndices = new short[m_fontIdCount];
 	for (int i = 0; i < (int) m_fontCapacity; i++) {
-		m_fonts[i] = 0;
+		m_fonts[i] = NULL;
 	}
 	for (int j = 0; j < (int) m_fontIdCount; j++) {
 		m_fontIndices[j] = (short) m_fontCapacity;
@@ -45,20 +47,20 @@ CTextManager::~CTextManager()
 	int slot = 0;
 	if (m_loadedFontCount != 0) {
 		for (int unloaded = 0; unloaded < (int) m_loadedFontCount; unloaded++) {
-			while (m_fonts[slot] == 0) {
+			while (m_fonts[slot] == NULL) {
 				slot++;
 			}
 			m_fonts[slot]->UnLoad();
 			slot++;
 		}
 	}
-	if (m_fonts != 0) {
+	if (m_fonts != NULL) {
 		delete[] m_fonts;
 	}
-	if (m_fontIndices != 0) {
+	if (m_fontIndices != NULL) {
 		delete[] m_fontIndices;
 	}
-	if (m_textPrimitives != 0) {
+	if (m_textPrimitives != NULL) {
 		for (int j = 0; j < (int) m_primitiveCount; j++) {
 			delete m_textPrimitives[j];
 		}
@@ -72,10 +74,10 @@ void CTextManager::LoadFont(unsigned long p_fontId)
 	CResFONT** fonts;
 	int slot = 0;
 	fonts = m_fonts;
-	if (fonts[0] != 0) {
+	if (fonts[0] != NULL) {
 		do {
 			slot++;
-		} while (fonts[slot] != 0);
+		} while (fonts[slot] != NULL);
 	}
 	fonts[slot] = CResFONT::Load(p_fontId);
 	m_fontIndices[p_fontId] = (short) slot;
@@ -92,7 +94,7 @@ CResFONT* CTextManager::GetFont(unsigned long p_fontId)
 void CTextManager::UnLoadFont(unsigned long p_fontId)
 {
 	m_fonts[m_fontIndices[p_fontId]]->UnLoad();
-	m_fonts[m_fontIndices[p_fontId]] = 0;
+	m_fonts[m_fontIndices[p_fontId]] = NULL;
 	m_loadedFontCount--;
 }
 

@@ -17,7 +17,7 @@ CTrapDoorManager::CTrapDoorManager() : CBaseObjectManager(TRAP_DOOR_NETWORK_MESS
 {
 	m_count = 0;
 	for (int i = 0; i < TRAP_DOOR_CAPACITY; i++) {
-		m_doors[i] = 0;
+		m_doors[i] = NULL;
 	}
 }
 
@@ -188,9 +188,9 @@ void CTrapDoorManager::ClearAllTrapDoors()
 	CTrapDoor** door = m_doors;
 	int remaining = TRAP_DOOR_CAPACITY;
 	do {
-		if (*door != 0) {
+		if (*door != NULL) {
 			delete *door;
-			*door = 0;
+			*door = NULL;
 		}
 		door++;
 	} while (--remaining != 0);

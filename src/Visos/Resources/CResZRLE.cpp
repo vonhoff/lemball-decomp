@@ -2,17 +2,19 @@
 
 #include "CMogRes.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045e2b0
 CResZRLE* CResZRLE::Load(unsigned int p_resourceId)
 {
 	register unsigned int id = p_resourceId;
 	CResZRLE* res = (CResZRLE*) g_pActiveMogRes->Find(id);
-	if (res == 0) {
+	if (res == NULL) {
 		return (CResZRLE*) (new CResZRLE(id))->CheckError();
 	}
 	if (res->m_chunkType != 0x5a524c45) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }

@@ -70,7 +70,7 @@ bool CNetworkFile::Open(const char* p_filename, unsigned char p_mode, int p_crea
 	else {
 		creation = 1;
 	}
-	handle = CreateFileA(p_filename, 0xc0000000, 3, 0, creation, 0x80, 0);
+	handle = CreateFileA(p_filename, 0xc0000000, 3, NULL, creation, 0x80, NULL);
 	m_handle = handle;
 	if (handle == (void*) -1) {
 		return false;
@@ -105,7 +105,7 @@ bool CNetworkFile::CheckExists(const char* p_filename)
 {
 	void* handle;
 
-	handle = CreateFileA(p_filename, 0xc0000000, 3, 0, 3, 0x80, 0);
+	handle = CreateFileA(p_filename, 0xc0000000, 3, NULL, 3, 0x80, NULL);
 	m_handle = handle;
 	if (handle == (void*) -1) {
 		return false;
@@ -121,7 +121,7 @@ bool CNetworkFile::Write(const unsigned char* p_data, int p_size)
 	int success;
 	unsigned int written;
 
-	success = WriteFile(m_handle, p_data, (unsigned int) p_size, &written, 0);
+	success = WriteFile(m_handle, p_data, (unsigned int) p_size, &written, NULL);
 	if (success == 0) {
 		int error = (int) GetLastError();
 		*g_pErrorOutput << "Write error: " << error << "\n";
@@ -143,7 +143,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 	unsigned int got;
 	unsigned int error;
 
-	success = ReadFile(m_handle, p_data, (unsigned int) p_size, &got, 0);
+	success = ReadFile(m_handle, p_data, (unsigned int) p_size, &got, NULL);
 	if (success == 0) {
 		error = GetLastError();
 		if (error != 0x21) {
@@ -166,7 +166,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 bool CNetworkFile::Seek(int p_position)
 {
 	m_position = (unsigned int) p_position;
-	return SetFilePointer(m_handle, p_position, 0, 0) != 0xffffffff;
+	return SetFilePointer(m_handle, p_position, NULL, 0) != 0xffffffff;
 }
 
 // FUNCTION: LEMBALL 0x0047f8b0
@@ -193,7 +193,7 @@ bool CNetworkFile::Close()
 // FUNCTION: LEMBALL 0x0047f8f0
 unsigned int CNetworkFile::GetFileSize()
 {
-	return ::GetFileSize(m_handle, 0);
+	return ::GetFileSize(m_handle, NULL);
 }
 
 // FUNCTION: LEMBALL 0x0047f900

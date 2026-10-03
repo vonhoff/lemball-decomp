@@ -3,9 +3,10 @@
 #include "../Foundation/VsFile.h"
 
 #include <ctype.h>
+#include <stddef.h>
 
 // GLOBAL: LEMBALL 0x004a1d50
-_Filet* g_pMogFile = 0;
+_Filet* g_pMogFile = NULL;
 
 #define RESOURCE_PATH_SEPARATOR '/'
 
@@ -13,7 +14,7 @@ _Filet* g_pMogFile = 0;
 bool CRawRead::Open(char* p_path, char* p_mode)
 {
 	g_pMogFile = vsOpen(p_path, p_mode);
-	return g_pMogFile != 0;
+	return g_pMogFile != NULL;
 }
 
 // FUNCTION: LEMBALL 0x0045bbe0

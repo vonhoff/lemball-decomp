@@ -12,14 +12,14 @@ CMineManager::CMineManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0xd, 
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_mines = 0;
-	m_positions = 0;
+	m_mines = NULL;
+	m_positions = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00424080
 void CMineManager::Restart()
 {
-	if (m_mines != 0) {
+	if (m_mines != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_mines[i].Restart();
 		}
@@ -32,10 +32,10 @@ void CMineManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_mines = 0;
+		m_mines = NULL;
 		return;
 	}
-	if (m_mines == 0) {
+	if (m_mines == NULL) {
 		m_mines = new CMine[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			CMine* mine = &m_mines[i];
@@ -50,7 +50,7 @@ void CMineManager::Initialise(int p_capacity)
 // FUNCTION: LEMBALL 0x00424170
 CMineManager::~CMineManager()
 {
-	if (m_mines != 0) {
+	if (m_mines != NULL) {
 		delete[] m_mines;
 		delete[] m_positions;
 	}

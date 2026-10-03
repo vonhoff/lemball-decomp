@@ -10,13 +10,13 @@ CMoverManager::CMoverManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x1
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_movers = 0;
+	m_movers = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0042f1f0
 void CMoverManager::Restart()
 {
-	if (m_movers != 0) {
+	if (m_movers != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_movers[i].Restart();
 		}
@@ -29,10 +29,10 @@ void CMoverManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_movers = 0;
+		m_movers = NULL;
 		return;
 	}
-	if (m_movers == 0) {
+	if (m_movers == NULL) {
 		m_movers = new CMover[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_movers[i].Restart();
@@ -55,7 +55,7 @@ CMover* CMoverManager::Find(int p_x, int p_y, int& p_height)
 			return &m_movers[i];
 		}
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0042f350

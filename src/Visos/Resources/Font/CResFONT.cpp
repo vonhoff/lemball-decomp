@@ -1,5 +1,7 @@
 #include "../CResFONT.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045db30
 CVSSize CResFONT::GetSize(const char* p_text, unsigned int p_flags)
 {
@@ -11,9 +13,9 @@ CVSSize CResFONT::GetSize(const char* p_text, unsigned int p_flags)
 	if (p_text[0] != '\0') {
 		do {
 			CResZRLE* glyph = ASCIItoZRLE(p_text[textIndex]);
-			if (glyph == 0) {
+			if (glyph == NULL) {
 				glyph = ASCIItoZRLE('I');
-				if (glyph == 0) {
+				if (glyph == NULL) {
 					glyph = m_animationEntries;
 				}
 			}

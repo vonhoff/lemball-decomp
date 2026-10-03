@@ -11,13 +11,13 @@ CHandManager::CHandManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x16,
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_hands = 0;
+	m_hands = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00427ec0
 void CHandManager::Restart()
 {
-	if (m_hands != 0) {
+	if (m_hands != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_hands[i].Restart();
 		}
@@ -30,10 +30,10 @@ void CHandManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_hands = 0;
+		m_hands = NULL;
 		return;
 	}
-	if (m_hands == 0) {
+	if (m_hands == NULL) {
 		m_hands = new CHand[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_hands[i].Restart();

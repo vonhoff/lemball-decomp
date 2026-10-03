@@ -54,16 +54,16 @@ CAnimsManager::CAnimsManager(CGDI* p_gdi,
 	m_gdi = p_gdi;
 	m_resourceCapacity = p_resourceCapacity;
 	m_resourceIdCount = (int) p_resourceIdCount;
-	m_animPrimitives = 0;
-	m_zrlePrimitives = 0;
-	m_previousGdi = 0;
+	m_animPrimitives = NULL;
+	m_zrlePrimitives = NULL;
+	m_previousGdi = NULL;
 	m_doubleBuffered = p_doubleBuffered;
 	m_loadedResourceCount = 0;
 	m_reserved6c = 0xffffffff;
 	m_resources = (CResBase**) operator new(m_resourceCapacity * sizeof(*m_resources));
 	m_resourceSlots = (short*) operator new(m_resourceIdCount * sizeof(*m_resourceSlots));
 	for (i = 0; i < m_resourceCapacity; i++) {
-		m_resources[i] = 0;
+		m_resources[i] = NULL;
 	}
 	for (i = 0; i < m_resourceIdCount; i++) {
 		m_resourceSlots[i] = (short) m_resourceCapacity;
@@ -86,7 +86,7 @@ CAnimsManager::CAnimsManager(CGDI* p_gdi,
 		m_animPrimitives = new CAnim[m_animCapacity];
 	}
 	m_ownsLinePrimitives = 0;
-	m_linePrimitives = 0;
+	m_linePrimitives = NULL;
 	ResetPrimitives();
 }
 
@@ -101,7 +101,7 @@ CAnimsManager::~CAnimsManager()
 	if (m_loadedResourceCount != 0 && (scanned = 0, 0 < m_loadedResourceCount)) {
 		do {
 			resources = m_resources;
-			while (resources[i] == 0) {
+			while (resources[i] == NULL) {
 				i = i + 1;
 			}
 			resources[i]->UnLoad();
@@ -109,25 +109,25 @@ CAnimsManager::~CAnimsManager()
 			i = i + 1;
 		} while (scanned < m_loadedResourceCount);
 	}
-	if (m_resources != 0) {
+	if (m_resources != NULL) {
 		operator delete(m_resources);
-		m_resources = 0;
+		m_resources = NULL;
 	}
-	if (m_resourceSlots != 0) {
+	if (m_resourceSlots != NULL) {
 		operator delete(m_resourceSlots);
-		m_resourceSlots = 0;
+		m_resourceSlots = NULL;
 	}
-	if (m_zrlePrimitives != 0) {
+	if (m_zrlePrimitives != NULL) {
 		delete[] m_zrlePrimitives;
-		m_zrlePrimitives = 0;
+		m_zrlePrimitives = NULL;
 	}
-	if (m_animPrimitives != 0) {
+	if (m_animPrimitives != NULL) {
 		delete[] m_animPrimitives;
-		m_animPrimitives = 0;
+		m_animPrimitives = NULL;
 	}
-	if (m_ownsLinePrimitives != 0 && m_linePrimitives != 0) {
+	if (m_ownsLinePrimitives != 0 && m_linePrimitives != NULL) {
 		delete[] m_linePrimitives;
-		m_linePrimitives = 0;
+		m_linePrimitives = NULL;
 	}
 }
 
@@ -141,13 +141,13 @@ void CAnimsManager::LoadAnims(unsigned long p_resourceId)
 		slot = owner->m_resourceSlots[resourceId];
 	}
 	else {
-		while (owner->m_resources[slot] != 0) {
+		while (owner->m_resources[slot] != NULL) {
 			slot = slot + 1;
 		}
 	}
 	owner->m_resources[slot] = CResANIM::Load(resourceId);
 	CResBase*& resource = owner->m_resources[slot];
-	if (resource == 0) {
+	if (resource == NULL) {
 		resource = CResZRLE::Load(resourceId);
 	}
 	if ((int) owner->m_resourceSlots[resourceId] == owner->m_resourceCapacity) {
@@ -160,7 +160,7 @@ void CAnimsManager::LoadAnims(unsigned long p_resourceId)
 void CAnimsManager::UnLoadAnims(unsigned long p_resourceId)
 {
 	m_resources[m_resourceSlots[p_resourceId]]->UnLoad();
-	m_resources[m_resourceSlots[p_resourceId]] = 0;
+	m_resources[m_resourceSlots[p_resourceId]] = NULL;
 	m_resourceSlots[p_resourceId] = (short) m_resourceCapacity;
 	m_loadedResourceCount = m_loadedResourceCount - 1;
 }
@@ -200,7 +200,7 @@ CResZRLE* CAnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, CAnimF
 {
 	CResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
 	unsigned int frame;
-	if (p_frame != 0) {
+	if (p_frame != NULL) {
 		frame = p_frame->GetFrameNo();
 	}
 	else {
@@ -216,11 +216,11 @@ CResZRLE* CAnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, CAnimF
 void CAnimsManager::DetachGdi(CGDI* p_gdi)
 {
 	if (m_previousGdi == p_gdi) {
-		m_previousGdi = 0;
+		m_previousGdi = NULL;
 	}
 	if (m_gdi == p_gdi) {
-		m_previousGdi = 0;
-		m_gdi = 0;
+		m_previousGdi = NULL;
+		m_gdi = NULL;
 	}
 }
 

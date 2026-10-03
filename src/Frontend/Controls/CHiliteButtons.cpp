@@ -45,7 +45,7 @@ CHiliteButtons::CHiliteButtons(CGWnd* p_window,
 	m_x = p_x;
 	m_y = p_y;
 	int* binding = (int*) p_binding;
-	if (binding != 0) {
+	if (binding != NULL) {
 		if (m_valueCount == 1) {
 			m_value = *binding;
 		}
@@ -80,8 +80,8 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 	posted.m_type = MESSAGE_BUTTON_RELEASED;
 	posted.m_time = CurrentQueueTimer();
 	posted.m_code = 0;
-	posted.m_payload = 0;
-	posted.m_source = 0;
+	posted.m_payload = NULL;
+	posted.m_source = NULL;
 
 	if (p_message->m_code != (int) m_controlMessage) {
 		return 0;
@@ -104,7 +104,7 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 			if (m_maximum < nextValue) {
 				m_value = m_minimum;
 			}
-			if (m_binding != 0) {
+			if (m_binding != NULL) {
 				if (m_valueCount == 1) {
 					if (*m_binding == 0) {
 						*m_binding = 1;
@@ -127,7 +127,7 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 void CHiliteButtons::MoveCurrentButton(int p_x, int p_y)
 {
 	CVSPoint point(p_x, p_y);
-	if (m_button != 0) {
+	if (m_button != NULL) {
 		m_button->Move(point);
 	}
 }
@@ -135,7 +135,7 @@ void CHiliteButtons::MoveCurrentButton(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x0044f270
 void CHiliteButtons::Draw(int p_force)
 {
-	if (m_button != 0) {
+	if (m_button != NULL) {
 		m_button->Draw(p_force);
 	}
 }
@@ -166,7 +166,7 @@ void CHiliteButtons::UnLoadFaces()
 {
 	int index;
 
-	if (m_button != 0) {
+	if (m_button != NULL) {
 		delete m_button;
 	}
 	index = 0;
@@ -177,13 +177,13 @@ void CHiliteButtons::UnLoadFaces()
 		} while (index < m_valueCount);
 	}
 	operator delete(m_resources);
-	m_resources = 0;
+	m_resources = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0044f3d0
 void CHiliteButtons::UpdateAnimID()
 {
-	if (m_binding != 0) {
+	if (m_binding != NULL) {
 		if (m_valueCount == 1) {
 			m_value = *m_binding;
 		}

@@ -4,6 +4,8 @@
 #include "Visos/Graphics/CHotAreaList.h"
 #include "Visos/Graphics/CPVGWnd.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00444790
 CPauseWindow::~CPauseWindow()
 {
@@ -13,7 +15,7 @@ CPauseWindow::~CPauseWindow()
 	}
 	delete[] m_menuItemRects;
 	UnRegisterRemaps();
-	if (m_borderAnims != 0) {
+	if (m_borderAnims != NULL) {
 		delete[] m_borderAnims;
 	}
 	UnLoad();

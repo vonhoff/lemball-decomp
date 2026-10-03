@@ -42,7 +42,7 @@ void CNetworkMessage::Initialise()
 	m_headerEnabled = 0;
 	m_pendingSendCount = 0;
 	m_ownsBuffer = 0;
-	m_buffer = 0;
+	m_buffer = NULL;
 	m_payloadCapacity = 0;
 	m_openDepth = 0;
 }
@@ -56,14 +56,14 @@ CNetworkMessage::~CNetworkMessage()
 			if (CurrentMilliTimer() - start >= 2000) {
 				break;
 			}
-			if (g_pBaseNetwork != 0) {
+			if (g_pBaseNetwork != NULL) {
 				g_pBaseNetwork->WaitProcess();
 			}
 		}
 	}
 	if (m_ownsBuffer != 0) {
 		operator delete(m_buffer);
-		m_buffer = 0;
+		m_buffer = NULL;
 	}
 }
 
@@ -287,7 +287,7 @@ void CNetworkMessage::Send(CConnect* p_connection)
 {
 	Message message;
 
-	if (p_connection != 0) {
+	if (p_connection != NULL) {
 		message.m_type = NETWORK_QUEUE_SEND_ONE;
 		message.m_code = 1;
 		message.m_payload = this;

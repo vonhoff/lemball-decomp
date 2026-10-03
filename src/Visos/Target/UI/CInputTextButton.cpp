@@ -12,7 +12,7 @@ CInputTextButton::CInputTextButton(const CVSRect& p_rect,
 								   char* p_text)
 	: CTextButton(p_rect, p_parent, RES_GAME_FONT1, 0x0c)
 {
-	m_ownedText = 0;
+	m_ownedText = NULL;
 	SetOwnedText(p_text);
 	m_messageQueue = g_pMasterInputQueue;
 	m_controlMessage = p_controlMessage;
@@ -21,7 +21,7 @@ CInputTextButton::CInputTextButton(const CVSRect& p_rect,
 // FUNCTION: LEMBALL 0x0043a190
 CInputTextButton::~CInputTextButton()
 {
-	if (m_ownedText != 0) {
+	if (m_ownedText != NULL) {
 		delete[] m_ownedText;
 	}
 }
@@ -29,10 +29,10 @@ CInputTextButton::~CInputTextButton()
 // FUNCTION: LEMBALL 0x0043a1d0
 void CInputTextButton::SetOwnedText(char* p_text)
 {
-	if (m_ownedText != 0) {
+	if (m_ownedText != NULL) {
 		delete[] m_ownedText;
 	}
 	m_ownedText = new char[strlen(p_text) + 1];
 	strcpy(m_ownedText, p_text);
-	SetText(m_ownedText, 0);
+	SetText(m_ownedText, NULL);
 }

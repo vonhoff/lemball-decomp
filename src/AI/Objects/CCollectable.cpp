@@ -12,6 +12,8 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Visos/Foundation/CFixed.h"
 
+#include <stddef.h>
+
 inline static CFixed FixedGroundHeight(unsigned short p_height)
 {
 	CFixed height((int) p_height << 12);
@@ -65,7 +67,7 @@ bool CCollectable::Process()
 			m_enabled = 0;
 			break;
 		case ACTION_READY: {
-			if (g_pActiveConnection == 0 || m_requestedAction == ACTION_READY) {
+			if (g_pActiveConnection == NULL || m_requestedAction == ACTION_READY) {
 				if (m_onMover == 0) {
 					int y = m_position.m_yFixed >> 12;
 					int x = m_position.m_xFixed >> 12;
@@ -88,7 +90,7 @@ bool CCollectable::Process()
 				pt.m_y = m_position.m_yFixed >> 12;
 				pt.m_z = m_position.m_zFixed >> 12;
 				CAI* ai = g_pAI;
-				ai->m_collisionExclude = 0;
+				ai->m_collisionExclude = NULL;
 				ai->m_collisionPoint = pt;
 				ai->m_collisionIndex = 0;
 				CGameObject* hit;
@@ -103,9 +105,9 @@ bool CCollectable::Process()
 						ai->m_collisionIndex++;
 					} while ((int) ai->m_collisionIndex < ai->m_objectCount);
 				}
-				hit = 0;
+				hit = NULL;
 			found:
-				if (hit != 0 && hit->m_objectType == OBJECT_PLAYER_2 && hit->HasObject(m_objectType) == 0) {
+				if (hit != NULL && hit->m_objectType == OBJECT_PLAYER_2 && hit->HasObject(m_objectType) == 0) {
 					m_activator = hit;
 					RequestAction(ACTION_ACTIVATED);
 				}

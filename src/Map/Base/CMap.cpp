@@ -6,6 +6,8 @@
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
+#include <stddef.h>
+
 #define WALK_CELL_SHIFT 4
 #define WALK_CELL_SIZE (1 << WALK_CELL_SHIFT)
 #define WALK_CELL_HALF_SIZE (WALK_CELL_SIZE / 2)
@@ -23,22 +25,22 @@
 #define WALK_OUT_WEST 0x80
 
 // GLOBAL: LEMBALL 0x0049e4e0
-CMap* g_pActiveMap = 0;
+CMap* g_pActiveMap = NULL;
 
 // GLOBAL: LEMBALL 0x0049e4e4
-CMap* g_pCurrentMap = 0;
+CMap* g_pCurrentMap = NULL;
 
 // FUNCTION: LEMBALL 0x004303c0
 CMap::CMap()
 {
-	m_ground.m_ground = 0;
+	m_ground.m_ground = NULL;
 	m_ground.m_width = 0;
 	m_ground.m_height = 0;
 	g_pActiveMap = this;
 	g_pCurrentMap = this;
 	m_walkHeight = 0;
 	m_walkWidth = 0;
-	m_walkBits = 0;
+	m_walkBits = NULL;
 }
 
 // FUNCTION: LEMBALL 0x004303f0
@@ -54,10 +56,10 @@ void CMap::Restart()
 // FUNCTION: LEMBALL 0x00430410
 CMap::~CMap()
 {
-	if (m_walkBits != 0) {
+	if (m_walkBits != NULL) {
 		delete[] m_walkBits;
 	}
-	if (m_ground.m_ground != 0) {
+	if (m_ground.m_ground != NULL) {
 		delete[] m_ground.m_ground;
 	}
 }
@@ -68,13 +70,13 @@ void CMap::ReSize(int p_width, int p_height)
 	if (m_walkWidth != p_width || m_walkHeight != p_height) {
 		m_walkWidth = p_width;
 		m_walkHeight = p_height;
-		if (m_ground.m_ground != 0) {
+		if (m_ground.m_ground != NULL) {
 			delete[] m_ground.m_ground;
 		}
 		m_ground.m_width = p_width;
 		m_ground.m_height = p_height;
 		m_ground.m_ground = new CGround[p_width * p_height];
-		if (m_walkBits != 0) {
+		if (m_walkBits != NULL) {
 			delete[] m_walkBits;
 		}
 		m_walkBits = new unsigned char[m_walkWidth * m_walkHeight];
@@ -84,13 +86,13 @@ void CMap::ReSize(int p_width, int p_height)
 // FUNCTION: LEMBALL 0x004304e0
 unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 {
-	if (p_mover != 0) {
+	if (p_mover != NULL) {
 		int blockX = p_x >> 4;
 		int blockY = p_y >> 4;
 		if ((m_ground.m_ground[blockY * m_ground.m_width + blockX].m_collision & 0x10) != 0) {
 			int height;
 			CMover* mover = m_ai->FindMoverHeight(p_x, p_y, height);
-			if (mover != 0) {
+			if (mover != NULL) {
 				*p_mover = mover;
 				return (unsigned short) height;
 			}

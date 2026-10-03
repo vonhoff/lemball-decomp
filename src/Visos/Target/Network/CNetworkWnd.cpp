@@ -24,10 +24,10 @@ CNetworkWnd::CNetworkWnd(const char* p_className, int* p_registered)
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 4;
 		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
-		windowClass.hIcon = 0;
-		windowClass.hCursor = 0;
-		windowClass.hbrBackground = 0;
-		windowClass.lpszMenuName = 0;
+		windowClass.hIcon = NULL;
+		windowClass.hCursor = NULL;
+		windowClass.hbrBackground = NULL;
+		windowClass.lpszMenuName = NULL;
 		windowClass.lpszClassName = p_className;
 		if (RegisterClassA(&windowClass) == 0) {
 			FatalWin32Error("Unable to register base window class");
@@ -43,11 +43,11 @@ CNetworkWnd::CNetworkWnd(const char* p_className, int* p_registered)
 									 CW_USEDEFAULT,
 									 CW_USEDEFAULT,
 									 CW_USEDEFAULT,
-									 0,
-									 0,
+									 NULL,
+									 NULL,
 									 (HINSTANCE) g_pApplicationInstance,
 									 this);
-	if (m_windowHandle == 0) {
+	if (m_windowHandle == NULL) {
 		unsigned long error = GetLastError();
 		*g_pErrorOutput << "Failed to create invisible window - Error code: " << error << "\n";
 	}
@@ -71,8 +71,8 @@ static LRESULT CALLBACK NetworkWndProc(HWND p_window, UINT p_message, WPARAM p_w
 
 	window = (CNetworkWnd*) GetWindowLongA(p_window, GWL_USERDATA);
 	if (p_message != WM_CREATE) {
-		if (window != 0 && (window->m_lastMessage == 0 ||
-							(window->m_firstMessage <= p_message && p_message <= window->m_lastMessage))) {
+		if (window != NULL && (window->m_lastMessage == 0 ||
+							   (window->m_firstMessage <= p_message && p_message <= window->m_lastMessage))) {
 			result = window->Process(p_message, p_wParam, p_lParam);
 			if (result != -1) {
 				return result;

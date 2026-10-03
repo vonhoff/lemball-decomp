@@ -29,21 +29,21 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 CBaseNetwork::CBaseNetwork()
 {
 	g_lastNetworkError = 0;
-	m_lastConnect = 0;
-	m_firstConnect = 0;
+	m_lastConnect = NULL;
+	m_firstConnect = NULL;
 	m_broadcastMode = 0;
 	m_suspendBroadcastOnConnect = 0;
 	m_initialised = 0;
 	m_initialisePending = 0;
-	m_pendingDetachQueue = 0;
-	m_activeStatusItem = 0;
-	m_pendingAttachQueue = 0;
-	m_messageQueue = 0;
+	m_pendingDetachQueue = NULL;
+	m_activeStatusItem = NULL;
+	m_pendingAttachQueue = NULL;
+	m_messageQueue = NULL;
 	m_queueTransitionPending = 0;
 	m_shutdownRequested = 0;
 	m_serverMode = 0;
 	m_criticalRetryLimit = 0x50;
-	m_broadcast = 0;
+	m_broadcast = NULL;
 
 	g_pNetworkStatusQueue = new CBaseQueue(0x1e);
 	g_pNetworkStatusQueue->Attach(this, 0x19);
@@ -74,7 +74,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 	}
 
 	start = timeGetTime();
-	while (m_serverMode != 0 && !(m_serverMode != 0 && m_broadcast != 0 && m_broadcast->m_readReady != 0) &&
+	while (m_serverMode != 0 && !(m_serverMode != 0 && m_broadcast != NULL && m_broadcast->m_readReady != 0) &&
 		   g_lastNetworkError == 0 && timeGetTime() - start < 10000) {
 		waitStart = timeGetTime();
 		while (timeGetTime() - waitStart < 100) {
@@ -84,7 +84,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 
 	if (m_serverMode != 0) {
 		if (m_serverMode != 0) {
-			if (m_broadcast != 0) {
+			if (m_broadcast != NULL) {
 				if (m_broadcast->m_readReady != 0) {
 					if (g_lastNetworkError == 0) {
 						return true;
@@ -140,16 +140,16 @@ CBaseNetwork::~CBaseNetwork()
 
 	DetachMessageQueue();
 	queue = *(CBaseQueue* volatile*) &g_pNetworkPacketQueue;
-	if (queue != 0) {
+	if (queue != NULL) {
 		delete queue;
 	}
-	g_pNetworkPacketQueue = 0;
+	g_pNetworkPacketQueue = NULL;
 	g_pNetworkStatusQueue->Detach(this, 0x19);
 	queue = *(CBaseQueue* volatile*) &g_pNetworkStatusQueue;
-	if (queue != 0) {
+	if (queue != NULL) {
 		delete queue;
 	}
-	g_pNetworkStatusQueue = 0;
+	g_pNetworkStatusQueue = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00461e10
@@ -164,10 +164,10 @@ void CBaseNetwork::ShutDown()
 		m_initialised = 0;
 		m_serverMode = 0;
 		peer = m_firstConnect;
-		if (peer != 0) {
+		if (peer != NULL) {
 			BeforeDestroyConnections();
 			while (1) {
-				if (peer == 0) {
+				if (peer == NULL) {
 					break;
 				}
 				next = peer->m_nextConnect;
@@ -182,53 +182,53 @@ void CBaseNetwork::ShutDown()
 			AfterDestroyConnections();
 		}
 
-		if (m_broadcast != 0) {
+		if (m_broadcast != NULL) {
 			m_broadcast->Stop();
 			delete m_broadcast;
 		}
-		if (g_pNetworkPacketScratch != 0) {
+		if (g_pNetworkPacketScratch != NULL) {
 			operator delete(g_pNetworkPacketScratch);
 		}
-		g_pNetworkPacketScratch = 0;
-		if (g_pBroadcastReceiveAddress != 0) {
+		g_pNetworkPacketScratch = NULL;
+		if (g_pBroadcastReceiveAddress != NULL) {
 			delete g_pBroadcastReceiveAddress;
 		}
-		g_pBroadcastReceiveAddress = 0;
+		g_pBroadcastReceiveAddress = NULL;
 		message = *(CNetworkMessage* volatile*) &g_pAckMessage;
-		if (message != 0) {
+		if (message != NULL) {
 			delete message;
 		}
-		g_pAckMessage = 0;
+		g_pAckMessage = NULL;
 		message = *(CNetworkMessage* volatile*) &g_pPulseMessage;
-		if (message != 0) {
+		if (message != NULL) {
 			delete message;
 		}
-		g_pPulseMessage = 0;
+		g_pPulseMessage = NULL;
 		message = *(CNetworkMessage* volatile*) &g_pMessReqConnect;
-		if (message != 0) {
+		if (message != NULL) {
 			delete message;
 		}
-		g_pMessReqConnect = 0;
+		g_pMessReqConnect = NULL;
 		message = *(CNetworkMessage* volatile*) &g_pMessReqNewPort;
-		if (message != 0) {
+		if (message != NULL) {
 			delete message;
 		}
-		g_pMessReqNewPort = 0;
+		g_pMessReqNewPort = NULL;
 		message = *(CNetworkMessage* volatile*) &g_pMessOKConnect;
-		if (message != 0) {
+		if (message != NULL) {
 			delete message;
 		}
-		g_pMessOKConnect = 0;
+		g_pMessOKConnect = NULL;
 		message = *(CNetworkMessage* volatile*) &g_pMessGOConnect;
-		if (message != 0) {
+		if (message != NULL) {
 			delete message;
 		}
-		g_pMessGOConnect = 0;
+		g_pMessGOConnect = NULL;
 		message = *(CNetworkMessage* volatile*) &g_pMessFAILEDConnect;
-		if (message != 0) {
+		if (message != NULL) {
 			delete message;
 		}
-		g_pMessFAILEDConnect = 0;
+		g_pMessFAILEDConnect = NULL;
 		UnInitialise();
 	}
 }
@@ -239,10 +239,10 @@ void CBaseNetwork::Delete(CConnect* p_connection)
 	CConnect* peer = m_firstConnect;
 	CConnect* next;
 	CConnect* previous;
-	if (peer != 0) {
+	if (peer != NULL) {
 		while (peer != p_connection) {
 			peer = peer->m_nextConnect;
-			if (peer == 0) {
+			if (peer == NULL) {
 				return;
 			}
 		}
@@ -257,10 +257,10 @@ void CBaseNetwork::Delete(CConnect* p_connection)
 		m_broadcast->ResetPort(peer->m_port);
 		peer->Stop();
 		delete peer;
-		if (previous != 0) {
+		if (previous != NULL) {
 			previous->m_nextConnect = next;
 		}
-		if (next != 0) {
+		if (next != NULL) {
 			next->m_previousConnect = previous;
 		}
 	}
@@ -276,7 +276,7 @@ CConnect* CBaseNetwork::NewConnect()
 	peer = m_firstConnect;
 	removed = false;
 	while (1) {
-		if (peer == 0) {
+		if (peer == NULL) {
 			break;
 		}
 		next = peer->m_nextConnect;
@@ -294,7 +294,7 @@ CConnect* CBaseNetwork::NewConnect()
 	}
 
 	peer = (CConnect*) GetNewConnect();
-	if (m_firstConnect == 0) {
+	if (m_firstConnect == NULL) {
 		m_firstConnect = peer;
 	}
 	else {
@@ -313,7 +313,7 @@ bool CBaseNetwork::Exists(CConnect* p_connection)
 	CConnect* peer;
 
 	peer = m_firstConnect;
-	while (peer != 0) {
+	while (peer != NULL) {
 		if (p_connection == peer) {
 			if (peer->CheckConnectTime() == 0) {
 				return false;
@@ -333,7 +333,7 @@ bool CBaseNetwork::Exists(CConnect* p_connection)
 CConnect* CBaseNetwork::FindConnection(CNetworkAddress* p_address)
 {
 	CConnect* peer = m_firstConnect;
-	while (peer != 0) {
+	while (peer != NULL) {
 		if (peer->m_killRequested == 0 && *peer->m_destinationAddress == *p_address) {
 			break;
 		}
@@ -346,7 +346,7 @@ CConnect* CBaseNetwork::FindConnection(CNetworkAddress* p_address)
 void CBaseNetwork::KillUnBornConnection(CNetworkAddress* p_address)
 {
 	CConnect* peer = FindConnection(p_address);
-	if (peer != 0) {
+	if (peer != NULL) {
 		peer->Kill();
 	}
 }
@@ -358,7 +358,7 @@ void CBaseNetwork::CtoSRequestConnect(CNetworkAddress* p_address)
 	short port;
 
 	peer = FindConnection(p_address);
-	if (peer != 0 && peer->m_killRequested == 0 && peer->CheckConnectTime() != 0) {
+	if (peer != NULL && peer->m_killRequested == 0 && peer->CheckConnectTime() != 0) {
 		return;
 	}
 
@@ -408,7 +408,7 @@ void CBaseNetwork::StoCOKConnect(CNetworkAddress* p_address)
 	short port;
 
 	peer = FindConnection(p_address);
-	if (peer != 0 && peer->m_killRequested == 0 && peer->CheckConnectTime() != 0) {
+	if (peer != NULL && peer->m_killRequested == 0 && peer->CheckConnectTime() != 0) {
 		if (*g_pBroadcastAddress > *p_address) {
 			return;
 		}
@@ -505,26 +505,26 @@ void CBaseNetwork::AttachMessageQueue(CBaseQueueHandler* p_queueHandler)
 // FUNCTION: LEMBALL 0x004625b0
 void CBaseNetwork::DetachMessageQueue()
 {
-	if (m_messageQueue != 0) {
+	if (m_messageQueue != NULL) {
 		g_pNetworkPacketQueue->Detach(m_messageQueue, 0);
-		m_messageQueue = 0;
+		m_messageQueue = NULL;
 	}
 }
 
 // FUNCTION: LEMBALL 0x004625e0
 void CBaseNetwork::Process()
 {
-	if (m_activeStatusItem != 0) {
+	if (m_activeStatusItem != NULL) {
 		g_pNetworkStatusQueue->Attach((CBaseQueueHandler*) m_activeStatusItem, 0);
 		m_queueTransitionPending = 1;
 		m_pendingAttachQueue = (CBaseQueueHandler*) m_activeStatusItem;
-		m_activeStatusItem = 0;
+		m_activeStatusItem = NULL;
 	}
 
-	if (m_pendingDetachQueue != 0) {
+	if (m_pendingDetachQueue != NULL) {
 		g_pNetworkStatusQueue->Detach(m_pendingDetachQueue, 0);
-		m_pendingDetachQueue = 0;
-		m_pendingAttachQueue = 0;
+		m_pendingDetachQueue = NULL;
+		m_pendingAttachQueue = NULL;
 		m_queueTransitionPending = 0;
 	}
 
@@ -538,17 +538,17 @@ void CBaseNetwork::Process()
 		return;
 	}
 
-	if (m_broadcast != 0) {
+	if (m_broadcast != NULL) {
 		m_broadcast->Process();
 	}
 
 	CConnect* peer = m_firstConnect;
-	while (peer != 0) {
+	while (peer != NULL) {
 		peer->Process();
 		peer = peer->m_nextConnect;
 	}
 
-	if (m_pendingAttachQueue != 0) {
+	if (m_pendingAttachQueue != NULL) {
 		((CNetworkManager*) m_pendingAttachQueue)->Process();
 	}
 }
@@ -563,7 +563,7 @@ void CBaseNetwork::HandleNewConnectionEvent(const char* p_localName, const char*
 CConnect* CBaseNetwork::FindEventConnection(CNetworkAddress* p_address)
 {
 	CConnect* peer = m_firstConnect;
-	while (peer != 0) {
+	while (peer != NULL) {
 		if ((*p_address == *peer->m_destinationAddress) == 0) {
 			break;
 		}
@@ -576,7 +576,7 @@ CConnect* CBaseNetwork::FindEventConnection(CNetworkAddress* p_address)
 void CBaseNetwork::HandleConnectionMessage(CNetworkAddress* p_address)
 {
 	CConnect* peer = FindEventConnection(p_address);
-	if (peer != 0) {
+	if (peer != NULL) {
 		BeforeDestroyConnections();
 		Delete(peer);
 		AfterDestroyConnections();
@@ -595,7 +595,7 @@ bool CBaseNetwork::SendAll(CNetworkMessage& p_message)
 	peer = m_firstConnect;
 
 	while (1) {
-		if (peer == 0) {
+		if (peer == NULL) {
 			if (sendBlocked == 0 && activeCount > 0) {
 				return true;
 			}
@@ -675,18 +675,18 @@ void CBaseNetwork::UnInitialise()
 
 void* CBaseNetwork::GetNewConnect()
 {
-	return 0;
+	return NULL;
 }
 
 void* CBaseNetwork::GetNewBroadcast()
 {
-	return 0;
+	return NULL;
 }
 
 void* CBaseNetwork::GetNewNetworkAddress()
 {
-	return 0;
+	return NULL;
 }
 
 // GLOBAL: LEMBALL 0x004a1e18
-CBaseNetwork* g_pBaseNetwork = 0;
+CBaseNetwork* g_pBaseNetwork = NULL;

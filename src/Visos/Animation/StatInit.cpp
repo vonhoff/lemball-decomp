@@ -3,6 +3,7 @@
 #include "Visos/Foundation/VsInit.h"
 
 #include <new.h>
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045aa80
 bool _STAT_Init()
@@ -10,15 +11,15 @@ bool _STAT_Init()
 	void* storage;
 
 	storage = operator new(0x14);
-	if (storage != 0) {
+	if (storage != NULL) {
 		storage = new (storage) CStatManager(0x20);
 	}
 	else {
-		storage = 0;
+		storage = NULL;
 	}
 	g_pStatManager = (CStatManager*) storage;
 
-	return g_pStatManager != 0;
+	return g_pStatManager != NULL;
 }
 
 // FUNCTION: LEMBALL 0x0045aab0

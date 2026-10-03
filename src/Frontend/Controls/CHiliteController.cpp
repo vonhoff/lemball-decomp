@@ -22,6 +22,7 @@
 #include "Visos/Resources/ResourceLimits.h"
 
 #include <new.h>
+#include <stddef.h>
 
 class CAnimFrameBASE;
 
@@ -43,7 +44,7 @@ CHiliteController::CHiliteController(CGWnd* p_window,
 	m_nextControlMessage = 0xabcd0000;
 	index = 0;
 	while (index < 4) {
-		m_buttons[index] = 0;
+		m_buttons[index] = NULL;
 		m_junctions[index].m_present = 0;
 		index = index + 1;
 	}
@@ -65,8 +66,8 @@ CHiliteController::CHiliteController(CGWnd* p_window,
 void CHiliteController::SetHiliteWindow()
 {
 	void* storage = operator new(0x90);
-	if (storage == 0) {
-		m_hiliteWindow = 0;
+	if (storage == NULL) {
+		m_hiliteWindow = NULL;
 	}
 	else {
 		m_hiliteWindow = new (storage) CHiliteWindow();
@@ -74,7 +75,7 @@ void CHiliteController::SetHiliteWindow()
 	CVSRect rect(m_window->m_rect);
 	rect.m_x = 0;
 	rect.m_y = 0;
-	m_hiliteWindow->Create(rect, (CPVGWnd*) m_window, 0);
+	m_hiliteWindow->Create(rect, (CPVGWnd*) m_window, NULL);
 	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
 }
 
@@ -83,7 +84,7 @@ CHiliteController::~CHiliteController()
 {
 	g_pMasterInputQueue->Detach(this, 0);
 	for (int i = 0; i < 4; i++) {
-		if (m_buttons[i] != 0) {
+		if (m_buttons[i] != NULL) {
 			delete m_buttons[i];
 		}
 	}
@@ -91,7 +92,7 @@ CHiliteController::~CHiliteController()
 	if (m_hiliteWindow->m_lifecycleRefs == 1) {
 		m_hiliteWindow->Destroy();
 	}
-	if (m_hiliteWindow != 0) {
+	if (m_hiliteWindow != NULL) {
 		delete m_hiliteWindow;
 	}
 }
@@ -170,19 +171,19 @@ void CHiliteController::AddButton(int p_x,
 {
 	unsigned long controlMessage = ++m_nextControlMessage;
 	void* storage = operator new(sizeof(CHiliteButtons));
-	m_buttons[m_buttonCount] = storage != 0 ? new (storage) CHiliteButtons(m_window,
-																		   m_gdi,
-																		   p_x,
-																		   p_y,
-																		   p_animIds,
-																		   p_mode,
-																		   p_minimum,
-																		   p_maximum,
-																		   p_value,
-																		   controlMessage,
-																		   p_binding,
-																		   p_actionMessage)
-											: 0;
+	m_buttons[m_buttonCount] = storage != NULL ? new (storage) CHiliteButtons(m_window,
+																			  m_gdi,
+																			  p_x,
+																			  p_y,
+																			  p_animIds,
+																			  p_mode,
+																			  p_minimum,
+																			  p_maximum,
+																			  p_value,
+																			  controlMessage,
+																			  p_binding,
+																			  p_actionMessage)
+											   : NULL;
 	AddHJunction(p_x, p_y, m_buttons[m_buttonCount]->m_controlMessage);
 	m_buttonCount++;
 }
@@ -205,7 +206,7 @@ void CHiliteController::DrawButtons(int p_force)
 	buttonPtr = m_buttons;
 	count = 4;
 	do {
-		if (*buttonPtr != 0) {
+		if (*buttonPtr != NULL) {
 			(*buttonPtr)->Draw(p_force);
 		}
 		buttonPtr++;
@@ -234,7 +235,7 @@ void CHiliteController::DrawHiliteWindow()
 		unsigned long animationId = g_dwHiliteAnimationId;
 		CGDI* savedGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
-		CAnimsManager::DrawAnim(position, animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, 0);
+		CAnimsManager::DrawAnim(position, animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, NULL);
 		CAnimsManager::m_gdi = savedGdi;
 		CAnimsManager::ResetPrimitives();
 	}
@@ -296,7 +297,7 @@ void CHiliteController::ActivateButtons(int p_active)
 	if (initialCount > i) {
 		do {
 			CHiliteButtons* btn = m_buttons[i];
-			if (btn != 0) {
+			if (btn != NULL) {
 				btn->m_active = active;
 				btn->m_button->SetActive(active);
 			}
@@ -313,7 +314,7 @@ void CHiliteController::UpdateAllAnimIDs()
 	if (m_buttonCount > i) {
 		CHiliteButtons** button = m_buttons;
 		do {
-			if (*button != 0) {
+			if (*button != NULL) {
 				(*button)->UpdateAnimID();
 			}
 			button++;
@@ -330,7 +331,7 @@ void CHiliteController::UpdateAnimIDs(unsigned long p_actionMessage)
 	if (m_buttonCount > buttonIndex) {
 		buttonCursor = m_buttons;
 		do {
-			if (*buttonCursor != 0 && (*buttonCursor)->m_actionMessage == p_actionMessage) {
+			if (*buttonCursor != NULL && (*buttonCursor)->m_actionMessage == p_actionMessage) {
 				m_buttons[buttonIndex]->UpdateAnimID();
 				break;
 			}

@@ -3,6 +3,7 @@
 #include "CMogRes.h"
 
 #include <new.h>
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045dd90
 CResPALETTE* CResPALETTE::Load(unsigned int p_resourceId)
@@ -11,19 +12,19 @@ CResPALETTE* CResPALETTE::Load(unsigned int p_resourceId)
 	CResPALETTE* res;
 	register unsigned int id = p_resourceId;
 	res = (CResPALETTE*) g_pActiveMogRes->Find(id);
-	if (res == 0) {
+	if (res == NULL) {
 		storage = operator new(sizeof(CResPALETTE));
-		if (storage != 0) {
+		if (storage != NULL) {
 			res = new (storage) CResPALETTE(id);
 		}
 		else {
-			res = 0;
+			res = NULL;
 		}
 		return (CResPALETTE*) res->CheckError();
 	}
 	if (res->m_chunkType != 0x50414c20) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }

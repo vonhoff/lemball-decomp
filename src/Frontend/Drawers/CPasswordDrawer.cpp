@@ -188,7 +188,7 @@ void CPasswordDrawer::Load()
 		m_primitiveBundle[primitiveIndex].m_primitive.m_y = (short) layoutY;
 		m_primitiveBundle[primitiveIndex].m_primitive.m_resource = background;
 		m_primitiveBundle[primitiveIndex].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
-		m_primitiveBundle[primitiveIndex].m_primitive.m_remap = 0;
+		m_primitiveBundle[primitiveIndex].m_primitive.m_remap = NULL;
 		primitiveIndex++;
 	} while (--primitiveCount != 0);
 	CAnimsManager::LoadAnims(m_animationId);
@@ -236,7 +236,7 @@ void CPasswordDrawer::UnLoad()
 
 	i = 0;
 	do {
-		if (m_buttons[i] != 0) {
+		if (m_buttons[i] != NULL) {
 			delete m_buttons[i];
 		}
 		i++;
@@ -419,12 +419,12 @@ void CPasswordDrawer::DrawText()
 		CVSSize advance;
 		CVSPoint position((short) labelPos->m_x, (short) labelPos->m_y);
 		m_textManager
-			->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillIndex], 0x20, 0);
+			->DrawString(m_gdi, position, advance, m_chalkFontId, g_apPasswordSkillLabels[skillIndex], 0x20, NULL);
 		strcpy(textPtr, g_szPasswordLevelFormat);
 		vsLtoa(g_pGameStatus->m_maxLevels[skillIndex] + 1, textPtr + 2, 10);
 		CVSSize countAdvance;
 		CVSPoint countPosition((short) countPos->m_x, (short) countPos->m_y);
-		m_textManager->DrawString(m_gdi, countPosition, countAdvance, m_chalkFontId, textPtr, 0x20, 0);
+		m_textManager->DrawString(m_gdi, countPosition, countAdvance, m_chalkFontId, textPtr, 0x20, NULL);
 		countPos++;
 		skillIndex++;
 		labelPos++;
@@ -434,12 +434,12 @@ void CPasswordDrawer::DrawText()
 		if (m_passwordValid == 1) {
 			CVSSize advance;
 			CVSPoint position((short) m_layout->m_resultPosition.m_x, (short) m_layout->m_resultPosition.m_y);
-			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordOk, 0x20, 0);
+			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordOk, 0x20, NULL);
 		}
 		else {
 			CVSSize advance;
 			CVSPoint position((short) m_layout->m_resultPosition.m_x, (short) m_layout->m_resultPosition.m_y);
-			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordInvalid, 0x20, 0);
+			m_textManager->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordInvalid, 0x20, NULL);
 		}
 	}
 }
@@ -455,7 +455,7 @@ void CPasswordDrawer::DrawPassword()
 	CVSPoint position((short) x, (short) y);
 	textSize.m_height = 0;
 	textSize.m_width = 0;
-	m_textManager->DrawString(m_gdi, position, textSize, m_chalkFontId, m_password, 0x20, 0);
+	m_textManager->DrawString(m_gdi, position, textSize, m_chalkFontId, m_password, 0x20, NULL);
 }
 
 // FUNCTION: LEMBALL 0x00451d20
@@ -536,7 +536,7 @@ void CPasswordDrawer::DrawHilite()
 	savedGdi = CAnimsManager::m_gdi;
 	m_hiliteAnim.m_frameState = 0;
 	CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
-	CAnimsManager::DrawAnim(position, m_animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, 0);
+	CAnimsManager::DrawAnim(position, m_animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, NULL);
 	CAnimsManager::m_gdi = savedGdi;
 }
 
@@ -554,6 +554,6 @@ void CPasswordDrawer::SetHiliteWindow()
 				 (short) (layout->m_keypadY - 1),
 				 (short) (pitch * 3),
 				 (short) (pitch * 4));
-	m_hiliteWindow->Create(rect, (CPVGWnd*) m_display, 0);
+	m_hiliteWindow->Create(rect, (CPVGWnd*) m_display, NULL);
 	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
 }

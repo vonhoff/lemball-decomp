@@ -18,10 +18,10 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 // FUNCTION: LEMBALL 0x00460a90
 CConnect::CConnect()
 {
-	m_address = 0;
-	m_name = 0;
-	m_previousConnect = 0;
-	m_nextConnect = 0;
+	m_address = NULL;
+	m_name = NULL;
+	m_previousConnect = NULL;
+	m_nextConnect = NULL;
 	m_isHost = 0;
 	m_killRequested = 0;
 	m_established = 0;
@@ -67,13 +67,13 @@ void CConnect::SetConnectTime()
 // FUNCTION: LEMBALL 0x00460d20
 void CConnect::Stop()
 {
-	if (m_name != 0) {
+	if (m_name != NULL) {
 		operator delete(m_name);
-		m_name = 0;
+		m_name = NULL;
 	}
-	if (m_address != 0) {
+	if (m_address != NULL) {
 		operator delete(m_address);
-		m_address = 0;
+		m_address = NULL;
 	}
 	CBaseCommonSocket::CloseSocket();
 }
@@ -157,7 +157,7 @@ CNetworkMessage* CConnect::ReceiveAcknowledgement()
 	Message message;
 
 	acknowledgement = CWriteSocket::ReceiveAcknowledgement();
-	if (acknowledgement != 0) {
+	if (acknowledgement != NULL) {
 		message.m_type = 6;
 		message.m_code = 0;
 		message.m_payload = this;
@@ -214,4 +214,4 @@ void CConnect::ConnectSetup()
 }
 
 // GLOBAL: LEMBALL 0x004a011c
-CConnect* g_pActiveConnection = 0;
+CConnect* g_pActiveConnection = NULL;

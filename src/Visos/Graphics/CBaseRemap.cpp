@@ -2,6 +2,8 @@
 
 #include "../Resources/CResPALETTE.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0046aa80
 CBaseRemap::CBaseRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)
 {
@@ -22,10 +24,10 @@ CBaseRemap::CBaseRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePa
 // FUNCTION: LEMBALL 0x0046aad0
 CBaseRemap::~CBaseRemap()
 {
-	if (m_remap != 0) {
+	if (m_remap != NULL) {
 		operator delete(m_remap);
 	}
-	if (m_paletteResource != 0) {
+	if (m_paletteResource != NULL) {
 		m_paletteResource->UnLoad();
 	}
 }

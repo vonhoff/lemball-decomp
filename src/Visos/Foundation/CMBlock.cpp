@@ -7,9 +7,9 @@ CMBlock::CMBlock(CArena* p_arena, CMBlock* p_previous, char* p_description, unsi
 {
 	m_ownerArena = p_arena;
 	m_nextBlock = p_previous;
-	m_previousBlock = 0;
-	m_previousFree = 0;
-	m_nextFree = 0;
+	m_previousBlock = NULL;
+	m_previousFree = NULL;
+	m_nextFree = NULL;
 	m_flags = 0;
 }
 

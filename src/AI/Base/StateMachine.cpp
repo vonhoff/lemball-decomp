@@ -7,6 +7,8 @@
 #include "StateEntry.h"
 #include "Views/Sound/SoundEffects.h"
 
+#include <stddef.h>
+
 // GLOBAL: LEMBALL 0x0049d198
 StateEntry g_userLemmingStateEntries[] = {
 	{(void*) GameOver, (void*) StartSommersault, ACTION_PREPARING_SOMMERSAULT, 0},
@@ -14,7 +16,7 @@ StateEntry g_userLemmingStateEntries[] = {
 	{(void*) RequestDeath, (void*) Die, ACTION_DEAD, 0},
 	{(void*) IsStuck, (void*) StartRoute, ACTION_FINDING_ROUTE, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
-	{(void*) IsFalling, 0, ACTION_FALLING, 0},
+	{(void*) IsFalling, NULL, ACTION_FALLING, 0},
 	{(void*) QOnBalloon, (void*) StartBalloon, ACTION_ON_BALLOON, 0},
 	{(void*) PlayerRequestingFire, (void*) PlayerFire, ACTION_NONE, 0},
 	{(void*) PlayerNotFacingTarget, (void*) PlayerTurnToFaceTarget, ACTION_TURNING, 0},
@@ -22,63 +24,63 @@ StateEntry g_userLemmingStateEntries[] = {
 	{(void*) GotDestination, (void*) StartWalking, ACTION_WALKING, 0},
 	{(void*) PlayerBored, (void*) PlayerRandomAction, ACTION_IDLE_ANIMATION, 0},
 	{(void*) PlayerNotFacingCursor, (void*) PlayerTurnToFaceCursor, ACTION_TURNING, 0},
-	{0, (void*) PlayerTurnToFaceCursor, ACTION_NONE, 0},
+	{NULL, (void*) PlayerTurnToFaceCursor, ACTION_NONE, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) RequestDeath, (void*) Die, ACTION_DEAD, 0},
-	{(void*) NotTimeUp, 0, ACTION_TURNING, 0},
-	{0, 0, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_TURNING, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) RequestDeath, (void*) Die, ACTION_DEAD, 0},
-	{(void*) IsJumping, 0, ACTION_JUMPING, 0},
-	{(void*) IsFalling, 0, ACTION_FALLING, 0},
-	{(void*) PlayerRequestingFire, 0, ACTION_NONE, 0},
+	{(void*) IsJumping, NULL, ACTION_JUMPING, 0},
+	{(void*) IsFalling, NULL, ACTION_FALLING, 0},
+	{(void*) PlayerRequestingFire, NULL, ACTION_NONE, 0},
 	{(void*) AtDestination, (void*) PlayerStopWalking, ACTION_NONE, 0},
-	{0, (void*) Walk, ACTION_WALKING, 0},
+	{NULL, (void*) Walk, ACTION_WALKING, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
-	{(void*) PlayerWaitingToFire, 0, ACTION_FIRING, 0},
+	{(void*) PlayerWaitingToFire, NULL, ACTION_FIRING, 0},
 	{(void*) PlayerRequestingFire, (void*) PlayerFire, ACTION_FIRING, 0},
-	{(void*) NotTimeUp, 0, ACTION_FIRING, 0},
-	{0, (void*) PlayerEndFiring, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_FIRING, 0},
+	{NULL, (void*) PlayerEndFiring, ACTION_NONE, 0},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
-	{0, (void*) StartLand, ACTION_LANDING, 0},
-	{0, 0, ACTION_HIDDEN, 0},
+	{NULL, (void*) StartLand, ACTION_LANDING, 0},
+	{NULL, NULL, ACTION_HIDDEN, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
-	{(void*) PlayerRequestingFire, 0, ACTION_NONE, 0},
+	{(void*) PlayerRequestingFire, NULL, ACTION_NONE, 0},
 	{(void*) PlayerNotFacingTarget, (void*) PlayerTurnToFaceTarget, ACTION_TURNING, 0},
-	{(void*) GotDestination, 0, ACTION_NONE, 0},
-	{(void*) NotTimeUp, 0, ACTION_IDLE_ANIMATION, 0},
-	{0, (void*) StartStanding, ACTION_NONE, 0},
-	{(void*) NotTimeUp, 0, ACTION_HIT, 0},
-	{0, (void*) Die, ACTION_DEAD, 0},
-	{0, 0, ACTION_DEAD, 0},
+	{(void*) GotDestination, NULL, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_IDLE_ANIMATION, 0},
+	{NULL, (void*) StartStanding, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_HIT, 0},
+	{NULL, (void*) Die, ACTION_DEAD, 0},
+	{NULL, NULL, ACTION_DEAD, 0},
 	{(void*) IsStuck, (void*) SearchRoute, ACTION_FINDING_ROUTE, 0},
-	{0, 0, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) IsJumping, (void*) Jump, ACTION_JUMPING, 0},
-	{0, (void*) StartLand, ACTION_LANDING, 0},
+	{NULL, (void*) StartLand, ACTION_LANDING, 0},
 	{(void*) IsFalling, (void*) Fall, ACTION_FALLING, 0},
-	{0, (void*) StartLand, ACTION_LANDING, 0},
-	{(void*) NotTimeUp, 0, ACTION_WAITING_TO_SPAWN, 0},
-	{0, (void*) StartWalking, ACTION_FALLING, 0},
-	{(void*) NotTimeUp, 0, ACTION_PREPARING_SOMMERSAULT, 0},
-	{0, 0, ACTION_SOMMERSAULT, 0},
-	{0, 0, ACTION_SOMMERSAULT, 0},
-	{(void*) NotTimeUp, 0, ACTION_EXTERNAL_CONTROL, 0},
-	{0, (void*) ExternalControlEnd, ACTION_KEEP_CURRENT, 0},
+	{NULL, (void*) StartLand, ACTION_LANDING, 0},
+	{(void*) NotTimeUp, NULL, ACTION_WAITING_TO_SPAWN, 0},
+	{NULL, (void*) StartWalking, ACTION_FALLING, 0},
+	{(void*) NotTimeUp, NULL, ACTION_PREPARING_SOMMERSAULT, 0},
+	{NULL, NULL, ACTION_SOMMERSAULT, 0},
+	{NULL, NULL, ACTION_SOMMERSAULT, 0},
+	{(void*) NotTimeUp, NULL, ACTION_EXTERNAL_CONTROL, 0},
+	{NULL, (void*) ExternalControlEnd, ACTION_KEEP_CURRENT, 0},
 	{(void*) QOnBalloon, (void*) OnBalloon, ACTION_ON_BALLOON, 0},
-	{0, 0, ACTION_NONE, 0},
-	{0, 0, ACTION_NONE, 0},
-	{0, 0, ACTION_NONE, 0},
-	{(void*) NotTimeUp, 0, ACTION_LANDING, 0},
+	{NULL, NULL, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_LANDING, 0},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
-	{0, (void*) Land, ACTION_NONE, 0},
-	{0, 0, ACTION_DEAD, 0},
-	{(void*) NotTimeUp, 0, ACTION_WAITING_TO_DIE, 0},
-	{0, (void*) Die, ACTION_DEAD, 0},
+	{NULL, (void*) Land, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_DEAD, 0},
+	{(void*) NotTimeUp, NULL, ACTION_WAITING_TO_DIE, 0},
+	{NULL, (void*) Die, ACTION_DEAD, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) QOnBalloon, (void*) StartBalloon, ACTION_ON_BALLOON, 0},
-	{0, 0, ACTION_ON_CONVEYOR, 0},
+	{NULL, NULL, ACTION_ON_CONVEYOR, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049d5f8
@@ -87,62 +89,62 @@ StateEntry g_aiPlayerLemmingStateEntries[] = {
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) RequestDeath, (void*) Die, ACTION_WAITING_TO_DIE, 0},
 	{(void*) IsStuck, (void*) StartRoute, ACTION_FINDING_ROUTE, 0},
-	{(void*) IsFalling, 0, ACTION_FALLING, 0},
+	{(void*) IsFalling, NULL, ACTION_FALLING, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) QOnBalloon, (void*) StartBalloon, ACTION_ON_BALLOON, 0},
 	{(void*) NotFacingDestination, (void*) TurnToFaceDestination, ACTION_TURNING, 0},
 	{(void*) GotDestination, (void*) StartWalking, ACTION_WALKING, 0},
 	{(void*) PlayerBored, (void*) PlayerRandomAction, ACTION_IDLE_ANIMATION, 0},
-	{0, (void*) StartStanding, ACTION_NONE, 0},
+	{NULL, (void*) StartStanding, ACTION_NONE, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) RequestDeath, (void*) Die, ACTION_DEAD, 0},
-	{(void*) NotTimeUp, 0, ACTION_TURNING, 0},
-	{0, (void*) StartStanding, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_TURNING, 0},
+	{NULL, (void*) StartStanding, ACTION_NONE, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) RequestDeath, (void*) Die, ACTION_DEAD, 0},
-	{(void*) IsJumping, 0, ACTION_JUMPING, 0},
-	{(void*) IsFalling, 0, ACTION_FALLING, 0},
+	{(void*) IsJumping, NULL, ACTION_JUMPING, 0},
+	{(void*) IsFalling, NULL, ACTION_FALLING, 0},
 	{(void*) AtDestination, (void*) PlayerStopWalking, ACTION_NONE, 0},
-	{0, (void*) Walk, ACTION_WALKING, 0},
+	{NULL, (void*) Walk, ACTION_WALKING, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
-	{0, (void*) StartStanding, ACTION_NONE, 0},
+	{NULL, (void*) StartStanding, ACTION_NONE, 0},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
-	{0, (void*) StartLand, ACTION_LANDING, 0},
-	{0, 0, ACTION_HIDDEN, 0},
+	{NULL, (void*) StartLand, ACTION_LANDING, 0},
+	{NULL, NULL, ACTION_HIDDEN, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
-	{(void*) PlayerRequestingFire, 0, ACTION_NONE, 0},
+	{(void*) PlayerRequestingFire, NULL, ACTION_NONE, 0},
 	{(void*) PlayerNotFacingTarget, (void*) PlayerTurnToFaceTarget, ACTION_TURNING, 0},
-	{(void*) NotTimeUp, 0, ACTION_IDLE_ANIMATION, 0},
-	{0, (void*) StartStanding, ACTION_NONE, 0},
-	{(void*) NotTimeUp, 0, ACTION_HIT, 0},
-	{0, (void*) Die, ACTION_DEAD, 0},
-	{0, 0, ACTION_DEAD, 0},
+	{(void*) NotTimeUp, NULL, ACTION_IDLE_ANIMATION, 0},
+	{NULL, (void*) StartStanding, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_HIT, 0},
+	{NULL, (void*) Die, ACTION_DEAD, 0},
+	{NULL, NULL, ACTION_DEAD, 0},
 	{(void*) IsStuck, (void*) SearchRoute, ACTION_FINDING_ROUTE, 0},
-	{0, 0, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) IsJumping, (void*) Jump, ACTION_JUMPING, 0},
-	{0, (void*) StartLand, ACTION_LANDING, 0},
+	{NULL, (void*) StartLand, ACTION_LANDING, 0},
 	{(void*) IsFalling, (void*) Fall, ACTION_FALLING, 0},
-	{0, (void*) StartLand, ACTION_LANDING, 0},
-	{(void*) NotTimeUp, 0, ACTION_WAITING_TO_SPAWN, 0},
-	{0, (void*) StartWalking, ACTION_FALLING, 0},
-	{(void*) NotTimeUp, 0, ACTION_PREPARING_SOMMERSAULT, 0},
-	{0, 0, ACTION_SOMMERSAULT, 0},
-	{0, 0, ACTION_SOMMERSAULT, 0},
-	{(void*) NotTimeUp, 0, ACTION_EXTERNAL_CONTROL, 0},
-	{0, (void*) ExternalControlEnd, ACTION_KEEP_CURRENT, 0},
+	{NULL, (void*) StartLand, ACTION_LANDING, 0},
+	{(void*) NotTimeUp, NULL, ACTION_WAITING_TO_SPAWN, 0},
+	{NULL, (void*) StartWalking, ACTION_FALLING, 0},
+	{(void*) NotTimeUp, NULL, ACTION_PREPARING_SOMMERSAULT, 0},
+	{NULL, NULL, ACTION_SOMMERSAULT, 0},
+	{NULL, NULL, ACTION_SOMMERSAULT, 0},
+	{(void*) NotTimeUp, NULL, ACTION_EXTERNAL_CONTROL, 0},
+	{NULL, (void*) ExternalControlEnd, ACTION_KEEP_CURRENT, 0},
 	{(void*) QOnBalloon, (void*) OnBalloon, ACTION_ON_BALLOON, 0},
-	{0, 0, ACTION_NONE, 0},
-	{0, 0, ACTION_NONE, 0},
-	{0, 0, ACTION_NONE, 0},
-	{(void*) NotTimeUp, 0, ACTION_LANDING, 0},
-	{0, (void*) Land, ACTION_NONE, 0},
-	{0, 0, ACTION_DEAD, 0},
-	{(void*) NotTimeUp, 0, ACTION_WAITING_TO_DIE, 0},
-	{0, (void*) Die, ACTION_DEAD, 0},
+	{NULL, NULL, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_LANDING, 0},
+	{NULL, (void*) Land, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_DEAD, 0},
+	{(void*) NotTimeUp, NULL, ACTION_WAITING_TO_DIE, 0},
+	{NULL, (void*) Die, ACTION_DEAD, 0},
 	{(void*) QOnBalloon, (void*) StartBalloon, ACTION_ON_BALLOON, 0},
-	{0, 0, ACTION_ON_CONVEYOR, 0},
+	{NULL, NULL, ACTION_ON_CONVEYOR, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049d9b8
@@ -150,16 +152,16 @@ StateEntry g_sheepStateEntries[] = {
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) NotFacingDestination, (void*) TurnToFaceDestination, ACTION_TURNING, 0},
 	{(void*) GotDestination, (void*) StartWalking, ACTION_WALKING, 0},
-	{0, 0, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
-	{(void*) NotTimeUp, 0, ACTION_TURNING, 0},
-	{0, 0, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_TURNING, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) AtDestination, (void*) StopWalking, ACTION_NONE, 0},
-	{0, (void*) Walk, ACTION_WALKING, 0},
-	{0, 0, ACTION_NONE, 0},
+	{NULL, (void*) Walk, ACTION_WALKING, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
-	{0, (void*) Land, ACTION_NONE, 0},
+	{NULL, (void*) Land, ACTION_NONE, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049da88
@@ -171,35 +173,35 @@ StateEntry g_enemyStateEntries[] = {
 	{(void*) EnemyRequestingFire, (void*) EnemyStartFiring, ACTION_FIRING, 0},
 	{(void*) NotFacingDestination, (void*) TurnToFaceDestination, ACTION_TURNING, 0},
 	{(void*) GotDestination, (void*) StartWalking, ACTION_WALKING, 0},
-	{0, 0, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) RequestDeath, (void*) Die, ACTION_DEAD, 0},
-	{(void*) NotTimeUp, 0, ACTION_TURNING, 0},
-	{0, 0, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_TURNING, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) RequestDeath, (void*) Die, ACTION_DEAD, 0},
-	{(void*) EnemyRequestingFire, 0, ACTION_NONE, 0},
+	{(void*) EnemyRequestingFire, NULL, ACTION_NONE, 0},
 	{(void*) AtDestination, (void*) StopWalking, ACTION_NONE, 0},
-	{0, (void*) Walk, ACTION_WALKING, 0},
+	{NULL, (void*) Walk, ACTION_WALKING, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
 	{(void*) RequestDeath, (void*) Die, ACTION_DEAD, 0},
-	{(void*) EnemyWaitingToFire, 0, ACTION_FIRING, 0},
+	{(void*) EnemyWaitingToFire, NULL, ACTION_FIRING, 0},
 	{(void*) EnemyRequestingFire, (void*) EnemyFire, ACTION_FIRING, SFX_GUN},
-	{(void*) NotTimeUp, 0, ACTION_FIRING, 0},
-	{0, (void*) EnemyEndFiring, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_FIRING, 0},
+	{NULL, (void*) EnemyEndFiring, ACTION_NONE, 0},
 	{(void*) Flying, (void*) Fly, ACTION_FLYING, 0},
-	{0, (void*) Land, ACTION_NONE, 0},
-	{0, 0, ACTION_NONE, 0},
+	{NULL, (void*) Land, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 	{(void*) IsHit, (void*) Hit, ACTION_HIT, SFX_GUNHIT},
-	{0, 0, ACTION_NONE, 0},
-	{(void*) NotTimeUp, 0, ACTION_HIT, 0},
-	{0, (void*) Die, ACTION_DEAD, 0},
-	{0, 0, ACTION_DEAD, 0},
-	{0, 0, ACTION_NONE, 0},
-	{0, 0, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
+	{(void*) NotTimeUp, NULL, ACTION_HIT, 0},
+	{NULL, (void*) Die, ACTION_DEAD, 0},
+	{NULL, NULL, ACTION_DEAD, 0},
+	{NULL, NULL, ACTION_NONE, 0},
+	{NULL, NULL, ACTION_NONE, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049dcc8
@@ -211,7 +213,7 @@ StateEntry* g_pUserLemmingStateTables[24] = {
 	g_userLemmingStateEntries + 50, g_userLemmingStateEntries + 52, g_userLemmingStateEntries + 54,
 	g_userLemmingStateEntries + 55, g_userLemmingStateEntries + 57, g_userLemmingStateEntries + 59,
 	g_userLemmingStateEntries + 60, g_userLemmingStateEntries + 61, g_userLemmingStateEntries + 64,
-	g_userLemmingStateEntries + 65, g_userLemmingStateEntries + 67, 0,
+	g_userLemmingStateEntries + 65, g_userLemmingStateEntries + 67, NULL,
 };
 
 // GLOBAL: LEMBALL 0x0049dd28
@@ -223,7 +225,7 @@ StateEntry* g_pAiPlayerLemmingStateTables[24] = {
 	g_aiPlayerLemmingStateEntries + 42, g_aiPlayerLemmingStateEntries + 44, g_aiPlayerLemmingStateEntries + 46,
 	g_aiPlayerLemmingStateEntries + 47, g_aiPlayerLemmingStateEntries + 49, g_aiPlayerLemmingStateEntries + 51,
 	g_aiPlayerLemmingStateEntries + 52, g_aiPlayerLemmingStateEntries + 53, g_aiPlayerLemmingStateEntries + 55,
-	g_aiPlayerLemmingStateEntries + 56, g_aiPlayerLemmingStateEntries + 58, 0,
+	g_aiPlayerLemmingStateEntries + 56, g_aiPlayerLemmingStateEntries + 58, NULL,
 };
 
 // GLOBAL: LEMBALL 0x0049dd88
@@ -233,7 +235,7 @@ StateEntry* g_pSheepStateTables[24] = {
 	g_enemyStateEntries + 0,  g_enemyStateEntries + 0, g_enemyStateEntries + 0, g_enemyStateEntries + 0,
 	g_enemyStateEntries + 0,  g_enemyStateEntries + 0, g_enemyStateEntries + 0, g_enemyStateEntries + 0,
 	g_enemyStateEntries + 0,  g_enemyStateEntries + 0, g_enemyStateEntries + 0, g_enemyStateEntries + 0,
-	g_enemyStateEntries + 0,  g_enemyStateEntries + 0, g_enemyStateEntries + 0, 0,
+	g_enemyStateEntries + 0,  g_enemyStateEntries + 0, g_enemyStateEntries + 0, NULL,
 };
 
 // GLOBAL: LEMBALL 0x0049dde8
@@ -243,7 +245,7 @@ StateEntry* g_pEnemyStateTables[24] = {
 	g_enemyStateEntries + 33, g_enemyStateEntries + 34, g_enemyStateEntries + 35, g_enemyStateEntries + 35,
 	g_enemyStateEntries + 35, g_enemyStateEntries + 35, g_enemyStateEntries + 35, g_enemyStateEntries + 35,
 	g_enemyStateEntries + 35, g_enemyStateEntries + 35, g_enemyStateEntries + 35, g_enemyStateEntries + 35,
-	g_enemyStateEntries + 35, g_enemyStateEntries + 35, g_enemyStateEntries + 35, 0,
+	g_enemyStateEntries + 35, g_enemyStateEntries + 35, g_enemyStateEntries + 35, NULL,
 };
 
 // FUNCTION: LEMBALL 0x00419980
@@ -260,13 +262,13 @@ void StateMachine(StateEntry** p_stateTables, CAI* p_ai, CGameObject* p_object)
 
 	action = p_object->m_action;
 	entry = p_stateTables[action];
-	while (entry->m_predicate != 0) {
+	while (entry->m_predicate != NULL) {
 		if (((StatePredicate) entry->m_predicate)(p_ai, p_object, (Info*) &info) != 0) {
 			break;
 		}
 		entry++;
 	}
-	if (entry->m_actionFunction != 0) {
+	if (entry->m_actionFunction != NULL) {
 		((StateAction) entry->m_actionFunction)(p_ai, p_object, (Info*) &info);
 	}
 	nextAction = entry->m_nextAction;
@@ -563,7 +565,7 @@ void TurnToFaceDestination(CAI* p_ai, CGameObject* p_object, Info* p_info)
 void Hit(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	if (p_object->OnConveyor() != 0) {
-		p_object->OnConveyor(0, 0, 1);
+		p_object->OnConveyor(0, NULL, 1);
 	}
 	p_object->GetHit();
 }
@@ -590,7 +592,7 @@ void ExternalControlEnd(CAI* p_ai, CGameObject* p_object, Info* p_info)
 void StartBalloon(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	if (p_object->OnConveyor() != 0) {
-		p_object->OnConveyor(0, 0, 1);
+		p_object->OnConveyor(0, NULL, 1);
 	}
 	p_object->StartBalloon();
 }

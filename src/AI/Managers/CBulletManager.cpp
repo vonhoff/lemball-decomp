@@ -12,11 +12,11 @@ CBulletManager::CBulletManager() : CBaseObjectManager(0x21, 0x16)
 {
 	m_bullets = new CBullet[40];
 	for (int i = 0; i < 40; i++) {
-		m_activeBullets[i] = 0;
+		m_activeBullets[i] = NULL;
 		m_bullets[i].SetId(CGameObject::NextLoadingId());
 		m_bullets[i].m_manager = this;
 	}
-	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
+	if (g_pActiveConnection != NULL && g_pActiveConnection->m_isHost != 0) {
 		m_poolStart = 0x14;
 		return;
 	}
@@ -32,7 +32,7 @@ void CBulletManager::Restart()
 	m_iterator = 0;
 	m_activeCount = 0;
 	for (int i = 0; i < BULLET_POOL_CAPACITY; i++) {
-		m_activeBullets[i] = 0;
+		m_activeBullets[i] = NULL;
 		m_bullets[i].Restart();
 	}
 }
@@ -49,7 +49,7 @@ CBullet* CBulletManager::NextFreeBullet()
 	int i = 0;
 	while (1) {
 		if (i >= 0x14) {
-			return 0;
+			return NULL;
 		}
 		if (m_bullets[m_poolStart + i].m_active == 0) {
 			break;
@@ -78,7 +78,7 @@ CBullet* CBulletManager::GetNextBullet()
 	int iterator = m_iterator + 1;
 	m_iterator = iterator;
 	if (m_activeCount <= iterator) {
-		return 0;
+		return NULL;
 	}
 	return m_activeBullets[iterator];
 }
@@ -106,7 +106,7 @@ bool CBulletManager::RequestBullet(unsigned short p_id,
 {
 	if (m_activeCount < 0x28) {
 		m_activeBullets[m_activeCount] = NextFreeBullet();
-		if (m_activeBullets[m_activeCount] != 0) {
+		if (m_activeBullets[m_activeCount] != NULL) {
 			m_activeBullets[m_activeCount]->Set(p_id, p_bulletType, p_owner, p_sourceObjectId, p_start, p_target);
 			m_activeBullets[m_activeCount]->FireBullet();
 			m_activeCount = m_activeCount + 1;
@@ -120,7 +120,7 @@ bool CBulletManager::RequestBullet(unsigned short p_id,
 void CBulletManager::Process()
 {
 	CBullet* bullet = GetFirstBullet();
-	while (bullet != 0) {
+	while (bullet != NULL) {
 		if (bullet->Process() == 0) {
 			RemoveBullet(bullet);
 		}
@@ -144,7 +144,7 @@ void CBulletManager::RemoveBullet(CBullet* p_bullet)
 					slot[-1] = next;
 				} while (--count);
 			}
-			m_activeBullets[i] = 0;
+			m_activeBullets[i] = NULL;
 			m_activeCount--;
 			return;
 		}
@@ -156,14 +156,14 @@ int CBulletManager::GetViewData(CViewData* p_viewData)
 {
 	CBullet* bullet = GetFirstBullet();
 	int count = 0;
-	if (bullet != 0) {
+	if (bullet != NULL) {
 		CViewData* viewData = p_viewData;
 		do {
 			bullet->GetViewData(*viewData);
 			viewData++;
 			count++;
 			bullet = GetNextBullet();
-		} while (bullet != 0);
+		} while (bullet != NULL);
 	}
 	return count;
 }
@@ -177,7 +177,7 @@ bool CBulletManager::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordina
 	rectTop = p_rect->m_y;
 	int rectBottom = p_rect->m_height + rectTop;
 	CBullet* bullet = GetFirstBullet();
-	while (bullet != 0) {
+	while (bullet != NULL) {
 		int left = bullet->m_position.m_xFixed >> 0xc;
 		int top = bullet->m_position.m_yFixed >> 0xc;
 		int right = left + 8;

@@ -20,6 +20,8 @@
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
 
+#include <stddef.h>
+
 #define ENEMY_FIRE_RAPID_INTERVAL 100
 #define ENEMY_FIRE_SLOW_INTERVAL 800
 #define ENEMY_FIRE_RANDOM_MIN_INTERVAL 150
@@ -73,9 +75,9 @@ CEnemy::CEnemy(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
 	m_state2Rule = ENEMY_RULE_NONE;
 	m_state1Rule = ENEMY_RULE_NONE;
 	m_state0Rule = ENEMY_RULE_NONE;
-	m_state0Data.m_waypointInformation = 0;
-	m_state1Data.m_waypointInformation = 0;
-	m_state2Data.m_waypointInformation = 0;
+	m_state0Data.m_waypointInformation = NULL;
+	m_state1Data.m_waypointInformation = NULL;
+	m_state2Data.m_waypointInformation = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0041fcd0
@@ -95,15 +97,15 @@ void CEnemy::Restart()
 	ai->m_objects[ai->m_objectCount] = this;
 	ai->m_objectCount++;
 
-	if (m_state0Data.m_waypointInformation != 0) {
+	if (m_state0Data.m_waypointInformation != NULL) {
 		m_state0Data.m_waypointInformation->m_waypointIndex = 0;
 		m_state0Data.m_waypointInformation->m_waypointStep = 1;
 	}
-	if (m_state1Data.m_waypointInformation != 0) {
+	if (m_state1Data.m_waypointInformation != NULL) {
 		m_state1Data.m_waypointInformation->m_waypointIndex = 0;
 		m_state1Data.m_waypointInformation->m_waypointStep = 1;
 	}
-	if (m_state2Data.m_waypointInformation != 0) {
+	if (m_state2Data.m_waypointInformation != NULL) {
 		m_state2Data.m_waypointInformation->m_waypointIndex = 0;
 		m_state2Data.m_waypointInformation->m_waypointStep = 1;
 	}
@@ -441,7 +443,7 @@ void CEnemy::HitMine()
 	velocity.m_xFixed = 0;
 	velocity.m_yFixed = 0;
 	velocity.m_zFixed = 0xa000;
-	StartFly(velocity, 0);
+	StartFly(velocity, NULL);
 	m_deathRequested = 1;
 }
 
@@ -464,7 +466,7 @@ void CEnemy::GetHit()
 			for (; i < ai->m_objectCount; i++) {
 				ai->m_objects[i] = ai->m_objects[i + 1];
 			}
-			ai->m_objects[ai->m_objectCount] = 0;
+			ai->m_objects[ai->m_objectCount] = NULL;
 			break;
 		}
 	}

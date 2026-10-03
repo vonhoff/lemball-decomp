@@ -2,6 +2,8 @@
 
 #include "CHeaderMessage.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00479620
 CHeaders::CHeaders(int p_headerCount)
 {
@@ -34,7 +36,7 @@ CHeaderMessage* CHeaders::GetNextHeaderBySequence()
 	}
 	if (index == count) {
 		m_currentIndex = -1;
-		return 0;
+		return NULL;
 	}
 	m_currentIndex = index;
 	m_sequences[index] = m_headers[index].m_sequence;

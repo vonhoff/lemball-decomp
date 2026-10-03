@@ -3,6 +3,8 @@
 
 #include "../../Visos/Messaging/CNetworkMessage.h"
 
+#include <stddef.h>
+
 class CGlobalGameObject;
 class CViewData;
 class CBaseNetwork;
@@ -16,7 +18,7 @@ public:
 	inline CBaseObjectManager(unsigned long p_messageId, int p_transportId) : CNetworkMessage(p_messageId)
 	{
 		m_transportId = p_transportId;
-		if (g_pBaseNetwork != 0) {
+		if (g_pBaseNetwork != NULL) {
 			m_headerEnabled = 1;
 			m_payloadCapacity += g_networkPacketSize;
 		}

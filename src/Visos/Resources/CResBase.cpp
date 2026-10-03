@@ -75,9 +75,9 @@ void CResBase::Initialise()
 	m_loaded = 0;
 	m_dataSize = 0;
 	m_fileOffset = 0;
-	m_name = 0;
-	m_data = 0;
-	m_externalList = 0;
+	m_name = NULL;
+	m_data = NULL;
+	m_externalList = NULL;
 	m_headerSkip = 0;
 	m_chunkType = 0;
 	m_resourceId = 0;
@@ -91,12 +91,12 @@ void CResBase::Initialise()
 void CResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size)
 {
 	if (p_size != 0) {
-		if (m_data == 0) {
+		if (m_data == NULL) {
 			m_data = g_pActiveMogRes->AllocateMainMem(p_size);
 			memcpy(m_data, p_source, p_size);
 		}
 	}
-	if (m_name != 0) {
+	if (m_name != NULL) {
 		m_loaded = 1;
 		OnLoad();
 	}
@@ -109,7 +109,7 @@ void CResBase::LoadData()
 
 	if (m_loaded == 0) {
 		if (GetfVramLoaded() == 0) {
-			if (m_externalList == 0) {
+			if (m_externalList == NULL) {
 				if (m_dataSize != 0) {
 					range.m_offset = m_fileOffset;
 					range.m_size = m_dataSize;
@@ -118,8 +118,8 @@ void CResBase::LoadData()
 					}
 				}
 				else {
-					m_data = 0;
-					OnRead(0, &m_data, m_dataSize);
+					m_data = NULL;
+					OnRead(NULL, &m_data, m_dataSize);
 				}
 			}
 			else {
@@ -153,7 +153,7 @@ void CResBase::UnLoadData(unsigned int p_force)
 		size = m_dataSize;
 		if (m_resourceId != 0 && size != 0) {
 			g_pActiveMogRes->DeallocateMem(m_data, 1);
-			m_data = 0;
+			m_data = NULL;
 		}
 	}
 	UnLoadVramData(p_force);
@@ -169,7 +169,7 @@ void CResBase::UnLoadExtData(unsigned int p_force)
 	UnLoadVramData(p_force);
 	if (m_loaded != 0) {
 		m_loaded = 0;
-		m_data = 0;
+		m_data = NULL;
 		--m_directUseCount;
 	}
 }
@@ -181,9 +181,9 @@ CResBase* CResBase::CheckError()
 	case 1:
 		g_pActiveMogRes->Remove(this);
 		delete this;
-		return 0;
+		return NULL;
 	case 2:
-		return 0;
+		return NULL;
 	default:
 		return this;
 	}

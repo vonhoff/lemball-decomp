@@ -70,7 +70,7 @@ void CBaseObjectManager::AddData()
 // FUNCTION: LEMBALL 0x0040add0
 void CBaseObjectManager::ProcessNetwork()
 {
-	if ((int) m_openDepth <= 0 || m_pendingSendCount != 0 || g_pActiveConnection == 0) {
+	if ((int) m_openDepth <= 0 || m_pendingSendCount != 0 || g_pActiveConnection == NULL) {
 		return;
 	}
 	CNetworkMessage::Add((unsigned short) 0x2f);
@@ -107,10 +107,10 @@ void CBaseObjectManager::GetData()
 	unsigned short type = GetWORD();
 	while (type != 0x2f) {
 		unsigned short id = GetWORD();
-		CGlobalGameObject* found = 0;
+		CGlobalGameObject* found = NULL;
 		for (unsigned int i = 0; (int) i < (int) (unsigned int) g_wObjectCount; i++) {
 			CGameObject* obj = g_pObjects[(unsigned short) i];
-			if (obj != 0 && (unsigned short) obj->GetId() == id) {
+			if (obj != NULL && (unsigned short) obj->GetId() == id) {
 				found = (CGlobalGameObject*) obj;
 				break;
 			}

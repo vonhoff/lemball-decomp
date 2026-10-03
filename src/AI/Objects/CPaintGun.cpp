@@ -14,6 +14,8 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+#include <stddef.h>
+
 inline static void ClampUpperTargetCoordinate(int& p_coordinate)
 {
 	if (p_coordinate > 1024) {
@@ -85,7 +87,7 @@ bool CPaintGun::Process()
 		}
 		return true;
 	}
-	if (g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
+	if (g_pActiveConnection != NULL && g_pActiveConnection->m_isHost != 0) {
 		return true;
 	}
 	if (m_enabled == 0) {

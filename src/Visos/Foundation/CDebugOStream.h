@@ -4,12 +4,15 @@
 #include "CVSDebugStreambuf.h"
 #include "CVSOStream.h"
 
+#include <stddef.h>
+
 #pragma warning(disable : 4355)
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x00493020
 class CDebugOStream : public virtual CVSOStream {
 public:
-	CDebugOStream(char* p_buffer, int p_size) : CVSIOs(&m_buffer), CVSOStream(&m_buffer), m_buffer(p_buffer, p_size, 0)
+	CDebugOStream(char* p_buffer, int p_size)
+		: CVSIOs(&m_buffer), CVSOStream(&m_buffer), m_buffer(p_buffer, p_size, NULL)
 	{
 	}
 	virtual ~CDebugOStream() {}

@@ -4,6 +4,8 @@
 #include "Visos/Resources/CResBaseLIST.h"
 #include "Visos/Resources/CResINT.h"
 
+#include <stddef.h>
+
 #define FONT_GLYPH_TABLE_BYTES 0x400
 #define FONT_GLYPH_COUNT 0x100
 #define FONT_INT_RESOURCE_STRIDE 0x4c
@@ -21,7 +23,7 @@ CFontTable::CFontTable(CResFONT* p_font)
 	m_glyphs = (CResZRLE**) ::operator new(FONT_GLYPH_TABLE_BYTES);
 	offset = 0;
 	do {
-		m_glyphs[offset] = 0;
+		m_glyphs[offset] = NULL;
 		offset++;
 	} while (offset < FONT_GLYPH_COUNT);
 
@@ -30,7 +32,7 @@ CFontTable::CFontTable(CResFONT* p_font)
 	if (p_font->m_totalSize / p_font->m_listHeader->m_headerSize != 0) {
 		intOffset = 0;
 		do {
-			if (p_font->m_fontEntries == 0) {
+			if (p_font->m_fontEntries == NULL) {
 				glyphIndex = p_font->m_fontTable->GetChar(
 					(CResZRLE*) ((unsigned char*) p_font->m_animationEntries + zrleOffset));
 			}

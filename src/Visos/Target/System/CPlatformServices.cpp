@@ -56,8 +56,8 @@ bool InitPlatformServices()
 	unsigned int length;
 
 	storage = operator new(1);
-	if (storage == 0) {
-		g_pTargetPlatformServices = 0;
+	if (storage == NULL) {
+		g_pTargetPlatformServices = NULL;
 	}
 	else {
 		g_pTargetPlatformServices = new (storage) CPlatformServices();
@@ -76,7 +76,7 @@ bool QuitPlatformServices()
 	CPlatformServices* services;
 
 	services = g_pTargetPlatformServices;
-	if (g_pTargetPlatformServices != 0) {
+	if (g_pTargetPlatformServices != NULL) {
 		delete services;
 	}
 	return true;
@@ -137,7 +137,7 @@ char* CPlatformServices::GetCDDir(const char* p_requiredFile)
 			g_szCDRootPath[0] = letter;
 			if (GetDriveTypeA(g_szCDRootPath) == 5) {
 				file = vsOpen(candidate, g_szFileModeRead);
-				if (file != 0) {
+				if (file != NULL) {
 					vsClose(file);
 					return g_szCDRootPath;
 				}
@@ -147,7 +147,7 @@ char* CPlatformServices::GetCDDir(const char* p_requiredFile)
 		letter = letter + 1;
 		i = i + 1;
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0046dcd0
@@ -158,13 +158,13 @@ char* ReadSourceDiskRegistryPath()
 	unsigned int type;
 
 	g_szSourceDiskPath[0] = 0;
-	key = 0;
+	key = NULL;
 	if (RegOpenKeyExA((void*) 0x80000002, "SOFTWARE\\Visual Sciences\\Lemmings Paintball", 0, 0xf003f, &key) != 0) {
 		return g_szSourceDiskPath;
 	}
 	type = 0xffffffff;
 	size = 0x100;
-	if (RegQueryValueExA(key, "SrcDisk", 0, &type, (unsigned char*) g_szSourceDiskPath, &size) != 0) {
+	if (RegQueryValueExA(key, "SrcDisk", NULL, &type, (unsigned char*) g_szSourceDiskPath, &size) != 0) {
 		g_szSourceDiskPath[0] = 0;
 		return g_szSourceDiskPath;
 	}
@@ -177,7 +177,7 @@ bool __stdcall HandleInputQuitEvent(const Message* p_event)
 {
 	switch ((unsigned int) p_event->m_type) {
 	case 3:
-		if (p_event->m_payload == 0 && (p_event->m_code == 0x22 || p_event->m_code == 0x2e)) {
+		if (p_event->m_payload == NULL && (p_event->m_code == 0x22 || p_event->m_code == 0x2e)) {
 			g_dwInputQuitRequested = 1;
 			return false;
 		}
@@ -190,7 +190,7 @@ bool __stdcall HandleInputQuitEvent(const Message* p_event)
 }
 
 // GLOBAL: LEMBALL 0x004a1dcc
-CPlatformServices* g_pTargetPlatformServices = 0;
+CPlatformServices* g_pTargetPlatformServices = NULL;
 
 // GLOBAL: LEMBALL 0x004a27a0
 unsigned int g_dwInputQuitRequested = 0;

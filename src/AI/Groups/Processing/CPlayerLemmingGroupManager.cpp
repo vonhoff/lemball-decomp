@@ -10,21 +10,21 @@ void CPlayerLemmingGroupManager::Process()
 	CGenericGroupManager* manager = this;
 	bool controlledGroupDeleted = false;
 	CGenericGroup* genericGroup = manager->CGenericGroupManager::GetFirstGroup();
-	while (genericGroup != 0) {
+	while (genericGroup != NULL) {
 		genericGroup->Process();
 		genericGroup = manager->CGenericGroupManager::GetNextGroup();
 	}
 
 	CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) manager->CGenericGroupManager::GetFirstGroup();
-	while (group != 0) {
+	while (group != NULL) {
 		lemming = group->GetFirstDeadLemming();
-		if (lemming != 0) {
+		if (lemming != NULL) {
 			do {
 				group->RemoveLemmingFromGroup(lemming);
 				m_dead[m_deadCount] = lemming;
 				m_deadCount++;
 				if (group->GetElementsInGroup() == 0) {
-					lemming = 0;
+					lemming = NULL;
 					if (GetPlayerControlledGroup() == group) {
 						controlledGroupDeleted = true;
 					}
@@ -33,7 +33,7 @@ void CPlayerLemmingGroupManager::Process()
 				else {
 					lemming = group->GetFirstDeadLemming();
 				}
-			} while (lemming != 0);
+			} while (lemming != NULL);
 		}
 		group = (CPlayerLemmingGroup*) manager->CGenericGroupManager::GetNextGroup();
 	}

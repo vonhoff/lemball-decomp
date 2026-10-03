@@ -21,26 +21,26 @@ unsigned int FileNetworkMessageThread()
 	while (g_pBaseNetwork->m_initialisePending == 0 && g_pBaseNetwork->m_serverMode == 0 &&
 		   g_pBaseNetwork->m_shutdownRequested == 0) {
 		WaitMessage();
-		GetMessageA(&message, 0, 0, 0);
+		GetMessageA(&message, NULL, 0, 0);
 	}
 	if (g_pBaseNetwork->m_initialisePending != 0) {
 		g_pBaseNetwork->DoInitialise();
 	}
 	while (g_pBaseNetwork->m_serverMode == 0 && g_pBaseNetwork->m_shutdownRequested == 0) {
 		WaitMessage();
-		GetMessageA(&message, 0, 0, 0);
+		GetMessageA(&message, NULL, 0, 0);
 	}
 	if (g_pBaseNetwork->m_shutdownRequested == 0) {
 		while (g_pBaseNetwork->m_serverMode != 0) {
 			WaitMessage();
-			if (PeekMessageA(&message, 0, 0, 0, PM_NOREMOVE) != 0) {
-				while (PeekMessageA(&message, 0, 0, 0, PM_NOREMOVE) != 0) {
-					GetMessageA(&message, 0, 0, 0);
+			if (PeekMessageA(&message, NULL, 0, 0, PM_NOREMOVE) != 0) {
+				while (PeekMessageA(&message, NULL, 0, 0, PM_NOREMOVE) != 0) {
+					GetMessageA(&message, NULL, 0, 0);
 					TranslateMessage(&message);
 					DispatchMessageA(&message);
 				}
 			}
-			if (g_pNetworkStatusQueue != 0) {
+			if (g_pNetworkStatusQueue != NULL) {
 				do {
 					count = ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
 					if (count != 0) {
@@ -51,7 +51,7 @@ unsigned int FileNetworkMessageThread()
 		}
 	}
 	delete g_pBaseNetwork;
-	g_pBaseNetwork = 0;
+	g_pBaseNetwork = NULL;
 	return 1;
 }
 
@@ -61,26 +61,26 @@ bool VSFNET_Init()
 	unsigned long startTime;
 
 	g_hFileNetworkThread =
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE) FileNetworkMessageThread, 0, 0, &g_dwFileNetworkThreadId);
-	if (g_hFileNetworkThread == 0) {
-		MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) FileNetworkMessageThread, NULL, 0, &g_dwFileNetworkThreadId);
+	if (g_hFileNetworkThread == NULL) {
+		MessageBoxA(NULL, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
 		ExitProcess(0xbbbb);
 	}
 
 	SetThreadPriority(g_hFileNetworkThread, 2);
 
 	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == 0) {
+	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == NULL) {
 	}
-	if (g_pBaseNetwork == 0) {
+	if (g_pBaseNetwork == NULL) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
 		return false;
 	}
 
 	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
+	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == NULL) {
 	}
-	if (g_pNetworkStatusQueue == 0) {
+	if (g_pNetworkStatusQueue == NULL) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
 		return false;
 	}
@@ -93,13 +93,13 @@ bool VSFNET_Quit()
 {
 	unsigned long startTime;
 
-	if (g_pBaseNetwork != 0) {
+	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->m_shutdownRequested = 1;
 		g_pBaseNetwork->ForceProcess();
 		startTime = timeGetTime();
-		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != 0) {
+		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != NULL) {
 		}
-		if (g_pBaseNetwork != 0) {
+		if (g_pBaseNetwork != NULL) {
 			*g_pErrorOutput << "Network quit timed out\n";
 			return false;
 		}
@@ -118,26 +118,26 @@ unsigned int TcpIpNetworkMessageThread()
 	while (g_pBaseNetwork->m_initialisePending == 0 && g_pBaseNetwork->m_serverMode == 0 &&
 		   g_pBaseNetwork->m_shutdownRequested == 0) {
 		WaitMessage();
-		GetMessageA(&message, 0, 0, 0);
+		GetMessageA(&message, NULL, 0, 0);
 	}
 	if (g_pBaseNetwork->m_initialisePending != 0) {
 		g_pBaseNetwork->DoInitialise();
 	}
 	while (g_pBaseNetwork->m_serverMode == 0 && g_pBaseNetwork->m_shutdownRequested == 0) {
 		WaitMessage();
-		GetMessageA(&message, 0, 0, 0);
+		GetMessageA(&message, NULL, 0, 0);
 	}
 	if (g_pBaseNetwork->m_shutdownRequested == 0) {
 		while (g_pBaseNetwork->m_serverMode != 0) {
 			WaitMessage();
-			if (PeekMessageA(&message, 0, 0, 0, PM_NOREMOVE) != 0) {
-				while (PeekMessageA(&message, 0, 0, 0, PM_NOREMOVE) != 0) {
-					GetMessageA(&message, 0, 0, 0);
+			if (PeekMessageA(&message, NULL, 0, 0, PM_NOREMOVE) != 0) {
+				while (PeekMessageA(&message, NULL, 0, 0, PM_NOREMOVE) != 0) {
+					GetMessageA(&message, NULL, 0, 0);
 					TranslateMessage(&message);
 					DispatchMessageA(&message);
 				}
 			}
-			if (g_pNetworkStatusQueue != 0) {
+			if (g_pNetworkStatusQueue != NULL) {
 				do {
 					count = ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount();
 					if (count != 0) {
@@ -148,7 +148,7 @@ unsigned int TcpIpNetworkMessageThread()
 		}
 	}
 	delete g_pBaseNetwork;
-	g_pBaseNetwork = 0;
+	g_pBaseNetwork = NULL;
 	return 1;
 }
 
@@ -158,26 +158,26 @@ bool VSNET_Init()
 	unsigned long startTime;
 
 	g_hTCPIPNetworkThread =
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE) TcpIpNetworkMessageThread, 0, 0, &g_dwTCPIPNetworkThreadId);
-	if (g_hTCPIPNetworkThread == 0) {
-		MessageBoxA(0, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) TcpIpNetworkMessageThread, NULL, 0, &g_dwTCPIPNetworkThreadId);
+	if (g_hTCPIPNetworkThread == NULL) {
+		MessageBoxA(NULL, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
 		ExitProcess(0xbbbb);
 	}
 
 	SetThreadPriority(g_hTCPIPNetworkThread, 2);
 
 	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == 0) {
+	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == NULL) {
 	}
-	if (g_pBaseNetwork == 0) {
+	if (g_pBaseNetwork == NULL) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
 		return false;
 	}
 
 	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == 0) {
+	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == NULL) {
 	}
-	if (g_pNetworkStatusQueue == 0) {
+	if (g_pNetworkStatusQueue == NULL) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
 		return false;
 	}
@@ -190,13 +190,13 @@ bool VSNET_Quit()
 {
 	unsigned long startTime;
 
-	if (g_pBaseNetwork != 0) {
+	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->m_shutdownRequested = 1;
 		g_pBaseNetwork->ForceProcess();
 		startTime = timeGetTime();
-		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != 0) {
+		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != NULL) {
 		}
-		if (g_pBaseNetwork != 0) {
+		if (g_pBaseNetwork != NULL) {
 			*g_pErrorOutput << "Network quit timed out\n";
 			return false;
 		}

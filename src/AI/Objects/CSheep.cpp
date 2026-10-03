@@ -67,5 +67,5 @@ void CSheep::HitMine()
 	velocity.m_xFixed = 0;
 	velocity.m_yFixed = 0;
 	velocity.m_zFixed = 0xa000;
-	StartFly(velocity, 0);
+	StartFly(velocity, NULL);
 }

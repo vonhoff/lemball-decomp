@@ -48,6 +48,7 @@ extern char g_szUnknownUserActionReceived[];
 #include "Visos/Resources/ResourceLimits.h"
 
 #include <new.h>
+#include <stddef.h>
 
 class CAnimFrameBASE;
 
@@ -83,7 +84,7 @@ CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 	m_backBufferReady = 0;
 	m_drawingBackBuffer = 0;
 	m_ready = 1;
-	if (g_pGameStatus->m_skill == 4 && g_pActiveConnection != 0) {
+	if (g_pGameStatus->m_skill == 4 && g_pActiveConnection != NULL) {
 		m_networkMode = 1;
 	}
 	else {
@@ -91,11 +92,11 @@ CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 	}
 	m_startupPending = 1;
 	m_actionPending = 0;
-	m_gunController = 0;
-	m_hiliteController = 0;
+	m_gunController = NULL;
+	m_hiliteController = NULL;
 	m_ambientAnimId = 0;
-	m_ambientAnim = 0;
-	m_textManager = 0;
+	m_ambientAnim = NULL;
+	m_textManager = NULL;
 	m_createdAt = CurrentQueueTimer();
 }
 
@@ -113,8 +114,8 @@ void CBaseFrontendDrawer::Setup()
 
 	if (m_textPrimitiveCapacity > 0) {
 		storage = operator new(sizeof(CTextManager));
-		if (storage == 0) {
-			m_textManager = 0;
+		if (storage == NULL) {
+			m_textManager = NULL;
 		}
 		else {
 			m_textManager = new (storage) CTextManager(RESOURCE_ID_COUNT, 1, m_textPrimitiveCapacity, m_maxStringLen);
@@ -125,8 +126,8 @@ void CBaseFrontendDrawer::Setup()
 
 	if (m_ambientAnimId != 0) {
 		storage = operator new(0x1c);
-		if (storage == 0) {
-			m_ambientAnim = 0;
+		if (storage == NULL) {
+			m_ambientAnim = NULL;
 		}
 		else {
 			m_ambientAnim = new (storage) CPlayThruAnim(CAnimsManager::GetnAnims(m_ambientAnimId), 1);
@@ -145,7 +146,7 @@ void CBaseFrontendDrawer::Setup()
 		int desiredState;
 		m_startupPending = 0;
 		m_actionPending = 1;
-		if (m_hiliteController != 0) {
+		if (m_hiliteController != NULL) {
 			m_hiliteController->ActivateButtons(0);
 			m_hiliteController->m_active = 0;
 		}
@@ -172,29 +173,29 @@ void CBaseFrontendDrawer::Setup()
 // FUNCTION: LEMBALL 0x00445790
 CBaseFrontendDrawer::~CBaseFrontendDrawer()
 {
-	g_pBaseFrontendDrawer = 0;
+	g_pBaseFrontendDrawer = NULL;
 	if (m_networkMode != 0 && m_returnState == 2) {
-		if (g_pNetworkManager != 0) {
+		if (g_pNetworkManager != NULL) {
 			g_pNetworkManager->Stop();
 		}
-		if (g_pBaseNetwork != 0) {
+		if (g_pBaseNetwork != NULL) {
 			unsigned long start = CurrentMilliTimer();
 			while (CurrentMilliTimer() - start < 2000 && g_pBaseNetwork->m_queueTransitionPending != 0) {
 			}
 		}
-		if (g_pNetworkManager != 0) {
+		if (g_pNetworkManager != NULL) {
 			delete g_pNetworkManager;
-			g_pNetworkManager = 0;
+			g_pNetworkManager = NULL;
 		}
 	}
-	if (m_ambientAnim != 0) {
+	if (m_ambientAnim != NULL) {
 		delete m_ambientAnim;
 	}
 	g_pMasterInputQueue->Detach(this, 0);
 	if (m_loaded != 0) {
 		_UnLoad();
 	}
-	if (m_textManager != 0) {
+	if (m_textManager != NULL) {
 		delete m_textManager;
 	}
 	g_pMogRes->CleanUpResources();
@@ -208,10 +209,10 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 
 	m_backBufferNeeded = 0;
 	m_drawingBackBuffer = 1;
-	if (m_hiliteController != 0 && (hiliteActive = m_hiliteController->m_buttonsActive) != 0) {
+	if (m_hiliteController != NULL && (hiliteActive = m_hiliteController->m_buttonsActive) != 0) {
 		m_hiliteController->ActivateButtons(0);
 	}
-	if (m_gunController != 0 && (gunActive = m_gunController->m_buttonsActive) != 0) {
+	if (m_gunController != NULL && (gunActive = m_gunController->m_buttonsActive) != 0) {
 		m_gunController->ActivateButtons(0);
 	}
 	if (m_backBufferReady == 0) {
@@ -231,10 +232,10 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 	bitmap->m_destination.m_y = origin->m_y;
 	m_primitiveBundle[m_primitiveBank].m_bitmap.Draw(m_gdi);
 	m_drawingBackBuffer = 0;
-	if (m_hiliteController != 0 && hiliteActive != 0) {
+	if (m_hiliteController != NULL && hiliteActive != 0) {
 		m_hiliteController->ActivateButtons(1);
 	}
-	if (m_gunController != 0 && gunActive != 0) {
+	if (m_gunController != NULL && gunActive != 0) {
 		m_gunController->ActivateButtons(1);
 	}
 	g_pCursor->SetActive(1);
@@ -243,10 +244,10 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 // FUNCTION: LEMBALL 0x00445a40
 void CBaseFrontendDrawer::Draw(const CVSRect& p_rect)
 {
-	if (m_gdi != 0) {
+	if (m_gdi != NULL) {
 		m_gdi->m_renderTarget->GetCurrDB();
 		m_primitiveBank = 0;
-		if (m_gunController != 0) {
+		if (m_gunController != NULL) {
 			if (CGunButtons::DrawBackBuffer() == 0 && m_backBufferNeeded == 0) {
 				m_backBufferNeeded = 0;
 			}
@@ -291,10 +292,10 @@ void CBaseFrontendDrawer::ReplaceBackground()
 	}
 	DrawText();
 	if (m_drawingBackBuffer == 0) {
-		if (m_gunController != 0) {
+		if (m_gunController != NULL) {
 			m_gunController->DrawSpriteWindow();
 		}
-		if (m_hiliteController != 0) {
+		if (m_hiliteController != NULL) {
 			m_hiliteController->DrawHiliteWindow();
 		}
 	}
@@ -329,7 +330,7 @@ void CBaseFrontendDrawer::_DrawBackGround()
 				rec->m_y = y;
 				rec->m_resource = bitmap;
 				rec->m_flags = 0;
-				rec->m_remap = 0;
+				rec->m_remap = NULL;
 				m_primitiveBundle[m_primitiveBank].m_records[recordIndex].Draw(m_gdi);
 				recordIndex++;
 			}
@@ -338,10 +339,10 @@ void CBaseFrontendDrawer::_DrawBackGround()
 	if (m_drawSolid != 0) {
 		m_primitiveBundle[m_primitiveBank].m_primitive.Draw(m_gdi);
 	}
-	if (m_gunController != 0) {
+	if (m_gunController != NULL) {
 		m_gunController->DrawButtons(1, 0);
 	}
-	if (m_hiliteController != 0) {
+	if (m_hiliteController != NULL) {
 		m_hiliteController->DrawButtons(1);
 	}
 	if (m_activePalette != m_desiredPalette) {
@@ -391,7 +392,7 @@ void CBaseFrontendDrawer::_Load()
 	CAnimsManager::LoadAnims(m_topFrameAnimId);
 	CAnimsManager::LoadAnims(m_sideFrameAnimId);
 	CAnimsManager::LoadAnims(m_bottomFrameAnimId);
-	if (m_textManager != 0) {
+	if (m_textManager != NULL) {
 		m_textManager->LoadFont(m_chalkFontId);
 	}
 }
@@ -399,7 +400,7 @@ void CBaseFrontendDrawer::_Load()
 // FUNCTION: LEMBALL 0x00445fe0
 void CBaseFrontendDrawer::_UnLoad()
 {
-	if (m_textManager != 0) {
+	if (m_textManager != NULL) {
 		m_textManager->UnLoadFont(m_chalkFontId);
 	}
 	m_backgroundBitmap->UnLoad();
@@ -413,9 +414,9 @@ void CBaseFrontendDrawer::_UnLoad()
 // FUNCTION: LEMBALL 0x00446050
 void CBaseFrontendDrawer::_DrawAnims()
 {
-	if (m_ambientAnim != 0) {
+	if (m_ambientAnim != NULL) {
 		m_ambientAnim->m_fixedTime = timeGetTime();
-		CAnimsManager::DrawAnim(m_animPosition, m_ambientAnimId, 0, (CAnimFrameBASE*) m_ambientAnim, 0);
+		CAnimsManager::DrawAnim(m_animPosition, m_ambientAnimId, 0, (CAnimFrameBASE*) m_ambientAnim, NULL);
 	}
 }
 
@@ -423,7 +424,7 @@ void CBaseFrontendDrawer::_DrawAnims()
 void CBaseFrontendDrawer::ResetPrimitives()
 {
 	CAnimsManager::ResetPrimitives();
-	if (m_textManager != 0) {
+	if (m_textManager != NULL) {
 		m_textManager->ResetPrimitives();
 	}
 	m_framePrimitiveCount = 0;
@@ -462,12 +463,12 @@ void CBaseFrontendDrawer::Process()
 		g_pNetworkManager->m_observedGameState == g_pNetworkManager->m_desiredGameState) {
 		m_actionPending = 0;
 		m_startupPending = 1;
-		if (m_hiliteController != 0) {
+		if (m_hiliteController != NULL) {
 			m_hiliteController->ActivateButtons(1);
 			m_hiliteController->m_active = 1;
 		}
 	}
-	if (m_ambientAnim != 0) {
+	if (m_ambientAnim != NULL) {
 		now = CurrentMilliTimer();
 		if (m_ambientDelay + 1000U < now - m_ambientUpdatedAt) {
 			now = CurrentMilliTimer();
@@ -478,10 +479,10 @@ void CBaseFrontendDrawer::Process()
 			m_ambientDelay = seed % 6000;
 		}
 	}
-	if (m_gunController != 0) {
+	if (m_gunController != NULL) {
 		m_gunController->Process();
 	}
-	if (m_hiliteController != 0) {
+	if (m_hiliteController != NULL) {
 		m_hiliteController->Process();
 	}
 	Processing();
@@ -595,7 +596,7 @@ void CBaseFrontendDrawer::OnSize(const CVSRect& p_rect)
 }
 
 // GLOBAL: LEMBALL 0x0049f144
-CBaseFrontendDrawer* g_pBaseFrontendDrawer = 0;
+CBaseFrontendDrawer* g_pBaseFrontendDrawer = NULL;
 
 // GLOBAL: LEMBALL 0x0049f148
 char g_szUnknownUserActionSpecified[] = "Unknown user action specified\n";

@@ -6,10 +6,12 @@
 #include "Visos/Graphics/CPVWnd.h"
 #include "Visos/Graphics/CWnd.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00432530
 void CPVGWnd::OnVisibilityChange()
 {
-	if (m_parent != 0) {
+	if (m_parent != NULL) {
 		m_gdi->m_renderTarget->m_flag78 = 1;
 	}
 }
@@ -17,7 +19,7 @@ void CPVGWnd::OnVisibilityChange()
 // FUNCTION: LEMBALL 0x00432560
 void CPVGWnd::SetDontUpdateRect(const CVSRect& p_rect)
 {
-	if (m_gdi != 0 && m_gdi->m_renderTarget != 0) {
+	if (m_gdi != NULL && m_gdi->m_renderTarget != NULL) {
 		CPVSurface& target = *m_gdi->m_renderTarget;
 		target.SetDontUpdateRect(p_rect);
 	}
@@ -38,7 +40,7 @@ unsigned int CPVGWnd::GetStyle()
 // FUNCTION: LEMBALL 0x00465aa0
 void CPVGWnd::Clear(int p_colour)
 {
-	if (g_dwWindowQuitRequested != 0 || m_lifecycleRefs != 1 || m_gdi == 0) {
+	if (g_dwWindowQuitRequested != 0 || m_lifecycleRefs != 1 || m_gdi == NULL) {
 		return;
 	}
 	if (p_colour == -1) {
@@ -95,7 +97,7 @@ void CPVGWnd::SetInnerWindow(const CVSRect& p_rect)
 void CPVGWnd::_OnZoom(int p_oldZoom)
 {
 	CWnd::_OnZoom(p_oldZoom);
-	if (m_gdi != 0 && m_gdi->m_renderTarget != 0 && m_parent == 0) {
+	if (m_gdi != NULL && m_gdi->m_renderTarget != NULL && m_parent == NULL) {
 		m_gdi->m_renderTarget->CPVSurface::m_zoom = m_zoom;
 	}
 }

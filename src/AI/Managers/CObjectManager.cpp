@@ -25,7 +25,7 @@ CObjectManager::CObjectManager(CAI* p_ai, int p_arg1) : CBaseObjectManager(0xc, 
 	g_pObjectManager = this;
 	m_ai = p_ai;
 	m_count = 0;
-	m_objects = 0;
+	m_objects = NULL;
 	m_unk0x38 = 0;
 	m_capacity = 0;
 	g_wNextSwitchIndex = 0;
@@ -36,21 +36,21 @@ void CObjectManager::Restart()
 {
 	int removedCount = 0;
 	int i;
-	if (m_objects != 0 && (i = 0, m_capacity > 0)) {
+	if (m_objects != NULL && (i = 0, m_capacity > 0)) {
 		do {
 			CGlobalGameObject* object = m_objects[i];
-			if (object != 0) {
+			if (object != NULL) {
 				if (object->m_objectType == OBJECT_CRATE) {
 					CCrate* crate = (CCrate*) object;
 					CGlobalGameObject* contents = crate->m_contents;
-					if (contents != 0 && crate->m_contentsType == OBJECT_INVALID) {
+					if (contents != NULL && crate->m_contentsType == OBJECT_INVALID) {
 						for (int j = 0; j < m_count; j++) {
 							if (m_objects[j] == contents) {
 								crate->m_contentsType = contents->m_objectType;
 								m_objects[j]->Restart();
 								removedCount++;
 								m_objects[j]->m_objectActive = 1;
-								m_objects[j] = 0;
+								m_objects[j] = NULL;
 								break;
 							}
 						}
@@ -70,10 +70,10 @@ void CObjectManager::Initialise(int p_objectCount)
 {
 	int capacity = p_objectCount + 4;
 	m_capacity = capacity;
-	if (m_objects == 0) {
+	if (m_objects == NULL) {
 		m_objects = new CGlobalGameObject*[(unsigned short) capacity];
 		for (int i = 0; i < m_capacity; i++) {
-			m_objects[i] = 0;
+			m_objects[i] = NULL;
 		}
 	}
 }
@@ -84,7 +84,7 @@ CObjectManager::~CObjectManager()
 	int i = 0;
 	while (i < m_count) {
 		CGlobalGameObject* object = m_objects[i];
-		if (object != 0) {
+		if (object != NULL) {
 			delete object;
 		}
 		i++;
@@ -149,7 +149,7 @@ CGlobalGameObject* CObjectManager::AddObject(unsigned short p_id, CGlobalGameObj
 		m_objects[m_count]->m_initiallyActive = p_active;
 		return m_objects[m_count++];
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0041b310
@@ -172,8 +172,8 @@ CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
 									   unsigned short p_linkedObjectId,
 									   eObjectType p_linkedObjectType)
 {
-	CGlobalGameObject* object = 0;
-	CBaseGlobalObject* linkedObject = 0;
+	CGlobalGameObject* object = NULL;
+	CBaseGlobalObject* linkedObject = NULL;
 	switch (p_objectType) {
 	case OBJECT_CATAPULT:
 		object = new CCatapult(p_position);
@@ -201,10 +201,10 @@ CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
 			object = new CBalloon(p_position, p_linkedObjectType);
 			break;
 		case OBJECT_INVALID:
-			linkedObject = 0;
+			linkedObject = NULL;
 			break;
 		}
-		if (linkedObject != 0) {
+		if (linkedObject != NULL) {
 			linkedObject->SetId(p_linkedObjectId);
 		}
 		object = new CCrate(p_position, linkedObject, p_linkedObjectId);
@@ -229,7 +229,7 @@ CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
 	}
 	object->m_manager = this;
 	object->Restart();
-	if (linkedObject != 0) {
+	if (linkedObject != NULL) {
 		linkedObject->m_manager = this;
 		linkedObject->Restart();
 	}
@@ -261,7 +261,7 @@ void CObjectManager::Process()
 		CGlobalGameObject* object = m_objects[i];
 		if (object->m_objectActive != 0) {
 			object->Process();
-			if (g_pActiveConnection != 0) {
+			if (g_pActiveConnection != NULL) {
 				object = m_objects[i];
 				if (object->m_objectActive == 0) {
 					object->SendRemove();
@@ -307,7 +307,7 @@ CGlobalGameObject* CObjectManager::FindObject(int p_id)
 	int i = 0;
 	while (1) {
 		if (m_count <= i) {
-			return 0;
+			return NULL;
 		}
 		if (m_objects[i]->m_objectId == p_id) {
 			break;
@@ -315,7 +315,7 @@ CGlobalGameObject* CObjectManager::FindObject(int p_id)
 		i++;
 	}
 	if (m_objects[i]->m_objectActive == 0) {
-		return 0;
+		return NULL;
 	}
 	return m_objects[i];
 }
@@ -325,7 +325,7 @@ void CObjectManager::RemoveById(short p_id)
 {
 	for (int index = 0; index < m_count; index++) {
 		CGlobalGameObject* object = m_objects[index];
-		if (object != 0 && object->GetId() == p_id) {
+		if (object != NULL && object->GetId() == p_id) {
 			DeactivateObjectAtIndex(index);
 			return;
 		}
@@ -370,7 +370,7 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position)
 			index++;
 		} while (index < m_count);
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0041ba80
@@ -382,7 +382,7 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position, eObjectT
 	int index = 0;
 	while (1) {
 		if (index >= count) {
-			return 0;
+			return NULL;
 		}
 		CGlobalGameObject* object = m_objects[index];
 		if (object->m_objectType == p_objectType) {
@@ -412,7 +412,7 @@ CGlobalGameObject* CObjectManager::FindObjectInBounds(CVSRect* p_bounds, eObject
 	Rect bounds;
 	while (1) {
 		if (index >= count) {
-			return 0;
+			return NULL;
 		}
 		CGlobalGameObject* object = m_objects[index];
 		if (object->m_objectType == p_objectType) {

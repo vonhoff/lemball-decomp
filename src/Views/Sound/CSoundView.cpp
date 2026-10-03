@@ -12,10 +12,12 @@
 #include "Views/Sound/CLoadUpdate.h"
 #include "Views/Sound/SoundEffects.h"
 
+#include <stddef.h>
+
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // GLOBAL: LEMBALL 0x0049eb80
-CSoundView* g_pSoundView = 0;
+CSoundView* g_pSoundView = NULL;
 
 // GLOBAL: LEMBALL 0x0049eb88
 EffectSpec g_pEffectSpecs[44] = {
@@ -84,7 +86,7 @@ CSoundView::CSoundView()
 	m_musicHandle = 0;
 	m_musicResourceId = 0;
 	m_randomMusicIndex = 0;
-	m_loadUpdate = 0;
+	m_loadUpdate = NULL;
 	if (g_nMusicVolume != 0) {
 		g_pSoundManager->PrepareMusic(0x2220, 0xb482);
 		g_dwMusicOn = 0;
@@ -94,7 +96,7 @@ CSoundView::CSoundView()
 		i = 0;
 		while (i < 50) {
 			m_effectSlots[i].m_handle = 0xffffffff;
-			m_effectSlots[i].m_spec = 0;
+			m_effectSlots[i].m_spec = NULL;
 			i = i + 1;
 		}
 	}
@@ -231,11 +233,11 @@ void CSoundView::PrepareEffects(unsigned short p_stateMask)
 		for (i = 0; i < 50; i++) {
 			slot = &m_effectSlots[i];
 			spec = slot->m_spec;
-			if (spec != 0 && (spec->m_groupMask & p_stateMask) != 0) {
+			if (spec != NULL && (spec->m_groupMask & p_stateMask) != 0) {
 				slot->m_handle = g_pSoundManager->PrepareEffect(spec->m_resourceId);
 			}
 			slot->m_lastPlayed = timestamp;
-			if (m_loadUpdate != 0) {
+			if (m_loadUpdate != NULL) {
 				m_loadUpdate->UpdateNonCacheLoad();
 			}
 		}
@@ -254,7 +256,7 @@ int CSoundView::GetnEffects(unsigned short p_stateMask)
 		slot = m_effectSlots;
 		i = 50;
 		do {
-			if (slot->m_spec != 0 && (slot->m_spec->m_groupMask & p_stateMask) != 0) {
+			if (slot->m_spec != NULL && (slot->m_spec->m_groupMask & p_stateMask) != 0) {
 				count++;
 			}
 			slot++;
@@ -312,7 +314,7 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 		if (restartMusic != 0) {
 			SetMusicOn(1);
 		}
-		m_loadUpdate = 0;
+		m_loadUpdate = NULL;
 	}
 }
 

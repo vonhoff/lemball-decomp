@@ -12,12 +12,12 @@ CArena::CArena(unsigned long p_arenaSize, char* p_description, class CArena* p_p
 {
 	m_parentArena = p_parentArena;
 	m_arenaLinkB = p_arenaLink;
-	m_firstBlock = 0;
-	m_lastBlock = 0;
-	m_lastFreeBlock = 0;
-	m_firstFreeBlock = 0;
-	m_nextArena = 0;
-	m_usageStat = 0;
+	m_firstBlock = NULL;
+	m_lastBlock = NULL;
+	m_lastFreeBlock = NULL;
+	m_firstFreeBlock = NULL;
+	m_nextArena = NULL;
+	m_usageStat = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00459a40
@@ -25,9 +25,9 @@ void CArena::DeleteLists()
 {
 	EnterCritical();
 	CMBlock* block = m_firstBlock;
-	m_firstBlock = 0;
+	m_firstBlock = NULL;
 	for (;;) {
-		if (block == 0) {
+		if (block == NULL) {
 			break;
 		}
 		CMBlock* next = block->m_nextBlock;
@@ -35,8 +35,8 @@ void CArena::DeleteLists()
 		block = next;
 	}
 	CArena* arena = m_nextArena;
-	m_nextArena = 0;
-	while (arena != 0) {
+	m_nextArena = NULL;
+	while (arena != NULL) {
 		CArena* next = arena->m_nextArena;
 		delete arena;
 		arena = next;
@@ -68,13 +68,13 @@ bool CArena::CheckAndAmalgamate(CMBlock* p_block1, CMBlock* p_block2)
 // FUNCTION: LEMBALL 0x00459bd0
 bool CArena::AddToFreeList(CMBlock* p_block)
 {
-	if (m_firstFreeBlock == 0) {
+	if (m_firstFreeBlock == NULL) {
 		m_lastFreeBlock = p_block;
 	}
 	else {
 		m_firstFreeBlock->m_previousFree = p_block;
 	}
-	p_block->m_previousFree = 0;
+	p_block->m_previousFree = NULL;
 	p_block->m_nextFree = m_firstFreeBlock;
 	m_firstFreeBlock = p_block;
 	return true;
@@ -84,9 +84,9 @@ bool CArena::AddToFreeList(CMBlock* p_block)
 bool CArena::AddToBlockList(CMBlock* p_block, CMBlock* p_previous)
 {
 	CMBlock* next;
-	if (p_previous == 0) {
+	if (p_previous == NULL) {
 		m_firstBlock = p_block;
-		next = 0;
+		next = NULL;
 	}
 	else {
 		next = p_previous->m_nextBlock;
@@ -94,7 +94,7 @@ bool CArena::AddToBlockList(CMBlock* p_block, CMBlock* p_previous)
 	}
 	p_block->m_previousBlock = p_previous;
 	p_block->m_nextBlock = next;
-	if (next == 0) {
+	if (next == NULL) {
 		m_lastBlock = p_block;
 	}
 	else {
@@ -107,12 +107,12 @@ bool CArena::AddToBlockList(CMBlock* p_block, CMBlock* p_previous)
 bool CArena::AddToArenaList(class CArena* p_arena)
 {
 	CArena* current = m_nextArena;
-	CArena* previous = 0;
-	while (current != 0 && current <= p_arena) {
+	CArena* previous = NULL;
+	while (current != NULL && current <= p_arena) {
 		previous = current;
 		current = current->m_nextArena;
 	}
-	if (previous == 0) {
+	if (previous == NULL) {
 		m_nextArena = p_arena;
 	}
 	else {
@@ -127,13 +127,13 @@ bool CArena::RemoveFromFreeList(CMBlock* p_block)
 {
 	CMBlock* next = p_block->m_nextFree;
 	CMBlock* prev = p_block->m_previousFree;
-	if (prev != 0) {
+	if (prev != NULL) {
 		prev->m_nextFree = next;
 	}
 	else {
 		m_firstFreeBlock = next;
 	}
-	if (next != 0) {
+	if (next != NULL) {
 		next->m_previousFree = prev;
 	}
 	else {
@@ -147,13 +147,13 @@ bool CArena::RemoveFromBlockList(CMBlock* p_block)
 {
 	CMBlock* prev = p_block->m_previousBlock;
 	CMBlock* next = p_block->m_nextBlock;
-	if (next != 0) {
+	if (next != NULL) {
 		next->m_previousBlock = prev;
 	}
 	else {
 		m_lastBlock = prev;
 	}
-	if (prev != 0) {
+	if (prev != NULL) {
 		prev->m_nextBlock = next;
 	}
 	else {
@@ -166,10 +166,10 @@ bool CArena::RemoveFromBlockList(CMBlock* p_block)
 bool CArena::RemoveFromArenaList(class CArena* p_arena)
 {
 	CArena* current = m_nextArena;
-	CArena* previous = 0;
-	while (current != 0) {
+	CArena* previous = NULL;
+	while (current != NULL) {
 		if (current == p_arena) {
-			if (previous != 0) {
+			if (previous != NULL) {
 				previous->m_nextArena = current->m_nextArena;
 			}
 			else {
@@ -187,10 +187,10 @@ bool CArena::RemoveFromArenaList(class CArena* p_arena)
 CMBlock* CArena::FindSmallestBlock(unsigned long p_size, char* p_description)
 {
 	CMBlock* current = m_firstFreeBlock;
-	CMBlock* best = 0;
-	for (; current != 0; current = current->m_nextFree) {
+	CMBlock* best = NULL;
+	for (; current != NULL; current = current->m_nextFree) {
 		if (CheckFreeMemoryBlock(current) && p_size <= current->m_size) {
-			if (best == 0 || best->m_size > current->m_size) {
+			if (best == NULL || best->m_size > current->m_size) {
 				best = current;
 			}
 		}
@@ -211,12 +211,12 @@ bool CArena::Free(unsigned char* p_memory)
 	m_freeSize += block->m_size;
 	CMBlock* prev = block->m_previousBlock;
 	CMBlock* next = block->m_nextBlock;
-	if (prev != 0 && CheckFreeMemoryBlock(prev)) {
+	if (prev != NULL && CheckFreeMemoryBlock(prev)) {
 		if (CheckAndAmalgamate(prev, block)) {
 			block = prev;
 		}
 	}
-	if (next != 0 && CheckFreeMemoryBlock(next)) {
+	if (next != NULL && CheckFreeMemoryBlock(next)) {
 		CheckAndAmalgamate(block, next);
 	}
 	LeaveCritical();
@@ -230,12 +230,12 @@ bool CArena::AllocateArena(CArena** p_arena, unsigned long p_size, char* p_descr
 	CMBlock* block;
 	CArena* arena;
 
-	if (!Allocate(&memory, (*p_arena = 0, p_size), "Arena container")) {
+	if (!Allocate(&memory, (*p_arena = NULL, p_size), "Arena container")) {
 		return false;
 	}
 	EnterCritical();
 	block = (CMBlock*) (memory - GetSizeOfBlock());
-	arena = CreateNew(block->m_data, block->m_size, p_description, this, 0);
+	arena = CreateNew(block->m_data, block->m_size, p_description, this, NULL);
 	AddToArenaList(arena);
 	*p_arena = arena;
 	LeaveCritical();
@@ -256,7 +256,7 @@ bool CArena::FreeArena(class CArena* p_arena)
 // FUNCTION: LEMBALL 0x0045a0e0
 bool CArena::CheckValidPointer(void* p_pointer)
 {
-	if (p_pointer == 0) {
+	if (p_pointer == NULL) {
 		return false;
 	}
 	unsigned char* start = (unsigned char*) this + GetSizeOf();
@@ -291,13 +291,13 @@ CVSOStream& CArena::StreamOut(CVSOStream& p_stream)
 	p_stream << "--------------------\n";
 	p_stream << "Addr\t\tSize\t\tDesc\n";
 	p_stream << "------------------------------------------------\n";
-	for (CMBlock* block = m_firstBlock; block != 0; block = block->m_nextBlock) {
+	for (CMBlock* block = m_firstBlock; block != NULL; block = block->m_nextBlock) {
 		block->StreamOut(p_stream);
 	}
-	if (m_nextArena != 0) {
+	if (m_nextArena != NULL) {
 		p_stream << "Child Arena list\n";
 		p_stream << "--------------------\n";
-		for (CArena* arena = m_nextArena; arena != 0; arena = arena->m_nextArena) {
+		for (CArena* arena = m_nextArena; arena != NULL; arena = arena->m_nextArena) {
 			arena->StreamOut(p_stream);
 		}
 	}
@@ -323,11 +323,11 @@ unsigned long CArena::GetAllocSize()
 {
 	int blockCount = 0;
 	CMBlock* current = m_firstBlock;
-	if (current != 0) {
+	if (current != NULL) {
 		do {
 			blockCount++;
 			current = current->m_nextBlock;
-		} while (current != 0);
+		} while (current != NULL);
 	}
 	unsigned long arenaSize = m_arenaSize;
 	return arenaSize - GetSizeOfBlock() * blockCount;
@@ -352,7 +352,7 @@ void CArena::MemCopy(unsigned char* p_destination, unsigned char* p_source, unsi
 }
 
 // GLOBAL: LEMBALL 0x004a117c
-unsigned char* g_pArenaHighWater = 0;
+unsigned char* g_pArenaHighWater = NULL;
 
 // GLOBAL: LEMBALL 0x004aa100
 CArena* g_pMasterArena;

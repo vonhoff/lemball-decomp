@@ -11,13 +11,13 @@ CTrampolineManager::CTrampolineManager(CAI* p_ai, int p_capacity) : CBaseObjectM
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_trampolines = 0;
+	m_trampolines = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0042afc0
 void CTrampolineManager::Restart()
 {
-	if (m_trampolines != 0) {
+	if (m_trampolines != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_trampolines[i].Restart();
 		}
@@ -30,10 +30,10 @@ void CTrampolineManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_trampolines = 0;
+		m_trampolines = NULL;
 		return;
 	}
-	if (m_trampolines == 0) {
+	if (m_trampolines == NULL) {
 		m_trampolines = new CTrampoline[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_trampolines[i].m_manager = this;

@@ -4,6 +4,8 @@
 #include "BasePacketHeader.h"
 #include "Visos/Messaging/CReadMSBuff.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00461610
 CReadNCMSBuff::CReadNCMSBuff(unsigned long p_firstMessageId,
 							 unsigned long p_lastMessageId,
@@ -23,14 +25,14 @@ CReadNCMSBuff::CReadNCMSBuff(unsigned long p_firstMessageId,
 		}
 	}
 	else {
-		m_messages = 0;
+		m_messages = NULL;
 	}
 }
 
 // FUNCTION: LEMBALL 0x004616b0
 CReadNCMSBuff::~CReadNCMSBuff()
 {
-	if (m_messages != 0) {
+	if (m_messages != NULL) {
 		int index;
 
 		for (index = 0; index < m_messageCount; index++) {
@@ -50,17 +52,17 @@ CReadMSBuff* CReadNCMSBuff::UpdateSubPacket()
 	unsigned short packetSequence;
 
 	if (messageId >= 3 && (int) g_pNetworkPacketScratch->m_packetSequence - (int) header->m_packetSequence < 0) {
-		return 0;
+		return NULL;
 	}
 
 	packetSequence = g_pNetworkPacketScratch->m_packetSequence;
 	if ((int) m_nextExpectedSequence > (int) (unsigned int) packetSequence) {
-		return 0;
+		return NULL;
 	}
 
 	if (header->m_packetSequence != packetSequence && (int) message->m_receivedSubpacketCount > 0) {
 		m_nextExpectedSequence = (unsigned int) packetSequence + 1;
-		return 0;
+		return NULL;
 	}
 
 	message->FillPacket();

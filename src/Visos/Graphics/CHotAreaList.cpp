@@ -7,10 +7,12 @@
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CHotAreaHandler.h"
 
+#include <stddef.h>
+
 class CBaseQueueHandler;
 
 // GLOBAL: LEMBALL 0x004a1ff8
-CVSPoint* g_pHotAreaCursor = 0;
+CVSPoint* g_pHotAreaCursor = NULL;
 
 // GLOBAL: LEMBALL 0x004a1ffc
 int g_nHotAreaListCount = 0;
@@ -22,11 +24,11 @@ void CHotAreaList::Set(const CVSRect& p_rect, CVSPoint p_relativeTopLeft, const 
 
 	m_bounds.m_width = p_rect.m_width;
 	m_bounds.m_height = p_rect.m_height;
-	if (&p_rect != 0) {
+	if (&p_rect != NULL) {
 		coords = &p_rect.m_x;
 	}
 	else {
-		coords = 0;
+		coords = NULL;
 	}
 	m_bounds.m_x = coords[0];
 	m_bounds.m_y = coords[1];
@@ -52,16 +54,16 @@ CHotAreaList::CHotAreaList(const CVSRect& p_rect, const CVSPoint& p_relativeTopL
 	m_innerOrigin.m_x = p_innerOrigin.m_x;
 	m_innerOrigin.m_y = p_innerOrigin.m_y;
 	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), -0x19);
-	m_tail = 0;
-	m_head = 0;
+	m_tail = NULL;
+	m_head = NULL;
 	m_scale = 1;
-	m_currentHandler = 0;
+	m_currentHandler = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0046a6d0
 void CHotAreaList::UpdateHandlers()
 {
-	ProcessHandlers(*g_pHotAreaCursor, 0);
+	ProcessHandlers(*g_pHotAreaCursor, NULL);
 }
 
 // FUNCTION: LEMBALL 0x0046a6e0
@@ -72,13 +74,13 @@ void CHotAreaList::DeleteEntry(CHotAreaElement* p_entry)
 
 	next = p_entry->m_next;
 	previous = p_entry->m_previous;
-	if (previous != 0) {
+	if (previous != NULL) {
 		previous->m_next = next;
 	}
 	else {
 		m_head = next;
 	}
-	if (next != 0) {
+	if (next != NULL) {
 		next->m_previous = previous;
 	}
 	else {
@@ -97,7 +99,7 @@ int CHotAreaList::ProcessMsg(Message* p_message)
 	case 8:
 	case 9:
 	case 10:
-		if (p_message->m_source == 0) {
+		if (p_message->m_source == NULL) {
 			CVSPoint point((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
 			CVSPoint* cursor = g_pHotAreaCursor;
 			cursor->m_x = point.m_x;
@@ -121,9 +123,9 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
 	fallback.m_type = 7;
 	fallback.m_time = 0;
 	fallback.m_code = 0;
-	fallback.m_payload = 0;
-	fallback.m_source = 0;
-	if (p_message == 0) {
+	fallback.m_payload = NULL;
+	fallback.m_source = NULL;
+	if (p_message == NULL) {
 		p_message = &fallback;
 	}
 	type = p_message->m_type;
@@ -133,7 +135,7 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
 	CVSPoint& localPoint = localPointValue;
 	entry = m_tail;
 	for (;;) {
-		if (entry == 0) {
+		if (entry == NULL) {
 			break;
 		}
 		handler = entry->m_handler;
@@ -174,7 +176,7 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
 	}
 	m_entered = 1;
 	entry = m_tail;
-	if (m_tail != 0) {
+	if (m_tail != NULL) {
 		do {
 			handler = entry->m_handler;
 			previous = entry->m_previous;
@@ -184,8 +186,8 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
 				break;
 			}
 			entry = previous;
-		} while (previous != 0);
-		if (entry != 0) {
+		} while (previous != NULL);
+		if (entry != NULL) {
 			return;
 		}
 	}
@@ -199,15 +201,15 @@ void CHotAreaList::AddToList(CHotAreaHandler* p_handler)
 	CHotAreaElement* entry;
 
 	entry = (CHotAreaElement*) operator new(sizeof(CHotAreaElement));
-	if (entry != 0) {
+	if (entry != NULL) {
 		entry->m_handler = p_handler;
-		entry->m_next = 0;
-		entry->m_previous = 0;
+		entry->m_next = NULL;
+		entry->m_previous = NULL;
 	}
 	else {
-		entry = 0;
+		entry = NULL;
 	}
-	if (m_head != 0) {
+	if (m_head != NULL) {
 		m_tail->m_next = entry;
 		if (m_tail == m_head) {
 			m_head->m_next = entry;
@@ -227,15 +229,15 @@ void CHotAreaList::RemoveFromList(CHotAreaHandler* p_handler)
 	CHotAreaElement* entry;
 
 	entry = m_head;
-	if (entry != 0) {
+	if (entry != NULL) {
 		while (entry->m_handler != p_handler) {
 			entry = entry->m_next;
-			if (entry == 0) {
+			if (entry == NULL) {
 				return;
 			}
 		}
 		if (m_currentHandler == p_handler) {
-			m_currentHandler = 0;
+			m_currentHandler = NULL;
 		}
 		DeleteEntry(entry);
 	}

@@ -239,7 +239,7 @@ CVSRect CPauseWindow::CalculateWindow()
 
 	int borderAnimCount = m_borderTiles.m_width + m_borderTiles.m_height;
 	if (m_borderAnimCount != borderAnimCount) {
-		if (m_borderAnims != 0) {
+		if (m_borderAnims != NULL) {
 			delete[] m_borderAnims;
 		}
 		m_borderAnimCount = borderAnimCount;
@@ -259,25 +259,25 @@ CVSRect CPauseWindow::CalculateWindow()
 			corners[0].m_animResource = m_horizontalBorderAnim;
 			corners[0].m_animIndex = 0;
 			corners[0].m_flags = 0;
-			corners[0].m_remap = 0;
+			corners[0].m_remap = NULL;
 			corners[1].m_x = cornerPositions[0].m_x;
 			corners[1].m_y = cornerPositions[1].m_y;
 			corners[1].m_animResource = m_horizontalBorderAnim;
 			corners[1].m_animIndex = 1;
 			corners[1].m_flags = 0;
-			corners[1].m_remap = 0;
+			corners[1].m_remap = NULL;
 			corners[2].m_x = cornerPositions[1].m_x;
 			corners[2].m_y = cornerPositions[0].m_y;
 			corners[2].m_animResource = m_horizontalBorderAnim;
 			corners[2].m_animIndex = 2;
 			corners[2].m_flags = 0;
-			corners[2].m_remap = 0;
+			corners[2].m_remap = NULL;
 			corners[3].m_x = cornerPositions[0].m_x;
 			corners[3].m_y = cornerPositions[0].m_y;
 			corners[3].m_animResource = m_horizontalBorderAnim;
 			corners[3].m_animIndex = 3;
 			corners[3].m_flags = 0;
-			corners[3].m_remap = 0;
+			corners[3].m_remap = NULL;
 			corners += 4;
 		} while (--cornerBatchCount != 0);
 	}
@@ -299,7 +299,7 @@ CVSRect CPauseWindow::CalculateWindow()
 			firstBorder.m_animResource = firstResource;
 			firstBorder.m_animIndex = 0;
 			firstBorder.m_flags = 0;
-			firstBorder.m_remap = 0;
+			firstBorder.m_remap = NULL;
 			CResANIM* secondResource = m_verticalBorderAnim;
 			CAnim& secondBorder = m_borderAnims[m_borderAnimCount * opposite + i];
 			secondBorder.m_x = secondBorderPosition.m_x;
@@ -307,7 +307,7 @@ CVSRect CPauseWindow::CalculateWindow()
 			secondBorder.m_animResource = secondResource;
 			secondBorder.m_animIndex = 1;
 			secondBorder.m_flags = 0;
-			secondBorder.m_remap = 0;
+			secondBorder.m_remap = NULL;
 			pair++;
 			opposite += 2;
 		} while (opposite < 3);
@@ -330,7 +330,7 @@ CVSRect CPauseWindow::CalculateWindow()
 			firstBorder.m_animResource = firstResource;
 			firstBorder.m_animIndex = 2;
 			firstBorder.m_flags = 0;
-			firstBorder.m_remap = 0;
+			firstBorder.m_remap = NULL;
 			CResANIM* secondResource = m_verticalBorderAnim;
 			CAnim& secondBorder = m_borderAnims[m_borderAnimCount * opposite + m_borderTiles.m_width + i];
 			secondBorder.m_x = secondBorderPosition.m_x;
@@ -338,7 +338,7 @@ CVSRect CPauseWindow::CalculateWindow()
 			secondBorder.m_animResource = secondResource;
 			secondBorder.m_animIndex = 3;
 			secondBorder.m_flags = 0;
-			secondBorder.m_remap = 0;
+			secondBorder.m_remap = NULL;
 		}
 		firstBorderPosition.m_y = (short) (firstBorderPosition.m_y + verticalCorner[1]);
 		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner[1]);
@@ -562,7 +562,7 @@ int CPauseWindow::ProcessMsg(Message* p_message)
 // FUNCTION: LEMBALL 0x00444da0
 void CPauseWindow::FreeVram()
 {
-	if (m_vramSurface != 0) {
+	if (m_vramSurface != NULL) {
 		m_vramSurface->FreeVram();
 	}
 	m_gdi->Render();
@@ -606,17 +606,17 @@ char* g_apPauseMenuLabels[15] = {g_szPausePaused,
 								 g_szPauseResume,
 								 g_szPauseRestart,
 								 g_szPauseQuit,
-								 0,
+								 NULL,
 								 g_szPausePleaseWait,
-								 0,
+								 NULL,
 								 g_szPauseLoading,
-								 0,
+								 NULL,
 								 g_szPauseAreYouSure,
 								 g_szPauseYes,
 								 g_szPauseNo,
-								 0,
+								 NULL,
 								 g_szPauseConnectionLost,
-								 0};
+								 NULL};
 
 // GLOBAL: LEMBALL 0x0049f0a4
 char g_szPausePaused[] = "Paused";

@@ -30,24 +30,24 @@ CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
 	long result;
 	m_screenSize.m_width = p_size->m_width;
 	m_screenSize.m_height = p_size->m_height;
-	m_directDraw = 0;
-	m_primarySurface = 0;
-	m_surface24 = 0;
-	m_surface28 = 0;
-	m_surface2c = 0;
+	m_directDraw = NULL;
+	m_primarySurface = NULL;
+	m_surface24 = NULL;
+	m_surface28 = NULL;
+	m_surface2c = NULL;
 	m_nextContextIndex = 1;
-	m_paletteInterface = 0;
+	m_paletteInterface = NULL;
 	IDirectDraw** directDraw = &m_directDraw;
 	m_driverModule = LoadLibraryA("DDRAW.DLL");
-	if (m_driverModule == 0) {
+	if (m_driverModule == NULL) {
 		return;
 	}
 	typedef long(__stdcall * CreateFunction)(void*, IDirectDraw**, void*);
 	m_contextSurfaces[0] = (void*) GetProcAddress((HMODULE) m_driverModule, "DirectDrawCreate");
-	if (m_contextSurfaces[0] == 0) {
+	if (m_contextSurfaces[0] == NULL) {
 		return;
 	}
-	result = ((CreateFunction) m_contextSurfaces[0])(0, directDraw, 0);
+	result = ((CreateFunction) m_contextSurfaces[0])(NULL, directDraw, NULL);
 	if (result != 0) {
 		OnDirectDrawCreateFailure(0, result);
 		return;
@@ -58,12 +58,12 @@ CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
 		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
-		windowClass.hIcon = LoadIconA(0, IDI_APPLICATION);
-		windowClass.hCursor = 0;
+		windowClass.hIcon = LoadIconA(NULL, IDI_APPLICATION);
+		windowClass.hCursor = NULL;
 		windowClass.hbrBackground = (HBRUSH) GetStockObject(BLACK_BRUSH);
-		windowClass.lpszMenuName = 0;
+		windowClass.lpszMenuName = NULL;
 		windowClass.lpszClassName = "DirectDrawClass";
-		LoadCursorA(0, IDC_ARROW);
+		LoadCursorA(NULL, IDC_ARROW);
 		ATOM registered = RegisterClassA(&windowClass);
 		ShowCursor(0);
 		if (registered == 0) {
@@ -78,11 +78,11 @@ CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
 								   0,
 								   m_screenSize.m_width,
 								   m_screenSize.m_height,
-								   0,
-								   0,
+								   NULL,
+								   NULL,
 								   (HINSTANCE) g_pApplicationInstance,
-								   0);
-		if (m_window == 0) {
+								   NULL);
+		if (m_window == NULL) {
 			return;
 		}
 		ShowWindow((HWND) m_window, SW_SHOW);
@@ -111,7 +111,7 @@ CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
 	description.dwSize = sizeof(DDSURFACEDESC);
 	description.dwFlags = 0;
 	description.ddsCaps = 0x200;
-	result = interface->CreateSurface(&description, &m_primarySurface, 0);
+	result = interface->CreateSurface(&description, &m_primarySurface, NULL);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Create Primary Surface failed : "
 						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
@@ -123,27 +123,27 @@ CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
 // FUNCTION: LEMBALL 0x004576e0
 CDirectDrawDriver::~CDirectDrawDriver()
 {
-	if (m_directDraw != 0) {
-		if (m_primarySurface != 0) {
+	if (m_directDraw != NULL) {
+		if (m_primarySurface != NULL) {
 			m_primarySurface->Release();
-			m_primarySurface = 0;
+			m_primarySurface = NULL;
 		}
-		if (m_surface28 != 0) {
-			m_surface28 = 0;
+		if (m_surface28 != NULL) {
+			m_surface28 = NULL;
 		}
-		if (m_surface2c != 0) {
-			m_surface2c = 0;
+		if (m_surface2c != NULL) {
+			m_surface2c = NULL;
 		}
-		if (m_paletteInterface != 0) {
+		if (m_paletteInterface != NULL) {
 			m_paletteInterface->Release();
-			m_paletteInterface = 0;
+			m_paletteInterface = NULL;
 		}
 		m_directDraw->Release();
-		m_directDraw = 0;
+		m_directDraw = NULL;
 		ShowCursor(1);
 	}
-	if (m_window != 0) {
-		m_window = 0;
+	if (m_window != NULL) {
+		m_window = NULL;
 	}
 }
 
@@ -151,7 +151,7 @@ CDirectDrawDriver::~CDirectDrawDriver()
 CDrawingContext* CDirectDrawDriver::CreateDrawingContext()
 {
 	int index = m_nextContextIndex;
-	m_contextSurfaces[index] = 0;
+	m_contextSurfaces[index] = NULL;
 	m_nextContextIndex++;
 	return new CDirectDrawContext(index);
 }
@@ -198,8 +198,8 @@ CDibContext* CDirectDrawDriver::CreateDibContext(CDrawingContext* p_drawingConte
 	description.dwHeight = height;
 	description.dwWidth = width;
 	IDirectDraw* directDraw = (IDirectDraw*) m_directDraw;
-	if (directDraw->CreateSurface(&description, &surface, 0) != 0) {
-		return 0;
+	if (directDraw->CreateSurface(&description, &surface, NULL) != 0) {
+		return NULL;
 	}
 	context = new CDirectDrawSurface(surface);
 	context->RefreshDescription();
@@ -209,7 +209,7 @@ CDibContext* CDirectDrawDriver::CreateDibContext(CDrawingContext* p_drawingConte
 // FUNCTION: LEMBALL 0x004578a0
 int CDirectDrawDriver::DestroyDibContext(CDibContext* p_dibContext)
 {
-	if (p_dibContext != 0) {
+	if (p_dibContext != NULL) {
 		delete p_dibContext;
 		return 1;
 	}
@@ -343,7 +343,7 @@ int CDirectDrawDriver::StretchBltContexts(CDrawingContext* p_destination,
 		((CDirectDrawSurface*) m_contextSurfaces[((CDirectDrawContext*) p_source)->m_surfaceIndex])->m_surface,
 		&source,
 		0,
-		0);
+		NULL);
 	if (result != 0) {
 		*g_pErrorOutput << "Blit failed: " << destination.left << ", " << destination.top << ", " << destination.right
 						<< ", " << destination.bottom << " - " << FormatUnknownDirectDrawError(result & 0xfff) << "\n";
@@ -374,13 +374,13 @@ bool CDirectDrawDriver::CreatePalette(void* p_paletteDescription)
 	effects.dwSize = sizeof(DDBLTFX);
 	effects.dwFillColor = 0;
 	IDirectDrawSurface* primary = (IDirectDrawSurface*) m_primarySurface;
-	result = primary->Blt(0, 0, 0, 0x400, &effects);
+	result = primary->Blt(NULL, NULL, NULL, 0x400, &effects);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Initial rectangle blit failed : "
 						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
 		return false;
 	}
-	if (m_paletteInterface != 0) {
+	if (m_paletteInterface != NULL) {
 		result = m_paletteInterface->SetEntries(0, 0, palette->palNumEntries, palette->palPalEntry);
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Draw Set Palette Entries failed: "
@@ -389,7 +389,7 @@ bool CDirectDrawDriver::CreatePalette(void* p_paletteDescription)
 		}
 	}
 	else {
-		result = m_directDraw->CreatePalette(0xc, palette->palPalEntry, &m_paletteInterface, 0);
+		result = m_directDraw->CreatePalette(0xc, palette->palPalEntry, &m_paletteInterface, NULL);
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Draw Create Palette failed: " << FormatUnknownDirectDrawError(result & 0xfff)
 							<< "\n";
@@ -409,5 +409,5 @@ bool CDirectDrawDriver::CreatePalette(void* p_paletteDescription)
 // FUNCTION: LEMBALL 0x00458350
 bool CDirectDrawDriver::HasPalette()
 {
-	return m_paletteInterface != 0;
+	return m_paletteInterface != NULL;
 }

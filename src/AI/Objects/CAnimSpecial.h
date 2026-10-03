@@ -1,15 +1,17 @@
 #ifndef LEMBALL_AI_OBJECTS_CANIMSPECIAL_H
 #define LEMBALL_AI_OBJECTS_CANIMSPECIAL_H
 
+#include <stddef.h>
+
 class CMap;
 struct AnimSpecialEntry;
 // SIZE 0x08
 class CAnimSpecial {
 public:
-	CAnimSpecial() : m_entries(0), m_entryCount(0) {}
+	CAnimSpecial() : m_entries(NULL), m_entryCount(0) {}
 	~CAnimSpecial()
 	{
-		if (m_entries != 0) {
+		if (m_entries != NULL) {
 			operator delete(m_entries);
 		}
 	}

@@ -21,21 +21,21 @@ CGodManager::CGodManager(int p_capacity)
 		m_transportMap[i] = -1;
 	}
 	CGlobalGameObject::SetMessages();
-	if (g_pBaseNetwork != 0) {
+	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->AttachMessageQueue(this);
 	}
 	if (g_pActiveAI->m_networkMode != 0) {
 		m_gameStateMessage = new CGameStateMessage();
 	}
 	else {
-		m_gameStateMessage = 0;
+		m_gameStateMessage = NULL;
 	}
 }
 
 // FUNCTION: LEMBALL 0x0040b0d0
 CGodManager::~CGodManager()
 {
-	if (g_pBaseNetwork != 0) {
+	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->DetachMessageQueue();
 	}
 	delete m_gameStateMessage;
@@ -49,7 +49,7 @@ void CGodManager::Restart()
 {
 	CGodManager* self = this;
 	for (int i = 0; i < self->m_count; i++) {
-		if (self->m_managers[i] != 0) {
+		if (self->m_managers[i] != NULL) {
 			self->m_managers[i]->Restart();
 		}
 	}
@@ -93,7 +93,7 @@ void CGodManager::Unregister(CBaseObjectManager* p_manager)
 			} while (index < m_count - 1);
 		}
 		m_transportMap[p_manager->m_transportId] = -1;
-		m_managers[index] = 0;
+		m_managers[index] = NULL;
 		m_count--;
 	}
 }
@@ -105,7 +105,7 @@ CBaseObjectManager* CGodManager::GetManagerForTransport(int p_transportId)
 	if (index != -1) {
 		return m_managers[index];
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0040b210
@@ -172,7 +172,7 @@ void CGodManager::Process()
 	for (int i = 0; i < m_count; i++) {
 		m_managers[i]->Process();
 	}
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		for (int i = 0; i < m_count; i++) {
 			m_managers[i]->ProcessNetwork();
 		}
@@ -180,4 +180,4 @@ void CGodManager::Process()
 }
 
 // GLOBAL: LEMBALL 0x0049cf30
-CGodManager* g_pGodManager = 0;
+CGodManager* g_pGodManager = NULL;

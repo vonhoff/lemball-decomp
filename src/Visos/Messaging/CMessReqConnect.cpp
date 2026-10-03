@@ -27,4 +27,4 @@ void CMessReqConnect::AddData()
 }
 
 // GLOBAL: LEMBALL 0x004a1e50
-CMessReqConnect* g_pMessReqConnect = 0;
+CMessReqConnect* g_pMessReqConnect = NULL;

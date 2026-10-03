@@ -15,16 +15,16 @@ CCollectableManager::CCollectableManager(CAI* p_ai, int p_capacity) : CBaseObjec
 	m_ai = p_ai;
 	m_count = 0;
 	m_capacity = p_capacity;
-	m_collectables = 0;
+	m_collectables = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00422420
 void CCollectableManager::Restart()
 {
-	if (m_collectables != 0) {
+	if (m_collectables != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			CCollectable* collectable = m_collectables[i];
-			if (collectable != 0) {
+			if (collectable != NULL) {
 				collectable->Restart();
 			}
 		}
@@ -36,14 +36,14 @@ void CCollectableManager::Initialise(int p_capacity)
 {
 	m_capacity = p_capacity;
 	if (p_capacity == 0) {
-		m_collectables = 0;
+		m_collectables = NULL;
 		return;
 	}
 	int i = 0;
-	if (m_collectables == 0) {
+	if (m_collectables == NULL) {
 		m_collectables = new CCollectable*[p_capacity];
 		for (; i < m_capacity; i++) {
-			m_collectables[i] = 0;
+			m_collectables[i] = NULL;
 		}
 	}
 }
@@ -51,7 +51,7 @@ void CCollectableManager::Initialise(int p_capacity)
 // FUNCTION: LEMBALL 0x004224c0
 CCollectableManager::~CCollectableManager()
 {
-	if (m_collectables != 0) {
+	if (m_collectables != NULL) {
 		for (int i = 0; i < m_count; i++) {
 			delete m_collectables[i];
 		}

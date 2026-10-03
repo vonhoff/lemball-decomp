@@ -35,7 +35,7 @@ CBroadcast::CBroadcast()
 	m_listenEnabled = 0;
 	m_runEnabled = 0;
 	m_addressMode = 0;
-	m_specificAddress = 0;
+	m_specificAddress = NULL;
 	g_pBroadcastAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
 	m_connectionData = new unsigned char[0x200];
 	for (index = 0; index < 0x200; index++) {
@@ -46,19 +46,19 @@ CBroadcast::CBroadcast()
 // FUNCTION: LEMBALL 0x004604e0
 CBroadcast::~CBroadcast()
 {
-	if (m_specificAddress != 0) {
+	if (m_specificAddress != NULL) {
 		operator delete(m_specificAddress);
 	}
 	operator delete(m_connectionData);
 	operator delete(g_pBroadcastAddress);
-	g_pBroadcastAddress = 0;
-	if (g_szBroadcastPeerName != 0) {
+	g_pBroadcastAddress = NULL;
+	if (g_szBroadcastPeerName != NULL) {
 		operator delete(g_szBroadcastPeerName);
-		g_szBroadcastPeerName = 0;
+		g_szBroadcastPeerName = NULL;
 	}
-	if (g_pBroadcastPacketTemplate != 0) {
+	if (g_pBroadcastPacketTemplate != NULL) {
 		operator delete(g_pBroadcastPacketTemplate);
-		g_pBroadcastPacketTemplate = 0;
+		g_pBroadcastPacketTemplate = NULL;
 	}
 }
 
@@ -91,11 +91,11 @@ short CBroadcast::FindPort(const unsigned char* p_peerPortUsage)
 // FUNCTION: LEMBALL 0x00460610
 void CBroadcast::SetSpecificAddr(const char* p_address)
 {
-	if (m_specificAddress != 0) {
+	if (m_specificAddress != NULL) {
 		CNetworkAddress* address;
 
 		address = m_specificAddress;
-		m_specificAddress = 0;
+		m_specificAddress = NULL;
 		operator delete(address);
 	}
 	m_addressMode = BROADCAST_ADDRESS_SPECIFIC;
@@ -107,7 +107,7 @@ void CBroadcast::Initialise(const char* p_networkName)
 {
 	CRwSocket::SetNCBuffers(3, 3, 0);
 	CRwSocket::SetCBuffers(1, 0);
-	if (g_pBroadcastPacketTemplate == 0) {
+	if (g_pBroadcastPacketTemplate == NULL) {
 		char* payload;
 
 		g_pBroadcastPacketTemplate = (BasePacketHeader*) new unsigned char[0x410];
@@ -126,9 +126,9 @@ void CBroadcast::Initialise(const char* p_networkName)
 // FUNCTION: LEMBALL 0x004607f0
 void CBroadcast::Stop()
 {
-	if (g_szBroadcastPeerName != 0) {
+	if (g_szBroadcastPeerName != NULL) {
 		operator delete(g_szBroadcastPeerName);
-		g_szBroadcastPeerName = 0;
+		g_szBroadcastPeerName = NULL;
 	}
 	CBaseCommonSocket::CloseSocket();
 }
@@ -139,7 +139,7 @@ void CBroadcast::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 	g_pBroadcastReceiveAddress->GetStr();
 	if (!(*g_pBroadcastReceiveAddress == *g_pBroadcastAddress) &&
 		(m_addressMode != BROADCAST_ADDRESS_SPECIFIC ||
-		 (m_specificAddress != 0 &&
+		 (m_specificAddress != NULL &&
 		  (m_addressMode != BROADCAST_ADDRESS_SPECIFIC || *g_pBroadcastReceiveAddress == *m_specificAddress)))) {
 		unsigned int length;
 
@@ -181,7 +181,7 @@ void CBroadcast::Process()
 				g_pMessReqConnect->m_connectionData = m_connectionData;
 				address = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
 				if (m_addressMode == BROADCAST_ADDRESS_SPECIFIC) {
-					if (m_specificAddress != 0) {
+					if (m_specificAddress != NULL) {
 						*address = *m_specificAddress;
 					}
 					else {

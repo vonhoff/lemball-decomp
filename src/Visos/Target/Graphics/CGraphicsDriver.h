@@ -7,6 +7,8 @@
 #include "CDibContext.h"
 #include "CDrawingContext.h"
 
+#include <stddef.h>
+
 class CPVGDIBitmap;
 class CResPALETTE;
 struct CGraphicsState;
@@ -18,11 +20,11 @@ public:
 	CGraphicsDriver()
 	{
 		m_screenSize.m_height = 0;
-		m_driverModule = 0;
+		m_driverModule = NULL;
 		m_screenSize.m_width = 0;
-		m_palette = 0;
+		m_palette = NULL;
 		m_ready = 0;
-		m_window = 0;
+		m_window = NULL;
 	}
 	virtual ~CGraphicsDriver();                                               // vtable+0x00
 	virtual CDrawingContext* CreateDrawingContext() = 0;                      // vtable+0x04

@@ -7,6 +7,8 @@
 #include "../CBaseFrontendDrawer.h"
 #include "Visos/Foundation/Message.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x004468d0
 int CBaseFrontendProcess::ProcessMsg(Message* p_message)
 {
@@ -16,7 +18,7 @@ int CBaseFrontendProcess::ProcessMsg(Message* p_message)
 	CConnect* connection;
 	unsigned int id;
 
-	if (g_pBaseFrontendDrawer == 0) {
+	if (g_pBaseFrontendDrawer == NULL) {
 		return 0;
 	}
 	if (ProcessMessages(message) == 0) {

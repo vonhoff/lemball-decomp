@@ -8,6 +8,8 @@
 #include "../../Graphics/CSurface.h"
 #include "../../Resources/CResFONT.h"
 
+#include <stddef.h>
+
 extern char g_szButton[];
 
 // FUNCTION: LEMBALL 0x00468f90
@@ -74,14 +76,14 @@ void CTextButton::SetText(char* p_normalText, char* p_pressedText)
 	CVSSize normalSize = m_font->GetSize(p_normalText, 0x20);
 	ExpandToFitText(normalSize);
 	CVSSize pressedSize(normalSize);
-	if (m_pressedText != 0) {
+	if (m_pressedText != NULL) {
 		const CVSSize& size = m_font->GetSize(m_pressedText, 0x20);
 		pressedSize.m_width = size.m_width;
 		pressedSize.m_height = size.m_height;
 		ExpandToFitText(pressedSize);
 	}
 	AlignTextPosition(m_normalTextPosition, normalSize);
-	if (m_pressedText != 0) {
+	if (m_pressedText != NULL) {
 		AlignTextPosition(m_pressedTextPosition, pressedSize);
 	}
 	else {
@@ -109,11 +111,11 @@ void CTextButton::Initialize()
 {
 	m_textPrimitive = new CText[1];
 	m_gdiFlags++;
-	m_pressedText = 0;
-	m_normalText = 0;
+	m_pressedText = NULL;
+	m_normalText = NULL;
 	m_reserved120 = 0;
-	m_lastDrawnRemap = 0;
-	m_remap = 0;
+	m_lastDrawnRemap = NULL;
+	m_remap = NULL;
 	m_font = CResFONT::Load(m_fontResourceId);
 	m_nativeButtonCreated = 0;
 }
@@ -141,7 +143,7 @@ void CTextButton::DrawButton()
 		text = m_pressedText;
 		position.m_y = m_pressedTextPosition.m_y;
 	}
-	if (text != 0) {
+	if (text != NULL) {
 		m_gdi->m_renderTarget->GetCurrDB();
 		m_textPrimitive->Set(position, m_font, text, 0x20, m_remap);
 		m_textPrimitive->Draw(m_gdi);

@@ -7,7 +7,7 @@
 #include "CSurface.h"
 
 // GLOBAL: LEMBALL 0x004a1ff4
-CPrimitive* g_pCurrentPrimitive = 0;
+CPrimitive* g_pCurrentPrimitive = NULL;
 
 // FUNCTION: LEMBALL 0x00467060
 CGDI::CGDI(const CVSRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSurface)
@@ -24,7 +24,7 @@ CGDI::CGDI(const CVSRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSur
 		m_primitiveCount = i;
 		if (0 < m_primitiveCapacity) {
 			do {
-				m_primitives[i] = 0;
+				m_primitives[i] = NULL;
 				i = i + 1;
 			} while (i < m_primitiveCapacity);
 		}

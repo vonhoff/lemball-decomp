@@ -28,10 +28,10 @@ extern unsigned int g_windowDispatchDisabled;
 extern int(__stdcall* g_pDisplayDib)(void*, void*, unsigned short);
 
 // GLOBAL: LEMBALL 0x004a1f64
-void* g_hFocusWindow = 0;
+void* g_hFocusWindow = NULL;
 
 // GLOBAL: LEMBALL 0x004a1f68
-CWnd* g_pFocusWindow = 0;
+CWnd* g_pFocusWindow = NULL;
 
 // GLOBAL: LEMBALL 0x004a1f6c
 int g_nMouseCaptureCount = 0;
@@ -52,10 +52,10 @@ int g_cursorState = 0;
 int g_nNativeWindowCount = 0;
 
 // GLOBAL: LEMBALL 0x004a1ff0
-WindowOwnerList* g_pWindowOwnerList = 0;
+WindowOwnerList* g_pWindowOwnerList = NULL;
 
 // GLOBAL: LEMBALL 0x004a8188
-void* g_pApplicationInstance = 0;
+void* g_pApplicationInstance = NULL;
 
 // GLOBAL: LEMBALL 0x004a1f7c
 char g_szVsBaseWindowClass[24] = "VS_Base_Window_Class";
@@ -174,17 +174,17 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 
 	posted.m_time = GetMessageTime();
 	window = (CWnd*) GetWindowLongA((HWND) p_hwnd, GWL_USERDATA);
-	if (g_pTargetGraphicsDriver == 0) {
+	if (g_pTargetGraphicsDriver == NULL) {
 		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 	}
 	if (g_pTargetGraphicsDriver->m_window != p_hwnd) {
-		if (window == 0 && p_message != WM_CREATE) {
+		if (window == NULL && p_message != WM_CREATE) {
 			return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 		}
 	}
 	else {
 		window = (CWnd*) g_pTargetGraphicsSystem->m_targetWindow;
-		if (window == 0) {
+		if (window == NULL) {
 			return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
 		}
 	}
@@ -216,10 +216,10 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_DESTROY: {
 		if (p_hwnd == g_hFocusWindow) {
-			g_hFocusWindow = 0;
-			g_pFocusWindow = 0;
+			g_hFocusWindow = NULL;
+			g_pFocusWindow = NULL;
 		}
-		window->m_nativeWindow = 0;
+		window->m_nativeWindow = NULL;
 		window->Destroy();
 		if (g_nNativeWindowCount == 0) {
 			g_dwWindowQuitRequested = 1;
@@ -229,7 +229,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_SETCURSOR: {
 		if ((unsigned short) p_lParam == HTCLIENT) {
-			SetCursor(0);
+			SetCursor(NULL);
 			return 1;
 		}
 	defaultWindowMessage:
@@ -280,7 +280,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		return 0;
 	}
 	case WM_SETFOCUS: {
-		if (g_hFocusWindow != 0) {
+		if (g_hFocusWindow != NULL) {
 			g_pFocusWindow->Dummy94();
 			g_pFocusWindow->OnFocusLost();
 		}
@@ -290,11 +290,11 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_KILLFOCUS: {
 		if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
-			if (g_hFocusWindow != 0) {
+			if (g_hFocusWindow != NULL) {
 				g_pFocusWindow->Dummy94();
 				g_pFocusWindow->OnFocusLost();
 			}
-			g_hFocusWindow = 0;
+			g_hFocusWindow = NULL;
 		}
 		goto defaultWindowMessage;
 	}
@@ -305,7 +305,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		case 1:
 			g_dwFullScreenGdi = 1;
 			g_nDisplayDibActive = 0;
-			InvalidateRect((HWND) p_hwnd, 0, 0);
+			InvalidateRect((HWND) p_hwnd, NULL, 0);
 			break;
 		case 2:
 		case 3:
@@ -316,15 +316,15 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				unsigned short flags = g_pTargetGraphicsSystem->m_driverMode == 3 ? 4 : 0;
 				flags++;
 				flags |= 0x8210;
-				g_pDisplayDib(0, 0, flags);
+				g_pDisplayDib(NULL, NULL, flags);
 				g_dwFullScreenGdi = 0;
 				g_nDisplayDibActive = 1;
 				_outpw(0x3d4, 0xc);
 				_outpw(0x3d4, 0xd);
-				InvalidateRect((HWND) p_hwnd, 0, 0);
+				InvalidateRect((HWND) p_hwnd, NULL, 0);
 			}
 			else {
-				g_pDisplayDib(0, 0, 0x4000);
+				g_pDisplayDib(NULL, NULL, 0x4000);
 				g_nDisplayDibActive = 0;
 				g_dwFullScreenGdi = 1;
 				SendMessageA((HWND) p_hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
@@ -344,7 +344,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				SystemParametersInfoA(SPI_SETMOUSE, 0, mouseParameters, 0);
 				SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &g_nSavedScreenSaverActive, 0);
 				if (g_nSavedScreenSaverActive != 0) {
-					SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, 0, 0);
+					SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, NULL, 0);
 				}
 				clipRect.top = 0;
 				clipRect.left = 0;
@@ -353,7 +353,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				ClipCursor(&clipRect);
 			}
 			else {
-				ClipCursor(0);
+				ClipCursor(NULL);
 				SystemParametersInfoA(SPI_SETMOUSE, 0, g_savedMouseParameters, 0);
 				if (g_nSavedScreenSaverActive != 0) {
 					SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, (void*) 1, 0);
@@ -363,7 +363,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		return window->ProcessOtherMessages(p_message, p_wParam, p_lParam);
 	}
 	case WM_DISPLAYCHANGE: {
-		if (g_pTargetGraphicsSystem != 0) {
+		if (g_pTargetGraphicsSystem != NULL) {
 			CVSSize size;
 			size.m_width = (short) p_lParam;
 			p_lParam >>= 16;
@@ -429,7 +429,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		p_lParam >>= 16;
 		mouseY = window->m_rect.m_y + (short) p_lParam;
 		posted.m_code = PackParam(mouseX, mouseY);
-		posted.m_source = 0;
+		posted.m_source = NULL;
 		g_pMasterInputQueue->Post(posted);
 		if (g_nMouseCaptureCount++ == 0) {
 			SetCapture((HWND) p_hwnd);
@@ -455,7 +455,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		p_lParam >>= 16;
 		mouseY = window->m_rect.m_y + (short) p_lParam;
 		posted.m_code = PackParam(mouseX, mouseY);
-		posted.m_source = 0;
+		posted.m_source = NULL;
 		g_pMasterInputQueue->Post(posted);
 		g_nMouseCaptureCount = g_nMouseCaptureCount - 1;
 		if (g_nMouseCaptureCount == 0) {
@@ -490,11 +490,11 @@ void CWnd::MoveAbsolute(const CVSPoint& p_point)
 		position = (CVSPoint*) &m_rect.m_x;
 	}
 	else {
-		position = 0;
+		position = NULL;
 	}
 	CVSPoint delta((short) (p_point.m_x - position->m_x), (short) (p_point.m_y - position->m_y));
 	for (;;) {
-		if (node == 0) {
+		if (node == NULL) {
 			break;
 		}
 		((CPVWnd*) node[0])->_OnMove(delta);
@@ -513,7 +513,7 @@ void CWnd::Move(const CVSPoint& p_point)
 	void** node = (void**) m_childList;
 	CVSPoint delta((short) (p_point.m_x - m_relativeTopLeft.m_x), (short) (p_point.m_y - m_relativeTopLeft.m_y));
 	for (;;) {
-		if (node == 0) {
+		if (node == NULL) {
 			break;
 		}
 		CPVWnd* child = (CPVWnd*) node[0];
@@ -527,8 +527,8 @@ void CWnd::Move(const CVSPoint& p_point)
 	m_relativeTopLeft.m_y = p_point.m_y;
 	_OnMove();
 	OnMove();
-	if (m_nativeWindow != 0) {
-		SetWindowPos((HWND) m_nativeWindow, 0, p_point.m_x, p_point.m_y, 0, 0, 5);
+	if (m_nativeWindow != NULL) {
+		SetWindowPos((HWND) m_nativeWindow, NULL, p_point.m_x, p_point.m_y, 0, 0, 5);
 	}
 }
 
@@ -542,15 +542,15 @@ void CWnd::ProcessMouseMoves()
 	if (position.x != g_nLastCursorX || position.y != g_nLastCursorY) {
 		g_nLastCursorX = position.x;
 		g_nLastCursorY = position.y;
-		if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0 && g_pFocusWindow != 0) {
+		if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0 && g_pFocusWindow != NULL) {
 			g_nLastCursorX += g_pFocusWindow->m_rect.m_x;
 			g_nLastCursorY += g_pFocusWindow->m_rect.m_y;
 		}
 		posted.m_type = 7;
 		posted.m_time = CurrentQueueTimer();
 		posted.m_code = PackParam((short) g_nLastCursorX, (short) g_nLastCursorY);
-		posted.m_payload = 0;
-		posted.m_source = 0;
+		posted.m_payload = NULL;
+		posted.m_source = NULL;
 		g_pMasterInputQueue->Post(posted);
 	}
 }
@@ -567,17 +567,17 @@ static bool RegisterBaseWindowClass()
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 4;
 	windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
-	if (g_preInitActive.m_icon == 0) {
-		windowClass.hIcon = LoadIconA(0, (LPCSTR) 0x7f00);
+	if (g_preInitActive.m_icon == NULL) {
+		windowClass.hIcon = LoadIconA(NULL, (LPCSTR) 0x7f00);
 	}
 	else {
 		windowClass.hIcon = (HICON) g_preInitActive.m_icon;
 	}
-	windowClass.hCursor = 0;
+	windowClass.hCursor = NULL;
 	windowClass.hbrBackground = (HBRUSH) GetStockObject(4);
-	windowClass.lpszMenuName = 0;
+	windowClass.lpszMenuName = NULL;
 	windowClass.lpszClassName = g_pszVsBaseWindowClass;
-	cursor = LoadCursorA(0, (LPCSTR) 0x7f00);
+	cursor = LoadCursorA(NULL, (LPCSTR) 0x7f00);
 	atom = RegisterClassA(&windowClass);
 	SetCursor(cursor);
 	ShowCursor(1);
@@ -593,7 +593,7 @@ CWnd::CWnd()
 	if (g_cursorState == 1) {
 		RegisterBaseWindowClass();
 	}
-	m_nativeWindow = 0;
+	m_nativeWindow = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00465200
@@ -611,7 +611,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 	m_parent = p_parent;
 	m_createRect = p_parent;
 
-	if (p_parent != 0) {
+	if (p_parent != NULL) {
 		styleFlags = GetStyle();
 		if ((styleFlags & 0x40000000) == 0) {
 			POINT screenPoint;
@@ -645,8 +645,8 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		int menuResourceId;
 		MenuList** menuLists;
 		styleFlags = GetStyle();
-		if ((styleFlags & 0x40000000) != 0 && p_parent != 0) {
-			m_parent = 0;
+		if ((styleFlags & 0x40000000) != 0 && p_parent != NULL) {
+			m_parent = NULL;
 			style &= 0x7fffffff;
 			style |= 0x40000000;
 		}
@@ -656,9 +656,9 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		windowRect.bottom = p_rect.m_height + windowRect.top;
 		windowRect.right = p_rect.m_width + windowRect.left;
 
-		m_menuLists = 0;
+		m_menuLists = NULL;
 		m_menuResourceId = 0;
-		menu = 0;
+		menu = NULL;
 		hasMenu = 0;
 		if (GetMenu(menuResourceId, &menuLists) != 0) {
 			m_menuResourceId = (unsigned int) menuResourceId;
@@ -670,8 +670,8 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		AdjustWindowRect(&windowRect, style, hasMenu);
 		windowRect.bottom -= windowRect.top;
 		windowRect.right -= windowRect.left;
-		if ((style & 0x40000000) == 0 || p_parent == 0) {
-			parentWindow = 0;
+		if ((style & 0x40000000) == 0 || p_parent == NULL) {
+			parentWindow = NULL;
 		}
 		else {
 			parentWindow = (HWND) ((CWnd*) p_parent)->m_nativeWindow;
@@ -689,10 +689,10 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 									(HINSTANCE) g_pApplicationInstance,
 									this);
 		m_nativeWindow = hwnd;
-		if (menu != 0) {
+		if (menu != NULL) {
 			ReSetMenu();
 		}
-		if (m_nativeWindow == 0) {
+		if (m_nativeWindow == NULL) {
 			FatalWin32Error(g_szUnableToCreateWindow);
 		}
 		styleFlags = GetStyle();
@@ -706,7 +706,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 	}
 	case 4:
 	case 5: {
-		m_parent = 0;
+		m_parent = NULL;
 		m_rect.m_width = p_rect.m_width;
 		m_rect.m_height = p_rect.m_height;
 		const CVSPoint* rectOrigin = &p_rect;
@@ -769,7 +769,7 @@ void CWnd::Destroy()
 	if (m_lifecycleRefs != 0) {
 		childNode = (void**) m_childList;
 		for (;;) {
-			if (childNode == 0) {
+			if (childNode == NULL) {
 				break;
 			}
 			child = (CPVWnd*) childNode[0];
@@ -779,7 +779,7 @@ void CWnd::Destroy()
 		OnDestroy();
 		_OnDestroy();
 		if ((g_pTargetGraphicsSystem->m_driverMode < 4 || g_pTargetGraphicsSystem->m_driverMode > 5) &&
-			m_nativeWindow != 0) {
+			m_nativeWindow != NULL) {
 			DestroyWindow((HWND) m_nativeWindow);
 		}
 	}
@@ -792,7 +792,7 @@ void CWnd::Refresh(CVSRect* p_rect)
 
 	rect.left = 0;
 	rect.top = 0;
-	if (p_rect == 0) {
+	if (p_rect == NULL) {
 		rect.right = 1;
 		rect.bottom = 1;
 	}
@@ -814,12 +814,12 @@ void CWnd::ReSetMenu()
 {
 	HMENU menu = ::GetMenu((HWND) m_nativeWindow);
 	MenuList** lists = (MenuList**) m_menuLists;
-	if (*lists != 0) {
+	if (*lists != NULL) {
 		BOOL(WINAPI * enableMenuItem)(HMENU, UINT, UINT) = EnableMenuItem;
 		DWORD(WINAPI * checkMenuItem)(HMENU, UINT, UINT) = CheckMenuItem;
 		do {
 			MenuList* item = *lists;
-			while (item->m_name != 0) {
+			while (item->m_name != NULL) {
 				if (item->m_enabled != 0) {
 					enableMenuItem(menu, item->m_commandId, MF_ENABLED);
 				}
@@ -835,7 +835,7 @@ void CWnd::ReSetMenu()
 				item++;
 			}
 			lists++;
-		} while (*lists != 0);
+		} while (*lists != NULL);
 	}
 }
 
@@ -850,12 +850,12 @@ void CWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
 	resourceId = p_menuResourceId;
 	m_menuResourceId = resourceId;
 	m_menuLists = p_menuLists;
-	if (p_menuLists != 0) {
+	if (p_menuLists != NULL) {
 		newMenu = LoadMenuA((HINSTANCE) g_pApplicationInstance, (LPCSTR) (unsigned short) resourceId);
 		::SetMenu((HWND) m_nativeWindow, newMenu);
 		ReSetMenu();
 	}
-	if (currentMenu != 0) {
+	if (currentMenu != NULL) {
 		DestroyMenu(currentMenu);
 	}
 }
@@ -866,7 +866,7 @@ int CWnd::SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int
 	int* menuList;
 	int* item;
 
-	if (m_menuLists == 0) {
+	if (m_menuLists == NULL) {
 		return 0;
 	}
 	menuList = (int*) m_menuLists;
@@ -890,7 +890,7 @@ void CWnd::_OnZoom(int p_oldZoom)
 	RECT clientRect;
 
 	CPVWnd::_OnZoom(p_oldZoom);
-	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
+	if (m_nativeWindow != NULL && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
 		GetWindowRect((HWND) m_nativeWindow, &windowRect);
 		GetClientRect((HWND) m_nativeWindow, &clientRect);
 		windowRect.right -= windowRect.left;
@@ -899,7 +899,7 @@ void CWnd::_OnZoom(int p_oldZoom)
 		windowRect.bottom -= clientRect.bottom;
 		windowRect.right += clientRect.right;
 		windowRect.bottom += clientRect.bottom;
-		SetWindowPos((HWND) m_nativeWindow, 0, 0, 0, windowRect.right, windowRect.bottom, 6);
+		SetWindowPos((HWND) m_nativeWindow, NULL, 0, 0, windowRect.right, windowRect.bottom, 6);
 	}
 }
 
@@ -913,7 +913,7 @@ void CWnd::_SetRect(const CVSRect& p_rect)
 	RECT window;
 	POINT client;
 	const CVSPoint* position;
-	if (m_nativeWindow != 0 && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
+	if (m_nativeWindow != NULL && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
 		if (g_pTargetGraphicsSystem->IsFullscreenDriver() != 0) {
 			origin->m_x = 0;
 			origin->m_y = 0;
@@ -929,10 +929,10 @@ void CWnd::_SetRect(const CVSRect& p_rect)
 		window.left += origin->m_x - client.x;
 		window.top += origin->m_y - client.y;
 		unsigned int style = ConvertWindowStyleFlags(GetStyle());
-		AdjustWindowRect(&adjusted, style, m_menuLists != 0);
+		AdjustWindowRect(&adjusted, style, m_menuLists != NULL);
 		adjusted.right -= adjusted.left;
 		adjusted.bottom -= adjusted.top;
-		SetWindowPos((HWND) m_nativeWindow, 0, window.left, window.top, adjusted.right, adjusted.bottom, 4);
+		SetWindowPos((HWND) m_nativeWindow, NULL, window.left, window.top, adjusted.right, adjusted.bottom, 4);
 		return;
 	}
 	const CVSRect* parentRect = &m_parent->m_rect;

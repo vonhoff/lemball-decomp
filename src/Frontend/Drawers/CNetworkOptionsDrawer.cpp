@@ -224,8 +224,8 @@ CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_
 	m_networkState = 0;
 	m_redrawPending = 0;
 	m_lastDrawTime = CurrentMilliTimer();
-	m_localAddressText = 0;
-	m_localComputerName = 0;
+	m_localAddressText = NULL;
+	m_localComputerName = NULL;
 	m_locked = 0;
 	m_startPending = 0;
 	m_pendingStage = 0;
@@ -302,7 +302,7 @@ void CNetworkOptionsDrawer::Load()
 // FUNCTION: LEMBALL 0x004535a0
 void CNetworkOptionsDrawer::UnLoad()
 {
-	if (m_hiliteController != 0) {
+	if (m_hiliteController != NULL) {
 		delete m_hiliteController;
 	}
 }
@@ -314,12 +314,12 @@ CNetworkOptionsDrawer::~CNetworkOptionsDrawer()
 	CEditString* editor;
 
 	if (m_returnState == 0) {
-		if (g_pCurrentFrontendProcess != 0) {
+		if (g_pCurrentFrontendProcess != NULL) {
 			Stop();
 		}
 	}
 	else {
-		if (g_pCurrentFrontendProcess != 0) {
+		if (g_pCurrentFrontendProcess != NULL) {
 			((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->StopBroadcast();
 		}
 	}
@@ -330,7 +330,7 @@ CNetworkOptionsDrawer::~CNetworkOptionsDrawer()
 	} while (index < 10);
 	delete[] m_playerEntries;
 	editor = m_editor;
-	if (editor != 0) {
+	if (editor != NULL) {
 		operator delete(editor->m_text);
 		operator delete(editor);
 	}
@@ -826,9 +826,9 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 	CNetworkGameMessage* messages;
 	int index;
 
-	connections = 0;
-	messages = 0;
-	if (g_pNetworkManager != 0) {
+	connections = NULL;
+	messages = NULL;
+	if (g_pNetworkManager != NULL) {
 		connections = g_pNetworkManager->m_connections;
 		messages = g_pNetworkManager->m_gameMessages;
 	}
@@ -839,7 +839,8 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 	index = 0;
 	m_visibleEntryCount = 0;
 	do {
-		if (m_visibleEntryCount < 4 && connections != 0 && connections[index] != 0 && messages[index].m_valid != 0) {
+		if (m_visibleEntryCount < 4 && connections != NULL && connections[index] != NULL &&
+			messages[index].m_valid != 0) {
 			CEntryHandler* entry = &m_playerEntries[index];
 			entry->m_bounds.m_width = rect.m_width;
 			entry->m_bounds.m_height = rect.m_height;
@@ -865,12 +866,12 @@ void CNetworkOptionsDrawer::ResetHandlers()
 	unsigned int* valid;
 	int index;
 
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		connections = g_pNetworkManager->m_connections;
 		index = 0;
 		valid = &g_pNetworkManager->m_gameMessages->m_valid;
 		do {
-			if (*connections == 0 || *valid == 0) {
+			if (*connections == NULL || *valid == 0) {
 				m_playerEntries[index].Reset();
 				if (m_acceptedPlayer == index) {
 					m_acceptedPlayer = -1;
@@ -913,9 +914,9 @@ bool CNetworkOptionsDrawer::AcceptingLock()
 	CGameStatus* status;
 
 	unlocked = m_locked == 0;
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		connections = g_pNetworkManager->m_connections;
-		if (m_acceptedPlayer != -1 && connections[m_acceptedPlayer] != 0) {
+		if (m_acceptedPlayer != -1 && connections[m_acceptedPlayer] != NULL) {
 			Lock();
 			g_pActiveConnection = connections[m_acceptedPlayer];
 			skill = 4;

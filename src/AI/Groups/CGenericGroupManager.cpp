@@ -31,7 +31,7 @@ CGenericGroupManager::CGenericGroupManager(CAI* p_ai,
 CGenericGroupManager::~CGenericGroupManager()
 {
 	for (int i = 0; i < 40; i++) {
-		if (m_groups[i] != 0) {
+		if (m_groups[i] != NULL) {
 			delete m_groups[i];
 		}
 	}
@@ -41,7 +41,7 @@ CGenericGroupManager::~CGenericGroupManager()
 void CGenericGroupManager::Restart()
 {
 	CGenericGroup* group = GetFirstGroup();
-	while (group != 0) {
+	while (group != NULL) {
 		group->Restart();
 		group = GetNextGroup();
 	}
@@ -51,7 +51,7 @@ void CGenericGroupManager::Restart()
 int CGenericGroupManager::Process()
 {
 	CGenericGroup* group = GetFirstGroup();
-	while (group != 0) {
+	while (group != NULL) {
 		group->Process();
 		group = GetNextGroup();
 	}
@@ -69,7 +69,7 @@ CGenericGroup* CGenericGroupManager::GetFirstGroup()
 {
 	m_currentGroup = 0;
 	if (m_groupCount == 0) {
-		return 0;
+		return NULL;
 	}
 	return m_groups[0];
 }
@@ -80,7 +80,7 @@ CGenericGroup* CGenericGroupManager::GetNextGroup()
 	int index = m_currentGroup + 1;
 	m_currentGroup = index;
 	if (m_groupCount <= index) {
-		return 0;
+		return NULL;
 	}
 	return m_groups[index];
 }
@@ -90,7 +90,7 @@ CGenericGroup* CGenericGroupManager::GetNthGroup(int p_index)
 {
 	m_currentGroup = p_index;
 	if (m_groupCount <= p_index) {
-		return 0;
+		return NULL;
 	}
 	return m_groups[p_index];
 }
@@ -99,7 +99,7 @@ CGenericGroup* CGenericGroupManager::GetNthGroup(int p_index)
 CGenericGroup* CGenericGroupManager::GetCurrentGroup()
 {
 	if (m_groupCount <= m_currentGroup) {
-		return 0;
+		return NULL;
 	}
 	return m_groups[m_currentGroup];
 }
@@ -109,11 +109,11 @@ int CGenericGroupManager::GetNumberOfElements()
 {
 	int total = 0;
 	CGenericGroup* group = GetFirstGroup();
-	if (group != 0) {
+	if (group != NULL) {
 		do {
 			total += group->GetElementsInGroup();
 			group = GetNextGroup();
-		} while (group != 0);
+		} while (group != NULL);
 	}
 	return total;
 }
@@ -122,36 +122,36 @@ int CGenericGroupManager::GetNumberOfElements()
 CGameObject* CGenericGroupManager::GetFirstElement()
 {
 	CGenericGroup* group = GetFirstGroup();
-	if (group != 0) {
+	if (group != NULL) {
 		return group->GetFirstElementInGroup();
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0041eb00
 CGameObject* CGenericGroupManager::GetNextElement()
 {
 	CGenericGroup* group = GetCurrentGroup();
-	if (group != 0) {
+	if (group != NULL) {
 		CGameObject* object = group->GetNextElementInGroup();
-		if (object != 0) {
+		if (object != NULL) {
 			return object;
 		}
 		group = GetNextGroup();
-		if (group != 0) {
+		if (group != NULL) {
 			return group->GetFirstElementInGroup();
 		}
-		return 0;
+		return NULL;
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0041eb40
 CGameObject* CGenericGroupManager::GetCurrentElement()
 {
-	CGameObject* object = 0;
+	CGameObject* object = NULL;
 	CGenericGroup* group = GetCurrentGroup();
-	if (group != 0) {
+	if (group != NULL) {
 		object = group->GetCurrentElementInGroup();
 	}
 	return object;
@@ -162,7 +162,7 @@ CGameObject* CGenericGroupManager::GetNthElement(int p_index)
 {
 	int i = 0;
 	CGameObject* object = GetFirstElement();
-	while (object != 0 && i < p_index) {
+	while (object != NULL && i < p_index) {
 		i++;
 		object = GetNextElement();
 	}
@@ -173,13 +173,13 @@ CGameObject* CGenericGroupManager::GetNthElement(int p_index)
 CGenericGroup* CGenericGroupManager::GetGroupElementIsMemberOf(CGameObject* p_object)
 {
 	CGenericGroup* group = GetFirstGroup();
-	while (group != 0) {
+	while (group != NULL) {
 		if (group->ConfirmElementIsInGroup(p_object) == 1) {
 			return group;
 		}
 		group = GetNextGroup();
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0041ec80
@@ -214,7 +214,7 @@ void CGenericGroupManager::DeleteGroup(CGenericGroup* p_group)
 				index++;
 			} while (index < m_groupCount);
 		}
-		m_groups[index] = 0;
+		m_groups[index] = NULL;
 		return;
 	}
 }
@@ -230,7 +230,7 @@ void CGenericGroupManager::AddElementToGroup(CGameObject* p_object, CGenericGrou
 bool CGenericGroupManager::RemoveElementFromGroup(CGameObject* p_object, CGenericGroup* p_group)
 {
 	bool groupExists = true;
-	if (p_group != 0) {
+	if (p_group != NULL) {
 		p_group->RemoveElementFromGroup(p_object);
 		if (m_state != 0 && p_group->GetElementsInGroup() < 1) {
 			delete p_group;
@@ -249,7 +249,7 @@ bool CGenericGroupManager::RemoveElementFromGroup(CGameObject* p_object, CGeneri
 							remaining--;
 						} while (remaining != 0);
 					}
-					m_groups[destination] = 0;
+					m_groups[destination] = NULL;
 				}
 			}
 		}
@@ -270,7 +270,7 @@ int CGenericGroupManager::GetAllBoundingBoxes(Rect* p_rects)
 	int count = 0;
 	CVSRect bounds;
 	CGenericGroup* group = GetFirstGroup();
-	if (group != 0) {
+	if (group != NULL) {
 		output = p_rects;
 		do {
 			group->GetBoundingBox(bounds);
@@ -281,7 +281,7 @@ int CGenericGroupManager::GetAllBoundingBoxes(Rect* p_rects)
 			output++;
 			count++;
 			group = GetNextGroup();
-		} while (group != 0);
+		} while (group != NULL);
 	}
 	return count;
 }
@@ -291,11 +291,11 @@ int CGenericGroupManager::GetViewData(CViewData* p_viewData)
 {
 	int total = 0;
 	CGenericGroup* group = GetFirstGroup();
-	if (group != 0) {
+	if (group != NULL) {
 		do {
 			total += group->GetViewData(p_viewData + total);
 			group = GetNextGroup();
-		} while (group != 0);
+		} while (group != NULL);
 	}
 	return total;
 }
@@ -304,7 +304,7 @@ int CGenericGroupManager::GetViewData(CViewData* p_viewData)
 bool CGenericGroupManager::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate)
 {
 	CGenericGroup* group = GetFirstGroup();
-	while (group != 0) {
+	while (group != NULL) {
 		if (group->CheckGroupIntersection(p_rect, p_coordinate) == 1) {
 			return true;
 		}

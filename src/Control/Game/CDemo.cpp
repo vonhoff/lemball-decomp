@@ -7,19 +7,21 @@
 #include "../../Visos/Messaging/PackParam.h"
 #include "../../Visos/Resources/CResBIN.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x004091b0
 CDemo::CDemo(int p_sourceId)
 {
 	m_offsetY = 0;
 	m_offsetX = 0;
 	m_sourceId = p_sourceId;
-	m_buffer = 0;
-	m_window = 0;
+	m_buffer = NULL;
+	m_window = NULL;
 	m_currentResourceId = 0;
 	m_firstResourceId = 0;
 	m_resourceCount = 0;
-	m_resource = 0;
-	m_filePath = 0;
+	m_resource = NULL;
+	m_filePath = NULL;
 	m_demoMode = 0;
 	m_state48 = 0;
 	m_gameOver = 0;
@@ -73,7 +75,7 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	message.m_source |= (unsigned int) m_readCursor[2] << 16;
 	message.m_source |= (unsigned int) m_readCursor[3] << 24;
 	m_readCursor += 4;
-	if (m_window == 0) {
+	if (m_window == NULL) {
 		return false;
 	}
 	switch ((unsigned int) message.m_type) {
@@ -110,9 +112,9 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 // FUNCTION: LEMBALL 0x00409460
 bool CDemo::LoadBuffer()
 {
-	if (m_filePath != 0) {
+	if (m_filePath != NULL) {
 		_Filet* file = vsOpen(m_filePath, "rb");
-		if (file == 0) {
+		if (file == NULL) {
 			return false;
 		}
 		unsigned long size = vsGetFileSize(file);
@@ -214,16 +216,16 @@ void CDemo::Process()
 // FUNCTION: LEMBALL 0x00409660
 void CDemo::CleanUp()
 {
-	if (m_resource != 0) {
+	if (m_resource != NULL) {
 		m_resource->m_directUseCount--;
 		m_resource->UnLoad();
-		m_resource = 0;
+		m_resource = NULL;
 	}
-	else if (m_buffer != 0) {
+	else if (m_buffer != NULL) {
 		operator delete(m_buffer);
 	}
-	m_buffer = 0;
-	m_readCursor = 0;
+	m_buffer = NULL;
+	m_readCursor = NULL;
 }
 
 // FUNCTION: LEMBALL 0x004096a0

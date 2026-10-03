@@ -47,18 +47,18 @@ void CNetworkOptionsDrawer::DrawText()
 		CVSPoint posIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_headerY);
 		CVSPoint posComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_headerY);
 		posLabel.m_x -= font->GetSize(g_szNetworkOptionsHeaderName, 0x20).m_width / 2;
-		m_textManager->DrawString(m_gdi, posLabel, CVSSize(), m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, 0);
+		m_textManager->DrawString(m_gdi, posLabel, CVSSize(), m_chalkFontId, g_szNetworkOptionsHeaderName, 0x20, NULL);
 
 		posIp.m_x -= font->GetSize(g_szNetworkOptionsHeaderIp, 0x20).m_width / 2;
-		m_textManager->DrawString(m_gdi, posIp, CVSSize(), m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, 0);
+		m_textManager->DrawString(m_gdi, posIp, CVSSize(), m_chalkFontId, g_szNetworkOptionsHeaderIp, 0x20, NULL);
 
 		posComputer.m_x -= font->GetSize(g_szNetworkOptionsHeaderComputer, 0x20).m_width / 2;
 		m_textManager
-			->DrawString(m_gdi, posComputer, CVSSize(), m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, 0);
+			->DrawString(m_gdi, posComputer, CVSSize(), m_chalkFontId, g_szNetworkOptionsHeaderComputer, 0x20, NULL);
 
 		short dividerWidth = font->GetSize(divider, 0x20).m_width;
 		posDivider.m_x = (short) (((int) m_size.m_width - (int) dividerWidth) / 2);
-		m_textManager->DrawString(m_gdi, posDivider, CVSSize(), m_chalkFontId, divider, 0x20, 0);
+		m_textManager->DrawString(m_gdi, posDivider, CVSSize(), m_chalkFontId, divider, 0x20, NULL);
 
 		if (g_szNetworkGameName[0] != 0) {
 			CVSPoint posMyName((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_localPlayerY);
@@ -74,7 +74,7 @@ void CNetworkOptionsDrawer::DrawText()
 									  (CRemap*) m_remaps[0]);
 
 			char* myIp = m_localAddressText;
-			if (myIp != 0 && *myIp != 0) {
+			if (myIp != NULL && *myIp != 0) {
 				posMyIp.m_x -= font->GetSize(myIp, 0x20).m_width / 2;
 				m_textManager->DrawString(m_gdi,
 										  posMyIp,
@@ -86,7 +86,7 @@ void CNetworkOptionsDrawer::DrawText()
 			}
 
 			char* myPeer = m_localComputerName;
-			if (myPeer != 0 && *myPeer != 0) {
+			if (myPeer != NULL && *myPeer != 0) {
 				char trimmed[21];
 				strncpy(trimmed, myPeer, 0x14);
 				int len = 0x14;
@@ -107,7 +107,7 @@ void CNetworkOptionsDrawer::DrawText()
 			}
 		}
 
-		if (g_pNetworkManager != 0) {
+		if (g_pNetworkManager != NULL) {
 			int i;
 			int row = 0;
 			for (i = 0; i < 10; i++) {
@@ -132,7 +132,7 @@ void CNetworkOptionsDrawer::DrawText()
 				}
 				special = true;
 			}
-			CRemap* remap = 0;
+			CRemap* remap = NULL;
 			if (m_message >= 7) {
 				remap = (CRemap*) m_remaps[3];
 				special = true;
@@ -148,7 +148,7 @@ void CNetworkOptionsDrawer::DrawText()
 		}
 
 		m_drawnMessage = m_message;
-		if (g_pNetworkManager != 0) {
+		if (g_pNetworkManager != NULL) {
 			int row = 0;
 			int fallbackHighlighted = -1;
 			CNetworkGameMessage* messages = g_pNetworkManager->m_gameMessages;

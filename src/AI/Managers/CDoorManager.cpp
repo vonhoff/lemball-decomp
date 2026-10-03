@@ -19,13 +19,13 @@ CDoorManager::CDoorManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x13,
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_doors = 0;
+	m_doors = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0040df90
 void CDoorManager::Restart()
 {
-	if (m_doors != 0) {
+	if (m_doors != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_doors[i].Restart();
 		}
@@ -39,10 +39,10 @@ void CDoorManager::Initialise(int p_capacity)
 	m_count = 0;
 	m_capacity = p_capacity;
 	if (p_capacity == 0) {
-		m_doors = 0;
+		m_doors = NULL;
 		return;
 	}
-	if (m_doors == 0) {
+	if (m_doors == NULL) {
 		m_doors = new CDoor[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_doors[i].Restart();
@@ -54,7 +54,7 @@ void CDoorManager::Initialise(int p_capacity)
 // FUNCTION: LEMBALL 0x0040e060
 CDoorManager::~CDoorManager()
 {
-	if (m_doors != 0) {
+	if (m_doors != NULL) {
 		delete[] m_doors;
 	}
 }

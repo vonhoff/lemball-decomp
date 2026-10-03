@@ -3,6 +3,7 @@
 #include "CMogRes.h"
 
 #include <new.h>
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045dd20
 CResCol* CResCol::Load(unsigned int p_resourceId)
@@ -11,19 +12,19 @@ CResCol* CResCol::Load(unsigned int p_resourceId)
 	CResCol* res;
 	register unsigned int id = p_resourceId;
 	res = (CResCol*) g_pActiveMogRes->Find(id);
-	if (res == 0) {
+	if (res == NULL) {
 		storage = operator new(sizeof(CResCol));
-		if (storage != 0) {
+		if (storage != NULL) {
 			res = new (storage) CResCol(id);
 		}
 		else {
-			res = 0;
+			res = NULL;
 		}
 		return (CResCol*) res->CheckError();
 	}
 	if (res->m_chunkType != RESOURCE_CHUNK_COLOUR) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }

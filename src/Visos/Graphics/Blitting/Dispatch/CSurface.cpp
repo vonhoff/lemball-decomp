@@ -4,6 +4,8 @@
 #include "../../../Resources/CResZRLE.h"
 #include "../../CRemap.h"
 
+#include <stddef.h>
+
 extern char g_szClippingHeightTo[];
 extern char g_szClippingDotNewline[];
 extern char g_szClippingWidthTo[];
@@ -78,7 +80,7 @@ void CSurface::BlitZRLE(int p_x,
 		if (ClipRect(*dest, clipped) == 0) {
 			AddToChangeList(*dest);
 			if ((flags & 0x40000) != 0) {
-				if (remap == 0) {
+				if (remap == NULL) {
 					BlitZRLENoClipZBuff(*dest, resource, p_depth);
 					return;
 				}
@@ -86,14 +88,14 @@ void CSurface::BlitZRLE(int p_x,
 				return;
 			}
 			if ((flags & 0x80000) != 0) {
-				if (remap == 0) {
+				if (remap == NULL) {
 					BlitZRLENoClipQZBuff(*dest, resource, p_depth);
 					return;
 				}
 				BlitZRLENoClipQZBuffRemap(*dest, resource, p_depth, remap->m_remap);
 				return;
 			}
-			if (remap == 0) {
+			if (remap == NULL) {
 				if ((flags & 1) != 0) {
 					BlitZRLENoClipR(*dest, resource, (flags & 2) >> 1);
 					return;
@@ -113,7 +115,7 @@ void CSurface::BlitZRLE(int p_x,
 		}
 		AddToChangeList(*dest);
 		if ((flags & 0x40000) != 0) {
-			if (remap == 0) {
+			if (remap == NULL) {
 				BlitZRLEClipZBuff(*dest, *clipped, resource, p_depth);
 				return;
 			}
@@ -121,14 +123,14 @@ void CSurface::BlitZRLE(int p_x,
 			return;
 		}
 		if ((flags & 0x80000) != 0) {
-			if (remap == 0) {
+			if (remap == NULL) {
 				BlitZRLEClipQZBuff(*dest, *clipped, resource, p_depth);
 				return;
 			}
 			BlitZRLEClipQZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
 			return;
 		}
-		if (remap == 0) {
+		if (remap == NULL) {
 			if ((flags & 1) != 0) {
 				BlitZRLEClipR(*dest, *clipped, resource, (flags & 2) >> 1);
 				return;

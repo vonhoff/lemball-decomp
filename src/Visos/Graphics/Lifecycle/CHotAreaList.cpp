@@ -3,6 +3,8 @@
 #include "../../Foundation/CBaseQueue.h"
 #include "../CHotAreaElement.h"
 
+#include <stddef.h>
+
 extern CVSPoint* g_pHotAreaCursor;
 extern int g_nHotAreaListCount;
 
@@ -14,7 +16,7 @@ CHotAreaList::~CHotAreaList()
 
 	entry = m_head;
 	for (;;) {
-		if (entry == 0) {
+		if (entry == NULL) {
 			break;
 		}
 		next = entry->m_next;

@@ -10,6 +10,8 @@
 #include "Visos/Network/CConnect.h"
 #include "Visos/Network/CNetworkAddress.h"
 
+#include <stddef.h>
+
 extern char* g_szBroadcastPeerName;
 
 // FUNCTION: LEMBALL 0x004548c0
@@ -45,7 +47,7 @@ void CNetworkOptionsDrawer::Processing()
 		now = CurrentMilliTimer();
 		m_lastDrawTime = now;
 	}
-	if (g_pNetworkManager != 0) {
+	if (g_pNetworkManager != NULL) {
 		ident = g_pBroadcastAddress->GetStr();
 		peer = g_szBroadcastPeerName;
 		if (m_localAddressText != ident) {
@@ -78,12 +80,12 @@ void CNetworkOptionsDrawer::Processing()
 				acceptedPlayer = m_acceptedPlayer;
 				if (acceptedPlayer != -1) {
 					CConnect* connection = connections[acceptedPlayer];
-					if (connection != 0) {
+					if (connection != NULL) {
 						((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Reject(connection);
 					}
 				}
 				m_acceptedPlayer = index;
-				if (*current != 0) {
+				if (*current != NULL) {
 					activation = m_playerEntries[index].m_activationState;
 					if (activation != 0) {
 						Lock();

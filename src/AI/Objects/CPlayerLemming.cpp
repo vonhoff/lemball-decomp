@@ -99,8 +99,8 @@ void CPlayerLemming::Restart()
 		m_position.m_zFixed = m_spawnPosition.m_zFixed;
 		m_deathRequested = 0;
 		m_sfxChanged = 1;
-		m_group = 0;
-		m_ice = 0;
+		m_group = NULL;
+		m_ice = NULL;
 		m_onConveyor = 0;
 		m_ammoCount = PLAYER_START_AMMO;
 	}
@@ -136,7 +136,7 @@ void CPlayerLemming::HitBullet(CBullet* p_bullet)
 				break;
 			}
 			case OWNER_REMOTE_PLAYER:
-				if (g_pActiveConnection != 0) {
+				if (g_pActiveConnection != NULL) {
 					g_pObjectHitMessage->Send(p_bullet);
 				}
 				break;
@@ -353,7 +353,7 @@ void CPlayerLemming::Die()
 					objectArray[objectIndex] = objectArray[objectIndex + 1];
 					objectIndex++;
 				}
-				objectArray[objectCount] = 0;
+				objectArray[objectCount] = NULL;
 				break;
 			}
 			objectIndex++;
@@ -373,7 +373,7 @@ void CPlayerLemming::HitMine()
 	vel.m_yFixed = 0;
 	m_wasHitByMine = 1;
 	vel.m_zFixed = 0xa000;
-	StartFly(vel, 0);
+	StartFly(vel, NULL);
 	m_deathRequested = 1;
 }
 
@@ -528,7 +528,7 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_action = ACTION_NONE;
 	m_isGroupLeader = 0;
 	m_wasHitByBullet = 0;
-	m_ice = 0;
+	m_ice = NULL;
 	m_onConveyor = 0;
 	m_hasDestination = 0;
 	short& resetFlags = m_unk0xc4;
@@ -764,14 +764,14 @@ void CPlayerLemming::SetBored(unsigned long p_minimumDelay)
 // FUNCTION: LEMBALL 0x00410100
 void CPlayerLemming::StartStanding()
 {
-	CMover* mover = 0;
+	CMover* mover = NULL;
 	unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
 	int tileZ = m_position.m_zFixed >> 12;
-	if (m_onMover == 0 && mover != 0) {
+	if (m_onMover == 0 && mover != NULL) {
 		mover->GetOn(this);
 	}
 	if (tileZ <= (int) groundZ + 2) {
-		if (mover == 0) {
+		if (mover == NULL) {
 			m_position.m_zFixed = groundZ << 12;
 		}
 		g_pAI->StepOn(m_position, this, m_collisionFlags);
@@ -864,7 +864,7 @@ void CPlayerLemming::GetHit()
 					objects[index] = objects[index + 1];
 					index++;
 				}
-				objects[count] = 0;
+				objects[count] = NULL;
 				return;
 			}
 			index++;

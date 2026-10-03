@@ -37,7 +37,7 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	}
 	m_nextHandle = 1;
 	for (unsigned int channel = 0; channel < m_channelCount; channel++) {
-		m_effects[channel] = 0;
+		m_effects[channel] = NULL;
 		m_effectUsed[channel] = 0;
 		m_effectHandles[channel] = 0;
 	}
@@ -186,7 +186,7 @@ int CWaveSoundDevice::Close()
 	unsigned int tries;
 	char errorText[MAXERRORLENGTH];
 
-	if (m_waveOut != 0) {
+	if (m_waveOut != NULL) {
 		result = WAVE_RESULT_UNSET;
 		tries = 0;
 		do {
@@ -207,7 +207,7 @@ int CWaveSoundDevice::Close()
 		if ((m_caps.dwSupport & WAVECAPS_VOLUME) != 0) {
 			waveOutSetVolume(m_waveOut, m_savedVolume);
 		}
-		if (m_waveOut != 0) {
+		if (m_waveOut != NULL) {
 			result = WAVE_RESULT_UNSET;
 			tries = 0;
 			do {
@@ -227,7 +227,7 @@ int CWaveSoundDevice::Close()
 			}
 		}
 	}
-	m_waveOut = 0;
+	m_waveOut = NULL;
 	return 1;
 }
 
@@ -261,7 +261,7 @@ int CWaveSoundDevice::StopAllEffects()
 	unsigned int tries;
 	char errorText[MAXERRORLENGTH];
 
-	if (m_waveOut != 0) {
+	if (m_waveOut != NULL) {
 		result = WAVE_RESULT_UNSET;
 		tries = 0;
 		do {
@@ -316,8 +316,8 @@ int CWaveSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_hand
 		if (m_effectUsed[i] == 0) {
 			Close();
 			storage = operator new(sizeof(CWaveEffect));
-			if (storage == 0) {
-				m_effects[i] = 0;
+			if (storage == NULL) {
+				m_effects[i] = NULL;
 			}
 			else {
 				m_effects[i] =
@@ -367,7 +367,7 @@ int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 		device = this;
 		if (device->m_effectHandles[channelIndex] == p_effectId) {
 			effect = device->m_effects[channelIndex];
-			if (effect != 0) {
+			if (effect != NULL) {
 				effect->~CWaveEffect();
 				operator delete(effect);
 			}
@@ -391,7 +391,7 @@ int CWaveSoundDevice::FreeAllEffects()
 		do {
 			if (device->m_effectUsed[i] == 1) {
 				effect = device->m_effects[i];
-				if (effect != 0) {
+				if (effect != NULL) {
 					effect->~CWaveEffect();
 					operator delete(effect);
 				}

@@ -54,7 +54,7 @@ CFileBroadcast::CFileBroadcast()
 {
 	*g_pBroadcastAddress = g_szBroadcastPeerName;
 
-	if (g_pFileBroadcast == 0) {
+	if (g_pFileBroadcast == NULL) {
 		g_pFileBroadcast = new CPortsMessage();
 	}
 
@@ -70,13 +70,13 @@ CFileBroadcast::CFileBroadcast()
 CFileBroadcast::~CFileBroadcast()
 {
 	delete CFileReadSocket::m_file;
-	if (g_pFileBroadcastData != 0) {
+	if (g_pFileBroadcastData != NULL) {
 		operator delete(g_pFileBroadcastData);
-		g_pFileBroadcastData = 0;
+		g_pFileBroadcastData = NULL;
 	}
-	if (g_pFileBroadcast != 0) {
+	if (g_pFileBroadcast != NULL) {
 		delete g_pFileBroadcast;
-		g_pFileBroadcast = 0;
+		g_pFileBroadcast = NULL;
 	}
 }
 
@@ -107,7 +107,7 @@ bool CFileBroadcast::Start(const char* p_name)
 	CBroadcast::Initialise(p_name);
 
 	char* extension = strchr(g_pFileBroadcastData, '.');
-	if (extension != 0) {
+	if (extension != NULL) {
 		strcpy(extension, ".bct");
 	}
 	else {
@@ -210,7 +210,7 @@ void CFileBroadcast::ResetPort(short p_port)
 
 	if (!g_pFileBroadcast->AnyUsed()) {
 		char* extension = strchr(g_pFileBroadcastData, '.');
-		if (extension != 0) {
+		if (extension != NULL) {
 			strcpy(extension, ".con");
 		}
 		else {
@@ -252,4 +252,4 @@ void CFileBroadcast::Closed(int p_notifyPeer)
 }
 
 // GLOBAL: LEMBALL 0x004a2de0
-CPortsMessage* g_pFileBroadcast = 0;
+CPortsMessage* g_pFileBroadcast = NULL;

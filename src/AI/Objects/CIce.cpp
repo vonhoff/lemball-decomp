@@ -239,7 +239,7 @@ bool CIce::Process()
 			unsigned short groundZ;
 			if (object->m_objectType == 2) {
 				object->SetBored(4000);
-				object->OnConveyor(0, 0, 0);
+				object->OnConveyor(0, NULL, 0);
 				{
 					int y = (current.m_yFixed >> 12);
 					int x = (current.m_xFixed >> 12);
@@ -258,7 +258,7 @@ bool CIce::Process()
 					velocity.m_xFixed = (m_velocityX << 12) / 6;
 					velocity.m_yFixed = (m_velocityY << 12) / 6;
 					velocity.m_zFixed = 0;
-					object->StartFly(velocity, 0);
+					object->StartFly(velocity, NULL);
 				}
 			}
 			for (int j = i + 1; j < m_objectCount; j++) {
@@ -396,7 +396,7 @@ void CIce::Switched()
 			unsigned short groundZ;
 			if (object->m_objectType == 2) {
 				object->SetBored(4000);
-				object->OnConveyor(0, 0, 0);
+				object->OnConveyor(0, NULL, 0);
 				{
 					int y = (current.m_yFixed >> 12);
 					int x = (current.m_xFixed >> 12);
@@ -417,7 +417,7 @@ void CIce::Switched()
 					velocity.m_xFixed = (m_velocityX << 12) / 6;
 					velocity.m_yFixed = (m_velocityY << 12) / 6;
 					velocity.m_zFixed = 0;
-					object->StartFly(velocity, 0);
+					object->StartFly(velocity, NULL);
 				}
 			}
 			for (int j = i + 1; j < m_objectCount; j++) {

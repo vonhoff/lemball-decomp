@@ -6,10 +6,12 @@
 extern int g_socketWindowClassRegistered;
 #include "Platform/WinSock/WinSock.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0046fcf0
 CTCPIPCommonSocket::CTCPIPCommonSocket() : CNetworkWnd("Socket Window", &g_socketWindowClassRegistered)
 {
-	m_asyncBuffer = 0;
+	m_asyncBuffer = NULL;
 	m_asyncRequest = 0;
 	m_firstMessage = 0x440;
 	m_lastMessage = 0x45f;
@@ -18,7 +20,7 @@ CTCPIPCommonSocket::CTCPIPCommonSocket() : CNetworkWnd("Socket Window", &g_socke
 // FUNCTION: LEMBALL 0x0046fd70
 CTCPIPCommonSocket::~CTCPIPCommonSocket()
 {
-	if (m_asyncBuffer != 0) {
+	if (m_asyncBuffer != NULL) {
 		operator delete(m_asyncBuffer);
 	}
 }
@@ -35,10 +37,10 @@ int CTCPIPCommonSocket::OnNameResolved(unsigned int p_wParam, unsigned int p_lPa
 			return NAME_LOOKUP_FAILED;
 		}
 		SocketError((NetworkErrors) error);
-		if (*p_buffer != 0) {
+		if (*p_buffer != NULL) {
 			operator delete(*p_buffer);
 		}
-		*p_buffer = 0;
+		*p_buffer = NULL;
 		return NAME_LOOKUP_ERROR_HANDLED;
 	}
 	return NAME_RESOLVED;

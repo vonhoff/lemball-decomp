@@ -19,8 +19,8 @@ static unsigned int g_bitMasks[32] = {
 // FUNCTION: LEMBALL 0x00472ce0
 CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, unsigned long* p_map) : CCritical()
 {
-	m_child = 0;
-	m_parent = 0;
+	m_child = NULL;
+	m_parent = NULL;
 	m_blockSize = p_blockSize;
 	m_blockCount = p_blockCount;
 	m_flags = 0;
@@ -32,7 +32,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 	m_mapWordCount = (p_blockCount + 31) / 32;
 	unsigned char* memory = p_memory;
 
-	if (memory == 0) {
+	if (memory == NULL) {
 		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
 		memory = (unsigned char*) operator new(m_totalBytes);
@@ -40,7 +40,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 		m_flags |= 2;
 	}
 
-	if (p_map == 0) {
+	if (p_map == NULL) {
 		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
 		p_map = (unsigned long*) operator new(m_mapWordCount * sizeof(unsigned long));
@@ -60,19 +60,19 @@ CBucket::~CBucket()
 {
 	int smallMemEnabled = g_nSmallMemoryEnabled;
 	g_nSmallMemoryEnabled = 0;
-	if (m_child != 0) {
+	if (m_child != NULL) {
 		RemoveChild();
 	}
 	if ((m_flags & 2) != 0) {
-		if (m_memory != 0) {
+		if (m_memory != NULL) {
 			operator delete(m_memory);
-			m_memory = 0;
+			m_memory = NULL;
 		}
 	}
 	if ((m_flags & 1) != 0) {
-		if (m_map != 0) {
+		if (m_map != NULL) {
 			operator delete(m_map);
-			m_map = 0;
+			m_map = NULL;
 		}
 	}
 	g_nSmallMemoryEnabled = smallMemEnabled;
@@ -87,13 +87,13 @@ bool CBucket::Allocate(unsigned char** p_result)
 		if ((current->m_flags & 4) == 0) {
 			break;
 		}
-		if (current->m_child == 0) {
+		if (current->m_child == NULL) {
 			current->NewChild();
 		}
 		current->LeaveCritical();
 		current = current->m_child;
 	}
-	*p_result = 0;
+	*p_result = NULL;
 	Boffset offset = current->m_freeOffset;
 	current->m_map[offset.m_wWord] |= g_bitMasks[offset.m_wBit];
 	current->m_freeBytes -= current->m_blockSize;
@@ -139,7 +139,7 @@ bool CBucket::Free(unsigned char* p_memory)
 		(current->m_freeOffset.m_wWord > offset.m_wWord && current->m_freeOffset.m_wBit > offset.m_wBit)) {
 		current->m_freeOffset = offset;
 	}
-	if (current->m_totalBytes == current->m_freeBytes && current->m_parent != 0) {
+	if (current->m_totalBytes == current->m_freeBytes && current->m_parent != NULL) {
 		current->RemoveThis();
 	}
 	current->LeaveCritical();
@@ -183,7 +183,7 @@ CBucket* CBucket::NewChild()
 	int smallMemEnabled = g_nSmallMemoryEnabled;
 	g_nSmallMemoryEnabled = 0;
 	g_pMasterArena->GetAllocSize();
-	CBucket* child = new CBucket(m_blockSize, m_blockCount, 0, 0);
+	CBucket* child = new CBucket(m_blockSize, m_blockCount, NULL, NULL);
 	g_pMasterArena->GetAllocSize();
 	g_nSmallMemoryEnabled = smallMemEnabled;
 	m_child = child;
@@ -195,11 +195,11 @@ CBucket* CBucket::NewChild()
 void CBucket::RemoveChild()
 {
 	g_pMasterArena->GetAllocSize();
-	if (m_child != 0) {
+	if (m_child != NULL) {
 		delete m_child;
 	}
 	g_pMasterArena->GetAllocSize();
-	m_child = 0;
+	m_child = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00473120
@@ -214,7 +214,7 @@ bool CBucket::CheckValidPointer(unsigned char* p_memory)
 	if (p_memory >= m_memory && m_totalBytes + m_memory > p_memory) {
 		return true;
 	}
-	if (m_child != 0) {
+	if (m_child != NULL) {
 		return m_child->CheckValidPointer(p_memory);
 	}
 	return false;

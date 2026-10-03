@@ -80,7 +80,7 @@ CAI::CAI(CGame* p_game)
 	m_objects = new CGameObject*[100];
 	CGameObject** objects = m_objects;
 	for (int i = 0; i < m_objectCapacity; i++) {
-		objects[i] = 0;
+		objects[i] = NULL;
 	}
 	m_game = p_game;
 	m_initialised = 0;
@@ -100,7 +100,7 @@ void CAI::Restart()
 	g_pActiveAI = this;
 	m_objectCount = 0;
 	for (i = 0; i < m_objectCapacity; i++) {
-		m_objects[i] = 0;
+		m_objects[i] = NULL;
 	}
 	g_wNetworkLemmingIndex = 0;
 	g_wLocalLemmingIndex = 0;
@@ -167,7 +167,7 @@ void CAI::Restart()
 		m_aiQueue = new CBaseQueue(10, "AIQueue");
 		m_aiQueue->Attach(this, 0);
 	}
-	if (m_networkMode != 0 && g_pActiveConnection != 0) {
+	if (m_networkMode != 0 && g_pActiveConnection != NULL) {
 		g_pActiveConnection->CReadSocket::UnUseAllNC();
 		g_pActiveConnection->CReadSocket::UnUseAllC();
 	}
@@ -327,8 +327,8 @@ CAI::~CAI()
 	if (g_nDemoMode != 0) {
 		g_pDemo->SetDemoMode(0);
 	}
-	CGameObject::Init(0);
-	g_pActiveAI = 0;
+	CGameObject::Init(NULL);
+	g_pActiveAI = NULL;
 	m_aiQueue->Detach(this, 0);
 	delete m_cursor;
 	delete m_playerGroupManager;
@@ -366,7 +366,7 @@ CAI::~CAI()
 		delete m_gameStateMessage;
 	}
 	operator delete(m_objectRequired);
-	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
 		g_pGameStatus->m_levelState = m_score;
 	}
 	operator delete(m_objects);
@@ -387,7 +387,7 @@ void CAI::Start()
 		return;
 	}
 
-	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
 		demo = g_pDemo;
 		demo->m_startTime = CurrentMilliTimer();
 		demo->m_duration = 0;
@@ -400,7 +400,7 @@ void CAI::Start()
 // FUNCTION: LEMBALL 0x00411b70
 void CAI::SendGameState(eGameStates p_state, eGameStateStages p_stage)
 {
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		if (m_gameStateMessage->m_pendingSendCount != 0) {
 			unsigned long start = CurrentMilliTimer();
 			while (m_gameStateMessage->m_pendingSendCount != 0 && CurrentMilliTimer() - start < 2000) {
@@ -605,7 +605,7 @@ void CAI::GameState(eGameStatus p_status)
 // FUNCTION: LEMBALL 0x00412080
 void CAI::SetPlayerIDs()
 {
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		int offsets[2] = {0, 0};
 		if (g_pActiveConnection->m_isHost != 0) {
 			offsets[0] = 4;
@@ -639,7 +639,7 @@ void CAI::DecideAnimsRequired()
 			break;
 		}
 		CGameObject* object = g_pObjects[(unsigned short) i];
-		if (object != 0 && object->m_objectType != OBJECT_INVALID) {
+		if (object != NULL && object->m_objectType != OBJECT_INVALID) {
 			SetObjectRequired(object->m_objectType, 1);
 		}
 		i++;
@@ -675,7 +675,7 @@ void CAI::AddTime(int p_time)
 // FUNCTION: LEMBALL 0x004121f0
 void CAI::Process(int p_paused)
 {
-	if (m_networkMode != 0 && g_pActiveConnection == 0) {
+	if (m_networkMode != 0 && g_pActiveConnection == NULL) {
 		return;
 	}
 	m_aiQueue->ProcessNMsgs(m_aiQueue->GetMessageCount());
@@ -704,13 +704,13 @@ void CAI::Process(int p_paused)
 	}
 	SetGameTime();
 	if (m_networkMode != 0) {
-		if (g_pActiveConnection != 0 && g_pActiveConnection->IsChanged(*m_networkGame)) {
+		if (g_pActiveConnection != NULL && g_pActiveConnection->IsChanged(*m_networkGame)) {
 			g_pActiveConnection->GetLatest(*m_networkGame);
 			m_clockSourceReady = 1;
 		}
 	}
 	unsigned int time;
-	if (m_networkMode != 0 && g_pActiveConnection != 0 && g_pActiveConnection->m_isHost != 0) {
+	if (m_networkMode != 0 && g_pActiveConnection != NULL && g_pActiveConnection->m_isHost != 0) {
 		time = g_dwRemoteGameTick;
 	}
 	else {
@@ -755,7 +755,7 @@ void CAI::Process(int p_paused)
 			GameState(GAME_STATUS_SUCCESS);
 		}
 	}
-	if (g_pActiveConnection != 0 &&
+	if (g_pActiveConnection != NULL &&
 		(LemmingsSFXChanged() || g_dwSimulationTimestamp - m_lastNetworkSendCheckTick > 0x42)) {
 		CConnect* connection = g_pActiveConnection;
 		if (m_networkGame->m_pendingSendCount == 0) {
@@ -1389,4 +1389,4 @@ CAI* g_pAI;
 int g_nGameOver = 0;
 
 // GLOBAL: LEMBALL 0x0049cf34
-CAI* g_pActiveAI = 0;
+CAI* g_pActiveAI = NULL;

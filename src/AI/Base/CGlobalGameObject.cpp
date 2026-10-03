@@ -15,6 +15,8 @@
 #include "AI/Messages/GameMessageIds.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0040ce40
 void CGlobalGameObject::DoActivate()
 {
@@ -26,7 +28,7 @@ CGlobalGameObject::CGlobalGameObject(eObjectType p_objectType,
 									 unsigned short p_destinationCapacity)
 	: CGameObject(p_objectType, p_collisionFlags, p_destinationCapacity)
 {
-	m_manager = 0;
+	m_manager = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00416d50
@@ -54,7 +56,7 @@ int CGlobalGameObject::UsableState()
 void CGlobalGameObject::Action(eAction p_action)
 {
 	m_action = p_action;
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		g_pObjectChangeStateMessage->Send(this);
 	}
 }
@@ -76,7 +78,7 @@ void CGlobalGameObject::SetActionAndRequest(eAction p_action, int p_argument)
 // FUNCTION: LEMBALL 0x00416e20
 void CGlobalGameObject::RequestAction(eAction p_action)
 {
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		m_requestedAction = p_action;
 		g_pRequestActionMessage->Send(this);
 		return;

@@ -3,6 +3,8 @@
 #include "Visos/Foundation/CBaseQueue.h"
 #include "Visos/Graphics/CReceiveWindowState.h"
 
+#include <stddef.h>
+
 extern char* g_apPauseMenuLabels[15];
 
 // FUNCTION: LEMBALL 0x00443af0
@@ -16,7 +18,7 @@ void CPauseWindow::Initialise()
 		do {
 			m_menuItemCount++;
 			index++;
-		} while (g_apPauseMenuLabels[index] != 0);
+		} while (g_apPauseMenuLabels[index] != NULL);
 		index++;
 	}
 	m_minimumSelection = 0;
@@ -52,9 +54,9 @@ void CPauseWindow::Initialise()
 	}
 	m_initialSelection = m_selection;
 	g_pMasterInputQueue->Attach(this, 0);
-	m_vramSurface = 0;
+	m_vramSurface = NULL;
 	m_menuItemRects = (CVSPoint*) (void*) new CVSRect[m_menuItemCount];
 	RegisterRemaps();
 	m_loaded = 0;
-	m_borderAnims = 0;
+	m_borderAnims = NULL;
 }

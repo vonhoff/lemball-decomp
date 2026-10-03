@@ -9,11 +9,11 @@
 // FUNCTION: LEMBALL 0x00456790
 CGraphicsDriver::~CGraphicsDriver()
 {
-	if (m_driverModule != 0) {
+	if (m_driverModule != NULL) {
 		FreeLibrary((HMODULE) m_driverModule);
-		m_driverModule = 0;
+		m_driverModule = NULL;
 	}
-	if (m_palette != 0) {
+	if (m_palette != NULL) {
 		DeleteObject((HGDIOBJ) m_palette);
 	}
 }
@@ -23,18 +23,18 @@ bool CGraphicsDriver::CreatePalette(void* p_paletteDescription)
 {
 	HPALETTE palette;
 
-	if (m_palette != 0) {
+	if (m_palette != NULL) {
 		DeleteObject((HGDIOBJ) m_palette);
 	}
 	palette = ::CreatePalette((LOGPALETTE*) p_paletteDescription);
 	m_palette = palette;
-	return palette != 0;
+	return palette != NULL;
 }
 
 // FUNCTION: LEMBALL 0x004567f0
 bool CGraphicsDriver::RealizePalette(CDrawingContext* p_drawingContext)
 {
-	if (m_palette != 0) {
+	if (m_palette != NULL) {
 		SelectPalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC, (HPALETTE) m_palette, 0);
 		::RealizePalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC);
 	}
@@ -54,20 +54,20 @@ bool CGraphicsDriver::BlitWrappedBitmap(CDrawingContext* p_destination,
 	bool copied;
 
 	copied = false;
-	rect0 = 0;
-	rect1 = 0;
+	rect0 = NULL;
+	rect1 = NULL;
 	m_currentBitmap = p_bitmap;
 	scale = (short) (p_destinationRect->m_width / p_sourceRect->m_width);
 	p_bitmap->GetRects(*p_sourceRect, rect0, rect1);
 	bool copiedSecond = false;
-	if (rect0 != 0) {
+	if (rect0 != NULL) {
 		CVSPoint* point = p_destinationRect;
 		short height = (short) (rect0->m_height * scale);
 		short width = (short) (rect0->m_width * scale);
 		CVSRect destRect(point->m_x, point->m_y, width, height);
 		copied = StretchBltContexts(p_destination, &destRect, p_source, rect0);
 	}
-	if (rect1 != 0) {
+	if (rect1 != NULL) {
 		short height = (short) (rect1->m_height * scale);
 		short y = (short) (rect0->m_height * scale + p_destinationRect->m_y);
 		short width = (short) (rect1->m_width * scale);
@@ -80,14 +80,14 @@ bool CGraphicsDriver::BlitWrappedBitmap(CDrawingContext* p_destination,
 // FUNCTION: LEMBALL 0x00458200
 bool CGraphicsDriver::HasPalette()
 {
-	return m_palette != 0;
+	return m_palette != NULL;
 }
 
 // GLOBAL: LEMBALL 0x004a076c
-CGraphicsDriver* g_pTargetGraphicsDriver = 0;
+CGraphicsDriver* g_pTargetGraphicsDriver = NULL;
 
 // GLOBAL: LEMBALL 0x004a0770
 unsigned int g_dwFullScreenGdi = 0;
 
 // GLOBAL: LEMBALL 0x004a0768
-CGraphicsState* g_pTargetGraphicsSystem = 0;
+CGraphicsState* g_pTargetGraphicsSystem = NULL;

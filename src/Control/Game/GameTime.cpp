@@ -4,6 +4,8 @@
 #include "CDemo.h"
 #include "CGame.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00408080
 void ClockEditMode(unsigned int p_enabled)
 {
@@ -28,7 +30,7 @@ void SetGameTime()
 	if (g_dwClockEditMode != 0) {
 		return;
 	}
-	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0) {
+	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
 		unsigned int nextElapsed = g_dwLastElapsedMilli + 80;
 		unsigned int elapsed;
 		do {
@@ -70,9 +72,9 @@ void _DEMO_Init(int p_sourceId)
 // FUNCTION: LEMBALL 0x00409180
 void _DEMO_Quit()
 {
-	if (g_pDemo != 0) {
+	if (g_pDemo != NULL) {
 		delete g_pDemo;
-		g_pDemo = 0;
+		g_pDemo = NULL;
 	}
 }
 

@@ -28,14 +28,14 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 // FUNCTION: LEMBALL 0x00470270
 CTCPIPBroadcast::CTCPIPBroadcast()
 {
-	m_specificNameBuffer = 0;
+	m_specificNameBuffer = NULL;
 	m_specificNameRequest = 0;
 }
 
 // FUNCTION: LEMBALL 0x004704e0
 CTCPIPBroadcast::~CTCPIPBroadcast()
 {
-	if (m_specificNameBuffer != 0) {
+	if (m_specificNameBuffer != NULL) {
 		operator delete(m_specificNameBuffer);
 	}
 }
@@ -48,12 +48,12 @@ void CTCPIPBroadcast::GetSpecificAddr(const char* p_name)
 
 	if (inet_addr(p_name) != INADDR_NONE) {
 		storage = operator new(sizeof(CTCPIPNetworkAddress));
-		if (storage != 0) {
+		if (storage != NULL) {
 			address = new (storage) CTCPIPNetworkAddress;
 			address->m_text[0] = '\0';
 		}
 		else {
-			address = 0;
+			address = NULL;
 		}
 		m_specificAddress = address;
 		address->operator=(p_name);
@@ -66,7 +66,7 @@ void CTCPIPBroadcast::GetSpecificAddr(const char* p_name)
 			return;
 		}
 		operator delete(m_specificNameBuffer);
-		m_specificNameBuffer = 0;
+		m_specificNameBuffer = NULL;
 	}
 	m_specificNameBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
 	m_specificNameRequest = WSAAsyncGetHostByName(m_windowHandle,
@@ -95,12 +95,12 @@ void CTCPIPBroadcast::GotName(int p_failed)
 		hostEntry = (TcpIpHostEntry*) m_specificNameBuffer;
 		memcpy(&lookupAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
 		storage = operator new(sizeof(CTCPIPNetworkAddress));
-		if (storage != 0) {
+		if (storage != NULL) {
 			address = new (storage) CTCPIPNetworkAddress;
 			address->m_text[0] = '\0';
 		}
 		else {
-			address = 0;
+			address = NULL;
 		}
 		m_specificAddress = address;
 		in_addr hostAddress = lookupAddress;
@@ -118,7 +118,7 @@ void CTCPIPBroadcast::GotName(int p_failed)
 		}
 	}
 	operator delete(m_specificNameBuffer);
-	m_specificNameBuffer = 0;
+	m_specificNameBuffer = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00470730
@@ -170,7 +170,7 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 	}
 	g_localHostLookupComplete = 1;
 	operator delete(m_asyncBuffer);
-	m_asyncBuffer = 0;
+	m_asyncBuffer = NULL;
 	m_socketHandle = socket(AF_INET, SOCK_DGRAM, 0);
 	if (m_socketHandle == -1) {
 		SocketError();
@@ -211,7 +211,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 		SetPort((short) (ntohs(serviceEntry->m_port) - g_broadcastPort));
 	}
 	operator delete(m_asyncBuffer);
-	m_asyncBuffer = 0;
+	m_asyncBuffer = NULL;
 	option = 1;
 	if (setsockopt(m_socketHandle, SOL_SOCKET, SO_BROADCAST, (const char*) &option, sizeof(option)) == -1) {
 		SocketError();

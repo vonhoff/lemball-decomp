@@ -27,6 +27,8 @@ void CCatapult::Restart()
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0041c720
 bool CCatapult::Process()
 {
@@ -84,7 +86,7 @@ bool CCatapult::Process()
 			activator->m_hidden = 0;
 			activator->m_action = ACTION_NONE;
 			m_activator->StartFly(vel, &pos);
-			m_activator = 0;
+			m_activator = NULL;
 			Action(ACTION_RUNNING);
 			SetSndEffect(SFX_CATAPULT);
 		}

@@ -16,6 +16,8 @@
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00421660
 CBall::CBall() : CGameObject(OBJECT_BALL, 0, 0)
 {
@@ -141,9 +143,9 @@ bool CBall::Move()
 			ai->m_collisionIndex++;
 		} while (ai->m_collisionIndex < ai->m_objectCount);
 	}
-	hit = 0;
+	hit = NULL;
 found:
-	if (hit != 0) {
+	if (hit != NULL) {
 		hit->HitBall();
 		m_action = ACTION_BALL_EXPLODING;
 		m_stateTimer = g_dwSimulationTimestamp;
@@ -190,7 +192,7 @@ void CBall::Delete()
 			for (; i < *objectCount; i++) {
 				objects[i] = objects[i + 1];
 			}
-			objects[*objectCount] = 0;
+			objects[*objectCount] = NULL;
 			break;
 		}
 	}

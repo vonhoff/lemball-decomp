@@ -2,6 +2,8 @@
 
 #include "Visos/Resources/CResSTRING.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00447fe0
 void CFrontendResourceLoader::UnLoadSTRING(unsigned long p_resourceId)
 {
@@ -11,9 +13,9 @@ void CFrontendResourceLoader::UnLoadSTRING(unsigned long p_resourceId)
 
 	for (i = 0; i < count; i++) {
 		slot = &m_strings[i];
-		if (*slot != 0 && (*slot)->m_resourceId == p_resourceId) {
+		if (*slot != NULL && (*slot)->m_resourceId == p_resourceId) {
 			m_strings[i]->UnLoad();
-			m_strings[i] = 0;
+			m_strings[i] = NULL;
 			break;
 		}
 	}

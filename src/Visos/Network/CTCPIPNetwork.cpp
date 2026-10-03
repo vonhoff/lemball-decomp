@@ -36,7 +36,7 @@ void CTCPIPNetwork::Initialise()
 	if ((int) g_networkPacketSize > maxDatagram) {
 		g_networkPacketSize = (unsigned int) maxDatagram;
 	}
-	m_timerId = SetTimer((HWND) m_windowHandle, 0x12345678, 10, 0);
+	m_timerId = SetTimer((HWND) m_windowHandle, 0x12345678, 10, NULL);
 }
 
 // FUNCTION: LEMBALL 0x00471460
@@ -56,7 +56,7 @@ int CTCPIPNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p
 		if (p_message != TCPIP_MESSAGE_FORCE_PROCESS) {
 			return -1;
 		}
-		if (g_pNetworkStatusQueue != 0 && ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount() != 0) {
+		if (g_pNetworkStatusQueue != NULL && ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount() != 0) {
 			((CBaseQueue*) g_pNetworkStatusQueue)
 				->ProcessNMsgs(((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount());
 		}
@@ -78,12 +78,12 @@ void* CTCPIPNetwork::GetNewNetworkAddress()
 	CTCPIPNetworkAddress* address;
 
 	storage = operator new(sizeof(CTCPIPNetworkAddress));
-	if (storage != 0) {
+	if (storage != NULL) {
 		address = new (storage) CTCPIPNetworkAddress();
 		address->m_text[0] = '\0';
 		return address;
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x004715e0
@@ -102,7 +102,7 @@ void* CTCPIPNetwork::GetNewBroadcast()
 unsigned long g_dwTCPIPNetworkThreadId = 0x12345678;
 
 // GLOBAL: LEMBALL 0x004a23b4
-void* g_hTCPIPNetworkThread = 0;
+void* g_hTCPIPNetworkThread = NULL;
 
 // GLOBAL: LEMBALL 0x004a23b8
 int g_socketWindowClassRegistered = 0;
@@ -117,16 +117,16 @@ unsigned int g_tcpIpBytesReceived = 0;
 unsigned int g_networkPacketSize = 0;
 
 // GLOBAL: LEMBALL 0x004a1e28
-BasePacketHeader* g_pNetworkPacketScratch = 0;
+BasePacketHeader* g_pNetworkPacketScratch = NULL;
 
 // GLOBAL: LEMBALL 0x004a1e2c
 unsigned int g_receivedPacketSize = 0;
 
 // GLOBAL: LEMBALL 0x004a1e34
-BasePacketHeader* g_pBroadcastPacketTemplate = 0;
+BasePacketHeader* g_pBroadcastPacketTemplate = NULL;
 
 // GLOBAL: LEMBALL 0x004a1e38
-char* g_szBroadcastPeerName = 0;
+char* g_szBroadcastPeerName = NULL;
 
 // GLOBAL: LEMBALL 0x004a1e3c
 unsigned int g_broadcastPayloadLength = 0;

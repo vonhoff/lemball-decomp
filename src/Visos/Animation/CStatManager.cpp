@@ -3,6 +3,8 @@
 #include "../Foundation/CVSOStream.h"
 #include "CBaseStat.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045aaf0
 CStatManager::CStatManager(int p_capacity)
 {
@@ -16,7 +18,7 @@ CStatManager::~CStatManager()
 {
 	unsigned int byteIndex = 0;
 
-	if (m_stats != 0) {
+	if (m_stats != NULL) {
 		int i = 0;
 		while (i < m_statCount) {
 			char* statBytes = (char*) m_stats;
@@ -27,7 +29,7 @@ CStatManager::~CStatManager()
 			++i;
 		}
 		operator delete(m_stats);
-		m_stats = 0;
+		m_stats = NULL;
 	}
 }
 
@@ -58,4 +60,4 @@ CVSOStream& CStatManager::StreamOut(CVSOStream& p_stream)
 }
 
 // GLOBAL: LEMBALL 0x004a1bd0
-CStatManager* g_pStatManager = 0;
+CStatManager* g_pStatManager = NULL;

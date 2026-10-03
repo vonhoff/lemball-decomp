@@ -69,19 +69,19 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 		length >>= 1;
 	}
 	m_sampleHandle = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, length);
-	if (m_sampleHandle == 0) {
+	if (m_sampleHandle == NULL) {
 		*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave data ";
 		*g_pErrorOutput << patchHeader.m_name << "\n";
 		return;
 	}
 	m_headerHandle = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, sizeof(WAVEHDR));
-	if (m_headerHandle == 0) {
+	if (m_headerHandle == NULL) {
 		*g_pErrorOutput << "Error! Sound System unable to allocate memory for Wave Header ";
 		*g_pErrorOutput << patchHeader.m_name << "\n";
 		return;
 	}
 	m_sampleData = (unsigned char*) GlobalLock(m_sampleHandle);
-	if (m_sampleData == 0) {
+	if (m_sampleData == NULL) {
 		*g_pErrorOutput << "Error! Sound System unable to lock memory for Wave data ";
 		*g_pErrorOutput << patchHeader.m_name << "\n";
 		GlobalUnlock(m_sampleHandle);
@@ -89,7 +89,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 		return;
 	}
 	m_waveHeader = (WAVEHDR*) GlobalLock(m_headerHandle);
-	if (m_waveHeader == 0) {
+	if (m_waveHeader == NULL) {
 		*g_pErrorOutput << "Error! Sound System unable to lock memory for Wave Header";
 		*g_pErrorOutput << patchHeader.m_name << "\n";
 		GlobalUnlock(m_headerHandle);

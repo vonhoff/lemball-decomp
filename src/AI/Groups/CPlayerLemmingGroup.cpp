@@ -26,7 +26,7 @@ void CPlayerLemmingGroup::Restart()
 	m_formationIndex = 0;
 	m_altered = 0;
 	m_playerControlled = 0;
-	m_useObject = 0;
+	m_useObject = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00414070
@@ -41,7 +41,7 @@ int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 	int count = 0;
 	CPlayerLemmingGroup* self = this;
 	CGameObject* object = self->GetFirstElementInGroup();
-	if (object != 0) {
+	if (object != NULL) {
 		view = p_viewData;
 		do {
 			if (object->m_action != ACTION_WAITING_TO_SPAWN) {
@@ -50,7 +50,7 @@ int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 				count++;
 			}
 			object = self->GetNextElementInGroup();
-		} while (object != 0);
+		} while (object != NULL);
 	}
 	return count;
 }
@@ -58,10 +58,10 @@ int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 // FUNCTION: LEMBALL 0x00414130
 void CPlayerLemmingGroup::Delete()
 {
-	if (m_useObject != 0) {
+	if (m_useObject != NULL) {
 		m_useObject->m_activationReserved = 0;
 	}
-	m_useObject = 0;
+	m_useObject = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00414150
@@ -73,7 +73,7 @@ bool CPlayerLemmingGroup::Process()
 	AICOORD memberPosition;
 	CGenericGroup::CalculateBoundingBox(0x18);
 	CGameObject* member = CGenericGroup::GetFirstElementInGroup();
-	while (member != 0) {
+	while (member != NULL) {
 		count++;
 		member->Process();
 		if (member->DestinationExists()) {
@@ -94,7 +94,7 @@ bool CPlayerLemmingGroup::Process()
 				case 2: {
 					int id = entry.m_metadata;
 					CGameObject* object = g_pGroupObjectManager->FindObject(id);
-					if (object != 0) {
+					if (object != NULL) {
 						if (object->m_activationReserved != 0) {
 							const AICOORD& activation = object->ActivatePosition();
 							position.m_xFixed = activation.m_xFixed;
@@ -113,7 +113,7 @@ bool CPlayerLemmingGroup::Process()
 						}
 						else {
 							member = CGenericGroup::GetNthElementInGroup(0);
-							if (member != 0) {
+							if (member != NULL) {
 								const AICOORD& activation = object->ActivatePosition();
 								position.m_xFixed = activation.m_xFixed;
 								position.m_yFixed = activation.m_yFixed;
@@ -151,10 +151,10 @@ bool CPlayerLemmingGroup::Process()
 		}
 		case 1:
 			member = CGenericGroup::GetNthElementInGroup(m_currentUseElement);
-			if (member == 0) {
+			if (member == NULL) {
 				SetGroupState(GROUP_STATE_IDLE);
 				m_useObject->m_activationReserved = 0;
-				m_useObject = 0;
+				m_useObject = NULL;
 			}
 			else {
 				switch (m_useObject->Usage()) {
@@ -169,7 +169,7 @@ bool CPlayerLemmingGroup::Process()
 						position.m_zFixed = z;
 					}
 					member = CGenericGroup::GetNextElementInGroup();
-					while (member != 0) {
+					while (member != NULL) {
 						member->AddDestination(position);
 						{
 							int y = member->m_position.m_yFixed;
@@ -186,7 +186,7 @@ bool CPlayerLemmingGroup::Process()
 				case 2:
 					SetGroupState(GROUP_STATE_IDLE);
 					m_useObject->m_activationReserved = 0;
-					m_useObject = 0;
+					m_useObject = NULL;
 					break;
 				}
 			}
@@ -196,7 +196,7 @@ bool CPlayerLemmingGroup::Process()
 				if (GetElementsInGroup() <= m_currentUseElement) {
 					SetGroupState(GROUP_STATE_IDLE);
 					m_useObject->m_activationReserved = 0;
-					m_useObject = 0;
+					m_useObject = NULL;
 				}
 				else {
 					member = CGenericGroup::GetNthElementInGroup(m_currentUseElement);
@@ -258,11 +258,11 @@ void CPlayerLemmingGroup::AddUseObject(int p_objectId)
 {
 	unsigned short count;
 	CAiDestinationList* list;
-	CGameObject* p_object = 0;
+	CGameObject* p_object = NULL;
 	int objectCount = g_wObjectCount;
 	for (unsigned int i = 0; (int) i < objectCount; i++) {
 		p_object = g_pObjects[(unsigned short) i];
-		if (p_object != 0 && (unsigned int) p_object->m_objectId == (unsigned int) p_objectId) {
+		if (p_object != NULL && (unsigned int) p_object->m_objectId == (unsigned int) p_objectId) {
 			break;
 		}
 	}
@@ -324,7 +324,7 @@ bool CPlayerLemmingGroup::RemoveLemmingFromGroup(CPlayerLemming* p_lemming)
 {
 	CGenericGroup::RemoveElementFromGroup(p_lemming);
 	CPlayerLemming* leader = (CPlayerLemming*) CGenericGroup::GetFirstElementInGroup();
-	if (m_playerControlled == 1 && leader != 0) {
+	if (m_playerControlled == 1 && leader != NULL) {
 		leader->SetGroupLeader(1);
 	}
 	m_altered = 1;
@@ -336,18 +336,18 @@ void CPlayerLemmingGroup::SetPlayerControlled(unsigned int p_playerControlled, C
 {
 	CPlayerLemming* first = (CPlayerLemming*) CGenericGroup::GetFirstElementInGroup();
 	CPlayerLemming* lemming = first;
-	if (first != 0) {
+	if (first != NULL) {
 		do {
 			lemming->SetGroup(p_playerControlled);
 			lemming->SetGroupLeader(0);
 			lemming = (CPlayerLemming*) CGenericGroup::GetNextElementInGroup();
-		} while (lemming != 0);
+		} while (lemming != NULL);
 	}
-	if (p_leader == 0) {
+	if (p_leader == NULL) {
 		p_leader = first;
 	}
 	m_playerControlled = p_playerControlled;
-	if (p_leader != 0) {
+	if (p_leader != NULL) {
 		p_leader->SetGroupLeader(1);
 		if (p_leader != first) {
 			CGenericGroup::SwapElements(p_leader, first);
@@ -366,8 +366,8 @@ CPlayerLemming* CPlayerLemmingGroup::GetFirstDeadLemming()
 {
 	CPlayerLemming* lemming = (CPlayerLemming*) CGenericGroup::GetFirstElementInGroup();
 	while (1) {
-		if (lemming == 0) {
-			return 0;
+		if (lemming == NULL) {
+			return NULL;
 		}
 		if (lemming->m_action == ACTION_DEAD) {
 			break;
@@ -381,10 +381,10 @@ CPlayerLemming* CPlayerLemmingGroup::GetFirstDeadLemming()
 void CPlayerLemmingGroup::ClearExistingWaypoints()
 {
 	CGenericGroup::ClearExistingWaypoints();
-	if (m_useObject != 0) {
+	if (m_useObject != NULL) {
 		if (GetGroupState() == GROUP_STATE_USING_OBJECT && m_useObject->m_objectActive != 0 &&
 			m_useObject->m_activationReserved != 0) {
-			if (g_pActiveConnection != 0) {
+			if (g_pActiveConnection != NULL) {
 				m_useObject->SendCancel();
 			}
 			m_useObject->m_activationReserved = 0;
@@ -398,7 +398,7 @@ bool CPlayerLemmingGroup::HasSFXChanged()
 {
 	bool changed = false;
 	CPlayerLemming* lemming = (CPlayerLemming*) CGenericGroup::GetFirstElementInGroup();
-	while (lemming != 0) {
+	while (lemming != NULL) {
 		changed = lemming->CheckSFX() || changed;
 		lemming = (CPlayerLemming*) CGenericGroup::GetNextElementInGroup();
 	}

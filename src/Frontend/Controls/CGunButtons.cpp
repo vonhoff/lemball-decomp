@@ -48,7 +48,7 @@ CGunButtons::CGunButtons(CGWnd* p_window,
 	m_x = p_x;
 	m_y = p_y;
 	int* binding = (int*) p_binding;
-	if (binding != 0) {
+	if (binding != NULL) {
 		if (m_valueCount == 1) {
 			m_value = *binding;
 		}
@@ -132,8 +132,8 @@ int CGunButtons::ProcessMsg(Message* p_message)
 	posted.m_type = MESSAGE_BUTTON_RELEASED;
 	posted.m_time = CurrentQueueTimer();
 	posted.m_code = 0;
-	posted.m_payload = 0;
-	posted.m_source = 0;
+	posted.m_payload = NULL;
+	posted.m_source = NULL;
 	if (p_message->m_code != (int) m_controlMessage) {
 		return 0;
 	}
@@ -151,7 +151,7 @@ int CGunButtons::ProcessMsg(Message* p_message)
 			if (m_maximum < nextValue) {
 				m_value = m_minimum;
 			}
-			if (m_binding != 0) {
+			if (m_binding != NULL) {
 				if (m_valueCount == 1) {
 					if (*m_binding == 0) {
 						*m_binding = 1;
@@ -164,7 +164,7 @@ int CGunButtons::ProcessMsg(Message* p_message)
 					*m_binding = m_value;
 				}
 			}
-			if (m_graphicButton != 0) {
+			if (m_graphicButton != NULL) {
 				animId = m_animIds[m_value - m_minimum];
 				m_graphicButton->SetAnimID(animId);
 			}
@@ -200,10 +200,10 @@ int CGunButtons::ProcessMsg(Message* p_message)
 void CGunButtons::Move(int p_x, int p_y)
 {
 	CVSPoint point((short) p_x, (short) p_y);
-	if (m_graphicButton != 0) {
+	if (m_graphicButton != NULL) {
 		m_graphicButton->Move(point);
 	}
-	if (m_trackerButton != 0) {
+	if (m_trackerButton != NULL) {
 		m_trackerButton->Move(point);
 	}
 }
@@ -211,10 +211,10 @@ void CGunButtons::Move(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x0044c600
 void CGunButtons::Draw(int p_firstState, int p_secondState)
 {
-	if (m_graphicButton != 0) {
+	if (m_graphicButton != NULL) {
 		m_graphicButton->Draw(p_firstState);
 	}
-	if (m_trackerButton != 0) {
+	if (m_trackerButton != NULL) {
 		m_trackerButton->Draw(p_firstState);
 	}
 }
@@ -241,7 +241,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 		surface->m_flag70 = 0;
 		m_graphicButton->m_messageQueue = g_pMasterInputQueue;
 		m_graphicButton->m_controlMessage = m_controlMessage;
-		m_trackerButton = 0;
+		m_trackerButton = NULL;
 		return;
 	}
 	m_trackerButton =
@@ -251,7 +251,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 	surface->m_flag70 = 0;
 	m_trackerButton->m_messageQueue = g_pMasterInputQueue;
 	m_trackerButton->m_controlMessage = m_controlMessage;
-	m_graphicButton = 0;
+	m_graphicButton = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0044c7c0
@@ -259,10 +259,10 @@ void CGunButtons::UnLoadFaces()
 {
 	int i;
 
-	if (m_graphicButton != 0) {
+	if (m_graphicButton != NULL) {
 		delete m_graphicButton;
 	}
-	if (m_trackerButton != 0) {
+	if (m_trackerButton != NULL) {
 		delete m_trackerButton;
 	}
 	i = 0;
@@ -274,7 +274,7 @@ void CGunButtons::UnLoadFaces()
 		} while (i < m_valueCount);
 	}
 	operator delete(m_resources);
-	m_resources = 0;
+	m_resources = NULL;
 }
 
 // GLOBAL: LEMBALL 0x0049fa68

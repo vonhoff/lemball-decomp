@@ -3,6 +3,8 @@
 #include "Visos/Foundation/VsFile.h"
 #include "Visos/Foundation/VsInit.h"
 
+#include <stddef.h>
+
 extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
 														   const char* p_text,
@@ -18,15 +20,15 @@ jmp_buf g_vsDebugJumpBuffer;
 bool _DBG_Init()
 {
 	if (g_nAsyncDebugEnabled == 1) {
-		g_pDebugSyncEvent = CreateEventA(0, 0, 0, "Sync_Debug");
-		g_pDebugThread = CreateThread(0,
+		g_pDebugSyncEvent = CreateEventA(NULL, 0, 0, "Sync_Debug");
+		g_pDebugThread = CreateThread(NULL,
 									  0,
 									  (unsigned int(__stdcall*)(void*)) DebugMessageThreadMain,
-									  0,
+									  NULL,
 									  0,
 									  (unsigned int*) &g_nDebugThreadId);
-		if (g_pDebugThread == 0) {
-			MessageBoxA(0, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
+		if (g_pDebugThread == NULL) {
+			MessageBoxA(NULL, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
 			ExitProcess(0xbbbb);
 		}
 
@@ -50,9 +52,9 @@ bool _DBG_Quit(unsigned int p_force)
 		g_nAsyncDebugEnabled = 0;
 		return true;
 	}
-	if (g_pDebugOutputFile != 0) {
+	if (g_pDebugOutputFile != NULL) {
 		vsClose((_Filet*) g_pDebugOutputFile);
-		g_pDebugOutputFile = 0;
+		g_pDebugOutputFile = NULL;
 	}
 	return true;
 }

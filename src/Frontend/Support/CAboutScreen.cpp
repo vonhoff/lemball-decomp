@@ -60,13 +60,13 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect
 	m_size.m_height = p_rect.m_height;
 	p_display->AttachPalette(RES_REGISTRATION_VISOS_PALETTE);
 	m_backgroundBitmap = CResBITMAP::Load(RES_REGISTRATION_VISOS_LOGO);
-	m_textWindow = 0;
+	m_textWindow = NULL;
 	storage = operator new(sizeof(CTextManager));
-	if (storage != 0) {
+	if (storage != NULL) {
 		m_textManager = new (storage) CTextManager(RESOURCE_ID_COUNT, 1, 10, 0);
 	}
 	else {
-		m_textManager = 0;
+		m_textManager = NULL;
 	}
 	m_textManager->LoadFont(RES_GAME_FONT3);
 	m_aboutString = CResSTRING::Load(RES_REGISTRATION_FINGERPRINT);
@@ -89,10 +89,10 @@ CAboutScreen::~CAboutScreen()
 	g_pMasterInputQueue->Detach(this, 0);
 	m_backgroundBitmap->UnLoad();
 	m_textManager->UnLoadFont(RES_GAME_FONT3);
-	if (m_textWindow != 0) {
+	if (m_textWindow != NULL) {
 		delete m_textWindow;
 	}
-	if (m_textManager != 0) {
+	if (m_textManager != NULL) {
 		delete m_textManager;
 	}
 	m_aboutString->m_directUseCount = m_aboutString->m_directUseCount - 1;
@@ -104,7 +104,7 @@ CAboutScreen::~CAboutScreen()
 // FUNCTION: LEMBALL 0x0044b9e0
 void CAboutScreen::Draw(const CVSRect& p_rect)
 {
-	if (m_gdi != 0) {
+	if (m_gdi != NULL) {
 		DrawChangedRegion();
 	}
 }
@@ -129,7 +129,7 @@ void CAboutScreen::DrawRegistrationText()
 		advance.m_width = 0;
 		labelPosition.m_x = (short) (m_size.m_width / 2 - size.m_width / 2);
 		labelPosition.m_y = (short) labelY;
-		m_textManager->DrawString(m_gdi, labelPosition, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, 0);
+		m_textManager->DrawString(m_gdi, labelPosition, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, NULL);
 	}
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	vsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
@@ -147,7 +147,7 @@ void CAboutScreen::DrawRegistrationText()
 		position.m_x = (short) (m_size.m_width - size.m_width) / 2;
 		position.m_y = (short) (m_size.m_height - size.m_height) / 2;
 		position.m_y += size.m_height * 4;
-		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, 0x20, 0);
+		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, 0x20, NULL);
 	}
 	index = 0;
 	while (m_aboutText[index] != '\0') {
@@ -166,7 +166,7 @@ void CAboutScreen::DrawRegistrationText()
 		advance.m_height = 0;
 		advance.m_width = 0;
 		CVSPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY + 0x23);
-		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szAboutDecodeBuffer, 0x20, 0);
+		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szAboutDecodeBuffer, 0x20, NULL);
 	}
 	m_textManager->ResetPrimitives();
 }
@@ -182,7 +182,7 @@ void CAboutScreen::OnSize(const CVSRect& p_rect)
 	m_size.m_height = p_rect.m_height;
 	textY = (int) p_rect.m_height - 0x20;
 	textX = ((int) p_rect.m_width - 0x60) / 2;
-	if (m_textWindow != 0) {
+	if (m_textWindow != NULL) {
 		position.m_x = (short) textX;
 		position.m_y = (short) textY;
 		m_textWindow->Move(position);
@@ -234,7 +234,7 @@ void CAboutScreen::DrawChangedRegion()
 			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) bitmap->m_x) / 2);
 			m_bitmap.m_y = (short) centreedY;
 			m_bitmap.m_resource = m_backgroundBitmap;
-			m_bitmap.m_remap = 0;
+			m_bitmap.m_remap = NULL;
 			m_bitmap.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
 			m_bitmap.Draw(m_gdi);
 			DrawRegistrationText();

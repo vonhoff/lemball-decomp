@@ -1,13 +1,15 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CDIBCONTEXT_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CDIBCONTEXT_H
 
+#include <stddef.h>
+
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x00498780
 class CDibContext {
 public:
 	CDibContext()
 	{
-		m_bits = 0;
+		m_bits = NULL;
 		m_width = 0;
 	}
 	virtual ~CDibContext() {}         // vtable+0x00

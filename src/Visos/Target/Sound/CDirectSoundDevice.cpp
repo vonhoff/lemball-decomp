@@ -17,10 +17,10 @@
 #pragma intrinsic(memset, memcpy, strlen)
 
 // GLOBAL: LEMBALL 0x004a3318
-static IDirectSoundBuffer* g_primarySoundBuffer = 0;
+static IDirectSoundBuffer* g_primarySoundBuffer = NULL;
 
 // GLOBAL: LEMBALL 0x004a331c
-IDirectSound* g_directSound = 0;
+IDirectSound* g_directSound = NULL;
 
 // FUNCTION: LEMBALL 0x0047dd80
 CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEffect)
@@ -34,7 +34,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 
 	m_platform.m_effectCapacity = p_effectCapacity;
 	m_platform.m_buffersPerEffect = p_buffersPerEffect;
-	m_platform.m_nativeWindow = 0;
+	m_platform.m_nativeWindow = NULL;
 	m_platform.m_effects = (CDirectSoundEffect**) operator new((p_effectCapacity + 1) * sizeof(*m_platform.m_effects));
 	m_platform.m_open = 0;
 	m_platform.m_musicAvailable = 0;
@@ -45,7 +45,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_sampleRate = 0;
 	m_platform.m_deviceId = 0xffffffff;
 	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
-		m_platform.m_effects[i] = 0;
+		m_platform.m_effects[i] = NULL;
 	}
 	m_platform.m_sampleRate = 0x5622;
 	m_platform.m_deviceId = 0;
@@ -59,7 +59,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_format.nAvgBytesPerSec = 1;
 	m_platform.m_format.nAvgBytesPerSec *= m_platform.m_format.nSamplesPerSec * m_platform.m_format.nBlockAlign;
 	m_platform.m_library = LoadLibraryA("DSOUND.DLL");
-	if (m_platform.m_library != 0) {
+	if (m_platform.m_library != NULL) {
 		if (GetSystemDirectoryA(path, sizeof(path)) != 0) {
 			memcpy(path + strlen(path), "\\DSOUND.DLL", 12);
 			DWORD size = GetFileVersionInfoSizeA(path, &versionHandle);
@@ -88,7 +88,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 				m_platform.m_createDirectSound = (long(__stdcall*)(const void*, IDirectSound**, void*)) GetProcAddress(
 					(HMODULE) m_platform.m_library,
 					"DirectSoundCreate");
-				if (m_platform.m_createDirectSound != 0) {
+				if (m_platform.m_createDirectSound != NULL) {
 					m_platform.m_available = 1;
 					m_platform.m_open = 0;
 				}
@@ -101,9 +101,9 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 CDirectSoundDevice::~CDirectSoundDevice()
 {
 	operator delete(m_platform.m_effects);
-	if (m_platform.m_library != 0) {
+	if (m_platform.m_library != NULL) {
 		FreeLibrary((HMODULE) m_platform.m_library);
-		m_platform.m_library = 0;
+		m_platform.m_library = NULL;
 	}
 }
 
@@ -119,7 +119,7 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 	DSBUFFERDESC description;
 	unsigned int result;
 
-	result = m_platform.m_createDirectSound(0, &g_directSound, 0);
+	result = m_platform.m_createDirectSound(NULL, &g_directSound, NULL);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Sound Create failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 		m_platform.m_available = 0;
@@ -129,7 +129,7 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 	description.dwSize = sizeof(description);
 	description.dwFlags = DSBCAPS_PRIMARYBUFFER;
 	description.dwBufferBytes = 0;
-	description.lpwfxFormat = 0;
+	description.lpwfxFormat = NULL;
 	result = g_directSound->SetCooperativeLevel(m_platform.m_nativeWindow, 2);
 	if (result != 0) {
 		*g_pErrorOutput << "Effect Buffer Set Cooperative Level failed: " << DescribeDirectSoundError(result & 0xfff)
@@ -137,7 +137,7 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 		m_platform.m_available = 0;
 		return 0;
 	}
-	result = g_directSound->CreateSoundBuffer(&description, &g_primarySoundBuffer, 0);
+	result = g_directSound->CreateSoundBuffer(&description, &g_primarySoundBuffer, NULL);
 	if (result != 0) {
 		*g_pErrorOutput << "Primary Sound Buffer failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 		m_platform.m_available = 0;
@@ -209,21 +209,21 @@ int CDirectSoundDevice::IsAvailable()
 // FUNCTION: LEMBALL 0x0047e390
 int CDirectSoundDevice::Close()
 {
-	if (g_primarySoundBuffer != 0) {
+	if (g_primarySoundBuffer != NULL) {
 		unsigned int result = g_primarySoundBuffer->Release();
 		if (result != 0) {
 			*g_pErrorOutput << "Primary Sound Buffer Release: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 			return 0;
 		}
-		g_primarySoundBuffer = 0;
+		g_primarySoundBuffer = NULL;
 	}
-	if (g_directSound != 0) {
+	if (g_directSound != NULL) {
 		unsigned int result = g_directSound->Release();
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Sound Release failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
 			return 0;
 		}
-		g_directSound = 0;
+		g_directSound = NULL;
 	}
 	return 1;
 }
@@ -232,7 +232,7 @@ int CDirectSoundDevice::Close()
 int CDirectSoundDevice::IsAnyEffectPlaying()
 {
 	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
-		if (m_platform.m_effects[i] != 0 && m_platform.m_effects[i]->IsPlaying()) {
+		if (m_platform.m_effects[i] != NULL && m_platform.m_effects[i]->IsPlaying()) {
 			return 1;
 		}
 	}
@@ -249,7 +249,7 @@ int CDirectSoundDevice::Dummy1c()
 int CDirectSoundDevice::StopAllEffects()
 {
 	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
-		if (m_platform.m_effects[i] != 0) {
+		if (m_platform.m_effects[i] != NULL) {
 			m_platform.m_effects[i]->Stop();
 		}
 	}
@@ -285,7 +285,7 @@ bool CDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_h
 {
 	int index;
 	for (index = 1; index <= m_platform.m_effectCapacity; index++) {
-		if (m_platform.m_effects[index] == 0) {
+		if (m_platform.m_effects[index] == NULL) {
 			m_platform.m_effects[index] = new CDirectSoundEffect(m_platform.m_buffersPerEffect,
 																 p_data,
 																 m_platform.m_sampleRate,
@@ -322,9 +322,9 @@ int CDirectSoundDevice::Dummy4c()
 // FUNCTION: LEMBALL 0x0047e5e0
 int CDirectSoundDevice::FreeEffect(unsigned long p_effectId)
 {
-	if (m_platform.m_effects[p_effectId] != 0) {
+	if (m_platform.m_effects[p_effectId] != NULL) {
 		delete m_platform.m_effects[p_effectId];
-		m_platform.m_effects[p_effectId] = 0;
+		m_platform.m_effects[p_effectId] = NULL;
 		return 1;
 	}
 	return 0;
@@ -338,9 +338,9 @@ int CDirectSoundDevice::FreeAllEffects()
 	if (index <= device->m_platform.m_effectCapacity) {
 		do {
 			CDirectSoundEffect* effect = device->m_platform.m_effects[index];
-			if (effect != 0) {
+			if (effect != NULL) {
 				delete effect;
-				device->m_platform.m_effects[index] = 0;
+				device->m_platform.m_effects[index] = NULL;
 			}
 			index++;
 		} while (index <= device->m_platform.m_effectCapacity);

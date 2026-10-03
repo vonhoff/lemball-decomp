@@ -16,18 +16,19 @@
 #include "Visos/Network/CBaseNetwork.h"
 
 #include <new.h>
+#include <stddef.h>
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x0045f820
 CReadSocket::CReadSocket()
 {
-	m_nonCriticalBuffer = 0;
-	m_nonCriticalMultiBuffer = 0;
-	m_criticalBuffer = 0;
-	m_criticalMultiBuffer = 0;
-	m_packetHeader = 0;
-	if (g_pBroadcastReceiveAddress == 0) {
+	m_nonCriticalBuffer = NULL;
+	m_nonCriticalMultiBuffer = NULL;
+	m_criticalBuffer = NULL;
+	m_criticalMultiBuffer = NULL;
+	m_packetHeader = NULL;
+	if (g_pBroadcastReceiveAddress == NULL) {
 		g_pBroadcastReceiveAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
 	}
 }
@@ -46,12 +47,12 @@ void CReadSocket::DeleteNCBuffers()
 	CReadNCMSBuff* ncms;
 
 	nc = m_nonCriticalBuffer;
-	if (nc != 0) {
+	if (nc != NULL) {
 		nc->CBasePacketBuff::~CBasePacketBuff();
 		operator delete(nc);
 	}
 	ncms = m_nonCriticalMultiBuffer;
-	if (ncms != 0) {
+	if (ncms != NULL) {
 		delete ncms;
 	}
 }
@@ -63,12 +64,12 @@ void CReadSocket::DeleteCBuffers()
 	CReadCMSBuff* criticalMulti;
 
 	critical = m_criticalBuffer;
-	if (critical != 0) {
+	if (critical != NULL) {
 		critical->CBasePacketBuff::~CBasePacketBuff();
 		operator delete(critical);
 	}
 	criticalMulti = m_criticalMultiBuffer;
-	if (criticalMulti != 0) {
+	if (criticalMulti != NULL) {
 		delete criticalMulti;
 	}
 }
@@ -82,22 +83,22 @@ void CReadSocket::SetNCBuffers(unsigned long p_lastSinglePacketMessageId,
 
 	DeleteNCBuffers();
 	storage = operator new(sizeof(CReadNCBuff));
-	if (storage == 0) {
-		m_nonCriticalBuffer = 0;
+	if (storage == NULL) {
+		m_nonCriticalBuffer = NULL;
 	}
 	else {
 		m_nonCriticalBuffer =
 			new (storage) CReadNCBuff(p_lastSinglePacketMessageId, (unsigned short) g_networkPacketSize);
 	}
 	storage = operator new(sizeof(CReadNCMSBuff));
-	if (storage != 0) {
+	if (storage != NULL) {
 		m_nonCriticalMultiBuffer = new (storage) CReadNCMSBuff(p_lastSinglePacketMessageId + 1,
 															   p_lastMessageId,
 															   p_messageCapacity,
 															   (unsigned short) g_networkPacketSize);
 		return;
 	}
-	m_nonCriticalMultiBuffer = 0;
+	m_nonCriticalMultiBuffer = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0045f9b0
@@ -107,21 +108,21 @@ void CReadSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 
 	DeleteCBuffers();
 	storage = operator new(sizeof(CReadCBuff));
-	if (storage == 0) {
-		m_criticalBuffer = 0;
+	if (storage == NULL) {
+		m_criticalBuffer = NULL;
 	}
 	else {
 		m_criticalBuffer = new (storage) CReadCBuff(p_packetCount, (unsigned short) g_networkPacketSize);
 	}
 	storage = operator new(sizeof(CReadCMSBuff));
-	if (storage == 0) {
-		m_criticalMultiBuffer = 0;
+	if (storage == NULL) {
+		m_criticalMultiBuffer = NULL;
 	}
 	else {
 		m_criticalMultiBuffer =
 			new (storage) CReadCMSBuff(p_packetCount, p_messageCapacity, (unsigned short) g_networkPacketSize);
 	}
-	if (g_pNetworkPacketScratch == 0) {
+	if (g_pNetworkPacketScratch == NULL) {
 		g_pNetworkPacketScratch = (BasePacketHeader*) operator new(g_networkPacketSize);
 	}
 }
@@ -155,14 +156,14 @@ bool CReadSocket::ProcessPacket()
 	if (subpacketSequence != BASE_PACKET_UNSEGMENTED) {
 		if (packetHeader->m_critical == 0) {
 			message = m_nonCriticalMultiBuffer->UpdateSubPacket();
-			if (message != 0) {
+			if (message != NULL) {
 				PostRead(NETWORK_EVENT_9, message);
 				return true;
 			}
 		}
 		else {
 			message = m_criticalMultiBuffer->StoreSubPacket();
-			if (message != 0) {
+			if (message != NULL) {
 				PostRead(NETWORK_EVENT_8, message);
 				return true;
 			}
@@ -170,7 +171,7 @@ bool CReadSocket::ProcessPacket()
 	}
 	else if (packetHeader->m_critical == 0) {
 		packet = m_nonCriticalBuffer->UpdatePacket();
-		if (packet != 0) {
+		if (packet != NULL) {
 			PostRead(NETWORK_EVENT_7, packet);
 			return true;
 		}
@@ -188,7 +189,7 @@ bool CReadSocket::ProcessPacket()
 		}
 
 		packet = m_criticalBuffer->StorePacket();
-		if (packet == 0) {
+		if (packet == NULL) {
 			if (m_criticalBuffer->m_outOfOrder != 0) {
 				Closed(1);
 			}
@@ -206,7 +207,7 @@ bool CReadSocket::ProcessPacket()
 				acknowledgement->m_subpacketSequence = acknowledgementSubpacketSequence;
 				SendAcknowledgement();
 				packet = m_criticalBuffer->NextPacketReady();
-			} while (packet != 0);
+			} while (packet != NULL);
 
 			return true;
 		}

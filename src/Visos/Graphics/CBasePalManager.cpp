@@ -4,6 +4,7 @@
 #include "CRemap.h"
 
 #include <new.h>
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0046acd0
 CBasePalManager::CBasePalManager(int p_capacity)
@@ -16,7 +17,7 @@ CBasePalManager::CBasePalManager(int p_capacity)
 	i = 0;
 	if (0 < m_capacity) {
 		do {
-			m_remaps[i] = 0;
+			m_remaps[i] = NULL;
 			i = i + 1;
 		} while (i < m_capacity);
 	}
@@ -30,22 +31,22 @@ CBasePalManager::~CBasePalManager()
 	int offset;
 	CBaseRemap* remap;
 
-	if (manager->m_remaps != 0 && 0 < manager->m_remapCount) {
+	if (manager->m_remaps != NULL && 0 < manager->m_remapCount) {
 		offset = 0;
 		do {
 			CBaseRemap** slot = (CBaseRemap**) ((char*) manager->m_remaps + offset);
 			remap = *slot;
-			if (remap != 0) {
+			if (remap != NULL) {
 				remap->~CBaseRemap();
 				operator delete(remap);
 			}
 			offset += sizeof(CBaseRemap*);
 			i = i + 1;
 			CBaseRemap** previousSlot = (CBaseRemap**) ((char*) manager->m_remaps + offset - sizeof(CBaseRemap*));
-			*previousSlot = 0;
+			*previousSlot = NULL;
 		} while (i < manager->m_remapCount);
 	}
-	if (manager->m_remaps != 0) {
+	if (manager->m_remaps != NULL) {
 		operator delete(manager->m_remaps);
 	}
 }
@@ -61,14 +62,14 @@ CBaseRemap* CBasePalManager::RegisterRemap(unsigned int p_resourceId, unsigned c
 	slot = m_remaps;
 	i = 0;
 	remap = *slot;
-	while (remap != 0) {
+	while (remap != NULL) {
 		slot = slot + 1;
 		i = i + 1;
 		remap = *slot;
 	}
 	storage = operator new(sizeof(CRemap));
-	if (storage == 0) {
-		m_remaps[i] = 0;
+	if (storage == NULL) {
+		m_remaps[i] = NULL;
 	}
 	else {
 		m_remaps[i] = new (storage) CRemap(p_resourceId, p_mapping, p_type);
@@ -93,7 +94,7 @@ void CBasePalManager::UnRegisterRemap(CBaseRemap* p_remap)
 		slots = m_remaps;
 		while (true) {
 			current = slots[i];
-			while (current == 0) {
+			while (current == NULL) {
 				i = i + 1;
 				current = slots[i];
 			}
@@ -107,14 +108,14 @@ void CBasePalManager::UnRegisterRemap(CBaseRemap* p_remap)
 			}
 		}
 		current = slots[i];
-		if (current != 0) {
+		if (current != NULL) {
 			current->~CBaseRemap();
 			operator delete(current);
 		}
-		m_remaps[i] = 0;
+		m_remaps[i] = NULL;
 		m_remapCount = m_remapCount - 1;
 	}
 }
 
 // GLOBAL: LEMBALL 0x004a2000
-CBasePalManager* g_pBasePalManager = 0;
+CBasePalManager* g_pBasePalManager = NULL;

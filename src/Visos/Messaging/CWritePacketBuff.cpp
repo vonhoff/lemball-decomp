@@ -3,11 +3,13 @@
 #include "CWritePacket.h"
 #include "Visos/Messaging/CBasePacketBuff.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00461340
 CWritePacketBuff::CWritePacketBuff(int p_packetCount, unsigned short p_packetSize)
 	: CBasePacketBuff(p_packetCount, p_packetSize)
 {
-	if (m_packets != 0) {
+	if (m_packets != NULL) {
 		int index;
 
 		for (index = 0; index < m_packetCount; index++) {

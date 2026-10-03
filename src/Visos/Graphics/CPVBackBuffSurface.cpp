@@ -6,11 +6,13 @@
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Graphics/CPVGDIBitmap.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00466440
 CPVBackBuffSurface::CPVBackBuffSurface()
 {
 	m_allocatedWidth = 0;
-	m_buffer = 0;
+	m_buffer = NULL;
 	m_allocatedHeight = 0;
 	m_enabled = 0;
 }
@@ -32,9 +34,9 @@ bool CPVBackBuffSurface::HasBackBuff()
 // FUNCTION: LEMBALL 0x00466510
 void CPVBackBuffSurface::FreeBackBuff()
 {
-	if (m_buffer != 0) {
+	if (m_buffer != NULL) {
 		operator delete(m_buffer);
-		m_buffer = 0;
+		m_buffer = NULL;
 		m_allocatedHeight = 0;
 		m_allocatedWidth = 0;
 	}
@@ -60,13 +62,13 @@ void CPVBackBuffSurface::AllocateBackBuff()
 		FreeBackBuff();
 	}
 	if ((int) m_windowRect.m_width * (int) m_windowRect.m_height != 0) {
-		if (m_buffer == 0) {
+		if (m_buffer == NULL) {
 			m_allocatedWidth = (unsigned short) size.m_width;
 			m_allocatedHeight = (unsigned short) size.m_height;
 			m_buffer = (unsigned char*) operator new(
 				(unsigned int) (unsigned short) size.m_height*(unsigned int) (unsigned short) size.m_width);
 		}
-		if (m_buffer == 0) {
+		if (m_buffer == NULL) {
 			m_enabled = 0;
 		}
 		m_bitmap.SetBitsBase(m_buffer, (int) size.m_width);

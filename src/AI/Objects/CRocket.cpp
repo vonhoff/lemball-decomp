@@ -4,6 +4,8 @@
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Foundation/CVSMath.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x004267d0
 CRocket::CRocket() : CGlobalGameObject(OBJECT_ROCKET, 0, 0)
 {
@@ -130,7 +132,7 @@ void CRocket::DoActivate()
 	m_activator->Action(ACTION_WAITING_TO_DIE);
 	m_activator->m_actionDeadline = g_dwGameTick + 60;
 	SetSndEffect(SFX_ROCKET);
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		g_pObjectPosMessage->Send(this);
 	}
 }

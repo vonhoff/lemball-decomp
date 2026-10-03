@@ -16,7 +16,7 @@ extern const unsigned char g_mazeWalkMasks[32];
 CMaze::CMaze(CMap* p_map)
 {
 	m_map = p_map;
-	m_distances = 0;
+	m_distances = NULL;
 	m_changeSelect = 0;
 	m_routeSearchBusy = 0;
 	m_width = 0;
@@ -66,7 +66,7 @@ void CMaze::ReInitialise()
 // FUNCTION: LEMBALL 0x00423190
 void CMaze::Initialise()
 {
-	if (m_distances != 0) {
+	if (m_distances != NULL) {
 		int row = 0;
 		if (m_height > 0) {
 			do {
@@ -281,4 +281,4 @@ void CMaze::BSolution(int& p_count, Solution* p_solution)
 }
 
 // GLOBAL: LEMBALL 0x0049cf58
-CMaze* g_pMaze = 0;
+CMaze* g_pMaze = NULL;

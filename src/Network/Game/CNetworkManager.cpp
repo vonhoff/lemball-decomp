@@ -13,6 +13,8 @@
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Network/CReadSocket.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00452550
 CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler()
 {
@@ -29,28 +31,28 @@ CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler
 	m_gameMessage = new CNetworkGameMessage;
 	m_rejectMessage = new CGameRejectMessage;
 	for (int i = 0; i < 10; i++) {
-		m_connections[i] = 0;
+		m_connections[i] = NULL;
 	}
 
-	if (p_filePeerName != 0) {
+	if (p_filePeerName != NULL) {
 		networkLoaded = VSFNET_Init();
 		if (networkLoaded != 0) {
 			m_externalDriverLoaded = 1;
 		}
 	}
-	if (p_filePeerName == 0) {
+	if (p_filePeerName == NULL) {
 		networkLoaded = VSNET_Init();
 		m_localDriverLoaded = 1;
 	}
 	if (networkLoaded != 0) {
-		if (p_filePeerName != 0) {
+		if (p_filePeerName != NULL) {
 			((CFileNetwork*) g_pBaseNetwork)->Setup(p_filePeerName, "t:\\network");
 		}
 		if (g_pBaseNetwork->Initialise("Paintball v0.1", 0x400)) {
 			g_pBaseNetwork->SetCBuffers(100, 0x10);
 			g_pBaseNetwork->SetNCBuffers(4, 4, 0);
 			m_networkInitialised = 0;
-			g_pActiveConnection = 0;
+			g_pActiveConnection = NULL;
 			m_killRequested = 0;
 		}
 	}
@@ -74,7 +76,7 @@ CNetworkManager::~CNetworkManager()
 // FUNCTION: LEMBALL 0x00452740
 bool CNetworkManager::Start()
 {
-	if (g_pBaseNetwork != 0 && g_pBaseNetwork->m_serverMode != 0) {
+	if (g_pBaseNetwork != NULL && g_pBaseNetwork->m_serverMode != 0) {
 		CBaseNetwork* network = g_pBaseNetwork;
 		network->m_activeStatusItem = this;
 		network->ForceProcess();
@@ -97,16 +99,16 @@ void CNetworkManager::StartBroadcast(const char* p_address)
 // FUNCTION: LEMBALL 0x004527c0
 void CNetworkManager::Stop()
 {
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		m_rejectMessage->m_flag = 1;
 		m_rejectMessage->Send(g_pActiveConnection);
 		unsigned int startTime = CurrentMilliTimer();
 		while (m_rejectMessage->m_pendingSendCount != 0 && CurrentMilliTimer() - startTime < 1000) {
 		}
 		g_pActiveConnection->Kill();
-		g_pActiveConnection = 0;
+		g_pActiveConnection = NULL;
 	}
-	if (g_pBaseNetwork != 0 && g_pBaseNetwork->m_serverMode != 0) {
+	if (g_pBaseNetwork != NULL && g_pBaseNetwork->m_serverMode != 0) {
 		g_pNetworkPacketQueue->Detach(this, 0x19);
 		CBaseNetwork* network = g_pBaseNetwork;
 		network->m_pendingDetachQueue = this;
@@ -139,7 +141,7 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 	case 3:
 		if (status == 0) {
 			request = (CConnect*) p_message->m_payload;
-			if (g_pActiveConnection != 0) {
+			if (g_pActiveConnection != NULL) {
 				*g_pDebugOutput << "Game connection request during game\n";
 				request->Kill();
 				return 1;
@@ -147,9 +149,9 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 			slot = 0;
 			CConnect** connections = m_connections;
 			do {
-				if (*connections == 0) {
+				if (*connections == NULL) {
 					m_connections[slot] = request;
-					g_szGameName = g_pBaseFrontendDrawer != 0 ? g_szNetworkGameName : 0;
+					g_szGameName = g_pBaseFrontendDrawer != NULL ? g_szNetworkGameName : NULL;
 					m_gameMessages[slot].Send(m_connections[slot]);
 					m_connectionsChanged = 1;
 					break;
@@ -195,8 +197,8 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 		} while (index < 10);
 		if (index != 10) {
 			m_gameMessages[index].m_valid = 0;
-			m_connections[index] = 0;
-			if (g_pNetworkOptionsProc != 0) {
+			m_connections[index] = NULL;
+			if (g_pNetworkOptionsProc != NULL) {
 				g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) p_message->m_type);
 			}
 			if (g_pActiveConnection == connection) {
@@ -207,7 +209,7 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 		return 1;
 	}
 	case NETWORK_EVENT_HOST_LOOKUP_FAILED:
-		if (g_pNetworkOptionsProc != 0) {
+		if (g_pNetworkOptionsProc != NULL) {
 			g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) messageType);
 		}
 		return 1;
@@ -224,7 +226,7 @@ void CNetworkManager::Broadcast(const char* p_address)
 	if (broadcast->m_runEnabled != 0) {
 		broadcast->Suspend();
 	}
-	if (p_address == 0 || *p_address == '\0') {
+	if (p_address == NULL || *p_address == '\0') {
 		broadcast->m_addressMode = 0;
 	}
 	else {
@@ -247,10 +249,10 @@ void CNetworkManager::Kill()
 void CNetworkManager::GameProcess()
 {
 	if (m_killRequested != 0) {
-		g_pActiveConnection = 0;
+		g_pActiveConnection = NULL;
 		m_killRequested = 0;
 	}
-	if (g_pActiveConnection != 0) {
+	if (g_pActiveConnection != NULL) {
 		if (g_pActiveConnection->CReadSocket::IsChanged(*m_gameStage)) {
 			g_pActiveConnection->CReadSocket::GetLatest(*m_gameStage);
 			if (m_observedGameState != m_gameStage->m_stage) {
@@ -277,7 +279,7 @@ CNetworkGameMessage* CNetworkManager::GetGameMessage(CConnect* p_connection)
 {
 	int index = GetnGame(p_connection);
 	if (index == -1) {
-		return 0;
+		return NULL;
 	}
 	return m_gameMessages + index;
 }
@@ -289,7 +291,7 @@ int CNetworkManager::CountActiveGames()
 	int index = 0;
 	CConnect** connection = m_connections;
 	do {
-		if (*connection != 0 && m_gameMessages[index].m_valid != 0) {
+		if (*connection != NULL && m_gameMessages[index].m_valid != 0) {
 			count++;
 		}
 		connection++;
@@ -320,7 +322,7 @@ int CNetworkManager::GetnGame(CConnect* p_connection)
 }
 
 // GLOBAL: LEMBALL 0x004a0120
-CNetworkManager* g_pNetworkManager = 0;
+CNetworkManager* g_pNetworkManager = NULL;
 
 // GLOBAL: LEMBALL 0x004a0124
-char* g_szGameName = 0;
+char* g_szGameName = NULL;

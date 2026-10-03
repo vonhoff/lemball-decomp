@@ -2,6 +2,8 @@
 
 #include "CMogRes.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045e380
 CResEFFECT* CResEFFECT::Load(unsigned int p_resourceId)
 {
@@ -12,7 +14,7 @@ CResEFFECT* CResEFFECT::Load(unsigned int p_resourceId)
 	}
 	if (res->m_chunkType != 0x45464620) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }

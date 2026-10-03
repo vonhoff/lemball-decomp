@@ -5,13 +5,15 @@
 #include "CResZRLE.h"
 #include "ResourceTypeList.h"
 
+#include <stddef.h>
+
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x00498a18
 class CResANIM : public CResBaseLIST {
 public:
 	inline CResANIM(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g_pCompressedResourceTypes)
 	{
-		m_animationEntries = 0;
+		m_animationEntries = NULL;
 		DoLoad(p_resourceId);
 		m_initialised = 1;
 	}
@@ -28,7 +30,7 @@ public:
 	virtual void UnLoadVramData(unsigned int p_index, unsigned int p_force);  // vtable+0x40
 	inline virtual ~CResANIM()
 	{
-		if (m_animationEntries != 0) {
+		if (m_animationEntries != NULL) {
 			delete[] m_animationEntries;
 		}
 	}

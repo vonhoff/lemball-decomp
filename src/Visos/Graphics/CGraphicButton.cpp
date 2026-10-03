@@ -118,7 +118,7 @@ void CGraphicButton::Initialise()
 // FUNCTION: LEMBALL 0x004688e0
 void CGraphicButton::SetAnimID(unsigned long p_animId)
 {
-	if (m_animation != 0) {
+	if (m_animation != NULL) {
 		m_animation->UnLoad();
 	}
 	m_animationId = p_animId;
@@ -138,9 +138,9 @@ CGraphicButton::~CGraphicButton()
 // FUNCTION: LEMBALL 0x00468980
 void CGraphicButton::OnDestroy()
 {
-	if (m_animation != 0) {
+	if (m_animation != NULL) {
 		m_animation->UnLoad();
-		m_animation = 0;
+		m_animation = NULL;
 	}
 }
 

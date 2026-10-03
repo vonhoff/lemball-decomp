@@ -16,14 +16,14 @@ CLiftManager::CLiftManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x12,
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_lifts = 0;
+	m_lifts = NULL;
 }
 
 // FUNCTION: LEMBALL 0x004256e0
 void CLiftManager::Restart()
 {
 	g_wMovingLiftCount = 0;
-	if (m_lifts != 0) {
+	if (m_lifts != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_lifts[i].Restart();
 		}
@@ -35,11 +35,11 @@ void CLiftManager::Initialise(int p_capacity)
 {
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_lifts = 0;
+		m_lifts = NULL;
 		return;
 	}
 	m_capacity = p_capacity;
-	if (m_lifts == 0) {
+	if (m_lifts == NULL) {
 		m_lifts = new CLift[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_lifts[i].m_manager = this;

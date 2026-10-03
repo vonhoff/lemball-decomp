@@ -10,7 +10,7 @@ struct CTextLine {
 	~CTextLine();
 	void SetText(const char* p_text, unsigned int p_colour)
 	{
-		if (m_text != 0) {
+		if (m_text != NULL) {
 			free(m_text);
 		}
 		m_text = (char*) malloc(strlen(p_text) + 1);

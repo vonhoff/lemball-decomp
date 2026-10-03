@@ -12,7 +12,7 @@ void* InternalNew(unsigned long p_size)
 	if (g_nSmallMemoryEnabled != 0) {
 		if (g_maxSmallMemorySize > p_size) {
 			result = g_pSmallMemory->Allocate(p_size, g_pCurrentAllocDescription);
-			if (result != 0) {
+			if (result != NULL) {
 				g_pCurrentAllocDescription = "new";
 				return result;
 			}
@@ -51,12 +51,12 @@ void operator delete(void* p_memory)
 // FUNCTION: LEMBALL 0x0045a800
 bool CheckValidPointer(void* p_pointer)
 {
-	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory != 0) {
+	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory != NULL) {
 		int i = 0;
 		register unsigned char* ptr = (unsigned char*) p_pointer;
 		register CBucket** buckets = (CBucket**) g_pSmallMemory;
 		do {
-			if (*buckets != 0 && (*buckets)->CheckValidPointer(ptr)) {
+			if (*buckets != NULL && (*buckets)->CheckValidPointer(ptr)) {
 				return true;
 			}
 			buckets++;

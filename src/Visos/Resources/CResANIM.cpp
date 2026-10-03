@@ -7,12 +7,12 @@
 CResANIM* CResANIM::Load(unsigned long p_resourceId)
 {
 	CResANIM* res = (CResANIM*) g_pActiveMogRes->Find(p_resourceId);
-	if (res == 0) {
+	if (res == NULL) {
 		return (CResANIM*) (new CResANIM(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x4c495354) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }

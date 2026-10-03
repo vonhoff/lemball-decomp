@@ -2,16 +2,18 @@
 
 #include "CMogRes.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045de00
 CResSTRING* CResSTRING::Load(unsigned int p_resourceId)
 {
 	CResSTRING* res = (CResSTRING*) g_pActiveMogRes->Find(p_resourceId);
-	if (res == 0) {
+	if (res == NULL) {
 		return (CResSTRING*) (new CResSTRING(p_resourceId))->CheckError();
 	}
 	if (res->m_chunkType != 0x53545247) {
 		res->UnLoad();
-		return 0;
+		return NULL;
 	}
 	return res;
 }

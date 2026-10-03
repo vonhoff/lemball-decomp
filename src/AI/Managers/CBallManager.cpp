@@ -2,15 +2,17 @@
 
 #include "../Objects/CBall.h"
 
+#include <stddef.h>
+
 // GLOBAL: LEMBALL 0x0049e1bc
-CBallManager* g_pBallManager = 0;
+CBallManager* g_pBallManager = NULL;
 
 // FUNCTION: LEMBALL 0x00421ea0
 CBallManager::CBallManager(CAI* p_ai, int p_capacity)
 {
 	m_ai = p_ai;
 	g_pBallManager = this;
-	m_balls = 0;
+	m_balls = NULL;
 	m_capacity = p_capacity;
 }
 
@@ -18,7 +20,7 @@ CBallManager::CBallManager(CAI* p_ai, int p_capacity)
 void CBallManager::Restart()
 {
 	int i = 0;
-	if (m_balls != 0) {
+	if (m_balls != NULL) {
 		while (i < m_capacity) {
 			m_balls[i]->Restart();
 			i++;
@@ -32,10 +34,10 @@ void CBallManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_activeCount = 0;
 	if (p_capacity == 0) {
-		m_balls = 0;
+		m_balls = NULL;
 		return;
 	}
-	if (m_balls == 0) {
+	if (m_balls == NULL) {
 		m_balls = new CBall*[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_balls[i] = new CBall();
@@ -48,10 +50,10 @@ void CBallManager::Initialise(int p_capacity)
 CBallManager::~CBallManager()
 {
 	int i = 0;
-	if (m_balls != 0) {
+	if (m_balls != NULL) {
 		while (i < m_capacity) {
 			CBall* ball = m_balls[i];
-			if (ball != 0) {
+			if (ball != NULL) {
 				delete ball;
 			}
 			i++;

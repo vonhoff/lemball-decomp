@@ -5,6 +5,7 @@
 #include "Visos/Target/System/CPlatformServices.h"
 
 #include <new.h>
+#include <stddef.h>
 
 // GLOBAL: LEMBALL 0x004a0fb4
 char g_szMasterInputQueue[20] = "Master Input Queue.";
@@ -15,24 +16,24 @@ bool _INP_Init()
 	void* storage;
 
 	storage = operator new(0x58);
-	if (storage == 0) {
-		g_pMasterInputQueue = 0;
+	if (storage == NULL) {
+		g_pMasterInputQueue = NULL;
 	}
 	else {
 		g_pMasterInputQueue = new (storage) CTimedQueue(10, g_szMasterInputQueue);
 	}
 
 	storage = operator new(0x18);
-	if (storage == 0) {
-		g_pMasterInput = 0;
+	if (storage == NULL) {
+		g_pMasterInput = NULL;
 	}
 	else {
 		g_pMasterInput = new (storage) CMasterInput(g_pMasterInputQueue);
 	}
 
 	storage = operator new(0x10);
-	if (storage == 0) {
-		g_pInputTranslator = 0;
+	if (storage == NULL) {
+		g_pInputTranslator = NULL;
 	}
 	else {
 		g_pInputTranslator = new (storage) CTranslator();

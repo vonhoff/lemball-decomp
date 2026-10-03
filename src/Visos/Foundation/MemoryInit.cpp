@@ -40,18 +40,18 @@ bool _MEM_Init()
 	CSmallMemory* smallMemory;
 
 	g_pMasterArenaMemory = GlobalAlloc(2, g_preInitActive.m_memoryBudget);
-	if (g_pMasterArenaMemory == 0) {
+	if (g_pMasterArenaMemory == NULL) {
 		return false;
 	}
 
 	locked = GlobalLock(g_pMasterArenaMemory);
-	if (locked == 0) {
+	if (locked == NULL) {
 		return false;
 	}
 
-	g_pMasterArena = new (locked) CRAMArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, 0, 0);
+	g_pMasterArena = new (locked) CRAMArena(g_preInitActive.m_memoryBudget, g_szMasterMainRamArena, NULL, NULL);
 
-	smallMemory = 0;
+	smallMemory = NULL;
 	smallEnabled = g_nSmallMemoryEnabled;
 	g_pSmallMemory = smallMemory;
 	if (smallEnabled != 0) {
@@ -60,7 +60,7 @@ bool _MEM_Init()
 	}
 	g_pSmallMemory = smallMemory;
 	g_nSmallMemoryEnabled = smallEnabled;
-	if (g_pMasterArena != 0 && (smallEnabled == 0 || smallMemory != 0)) {
+	if (g_pMasterArena != NULL && (smallEnabled == 0 || smallMemory != NULL)) {
 		return true;
 	}
 	return false;
@@ -74,7 +74,7 @@ bool _MEM_Quit()
 
 	g_nSmallMemoryEnabled = 0;
 	smallMemory = g_pSmallMemory;
-	if (smallMemory != 0) {
+	if (smallMemory != NULL) {
 		smallMemory->~CSmallMemory();
 		operator delete(smallMemory);
 	}
@@ -85,7 +85,7 @@ bool _MEM_Quit()
 		do {
 		} while (GlobalUnlock(g_pMasterArenaMemory) != 0);
 	}
-	if (GlobalFree(g_pMasterArenaMemory) != 0) {
+	if (GlobalFree(g_pMasterArenaMemory) != NULL) {
 		lastError = GetLastError();
 		*g_pErrorOutput << g_szMasterArenaFreeFailed;
 		*g_pErrorOutput << g_szGetLastErrorEq << (unsigned long) lastError << g_szColonHexPrefix << Hex(lastError)

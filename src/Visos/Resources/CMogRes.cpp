@@ -24,7 +24,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 char g_mogRootPath[4];
 
 // GLOBAL: LEMBALL 0x004a1d60
-CBaseStat* g_pMogloadStat = 0;
+CBaseStat* g_pMogloadStat = NULL;
 
 // FUNCTION: LEMBALL 0x0045c630
 CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
@@ -35,10 +35,10 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 	g_mogRootPath[0] = RESOURCE_PATH_SEPARATOR;
 	g_pActiveMogRes = this;
 	m_error = 0;
-	m_resources = 0;
-	m_workingPath = 0;
-	m_rootDirectory = 0;
-	m_workingDirectory = 0;
+	m_resources = NULL;
+	m_workingPath = NULL;
+	m_rootDirectory = NULL;
+	m_workingDirectory = NULL;
 	m_resourceCount = 0;
 	m_skipCleanup = 0;
 	m_arenaSize = p_arenaSize;
@@ -57,7 +57,7 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 	SetWD(g_mogRootPath);
 	m_resources = (CResBase**) CMogloadArena::operator new(RESOURCE_HANDLE_COUNT * sizeof(*m_resources));
 	for (offset = 0; offset < RESOURCE_HANDLE_COUNT; offset++) {
-		m_resources[offset] = 0;
+		m_resources[offset] = NULL;
 	}
 	g_pMogloadStat = new CMogloadStat("Mogload memory");
 	g_pStatManager->Register(g_pMogloadStat);
@@ -67,29 +67,29 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 // FUNCTION: LEMBALL 0x0045c770
 CMogRes::~CMogRes()
 {
-	if (g_pMogFile != 0) {
+	if (g_pMogFile != NULL) {
 		vsClose(g_pMogFile);
 	}
 	CheckAllUnloaded();
 	if (m_skipCleanup == 0) {
 		CleanUpResources();
 	}
-	if (m_resources != 0) {
+	if (m_resources != NULL) {
 		CMogloadArena::operator delete(m_resources);
-		m_resources = 0;
+		m_resources = NULL;
 	}
-	if (m_rootDirectory != 0) {
+	if (m_rootDirectory != NULL) {
 		delete m_rootDirectory;
-		m_rootDirectory = 0;
+		m_rootDirectory = NULL;
 	}
-	if (m_workingPath != 0) {
+	if (m_workingPath != NULL) {
 		CMogloadArena::operator delete(m_workingPath);
-		m_workingPath = 0;
+		m_workingPath = NULL;
 	}
 	if (m_externalArena == 0) {
 		g_pMasterArena->FreeArena(g_pMogloadArena);
 	}
-	g_pMogloadArena = 0;
+	g_pMogloadArena = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0045c810
@@ -119,38 +119,38 @@ bool CMogRes::SetWD(char* p_path)
 	}
 	for (;;) {
 		cursor = strchr(cursor, RESOURCE_PATH_SEPARATOR);
-		if (cursor == 0) {
+		if (cursor == NULL) {
 			break;
 		}
 		cursor++;
 		if (*cursor != '\0') {
 			do {
 				dir = m_workingDirectory->GetNextDir();
-				if (dir == 0) {
+				if (dir == NULL) {
 					goto done;
 				}
 			} while (NameCmp((char*) m_workingDirectory->m_currentDir.m_info->m_data, cursor) == 0);
-			if (dir == 0) {
+			if (dir == NULL) {
 				break;
 			}
 			m_workingDirectory = dir;
 		}
-		if (cursor == 0) {
+		if (cursor == NULL) {
 			break;
 		}
 	}
 done:
 	oldPath = m_workingPath;
-	if (cursor == 0) {
-		if (oldPath != 0) {
+	if (cursor == NULL) {
+		if (oldPath != NULL) {
 			CMogloadArena::operator delete(oldPath);
-			m_workingPath = 0;
+			m_workingPath = NULL;
 		}
 		m_workingPath = copy;
 		return true;
 	}
 	SetWD(oldPath);
-	if (copy != 0) {
+	if (copy != NULL) {
 		CMogloadArena::operator delete(copy);
 	}
 	return false;
@@ -167,12 +167,12 @@ int CMogRes::KillLeastResource(unsigned int p_requiredSize)
 
 	if ((int) m_resourceCount > i) {
 		do {
-			if (m_resources[i] == 0) {
+			if (m_resources[i] == NULL) {
 				CResBase** slot = &m_resources[i];
 				do {
 					slot++;
 					i++;
-				} while (*slot == 0);
+				} while (*slot == NULL);
 			}
 			CResBase* resource = m_resources[i];
 			if (resource->m_loaded != 0) {
@@ -211,7 +211,7 @@ int CMogRes::GetFreeHandle()
 
 	if ((int) m_resourceCount > 0) {
 		if ((int) m_resourceCount < RESOURCE_HANDLE_COUNT) {
-			while (i < RESOURCE_HANDLE_COUNT && m_resources[i] != 0) {
+			while (i < RESOURCE_HANDLE_COUNT && m_resources[i] != NULL) {
 				i++;
 			}
 		}
@@ -236,7 +236,7 @@ unsigned char* CMogRes::AllocateMainMem(unsigned int p_size)
 
 	do {
 		memory = (unsigned char*) CMogloadArena::operator new(size);
-		if (memory == 0) {
+		if (memory == NULL) {
 			int needed = size;
 			needed -= g_pMogloadArena->GetFreeSize();
 			if (needed < 0) {
@@ -253,17 +253,17 @@ unsigned char* CMogRes::AllocateMainMem(unsigned int p_size)
 			unsigned int remaining = m_resourceCount;
 			if ((int) remaining > 0) {
 				do {
-					if (m_resources[i] == 0) {
+					if (m_resources[i] == NULL) {
 						do {
 							i++;
-						} while (m_resources[i] == 0);
+						} while (m_resources[i] == NULL);
 					}
 					i++;
 					remaining--;
 				} while (remaining != 0);
 			}
 		}
-	} while (memory == 0);
+	} while (memory == NULL);
 	return memory;
 }
 
@@ -277,12 +277,12 @@ CResBase* CMogRes::Find(unsigned int p_resourceId)
 	if (count > i) {
 		unsigned int resourceId = p_resourceId;
 		do {
-			if (m_resources[i] == 0) {
+			if (m_resources[i] == NULL) {
 				CResBase** slot = &m_resources[i];
 				do {
 					slot++;
 					i++;
-				} while (*slot == 0);
+				} while (*slot == NULL);
 			}
 			if (m_resources[i]->m_resourceId == resourceId) {
 				break;
@@ -297,7 +297,7 @@ CResBase* CMogRes::Find(unsigned int p_resourceId)
 		m_resources[i]->m_referenceCount++;
 		return m_resources[i];
 	}
-	return 0;
+	return NULL;
 }
 
 // FUNCTION: LEMBALL 0x0045cb50
@@ -319,12 +319,12 @@ bool CMogRes::Load(unsigned int p_resourceId, CResBase* p_resource, unsigned int
 	int handle;
 
 	m_workingDirectory->Find(chunk, p_resourceId, p_recurse);
-	if (chunk.m_info != 0) {
+	if (chunk.m_info != NULL) {
 		handle = GetFreeHandle();
 		CResBase* res = m_resources[handle];
-		if (res != 0) {
+		if (res != NULL) {
 			delete res;
-			m_resources[handle] = 0;
+			m_resources[handle] = NULL;
 			m_resourceCount--;
 		}
 		m_resources[handle] = p_resource;
@@ -347,7 +347,7 @@ bool CMogRes::CheckAllUnloaded()
 
 	if (remaining != 0) {
 		do {
-			while (m_resources[i] == 0 && i < RESOURCE_HANDLE_COUNT) {
+			while (m_resources[i] == NULL && i < RESOURCE_HANDLE_COUNT) {
 				i++;
 			}
 			if (m_resources[i]->m_referenceCount != 0) {
@@ -369,10 +369,10 @@ void CMogRes::AgeResources()
 
 	if ((int) m_resourceCount > zero) {
 		do {
-			if (m_resources[i] == 0) {
+			if (m_resources[i] == NULL) {
 				do {
 					i++;
-				} while (m_resources[i] == 0);
+				} while (m_resources[i] == NULL);
 			}
 			if (m_resources[i]->m_loaded != 0 || m_resources[i]->GetfVramLoaded()) {
 				m_resources[i]->m_age++;
@@ -401,17 +401,17 @@ void CMogRes::CleanUpResources()
 
 	if ((int) count > 0) {
 		do {
-			while (m_resources[i] == 0) {
+			while (m_resources[i] == NULL) {
 				i++;
 			}
 			if (i == RESOURCE_HANDLE_COUNT) {
 				return;
 			}
 			if (m_resources[i]->m_referenceCount == 0) {
-				if (m_resources[i] != 0) {
+				if (m_resources[i] != NULL) {
 					delete m_resources[i];
 				}
-				m_resources[i] = 0;
+				m_resources[i] = NULL;
 				m_resourceCount--;
 			}
 			scanned++;
@@ -428,13 +428,13 @@ void CMogRes::Remove(CResBase* p_resource)
 
 	if ((int) m_resourceCount > scanned) {
 		do {
-			if (m_resources[i] == 0) {
+			if (m_resources[i] == NULL) {
 				do {
 					i++;
-				} while (m_resources[i] == 0);
+				} while (m_resources[i] == NULL);
 			}
 			if (m_resources[i] == p_resource) {
-				m_resources[i] = 0;
+				m_resources[i] = NULL;
 				break;
 			}
 			scanned++;
@@ -455,7 +455,7 @@ void CMogRes::DeallocateMem(unsigned char* p_data, unsigned char p_owned)
 }
 
 // GLOBAL: LEMBALL 0x004a1d58
-CMogRes* g_pMogRes = 0;
+CMogRes* g_pMogRes = NULL;
 
 // GLOBAL: LEMBALL 0x004a1d5c
-CMogRes* g_pActiveMogRes = 0;
+CMogRes* g_pActiveMogRes = NULL;

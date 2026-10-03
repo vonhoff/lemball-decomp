@@ -3,12 +3,14 @@
 #include "AI/Base/CPt3.h"
 #include "NodeNeighbour.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x004212e0
 CNode::CNode()
 {
 	m_xFixed = 0xaa55aa55;
 	m_yFixed = 0xaa55aa55;
-	m_neighbours = 0;
+	m_neighbours = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00421300
@@ -20,7 +22,7 @@ void CNode::Restart()
 // FUNCTION: LEMBALL 0x00421310
 CNode::~CNode()
 {
-	if (m_neighbours != 0) {
+	if (m_neighbours != NULL) {
 		delete[] m_neighbours;
 	}
 }
@@ -28,7 +30,7 @@ CNode::~CNode()
 // FUNCTION: LEMBALL 0x00421330
 void CNode::Initialise(int p_x, int p_y, int p_neighbourCapacity)
 {
-	if (p_neighbourCapacity != 0 && m_neighbours != 0) {
+	if (p_neighbourCapacity != 0 && m_neighbours != NULL) {
 		m_neighbours = (NodeNeighbour*) operator new(p_neighbourCapacity * sizeof(NodeNeighbour));
 	}
 	m_neighbourCapacity = p_neighbourCapacity;

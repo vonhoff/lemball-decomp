@@ -27,10 +27,10 @@ CWriteSocket::CWriteSocket()
 	header = (BasePacketHeader*) operator new(sizeof(BasePacketHeader));
 	m_packetHeader = header;
 	header->m_magic = BASE_PACKET_MAGIC;
-	m_nonCriticalBuffer = 0;
-	m_criticalBuffer = 0;
-	m_secondaryCriticalBuffer = 0;
-	m_segmentedMessage = 0;
+	m_nonCriticalBuffer = NULL;
+	m_criticalBuffer = NULL;
+	m_secondaryCriticalBuffer = NULL;
+	m_segmentedMessage = NULL;
 	m_segmentIndex = -1;
 	m_destinationAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
 }
@@ -39,7 +39,7 @@ CWriteSocket::CWriteSocket()
 CWriteSocket::~CWriteSocket()
 {
 	operator delete(m_destinationAddress);
-	m_destinationAddress = 0;
+	m_destinationAddress = NULL;
 	operator delete(m_packetHeader);
 	DeleteNCBuffers();
 	DeleteCBuffers();
@@ -57,7 +57,7 @@ void CWriteSocket::DeleteNCBuffers()
 	CWriteNcBuff* buffer;
 
 	buffer = m_nonCriticalBuffer;
-	if (buffer != 0) {
+	if (buffer != NULL) {
 		buffer->CBasePacketBuff::~CBasePacketBuff();
 		operator delete(buffer);
 	}
@@ -70,12 +70,12 @@ void CWriteSocket::DeleteCBuffers()
 	CWriteCBuff* secondary;
 
 	critical = m_criticalBuffer;
-	if (critical != 0) {
+	if (critical != NULL) {
 		critical->CBasePacketBuff::~CBasePacketBuff();
 		operator delete(critical);
 	}
 	secondary = m_secondaryCriticalBuffer;
-	if (secondary != 0) {
+	if (secondary != NULL) {
 		secondary->CBasePacketBuff::~CBasePacketBuff();
 		operator delete(secondary);
 	}
@@ -100,11 +100,11 @@ void CWriteSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 	(void) p_messageCapacity;
 	DeleteCBuffers();
 	storage = operator new(sizeof(CWriteCBuff));
-	if (storage != 0) {
+	if (storage != NULL) {
 		m_criticalBuffer = new (storage) CWriteCBuff(p_packetCount, (unsigned short) g_networkPacketSize);
 		return;
 	}
-	m_criticalBuffer = 0;
+	m_criticalBuffer = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0045fea0
@@ -119,7 +119,7 @@ bool CWriteSocket::SendCritical(CNetworkMessage& p_message)
 	m_packetHeader->m_critical = 1;
 	CopyDataStream(data, 0);
 	packet = m_criticalBuffer->StorePacket(m_packetHeader->m_packetSequence, data, size, &p_message);
-	if (packet == 0) {
+	if (packet == NULL) {
 		return false;
 	}
 	if (SendPacket(data, size) != 0) {
@@ -274,7 +274,7 @@ CNetworkMessage* CWriteSocket::ReceiveAcknowledgement()
 {
 	CNetworkMessage* message;
 
-	message = 0;
+	message = NULL;
 	g_pAckMessage->Set((unsigned char*) (g_pNetworkPacketScratch + 1));
 	if (g_pAckMessage->m_subpacketSequence == BASE_PACKET_UNSEGMENTED) {
 		CWriteCBuff* buffer;

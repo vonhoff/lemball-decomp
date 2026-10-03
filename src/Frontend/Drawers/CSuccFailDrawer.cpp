@@ -79,31 +79,37 @@ char g_szSuccFailGaveUpLose[] = "You gave up!";
 char g_szSuccFailMoviePrefix[] = "lemball";
 
 // GLOBAL: LEMBALL 0x0049fb38
-char* g_apSuccFailSingleWin[8] = {0, 0, g_szSuccFailCollectedAllFlags, 0, 0, 0, 0, 0};
+char* g_apSuccFailSingleWin[8] = {NULL, NULL, g_szSuccFailCollectedAllFlags, NULL, NULL, NULL, NULL, NULL};
 
 // GLOBAL: LEMBALL 0x0049fb58
-char* g_apSuccFailNetWin[8] = {0,
+char* g_apSuccFailNetWin[8] = {NULL,
 							   g_szSuccFailBeatScore,
 							   g_szSuccFailCollectedAllYourFlags,
 							   g_szSuccFailSplattedAllLemmings,
 							   g_szSuccFailRanOutOfTimeNet,
 							   g_szSuccFailGaveUpNet,
-							   0,
-							   0};
+							   NULL,
+							   NULL};
 
 // GLOBAL: LEMBALL 0x0049fb78
-char* g_apSuccFailSingleLose[8] =
-	{0, 0, 0, g_szSuccFailAllLemmingsEliminated, g_szSuccFailRanOutOfTimeSingle, g_szSuccFailGaveUpSingle, 0, 0};
+char* g_apSuccFailSingleLose[8] = {NULL,
+								   NULL,
+								   NULL,
+								   g_szSuccFailAllLemmingsEliminated,
+								   g_szSuccFailRanOutOfTimeSingle,
+								   g_szSuccFailGaveUpSingle,
+								   NULL,
+								   NULL};
 
 // GLOBAL: LEMBALL 0x0049fb98
-char* g_apSuccFailNetLose[8] = {0,
+char* g_apSuccFailNetLose[8] = {NULL,
 								g_szSuccFailOpponentBeatScore,
 								g_szSuccFailOpponentCollectedFlags,
 								g_szSuccFailOpponentSplattedLemmings,
 								g_szSuccFailRanOutOfTimeLose,
 								g_szSuccFailGaveUpLose,
-								0,
-								0};
+								NULL,
+								NULL};
 
 // GLOBAL: LEMBALL 0x0049fbb8
 SuccFailLayout g_succFailLayoutFull = {{92, 375},
@@ -212,7 +218,7 @@ void CSuccFailDrawer::Load()
 		m_secondaryBitmap = CResBITMAP::Load(m_secondaryBitmapId);
 	}
 	else {
-		m_secondaryBitmap = 0;
+		m_secondaryBitmap = NULL;
 	}
 	bitmapX = (int) m_size.m_width - (int) (short) m_primaryBitmap->m_x;
 	primitive = m_primitiveBundle;
@@ -225,16 +231,16 @@ void CSuccFailDrawer::Load()
 		primitive->m_primitive.m_y = position;
 		primitive->m_primitive.m_resource = resource;
 		primitive->m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
-		primitive->m_primitive.m_remap = 0;
+		primitive->m_primitive.m_remap = NULL;
 		resource = m_primaryBitmap;
 		position = m_layout->m_primaryPosition.m_y;
 		primary->m_primary.m_x = (short) bitmapX;
 		primary->m_primary.m_y = position;
 		primary->m_primary.m_resource = resource;
 		primary->m_primary.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
-		primary->m_primary.m_remap = 0;
+		primary->m_primary.m_remap = NULL;
 		CResBITMAP* secondaryResource = m_secondaryBitmap;
-		if (secondaryResource != 0) {
+		if (secondaryResource != NULL) {
 			unsigned int secondaryY;
 			SuccFailLayout* layout = m_layout;
 			secondaryY = layout->m_secondaryPosition.m_y;
@@ -243,7 +249,7 @@ void CSuccFailDrawer::Load()
 			primary->m_secondary.m_y = secondaryY;
 			primary->m_secondary.m_resource = secondaryResource;
 			primary->m_secondary.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
-			primary->m_secondary.m_remap = 0;
+			primary->m_secondary.m_remap = NULL;
 		}
 		primary++;
 		primitive++;
@@ -296,11 +302,11 @@ char g_szPaintballSequence[] = "Paintball Sequence";
 // FUNCTION: LEMBALL 0x00450770
 void CSuccFailDrawer::UnLoad()
 {
-	if (m_hiliteController != 0) {
+	if (m_hiliteController != NULL) {
 		delete m_hiliteController;
 	}
 	m_primaryBitmap->UnLoad();
-	if (m_secondaryBitmap != 0) {
+	if (m_secondaryBitmap != NULL) {
 		m_secondaryBitmap->UnLoad();
 	}
 }
@@ -336,18 +342,18 @@ void CSuccFailDrawer::DrawText()
 	if (m_drawingBackBuffer != 0) {
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_firstLinePos, advance, m_chalkFontId, m_firstLine, 0x20, 0);
-		if (m_secondLine != 0) {
+		m_textManager->DrawString(m_gdi, m_firstLinePos, advance, m_chalkFontId, m_firstLine, 0x20, NULL);
+		if (m_secondLine != NULL) {
 			advance.m_height = 0;
 			advance.m_width = 0;
-			m_textManager->DrawString(m_gdi, m_secondLinePos, advance, m_chalkFontId, m_secondLine, 0x20, 0);
+			m_textManager->DrawString(m_gdi, m_secondLinePos, advance, m_chalkFontId, m_secondLine, 0x20, NULL);
 		}
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_passwordLabelPos, advance, m_chalkFontId, g_szPasswordLabel, 0x20, 0);
+		m_textManager->DrawString(m_gdi, m_passwordLabelPos, advance, m_chalkFontId, g_szPasswordLabel, 0x20, NULL);
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_passwordPos, advance, m_chalkFontId, m_password, 0x20, 0);
+		m_textManager->DrawString(m_gdi, m_passwordPos, advance, m_chalkFontId, m_password, 0x20, NULL);
 	}
 }
 
@@ -468,7 +474,7 @@ void CSuccFailDrawer::DrawBackGround()
 	SuccFailLayout* layout = m_layout;
 	DrawFrame(layout->m_frameStart, layout->m_frameEnd);
 	m_primitives[m_primitiveBank].m_primary.Draw(m_gdi);
-	if (m_secondaryBitmap != 0) {
+	if (m_secondaryBitmap != NULL) {
 		m_primitives[m_primitiveBank].m_secondary.Draw(m_gdi);
 	}
 }

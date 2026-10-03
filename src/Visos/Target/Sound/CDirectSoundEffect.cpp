@@ -96,7 +96,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	m_bufferCount = p_bufferCount;
 	m_buffers = new IDirectSoundBuffer*[p_bufferCount];
 	for (index = 0; index < m_bufferCount; index++) {
-		m_buffers[index] = 0;
+		m_buffers[index] = NULL;
 	}
 	memcpy(&patchHeader, p_patch, sizeof(patchHeader));
 	patchHeader.m_formatVersion = SwapBytes16(patchHeader.m_formatVersion);
@@ -141,7 +141,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	if ((m_controlFlags & 4) != 0) {
 		description.dwFlags |= 0x20;
 	}
-	result = g_directSound->CreateSoundBuffer(&description, m_buffers, 0);
+	result = g_directSound->CreateSoundBuffer(&description, m_buffers, NULL);
 	if (result != 0) {
 		// STRING: LEMBALL 0x004a3528
 		*g_pErrorOutput << "Effect Buffer Create failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
@@ -200,7 +200,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 CDirectSoundEffect::~CDirectSoundEffect()
 {
 	for (int i = 0; m_bufferCount > i; i++) {
-		if (m_buffers[i] != 0) {
+		if (m_buffers[i] != NULL) {
 			m_buffers[i]->Release();
 		}
 	}

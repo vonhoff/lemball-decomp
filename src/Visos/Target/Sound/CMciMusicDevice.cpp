@@ -51,7 +51,7 @@ CMciMusicDevice::CMciMusicDevice()
 	g_pActiveMciMusicDevice = this;
 	memset(&openParms, 0, sizeof(openParms));
 	openParms.lpstrDeviceType = g_szMciSequencerDevice;
-	openParms.lpstrElementName = 0;
+	openParms.lpstrElementName = NULL;
 	error = mciSendCommandA(0, MCI_OPEN, MCI_OPEN_TYPE, (DWORD) &openParms);
 	if (error != 0) {
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
@@ -66,9 +66,9 @@ CMciMusicDevice::CMciMusicDevice()
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
-	windowClass.hIcon = 0;
-	windowClass.hCursor = 0;
-	windowClass.hbrBackground = 0;
+	windowClass.hIcon = NULL;
+	windowClass.hCursor = NULL;
+	windowClass.hbrBackground = NULL;
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpfnWndProc = MciMusicWindowProc;
 	windowClass.lpszMenuName = g_szMciMusicWindow;
@@ -82,11 +82,11 @@ CMciMusicDevice::CMciMusicDevice()
 									 CW_USEDEFAULT,
 									 CW_USEDEFAULT,
 									 CW_USEDEFAULT,
-									 0,
-									 0,
+									 NULL,
+									 NULL,
 									 (HINSTANCE) g_pApplicationInstance,
-									 0);
-	if (m_notifyWindow == 0) {
+									 NULL);
+	if (m_notifyWindow == NULL) {
 		*g_pErrorOutput << "Error! Unable to Create Window for HL Music.\n";
 	}
 }
@@ -143,7 +143,7 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	}
 	else {
 		cdDir = g_pTargetPlatformServices->GetCDDir(musicName);
-		if (cdDir == 0) {
+		if (cdDir == NULL) {
 			cdDir = g_szCurrentDirectory;
 		}
 		fullPath = cdDir;

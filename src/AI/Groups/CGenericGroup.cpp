@@ -85,7 +85,7 @@ CGameObject* CGenericGroup::GetNextElementInGroup()
 	int index = m_currentElement + 1;
 	m_currentElement = index;
 	if (m_elementCount <= index) {
-		return 0;
+		return NULL;
 	}
 	return m_elements[index];
 }
@@ -94,7 +94,7 @@ CGameObject* CGenericGroup::GetNextElementInGroup()
 CGameObject* CGenericGroup::GetCurrentElementInGroup()
 {
 	if (m_elementCount <= m_currentElement) {
-		return 0;
+		return NULL;
 	}
 	return m_elements[m_currentElement];
 }
@@ -104,7 +104,7 @@ CGameObject* CGenericGroup::GetNthElementInGroup(int p_index)
 {
 	m_currentElement = p_index;
 	if (m_elementCount <= p_index) {
-		return 0;
+		return NULL;
 	}
 	return m_elements[p_index];
 }
@@ -159,7 +159,7 @@ void CGenericGroup::RemoveElementFromGroup(CGameObject* p_object)
 					element[-1] = copy;
 				} while (remaining != 0);
 			}
-			m_elements[index] = 0;
+			m_elements[index] = NULL;
 			m_elementCount--;
 			m_altered = 1;
 			return;
@@ -185,7 +185,7 @@ bool CGenericGroup::ConfirmElementIsInGroup(unsigned short p_objectId)
 {
 	for (int i = 0; i < m_elementCount; i++) {
 		CGameObject* object = m_elements[i];
-		if (object != 0 && object->m_objectId == p_objectId) {
+		if (object != NULL && object->m_objectId == p_objectId) {
 			return true;
 		}
 	}
@@ -221,7 +221,7 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 		int count = m_elementCount;
 		do {
 			CGameObject* object = *element;
-			if (object != 0) {
+			if (object != NULL) {
 				int x = object->m_position.m_xFixed >> 12;
 				int y = object->m_position.m_yFixed >> 12;
 				int right = radius + x;
@@ -281,7 +281,7 @@ void CGenericGroup::SendNewWaypoint(AICOORD p_coordinate)
 {
 	AICOORD destination;
 	CGameObject* object = GetFirstElementInGroup();
-	if (object != 0) {
+	if (object != NULL) {
 		unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> 12,
 													   object->m_position.m_yFixed >> 12,
 													   p_coordinate.m_xFixed >> 12,
@@ -314,11 +314,11 @@ void CGenericGroup::ClearExistingWaypoints()
 
 	m_destinationList->m_count = 0;
 	object = GetFirstElementInGroup();
-	if (object != 0) {
+	if (object != NULL) {
 		do {
 			object->ResetInstructions();
 			object = GetNextElementInGroup();
-		} while (object != 0);
+		} while (object != NULL);
 	}
 }
 
@@ -341,7 +341,7 @@ void CGenericGroup::ReformAlteredGroup(CFormationManager* p_formationManager)
 
 	if (m_altered != 0) {
 		CGameObject* object = GetFirstElementInGroup();
-		if (object != 0) {
+		if (object != NULL) {
 			AICOORD destination;
 			{
 				const AICOORD& returnedDestination = object->GetDestination();
@@ -381,7 +381,7 @@ bool CGenericGroup::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinat
 
 	if (m_bounds.m_x < rectRight && rectX < groupRight && m_bounds.m_y < rectBottom && rectY < groupBottom) {
 		CGameObject* object = GetFirstElementInGroup();
-		while (object != 0) {
+		while (object != NULL) {
 			int x = object->m_position.m_xFixed >> 12;
 			int y = object->m_position.m_yFixed >> 12;
 			if (x - 24 < rectRight && rectX < x + 24 && y - 24 < rectBottom && rectY < y + 24) {
@@ -403,13 +403,13 @@ int CGenericGroup::GetViewData(CViewData* p_viewData)
 	CGenericGroup* self = this;
 	CGameObject* object = self->GetFirstElementInGroup();
 	count = 0;
-	if (object != 0) {
+	if (object != NULL) {
 		do {
 			object->GetViewData(*p_viewData);
 			p_viewData++;
 			count++;
 			object = self->GetNextElementInGroup();
-		} while (object != 0);
+		} while (object != NULL);
 	}
 	return count;
 }

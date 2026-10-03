@@ -46,7 +46,7 @@ void CSheepGroupManager::Restart()
 int CSheepGroupManager::Process()
 {
 	CGenericGroup* group = GetFirstGroup();
-	while (group != 0) {
+	while (group != NULL) {
 		group->Process();
 		group = GetNextGroup();
 	}

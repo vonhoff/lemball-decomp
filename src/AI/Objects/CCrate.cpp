@@ -4,13 +4,15 @@
 #include "../../Control/Game/GameTime.h"
 #include "../Navigation/CAI.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0041c470
 CCrate::CCrate(const AICOORD& p_position, CGlobalGameObject* p_contents, unsigned short p_contentsId)
 	: CBaseGlobalObject(p_position, OBJECT_CRATE)
 {
 	m_contentsId = p_contentsId;
 	m_contents = p_contents;
-	if (p_contents == 0) {
+	if (p_contents == NULL) {
 		m_contentsType = OBJECT_INVALID;
 	}
 	else {
@@ -26,7 +28,7 @@ int CCrate::Usage()
 
 inline CCrate::~CCrate()
 {
-	if (m_contents != 0 && m_contentsType != OBJECT_INVALID) {
+	if (m_contents != NULL && m_contentsType != OBJECT_INVALID) {
 		delete m_contents;
 	}
 }

@@ -6,6 +6,8 @@
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/Message.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0043a250
 CPadToButton::CPadToButton(int p_entryCapacity)
 {
@@ -13,7 +15,7 @@ CPadToButton::CPadToButton(int p_entryCapacity)
 	m_entryCapacity = p_entryCapacity;
 	m_entryCount = 0;
 	for (int i = 0; i < p_entryCapacity; i++) {
-		m_entries[i].m_button = 0;
+		m_entries[i].m_button = NULL;
 	}
 	g_pMasterInputQueue->Attach(this, -25);
 }

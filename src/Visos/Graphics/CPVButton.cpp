@@ -16,6 +16,8 @@
 #include "Visos/Graphics/CPVWnd.h"
 #include "Visos/Graphics/CPrimitive.h"
 
+#include <stddef.h>
+
 extern int g_nGunButtonsRedrawPending;
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -46,7 +48,7 @@ void CPVButton::Move(const CVSPoint& p_point)
 // FUNCTION: LEMBALL 0x0043a5e0
 void CPVButton::OnVisibilityChange()
 {
-	if (CPVWnd::m_parent != 0) {
+	if (CPVWnd::m_parent != NULL) {
 		m_gdi->m_renderTarget->m_flag78 = 1;
 	}
 	m_forceDrawCount = 1;
@@ -61,11 +63,11 @@ CPVButton::CPVButton(const CVSRect& p_bounds, CPVGWnd* p_ownerWindow)
 	m_clickX = 0;
 	const CVSRect* rect = &p_bounds;
 	const short* position;
-	if (rect != 0) {
+	if (rect != NULL) {
 		position = &rect->m_x;
 	}
 	else {
-		position = 0;
+		position = NULL;
 	}
 	m_buttonX = *position;
 	m_buttonY = position[1];
@@ -93,7 +95,7 @@ void CPVButton::Initialise()
 	m_drawCompleted = 0;
 	m_primitive = new CDrawingMark();
 	m_gdiFlags = 2;
-	m_messageQueue = 0;
+	m_messageQueue = NULL;
 	m_controlMessage = 0;
 }
 
@@ -103,7 +105,7 @@ CPVButton::~CPVButton()
 	if (m_ownerWindow->m_lifecycleRefs == 1) {
 		Destroy();
 	}
-	if (m_primitive != 0) {
+	if (m_primitive != NULL) {
 		delete m_primitive;
 	}
 }
@@ -266,7 +268,7 @@ void CPVButton::_OnReleased(int p_flags)
 	if (m_autoDraw == 0) {
 		m_forceDrawCount = 1;
 	}
-	if (m_messageQueue != 0) {
+	if (m_messageQueue != NULL) {
 		converted = ConvertDoubleClick(p_flags);
 		posted.m_time = timeGetTime();
 		posted.m_code = (int) m_controlMessage;
@@ -286,7 +288,7 @@ void CPVButton::_OnPressed(int p_flags)
 	if (m_autoDraw == 0) {
 		m_forceDrawCount = 1;
 	}
-	if (m_messageQueue != 0) {
+	if (m_messageQueue != NULL) {
 		converted = ConvertDoubleClick(p_flags);
 		posted.m_time = timeGetTime();
 		posted.m_code = (int) m_controlMessage;
@@ -302,7 +304,7 @@ void CPVButton::_OnEnterButton()
 {
 	Message posted;
 
-	if (m_messageQueue != 0) {
+	if (m_messageQueue != NULL) {
 		posted.m_time = timeGetTime();
 		posted.m_code = (int) m_controlMessage;
 		posted.m_type = MESSAGE_BUTTON_ENTERED;
@@ -316,7 +318,7 @@ void CPVButton::_OnExitButton()
 {
 	Message posted;
 
-	if (m_messageQueue != 0) {
+	if (m_messageQueue != NULL) {
 		posted.m_time = timeGetTime();
 		posted.m_code = (int) m_controlMessage;
 		posted.m_type = MESSAGE_BUTTON_EXITED;

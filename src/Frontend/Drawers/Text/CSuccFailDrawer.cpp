@@ -50,13 +50,13 @@ void CSuccFailDrawer::CalculateText()
 	}
 	format = messages[g_pGameStatus->m_skillState];
 	hash = strchr(format, '#');
-	if (hash != 0) {
+	if (hash != NULL) {
 		int prefixLen = hash - format;
 		if (prefixLen != 0) {
 			strncpy(m_message, format, prefixLen);
 		}
 		m_message[prefixLen] = 0;
-		if (g_pActiveConnection != 0) {
+		if (g_pActiveConnection != NULL) {
 			CNetworkGameMessage* opponentMsg = g_pNetworkManager->GetGameMessage(g_pActiveConnection);
 			strcat(m_message, opponentMsg->m_gameName);
 		}
@@ -71,7 +71,7 @@ void CSuccFailDrawer::CalculateText()
 		short layoutMinX = (short) m_layout->m_messagePosition.m_x;
 		short layoutY = (short) m_layout->m_messagePosition.m_y;
 		m_firstLine = m_message;
-		m_secondLine = 0;
+		m_secondLine = NULL;
 		short lineX;
 		CVSSize measuredSize;
 		do {
@@ -80,13 +80,13 @@ void CSuccFailDrawer::CalculateText()
 			measuredSize.m_width = textSize.m_width;
 			lineX = (short) m_layout->m_frameStart.m_x +
 					(short) ((m_layout->m_frameEnd.m_x - (int) measuredSize.m_width) / 2);
-			char* prevBreak = (m_secondLine != 0) ? (m_secondLine - 1) : 0;
+			char* prevBreak = (m_secondLine != NULL) ? (m_secondLine - 1) : NULL;
 			if (lineX < layoutMinX) {
 				char* space = strrchr(m_firstLine, ' ');
 				m_secondLine = space;
 				*space = 0;
 				m_secondLine = m_secondLine + 1;
-				if (prevBreak != 0) {
+				if (prevBreak != NULL) {
 					*prevBreak = ' ';
 				}
 			}
@@ -97,7 +97,7 @@ void CSuccFailDrawer::CalculateText()
 
 		m_firstLinePos.m_x = lineX;
 		m_firstLinePos.m_y = layoutY;
-		if (m_secondLine == 0) {
+		if (m_secondLine == NULL) {
 			m_firstLinePos.m_y = layoutY + measuredSize.m_height / 2;
 		}
 		else {

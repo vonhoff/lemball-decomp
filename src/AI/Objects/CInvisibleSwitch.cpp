@@ -14,6 +14,8 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00409ca0
 CInvisibleSwitch::CInvisibleSwitch() : CGlobalGameObject(OBJECT_INVISIBLE_SWITCH, 0, 0)
 {
@@ -34,7 +36,7 @@ void CInvisibleSwitch::Initialise()
 	m_triggered = 0;
 	m_objectCount = 0;
 	m_repeatable = 0;
-	m_activator = 0;
+	m_activator = NULL;
 	m_scoreAwarded = 0;
 }
 
@@ -181,9 +183,9 @@ bool CInvisibleSwitch::Process()
 		if (m_repeatable == 0) {
 			m_triggered = 1;
 		}
-		if (m_activator != 0) {
+		if (m_activator != NULL) {
 			AddObject(m_activator);
-			m_activator = 0;
+			m_activator = NULL;
 		}
 		InvisibleSwitchTarget* target;
 		int i = 0;

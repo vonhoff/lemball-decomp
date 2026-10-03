@@ -5,6 +5,8 @@
 #include "CBaseSoundDevice.h"
 #include "CPVMusicDevice.h"
 
+#include <stddef.h>
+
 struct SoundDeviceDispatch {
 	virtual void Delete(int p_delete) = 0;
 	virtual void Slot04() = 0;
@@ -75,7 +77,7 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 	i = 0;
 	detectedCd = 0;
 	m_useMusicCD = p_useMusicCD;
-	m_musicDevice = 0;
+	m_musicDevice = NULL;
 	m_deviceCount = MachineSoundDetect(m_devices,
 									   p_musicEnabled,
 									   p_effectsEnabled,
@@ -83,8 +85,8 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 									   &detectedCd,
 									   &m_musicDevice,
 									   p_deviceParameter);
-	m_musicOutput = 0;
-	m_effectOutput = 0;
+	m_musicOutput = NULL;
+	m_effectOutput = NULL;
 	if (i < m_deviceCount) {
 		do {
 			if (((SoundDeviceDispatch*) m_devices[i])->IsMusicAvailable() == 1) {
@@ -101,7 +103,7 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 	if (m_useMusicCD == 1) {
 		if (detectedCd == 0) {
 			m_musicAvailable = 0;
-			m_musicOutput = 0;
+			m_musicOutput = NULL;
 		}
 		else {
 			m_musicAvailable = 1;
@@ -117,7 +119,7 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 	if (m_musicAvailable == 1) {
 		m_musicRequested = 1;
 		m_musicCapability = 1;
-		if (m_musicOutput != 0) {
+		if (m_musicOutput != NULL) {
 			m_musicCapability = ((SoundDeviceDispatch*) m_musicOutput)->Slot2c();
 		}
 	}
@@ -148,19 +150,19 @@ CSoundManager::~CSoundManager()
 	unsigned int i;
 	CBaseSoundDevice** devices;
 
-	if (m_musicAvailable != 0 && m_musicOutput != 0) {
+	if (m_musicAvailable != 0 && m_musicOutput != NULL) {
 		((SoundDeviceDispatch*) m_musicOutput)->Slot1c();
 	}
-	if (m_effectsAvailable != 0 && m_effectOutput != 0) {
+	if (m_effectsAvailable != 0 && m_effectOutput != NULL) {
 		((SoundDeviceDispatch*) m_effectOutput)->Slot20();
 	}
 	i = 0;
-	m_musicOutput = 0;
-	m_effectOutput = 0;
+	m_musicOutput = NULL;
+	m_effectOutput = NULL;
 	if (i < m_deviceCount) {
 		devices = m_devices;
 		do {
-			if (*devices != 0) {
+			if (*devices != NULL) {
 				(*devices)->SetMasterVolume(0);
 				((SoundDeviceDispatch*) *devices)->Slot14();
 				delete *devices;
@@ -177,7 +179,7 @@ void CSoundManager::SetResId(unsigned long p_resourceId)
 {
 	m_resourceId = p_resourceId;
 	if (m_background == 0) {
-		if (m_effectOutput != 0) {
+		if (m_effectOutput != NULL) {
 			if (((SoundDeviceDispatch*) m_effectOutput)->OpenPrimary(0, m_requestedEffects, p_resourceId) == 0) {
 				m_requestedEffects = 0;
 			}
@@ -197,7 +199,7 @@ void CSoundManager::Background()
 		if (i < m_deviceCount) {
 			devices = m_devices;
 			do {
-				if (*devices != 0) {
+				if (*devices != NULL) {
 					((SoundDeviceDispatch*) *devices)->Slot14();
 				}
 				devices = devices + 1;
@@ -221,9 +223,9 @@ void CSoundManager::Foreground()
 		musicOutput = m_musicOutput;
 		if (m_effectOutput == musicOutput) {
 			effects = m_requestedEffects;
-			m_effectOutput = 0;
+			m_effectOutput = NULL;
 		}
-		if (m_useMusicCD == 0 && musicOutput != 0) {
+		if (m_useMusicCD == 0 && musicOutput != NULL) {
 			if (((SoundDeviceDispatch*) musicOutput)->Open(music, effects, m_resourceId) == 0) {
 				music = 0;
 				effects = 0;
@@ -231,7 +233,7 @@ void CSoundManager::Foreground()
 			m_musicAvailable = music;
 			m_effectsAvailable = effects;
 		}
-		if (m_effectOutput != 0) {
+		if (m_effectOutput != NULL) {
 			if (((SoundDeviceDispatch*) m_effectOutput)->Open(0, m_requestedEffects, m_resourceId) == 0) {
 				m_requestedEffects = 0;
 			}
@@ -375,7 +377,7 @@ void CSoundManager::FreeEffect(unsigned long p_effectId)
 void CSoundManager::SetVolumes(int p_effectVolume, int p_musicVolume)
 {
 	if (p_effectVolume != -1) {
-		if (m_effectOutput != 0) {
+		if (m_effectOutput != NULL) {
 			m_effectOutput->SetEffectVolume((unsigned char) p_effectVolume);
 		}
 	}
@@ -384,7 +386,7 @@ void CSoundManager::SetVolumes(int p_effectVolume, int p_musicVolume)
 		return;
 	}
 	if (p_musicVolume != -1) {
-		if (m_musicOutput != 0) {
+		if (m_musicOutput != NULL) {
 			m_musicOutput->SetMusicVolume((unsigned char) p_musicVolume);
 		}
 	}
@@ -393,7 +395,7 @@ void CSoundManager::SetVolumes(int p_effectVolume, int p_musicVolume)
 // FUNCTION: LEMBALL 0x0045b560
 unsigned char CSoundManager::GetEffectVolume()
 {
-	if (m_effectOutput != 0) {
+	if (m_effectOutput != NULL) {
 		return m_effectOutput->GetEffectVolume();
 	}
 	return 0;
@@ -408,7 +410,7 @@ void CSoundManager::SetEffectsWnd(CWnd* p_window)
 // FUNCTION: LEMBALL 0x0045b5a0
 void CSoundManager::SetMusicWnd(CWnd* p_window)
 {
-	if (m_musicOutput != 0) {
+	if (m_musicOutput != NULL) {
 		m_musicOutput->SetWnd(p_window);
 	}
 }
@@ -444,13 +446,13 @@ char* CSoundManager::BuildDriverInfo()
 {
 	CDebugOStream stream(g_szSoundDriverInfo, sizeof(g_szSoundDriverInfo));
 	g_szSoundDriverInfo[0] = 0;
-	if (m_effectOutput != 0 && m_requestedEffects != 0) {
+	if (m_effectOutput != NULL && m_requestedEffects != 0) {
 		stream << g_szEffectsDriverPrefix << m_effectOutput->GetInfo();
 	}
 	if (m_useMusicCD != 0 && m_requestedMusic != 0) {
 		stream << m_musicDevice->GetInfo() << g_szSoundDriverNewline;
 	}
-	if (m_musicOutput != 0 && m_requestedMusic != 0) {
+	if (m_musicOutput != NULL && m_requestedMusic != 0) {
 		stream << g_szMusicDriverPrefix << m_musicOutput->GetInfo();
 	}
 	return g_szSoundDriverInfo;
@@ -460,4 +462,4 @@ char* CSoundManager::BuildDriverInfo()
 char g_szSoundDriverInfo[1024];
 
 // GLOBAL: LEMBALL 0x004a9bc8
-CSoundManager* g_pSoundManager = 0;
+CSoundManager* g_pSoundManager = NULL;

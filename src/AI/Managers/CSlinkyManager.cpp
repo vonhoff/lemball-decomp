@@ -4,12 +4,14 @@
 #include "../Objects/CSlinky.h"
 #include "AI/Base/CGameObject.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0040b8e0
 CSlinkyManager::CSlinkyManager(CAI* p_ai, int p_capacity)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_slinkies = 0;
+	m_slinkies = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0040b900
@@ -17,7 +19,7 @@ void CSlinkyManager::Restart()
 {
 	int i;
 	unsigned int byteIndex;
-	if (m_slinkies != 0) {
+	if (m_slinkies != NULL) {
 		i = 0;
 		if (i < m_capacity) {
 			byteIndex = 0;
@@ -38,10 +40,10 @@ void CSlinkyManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_slinkies = 0;
+		m_slinkies = NULL;
 		return;
 	}
-	if (m_slinkies == 0) {
+	if (m_slinkies == NULL) {
 		m_slinkies = new CSlinky[p_capacity];
 		// LINE: LEMBALL 0x0040b99b
 		for (int i = 0; i < m_capacity; i++) {
@@ -53,7 +55,7 @@ void CSlinkyManager::Initialise(int p_capacity)
 // FUNCTION: LEMBALL 0x0040b9d0
 CSlinkyManager::~CSlinkyManager()
 {
-	if (m_slinkies != 0) {
+	if (m_slinkies != NULL) {
 		delete[] m_slinkies;
 	}
 }

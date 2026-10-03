@@ -22,14 +22,14 @@ CReadMSBuff::CReadMSBuff(int p_messageSlots, int p_messageCapacity, unsigned sho
 		((BasePacketHeader*) m_data)->m_packetSequence = 0;
 	}
 	else {
-		m_data = 0;
+		m_data = NULL;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00461440
 CReadMSBuff::~CReadMSBuff()
 {
-	if (m_data != 0) {
+	if (m_data != NULL) {
 		operator delete(m_data);
 	}
 }

@@ -215,12 +215,12 @@ void INIT_SubSystems()
 	*g_pSysOutput << "_RES_Init   : " << OkFailed(resOk) << "...\n";
 
 	storage = operator new(0x20);
-	if (storage != 0) {
+	if (storage != NULL) {
 		stat = (CBaseStat*) storage;
 		new (storage) CMogloadStat("Main memory arena");
 	}
 	else {
-		stat = 0;
+		stat = NULL;
 	}
 	g_pStatManager->Register(stat);
 	g_pMasterArena->m_usageStat = (void*) stat;
@@ -264,7 +264,7 @@ bool INIT_CheckOptions(char* p_option)
 		index = 0;
 		do {
 			colon = strchr((char*) (*option)[kInitCmdOptionName], ':');
-			if (colon != 0) {
+			if (colon != NULL) {
 				maxCount = (unsigned int) (colon - (char*) (*option)[kInitCmdOptionName]);
 			}
 			else {
@@ -294,7 +294,7 @@ void INIT_CmdLine(char* p_commandLine)
 	g_cParsedArgs = 0;
 	g_apszParsedArgs[0] = p_commandLine;
 	memset(g_afInitOptionSelected, 0, sizeof(g_afInitOptionSelected));
-	if (p_commandLine != 0) {
+	if (p_commandLine != NULL) {
 		while (*p_commandLine != '\0' && isspace(*p_commandLine)) {
 			p_commandLine = p_commandLine + 1;
 		}
@@ -405,7 +405,7 @@ void INIT_PreInit()
 	}
 	g_preInitActive.m_memoryBudget = g_preInitActive.m_memoryBudget << 0x13;
 	result = VSPreInit(&g_preInitActive);
-	if (result != 0) {
+	if (result != NULL) {
 		g_preInitActive = *result;
 	}
 	if (7 < g_preInitActive.m_capabilityCount) {

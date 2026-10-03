@@ -32,7 +32,7 @@ static const char* g_graphicsDriverNames[] = {"NO",
 											  "Direct Draw (Windowed 640*480)",
 											  "Direct Draw (Windowed 320*200)",
 											  "Auto Select",
-											  0};
+											  NULL};
 
 // GLOBAL: LEMBALL 0x004a07a0
 static const char* g_graphicsDriverErrors[] = {
@@ -67,26 +67,26 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 		break;
 	case 2:
 		driverStorage = operator new(sizeof(CDisplayDibDriver));
-		if (driverStorage != 0) {
+		if (driverStorage != NULL) {
 			CVSSize size;
 			size.m_width = 320;
 			size.m_height = 200;
 			g_pTargetGraphicsDriver = new (driverStorage) CDisplayDibDriver(size);
 		}
 		else {
-			g_pTargetGraphicsDriver = 0;
+			g_pTargetGraphicsDriver = NULL;
 		}
 		break;
 	case 3:
 		driverStorage = operator new(sizeof(CPlanarDibDriver));
-		if (driverStorage != 0) {
+		if (driverStorage != NULL) {
 			CVSSize size;
 			size.m_width = 320;
 			size.m_height = 240;
 			g_pTargetGraphicsDriver = new (driverStorage) CPlanarDibDriver(size);
 		}
 		else {
-			g_pTargetGraphicsDriver = 0;
+			g_pTargetGraphicsDriver = NULL;
 		}
 		break;
 	case 4: {
@@ -114,7 +114,7 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 		if (m_fallbackWarningShown == 0) {
 			CString warning(g_graphicsDriverErrors[resolvedDriverMode]);
 			warning += ". Defaulting to normal window mode (using CreateDIBSection)";
-			MessageBoxA(0, warning, "WARNING", 0x12000);
+			MessageBoxA(NULL, warning, "WARNING", 0x12000);
 			m_fallbackWarningShown = 1;
 		}
 		resolvedDriverMode = 1;
@@ -129,12 +129,12 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 // FUNCTION: LEMBALL 0x004580c0
 void CGraphicsState::NotifyDriverChange()
 {
-	if (g_pWindowOwnerList != 0) {
+	if (g_pWindowOwnerList != NULL) {
 		WindowOwnerNode* node = g_pWindowOwnerList->m_head;
-		while (node != 0) {
+		while (node != NULL) {
 			CWnd* window = (CWnd*) node->m_window;
 			HWND nativeWindow = (HWND) window->m_nativeWindow;
-			if (nativeWindow != 0) {
+			if (nativeWindow != NULL) {
 				if ((window->GetStyle() & 0x80000000) != 0) {
 					int directScroll = 1;
 					if (m_driverMode == 3) {
@@ -154,7 +154,7 @@ void CGraphicsState::NotifyDriverChange()
 bool CGraphicsState::ChangeDriver(int p_driverMode)
 {
 	if (m_driverMode != p_driverMode) {
-		if (g_pTargetGraphicsDriver != 0) {
+		if (g_pTargetGraphicsDriver != NULL) {
 			delete g_pTargetGraphicsDriver;
 		}
 		SelectDriver(p_driverMode);
@@ -205,7 +205,7 @@ bool CGraphicsState::IsDisplayDibDriver()
 // FUNCTION: LEMBALL 0x004581d0
 void CGraphicsState::UpdateDriverSize(const CVSSize& p_size)
 {
-	if (g_pTargetGraphicsDriver != 0) {
+	if (g_pTargetGraphicsDriver != NULL) {
 		CGraphicsDriver* driver = g_pTargetGraphicsDriver;
 		driver->m_screenSize.m_width = p_size.m_width;
 		driver->m_screenSize.m_height = p_size.m_height;

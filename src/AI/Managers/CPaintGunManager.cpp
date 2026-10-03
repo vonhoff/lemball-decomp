@@ -11,13 +11,13 @@ CPaintGunManager::CPaintGunManager(CAI* p_ai, int p_capacity) : CBaseObjectManag
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_paintGuns = 0;
+	m_paintGuns = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0042c040
 void CPaintGunManager::Restart()
 {
-	if (m_paintGuns != 0) {
+	if (m_paintGuns != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_paintGuns[i].Restart();
 		}
@@ -30,10 +30,10 @@ void CPaintGunManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_paintGuns = 0;
+		m_paintGuns = NULL;
 		return;
 	}
-	if (m_paintGuns == 0) {
+	if (m_paintGuns == NULL) {
 		m_paintGuns = new CPaintGun[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_paintGuns[i].Restart();

@@ -31,7 +31,7 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 	stateTimer = p_viewData.m_stateTimer;
 	x = p_viewData.m_positionX;
 	y = p_viewData.m_positionY;
-	remap = 0;
+	remap = NULL;
 
 	if (p_viewData.m_actionArgument != 0) {
 		remap = m_paletteRemap;
@@ -40,16 +40,16 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 	switch (action) {
 	case ACTION_READY:
 		owner.m_lemmingAnims
-			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, NULL);
 		owner.m_lemmingAnims
-			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, NULL);
 		break;
 
 	case ACTION_ACTIVATING:
 		owner.m_lemmingAnims
-			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, NULL);
 		owner.m_lemmingAnims
-			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, 0);
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 0, 0, NULL);
 		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0] - 8,
 									   y - g_animOffset[1],
 									   RES_GAME_CATMOUNT_SE,
@@ -60,13 +60,13 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 
 	case ACTION_ACTIVATED:
 		owner.m_lemmingAnims
-			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, NULL);
 		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0],
 									   y - g_animOffset[1],
 									   g_anGroundStyleResourceIds[9],
 									   stateTimer + 0x640,
 									   p_viewData.m_animationTime,
-									   0);
+									   NULL);
 		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0] - 8,
 									   y - g_animOffset[1],
 									   RES_GAME_CATMOUNT_SE,
@@ -77,13 +77,13 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 
 	case ACTION_RUNNING:
 		owner.m_lemmingAnims
-			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, 0);
+			->DrawAnim(x - g_baseOffset[0], y - g_baseOffset[1], g_anGroundStyleResourceIds[8], 1, 0, NULL);
 		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0],
 									   y - g_animOffset[1],
 									   g_anGroundStyleResourceIds[9],
 									   stateTimer + 0x640,
 									   p_viewData.m_animationTime,
-									   0);
+									   NULL);
 		break;
 	}
 }

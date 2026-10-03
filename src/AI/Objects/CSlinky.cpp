@@ -12,6 +12,8 @@
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0040b480
 CSlinky::CSlinky() : CGameObject(OBJECT_SLINKY, 0, 0), m_unk0x138(0, 0, 0)
 {
@@ -187,7 +189,7 @@ bool CSlinky::Process()
 		}
 		ai->m_rectCollisionIndex++;
 	}
-	hit = 0;
+	hit = NULL;
 hitObject:
 	if (hit) {
 		hit->HitBall();

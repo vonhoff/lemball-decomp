@@ -9,6 +9,8 @@
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/Message.h"
 
+#include <stddef.h>
+
 // GLOBAL: LEMBALL 0x0049f19c
 char g_szPaintBallIntroSequence[] = "PaintBall Intro Sequence";
 
@@ -122,7 +124,7 @@ void CIntroAnimDrawer::Processing()
 		introRect.m_height = 240;
 		introRect.m_y = (short) (height - 240) / 2;
 		if (m_started == 0) {
-			g_pSoundView->ChangeState(1, 0);
+			g_pSoundView->ChangeState(1, NULL);
 			m_animWindow.Create(introRect, m_display, g_szPaintBallIntroSequence);
 			m_animWindow.Play();
 			m_started = 1;

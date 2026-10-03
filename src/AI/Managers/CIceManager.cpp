@@ -14,13 +14,13 @@ CIceManager::CIceManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x19, 0
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
-	m_ice = 0;
+	m_ice = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0042d800
 void CIceManager::Restart()
 {
-	if (m_ice != 0) {
+	if (m_ice != NULL) {
 		for (int i = 0; i < m_capacity; i++) {
 			m_ice[i].Restart();
 		}
@@ -33,10 +33,10 @@ void CIceManager::Initialise(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
-		m_ice = 0;
+		m_ice = NULL;
 		return;
 	}
-	if (m_ice == 0) {
+	if (m_ice == NULL) {
 		m_ice = new CIce[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
 			m_ice[i].Restart();

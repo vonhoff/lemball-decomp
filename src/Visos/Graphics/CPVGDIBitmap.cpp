@@ -23,24 +23,24 @@ CPVGDIBitmap::~CPVGDIBitmap()
 // FUNCTION: LEMBALL 0x004722e0
 void CPVGDIBitmap::Free()
 {
-	if (m_lines != 0) {
+	if (m_lines != NULL) {
 		operator delete(m_lines);
-		m_lines = 0;
+		m_lines = NULL;
 		m_lineCapacity = 0;
 	}
-	m_bits = 0;
-	m_bitsBase = 0;
+	m_bits = NULL;
+	m_bitsBase = NULL;
 }
 
 // FUNCTION: LEMBALL 0x00472310
 void CPVGDIBitmap::Initialise()
 {
 	m_directScroll = 0;
-	m_bits = 0;
-	m_bitsBase = 0;
+	m_bits = NULL;
+	m_bitsBase = NULL;
 	m_xOffset = 0;
 	m_firstLine = 0;
-	m_lines = 0;
+	m_lines = NULL;
 	m_stride = 0;
 	m_extraRows = 0;
 	m_rowPadding = 0;
@@ -51,9 +51,9 @@ void CPVGDIBitmap::Initialise()
 void CPVGDIBitmap::CreateLinePtrs()
 {
 	if ((int) m_lineCapacity < m_height) {
-		if (m_lines != 0) {
+		if (m_lines != NULL) {
 			operator delete(m_lines);
-			m_lines = 0;
+			m_lines = NULL;
 		}
 		if (m_height > 0) {
 			short heightWord;
@@ -125,8 +125,8 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 	}
 	if (m_directScroll == 0) {
 		xy = &p_rect->m_x;
-		if (p_rect == 0) {
-			xy = 0;
+		if (p_rect == NULL) {
+			xy = NULL;
 		}
 		deltaY = (short) (xy[1] - p_destination->m_y);
 		m_xOffset = m_xOffset - (unsigned int) (short) (xy[0] - p_destination->m_x);
@@ -245,25 +245,25 @@ void CPVGDIBitmap::GetRects(const CVSRect& p_rect, CVSRect*& p_rect0, CVSRect*& 
 
 	m_rect0.m_width = p_rect.m_width;
 	m_rect0.m_height = p_rect.m_height;
-	if (&p_rect != 0) {
+	if (&p_rect != NULL) {
 		position = &p_rect.m_x;
 	}
 	else {
-		position = 0;
+		position = NULL;
 	}
 	m_rect0.m_x = position[0];
 	m_rect0.m_y = position[1];
 	p_rect0 = &m_rect0;
-	p_rect1 = 0;
+	p_rect1 = NULL;
 	if ((int) m_firstLine < (int) (short) (p_rect.m_height + p_rect.m_y) && (int) p_rect.m_y < (int) m_firstLine) {
 		m_rect0.m_height = (short) m_firstLine - m_rect0.m_y;
 		m_rect1.m_width = p_rect.m_width;
 		m_rect1.m_height = p_rect.m_height;
-		if (&p_rect != 0) {
+		if (&p_rect != NULL) {
 			position = &p_rect.m_x;
 		}
 		else {
-			position = 0;
+			position = NULL;
 		}
 		m_rect1.m_x = position[0];
 		m_rect1.m_y = position[1];

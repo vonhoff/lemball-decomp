@@ -24,8 +24,8 @@ unsigned int __cdecl DebugMessageThreadMain()
 	g_pDebugWindow = new CTextWnd("Debug Window", 0x2800);
 	SetEvent(g_pDebugSyncEvent);
 	MSG message;
-	while (GetMessageA(&message, 0, 0, 0) != 0) {
-		if (g_pDebugAcceleratorTable == 0 ||
+	while (GetMessageA(&message, NULL, 0, 0) != 0) {
+		if (g_pDebugAcceleratorTable == NULL ||
 			TranslateAcceleratorA(message.hwnd, (HACCEL) g_pDebugAcceleratorTable, &message) == 0) {
 			TranslateMessage(&message);
 			DispatchMessageA(&message);
@@ -51,7 +51,7 @@ static char g_textWindowClassName[] = "CTextWindow";
 CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 {
 	m_lineBuffer = new CTextLineBuffer(p_lineCapacity);
-	if (m_lineBuffer == 0) {
+	if (m_lineBuffer == NULL) {
 		// STRING: LEMBALL 0x004a2bb4
 		FatalWin32Error("Unable to allocate TextLineBuffer");
 	}
@@ -62,10 +62,10 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 4;
 		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
-		windowClass.hIcon = LoadIconA(0, IDI_APPLICATION);
-		windowClass.hCursor = LoadCursorA(0, IDC_ARROW);
+		windowClass.hIcon = LoadIconA(NULL, IDI_APPLICATION);
+		windowClass.hCursor = LoadCursorA(NULL, IDC_ARROW);
 		windowClass.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
-		windowClass.lpszMenuName = 0;
+		windowClass.lpszMenuName = NULL;
 		windowClass.lpszClassName = g_textWindowClassName;
 		if (RegisterClassA(&windowClass) == 0) {
 			// STRING: LEMBALL 0x004a2bd8
@@ -83,17 +83,17 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 									 CW_USEDEFAULT,
 									 GetSystemMetrics(0) / 2,
 									 GetSystemMetrics(1) / 2,
-									 0,
-									 0,
+									 NULL,
+									 NULL,
 									 (HINSTANCE) g_pApplicationInstance,
 									 this);
-	if (m_windowHandle == 0) {
+	if (m_windowHandle == NULL) {
 		// STRING: LEMBALL 0x004a2c00
 		FatalWin32Error("Unable to create text window");
 	}
 	// STRING: LEMBALL 0x004a2c20
 	m_fontHandle = CreateFontA(8, 6, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0x30, "Courier");
-	if (m_fontHandle == 0) {
+	if (m_fontHandle == NULL) {
 		// STRING: LEMBALL 0x004a2c28
 		FatalWin32Error("Unable to create font");
 	}
@@ -124,7 +124,7 @@ CTextWnd::~CTextWnd()
 	}
 	delete m_lineBuffer;
 	g_nTargetTextWindowActive = 0;
-	m_windowHandle = 0;
+	m_windowHandle = NULL;
 	DeleteObject((HFONT) m_fontHandle);
 }
 
@@ -134,11 +134,11 @@ void CTextWnd::PostText(const char* p_text, unsigned int p_colour)
 	EnterCritical();
 	if (g_nTargetTextWindowActive != 0) {
 		char* copy = (char*) malloc(strlen(p_text) + 1);
-		if (copy == 0) {
+		if (copy == NULL) {
 			FatalWin32Error(g_unableToAllocateTextCopy);
 		}
 		strcpy(copy, p_text);
-		if (m_windowHandle != 0) {
+		if (m_windowHandle != NULL) {
 			PostMessageA((HWND) m_windowHandle, TEXT_WINDOW_APPEND_MESSAGE, (unsigned int) copy, p_colour);
 		}
 		LeaveCritical();
@@ -207,7 +207,7 @@ int CTextWnd::PointToLine(int p_x, int p_y)
 void CTextWnd::RedrawAll()
 {
 	EnterCritical();
-	InvalidateRect((HWND) m_windowHandle, 0, 0);
+	InvalidateRect((HWND) m_windowHandle, NULL, 0);
 	LeaveCritical();
 }
 
@@ -223,7 +223,7 @@ void CTextWnd::RedrawLines(int p_firstLine, int p_lineCount)
 		rect.top = row * m_lineHeight;
 		rect.bottom = m_lineHeight * p_lineCount + rect.top;
 		if (InvalidateRect((HWND) m_windowHandle, &rect, 0) == 0) {
-			MessageBoxA(0, g_unableToInvalidateTextLines, g_textWindowInfo, 0);
+			MessageBoxA(NULL, g_unableToInvalidateTextLines, g_textWindowInfo, 0);
 		}
 	}
 	LeaveCritical();
@@ -271,7 +271,7 @@ void CTextWnd::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned
 		rect.right = GetSystemMetrics(2) + p_clientWidth;
 		rect.bottom = p_clientHeight;
 		AdjustWindowRect(&rect, GetWindowLongA((HWND) m_windowHandle, -16), 0);
-		SetWindowPos((HWND) m_windowHandle, 0, 0, 0, rect.right - rect.left, rect.bottom - rect.top, 6);
+		SetWindowPos((HWND) m_windowHandle, NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top, 6);
 	}
 	else {
 		UpdateVisibleRows();
@@ -285,7 +285,7 @@ void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
 {
 	EnterCritical();
 	RECT paintRect;
-	if (p_paint == 0) {
+	if (p_paint == NULL) {
 		GetClientRect((HWND) m_windowHandle, &paintRect);
 	}
 	else {
@@ -319,7 +319,7 @@ void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
 		row.bottom = row.top + m_lineHeight;
 		SetTextColor((HDC) p_dc, foreground);
 		SetBkColor((HDC) p_dc, background);
-		ExtTextOutA((HDC) p_dc, row.left, row.top, 2, &row, text, strlen(text), 0);
+		ExtTextOutA((HDC) p_dc, row.left, row.top, 2, &row, text, strlen(text), NULL);
 	}
 	LeaveCritical();
 }
@@ -474,7 +474,7 @@ char* CTextWnd::GetSelectionText()
 		length += strlen(m_lineBuffer->m_lines[line].m_text) + 2;
 	}
 	char* text = (char*) malloc(length + 1);
-	if (text == 0) {
+	if (text == NULL) {
 		FatalWin32Error(g_unableToAllocateSelectionText);
 	}
 	text[0] = 0;
@@ -497,9 +497,9 @@ void CTextWnd::CopySelection()
 	}
 	char* text = GetSelectionText();
 	HGLOBAL memory = GlobalAlloc(0x2002, strlen(text) + 1);
-	if (memory == 0) {
+	if (memory == NULL) {
 		free(text);
-		MessageBoxA(0, g_unableToAllocateCopyBuffer, g_copyBufferInfo, 0);
+		MessageBoxA(NULL, g_unableToAllocateCopyBuffer, g_copyBufferInfo, 0);
 		LeaveCritical();
 		return;
 	}
@@ -513,7 +513,7 @@ void CTextWnd::CopySelection()
 		CloseClipboard();
 	}
 	else {
-		MessageBoxA(0, g_unableToAllocateClipboard, g_clipboardInfo, 0);
+		MessageBoxA(NULL, g_unableToAllocateClipboard, g_clipboardInfo, 0);
 		GlobalFree(memory);
 	}
 	SetSelectionHighlight(0);
@@ -545,7 +545,7 @@ long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsi
 	switch (p_message) {
 	case WM_DESTROY:
 		delete window;
-		g_pDebugWindow = 0;
+		g_pDebugWindow = NULL;
 		PostQuitMessage(0);
 		break;
 	case WM_SIZE:
@@ -553,7 +553,7 @@ long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsi
 		break;
 	case WM_SETFOCUS: {
 		HACCEL accelerators = CreateAcceleratorTableA(g_textWindowAccelerators, 2);
-		if (accelerators != 0) {
+		if (accelerators != NULL) {
 			g_pDebugAcceleratorTable = accelerators;
 		}
 		break;
@@ -618,7 +618,7 @@ long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsi
 // __crtheap
 
 // GLOBAL: LEMBALL 0x004a29f0
-CTextWnd* g_pDebugWindow = 0;
+CTextWnd* g_pDebugWindow = NULL;
 
 // GLOBAL: LEMBALL 0x004a2b68
 int g_nTargetTextWindowClassRegistered = 0;

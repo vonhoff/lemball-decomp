@@ -5,6 +5,7 @@
 #include "Visos/Foundation/CVector.h"
 
 #include <new.h>
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0041a140
 CFormationManager::CFormationManager()
@@ -99,7 +100,7 @@ CVector* CFormationManager::GetNextVector()
 {
 	int index = ++m_restartState;
 	if (index >= 8) {
-		return 0;
+		return NULL;
 	}
 	return &m_transformedVectors[index];
 }

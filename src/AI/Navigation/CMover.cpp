@@ -18,6 +18,8 @@
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
+#include <stddef.h>
+
 #define MOVER_POSITION_FRACTION_BITS 12
 #define MOVER_FOOTPRINT_HALF_SIZE 8
 #define MOVER_FOOTPRINT_LAST_OFFSET 15
@@ -163,7 +165,7 @@ void CMover::FindObjectsOnTopOfMe()
 	if (objectCount > 0) {
 		do {
 			CGameObject* object = g_pObjects[(unsigned short) index];
-			if (object != 0 && object->GetId() != (short) 0xffff && mover->GetId() != object->GetId() &&
+			if (object != NULL && object->GetId() != (short) 0xffff && mover->GetId() != object->GetId() &&
 				object->m_objectType != OBJECT_SHEEP) {
 				int objectX = object->m_position.m_xFixed >> 12;
 				int objectY = object->m_position.m_yFixed >> 12;
@@ -197,7 +199,7 @@ bool CMover::Process()
 		m_findOccupants = 0;
 		FindObjectsOnTopOfMe();
 	}
-	bool local = g_pActiveConnection == 0 || g_pActiveConnection->m_isHost != 0;
+	bool local = g_pActiveConnection == NULL || g_pActiveConnection->m_isHost != 0;
 	eAction action;
 	unsigned int time;
 	if (local) {

@@ -3,20 +3,22 @@
 #include "Visos/Graphics/CPaletteManager.h"
 #include "Visos/Resources/ResourceTypeList.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045b900
 bool _RES_Init()
 {
 	ResourceTypeList* list;
 
 	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
-	if (list != 0) {
+	if (list != NULL) {
 		list->m_capacity = 2;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
 		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
 	}
 	else {
-		list = 0;
+		list = NULL;
 	}
 	list->m_typeCodes[list->m_count] = 0x494e5420;
 	list->m_count = list->m_count + 1;
@@ -25,28 +27,28 @@ bool _RES_Init()
 	g_pResourceTypes = list;
 
 	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
-	if (list != 0) {
+	if (list != NULL) {
 		list->m_capacity = 1;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
 		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
 	}
 	else {
-		list = 0;
+		list = NULL;
 	}
 	list->m_typeCodes[list->m_count] = 0x5a524c45;
 	list->m_count = list->m_count + 1;
 	g_pCompressedResourceTypes = list;
 
 	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
-	if (list != 0) {
+	if (list != NULL) {
 		list->m_capacity = 2;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
 		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
 	}
 	else {
-		list = 0;
+		list = NULL;
 	}
 	list->m_typeCodes[list->m_count] = 0x53545247;
 	list->m_count = list->m_count + 1;
@@ -65,17 +67,17 @@ bool _RES_Quit()
 
 	delete g_pBasePalManager;
 	list = g_pPreloadedResourceTypes;
-	if (list != 0) {
+	if (list != NULL) {
 		operator delete(list->m_typeCodes);
 		operator delete(list);
 	}
 	list = g_pResourceTypes;
-	if (list != 0) {
+	if (list != NULL) {
 		operator delete(list->m_typeCodes);
 		operator delete(list);
 	}
 	list = g_pCompressedResourceTypes;
-	if (list != 0) {
+	if (list != NULL) {
 		operator delete(list->m_typeCodes);
 		operator delete(list);
 	}

@@ -50,10 +50,10 @@ void CAnimSpecial::Initialise(CMap* p_map)
 	}
 	m_entryCount = entryCount;
 	if (entryCount == 0) {
-		m_entries = 0;
+		m_entries = NULL;
 		return;
 	}
-	if (m_entries == 0) {
+	if (m_entries == NULL) {
 		m_entries = (AnimSpecialEntry*) operator new(entryCount * sizeof(AnimSpecialEntry));
 	}
 

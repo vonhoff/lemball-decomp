@@ -1,19 +1,21 @@
 #ifndef LEMBALL_VISOS_NETWORK_CABSTRACTFILE_H
 #define LEMBALL_VISOS_NETWORK_CABSTRACTFILE_H
 
+#include <stddef.h>
+
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x0049a5e8
 class CAbstractFile {
 public:
 	~CAbstractFile()
 	{
-		if (m_filename != 0) {
+		if (m_filename != NULL) {
 			operator delete(m_filename);
 		}
 	}
 	CAbstractFile()
 	{
-		m_filename = 0;
+		m_filename = NULL;
 		m_closed = 1;
 	}
 	virtual bool Open(const char* p_filename, unsigned char p_mode, int p_create) = 0; // vtable+0x00

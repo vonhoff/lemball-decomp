@@ -4,6 +4,8 @@
 #include "../../Sound/CSoundView.h"
 #include "../CMain2DDisplay.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00437520
 void C2D::NoStateLeftClick(const CVSPoint& p_screenPoint,
 						   const CVSPoint& p_gamePoint,
@@ -67,7 +69,7 @@ void C2D::NoStateLeftClick(const CVSPoint& p_screenPoint,
 // FUNCTION: LEMBALL 0x00437b60
 int C2D::ProcessMsg(Message* p_message)
 {
-	if ((g_pDemo == 0 || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
+	if ((g_pDemo == NULL || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
 		return 0;
 	}
 	if (m_paused != 0) {

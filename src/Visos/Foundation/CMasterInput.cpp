@@ -2,11 +2,13 @@
 
 #include "../Target/Input/CMasterInputItem.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00472070
 CMasterInput::CMasterInput(CBaseQueue* p_queue)
 {
 	m_itemCount = 0;
-	m_firstItem = 0;
+	m_firstItem = NULL;
 	m_queue = p_queue;
 	m_state = 0;
 }
@@ -78,10 +80,10 @@ bool CMasterInput::IsEmpty()
 	}
 	void** item = (void**) m_firstItem;
 	for (i = 0; i < count; i++) {
-		if (item == 0) {
+		if (item == NULL) {
 			return false;
 		}
-		if (*item == 0) {
+		if (*item == NULL) {
 			return false;
 		}
 		item = (void**) item[1];
@@ -96,4 +98,4 @@ CVSOStream& CMasterInput::StreamOut(CVSOStream& p_stream)
 }
 
 // GLOBAL: LEMBALL 0x004a279c
-CMasterInput* g_pMasterInput = 0;
+CMasterInput* g_pMasterInput = NULL;

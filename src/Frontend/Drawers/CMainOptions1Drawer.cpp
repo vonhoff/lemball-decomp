@@ -12,6 +12,8 @@
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBigBitmap.h"
 
+#include <stddef.h>
+
 class CGWnd;
 
 extern "C" unsigned long __stdcall timeGetTime(void);
@@ -120,7 +122,7 @@ void CMainOptions1Drawer::Load()
 		m_primitiveBundle[i].m_primitive.m_y = 0;
 		m_primitiveBundle[i].m_primitive.m_resource = bitmap;
 		m_primitiveBundle[i].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
-		m_primitiveBundle[i].m_primitive.m_remap = 0;
+		m_primitiveBundle[i].m_primitive.m_remap = NULL;
 	}
 	m_gunController = new CGunController((CGWnd*) m_display, m_gdi, 6, m_mode);
 	m_gunController->AddButton(m_buttonLayout[0],
@@ -177,7 +179,7 @@ void CMainOptions1Drawer::Load()
 // FUNCTION: LEMBALL 0x00448540
 void CMainOptions1Drawer::UnLoad()
 {
-	if (m_gunController != 0) {
+	if (m_gunController != NULL) {
 		delete m_gunController;
 	}
 }

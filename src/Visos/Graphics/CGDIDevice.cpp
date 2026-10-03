@@ -7,10 +7,10 @@
 #include "Visos/Foundation/CVSOStream.h"
 
 // GLOBAL: LEMBALL 0x004a2008
-CGDIDevice* g_pGdiDevice = 0;
+CGDIDevice* g_pGdiDevice = NULL;
 
 // GLOBAL: LEMBALL 0x004a200c
-void* g_pGdiHelperTarget = 0;
+void* g_pGdiHelperTarget = NULL;
 
 // FUNCTION: LEMBALL 0x0046bc00
 CGDIDevice::CGDIDevice(int p_surfaceCapacity)
@@ -24,9 +24,9 @@ CGDIDevice::CGDIDevice(int p_surfaceCapacity)
 	if (0 < p_surfaceCapacity) {
 		i = 0;
 		do {
-			m_surfaceSlots[i].m_surface = 0;
-			m_surfaceSlots[i].m_timer = 0;
-			m_surfaceSlots[i].m_parent = 0;
+			m_surfaceSlots[i].m_surface = NULL;
+			m_surfaceSlots[i].m_timer = NULL;
+			m_surfaceSlots[i].m_parent = NULL;
 			m_surfaceSlots[i].m_isPrimary = 0;
 			m_surfaceSlots[i].m_flushed = 0;
 			m_surfaceSlots[i].m_available = 1;
@@ -35,7 +35,7 @@ CGDIDevice::CGDIDevice(int p_surfaceCapacity)
 			--p_surfaceCapacity;
 		} while (p_surfaceCapacity != 0);
 	}
-	g_pGdiHelperTarget = 0;
+	g_pGdiHelperTarget = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0046bc90
@@ -73,7 +73,7 @@ CSurface* CGDIDevice::AllocateSurface(const CVSRect& p_rect, CSurface* p_parentS
 
 	i = FindFreeSurface();
 	if (i == -1) {
-		return 0;
+		return NULL;
 	}
 
 	char buffer[0x20];
@@ -86,11 +86,11 @@ CSurface* CGDIDevice::AllocateSurface(const CVSRect& p_rect, CSurface* p_parentS
 	m_surfaceSlots[i].m_flushed = 0;
 	m_surfaceSlots[i].m_available = 0;
 	if (m_surfaceSlots[i].m_isPrimary != 0) {
-		m_surfaceSlots[i].m_timer = 0;
+		m_surfaceSlots[i].m_timer = NULL;
 		++m_primarySurfaceCount;
 	}
 	else {
-		m_surfaceSlots[i].m_timer = 0;
+		m_surfaceSlots[i].m_timer = NULL;
 	}
 	return m_surfaceSlots[i].m_surface;
 }
@@ -103,15 +103,15 @@ void CGDIDevice::FreeSurface(CSurface* p_surface)
 
 	i = FindSurface(p_surface);
 	surface = m_surfaceSlots[i].m_surface;
-	if (surface != 0) {
+	if (surface != NULL) {
 		delete surface;
 	}
 	if (m_surfaceSlots[i].m_isPrimary != 0) {
 		--m_primarySurfaceCount;
 	}
-	m_surfaceSlots[i].m_surface = 0;
-	m_surfaceSlots[i].m_timer = 0;
-	m_surfaceSlots[i].m_parent = 0;
+	m_surfaceSlots[i].m_surface = NULL;
+	m_surfaceSlots[i].m_timer = NULL;
+	m_surfaceSlots[i].m_parent = NULL;
 	m_surfaceSlots[i].m_isPrimary = 0;
 	m_surfaceSlots[i].m_flushed = 0;
 	m_surfaceSlots[i].m_available = 1;
@@ -142,7 +142,7 @@ void CGDIDevice::Flush(CSurface* p_surface)
 	i = FindSurface(p_surface);
 	m_surfaceSlots[i].m_flushed = 1;
 	timer = m_surfaceSlots[i].m_timer;
-	if (timer != 0) {
+	if (timer != NULL) {
 		if (timer->m_timingActive != 0) {
 			timer->Update(CurrentMilliTimer() - timer->m_timingStart);
 			timer->m_timingActive = 0;

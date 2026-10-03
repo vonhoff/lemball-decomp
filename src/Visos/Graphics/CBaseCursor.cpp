@@ -18,7 +18,7 @@
 #include "Visos/Graphics/CPushActive.h"
 
 // GLOBAL: LEMBALL 0x004a9bec
-CGWnd* g_pCursorLastWindow = 0;
+CGWnd* g_pCursorLastWindow = NULL;
 
 // GLOBAL: LEMBALL 0x004a9bf0
 unsigned char g_cursorFocusFlag = 0;
@@ -36,7 +36,7 @@ CBaseCursor::CBaseCursor()
 CBaseCursor::~CBaseCursor()
 {
 	g_pMasterInputQueue->Detach(this, -0x19);
-	if (m_resource != 0) {
+	if (m_resource != NULL) {
 		m_resource->UnLoad();
 	}
 	delete[] m_renderState;
@@ -51,9 +51,9 @@ void CBaseCursor::Initialise()
 		CZRLE* state = &m_renderState[i];
 		state->m_x = 0;
 		state->m_y = 0;
-		state->m_resource = 0;
+		state->m_resource = NULL;
 		state->m_flags = 0;
-		state->m_remap = 0;
+		state->m_remap = NULL;
 	}
 	g_pMasterInputQueue->Attach(this, -0x19);
 	m_changingCursor = 0;
@@ -62,7 +62,7 @@ void CBaseCursor::Initialise()
 	m_active = 0;
 	m_drawn = 0;
 	m_systemCursorVisible = 1;
-	m_resource = 0;
+	m_resource = NULL;
 	m_pushActive.m_activeMarker = 1;
 	m_keys[0] = 3;
 	m_keys[1] = 4;
@@ -130,7 +130,7 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 			}
 			posted.m_time = time;
 			posted.m_code = PackParam(m_position.m_x, m_position.m_y);
-			posted.m_source = 0;
+			posted.m_source = NULL;
 			g_pMasterInputQueue->Post(posted);
 			return 0;
 		}
@@ -180,7 +180,7 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 		if (m_mouseInput == 0) {
 			return 0;
 		}
-		if (p_message->m_source == 0) {
+		if (p_message->m_source == NULL) {
 			CVSPoint position((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
 			SetPos(position);
 		}
@@ -215,7 +215,7 @@ void CBaseCursor::SetMainID(unsigned int p_resourceId)
 		}
 		return;
 	}
-	m_resource = 0;
+	m_resource = NULL;
 }
 
 // FUNCTION: LEMBALL 0x0046b370
@@ -250,10 +250,10 @@ void CBaseCursor::SetMainID(unsigned int p_resourceId, int p_frame)
 			m_resource = CResANIM::Load(p_resourceId);
 		}
 		else {
-			m_resource = 0;
+			m_resource = NULL;
 		}
 	}
-	if (m_frame != p_frame && m_resource != 0) {
+	if (m_frame != p_frame && m_resource != NULL) {
 		m_frame = p_frame;
 		for (int i = 0; i < 1; i++) {
 			m_renderState[i].m_resource = &((CResANIM*) m_resource)->m_animationEntries[m_frame];
@@ -346,7 +346,7 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	if (p_window->IsFocusWindow() == 0) {
 		if (p_window == g_pCursorLastWindow) {
 			RestoreSystemCursor();
-			g_pCursorLastWindow = 0;
+			g_pCursorLastWindow = NULL;
 		}
 	}
 	else {
@@ -403,7 +403,7 @@ void CBaseCursor::Draw(CGWnd* p_window)
 		KillSystemCursor();
 	}
 	m_drawn = 1;
-	if (m_resource == 0) {
+	if (m_resource == NULL) {
 		return;
 	}
 	zoom = (int) p_window->m_zoom;
@@ -471,8 +471,8 @@ void CBaseCursor::Process()
 		posted.m_type = 10;
 		posted.m_time = CurrentQueueTimer();
 		posted.m_code = PackParam(m_position.m_x, m_position.m_y);
-		posted.m_payload = 0;
-		posted.m_source = 0;
+		posted.m_payload = NULL;
+		posted.m_source = NULL;
 		g_pMasterInputQueue->Post(posted);
 	}
 	if ((int) m_bounds.m_width * (int) m_bounds.m_height != 0) {

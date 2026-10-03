@@ -1,5 +1,7 @@
 #include "CPVMusicDevice.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0047f510
 void CPVMusicDevice::Initialise(unsigned long p_resourceId, unsigned long p_flags)
 {
@@ -25,5 +27,5 @@ void CPVMusicDevice::Process()
 // FUNCTION: LEMBALL 0x0047f550
 char* CPVMusicDevice::GetInfo()
 {
-	return 0;
+	return NULL;
 }

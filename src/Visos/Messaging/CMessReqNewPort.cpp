@@ -24,4 +24,4 @@ void CMessReqNewPort::AddData()
 }
 
 // GLOBAL: LEMBALL 0x004a1e54
-CMessReqNewPort* g_pMessReqNewPort = 0;
+CMessReqNewPort* g_pMessReqNewPort = NULL;

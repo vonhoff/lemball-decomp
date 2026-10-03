@@ -3,14 +3,16 @@
 
 #include "CDrawingContext.h"
 
+#include <stddef.h>
+
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x00498770
 class CGdiContext : public CDrawingContext {
 public:
-	CGdiContext(void* p_hDC = 0)
+	CGdiContext(void* p_hDC = NULL)
 	{
 		m_hDC = p_hDC;
-		m_hBitmap = 0;
+		m_hBitmap = NULL;
 	}
 	virtual ~CGdiContext() {}        // vtable+0x00
 	virtual void SetDc(void* p_hDC); // vtable+0x04

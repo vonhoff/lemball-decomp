@@ -11,11 +11,13 @@
 #include "../../Panel/CPanel.h"
 #include "../CMain2DDisplay.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00436a10
 void C2D::Process()
 {
 	CheckValidFormGroup();
-	if (g_pDemo != 0 && g_pDemo->m_demoMode != 0 && g_pDemo->m_gameOver != 0) {
+	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0 && g_pDemo->m_gameOver != 0) {
 		m_ai->GameState(GAME_STATUS_SUCCESS);
 	}
 	if (m_connectionTimeoutActive != 0) {
@@ -148,7 +150,7 @@ optionHandled:
 		break;
 	}
 
-	if (m_ai->m_networkMode != 0 && g_pActiveConnection == 0) {
+	if (m_ai->m_networkMode != 0 && g_pActiveConnection == NULL) {
 		NewPauseWindow(PAUSE_MSG_CONNECTION_LOST);
 		m_connectionTimeoutActive = 1;
 		m_connectionTimeoutStart = CurrentMilliTimer();

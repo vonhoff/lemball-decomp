@@ -3,6 +3,8 @@
 #include "CWritePacket.h"
 #include "Visos/Messaging/CWritePacketBuff.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x00461970
 CWriteCBuff::CWriteCBuff(int p_packetCount, unsigned short p_packetSize) : CWritePacketBuff(p_packetCount, p_packetSize)
 {
@@ -20,7 +22,7 @@ CWritePacket* CWriteCBuff::StorePacket(unsigned short p_sequence,
 	index = p_sequence % m_packetCount;
 	packet = (CWritePacket*) m_packets[index];
 	if (packet->m_available == 0) {
-		return 0;
+		return NULL;
 	}
 	FillPacket(index, p_data, (unsigned short) p_size, p_message);
 	return packet;

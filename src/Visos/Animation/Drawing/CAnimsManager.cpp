@@ -29,7 +29,7 @@ CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 	if (m_doubleBuffered != 0) {
 		current = m_gdi;
 		previous = m_previousGdi;
-		if (current != previous && previous != 0) {
+		if (current != previous && previous != NULL) {
 			m_gdi = previous;
 			ResetPrimitives();
 			m_gdi = current;
@@ -58,7 +58,7 @@ CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 		zrle->Draw(m_gdi);
 	}
 	else {
-		if (p_frame != 0) {
+		if (p_frame != NULL) {
 			frameIndex = ((CAnimFrameBASE*) p_frame)->GetFrameNo();
 			((CAnimFrameBASE*) p_frame)->m_reserved08 = frameIndex;
 		}
