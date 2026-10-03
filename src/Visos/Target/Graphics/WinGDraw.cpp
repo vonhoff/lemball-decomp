@@ -289,8 +289,7 @@ int __stdcall WinGDrawBegin(WinGDrawState* p_state, void* p_request, long p_para
 		p_state->m_sourceHeight = request->dySrc;
 		SetStretchBltMode((HDC) p_state->m_targetDC, 3);
 		format = (BITMAPINFO*) request->lpbi;
-		copyBytes = format->bmiHeader.biClrUsed;
-		copyBytes = copyBytes * 4 - 4;
+		copyBytes = (format->bmiHeader.biClrUsed - 1) * sizeof(format->bmiColors[0]);
 		if (0 < copyBytes) {
 			memcpy(&g_dwWinGDrawColourTable[1], &format->bmiColors[1], (unsigned int) copyBytes);
 			p_state->m_surface->SetDefaultCtable();
