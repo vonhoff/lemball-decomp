@@ -95,6 +95,73 @@ def patch_body(image, start, offset, replacement):
 
 
 class ThunkTests(unittest.TestCase):
+    def test_reversed_comparison_requires_matching_condition_and_dead_flags(self):
+        for original, rebuilt in (("72", "77"), ("76", "73"), ("7c", "7f"),
+                                  ("7e", "7d"), ("74", "74"), ("75", "75")):
+            with self.subTest(branch=original):
+                left = "3bc7 " + original + "03 39c0c3 39c0c3"
+                right = "3bf8 " + rebuilt + "03 39c0c3 39c0c3"
+                self.assertTrue(compare(*fixture(left, right)))
+        for left, right in (("663bc7", "663bf8"), ("3ac3", "3ad8")):
+            with self.subTest(compare=left):
+                self.assertTrue(compare(*fixture(left + " 7203 39c0c3 39c0c3",
+                                                 right + " 7703 39c0c3 39c0c3")))
+
+    def test_changed_operands_or_branch_targets_are_not_comparison_reversals(self):
+        original = "3bc7 7203 39c0c3 39c0c3"
+        for rebuilt in ("3bf8 7303 39c0c3 39c0c3",  # Wrong unsigned relation.
+                        "3bf9 7703 39c0c3 39c0c3",  # Different register.
+                        "3bf8 7700 39c0c3 39c0c3",  # Different valid target.
+                        "3bf8 7703 39c8c3 39c0c3"):  # Changed flag overwrite.
+            with self.subTest(rebuilt=rebuilt):
+                self.assertEqual(compare(*fixture(original, rebuilt)), {})
+
+    def test_comparison_flags_must_be_overwritten_on_both_paths(self):
+        for observer in ("11c0", "19c0", "9c", "9f", "0f92c0", "7200",
+                         "40", "d3e0", "c3", "ff10", "e800000000"):
+            for taken in (False, True):
+                with self.subTest(observer=observer, taken=taken):
+                    blocks = ["39c0c3", observer + "39c0c3"]
+                    if taken:
+                        blocks.reverse()
+                    tail = f"{len(bytes.fromhex(blocks[0])):02x} " + " ".join(blocks)
+                    self.assertEqual(compare(*fixture("3bc7 72" + tail, "3bf8 77" + tail)), {})
+
+    def test_comparison_proof_follows_preserving_instructions_and_direct_jumps(self):
+        for path in ("89c1 50 5a 8d09 90", "eb00", "663bc0"):
+            with self.subTest(path=path):
+                tail = " 7200 " + path + " 39c0c3"
+                self.assertTrue(compare(*fixture("3bc7" + tail,
+                                                 "3bf8" + tail.replace("7200", "7700"))))
+        for path in ("ebfe", "ffe0", "c3"):
+            with self.subTest(unproven_path=path):
+                self.assertEqual(compare(*fixture("3bc7 7200 " + path,
+                                                 "3bf8 7700 " + path)), {})
+
+    def test_full_arithmetic_writes_end_the_comparison_flag_lifetime(self):
+        for writer in ("01c0", "29c0", "f7d8", "39c0"):
+            with self.subTest(writer=writer):
+                self.assertTrue(compare(*fixture("3bc7 7200 " + writer + " c3",
+                                                 "3bf8 7700 " + writer + " c3")))
+
+    def test_comparison_proof_preserves_near_branch_targets(self):
+        self.assertTrue(compare(*fixture("3bc7 0f8203000000 39c0c3 39c0c3",
+                                         "3bf8 0f8703000000 39c0c3 39c0c3")))
+        self.assertEqual(compare(*fixture("3bc7 0f8203000000 39c0c3 39c0c3",
+                                          "3bf8 0f8700000000 39c0c3 39c0c3")), {})
+
+    def test_branch_entry_cannot_bypass_the_reversed_comparison(self):
+        for entry in ("eb02", "e802000000", "7402"):
+            with self.subTest(entry=entry):
+                self.assertEqual(compare(*fixture(entry + " 3bc7 7203 39c0c3 39c0c3",
+                                                 entry + " 3bf8 7703 39c0c3 39c0c3")), {})
+
+    def test_comparison_proof_does_not_hide_partial_flags_or_unknown_control_flow(self):
+        for prefix in ("ffe0", "ff2485aabbccdd"):
+            with self.subTest(prefix=prefix):
+                self.assertEqual(compare(*fixture(prefix + " 3bc7 7203 39c0c3 39c0c3",
+                                                 prefix + " 3bf8 7703 39c0c3 39c0c3")), {})
+
     def test_direct_calls_and_tail_jumps_reach_the_paired_function(self):
         for opcode in ("e8", "e9"):
             with self.subTest(opcode=opcode):

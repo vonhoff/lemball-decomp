@@ -10,6 +10,7 @@ from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtual
 from reccmp.types import EntityType
 
 from . import BUILD
+from .compare_flags import normalize_compare_branches
 
 EFFECTIVE_JSON = BUILD / "effective.json"
 
@@ -107,6 +108,7 @@ def _comparison_signature(asm, sections, start, size):
         jump = re.fullmatch(r"(?:j\w+|loop\w*) (-?0x[0-9a-f]+)", line)
         if jump and ends[address] + int(jump[1], 16) not in ends:
             return None
+    asm = normalize_compare_branches(asm, sections)
     return size, [(address - start if address is not None else None, line) for address, line in asm]
 
 
