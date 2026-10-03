@@ -159,7 +159,8 @@ bool CIce::Process()
 	int minY = m_min.m_y - 8;
 	int maxX = m_max.m_x + 7;
 	int maxY = m_max.m_y + 7;
-	for (int i = 0; i < m_objectCount; i++) {
+	int i;
+	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
 		AICOORD position = AICOORD(object->m_position);
 		int dx = (m_velocityX * elapsed * 4096) / 8;

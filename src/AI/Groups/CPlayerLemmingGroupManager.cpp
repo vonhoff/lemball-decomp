@@ -497,7 +497,8 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 	unsigned short* data = (unsigned short*) p_data;
 	m_startPositionCount = *data++;
 	int total = 0;
-	for (int i = 0; i < m_startPositionCount; i++) {
+	int i;
+	for (i = 0; i < m_startPositionCount; i++) {
 		m_startX[i] = *data++;
 		m_startY[i] = *data++;
 		m_startZ[i] = *data++;

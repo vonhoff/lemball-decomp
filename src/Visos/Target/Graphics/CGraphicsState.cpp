@@ -89,13 +89,17 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 			g_pTargetGraphicsDriver = 0;
 		}
 		break;
-	case 4:
-		g_pTargetGraphicsDriver = new CDirectDrawDriver(&CVSSize(640, 480), 1);
+	case 4: {
+		CVSSize size(640, 480);
+		g_pTargetGraphicsDriver = new CDirectDrawDriver(&size, 1);
 		break;
-	case 6:
+	}
+	case 6: {
 		resolvedDriverMode = 4;
-		g_pTargetGraphicsDriver = new CDirectDrawDriver(&CVSSize(640, 480), 1);
+		CVSSize size(640, 480);
+		g_pTargetGraphicsDriver = new CDirectDrawDriver(&size, 1);
 		break;
+	}
 	default:
 		*g_pErrorOutput << "No valid driver selected to initialise\n";
 		return false;
