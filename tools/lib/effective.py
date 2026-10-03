@@ -14,6 +14,89 @@ from . import BUILD
 EFFECTIVE_JSON = BUILD / "effective.json"
 
 
+def _instruction_ends(sections, start, size):
+    """Require contiguous decoding of every code and table byte."""
+    cursor = start
+    ends = {}
+    for section in sections:
+        width = 4 if section.type == SectionType.ADDR_TAB else 1
+        for entry in section.contents:
+            address = entry[0]
+            if address != cursor:
+                return None
+            if section.type == SectionType.CODE:
+                cursor += entry[1]
+                ends[address] = cursor
+            else:
+                cursor += width
+    return ends if cursor == start + size else None
+
+
+def _table_padding(sections, tables):
+    """Find NOPs after terminal instructions; reject fallthrough into tables."""
+    padding = set()
+    for section in sections:
+        if section.type != SectionType.CODE or not section.contents:
+            continue
+        last = section.contents[-1]
+        if last[0] + last[1] not in tables:
+            continue
+        index = len(section.contents) - 1
+        while index >= 0 and section.contents[index][2] == "nop":
+            padding.add(section.contents[index][0])
+            index -= 1
+        if index < 0 or section.contents[index][2] not in ("ret", "jmp"):
+            return None
+    return padding
+
+
+def _indirect_jumps_use_tables(instructions, tables):
+    """Unknown computed jumps could reach otherwise unused padding."""
+    for _, _, mnemonic, operands in instructions:
+        if mnemonic != "jmp" or operands.startswith("0x"):
+            continue
+        table = re.fullmatch(r"dword ptr \[(?:e[a-z]{2}\*4 \+ )?(0x[0-9a-f]+)]", operands)
+        if table is None or tables.get(int(table[1], 16)) != SectionType.ADDR_TAB:
+            return False
+    return True
+
+
+def _valid_control_flow(sections, ends, start, size):
+    """Keep internal transfers on code boundaries and out of table padding."""
+    instructions = [inst for section in sections if section.type == SectionType.CODE
+                    for inst in section.contents]
+    table_targets = {target for section in sections if section.type == SectionType.ADDR_TAB
+                     for _, target in section.contents}
+    if not table_targets <= ends.keys():
+        return False
+    targets = table_targets | {start}
+    for _, _, mnemonic, operands in instructions:
+        if re.fullmatch(r"call|j\w+|loop\w*", mnemonic) and operands.startswith("0x"):
+            targets.add(int(operands, 16))
+    if any(start <= target < start + size and target not in ends for target in targets):
+        return False
+    tables = {section.contents[0][0]: section.type for section in sections
+              if section.type != SectionType.CODE and section.contents}
+    padding = _table_padding(sections, tables)
+    if padding is None or padding & targets:
+        return False
+    return not padding or _indirect_jumps_use_tables(instructions, tables)
+
+
+def _comparison_signature(asm, sections, start, size):
+    """Capture verified operands and offsets before upstream assertion fixups."""
+    ends = _instruction_ends(sections, start, size)
+    if ends is None or any("<OFFSET" in line for _, line in asm):
+        return None
+    if not _valid_control_flow(sections, ends, start, size):
+        return None
+    for address, line in asm:
+        jump = re.fullmatch(r"(?:j\w+|loop\w*) (-?0x[0-9a-f]+)", line)
+        if jump and ends[address] + int(jump[1], 16) not in ends:
+            return None
+    return size, [(address - start if address is not None else None, line) for address, line in asm]
+
+
 class ThunkParseAsm(ParseAsm):
     def __init__(self, image, targets, upstream):
         super().__init__(addr_test=upstream.addr_test, name_lookup=upstream.name_lookup)
@@ -26,23 +109,26 @@ class ThunkParseAsm(ParseAsm):
             return self.local_tables[addr]
         return super().lookup(addr, exact=exact, indirect=indirect)
 
+    def _thunk_name(self, address):
+        if address in self.targets:
+            return None
+        try:
+            raw = self.image.read(address, 5)
+        except (InvalidVirtualAddressError, InvalidVirtualReadError):
+            return None
+        if len(raw) != 5 or raw[0] != 0xe9:
+            return None
+        target = address + 5 + struct.unpack_from("<i", raw, 1)[0]
+        return self.lookup(target, exact=True) if target in self.targets else None
+
     def sanitize(self, inst):
         _, _, mnemonic, operands = inst
         if mnemonic in ("call", "jmp") and operands.startswith("0x"):
-            address = int(operands, 16)
-            if address not in self.targets:
-                try:
-                    raw = self.image.read(address, 5)
-                except (InvalidVirtualAddressError, InvalidVirtualReadError):
-                    raw = b""
-                if len(raw) == 5 and raw[0] == 0xe9:
-                    target = address + 5 + struct.unpack_from("<i", raw, 1)[0]
-                    name = self.lookup(target, exact=True) if target in self.targets else None
-                    if name is not None:
-                        # E9 changes only EIP. Resolve this transfer locally so
-                        # ordinary function pointers retain their own identity.
-                        self.used_thunk = True
-                        return mnemonic, name
+            name = self._thunk_name(int(operands, 16))
+            if name is not None:
+                # E9 changes only EIP; ordinary function pointers retain their identity.
+                self.used_thunk = True
+                return mnemonic, name
         return super().sanitize(inst)
 
     def parse_asm(self, data, start_addr):
@@ -55,48 +141,7 @@ class ThunkParseAsm(ParseAsm):
             if section.type != SectionType.CODE and section.contents
         }
         asm = super().parse_asm(data, start_addr)
-        cursor = start_addr
-        instruction_ends = {}
-        table_targets = []
-        for section in sections:
-            for entry in section.contents:
-                address = entry[0]
-                if section.type == SectionType.CODE:
-                    size = entry[1]
-                    instruction_ends[address] = address + size
-                elif section.type == SectionType.ADDR_TAB:
-                    size = 4
-                    table_targets.append(entry[1])
-                else:
-                    size = 1
-                if address != cursor:
-                    return asm
-                cursor += size
-        if cursor != start_addr + len(data) or any("<OFFSET" in line for _, line in asm):
-            return asm
-        if any(target not in instruction_ends for target in table_targets):
-            return asm
-        for section in sections:
-            if section.type != SectionType.CODE or not section.contents:
-                continue
-            last = section.contents[-1]
-            if instruction_ends[last[0]] in self.local_tables and last[2] not in ("ret", "jmp"):
-                return asm
-            for _, _, mnemonic, operands in section.contents:
-                if re.fullmatch(r"(?:call|j\w+|loop\w*)", mnemonic) and operands.startswith("0x"):
-                    target = int(operands, 16)
-                    if start_addr <= target < cursor and target not in instruction_ends:
-                        return asm
-        for address, line in asm:
-            jump = re.fullmatch(r"(?:j\w+|loop\w*) (-?0x[0-9a-f]+)", line)
-            if jump:
-                if instruction_ends[address] + int(jump[1], 16) not in instruction_ends:
-                    return asm
-        # Equal instruction offsets preserve relative branches and return sites.
-        # Capture actual operands before FunctionComparator's assertion fixup.
-        self.signature = (len(data), [
-            (address - start_addr if address is not None else None, line) for address, line in asm
-        ])
+        self.signature = _comparison_signature(asm, sections, start_addr, len(data))
         return asm
 
 

@@ -55,8 +55,8 @@ def compare(comparator, match, **flags):
 
 def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
                    indices=b"\x00\x01", rebuilt_indices=None, suffix=b"",
-                   branch_to_table=False, fallthrough=False):
-    table_offset = 39 if indexed else 32
+                   branch_to_table=False, fallthrough=False, padding=0, branch_to_padding=False):
+    table_offset = (39 if indexed else 32) + padding
     targets = targets or ((24, 27) if indexed else (17, 20))
     tails = []
     for start, destinations, index_bytes in (
@@ -64,20 +64,34 @@ def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
         (0x2000, targets if rebuilt_targets is None else rebuilt_targets,
          indices if rebuilt_indices is None else rebuilt_indices),
     ):
-        default_offset = table_offset - 6
-        displacement = (table_offset if branch_to_table else default_offset) - 10
+        default_offset = table_offset - padding - 6
+        branch_target = table_offset if branch_to_table else default_offset
+        if branch_to_padding:
+            branch_target = table_offset - padding
+        displacement = branch_target - 10
         tail = bytes.fromhex("83f80177") + bytes([displacement])
         if indexed:
             tail += bytes.fromhex("0fb680") + struct.pack("<I", start + table_offset + 8)
         tail += bytes.fromhex("ff2485") + struct.pack("<I", start + table_offset)
         tail += bytes.fromhex("31c0c3 b801000000c3 b802000000")
         tail += b"\x90" if fallthrough else b"\xc3"
+        tail += b"\x90" * padding
         tail += b"".join(struct.pack("<I", start + offset) for offset in destinations)
         tails.append((tail + (index_bytes if indexed else b"") + suffix).hex())
     comparator, match = fixture(*tails)
     for start, image in ((0x1000, comparator.orig_bin), (0x2000, comparator.recomp_bin)):
         image.is_relocated_addr = lambda address, start=start: start <= address < start + 100
     return comparator, match
+
+
+def patch_body(image, start, offset, replacement):
+    read = image.read
+    def patched(address, size):
+        data = read(address, size)
+        if address == start:
+            data = data[:offset] + replacement + data[offset + len(replacement):]
+        return data
+    image.read = patched
 
 
 class ThunkTests(unittest.TestCase):
@@ -187,6 +201,23 @@ class ThunkTests(unittest.TestCase):
         self.assertEqual(compare(*switch_fixture(branch_to_table=True)), {})
         self.assertEqual(compare(*switch_fixture(fallthrough=True)), {})
 
+    def test_switch_alignment_padding_must_be_unreachable_and_identical(self):
+        for padding in (1, 2, 3):
+            with self.subTest(padding=padding):
+                self.assertTrue(compare(*switch_fixture(padding=padding)))
+                self.assertEqual(compare(*switch_fixture(padding=padding, branch_to_padding=True)), {})
+                self.assertEqual(compare(*switch_fixture(padding=padding, targets=(32, 20))), {})
+                self.assertEqual(compare(*switch_fixture(padding=padding, fallthrough=True)), {})
+        comparator, match = switch_fixture(padding=1)
+        patch_body(comparator.recomp_bin, 0x2000, 32, b"\xcc")
+        self.assertEqual(compare(comparator, match), {})
+
+    def test_unknown_computed_jumps_cannot_prove_padding_unreachable(self):
+        comparator, match = switch_fixture(padding=1)
+        patch_body(comparator.orig_bin, 0x1000, 17, b"\xff\xe0\x90")  # jmp eax; nop
+        patch_body(comparator.recomp_bin, 0x2000, 17, b"\xff\xe0\x90")
+        self.assertEqual(compare(comparator, match), {})
+
     def test_switch_tables_cannot_hide_partial_entries_or_stale_names(self):
         for suffix in (b"\x00", b"\x00\x00", b"\x00\x00\x00"):
             with self.subTest(suffix=suffix):
@@ -194,6 +225,7 @@ class ThunkTests(unittest.TestCase):
         comparator, match = switch_fixture()
         parser = ThunkParseAsm(comparator.orig_bin, {0x4015}, comparator.orig_sanitize)
         size = match.size(ImageId.ORIG)
+        assert size is not None
         parser.parse_asm(comparator.orig_bin.read(0x1000, size), 0x1000)
         self.assertIsNotNone(parser.signature)
         self.assertTrue(parser.local_tables)
