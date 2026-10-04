@@ -35,10 +35,15 @@ int CTCPIPCommonSocket::OnNameResolved(unsigned int p_wParam, unsigned int p_lPa
 
 	(void) p_wParam;
 	error = (unsigned short) (p_lParam >> 16);
-	if (error != 0) {
-		if (error >= WSAHOST_NOT_FOUND && error <= WSANO_DATA) {
-			return NAME_LOOKUP_FAILED;
-		}
+	switch (error) {
+	case 0:
+		return NAME_RESOLVED;
+	case WSAHOST_NOT_FOUND:
+	case WSATRY_AGAIN:
+	case WSANO_RECOVERY:
+	case WSANO_DATA:
+		return NAME_LOOKUP_FAILED;
+	default:
 		SocketError((NetworkErrors) error);
 		if (*p_buffer != NULL) {
 			operator delete(*p_buffer);
@@ -46,7 +51,6 @@ int CTCPIPCommonSocket::OnNameResolved(unsigned int p_wParam, unsigned int p_lPa
 		*p_buffer = NULL;
 		return NAME_LOOKUP_ERROR_HANDLED;
 	}
-	return NAME_RESOLVED;
 }
 
 // FUNCTION: LEMBALL 0x00471a60
