@@ -533,7 +533,6 @@ void C2D::ShutDown()
 {
 	ObjectClipGrid* objectClipGrid;
 	SpriteGroundLookup* spriteGroundLookup;
-	CLemmingAnimsManager* lemmingAnims;
 	unsigned long started;
 	unsigned long now;
 
@@ -572,11 +571,7 @@ void C2D::ShutDown()
 	operator delete(m_zBuffer);
 	operator delete(m_viewData);
 	CursorChangeType(0, 0);
-	lemmingAnims = m_lemmingAnims;
-	if (lemmingAnims != NULL) {
-		lemmingAnims->~CLemmingAnimsManager();
-		operator delete(lemmingAnims);
-	}
+	delete m_lemmingAnims;
 	UnRegisterRemaps();
 	CPBButton::DumpStrs();
 	if (m_ai->m_networkMode != NETWORK_MODE_SINGLE_PLAYER && m_returnState == FLOW_MAIN_OPTIONS_1) {
