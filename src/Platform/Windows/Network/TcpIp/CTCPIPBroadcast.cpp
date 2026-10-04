@@ -47,7 +47,6 @@ void CTCPIPBroadcast::GetSpecificAddr(const char* p_name)
 		storage = operator new(sizeof(CTCPIPNetworkAddress));
 		if (storage != NULL) {
 			address = new (storage) CTCPIPNetworkAddress;
-			address->m_text[0] = '\0';
 		}
 		else {
 			address = NULL;
@@ -94,7 +93,6 @@ void CTCPIPBroadcast::GotName(int p_failed)
 		storage = operator new(sizeof(CTCPIPNetworkAddress));
 		if (storage != NULL) {
 			address = new (storage) CTCPIPNetworkAddress;
-			address->m_text[0] = '\0';
 		}
 		else {
 			address = NULL;

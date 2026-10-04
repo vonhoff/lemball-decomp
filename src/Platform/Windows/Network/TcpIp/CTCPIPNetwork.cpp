@@ -85,7 +85,6 @@ void* CTCPIPNetwork::GetNewNetworkAddress()
 	storage = operator new(sizeof(CTCPIPNetworkAddress));
 	if (storage != NULL) {
 		address = new (storage) CTCPIPNetworkAddress();
-		address->m_text[0] = '\0';
 		return address;
 	}
 	return NULL;
