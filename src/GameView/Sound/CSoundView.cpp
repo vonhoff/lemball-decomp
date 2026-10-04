@@ -282,11 +282,12 @@ int CSoundView::GetnEffects(unsigned short p_stateMask)
 // FUNCTION: LEMBALL 0x00439e30
 void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 {
+	unsigned short stateMask = p_state;
 	int restartMusic;
 	int musicId;
 	int seed;
 
-	if (m_currentState != p_state) {
+	if (m_currentState != stateMask) {
 		restartMusic = 1;
 		if (g_nDemoMode != 0) {
 			UnprepareEffects();
@@ -297,14 +298,14 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 			UnprepareEffects();
 			g_pSoundManager->Background();
 		}
-		m_currentState = p_state;
+		m_currentState = stateMask;
 		musicId = 0;
-		switch (p_state) {
+		switch (stateMask) {
 		case SOUND_STATE_SILENT:
 		case SOUND_STATE_INTRO:
 			return;
 		case SOUND_STATE_RESULTS:
-			p_state = SOUND_STATE_FRONTEND;
+			stateMask = SOUND_STATE_FRONTEND;
 			restartMusic = 0;
 		case SOUND_STATE_FRONTEND:
 			musicId = RES_MUSIC_FRONTEND_MUSIC3;
@@ -323,7 +324,7 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 			g_pSoundManager->Foreground();
 			m_musicResourceId = musicId;
 		}
-		PrepareEffects(p_state);
+		PrepareEffects(stateMask);
 		if (restartMusic != 0) {
 			SetMusicOn(1);
 		}
