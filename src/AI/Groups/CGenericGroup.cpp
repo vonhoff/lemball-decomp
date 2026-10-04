@@ -6,7 +6,7 @@
 #include "CFormationManager.h"
 
 #include <string.h>
-
+#define GENERIC_GROUP_ELEMENT_CAPACITY 10
 #pragma intrinsic(memset)
 
 // FUNCTION: LEMBALL 0x00414c60
@@ -49,7 +49,7 @@ CGenericGroup::CGenericGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormat
 // FUNCTION: LEMBALL 0x0041de40
 CGenericGroup::~CGenericGroup()
 {
-	int remaining = 10;
+	int remaining = GENERIC_GROUP_ELEMENT_CAPACITY;
 	CGameObject** element = m_elements;
 	do {
 		delete *element;
@@ -165,9 +165,9 @@ void CGenericGroup::RemoveElementFromGroup(CGameObject* p_object)
 
 	do {
 		if (*element == p_object) {
-			if (index < 9) {
+			if (index < GENERIC_GROUP_ELEMENT_CAPACITY - 1) {
 				element = &m_elements[index];
-				int remaining = 9 - index;
+				int remaining = GENERIC_GROUP_ELEMENT_CAPACITY - 1 - index;
 				index += remaining;
 				do {
 					CGameObject* copy = element[1];
@@ -183,7 +183,7 @@ void CGenericGroup::RemoveElementFromGroup(CGameObject* p_object)
 		}
 		element++;
 		index++;
-	} while (index < 10);
+	} while (index < GENERIC_GROUP_ELEMENT_CAPACITY);
 }
 
 // FUNCTION: LEMBALL 0x0041e0c0
