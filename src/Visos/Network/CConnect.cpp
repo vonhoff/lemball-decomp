@@ -16,6 +16,10 @@
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
+enum {
+	CONNECT_TIMEOUT_MS = 4000
+};
+
 // FUNCTION: LEMBALL 0x00460a90
 CConnect::CConnect()
 {
@@ -197,7 +201,7 @@ void CConnect::Process()
 {
 	if (m_killRequested == 0) {
 		if (m_established == 0 && m_eventPending == 0) {
-			if (4000 < timeGetTime() - m_connectTime) {
+			if (CONNECT_TIMEOUT_MS < timeGetTime() - m_connectTime) {
 				Kill();
 				return;
 			}
