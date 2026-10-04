@@ -347,14 +347,21 @@ void CFrontendResourceLoader::LoadFONT(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00447e60
 void CFrontendResourceLoader::UnLoadFONT(unsigned long p_resourceId)
 {
-	unsigned int i;
+	unsigned int count = m_loadedFonts;
+	unsigned int i = 0;
+	CResFONT** slot;
 
-	for (i = 0; i < (unsigned int) m_loadedFonts; i++) {
-		if (m_fonts[i] != NULL && m_fonts[i]->m_resourceId == p_resourceId) {
-			m_fonts[i]->UnLoad();
-			m_fonts[i] = NULL;
-			break;
-		}
+	if (count != 0) {
+		slot = m_fonts;
+		do {
+			if (*slot != NULL && (*slot)->m_resourceId == p_resourceId) {
+				m_fonts[i]->UnLoad();
+				m_fonts[i] = NULL;
+				return;
+			}
+			slot++;
+			i++;
+		} while (count > i);
 	}
 }
 
