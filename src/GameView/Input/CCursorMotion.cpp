@@ -5,7 +5,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Math/CFixed.h"
 #include "Engine/Math/CVSPoint.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "../../Engine/Resources/Manifest.h"
 #include "GameView/CLemmingAnimsManager.h"
 #include "Engine/Math/FixedPoint.h"

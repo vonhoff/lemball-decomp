@@ -1,6 +1,6 @@
 #include "Engine/Startup/PreInit.h"
 #include "Engine/Startup/VsInit.h"
-#include "CCursor.h"
+#include "Platform/Windows/Input/CCursor.h"
 #include "CGDIDevice.h"
 #include "CSurface.h"
 #include "CGraphicsDriver.h"

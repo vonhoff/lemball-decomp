@@ -2,7 +2,7 @@
 
 #include "Application/GameMain.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"

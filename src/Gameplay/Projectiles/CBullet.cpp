@@ -1,6 +1,6 @@
 #include "CBullet.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Map/CMap.h"
 #include "Map/CGround.h"
 #include "Gameplay/Geometry/Facing.h"

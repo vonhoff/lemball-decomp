@@ -1,6 +1,6 @@
 #include "CMine.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Map/CMap.h"
 #include "CMineManager.h"
 #include "Gameplay/Geometry/AICOORD.h"

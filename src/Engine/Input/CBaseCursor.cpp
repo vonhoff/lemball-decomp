@@ -1,9 +1,9 @@
-#include "CBaseCursor.h"
+#include "Engine/Input/CBaseCursor.h"
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Input/CMasterInput.h"
 #include "Engine/Math/CVector.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBase.h"

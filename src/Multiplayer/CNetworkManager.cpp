@@ -2,7 +2,7 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Startup/VsInit.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CBroadcast.h"

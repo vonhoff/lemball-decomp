@@ -1,6 +1,6 @@
 #include "CGame.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 
 #include "Application/GameMain.h"
 
@@ -27,7 +27,7 @@
 #include "Frontend/Options/CMainOptions2.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Sound/VsSound.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/NetworkConstants.h"

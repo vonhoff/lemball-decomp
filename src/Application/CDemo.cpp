@@ -2,7 +2,7 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResBIN.h"
@@ -115,7 +115,7 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	return true;
 }
 
-#include "Engine/VsFile.h"
+#include "Engine/Files/VsFile.h"
 
 // FUNCTION: LEMBALL 0x00409460
 bool CDemo::LoadBuffer()

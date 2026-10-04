@@ -2,7 +2,7 @@
 
 #include "Engine/Statistics/CTimeStat.h"
 #include "Engine/Diagnostics/CDebugOStream.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "CSurface.h"
 #include "Engine/Streams/CVSOStream.h"
 

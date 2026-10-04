@@ -1,8 +1,8 @@
 #include "CPaintGun.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Map/CMap.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"

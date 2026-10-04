@@ -1,6 +1,6 @@
 #include "GameView/CSoundView.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 
 #include "Application/GameMain.h"
 

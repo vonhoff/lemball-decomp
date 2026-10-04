@@ -1,6 +1,6 @@
 #include "CObjectChangeStateMess.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "CGameObjectMess.h"

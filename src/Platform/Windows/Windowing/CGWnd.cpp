@@ -3,7 +3,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "Platform/Windows/Graphics/CGraphicsState.h"
-#include "Platform/Windows/Graphics/CCursor.h"
+#include "Platform/Windows/Input/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Graphics/CGDIDevice.h"
 #include "Platform/Windows/Graphics/CSurface.h"

@@ -1,7 +1,7 @@
 #include "Multiplayer/CPBNetworkGame.h"
 
 #include "Gameplay/Simulation/CAI.h"
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Gameplay/Messages/GameMessageIds.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"

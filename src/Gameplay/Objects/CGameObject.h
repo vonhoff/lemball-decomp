@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_BASE_CGAMEOBJECT_H
 #define LEMBALL_AI_BASE_CGAMEOBJECT_H
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Engine/Math/CVSRect.h"
 #include "CViewData.h"
 #include "Gameplay/Geometry/AICOORD.h"

@@ -18,7 +18,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Platform/Windows/Graphics/CChangeList.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/Graphics/CCursor.h"
+#include "Platform/Windows/Input/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Resources/Types/CResBase.h"
@@ -40,7 +40,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"
-#include "Platform/Windows/Input/CBaseCursor.h"
+#include "Engine/Input/CBaseCursor.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
 
 #include <windows.h>

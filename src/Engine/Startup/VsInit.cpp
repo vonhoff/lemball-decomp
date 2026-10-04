@@ -2,7 +2,7 @@
 
 #include "Application/GameMain.h"
 #include "PreInit.h"
-#include "Engine/Statistics/CMogloadStat.h"
+#include "Engine/Resources/Archive/CMogloadStat.h"
 #include "Engine/Statistics/CStatManager.h"
 #include "Engine/Memory/CArena.h"
 #include "Engine/Memory/CSmallMemory.h"

@@ -1,9 +1,9 @@
-#include "CCursor.h"
+#include "Platform/Windows/Input/CCursor.h"
 
 #include "Application/CDemo.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Math/CVSPoint.h"
-#include "Platform/Windows/Input/CBaseCursor.h"
+#include "Engine/Input/CBaseCursor.h"
 
 #include <stddef.h>
 

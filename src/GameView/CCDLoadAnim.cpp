@@ -10,7 +10,7 @@
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/VSTrig.h"
-#include "Platform/Windows/Graphics/CCursor.h"
+#include "Platform/Windows/Input/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Resources/Types/CResBITMAP.h"

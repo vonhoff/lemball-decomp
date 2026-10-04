@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CFONTTABLE_H
 #define LEMBALL_VISOS_RESOURCES_CFONTTABLE_H
 
-#include "Engine/Resources/CPvFontTable.h"
+#include "Engine/Resources/Types/CPvFontTable.h"
 
 class CResFONT;
 class CResZRLE;

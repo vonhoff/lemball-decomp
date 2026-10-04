@@ -3,7 +3,7 @@
 #include "Frontend/Controls/ButtonActionMessages.h"
 
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 #include "Platform/Windows/Graphics/CSurface.h"

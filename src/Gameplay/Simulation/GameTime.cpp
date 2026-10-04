@@ -1,7 +1,7 @@
-#include "GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 
-#include "Engine/VsTime.h"
-#include "CDemo.h"
+#include "Engine/Time/VsTime.h"
+#include "Application/CDemo.h"
 
 #include <stddef.h>
 

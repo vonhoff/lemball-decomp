@@ -15,12 +15,12 @@ enum {
 #include "CVSRange.h"
 #include "Chunk.h"
 #include "ChunkInfo.h"
-#include "Engine/VsFile.h"
+#include "Engine/Files/VsFile.h"
 #include "CMogDir.h"
 #include "CMogloadArena.h"
 #include "CRawRead.h"
 #include "Engine/Resources/Types/CResBase.h"
-#include "Engine/Statistics/CMogloadStat.h"
+#include "Engine/Resources/Archive/CMogloadStat.h"
 
 #define RESOURCE_PATH_SEPARATOR '/'
 

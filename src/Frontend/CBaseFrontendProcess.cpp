@@ -7,7 +7,7 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Packets/CReadPacket.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 
 #include <stddef.h>
 

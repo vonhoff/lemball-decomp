@@ -63,7 +63,7 @@ void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 	}
 }
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 
 // FUNCTION: LEMBALL 0x004268e0
 bool CRocket::Process()

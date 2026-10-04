@@ -1,4 +1,4 @@
-#include "Engine/Resources/CFontTable.h"
+#include "Engine/Resources/Types/CFontTable.h"
 
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResBaseLIST.h"

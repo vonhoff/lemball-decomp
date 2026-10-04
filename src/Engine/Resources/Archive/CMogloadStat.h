@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CMOGLOADSTAT_H
 #define LEMBALL_VISOS_ANIMATION_CMOGLOADSTAT_H
 
-#include "CBaseStat.h"
+#include "Engine/Statistics/CBaseStat.h"
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x004988c8

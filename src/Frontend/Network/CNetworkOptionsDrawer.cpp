@@ -6,7 +6,7 @@
 #include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/CSoundView.h"
 #include "Engine/Text/CTextManager.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Engine/Graphics/Palettes/CBasePalManager.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Engine/Input/CHotAreaList.h"

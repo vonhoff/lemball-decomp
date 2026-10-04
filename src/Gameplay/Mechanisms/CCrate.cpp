@@ -1,6 +1,6 @@
 #include "CCrate.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
 

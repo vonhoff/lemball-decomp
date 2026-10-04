@@ -1,6 +1,6 @@
 #include "StateMachine.h"
 
-#include "Application/GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/CGameObject.h"

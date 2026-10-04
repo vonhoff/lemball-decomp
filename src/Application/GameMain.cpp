@@ -5,7 +5,7 @@
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/FrontendLayoutMode.h"
-#include "GameTime.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Level/CLevelLoader.h"
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"

@@ -6,7 +6,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Diagnostics/VsDebug.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Engine/Queues/PackParam.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "Platform/Windows/Graphics/CGraphicsState.h"

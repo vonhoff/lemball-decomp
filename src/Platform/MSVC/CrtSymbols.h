@@ -1,0 +1,607 @@
+#ifndef LEMBALL_PLATFORM_WINDOWS_CRT_H
+#define LEMBALL_PLATFORM_WINDOWS_CRT_H
+
+// LIBRARY: LEMBALL 0x0047fab0 SYMBOL
+// __toupper
+
+// LIBRARY: LEMBALL 0x0047fb10 SYMBOL
+// __toupper_lk
+
+// LIBRARY: LEMBALL 0x0047fcb0 SYMBOL
+// __onexit
+
+// LIBRARY: LEMBALL 0x0047fd40 SYMBOL
+// _atexit
+
+// LIBRARY: LEMBALL 0x0047fd60 SYMBOL
+// ___onexitinit
+
+// LIBRARY: LEMBALL 0x0047fda0 SYMBOL
+// _strrchr
+
+// LIBRARY: LEMBALL 0x0047fdd0 SYMBOL
+// _strncpy
+
+// LIBRARY: LEMBALL 0x00480050 SYMBOL
+// __tolower
+
+// LIBRARY: LEMBALL 0x004800b0 SYMBOL
+// __tolower_lk
+
+// LIBRARY: LEMBALL 0x00480198 SYMBOL
+// __setjmp3
+
+// LIBRARY: LEMBALL 0x00480214 SYMBOL
+// _longjmp
+
+// LIBRARY: LEMBALL 0x00480290 SYMBOL
+// _memmove
+
+// LIBRARY: LEMBALL 0x004803e0 SYMBOL
+// __fsopen
+
+// LIBRARY: LEMBALL 0x00480420 SYMBOL
+// _fopen
+
+// LIBRARY: LEMBALL 0x00480440 SYMBOL
+// _fclose
+
+// LIBRARY: LEMBALL 0x00480480 SYMBOL
+// __fclose_lk
+
+// LIBRARY: LEMBALL 0x004804e0 SYMBOL
+// _fread
+
+// LIBRARY: LEMBALL 0x00480520 SYMBOL
+// __fread_lk
+
+// LIBRARY: LEMBALL 0x00480670 SYMBOL
+// _fflush
+
+// LIBRARY: LEMBALL 0x004806b0 SYMBOL
+// __fflush_lk
+
+// LIBRARY: LEMBALL 0x004806f0 SYMBOL
+// __flush
+
+// LIBRARY: LEMBALL 0x00480760 SYMBOL
+// __flushall
+
+// LIBRARY: LEMBALL 0x00480830 SYMBOL
+// _fwrite
+
+// LIBRARY: LEMBALL 0x00480870 SYMBOL
+// __fwrite_lk
+
+// LIBRARY: LEMBALL 0x004809f0 SYMBOL
+// _ftell
+
+// LIBRARY: LEMBALL 0x00480a20 SYMBOL
+// __ftell_lk
+
+// LIBRARY: LEMBALL 0x00480bd0 SYMBOL
+// _fseek
+
+// LIBRARY: LEMBALL 0x00480c10 SYMBOL
+// __fseek_lk
+
+// LIBRARY: LEMBALL 0x00480cb0 SYMBOL
+// _atol
+
+// LIBRARY: LEMBALL 0x00480d60 SYMBOL
+// _atoi
+
+// LIBRARY: LEMBALL 0x00480df0 SYMBOL
+// __mtinitlocks
+
+// LIBRARY: LEMBALL 0x00480e20 SYMBOL
+// __mtdeletelocks
+
+// LIBRARY: LEMBALL 0x00480f20 SYMBOL
+// __lock_file
+
+// LIBRARY: LEMBALL 0x00480f60 SYMBOL
+// __lock_file2
+
+// LIBRARY: LEMBALL 0x00480f90 SYMBOL
+// __unlock_file
+
+// LIBRARY: LEMBALL 0x00480fd0 SYMBOL
+// __unlock_file2
+
+// LIBRARY: LEMBALL 0x00481000 SYMBOL
+// __lockerr_exit
+
+// LIBRARY: LEMBALL 0x00481020 SYMBOL
+// ___crtLCMapStringW
+
+// LIBRARY: LEMBALL 0x00481270 SYMBOL
+// ___crtLCMapStringA
+
+// LIBRARY: LEMBALL 0x004814d0 SYMBOL
+// ___crtGetStringTypeW
+
+// LIBRARY: LEMBALL 0x00481690 SYMBOL
+// ___crtGetStringTypeA
+
+// LIBRARY: LEMBALL 0x004817c0 SYMBOL
+// __cinit
+
+// LIBRARY: LEMBALL 0x004817f0 SYMBOL
+// _exit
+
+// LIBRARY: LEMBALL 0x00481810 SYMBOL
+// __exit
+
+// LIBRARY: LEMBALL 0x00481830 SYMBOL
+// __cexit
+
+// LIBRARY: LEMBALL 0x00481840 SYMBOL
+// __c_exit
+
+// LIBRARY: LEMBALL 0x004818e0 SYMBOL
+// __lockexit
+
+// LIBRARY: LEMBALL 0x004818f0 SYMBOL
+// __unlockexit
+
+// LIBRARY: LEMBALL 0x00481920 SYMBOL
+// _realloc
+
+// LIBRARY: LEMBALL 0x00481990 SYMBOL
+// __msize
+
+// LIBRARY: LEMBALL 0x004819a8 SYMBOL
+// __global_unwind2
+
+// LIBRARY: LEMBALL 0x004819ea SYMBOL
+// __local_unwind2
+
+// LIBRARY: LEMBALL 0x00481a42 SYMBOL
+// __NLG_Return2
+
+// LIBRARY: LEMBALL 0x00481a52 SYMBOL
+// __abnormal_termination
+
+// LIBRARY: LEMBALL 0x00481a75 SYMBOL
+// __NLG_Notify1
+
+// LIBRARY: LEMBALL 0x00481a7e SYMBOL
+// __NLG_Notify
+
+// LIBRARY: LEMBALL 0x00481a91 SYMBOL
+// __NLG_Dispatch
+
+// LIBRARY: LEMBALL 0x00481aa0 SYMBOL
+// __XcptFilter
+
+// LIBRARY: LEMBALL 0x00481c20 SYMBOL
+// __ismbbkalnum
+
+// LIBRARY: LEMBALL 0x00481c40 SYMBOL
+// __ismbbkprint
+
+// LIBRARY: LEMBALL 0x00481c60 SYMBOL
+// __ismbbkpunct
+
+// LIBRARY: LEMBALL 0x00481c80 SYMBOL
+// __ismbbalnum
+
+// LIBRARY: LEMBALL 0x00481ca0 SYMBOL
+// __ismbbalpha
+
+// LIBRARY: LEMBALL 0x00481cc0 SYMBOL
+// __ismbbgraph
+
+// LIBRARY: LEMBALL 0x00481ce0 SYMBOL
+// __ismbbprint
+
+// LIBRARY: LEMBALL 0x00481d00 SYMBOL
+// __ismbbpunct
+
+// LIBRARY: LEMBALL 0x00481d20 SYMBOL
+// __ismbblead
+
+// LIBRARY: LEMBALL 0x00481d40 SYMBOL
+// __ismbbtrail
+
+// LIBRARY: LEMBALL 0x00481d60 SYMBOL
+// __ismbbkana
+
+// LIBRARY: LEMBALL 0x00481dd0 SYMBOL
+// __setenvp
+
+// LIBRARY: LEMBALL 0x00481eb0 SYMBOL
+// __setargv
+
+// LIBRARY: LEMBALL 0x00482130 SYMBOL
+// ___crtGetEnvironmentStringsW
+
+// LIBRARY: LEMBALL 0x00482330 SYMBOL
+// ___crtGetEnvironmentStringsA
+
+// LIBRARY: LEMBALL 0x004824d0 SYMBOL
+// __setmbcp
+
+// LIBRARY: LEMBALL 0x004827e0 SYMBOL
+// __getmbcp
+
+// LIBRARY: LEMBALL 0x004827f0 SYMBOL
+// ___initmbctable
+
+// LIBRARY: LEMBALL 0x00482800 SYMBOL
+// __ioinit
+
+// LIBRARY: LEMBALL 0x004829e0 SYMBOL
+// __ioterm
+
+// LIBRARY: LEMBALL 0x00482a40 SYMBOL
+// __mtinit
+
+// LIBRARY: LEMBALL 0x00482aa0 SYMBOL
+// __mtterm
+
+// LIBRARY: LEMBALL 0x00482ad0 SYMBOL
+// __initptd
+
+// LIBRARY: LEMBALL 0x00482af0 SYMBOL
+// __getptd
+
+// LIBRARY: LEMBALL 0x00482b60 SYMBOL
+// __freeptd
+
+// LIBRARY: LEMBALL 0x00482c30 SYMBOL
+// __heap_init
+
+// LIBRARY: LEMBALL 0x00482c50 SYMBOL
+// __heap_term
+
+// LIBRARY: LEMBALL 0x00482c68 SYMBOL
+// __except_handler3
+
+// LIBRARY: LEMBALL 0x00482d25 SYMBOL
+// __seh_longjmp_unwind@4
+
+// LIBRARY: LEMBALL 0x00482d40 SYMBOL
+// __FF_MSGBANNER
+
+// LIBRARY: LEMBALL 0x00482d80 SYMBOL
+// __NMSG_WRITE
+
+// LIBRARY: LEMBALL 0x00482f70 SYMBOL
+// __GET_RTERRMSG
+
+// LIBRARY: LEMBALL 0x00482fb0 SYMBOL
+// __rt_probe_read4@4
+
+// LIBRARY: LEMBALL 0x00483030 SYMBOL
+// __openfile
+
+// LIBRARY: LEMBALL 0x00483240 SYMBOL
+// __getstream
+
+// LIBRARY: LEMBALL 0x00483330 SYMBOL
+// __close
+
+// LIBRARY: LEMBALL 0x004833a0 SYMBOL
+// __close_lk
+
+// LIBRARY: LEMBALL 0x00483430 SYMBOL
+// __freebuf
+
+// LIBRARY: LEMBALL 0x00483470 SYMBOL
+// __filbuf
+
+// LIBRARY: LEMBALL 0x00483570 SYMBOL
+// __read
+
+// LIBRARY: LEMBALL 0x004835f0 SYMBOL
+// __read_lk
+
+// LIBRARY: LEMBALL 0x00483820 SYMBOL
+// __commit
+
+// LIBRARY: LEMBALL 0x004838d0 SYMBOL
+// __write
+
+// LIBRARY: LEMBALL 0x00483950 SYMBOL
+// __write_lk
+
+// LIBRARY: LEMBALL 0x00483c40 SYMBOL
+// __flsbuf
+
+// LIBRARY: LEMBALL 0x00483d90 SYMBOL
+// __lseek
+
+// LIBRARY: LEMBALL 0x00483e10 SYMBOL
+// __lseek_lk
+
+// LIBRARY: LEMBALL 0x00483ea0 SYMBOL
+// __dosmaperr
+
+// LIBRARY: LEMBALL 0x00483f20 SYMBOL
+// __errno
+
+// LIBRARY: LEMBALL 0x00483f30 SYMBOL
+// ___doserrno
+
+// LIBRARY: LEMBALL 0x00483f40 SYMBOL
+// ?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z
+
+// LIBRARY: LEMBALL 0x00483f70 SYMBOL
+// ?_query_new_handler@@YAP6AHI@ZXZ
+
+// LIBRARY: LEMBALL 0x00483f80 SYMBOL
+// ?set_new_handler@@YAP6AXXZP6AXXZ@Z
+
+// LIBRARY: LEMBALL 0x00483ff0 SYMBOL
+// _calloc
+
+// LIBRARY: LEMBALL 0x00484050 SYMBOL
+// _wcslen
+
+// LIBRARY: LEMBALL 0x00484070 SYMBOL
+// ___crtMessageBoxA
+
+// LIBRARY: LEMBALL 0x00484110 SYMBOL
+// __open
+
+// LIBRARY: LEMBALL 0x00484130 SYMBOL
+// __sopen
+
+// LIBRARY: LEMBALL 0x00484590 SYMBOL
+// __alloc_osfhnd
+
+// LIBRARY: LEMBALL 0x004846e0 SYMBOL
+// __set_osfhnd
+
+// LIBRARY: LEMBALL 0x00484790 SYMBOL
+// __free_osfhnd
+
+// LIBRARY: LEMBALL 0x00484830 SYMBOL
+// __get_osfhandle
+
+// LIBRARY: LEMBALL 0x00484880 SYMBOL
+// __open_osfhandle
+
+// LIBRARY: LEMBALL 0x00484940 SYMBOL
+// __lock_fhandle
+
+// LIBRARY: LEMBALL 0x004849b0 SYMBOL
+// __unlock_fhandle
+
+// LIBRARY: LEMBALL 0x004849e0 SYMBOL
+// __getbuf
+
+// LIBRARY: LEMBALL 0x00484a30 SYMBOL
+// __fcloseall
+
+// LIBRARY: LEMBALL 0x00484ad0 SYMBOL
+// __isatty
+
+// LIBRARY: LEMBALL 0x00484b00 SYMBOL
+// __assert
+
+// LIBRARY: LEMBALL 0x00485050 SYMBOL
+// __chsize
+
+// LIBRARY: LEMBALL 0x004850c0 SYMBOL
+// __chsize_lk
+
+// LIBRARY: LEMBALL 0x00485200 SYMBOL
+// _abort
+
+// LIBRARY: LEMBALL 0x00485220 SYMBOL
+// _fprintf
+
+// LIBRARY: LEMBALL 0x00485270 SYMBOL
+// _setvbuf
+
+// LIBRARY: LEMBALL 0x00485340 SYMBOL
+// _signal
+
+// LIBRARY: LEMBALL 0x004855b0 SYMBOL
+// _raise
+
+// LIBRARY: LEMBALL 0x004857d0 SYMBOL
+// ___fpecode
+
+// LIBRARY: LEMBALL 0x004857e0 SYMBOL
+// ___pxcptinfoptrs
+
+// LIBRARY: LEMBALL 0x004857f0 SYMBOL
+// _strncat
+
+// LIBRARY: LEMBALL 0x00485830 SYMBOL
+// __itoa
+
+// LIBRARY: LEMBALL 0x004858d0 SYMBOL
+// __ltoa
+
+// LIBRARY: LEMBALL 0x00485900 SYMBOL
+// __ultoa
+
+// LIBRARY: LEMBALL 0x00485920 SYMBOL
+// __setmode
+
+// LIBRARY: LEMBALL 0x00485990 SYMBOL
+// __setmode_lk
+
+// LIBRARY: LEMBALL 0x00485a00 SYMBOL
+// __chkstk
+
+// LIBRARY: LEMBALL 0x00485a30 SYMBOL
+// __stbuf
+
+// LIBRARY: LEMBALL 0x00485ad0 SYMBOL
+// __ftbuf
+
+// LIBRARY: LEMBALL 0x00485b10 SYMBOL
+// __output
+
+// LIBRARY: LEMBALL 0x00486600 SYMBOL
+// _wctomb
+
+// LIBRARY: LEMBALL 0x00486630 SYMBOL
+// __wctomb_lk
+
+// LIBRARY: LEMBALL 0x004866d0 SYMBOL
+// __aulldiv
+
+// LIBRARY: LEMBALL 0x00486740 SYMBOL
+// __aullrem
+
+// LIBRARY: LEMBALL 0x004867c0 SYMBOL
+// __fptrap
+
+// GLOBAL: LEMBALL 0x0049aea8
+// ___lookuptable
+
+// GLOBAL: LEMBALL 0x0049c000
+// ___xc_a
+
+// GLOBAL: LEMBALL 0x0049c104
+// ___xc_z
+
+// GLOBAL: LEMBALL 0x0049c208 SYMBOL
+// ___xi_a
+
+// GLOBAL: LEMBALL 0x0049c418 SYMBOL
+// ___xi_z
+
+// GLOBAL: LEMBALL 0x0049c51c SYMBOL
+// ___xp_a
+
+// GLOBAL: LEMBALL 0x0049c724 SYMBOL
+// ___xp_z
+
+// GLOBAL: LEMBALL 0x004a44c0
+// __aenvptr
+
+// GLOBAL: LEMBALL 0x004a44cc
+// ___error_mode
+
+// GLOBAL: LEMBALL 0x004a44d0
+// ___app_type
+
+// GLOBAL: LEMBALL 0x004a45b0
+// ___lc_codepage
+
+// STRING: LEMBALL 0x004a45bc
+// "\0"
+
+// STRING: LEMBALL 0x004a45c0
+// L"\0"
+
+// GLOBAL: LEMBALL 0x004a45cc
+// __umaskval
+
+// GLOBAL: LEMBALL 0x004a45d0
+// __osver
+
+// GLOBAL: LEMBALL 0x004a45d4
+// __winver
+
+// GLOBAL: LEMBALL 0x004a45d8
+// __winmajor
+
+// GLOBAL: LEMBALL 0x004a45dc
+// __winminor
+
+// GLOBAL: LEMBALL 0x004a45e0
+// ___argc
+
+// GLOBAL: LEMBALL 0x004a45e4
+// ___argv
+
+// GLOBAL: LEMBALL 0x004a45ec
+// __environ
+
+// GLOBAL: LEMBALL 0x004a45fc
+// __pgmptr
+
+// GLOBAL: LEMBALL 0x004a4604 SYMBOL
+// __exitflag
+
+// GLOBAL: LEMBALL 0x004a460c
+// __NLG_Destination
+
+// GLOBAL: LEMBALL 0x004a4620 SYMBOL
+// __XcptActTab
+
+// GLOBAL: LEMBALL 0x004a4698
+// __First_FPE_Indx
+
+// GLOBAL: LEMBALL 0x004a469c
+// __Num_FPE
+
+// GLOBAL: LEMBALL 0x004a46a0 SYMBOL
+// __XcptActTabSize
+
+// GLOBAL: LEMBALL 0x004a46b0
+// __mbctype
+
+// GLOBAL: LEMBALL 0x004a47b4 SYMBOL
+// ___mbcodepage
+
+// GLOBAL: LEMBALL 0x004a47b8
+// ___mblcid
+
+// GLOBAL: LEMBALL 0x004a47c0
+// ___mbulinfo
+
+// GLOBAL: LEMBALL 0x004a48c8
+// ___badioinfo
+
+// GLOBAL: LEMBALL 0x004a48ec
+// ___tlsindex
+
+// GLOBAL: LEMBALL 0x004a4be0 SYMBOL
+// __adbgmsg
+
+// GLOBAL: LEMBALL 0x004a4c48 SYMBOL
+// __iob
+
+// GLOBAL: LEMBALL 0x004a4ec8
+// __cflush
+
+// GLOBAL: LEMBALL 0x004a509c
+// __commode
+
+// GLOBAL: LEMBALL 0x004a51cc
+// __fmode
+
+// GLOBAL: LEMBALL 0x004a51e8
+// __stdbuf
+
+// GLOBAL: LEMBALL 0x004a5208
+// ___nullstring
+
+// GLOBAL: LEMBALL 0x004a520c
+// ___wnullstring
+
+// GLOBAL: LEMBALL 0x004aa498 SYMBOL
+// __nstream
+
+// GLOBAL: LEMBALL 0x004aa7d8 SYMBOL
+// ___piob
+
+// GLOBAL: LEMBALL 0x004ab7ec
+// __nhandle
+
+// GLOBAL: LEMBALL 0x004ab830
+// ___pioinfo
+
+// GLOBAL: LEMBALL 0x004ab930 SYMBOL
+// ___onexitend
+
+// GLOBAL: LEMBALL 0x004ab940
+// __FPinit
+
+// GLOBAL: LEMBALL 0x004ab944 SYMBOL
+// ___onexitbegin
+
+// GLOBAL: LEMBALL 0x004ab954
+// __acmdln
+
+#endif

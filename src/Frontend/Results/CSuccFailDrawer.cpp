@@ -174,7 +174,7 @@ unsigned long g_dwSuccFailSuccessBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SU
 // GLOBAL: LEMBALL 0x0049fe18
 char g_szPaintballSequence[] = "Paintball Sequence";
 
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 
 extern char g_szSuccFailMoviePrefix[];
 

@@ -1,7 +1,7 @@
 #include "CConnect.h"
 
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "CBaseNetwork.h"
 #include "NetworkConstants.h"
 #include "CBroadcast.h"

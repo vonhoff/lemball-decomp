@@ -3,7 +3,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Startup/VsInit.h"
-#include "Platform/Windows/Graphics/CCursor.h"
+#include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Engine/Resources/Archive/CMogRes.h"

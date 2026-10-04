@@ -3,7 +3,7 @@
 #include "Chunk.h"
 #include "ChunkInfo.h"
 #include "Engine/Diagnostics/VsDebug.h"
-#include "Engine/VsFile.h"
+#include "Engine/Files/VsFile.h"
 #include "CMogloadArena.h"
 #include "CRawRead.h"
 
