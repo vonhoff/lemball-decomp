@@ -367,10 +367,7 @@ int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 		device = this;
 		if (device->m_effectHandles[channelIndex] == p_effectId) {
 			effect = device->m_effects[channelIndex];
-			if (effect != NULL) {
-				effect->~CWaveEffect();
-				operator delete(effect);
-			}
+			delete effect;
 			device->m_effectUsed[channelIndex] = 0;
 			device->m_effectHandles[channelIndex] = 0;
 		}
