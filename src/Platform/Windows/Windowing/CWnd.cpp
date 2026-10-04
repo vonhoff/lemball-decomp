@@ -852,7 +852,7 @@ int CWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, un
 void CWnd::ReSetMenu()
 {
 	HMENU menu = ::GetMenu((HWND) m_nativeWindow);
-	MenuList** lists = (MenuList**) m_menuLists;
+	MenuList** lists = m_menuLists;
 	if (*lists != NULL) {
 		BOOL(WINAPI * enableMenuItem)(HMENU, UINT, UINT) = EnableMenuItem;
 		DWORD(WINAPI * checkMenuItem)(HMENU, UINT, UINT) = CheckMenuItem;
@@ -902,20 +902,20 @@ void CWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
 // FUNCTION: LEMBALL 0x00465750
 int CWnd::SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
 {
-	int* menuList;
-	int* item;
+	MenuList** menuList;
+	MenuList* item;
 
 	if (m_menuLists == NULL) {
 		return 0;
 	}
-	menuList = (int*) m_menuLists;
-	while (*menuList != 0) {
-		item = (int*) *menuList;
-		while (*item != 0) {
-			if (item[1] == (int) p_wParam) {
-				return item[2];
+	menuList = m_menuLists;
+	while (*menuList != NULL) {
+		item = *menuList;
+		while (item->m_name != NULL) {
+			if (item->m_commandId == (int) p_wParam) {
+				return item->m_action;
 			}
-			item += 6;
+			item++;
 		}
 		menuList++;
 	}

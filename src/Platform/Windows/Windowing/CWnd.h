@@ -58,7 +58,7 @@ public:
 	friend class CDirectSoundDevice;
 
 private:
-	void* m_menuLists;             // 0x3c
+	MenuList** m_menuLists;        // 0x3c
 	unsigned int m_menuResourceId; // 0x40
 	void* m_nativeWindow;          // 0x44
 	CPVWnd* m_createRect;          // 0x48
