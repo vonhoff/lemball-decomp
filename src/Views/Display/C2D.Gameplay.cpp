@@ -3,7 +3,7 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "Game/CDemo.h"
 #include "Game/CGameStatus.h"
-#include "Frontend/Base/CBaseFrontendProcess.h"
+#include "Frontend/CBaseFrontendProcess.h"
 #include "Visos/Streams/CVSOStream.h"
 #include "Visos/Time/VsTime.h"
 #include "Visos/Network/CConnect.h"

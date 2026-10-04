@@ -1,0 +1,282 @@
+#include "CMainOptions2Drawer.h"
+#include "Frontend/FrontendLayoutMode.h"
+
+#include "Frontend/CBaseFrontendProcess.h"
+#include "Frontend/Controls/CGunController.h"
+#include "Views/Display/CMain2DDisplay.h"
+#include "Views/Sound/CSoundView.h"
+#include "Visos/Streams/CVSOStream.h"
+#include "Visos/Resources/Types/CResBITMAP.h"
+#include "Visos/Resources/Manifest.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/FlowProcesses.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Queues/Message.h"
+#include "Frontend/tagPRIMS.h"
+#include "Visos/Graphics/Primitives/CBigBitmap.h"
+
+#include <new.h>
+#include <stddef.h>
+
+#define MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE 0xacef0004
+#define MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE 0xacef0005
+#define MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE 0xacef0006
+#define MAIN_OPTIONS2_ANIMATIONS_TOGGLE_MESSAGE 0xacef0007
+#define MAIN_OPTIONS2_RETURN_MESSAGE 0xacef0008
+#define MAIN_OPTIONS2_KEYBOARD_SETTINGS_MESSAGE 0xacef0009
+#define MAIN_OPTIONS2_MAX_VOLUME 255
+
+#define MAIN_OPTIONS2_EFFECTS_VOLUME_CHANGED_MESSAGE 0xacff0000
+#define MAIN_OPTIONS2_MUSIC_VOLUME_CHANGED_MESSAGE 0xacff0001
+
+// GLOBAL: LEMBALL 0x0049f578
+unsigned long g_dwMainOptions2AnimIds[10] = {RES_NEWFRONT_ICONS_HIRES_ZOOM_OFF,
+											 RES_NEWFRONT_ICONS_HIRES_ZOOM_ON,
+											 RES_NEWFRONT_ICONS_HIRES_EFFECTS_OFF,
+											 RES_NEWFRONT_ICONS_HIRES_EFFECTS_ON,
+											 RES_NEWFRONT_ICONS_HIRES_MUSIC_OFF,
+											 RES_NEWFRONT_ICONS_HIRES_MUSIC_ON,
+											 RES_NEWFRONT_ICONS_HIRES_RETURN,
+											 RES_NEWFRONT_ICONS_HIRES_KEYBOARD,
+											 RES_NEWFRONT_ICONS_HIRES_VIDEO_ON,
+											 RES_NEWFRONT_ICONS_HIRES_VIDEO_OFF};
+
+// GLOBAL: LEMBALL 0x0049f5a0
+unsigned long g_dwMainOptions2CompactAnimIds[10] = {RES_NEWFRONT_ICONS_LORES_ZOOM_OFF,
+													RES_NEWFRONT_ICONS_LORES_ZOOM_ON,
+													RES_NEWFRONT_ICONS_LORES_EFFECTS_OFF,
+													RES_NEWFRONT_ICONS_LORES_EFFECTS_ON,
+													RES_NEWFRONT_ICONS_LORES_MUSIC_OFF,
+													RES_NEWFRONT_ICONS_LORES_MUSIC_ON,
+													RES_NEWFRONT_ICONS_LORES_RETURN,
+													RES_NEWFRONT_ICONS_LORES_KEYBOARD,
+													RES_NEWFRONT_ICONS_LORES_VIDEO_ON,
+													RES_NEWFRONT_ICONS_LORES_VIDEO_OFF};
+
+// GLOBAL: LEMBALL 0x0049f5c8
+int g_anMainOptions2ButtonLayout[12] = {32, 116, 480, 116, 48, 232, 464, 232, 64, 348, 416, 348};
+
+// GLOBAL: LEMBALL 0x0049f5f8
+int g_anMainOptions2CompactButtonLayout[12] = {16, 58, 240, 58, 24, 116, 232, 116, 32, 174, 208, 174};
+
+// FUNCTION: LEMBALL 0x00448ab0
+CMainOptions2Drawer::CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
+	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_2, 0, 0, 0, 0, 0)
+{
+	if (g_nMusicAvailable == 0) {
+		g_nMusicVolume = 0;
+	}
+	if (g_nEffectsAvailable == 0) {
+		g_nEffectsVolume = 0;
+	}
+	if (g_nZoomAvailable == 0) {
+		g_nZoomEnabled = 0;
+	}
+	if (g_nAnimationsAvailable == 0) {
+		g_nAnimationsDisabled = 1;
+	}
+	m_disableZoom = (unsigned int) (g_nZoomEnabled == 0);
+	m_disableAnimations = (unsigned int) g_nAnimationsDisabled;
+	m_transitionState = 0;
+	m_transitionPending = 0;
+	g_nPendingMusicVolume = g_nMusicVolume;
+	g_nPendingEffectsVolume = g_nEffectsVolume;
+	m_drawBackground = 1;
+	m_drawFrame = 1;
+	m_drawSolid = 1;
+	Setup();
+}
+
+// FUNCTION: LEMBALL 0x00448ba0
+void CMainOptions2Drawer::Load()
+{
+	unsigned long* zoomAnim;
+	unsigned long* animationsAnim;
+	unsigned long* effectsAnim;
+	unsigned long* musicAnim;
+	unsigned long* navigationAnim;
+	int i;
+	void* storage;
+
+	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
+		m_buttonLayout = g_anMainOptions2CompactButtonLayout;
+		zoomAnim = &g_dwMainOptions2CompactAnimIds[0];
+		effectsAnim = &g_dwMainOptions2CompactAnimIds[2];
+		musicAnim = &g_dwMainOptions2CompactAnimIds[4];
+		navigationAnim = &g_dwMainOptions2CompactAnimIds[6];
+		animationsAnim = &g_dwMainOptions2CompactAnimIds[8];
+	}
+	else {
+		m_buttonLayout = g_anMainOptions2ButtonLayout;
+		zoomAnim = &g_dwMainOptions2AnimIds[0];
+		effectsAnim = &g_dwMainOptions2AnimIds[2];
+		musicAnim = &g_dwMainOptions2AnimIds[4];
+		navigationAnim = &g_dwMainOptions2AnimIds[6];
+		animationsAnim = &g_dwMainOptions2AnimIds[8];
+	}
+
+	i = 0;
+	int remaining = 1;
+	do {
+		CResBITMAP* background = m_backgroundBitmap;
+		m_primitiveBundle[i].m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) background->m_x) / 2);
+		m_primitiveBundle[i].m_primitive.m_y = 0;
+		m_primitiveBundle[i].m_primitive.m_resource = background;
+		m_primitiveBundle[i].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
+		m_primitiveBundle[i].m_primitive.m_remap = NULL;
+		i++;
+	} while (--remaining);
+
+	storage = operator new(sizeof(CGunController));
+	CGunController** gunController = &m_gunController;
+	if (storage == NULL) {
+		*gunController = NULL;
+	}
+	else {
+		*gunController = new (storage) CGunController(m_display, m_gdi, 8, m_mode);
+	}
+
+	int disableZoom = 0;
+	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
+		disableZoom = 1;
+		m_disableZoom = 1;
+	}
+
+	(*gunController)
+		->AddButton(m_buttonLayout[0],
+					m_buttonLayout[1],
+					zoomAnim,
+					GUN_BUTTON_CYCLE_VALUE,
+					disableZoom,
+					1,
+					0,
+					&m_disableZoom,
+					MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE);
+	(*gunController)
+		->AddButton(m_buttonLayout[2],
+					m_buttonLayout[3],
+					animationsAnim,
+					GUN_BUTTON_CYCLE_VALUE,
+					0,
+					1,
+					0,
+					&m_disableAnimations,
+					MAIN_OPTIONS2_ANIMATIONS_TOGGLE_MESSAGE);
+	(*gunController)
+		->AddButton(m_buttonLayout[4],
+					m_buttonLayout[5],
+					effectsAnim,
+					GUN_BUTTON_CYCLE_VALUE,
+					0,
+					1,
+					0,
+					&g_nPendingEffectsVolume,
+					MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE);
+	(*gunController)
+		->AddButton(m_buttonLayout[6],
+					m_buttonLayout[7],
+					musicAnim,
+					GUN_BUTTON_CYCLE_VALUE,
+					0,
+					1,
+					0,
+					&g_nPendingMusicVolume,
+					MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE);
+	(*gunController)
+		->AddButton(m_buttonLayout[10],
+					m_buttonLayout[11],
+					navigationAnim,
+					GUN_BUTTON_POST_ACTION_MESSAGE,
+					0,
+					0,
+					0,
+					&m_transitionPending,
+					MAIN_OPTIONS2_RETURN_MESSAGE);
+	(*gunController)->SetGun(0);
+	(*gunController)->SetSpriteWindow();
+}
+
+// FUNCTION: LEMBALL 0x00448dc0
+void CMainOptions2Drawer::UnLoad()
+{
+	if (m_gunController != NULL) {
+		delete m_gunController;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00448de0
+CMainOptions2Drawer::~CMainOptions2Drawer()
+{
+	if (m_mode == FRONTEND_LAYOUT_STANDARD) {
+		g_nZoomEnabled = (int) (m_disableZoom == 0);
+	}
+	g_nAnimationsDisabled = m_disableAnimations;
+	g_pSoundView->SetEffectsOn(g_nPendingEffectsVolume);
+	g_pSoundView->SetMusicOn(g_nPendingMusicVolume);
+	g_nMusicVolume = g_nPendingMusicVolume;
+	g_nEffectsVolume = g_nPendingEffectsVolume;
+	if (g_nMusicAvailable == 0) {
+		g_nMusicVolume = 0;
+	}
+	if (g_nEffectsAvailable == 0) {
+		g_nEffectsVolume = 0;
+	}
+	if (g_nZoomAvailable == 0) {
+		g_nZoomEnabled = 0;
+	}
+	if (g_nAnimationsAvailable == 0) {
+		g_nAnimationsDisabled = 1;
+	}
+	g_pSoundView->SetEffectsOn(g_nPendingEffectsVolume);
+	g_pSoundView->SetMusicOn(g_nPendingMusicVolume);
+	if (m_loaded != 0) {
+		UnLoad();
+	}
+}
+
+// FUNCTION: LEMBALL 0x00448ee0
+bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
+{
+	switch (p_message->m_type) {
+	case MESSAGE_BUTTON_RELEASED:
+		break;
+	default:
+		m_processedCount++;
+		return false;
+	}
+
+	switch ((unsigned int) p_message->m_code) {
+	case MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE:
+	case MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE:
+		return true;
+	case MAIN_OPTIONS2_RETURN_MESSAGE:
+		m_quitYet = 1;
+		m_returnState = FLOW_MAIN_OPTIONS_1;
+		return true;
+	case MAIN_OPTIONS2_KEYBOARD_SETTINGS_MESSAGE:
+		m_quitYet = 1;
+		m_returnState = FLOW_KEYBOARD_SETTINGS;
+		return true;
+	case MAIN_OPTIONS2_EFFECTS_VOLUME_CHANGED_MESSAGE:
+		g_nPendingEffectsVolume = (int) p_message->m_payload;
+		g_pSoundView->SetEffectsVolume(
+			(unsigned char) (((unsigned int) p_message->m_payload * MAIN_OPTIONS2_MAX_VOLUME) /
+							 (unsigned int) p_message->m_source));
+		return true;
+	case MAIN_OPTIONS2_MUSIC_VOLUME_CHANGED_MESSAGE: {
+		g_nPendingMusicVolume = (int) p_message->m_payload;
+		unsigned char volume = (unsigned char) (((unsigned int) p_message->m_payload * MAIN_OPTIONS2_MAX_VOLUME) /
+												(unsigned int) p_message->m_source);
+		*g_pSysOutput << "Setting music volume " << volume << "\n";
+		g_pSoundView->SetMusicVolume(volume);
+		return true;
+	}
+	default:
+		return false;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00449000
+void CMainOptions2Drawer::DrawBackGround()
+{
+}

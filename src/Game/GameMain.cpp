@@ -1,7 +1,7 @@
 #include "GameMain.h"
 
-#include "Frontend/Base/CBaseFrontendDrawer.h"
-#include "Frontend/Base/CBaseFrontendProcess.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/CBaseFrontendProcess.h"
 #include "Platform/Windows/Entry.h"
 #include "Visos/Streams/CVSOStream.h"
 #include "Visos/Math/VSTrig.h"
@@ -12,7 +12,7 @@
 #include "Visos/Startup/PreInit.h"
 #include "CDemo.h"
 #include "CGame.h"
-#include "Frontend/Base/FrontendLayoutMode.h"
+#include "Frontend/FrontendLayoutMode.h"
 #include "GameTime.h"
 
 #include <string.h>

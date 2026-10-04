@@ -13,8 +13,8 @@
 #include "Game/GameMain.h"
 #include "Game/GameTime.h"
 #include "Level/CLevelLoader.h"
-#include "../../Frontend/Base/CBaseFrontendProcess.h"
-#include "../../Frontend/Resources/CFrontendResourceLoader.h"
+#include "Frontend/CBaseFrontendProcess.h"
+#include "Frontend/Loading/CFrontendResourceLoader.h"
 #include "Map/CMap.h"
 #include "Network/CNetworkManager.h"
 #include "Visos/Queues/CBaseQueue.h"
@@ -45,7 +45,7 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "CMain2DDisplay.h"
 #include "CPBButton.h"
-#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/FlowProcesses.h"
 #include "Visos/Math/FixedPoint.h"
 
 #include <new.h>

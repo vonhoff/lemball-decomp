@@ -1,6 +1,6 @@
 #include "CTrackerButton.h"
 
-#include "../Windows/CTrackWindow.h"
+#include "CTrackWindow.h"
 #include "Visos/Math/CVSPoint.h"
 #include "Visos/Math/CVSRect.h"
 #include "Platform/Windows/Windowing/CGWnd.h"

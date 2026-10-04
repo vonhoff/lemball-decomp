@@ -1,7 +1,7 @@
 #include "CPauseWindow.h"
 
 #include "Game/GameMain.h"
-#include "../../Frontend/Base/CBaseFrontendProcess.h"
+#include "Frontend/CBaseFrontendProcess.h"
 #include "Visos/Queues/CBaseQueue.h"
 #include "Visos/Graphics/Palettes/CBasePalManager.h"
 #include "Platform/Windows/Graphics/CCursor.h"

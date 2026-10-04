@@ -4,7 +4,7 @@
 #include "../../Visos/Animation/CAnimsManager.h"
 #include "Visos/Graphics/Primitives/CDrawingMark.h"
 #include "Visos/Graphics/Primitives/CPrimitive.h"
-#include "../Sound/CLoadUpdate.h"
+#include "Frontend/Loading/CLoadUpdate.h"
 
 class CAI;
 class CCDLoadAnim;

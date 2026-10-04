@@ -8,7 +8,7 @@
 #include "Visos/Controls/CGraphicButton.h"
 #include "Visos/Graphics/Surfaces/CSurface.h"
 #include "Visos/Resources/Types/CResANIM.h"
-#include "../Windows/CTrackWindow.h"
+#include "CTrackWindow.h"
 #include "CGunButton.h"
 #include "CTrackerButton.h"
 #include "Visos/Math/CVSPoint.h"

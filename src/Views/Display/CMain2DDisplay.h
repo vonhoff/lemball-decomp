@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_CMAIN2DDISPLAY_H
 #define LEMBALL_VIEWS_DISPLAY_CMAIN2DDISPLAY_H
 
-#include "../../Frontend/Base/FlowProcesses.h"
+#include "Frontend/FlowProcesses.h"
 #include "Visos/Queues/CBaseQueueHandler.h"
 #include "Visos/Math/CVSRect.h"
 #include "Visos/Graphics/Primitives/CDrawingMark.h"

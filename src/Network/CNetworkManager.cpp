@@ -121,8 +121,8 @@ void CNetworkManager::Stop()
 	}
 }
 
-#include "Frontend/Base/CBaseFrontendDrawer.h"
-#include "Frontend/Processes/CNetworkOptionsProc.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/Network/CNetworkOptionsProc.h"
 #include "Visos/Streams/CVSOStream.h"
 #include "Visos/Queues/Message.h"
 #include "Visos/Network/Packets/BasePacketHeader.h"

@@ -1,8 +1,8 @@
 #include "CLemmingAnimsManager.h"
 
 #include "Gameplay/Simulation/CAI.h"
-#include "../../Frontend/Resources/CCDLoadAnim.h"
-#include "../../Frontend/Resources/CFrontendResourceLoader.h"
+#include "Frontend/Loading/CCDLoadAnim.h"
+#include "Frontend/Loading/CFrontendResourceLoader.h"
 #include "../../Visos/Animation/CPlayThruAnim.h"
 #include "../../Visos/Animation/CRepeatAnim.h"
 #include "../../Visos/Animation/CStaticAnim.h"

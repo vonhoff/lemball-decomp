@@ -1,7 +1,7 @@
 #ifndef LEMBALL_CONTROL_GAME_CGAME_H
 #define LEMBALL_CONTROL_GAME_CGAME_H
 
-#include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/FlowProcesses.h"
 
 class CBaseProcess;
 class CMain2DDisplay;

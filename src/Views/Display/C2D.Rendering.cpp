@@ -1,6 +1,6 @@
 #include "C2D.h"
 
-#include "Frontend/Resources/CFrontendResourceLoader.h"
+#include "Frontend/Loading/CFrontendResourceLoader.h"
 #include "Visos/Graphics/Primitives/CGDI.h"
 #include "Visos/Graphics/Surfaces/CSurface.h"
 #include "Visos/Resources/Manifest.h"
