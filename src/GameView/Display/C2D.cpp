@@ -2486,14 +2486,15 @@ unsigned long C2D::LemmingFly(CViewData& p_viewData, int& p_frame)
 	int blockX;
 	int blockY;
 	viewY = (unsigned short) p_viewData.m_gameY;
-	map = m_map;
 	viewX = (unsigned short) p_viewData.m_gameX;
+	map = m_map;
 	blockY = viewY >> GROUND_BLOCK_PIXEL_SHIFT;
 	blockX = viewX >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short groundZ;
 	if (viewX >= 0 && viewY >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-		groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(viewX & GROUND_BLOCK_PIXEL_MASK,
-																					   viewY & GROUND_BLOCK_PIXEL_MASK);
+		viewX &= GROUND_BLOCK_PIXEL_MASK;
+		viewY &= GROUND_BLOCK_PIXEL_MASK;
+		groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(viewX, viewY);
 	}
 	else {
 		groundZ = 0;
