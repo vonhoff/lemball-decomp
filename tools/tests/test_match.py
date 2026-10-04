@@ -12,6 +12,39 @@ import match as matching
 
 
 class MatchTests(unittest.TestCase):
+    def test_summary_is_compact_and_missing_addresses_fail(self):
+        engine = Mock()
+        engine.compare_address.side_effect = [
+            ReccmpComparedEntity(0x401000, "Equivalent", 0.8, recomp_addr=0x501000),
+            ReccmpComparedEntity(
+                0x401020, "Stub", 1.0, recomp_addr=0x501020, is_stub=True
+            ),
+            None,
+        ]
+        output = io.StringIO()
+        with (
+            patch(
+                "sys.argv",
+                ["match.py", "401000", "401020", "401040", "--no-build", "--summary"],
+            ),
+            patch("match.load_engine", return_value=(None, engine)),
+            patch(
+                "match.additional_effective_matches", return_value={0x401000: ("Rule",)}
+            ),
+            patch("match.print_match_verbose") as verbose,
+            contextlib.redirect_stdout(output),
+        ):
+            self.assertEqual(matching.main(), 1)
+            verbose.assert_not_called()
+        self.assertEqual(
+            output.getvalue().splitlines(),
+            [
+                "0x00401000 Raw: 80.00%  Effective: 100.00% Equivalent",
+                "0x00401020 Raw: 0.00%  Effective: 0.00% STUB Stub",
+                "0x00401040: NOT_FOUND",
+            ],
+        )
+
     def test_failed_build_prevents_comparison(self):
         with (
             patch("sys.argv", ["match.py", "0x401000"]),

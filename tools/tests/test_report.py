@@ -1,7 +1,12 @@
 """Original-code accounting across canonical reports and Effective badges."""
 
 import copy
+import contextlib
+import io
+import json
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 from reccmp.compare.db import ReccmpEntity
@@ -10,6 +15,7 @@ from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.types import EntityType, ImageId
 
 from badges import build_badges
+import report as reporting
 from report import (
     build_report,
     is_visual_cpp_runtime_module,
@@ -17,9 +23,55 @@ from report import (
     read_report_exclusions,
 )
 from lib import ROOT
+from lib.effective import effective_addresses
+from lib.progress import effective_measures
 
 
 class ReportTests(unittest.TestCase):
+    def test_check_snapshots_before_overwrite_and_fails_on_lost_exact_match(self):
+        function = {
+            "size": "100",
+            "fuzzy_match_percent": 100,
+            "metadata": {"virtual_address": str(0x401000), "demangled_name": "Target"},
+        }
+        before = {
+            "units": [{"name": "unit", "functions": [function]}],
+            "measures": measures([function]),
+        }
+        for score, expected in ((100, 0), (50, 1)):
+            with self.subTest(score=score), tempfile.TemporaryDirectory() as temp:
+                directory = Path(temp)
+                path = directory / "report.json"
+                original = json.dumps(before).encode()
+                path.write_bytes(original)
+                after = copy.deepcopy(before)
+                after["units"][0]["functions"][0]["fuzzy_match_percent"] = score
+                after["measures"] = measures(after["units"][0]["functions"])
+                engine = Mock()
+                engine.to_report.return_value.entities = {}
+                output = io.StringIO()
+                with (
+                    patch("sys.argv", ["report.py", "--check"]),
+                    patch("report.BUILD", directory),
+                    patch("report.REPORT_JSON", path),
+                    patch("report.RECCMP_JSON", directory / "reccmp.json"),
+                    patch("report.EFFECTIVE_JSON", directory / "effective.json"),
+                    patch("report.detect_project"),
+                    patch("report.load_engine", return_value=(Mock(), engine)),
+                    patch("report.ModuleMap"),
+                    patch("report.build_report", return_value=after),
+                    patch("report.additional_effective_matches", return_value={}),
+                    patch("report.serialize_reccmp_report", return_value="{}"),
+                    contextlib.redirect_stdout(output),
+                ):
+                    self.assertEqual(reporting.main(), expected)
+                self.assertEqual(
+                    (directory / "report-baseline.json").read_bytes(), original
+                )
+                self.assertEqual(json.loads(path.read_bytes()), after)
+                self.assertIn("effective", output.getvalue())
+                self.assertEqual("REGRESSION" in output.getvalue(), bool(expected))
+
     def test_only_raw_100_percent_counts_as_exact(self):
         scores = (100, 99.999999999, 80, 0)
         result = measures(
@@ -222,16 +274,18 @@ class ReportTests(unittest.TestCase):
         unchanged = copy.deepcopy((result, comparisons.entities))
         badges = build_badges(
             result,
-            comparisons,
-            {
-                0x401000,
-                0x401040,
-                0x401060,
-                0x401080,
-                0x401090,
-                0x4010A0,
-                0x4010B0,
-            },
+            effective_addresses(
+                comparisons.entities,
+                {
+                    0x401000,
+                    0x401040,
+                    0x401060,
+                    0x401080,
+                    0x401090,
+                    0x4010A0,
+                    0x4010B0,
+                },
+            ),
         )
         self.assertEqual(
             {name: badge["message"] for name, badge in badges.items()},
@@ -242,3 +296,9 @@ class ReportTests(unittest.TestCase):
             },
         )
         self.assertEqual((result, comparisons.entities), unchanged)
+        self.assertAlmostEqual(
+            effective_measures(
+                result, effective_addresses(comparisons.entities, {0x4010B0})
+            )["matched_code_percent"],
+            58 / 95 * 100,
+        )

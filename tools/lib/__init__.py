@@ -10,6 +10,7 @@ BUILD = ROOT / "build-msvc400"
 SRC = ROOT / "src"
 RECCMP_JSON = BUILD / "reccmp.json"
 REPORT_JSON = BUILD / "report.json"
+EFFECTIVE_JSON = BUILD / "effective.json"
 
 
 TOKENS = re.compile(r'//[^\n]*|/\*[\s\S]*?\*/|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'')

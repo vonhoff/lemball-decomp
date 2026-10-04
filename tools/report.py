@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generate objdiff progress from raw assembly comparisons."""
 
+import argparse
 import json
 from collections import defaultdict
 from typing import Any
@@ -11,8 +12,17 @@ from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType
 
-from lib import RECCMP_JSON, REPORT_JSON, ROOT, load_engine
-from lib.effective import EFFECTIVE_JSON, additional_effective_matches
+from lib import BUILD, EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, load_engine
+from lib.effective import (
+    additional_effective_matches,
+    effective_addresses,
+)
+from lib.progress import (
+    effective_measures,
+    effective_snapshot,
+    exact_regressions,
+    load_progress,
+)
 
 REPORT_EXCLUSIONS = ROOT / "tools/data/report-exclusions.csv"
 
@@ -125,6 +135,20 @@ def build_report(engine, comparisons, modules) -> dict[str, Any]:
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Snapshot the saved report, regenerate, and fail on any lost exact match",
+    )
+    args = parser.parse_args()
+    baseline = None
+    if args.check:
+        try:
+            baseline, _ = load_progress(REPORT_JSON)
+        except ValueError as exc:
+            parser.error(str(exc))
+        (BUILD / "report-baseline.json").write_bytes(REPORT_JSON.read_bytes())
     detect_project(
         project_directory=ROOT,
         search_path=[ROOT / "data"],
@@ -136,18 +160,44 @@ def main():
         engine, comparisons, ModuleMap(target.recompiled_pdb, engine.recomp_bin)
     )
     additional = additional_effective_matches(engine, comparisons.entities)
+    accepted = effective_addresses(comparisons.entities, additional)
     RECCMP_JSON.write_text(
         serialize_reccmp_report(comparisons, diff_included=True), encoding="utf-8"
     )
-    for path, data in ((REPORT_JSON, report), (EFFECTIVE_JSON, additional)):
-        path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    report_bytes = (json.dumps(report, indent=2) + "\n").encode("utf-8")
+    REPORT_JSON.write_bytes(report_bytes)
+    EFFECTIVE_JSON.write_text(
+        json.dumps(effective_snapshot(report_bytes, accepted, additional), indent=2)
+        + "\n",
+        encoding="utf-8",
+    )
     totals = report["measures"]
+    effective = effective_measures(report, accepted)
     print(
         f"Report: {totals['total_functions']:,} functions; "
         f"{totals['matched_code_percent']:.2f}% exact; "
+        f"{effective['matched_code_percent']:.2f}% effective; "
         f"{totals['fuzzy_match_percent']:.2f}% fuzzy"
     )
+    if baseline is not None:
+        previous = baseline["measures"]
+        print(
+            f"Delta: {totals['matched_functions'] - previous['matched_functions']:+d} exact functions; "
+            f"{int(totals['matched_code']) - int(previous['matched_code']):+d} exact bytes; "
+            f"{totals['fuzzy_match_percent'] - previous['fuzzy_match_percent']:+.4f} fuzzy points"
+        )
+        regressions = exact_regressions(baseline, report)
+        for address, (old, new) in sorted(regressions.items()):
+            score = "MISSING" if new is None else f"{new['fuzzy_match_percent']:.8f}%"
+            print(
+                f"REGRESSION 0x{address:08x}: 100% -> {score} {old['metadata']['demangled_name']}"
+            )
+        print(
+            f"Exact audit: {len(regressions)} regressions; baseline={BUILD / 'report-baseline.json'}"
+        )
+        return int(bool(regressions))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

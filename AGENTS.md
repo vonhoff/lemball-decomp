@@ -20,10 +20,10 @@
 | Script | Purpose |
 | --- | --- |
 | `tools/build.py` | Build/link; `--clean-first` for stale PDB/build artifacts |
-| `tools/match.py 0xADDR` | Build/compare/diff with raw and Effective scores, `--no-build` for current artifacts |
-| `tools/next.py` | Rank unfinished functions with Effective scores, `--exact` for raw, then size/address |
+| `tools/match.py 0xADDR` | Build/compare/diff with raw and Effective scores; `--no-build` for current artifacts, `--summary` to omit diffs |
+| `tools/next.py` | Select unfinished functions; Effective filtering, `--exact` for raw, `--min-size N --sort size` for larger targets |
 | `tools/gate.py` | Source policy, annotation, and catalog checks |
-| `tools/report.py` | Canonical comparison/progress reports |
+| `tools/report.py` | Canonical reports plus console Effective score; `--check` snapshots the saved report and audits prior exact matches |
 | `tools/badges.py` | README badges, separate from canonical progress |
 | `python -m unittest discover -s tests` (from `tools/`) | Tool tests |
 
@@ -39,10 +39,10 @@ The source reconstruction workflow below applies to C/C++ source changes. Tool c
 
 ## Source changes
 
-1. Select a focused target from the current report. When reconstruction-memory tools are available: `triage_report`, then `get_function_memory(addr)`.
+1. Select a focused target with `tools/next.py` from the current report. When reconstruction-memory tools are available: `get_function_memory(addr)` before editing.
 2. Read the full function, declarations, relevant original callers/callees. Preserve ABI, dispatch, side effects, reload timing, narrowing, ownership, initialization, allocation failures. Ambiguous diff: inspect raw x86.
 3. Match before/after trials. Revert failed trials; retry with new evidence. `record_attempt`: actual trials only. `record_observation`: durable x86 facts with address/citation. Tools unavailable: continue locally.
-4. Batch boundary: snapshot `build-msvc400/report-baseline.json`; regenerate report; audit prior exact matches. Header/ABI/multi-TU changes: `detect_changes`. Explain regressions. No full reports per speculative trial.
+4. Batch boundary: `tools/report.py --check` snapshots the saved report to `build-msvc400/report-baseline.json`, regenerates progress, and audits prior exact matches. Header/ABI/multi-TU changes: `detect_changes`. Explain regressions. No full reports per speculative trial.
 5. Clang-format touched C/C++; run gate and relevant checks; commit verified work.
 
 ## Source conventions

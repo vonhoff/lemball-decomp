@@ -13,15 +13,12 @@ from reccmp.formats.exceptions import (
 )
 from reccmp.types import EntityType
 
-from . import BUILD
 from .compare_flags import (
     control_flow_targets,
     indirect_jumps_use_tables,
     normalize_compare_branches,
     prefix_overwrites_flags,
 )
-
-EFFECTIVE_JSON = BUILD / "effective.json"
 
 
 @dataclass

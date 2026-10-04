@@ -2,15 +2,11 @@
 """Rank unfinished functions from the canonical report."""
 
 import argparse
-import json
-
-from reccmp.compare.report import deserialize_reccmp_report
-
-from lib import RECCMP_JSON, REPORT_JSON
-from lib.effective import EFFECTIVE_JSON, effective_addresses
+from lib import EFFECTIVE_JSON, REPORT_JSON
+from lib.progress import load_progress
 
 
-def rank_functions(report, effective=()):
+def rank_functions(report, effective=(), min_size=0, sort="score"):
     """Rank unfinished functions without changing the canonical report."""
     functions = (
         {**function, "unit": unit["name"]}
@@ -18,10 +14,12 @@ def rank_functions(report, effective=()):
         for function in unit["functions"]
         if function["fuzzy_match_percent"] < 100
         and int(function["metadata"]["virtual_address"]) not in effective
+        and int(function["size"]) >= min_size
     )
     return sorted(
         functions,
         key=lambda function: (
+            -int(function["size"]) if sort == "size" else 0,
             -function["fuzzy_match_percent"],
             int(function["size"]),
             int(function["metadata"]["virtual_address"]),
@@ -33,19 +31,22 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--limit", type=int, default=40, help="rows; 0 = unlimited")
     parser.add_argument(
+        "--min-size", type=int, default=0, help="Minimum original bytes"
+    )
+    parser.add_argument("--sort", choices=("score", "size"), default="score")
+    parser.add_argument(
         "--exact", action="store_true", help="Rank by raw comparison scores"
     )
     args = parser.parse_args()
-    report = json.loads(REPORT_JSON.read_text(encoding="utf-8"))
-    accepted = set()
-    if not args.exact:
-        comparisons = deserialize_reccmp_report(RECCMP_JSON.read_text(encoding="utf-8"))
-        additional = {
-            int(address)
-            for address in json.loads(EFFECTIVE_JSON.read_text(encoding="utf-8"))
-        }
-        accepted = effective_addresses(comparisons.entities, additional)
-    functions = rank_functions(report, accepted)
+    if args.min_size < 0 or args.limit < 0:
+        parser.error("--min-size and --limit must not be negative")
+    try:
+        report, accepted = load_progress(
+            REPORT_JSON, None if args.exact else EFFECTIVE_JSON
+        )
+    except ValueError as exc:
+        parser.error(str(exc))
+    functions = rank_functions(report, accepted, args.min_size, args.sort)
     if args.limit > 0:
         functions = functions[: args.limit]
     for function in functions:

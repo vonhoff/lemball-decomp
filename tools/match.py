@@ -23,6 +23,11 @@ def main() -> int:
     parser.add_argument(
         "--no-build", action="store_true", help="Skip incremental build"
     )
+    parser.add_argument(
+        "--summary",
+        action="store_true",
+        help="One row per address; omit assembly diffs",
+    )
     args = parser.parse_args()
     if not args.no_build:
         code = run_build()
@@ -40,22 +45,31 @@ def main() -> int:
             if comparison is not None
         },
     )
+    missing = False
     for address, comparison in zip(args.addrs, comparisons, strict=True):
         if comparison is None:
             print(f"0x{address:08x}: NOT_FOUND")
+            missing = True
         elif comparison.is_stub:
-            print_match_oneline(comparison)
+            if args.summary:
+                print(
+                    f"0x{address:08x} Raw: 0.00%  Effective: 0.00% STUB {comparison.name}"
+                )
+            else:
+                print_match_oneline(comparison)
         else:
             effective = replace(
                 comparison,
                 is_effective_match=comparison.is_effective_match
                 or address in additional,
             )
-            print(
-                f"Raw: {comparison.accuracy * 100:.2f}%  Effective: {effective.effective_accuracy * 100:.2f}%"
-            )
-            print_match_verbose(effective)
-    return 0
+            scores = f"Raw: {comparison.accuracy * 100:.2f}%  Effective: {effective.effective_accuracy * 100:.2f}%"
+            if args.summary:
+                print(f"0x{address:08x} {scores} {comparison.name}")
+            else:
+                print(scores)
+                print_match_verbose(effective)
+    return int(missing)
 
 
 if __name__ == "__main__":
