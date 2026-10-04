@@ -2,77 +2,24 @@
 
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Animation/AnimSpecialEntry.h"
-#include "Gameplay/Animation/CAnimSpecial.h"
-#include "Gameplay/Characters/CPlayerLemming.h"
-#include "Gameplay/Hazards/CSlinky.h"
-#include "Gameplay/Mechanisms/CSwitch.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Game/CDemo.h"
-#include "Game/CGame.h"
 #include "Game/GameMain.h"
-#include "Game/GameTime.h"
-#include "Level/CLevelLoader.h"
-#include "Frontend/CBaseFrontendProcess.h"
-#include "Frontend/Loading/CFrontendResourceLoader.h"
 #include "Map/CMap.h"
-#include "Network/CNetworkManager.h"
-#include "Visos/Queues/CBaseQueue.h"
 #include "CObjSq.h"
 #include "Visos/Text/CTextManager.h"
-#include "Gameplay/Geometry/Facing.h"
-#include "Visos/Sorting/VsSort.h"
-#include "Visos/Time/VsTime.h"
-#include "Visos/Graphics/Palettes/CBasePalManager.h"
-#include "Platform/Windows/Graphics/CCursor.h"
-#include "Visos/Graphics/Primitives/CGDI.h"
-#include "Visos/Controls/CHotAreaList.h"
 #include "Visos/Graphics/Surfaces/CSurface.h"
-#include "Visos/Graphics/Primitives/CZRLE.h"
-#include "../../Visos/Network/CBaseNetwork.h"
-#include "../../Visos/Network/NetworkConstants.h"
-#include "../../Visos/Network/NetworkMode.h"
 #include "Visos/Resources/Types/CResFONT.h"
-#include "Visos/Resources/Types/CResPALETTE.h"
-#include "../../Visos/Resources/ResourceLimits.h"
-#include "../Animation/CLemmingAnimsManager.h"
-#include "../Input/CPadToButton.h"
-#include "../Panel/CPanel.h"
-#include "../Pause/CPauseWindow.h"
-#include "../Sound/CSoundView.h"
+#include "Views/Animation/CLemmingAnimsManager.h"
 #include "ObjectClipGrid.h"
 #include "SpriteGroundLookup.h"
-#include "Gameplay/Objects/ObjectTypes.h"
-#include "CMain2DDisplay.h"
-#include "CPBButton.h"
-#include "Frontend/FlowProcesses.h"
 #include "Visos/Math/FixedPoint.h"
 
 #include <new.h>
 #include <string.h>
 
-#include "Game/CGameStatus.h"
-
-#include "Visos/Graphics/Surfaces/CChangeList.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Geometry/C3DVector.h"
-#include "Gameplay/Objects/CGameObject.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
-#include "Visos/Queues/Message.h"
-#include "Visos/Input/CBaseCursor.h"
-#include "Visos/Graphics/Palettes/CBaseRemap.h"
-#include "Visos/Graphics/Primitives/CClipRect.h"
-#include "Visos/Graphics/Primitives/CCopyToBackBuff.h"
-#include "Visos/Graphics/Primitives/CDrawingMark.h"
-#include "Visos/Controls/CHotAreaHandler.h"
-#include "Visos/Graphics/Primitives/CPopActive.h"
-#include "Visos/Graphics/Primitives/CPushActive.h"
-#include "Visos/Graphics/Primitives/CSolidRect.h"
 
 class CBaseQueueHandler;
 class CRemap;
@@ -82,19 +29,7 @@ class CRemap;
 #include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Mechanisms/LiftEndpointRecord.h"
 
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Network/CConnect.h"
-#include "Visos/Network/NetworkMode.h"
-#include "Views/Animation/CLemmingAnimsManager.h"
-#include "Views/Panel/CPanel.h"
-
 #include <stddef.h>
-
-#include "Views/Sound/CSoundView.h"
-
-#include "Visos/Resources/Manifest.h"
-
-#include <stdlib.h>
 
 extern char* g_demoText;
 
