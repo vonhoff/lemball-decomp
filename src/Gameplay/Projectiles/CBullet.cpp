@@ -160,7 +160,7 @@ bool CBullet::Process()
 					int groundWidth;
 					int blockX = pos.m_x >> GROUND_BLOCK_PIXEL_SHIFT;
 					int blockY = pos.m_y >> GROUND_BLOCK_PIXEL_SHIFT;
-					if (pos.m_x < 0 || pos.m_y < 0 || (groundWidth = map->m_ground.m_width) <= blockX ||
+					if (pos.m_x < 0 || pos.m_y < 0 || blockX >= (groundWidth = map->m_ground.m_width) ||
 						map->m_ground.m_height <= blockY) {
 						groundZ = 0;
 					}
