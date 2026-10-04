@@ -1,6 +1,6 @@
 #include "CDrawingMark.h"
 
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "CGDI.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 

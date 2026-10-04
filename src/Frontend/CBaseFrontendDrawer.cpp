@@ -6,7 +6,7 @@
 #include "GameView/Display/CMain2DDisplay.h"
 #include "Engine/Animation/CPlayThruAnim.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Time/VsTime.h"
 #include "Engine/Graphics/Primitives/CCopyToBackBuff.h"

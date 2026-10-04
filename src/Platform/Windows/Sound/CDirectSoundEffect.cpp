@@ -7,11 +7,9 @@ enum {
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/VsString.h"
 #include "DirectSound.h"
-#include "EffPatchHeader.h"
-#include "EffWaveHeader.h"
-#include "PCMSampleFormat.h"
-#include "Platform/DirectX/DSBUFFERDESC.h"
-#include "Platform/DirectX/IDirectSound.h"
+#include "Engine/Sound/EffectFormat.h"
+
+#include "Platform/DirectX/DirectSound.h"
 
 #include <string.h>
 
@@ -25,11 +23,8 @@ enum {
 // clang-format off
 #include <windows.h>
 #include <mmsystem.h>
-#include "Platform/DirectX/IDirectSoundBuffer.h"
-// clang-format on
 
-unsigned short SwapBytes16(unsigned short p_value);
-unsigned int SwapBytes32(unsigned int p_value);
+// clang-format on
 
 struct DirectSoundError {
 	const char* m_name;

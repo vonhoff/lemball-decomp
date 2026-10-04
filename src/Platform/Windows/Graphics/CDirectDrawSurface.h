@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CDIRECTDRAWSURFACE_H
 
 #include "CDibContext.h"
-#include "Platform/DirectX/DDSURFACEDESC.h"
+#include "Platform/DirectX/DirectDraw.h"
 
 struct IDirectDrawSurface;
 

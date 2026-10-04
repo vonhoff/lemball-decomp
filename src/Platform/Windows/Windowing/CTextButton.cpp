@@ -1,6 +1,6 @@
 #include "CTextButton.h"
 
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Engine/Text/CText.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Input/CHotAreaList.h"

@@ -3,7 +3,7 @@
 #include "Application/GameMain.h"
 #include "Platform/Windows/Entry.h"
 #include "GameView/Display/CMain2DDisplay.h"
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Engine/Math/CFixed.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"

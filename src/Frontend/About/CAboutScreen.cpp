@@ -2,7 +2,7 @@
 
 #include "GameView/Display/CMain2DDisplay.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Strings/VsString.h"
 #include "Engine/Time/VsTime.h"

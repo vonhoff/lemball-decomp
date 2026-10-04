@@ -70,7 +70,7 @@ struct ObjectClipGrid {
 #include "GameView/Animation/CAnimSpecial.h"
 #include "Engine/Sorting/VsSort.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Engine/Math/CVSSize.h"
 #include <stdlib.h>
 

@@ -7,7 +7,7 @@
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CBroadcast.h"
 #include "Multiplayer/Transport/CConnect.h"
-#include "Platform/Windows/FileTransport/CFileNetwork.h"
+#include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
 #include "Multiplayer/CGameRejectMessage.h"
 #include "Multiplayer/CNetworkGameMessage.h"
 #include "Multiplayer/CNetworkGameStage.h"

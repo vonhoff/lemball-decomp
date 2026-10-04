@@ -4,7 +4,7 @@
 #include "Engine/Streams/CVSIOs.h"
 #include "Engine/Queues/Message.h"
 #include "Engine/Files/VsFile.h"
-#include "Platform/Windows/Input/InputTranslationEntry.h"
+#include "Platform/Windows/Input/InputTranslation.h"
 
 #include <new.h>
 #include <string.h>

@@ -6,13 +6,10 @@
 #include "CDirectDrawContext.h"
 #include "CDirectDrawSurface.h"
 #include "DirectDrawError.h"
-#include "Platform/DirectX/IDirectDraw.h"
+#include "Platform/DirectX/DirectDraw.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Platform/DirectX/DDBLTFX.h"
-#include "Platform/DirectX/DDSURFACEDESC.h"
-#include "Platform/DirectX/IDirectDrawPalette.h"
-#include "Platform/DirectX/IDirectDrawSurface.h"
+
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"

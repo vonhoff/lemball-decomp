@@ -16,7 +16,7 @@
 #include "Frontend/About/CAboutScreen.h"
 #include "../../Platform/Windows/Entry.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/Input/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"

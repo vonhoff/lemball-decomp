@@ -1,6 +1,6 @@
 #include "CSurface.h"
 
-#include "CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Diagnostics/VsDebug.h"
@@ -29,7 +29,7 @@
 #include <string.h>
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "ChangeListItem.h"
+#include "Engine/Graphics/ChangeListItem.h"
 #include "CPVBackBuffSurface.h"
 #include "CPVGDIBitmap.h"
 #include "CPVScrollableSurface.h"

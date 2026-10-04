@@ -1,6 +1,47 @@
 #ifndef LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 #define LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 
+struct in_addr {
+	unsigned long s_addr;
+};
+
+struct TcpIpSocketAddress {
+	unsigned short m_family;
+	unsigned short m_port;
+	in_addr m_address;
+	unsigned char m_padding[8];
+};
+
+struct TcpIpHostEntry {
+	char* m_name;
+	char** m_aliases;
+	short m_addressType;
+	short m_addressLength;
+	char** m_addressList;
+};
+
+struct TcpIpServiceEntry {
+	char* m_name;
+	char** m_aliases;
+	short m_port;
+	char* m_protocol;
+};
+
+#define WSADESCRIPTION_LEN 256
+#define WSASYS_STATUS_LEN 128
+
+struct WSAData {
+	unsigned short wVersion;
+	unsigned short wHighVersion;
+	char szDescription[WSADESCRIPTION_LEN + 1];
+	char szSystemStatus[WSASYS_STATUS_LEN + 1];
+	unsigned short iMaxSockets;
+	unsigned short iMaxUdpDg;
+	char* lpVendorInfo;
+};
+
+typedef WSAData WSADATA;
+
 #define SOL_SOCKET 0xffff
 #define SO_BROADCAST 0x0020
 #define FD_READ 0x01

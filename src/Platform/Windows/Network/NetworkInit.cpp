@@ -4,8 +4,8 @@
 #include "Engine/Startup/ProcessExitCodes.h"
 #include "Engine/Startup/VsInit.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
-#include "Platform/Windows/FileTransport/CFileNetwork.h"
-#include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
+#include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 
 #define WIN32_LEAN_AND_MEAN

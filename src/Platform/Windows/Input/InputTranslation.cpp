@@ -1,4 +1,4 @@
-#include "InputTranslationEntry.h"
+#include "Platform/Windows/Input/InputTranslation.h"
 
 #include "Engine/Input/CMasterInput.h"
 #include "Engine/Queues/Message.h"

@@ -1,6 +1,6 @@
 #include "CDepressedButton.h"
 
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Queues/Message.h"

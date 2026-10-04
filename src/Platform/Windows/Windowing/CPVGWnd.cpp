@@ -32,7 +32,7 @@ unsigned int CPVGWnd::GetStyle()
 }
 
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
-#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Platform/Windows/CPlatformServices.h"
 
 #include <string.h>

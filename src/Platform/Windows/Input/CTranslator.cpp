@@ -5,7 +5,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include "Engine/Queues/Message.h"
-#include "InputTranslationEntry.h"
+#include "Platform/Windows/Input/InputTranslation.h"
 
 #include <windows.h>
 
