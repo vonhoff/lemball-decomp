@@ -28,7 +28,8 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 enum {
 	NETWORK_QUEUE_MESSAGE_CAPACITY = 0x1e,
-	CRITICAL_PACKET_RETRY_LIMIT = 0x50
+	CRITICAL_PACKET_RETRY_LIMIT = 0x50,
+	NETWORK_NEW_PORT_REQUEST_LIMIT = 5
 };
 
 // FUNCTION: LEMBALL 0x004619f0
@@ -391,7 +392,7 @@ void CBaseNetwork::CtoSRequestNewPort(CNetworkAddress* p_address)
 	if (Exists(peer) != 0) {
 		m_broadcast->ResetPort(peer->m_port);
 		peer->m_newPortRequestCount++;
-		if (peer->m_newPortRequestCount > 5) {
+		if (peer->m_newPortRequestCount > NETWORK_NEW_PORT_REQUEST_LIMIT) {
 			g_pMessFAILEDConnect->m_failureReason = "To many new-port requests";
 			m_broadcast->Send(p_address, *g_pMessReqNewPort);
 			return;
