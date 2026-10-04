@@ -8,6 +8,10 @@
 
 #include <stddef.h>
 
+enum {
+	HOT_AREA_CURSOR_BLOCKED_MASK = 0x01
+};
+
 // FUNCTION: LEMBALL 0x00439960
 void CHotAreaHandler::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
@@ -141,7 +145,7 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, c
 	switch (type) {
 	case MESSAGE_CURSOR_BUTTON_DOWN:
 	case MESSAGE_CURSOR_BUTTON_UP:
-		if ((g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) != 0) {
+		if ((g_pMasterInput->m_state & HOT_AREA_CURSOR_BLOCKED_MASK) != 0) {
 			return;
 		}
 	case MESSAGE_MOUSE_BUTTON_UP:
@@ -189,7 +193,7 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, c
 		OnExternalButtonUp(p_point, button);
 		return;
 	case MESSAGE_CURSOR_MOVED:
-		if ((g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) != 0) {
+		if ((g_pMasterInput->m_state & HOT_AREA_CURSOR_BLOCKED_MASK) != 0) {
 			return;
 		}
 	case MESSAGE_MOUSE_MOVED:
