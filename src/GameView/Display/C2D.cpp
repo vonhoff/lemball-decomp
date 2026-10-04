@@ -4533,19 +4533,21 @@ void C2D::TransformAndSortViewData()
 // FUNCTION: LEMBALL 0x0043f060
 void C2D::MarkGroundAnimAndLiftBounds()
 {
-	char* scratch = m_groundClipScratch;
-	int count = m_ai->ExportGroundAnimRecords((tCoord3d*) scratch);
+	tCoord3d* scratch = (tCoord3d*) m_groundClipScratch;
+	int count = m_ai->ExportGroundAnimRecords(scratch);
 	if (count > 0) {
 		int remaining = count;
-		tCoord3d* coordinate = (tCoord3d*) scratch;
+		tCoord3d* coordinate = scratch;
 		do {
 			int screenX = coordinate->m_x;
 			int screenY = coordinate->m_y;
 			const int& groundHeight = (int) coordinate->m_z;
 			C2D* view = this;
 			view->m_map->GameToScreen(screenX, screenY);
-			screenX -= view->m_viewOriginX;
-			screenY -= view->m_viewOriginY;
+			int originX = view->m_viewOriginX;
+			int originY = view->m_viewOriginY;
+			screenX -= originX;
+			screenY -= originY;
 			screenY -= groundHeight;
 			short pixelX = (short) screenX - 16;
 			short pixelY = (short) screenY - 24;
