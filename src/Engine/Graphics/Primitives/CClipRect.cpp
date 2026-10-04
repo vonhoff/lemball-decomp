@@ -1,7 +1,7 @@
 #include "CClipRect.h"
 
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00432b10
 void CClipRect::Draw(CGDI* p_gdi)

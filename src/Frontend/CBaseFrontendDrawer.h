@@ -8,7 +8,7 @@
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Math/CVSPoint.h"
 #include "tagPRIMS.h"
-#include "Engine/Windows/CDrawer.h"
+#include "Platform/Windows/Windowing/CDrawer.h"
 #include "CUserActionMessage.h"
 #include "CoordPair.h"
 #include "Application/FlowProcesses.h"

@@ -2,7 +2,7 @@
 
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00447380
 void CBigBitmap::Draw(CGDI* p_gdi)

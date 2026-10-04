@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CBULLET_H
 #define LEMBALL_AI_OBJECTS_CBULLET_H
 
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Movement/CMove3d.h"

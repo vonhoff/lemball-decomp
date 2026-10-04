@@ -3,7 +3,7 @@
 
 #include "CFileBaseSocket.h"
 #include "CFileCommonSocket.h"
-#include "Engine/Network/CReadSocket.h"
+#include "Multiplayer/Transport/CReadSocket.h"
 
 class CNetworkMessage;
 

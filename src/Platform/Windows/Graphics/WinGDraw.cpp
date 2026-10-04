@@ -3,8 +3,8 @@
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-#include "Engine/Windows/CPVWnd.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Windowing/CPVWnd.h"
+#include "CSurface.h"
 #include "WinGDrawState.h"
 
 #include <string.h>

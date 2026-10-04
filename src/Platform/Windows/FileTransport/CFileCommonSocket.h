@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILECOMMONSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILECOMMONSOCKET_H
 
-#include "Engine/Network/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "CNetworkFile.h"
 
 // SIZE 0x4c

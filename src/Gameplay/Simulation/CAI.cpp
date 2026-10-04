@@ -13,9 +13,9 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/VsTime.h"
-#include "Engine/Network/CBaseNetwork.h"
-#include "Engine/Network/CConnect.h"
-#include "Engine/Network/NetworkConstants.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/CConnect.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Geometry/Rect.h"
 #include "Gameplay/Groups/CEnemyGroupManager.h"
@@ -64,8 +64,8 @@
 #include "Map/CGroundArray.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
-#include "Engine/Network/CReadSocket.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/CReadSocket.h"
 
 extern int g_anDefaultTrapDoorLemmings[4][4];
 

@@ -3,7 +3,7 @@
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00467ae0
 void CZRLE::Draw(CGDI* p_gdi)

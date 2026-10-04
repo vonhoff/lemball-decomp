@@ -1,8 +1,8 @@
 #include "CPushActive.h"
 
-#include "Engine/Graphics/Surfaces/CChangeList.h"
+#include "Platform/Windows/Graphics/CChangeList.h"
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00439760
 void CPushActive::Draw(CGDI* p_gdi)

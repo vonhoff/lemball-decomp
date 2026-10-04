@@ -3,17 +3,17 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Startup/VsInit.h"
 #include "Engine/VsTime.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
-#include "Engine/Network/CBaseNetwork.h"
-#include "Engine/Network/CBroadcast.h"
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/CBroadcast.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Platform/Windows/FileTransport/CFileNetwork.h"
 #include "Multiplayer/CGameRejectMessage.h"
 #include "Multiplayer/CNetworkGameMessage.h"
 #include "Multiplayer/CNetworkGameStage.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Network/CReadSocket.h"
-#include "Engine/Network/NetworkConstants.h"
+#include "Multiplayer/Transport/CReadSocket.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 
 #include <stddef.h>
 
@@ -125,8 +125,8 @@ void CNetworkManager::Stop()
 #include "Frontend/Network/CNetworkOptionsProc.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Network/Packets/BasePacketHeader.h"
-#include "Engine/Network/Packets/CReadPacket.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Packets/CReadPacket.h"
 
 extern char* g_szGameName;
 extern char g_szNetworkGameName[16];

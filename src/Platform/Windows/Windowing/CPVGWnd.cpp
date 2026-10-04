@@ -1,9 +1,9 @@
 #include "CPVGWnd.h"
 
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
-#include "Engine/Graphics/Surfaces/CPVSurface.h"
-#include "Engine/Windows/CPVWnd.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+#include "Platform/Windows/Graphics/CPVSurface.h"
+#include "CPVWnd.h"
 #include "CWnd.h"
 
 #include <stddef.h>
@@ -32,7 +32,7 @@ unsigned int CPVGWnd::GetStyle()
 }
 
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
-#include "Engine/Graphics/Surfaces/CChangeList.h"
+#include "Platform/Windows/Graphics/CChangeList.h"
 #include "Platform/Windows/CPlatformServices.h"
 
 #include <string.h>

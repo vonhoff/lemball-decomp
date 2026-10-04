@@ -16,11 +16,11 @@
 #include "Frontend/About/CAboutScreen.h"
 #include "../../Platform/Windows/Entry.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Graphics/Surfaces/CChangeList.h"
+#include "Platform/Windows/Graphics/CChangeList.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/Types/CResZRLE.h"
@@ -40,8 +40,8 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Input/CBaseCursor.h"
-#include "Engine/Windows/CDrawer.h"
+#include "Platform/Windows/Input/CBaseCursor.h"
+#include "Platform/Windows/Windowing/CDrawer.h"
 
 #include <windows.h>
 

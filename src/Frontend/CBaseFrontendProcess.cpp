@@ -2,10 +2,10 @@
 
 #include "CBaseFrontendDrawer.h"
 #include "CUserActionMessage.h"
-#include "Engine/Network/CBaseNetwork.h"
-#include "Engine/Network/CConnect.h"
-#include "Engine/Network/NetworkConstants.h"
-#include "Engine/Network/Packets/CReadPacket.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/CConnect.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/Packets/CReadPacket.h"
 #include "Engine/Queues/Message.h"
 #include "Engine/VsTime.h"
 
@@ -20,7 +20,7 @@ int g_nFrontendAutoFlowToggle = 1;
 #include "Application/CGameStatus.h"
 #include "Level/CLevelLoader.h"
 #include "Multiplayer/CGameFlaggedMessage.h"
-#include "Engine/Network/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 
 // FUNCTION: LEMBALL 0x00407f20
 void CBaseFrontendProcess::Processing()

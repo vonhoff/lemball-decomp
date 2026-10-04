@@ -1,7 +1,7 @@
 #include "CAnim.h"
 
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Resources/Types/CResANIM.h"
 class CResZRLE;
 

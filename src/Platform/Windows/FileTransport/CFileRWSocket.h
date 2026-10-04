@@ -3,7 +3,7 @@
 
 #include "CFileReadSocket.h"
 #include "CFileWriteSocket.h"
-#include "Engine/Network/CRwSocket.h"
+#include "Multiplayer/Transport/CRwSocket.h"
 
 // SIZE 0x154
 // VTABLE: LEMBALL 0x0049a79c CFileCommonSocket

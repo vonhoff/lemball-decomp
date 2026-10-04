@@ -1,7 +1,7 @@
 #ifndef LEMBALL_NETWORK_GAME_CPBNETWORKGAME_H
 #define LEMBALL_NETWORK_GAME_CPBNETWORKGAME_H
 
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 class CAI;
 class CPlayerLemming;

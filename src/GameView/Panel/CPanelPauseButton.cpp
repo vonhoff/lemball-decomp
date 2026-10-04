@@ -2,16 +2,16 @@
 
 #include "Gameplay/Simulation/CAI.h"
 #include "Platform/Windows/Graphics/CCursor.h"
-#include "Engine/Controls/CDepressedButton.h"
+#include "Platform/Windows/Windowing/CDepressedButton.h"
 #include "../Display/C2D.h"
 #include "GameView/CSoundView.h"
 #include "CPanel.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Input/CBaseCursor.h"
-#include "Engine/Controls/CGraphicButton.h"
-#include "Engine/Controls/CPVButton.h"
-#include "Engine/Controls/CToggleButton.h"
+#include "Platform/Windows/Input/CBaseCursor.h"
+#include "Platform/Windows/Windowing/CGraphicButton.h"
+#include "Platform/Windows/Windowing/CPVButton.h"
+#include "Platform/Windows/Windowing/CToggleButton.h"
 
 // FUNCTION: LEMBALL 0x004421d0
 CPanelPauseButton::CPanelPauseButton(CPanel* p_panel,

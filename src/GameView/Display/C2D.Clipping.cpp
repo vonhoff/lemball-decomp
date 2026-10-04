@@ -8,7 +8,7 @@
 #include "Map/CMap.h"
 #include "CObjSq.h"
 #include "Engine/Text/CTextManager.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "GameView/CLemmingAnimsManager.h"
 #include "ObjectClipGrid.h"

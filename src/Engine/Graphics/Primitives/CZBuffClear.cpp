@@ -1,7 +1,7 @@
 #include "CZBuffClear.h"
 
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00439900
 void CZBuffClear::Draw(CGDI* p_gdi)

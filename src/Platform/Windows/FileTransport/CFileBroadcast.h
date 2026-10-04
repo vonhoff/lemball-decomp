@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILEBROADCAST_H
 #define LEMBALL_VISOS_NETWORK_CFILEBROADCAST_H
 
-#include "Engine/Network/CBroadcast.h"
+#include "Multiplayer/Transport/CBroadcast.h"
 #include "CFileOpenManagement.h"
 
 class CPortsMessage;

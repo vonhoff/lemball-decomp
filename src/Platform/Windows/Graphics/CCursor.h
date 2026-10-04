@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CCURSOR_H
 #define LEMBALL_VISOS_GRAPHICS_CCURSOR_H
 
-#include "Engine/Input/CBaseCursor.h"
+#include "Platform/Windows/Input/CBaseCursor.h"
 
 // SIZE 0xa4
 // VTABLE: LEMBALL 0x00499d58

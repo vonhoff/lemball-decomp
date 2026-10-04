@@ -1,16 +1,16 @@
 #include "CFileWriteSocket.h"
 
-#include "Engine/Network/Protocol/CHeaderMessage.h"
-#include "Engine/Network/Protocol/CHeaders.h"
-#include "Engine/Network/CNetworkAddress.h"
-#include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
-#include "Engine/Network/NetworkConstants.h"
-#include "Engine/Network/Packets/BasePacketHeader.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CHeaderMessage.h"
+#include "Multiplayer/Transport/Protocol/CHeaders.h"
+#include "Multiplayer/Transport/CNetworkAddress.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "CFileBaseSocket.h"
 #include "CFileCommonSocket.h"
 #include "CNetworkFile.h"
-#include "Engine/Network/CWriteSocket.h"
+#include "Multiplayer/Transport/CWriteSocket.h"
 
 #include <string.h>
 

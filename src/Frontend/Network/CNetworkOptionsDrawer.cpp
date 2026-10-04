@@ -9,8 +9,8 @@
 #include "Engine/VsTime.h"
 #include "Engine/Graphics/Palettes/CBasePalManager.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-#include "Engine/Controls/CHotAreaList.h"
-#include "Engine/Network/CConnect.h"
+#include "Engine/Input/CHotAreaList.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Engine/Resources/Manifest.h"
 #include "Frontend/Controls/CHiliteController.h"
 #include "CNetworkOptionsProc.h"
@@ -218,7 +218,7 @@ int g_nNetworkOptionsShiftHeld = 0;
 // GLOBAL: LEMBALL 0x004a0394
 int g_nNetworkOptionsCapsOrShift = 0;
 
-#include "Engine/Network/CNetworkAddress.h"
+#include "Multiplayer/Transport/CNetworkAddress.h"
 
 #include <stddef.h>
 

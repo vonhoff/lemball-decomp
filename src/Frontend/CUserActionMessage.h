@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_CUSERACTIONMESSAGE_H
 #define LEMBALL_FRONTEND_SUPPORT_CUSERACTIONMESSAGE_H
 
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 enum eUserActions {
 	USER_ACTION_NEXT_LEVEL = 0,

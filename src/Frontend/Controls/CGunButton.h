@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CGUNBUTTON_H
 #define LEMBALL_FRONTEND_CONTROLS_CGUNBUTTON_H
 
-#include "Engine/Controls/CGraphicButton.h"
+#include "Platform/Windows/Windowing/CGraphicButton.h"
 
 class CPVGWnd;
 struct CVSPoint;

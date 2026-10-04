@@ -3,8 +3,8 @@
 
 #include "Application/CBaseProcess.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
-#include "Engine/Network/NetworkMode.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/NetworkMode.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/CRect3.h"

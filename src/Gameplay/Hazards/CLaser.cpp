@@ -3,7 +3,7 @@
 #include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"

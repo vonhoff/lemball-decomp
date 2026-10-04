@@ -13,11 +13,11 @@
 #include "Engine/Graphics/Palettes/CBasePalManager.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Controls/CHotAreaList.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
-#include "Engine/Network/CBaseNetwork.h"
-#include "Engine/Network/NetworkConstants.h"
-#include "Engine/Network/NetworkMode.h"
+#include "Engine/Input/CHotAreaList.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/NetworkMode.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "GameView/CLemmingAnimsManager.h"
@@ -42,7 +42,7 @@ class CBaseQueueHandler;
 class CRemap;
 
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 
 #include <stddef.h>
 

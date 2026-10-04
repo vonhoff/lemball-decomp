@@ -1,7 +1,7 @@
 #include "CCopyToBackBuff.h"
 
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x004398a0
 void CCopyToBackBuff::Draw(CGDI* p_gdi)

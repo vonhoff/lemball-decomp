@@ -1,7 +1,7 @@
 #include "CLine.h"
 
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00432a30
 CLine::CLine()

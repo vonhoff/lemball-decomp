@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_NETWORK_CNETWORKWND_H
 #define LEMBALL_VISOS_TARGET_NETWORK_CNETWORKWND_H
 
-#include "Engine/Network/NetworkConstants.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x0049ac30

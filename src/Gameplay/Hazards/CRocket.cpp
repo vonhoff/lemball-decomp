@@ -131,7 +131,7 @@ int CRocket::StepOn(const AICOORD& p_position, CGameObject* p_object)
 	return 0;
 }
 
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Gameplay/Messages/CObjectPosMess.h"
 
 // FUNCTION: LEMBALL 0x00426a60

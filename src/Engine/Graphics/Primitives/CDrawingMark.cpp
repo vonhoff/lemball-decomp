@@ -1,8 +1,8 @@
 #include "CDrawingMark.h"
 
-#include "Engine/Graphics/Surfaces/CChangeList.h"
+#include "Platform/Windows/Graphics/CChangeList.h"
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00432380
 void CDrawingMark::Draw(CGDI* p_gdi)

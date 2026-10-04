@@ -1,19 +1,19 @@
 #include "CFileConnect.h"
 
 #include "Engine/VsTime.h"
-#include "Engine/Network/Protocol/CHeaders.h"
+#include "Multiplayer/Transport/Protocol/CHeaders.h"
 #include "CFileNetwork.h"
-#include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
-#include "Engine/Network/NetworkConstants.h"
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "CFileCommonSocket.h"
 #include "CFileOpenManagement.h"
 #include "CFileReadSocket.h"
 #include "CFileWriteSocket.h"
 #include "CNetworkFile.h"
 #include "COpenCount.h"
-#include "Engine/Network/CReadSocket.h"
-#include "Engine/Network/CWriteSocket.h"
+#include "Multiplayer/Transport/CReadSocket.h"
+#include "Multiplayer/Transport/CWriteSocket.h"
 
 #include <string.h>
 

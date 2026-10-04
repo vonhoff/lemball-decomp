@@ -5,7 +5,7 @@
 #include "Engine/Startup/VsInit.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Platform/Windows/Windowing/CWnd.h"
-#include "../../Engine/Network/CBaseNetwork.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "CPlatformServices.h"

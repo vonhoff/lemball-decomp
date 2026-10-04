@@ -1,7 +1,7 @@
 #include "CFileNetworkAddress.h"
 
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Network/CNetworkAddress.h"
+#include "Multiplayer/Transport/CNetworkAddress.h"
 
 #include <string.h>
 

@@ -1,6 +1,6 @@
 #include "CBulletManager.h"
 
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "CBullet.h"
 #include "Gameplay/Geometry/AICOORD.h"

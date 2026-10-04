@@ -12,7 +12,7 @@
 #include "Engine/VsSort.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "GameView/CLemmingAnimsManager.h"
@@ -24,11 +24,11 @@
 
 #include "Application/CGameStatus.h"
 
-#include "Engine/Graphics/Surfaces/CChangeList.h"
+#include "Platform/Windows/Graphics/CChangeList.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Input/CBaseCursor.h"
+#include "Platform/Windows/Input/CBaseCursor.h"
 #include "Engine/Graphics/Palettes/CBaseRemap.h"
 
 class CBaseQueueHandler;

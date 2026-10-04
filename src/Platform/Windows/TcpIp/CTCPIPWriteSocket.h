@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPWRITESOCKET_H
 
-#include "Engine/Network/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "CTCPIPCommonSocket.h"
-#include "Engine/Network/CWriteSocket.h"
+#include "Multiplayer/Transport/CWriteSocket.h"
 #include "Platform/WinSock/TcpIpSocketAddress.h"
 
 // SIZE 0xdc

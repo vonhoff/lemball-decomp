@@ -7,7 +7,7 @@
 #include "CFileNetworkAddress.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Platform/Windows/ThreadConstants.h"
-#include "Engine/Network/CBaseNetwork.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Platform/Windows/Network/CNetworkWnd.h"
 
 #include <new.h>

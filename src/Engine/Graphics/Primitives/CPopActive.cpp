@@ -1,8 +1,8 @@
 #include "CPopActive.h"
 
-#include "Engine/Graphics/Surfaces/CChangeList.h"
+#include "Platform/Windows/Graphics/CChangeList.h"
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x004397d0
 void CPopActive::Draw(CGDI* p_gdi)

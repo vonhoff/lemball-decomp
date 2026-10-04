@@ -1,7 +1,7 @@
 #include "CZBuffScroll.h"
 
 #include "CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00439930
 void CZBuffScroll::Draw(CGDI* p_gdi)

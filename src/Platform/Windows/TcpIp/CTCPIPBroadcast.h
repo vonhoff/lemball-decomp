@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPBROADCAST_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPBROADCAST_H
 
-#include "Engine/Network/CBroadcast.h"
+#include "Multiplayer/Transport/CBroadcast.h"
 #include "CTCPIPRWSocket.h"
 
 // SIZE 0x16c

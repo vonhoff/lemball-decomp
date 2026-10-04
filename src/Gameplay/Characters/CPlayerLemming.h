@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 #define LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"

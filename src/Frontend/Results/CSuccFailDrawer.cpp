@@ -9,7 +9,7 @@
 #include "Engine/Memory/CArena.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Network/NetworkMode.h"
+#include "Multiplayer/Transport/NetworkMode.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Manifest.h"
 #include "Frontend/CBaseFrontendProcess.h"
@@ -182,7 +182,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/CNetworkGameMessage.h"
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Engine/Resources/Types/CResFONT.h"
 
 #include <string.h>

@@ -8,7 +8,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-#include "Engine/Controls/CHotAreaHandler.h"
+#include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "CPauseVramHandler.h"
 

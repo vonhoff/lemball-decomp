@@ -15,7 +15,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Windows/CPVWnd.h"
+#include "CPVWnd.h"
 #include "MenuList.h"
 
 #include <conio.h>

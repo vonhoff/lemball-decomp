@@ -2,9 +2,9 @@
 
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Memory/VsMem.h"
-#include "Engine/Graphics/Surfaces/CGDIDevice.h"
+#include "Platform/Windows/Graphics/CGDIDevice.h"
 #include "CPrimitive.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // GLOBAL: LEMBALL 0x004a1ff4
 CPrimitive* g_pCurrentPrimitive = NULL;

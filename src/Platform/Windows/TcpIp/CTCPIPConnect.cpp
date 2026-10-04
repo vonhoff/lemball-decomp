@@ -3,9 +3,9 @@
 #include "Engine/Streams/CVSOStream.h"
 #include "CTCPIPNetwork.h"
 #include "CTCPIPNetworkAddress.h"
-#include "Engine/Network/NetworkConstants.h"
-#include "Engine/Network/CConnect.h"
-#include "Engine/Network/CNetworkAddress.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/CConnect.h"
+#include "Multiplayer/Transport/CNetworkAddress.h"
 #include "CTCPIPRWSocket.h"
 
 #include <stdlib.h>

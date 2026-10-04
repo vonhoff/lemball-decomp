@@ -4,7 +4,7 @@
 #include "Map/CMap.h"
 #include "Map/CGround.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "CBulletManager.h"
 #include "Gameplay/Messages/GameMessageIds.h"
@@ -19,7 +19,7 @@
 #include "Map/CGroundArray.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Diagnostics/VsDebug.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 enum {
 	BULLET_TRAVEL_DURATION_TICKS = 10

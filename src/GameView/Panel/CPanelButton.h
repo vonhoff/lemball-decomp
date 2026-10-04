@@ -4,7 +4,7 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "../../Engine/Animation/CAnim.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Controls/CDepressedButton.h"
+#include "Platform/Windows/Windowing/CDepressedButton.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 
 class CPanelLemming;

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_NETWORK_GAME_CNETWORKGAMESTAGE_H
 #define LEMBALL_NETWORK_GAME_CNETWORKGAMESTAGE_H
 
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498558

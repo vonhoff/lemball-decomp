@@ -3,7 +3,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
 #include "Engine/VsTime.h"
-#include "Engine/Windows/CPVWnd.h"
+#include "Platform/Windows/Windowing/CPVWnd.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResBIN.h"
 

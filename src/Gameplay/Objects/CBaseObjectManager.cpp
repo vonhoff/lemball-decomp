@@ -1,15 +1,15 @@
 #include "CBaseObjectManager.h"
 
 #include "Multiplayer/CNetworkManager.h"
-#include "Engine/Network/Packets/CWriteCBuff.h"
-#include "Engine/Network/CBaseNetwork.h"
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/Packets/CWriteCBuff.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "CGameObject.h"
 #include "CGlobalGameObject.h"
 #include "Gameplay/Messages/GameMessageIds.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
-#include "Engine/Network/CWriteSocket.h"
-#include "Engine/Network/NetworkConstants.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/CWriteSocket.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

@@ -1,0 +1,177 @@
+#include "CTextButton.h"
+
+#include "Platform/Windows/Graphics/CChangeList.h"
+#include "Engine/Text/CText.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Input/CHotAreaList.h"
+#include "CPVGWnd.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+#include "Engine/Resources/Types/CResFONT.h"
+
+#include <stddef.h>
+
+extern char g_szButton[];
+
+namespace
+{
+enum {
+	TEXT_BUTTON_FRAME_COLOUR_INDEX = 0xf7
+};
+}
+
+// FUNCTION: LEMBALL 0x00468f90
+CTextButton::CTextButton(const CVSRect& p_rect,
+						 CPVGWnd* p_parent,
+						 unsigned int p_fontResourceId,
+						 unsigned int p_alignmentFlags)
+	: CFramedButton(p_parent, TEXT_BUTTON_FRAME_COLOUR_INDEX)
+{
+	const CVSPoint* position = &p_rect;
+	m_buttonX = position->m_x;
+	m_buttonY = position->m_y;
+	CVSRect bounds(p_rect);
+	bounds.m_x = 0;
+	bounds.m_y = 0;
+	m_bounds.m_width = bounds.m_width;
+	m_bounds.m_height = bounds.m_height;
+	m_bounds.m_x = bounds.m_x;
+	m_bounds.m_y = bounds.m_y;
+	SetActive(1);
+	m_fontResourceId = p_fontResourceId;
+	m_alignmentFlags = p_alignmentFlags;
+	Initialize();
+}
+
+// FUNCTION: LEMBALL 0x00469120
+void CTextButton::ExpandToFitText(const CVSSize& p_textSize)
+{
+	if (m_textMargins.m_width * m_textMargins.m_height != 0) {
+		short width = (short) (p_textSize.m_width + 2 * m_textMargins.m_width);
+		short height = (short) (p_textSize.m_height + 2 * m_textMargins.m_height);
+		if (m_bounds.m_width < width) {
+			m_bounds.m_width = width;
+		}
+		if (m_bounds.m_height < height) {
+			m_bounds.m_height = height;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00469180
+void CTextButton::AlignTextPosition(CVSPoint& p_position, const CVSSize& p_textSize)
+{
+	if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_RIGHT) != 0) {
+		p_position.m_x = (short) (m_bounds.m_width - p_textSize.m_width);
+	}
+	else if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_HORIZONTAL_CENTER) != 0) {
+		p_position.m_x = (short) ((m_bounds.m_width - p_textSize.m_width) / 2);
+	}
+	if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_BOTTOM) != 0) {
+		p_position.m_y = (short) (m_bounds.m_height - p_textSize.m_height);
+	}
+	else if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_VERTICAL_CENTER) != 0) {
+		p_position.m_y = (short) ((m_bounds.m_height - p_textSize.m_height) / 2);
+	}
+	m_forceDrawCount = 1;
+}
+
+// FUNCTION: LEMBALL 0x00469210
+void CTextButton::SetText(char* p_normalText, char* p_pressedText)
+{
+	m_pressedText = p_pressedText;
+	m_normalText = p_normalText;
+	CVSSize normalSize = m_font->GetSize(p_normalText, TEXT_ADVANCE_X_POSITIVE);
+	ExpandToFitText(normalSize);
+	CVSSize pressedSize(normalSize);
+	if (m_pressedText != NULL) {
+		const CVSSize& size = m_font->GetSize(m_pressedText, TEXT_ADVANCE_X_POSITIVE);
+		pressedSize.m_width = size.m_width;
+		pressedSize.m_height = size.m_height;
+		ExpandToFitText(pressedSize);
+	}
+	AlignTextPosition(m_normalTextPosition, normalSize);
+	if (m_pressedText != NULL) {
+		AlignTextPosition(m_pressedTextPosition, pressedSize);
+	}
+	else {
+		m_pressedText = m_normalText;
+		m_pressedTextPosition.m_x = m_normalTextPosition.m_x;
+		m_pressedTextPosition.m_y = m_normalTextPosition.m_y;
+	}
+	m_pressedTextPosition.m_x++;
+	m_pressedTextPosition.m_y++;
+	if (m_nativeButtonCreated == 0) {
+		CVSRect rect(m_buttonX, m_buttonY, m_bounds.m_width, m_bounds.m_height);
+		Create(rect, m_ownerWindow, g_szButton);
+		m_bounds.m_x += m_relativeTopLeft.m_x;
+		m_bounds.m_y += m_relativeTopLeft.m_y;
+		CHotAreaHandler* area = this;
+		m_ownerWindow->m_hotAreaList->AddToList(area);
+		SetActive(1);
+		m_nativeButtonCreated = 1;
+	}
+	m_forceDrawCount = 1;
+}
+
+// FUNCTION: LEMBALL 0x004693b0
+void CTextButton::Initialize()
+{
+	m_textPrimitive = new CText[1];
+	m_gdiFlags++;
+	m_pressedText = NULL;
+	m_normalText = NULL;
+	m_reserved120 = 0;
+	m_lastDrawnRemap = NULL;
+	m_remap = NULL;
+	m_font = CResFONT::Load(m_fontResourceId);
+	m_nativeButtonCreated = 0;
+}
+
+// FUNCTION: LEMBALL 0x00469440
+CTextButton::~CTextButton()
+{
+	m_font->UnLoad();
+	delete[] m_textPrimitive;
+}
+
+// FUNCTION: LEMBALL 0x00469480
+void CTextButton::DrawButton()
+{
+	CVSPoint position;
+	char* text;
+	bool depressed = m_pressed != 0 && CHotAreaHandler::m_active != 0;
+	if (!depressed) {
+		position.m_x = m_normalTextPosition.m_x;
+		text = m_normalText;
+		position.m_y = m_normalTextPosition.m_y;
+	}
+	else {
+		position.m_x = m_pressedTextPosition.m_x;
+		text = m_pressedText;
+		position.m_y = m_pressedTextPosition.m_y;
+	}
+	if (text != NULL) {
+		m_gdi->m_renderTarget->GetCurrDB();
+		m_textPrimitive->Set(position, m_font, text, TEXT_ADVANCE_X_POSITIVE, m_remap);
+		m_textPrimitive->Draw(m_gdi);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00469530
+void CTextButton::OnPaint(const CVSRect& p_rect)
+{
+	if (m_lastDrawnRemap != m_remap) {
+		m_forceDrawCount = 1;
+	}
+	if (m_gdi->m_primitiveCount == 0 && (m_autoDraw != 0 || m_forceDrawCount != 0 || m_pressed != m_lastDrawnPressed)) {
+		if (GetSizeStatus() != 0) {
+			_DrawButton();
+			CFramedButton::DrawButton();
+			DrawButton();
+		}
+		CChangeList* changeList = m_gdi->m_renderTarget->GetChangeList();
+		m_gdi->AddToList(m_primitive);
+		changeList->Reset();
+		m_drawCompleted = 1;
+	}
+}

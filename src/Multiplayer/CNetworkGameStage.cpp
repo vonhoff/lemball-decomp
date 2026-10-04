@@ -1,6 +1,6 @@
 #include "Multiplayer/CNetworkGameStage.h"
 
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x004523b0
 CNetworkGameStage::CNetworkGameStage() : CNetworkMessage(NETWORK_MESSAGE_GAME_STAGE)

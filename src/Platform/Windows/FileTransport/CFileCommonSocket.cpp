@@ -1,8 +1,8 @@
 #include "CFileCommonSocket.h"
 
 #include "Engine/VsTime.h"
-#include "Engine/Network/NetworkConstants.h"
-#include "Engine/Network/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
 
 // FUNCTION: LEMBALL 0x00479880
 bool CFileCommonSocket::CreateSocket(const char* p_path)

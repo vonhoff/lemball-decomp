@@ -1,7 +1,7 @@
 #include "CSpriteWindow.h"
 
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x0044c830
 CSpriteWindow::CSpriteWindow()

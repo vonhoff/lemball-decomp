@@ -5,8 +5,8 @@
 #include "Platform/Windows/Graphics/CGraphicsState.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CGDIDevice.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CGDIDevice.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 #include <windows.h>
 
@@ -14,8 +14,8 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Graphics/Surfaces/CPVSurface.h"
-#include "Engine/Windows/CPVWnd.h"
+#include "Platform/Windows/Graphics/CPVSurface.h"
+#include "CPVWnd.h"
 #include "CWnd.h"
 
 #define WIN32_LEAN_AND_MEAN

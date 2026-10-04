@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CTCPIPNETWORK_H
 
 #include "Platform/Windows/Network/CNetworkWnd.h"
-#include "Engine/Network/CBaseNetwork.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 
 #define TCPIP_MESSAGE_FORCE_PROCESS 0x444
 #define TCPIP_TIMER_ID 0x12345678
@@ -34,15 +34,6 @@ extern unsigned long g_dwTCPIPNetworkThreadId;
 extern void* g_hTCPIPNetworkThread;
 extern int g_socketWindowClassRegistered;
 extern int g_tcpIpNetworkWindowClassRegistered;
-extern unsigned int g_networkPacketSize;
-extern BasePacketHeader* g_pNetworkPacketScratch;
-extern unsigned int g_receivedPacketSize;
-extern BasePacketHeader* g_pBroadcastPacketTemplate;
-extern char* g_szBroadcastPeerName;
-extern unsigned int g_broadcastPayloadLength;
-extern unsigned short g_broadcastPort;
-extern unsigned int g_localHostLookupComplete;
-extern int g_lastNetworkError;
 
 // SYNTHETIC: LEMBALL 0x00471a10
 // CTCPIPNetwork::`scalar deleting destructor'

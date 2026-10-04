@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_PANEL_CPANELPAUSEBUTTON_H
 #define LEMBALL_VIEWS_PANEL_CPANELPAUSEBUTTON_H
 
-#include "Engine/Controls/CToggleButton.h"
+#include "Platform/Windows/Windowing/CToggleButton.h"
 
 class CPanel;
 class CPVGWnd;

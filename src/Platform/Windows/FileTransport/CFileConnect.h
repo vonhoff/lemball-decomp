@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILECONNECT_H
 #define LEMBALL_VISOS_NETWORK_CFILECONNECT_H
 
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "CFileOpenManagement.h"
 
 // SIZE 0x1b8

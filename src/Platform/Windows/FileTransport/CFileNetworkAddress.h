@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILENETWORKADDRESS_H
 #define LEMBALL_VISOS_NETWORK_CFILENETWORKADDRESS_H
 
-#include "Engine/Network/CNetworkAddress.h"
+#include "Multiplayer/Transport/CNetworkAddress.h"
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x0049a030

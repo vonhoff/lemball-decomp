@@ -18,7 +18,7 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Input/CBaseCursor.h"
+#include "Platform/Windows/Input/CBaseCursor.h"
 
 class CBaseQueueHandler;
 class CRemap;

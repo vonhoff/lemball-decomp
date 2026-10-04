@@ -2,7 +2,7 @@
 
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBase.h"

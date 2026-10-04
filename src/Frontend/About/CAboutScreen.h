@@ -6,7 +6,7 @@
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
-#include "Engine/Windows/CDrawer.h"
+#include "Platform/Windows/Windowing/CDrawer.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 

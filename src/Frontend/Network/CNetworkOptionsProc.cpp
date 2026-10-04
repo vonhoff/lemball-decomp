@@ -4,19 +4,19 @@
 #include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/CGameAcceptMessage.h"
 #include "Multiplayer/CGameRejectMessage.h"
-#include "Engine/Network/Packets/BasePacketHeader.h"
-#include "Engine/Network/Packets/CReadPacket.h"
-#include "Engine/Network/CBaseNetwork.h"
-#include "Engine/Network/CBroadcast.h"
-#include "Engine/Network/CConnect.h"
-#include "Engine/Network/NetworkConstants.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Packets/CReadPacket.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/CBroadcast.h"
+#include "Multiplayer/Transport/CConnect.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "CNetworkOptionsDrawer.h"
 
 #define g_pNetworkOptionsDrawer ((CNetworkOptionsDrawer*) g_pBaseFrontendDrawer)
 
 #include "Frontend/CBaseFrontendProcess.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 #include <new.h>
 #include <stddef.h>

@@ -12,7 +12,7 @@ CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(GAME_MESSAGE_GAME_I
 }
 
 #include "Engine/Strings/CString.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 #include <string.h>
 

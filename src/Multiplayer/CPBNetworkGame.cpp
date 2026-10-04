@@ -4,7 +4,7 @@
 #include "Application/GameTime.h"
 #include "Gameplay/Messages/GameMessageIds.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
-#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00452fe0
 CPBNetworkGame::CPBNetworkGame(CAI* p_ai)

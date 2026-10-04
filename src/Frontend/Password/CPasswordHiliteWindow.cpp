@@ -1,7 +1,7 @@
 #include "CPasswordHiliteWindow.h"
 
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00451fb0
 CPasswordHiliteWindow::CPasswordHiliteWindow()

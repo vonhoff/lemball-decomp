@@ -1,7 +1,7 @@
 #include "CText.h"
 
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Engine/Streams/CVSOStream.h"

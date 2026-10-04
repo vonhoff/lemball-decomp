@@ -4,7 +4,7 @@
 #include "CTCPIPBroadcast.h"
 #include "CTCPIPConnect.h"
 #include "CTCPIPNetworkAddress.h"
-#include "Engine/Network/NetworkConstants.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/WinSock/WSAData.h"
 #include "Platform/WinSock/WinSock.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
@@ -117,30 +117,3 @@ int g_tcpIpNetworkWindowClassRegistered = 0;
 
 // GLOBAL: LEMBALL 0x004a23c4
 unsigned int g_tcpIpBytesReceived = 0;
-
-// GLOBAL: LEMBALL 0x004a1e24
-unsigned int g_networkPacketSize = 0;
-
-// GLOBAL: LEMBALL 0x004a1e28
-BasePacketHeader* g_pNetworkPacketScratch = NULL;
-
-// GLOBAL: LEMBALL 0x004a1e2c
-unsigned int g_receivedPacketSize = 0;
-
-// GLOBAL: LEMBALL 0x004a1e34
-BasePacketHeader* g_pBroadcastPacketTemplate = NULL;
-
-// GLOBAL: LEMBALL 0x004a1e38
-char* g_szBroadcastPeerName = NULL;
-
-// GLOBAL: LEMBALL 0x004a1e3c
-unsigned int g_broadcastPayloadLength = 0;
-
-// GLOBAL: LEMBALL 0x004a1e44
-unsigned int g_localHostLookupComplete = 0;
-
-// GLOBAL: LEMBALL 0x004a1e48
-unsigned short g_broadcastPort = 0;
-
-// GLOBAL: LEMBALL 0x004a1e4c
-int g_lastNetworkError = 0;

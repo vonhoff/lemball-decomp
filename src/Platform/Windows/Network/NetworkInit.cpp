@@ -3,10 +3,10 @@
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Startup/ProcessExitCodes.h"
 #include "Engine/Startup/VsInit.h"
-#include "Engine/Network/CBaseNetwork.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Platform/Windows/FileTransport/CFileNetwork.h"
 #include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
-#include "Engine/Network/NetworkConstants.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

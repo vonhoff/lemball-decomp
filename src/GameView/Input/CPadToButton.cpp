@@ -1,7 +1,7 @@
 #include "CPadToButton.h"
 
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Controls/CPVButton.h"
+#include "Platform/Windows/Windowing/CPVButton.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Queues/Message.h"
 

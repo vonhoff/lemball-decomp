@@ -10,7 +10,7 @@
 #include "Engine/Animation/CRepeatAnim.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Graphics/Palettes/CBasePalManager.h"
-#include "Engine/Network/NetworkMode.h"
+#include "Multiplayer/Transport/NetworkMode.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Manifest.h"

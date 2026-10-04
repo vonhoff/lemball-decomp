@@ -1,8 +1,8 @@
 #include "Engine/Startup/PreInit.h"
 #include "Engine/Startup/VsInit.h"
 #include "CCursor.h"
-#include "Engine/Graphics/Surfaces/CGDIDevice.h"
-#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "CGDIDevice.h"
+#include "CSurface.h"
 #include "CGraphicsDriver.h"
 #include "CGraphicsState.h"
 

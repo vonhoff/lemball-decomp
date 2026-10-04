@@ -9,7 +9,7 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"

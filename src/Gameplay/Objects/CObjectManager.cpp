@@ -1,6 +1,6 @@
 #include "CObjectManager.h"
 
-#include "Engine/Network/CConnect.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "CGameObject.h"
 #include "Gameplay/Messages/GameMessageIds.h"
 #include "Gameplay/Simulation/CAI.h"
