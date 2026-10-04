@@ -1,5 +1,6 @@
 """Shared repository paths, source scanning and upstream reccmp setup."""
 
+import logging
 import re
 from pathlib import Path
 
@@ -39,9 +40,25 @@ def collect_sources(paths=None):
     return list(source_code_search([ROOT / path for path in paths or [SRC]]))
 
 
+def _show_match_diagnostic(record):
+    """Mute the known Position/ActivatePosition FOLDED-address diagnostic only."""
+    return not (
+        record.levelno == logging.WARNING
+        and record.msg == "Match (%x, %x) collides with previous staged match"
+        and isinstance(record.args, tuple)
+        and len(record.args) == 2
+        and record.args[0] == 0x0040A830
+    )
+
+
 def load_engine():
     from reccmp.compare import Compare
     from reccmp.project.detect import RecCmpProject
 
     target = RecCmpProject.from_directory(BUILD).get("LEMBALL")
-    return target, Compare.from_target(target)
+    logger = logging.getLogger("reccmp.compare.db")
+    logger.addFilter(_show_match_diagnostic)
+    try:
+        return target, Compare.from_target(target)
+    finally:
+        logger.removeFilter(_show_match_diagnostic)
