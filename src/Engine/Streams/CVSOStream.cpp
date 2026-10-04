@@ -143,10 +143,8 @@ CVSOStream& CVSOStream::operator<<(unsigned int p_value)
 // FUNCTION: LEMBALL 0x00458780
 CVSOStream& CVSOStream::operator<<(Hex p_value)
 {
-	unsigned int oldFlags = m_flags;
-	m_flags = (oldFlags & ~VSO_STREAM_BASE_FIELD_MASK) | VSO_STREAM_HEXADECIMAL_BASE_FLAG;
-	unsigned int oldRadix = m_radix;
-	m_radix = VSO_RADIX_HEXADECIMAL;
+	unsigned int oldFlags = SetFlags(VSO_STREAM_HEXADECIMAL_BASE_FLAG, VSO_STREAM_BASE_FIELD_MASK);
+	unsigned int oldRadix = SetRadix(VSO_RADIX_HEXADECIMAL);
 	*this << (unsigned long) p_value.m_value;
 
 	m_radix = oldRadix;
@@ -157,14 +155,10 @@ CVSOStream& CVSOStream::operator<<(Hex p_value)
 // FUNCTION: LEMBALL 0x004589c0
 CVSOStream& CVSOStream::operator<<(Hex8 p_value)
 {
-	char oldFill = m_fill;
-	m_fill = '0';
-	unsigned int oldWidth = m_width;
-	m_width = VSO_HEX8_DIGIT_WIDTH;
-	unsigned int oldFlags = m_flags;
-	m_flags = (oldFlags & ~VSO_STREAM_BASE_FIELD_MASK) | VSO_STREAM_HEXADECIMAL_BASE_FLAG;
-	unsigned int oldRadix = m_radix;
-	m_radix = VSO_RADIX_HEXADECIMAL;
+	char oldFill = SetFill('0');
+	unsigned int oldWidth = SetWidth(VSO_HEX8_DIGIT_WIDTH);
+	unsigned int oldFlags = SetFlags(VSO_STREAM_HEXADECIMAL_BASE_FLAG, VSO_STREAM_BASE_FIELD_MASK);
+	unsigned int oldRadix = SetRadix(VSO_RADIX_HEXADECIMAL);
 	*this << (unsigned long) p_value.m_value;
 
 	m_width = oldWidth;

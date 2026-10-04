@@ -21,6 +21,30 @@ public:
 	CVSIOs(CVSStreambuf* p_streamBuffer);
 	virtual ~CVSIOs(); // vtable+0x00
 	CVSIOs();
+	char SetFill(char p_fill)
+	{
+		char previous = m_fill;
+		m_fill = p_fill;
+		return previous;
+	}
+	unsigned int SetWidth(unsigned int p_width)
+	{
+		unsigned int previous = m_width;
+		m_width = p_width;
+		return previous;
+	}
+	unsigned int SetFlags(unsigned int p_flags, unsigned int p_clearMask)
+	{
+		unsigned int previous = m_flags;
+		m_flags = (previous & ~p_clearMask) | p_flags;
+		return previous;
+	}
+	unsigned int SetRadix(unsigned int p_radix)
+	{
+		unsigned int previous = m_radix;
+		m_radix = p_radix;
+		return previous;
+	}
 
 public:
 	int m_state;                  // 0x04
