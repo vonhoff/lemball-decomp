@@ -6,7 +6,7 @@
 
 #include <new.h>
 #include <stddef.h>
-
+#define FORMATION_VECTOR_COUNT 8
 // FUNCTION: LEMBALL 0x0041a140
 CFormationManager::CFormationManager()
 {
@@ -21,7 +21,7 @@ CFormationManager::CFormationManager()
 	formation = (CVector*) g_aFormationTemplates;
 	formationCount = 3;
 	do {
-		vectorCount = 8;
+		vectorCount = FORMATION_VECTOR_COUNT;
 		do {
 			y = formation->m_yFixed;
 			x = formation->m_xFixed;
@@ -56,9 +56,9 @@ void CFormationManager::TransformFormation(int p_formationIndex, int p_angle)
 	CVector* transformed;
 	int remaining;
 
-	source = m_sourceVectors + p_formationIndex * 8;
+	source = m_sourceVectors + p_formationIndex * FORMATION_VECTOR_COUNT;
 	transformed = m_transformedVectors;
-	remaining = 8;
+	remaining = FORMATION_VECTOR_COUNT;
 	do {
 		VSTrig* trig = g_pVSTrig;
 		int sine;
@@ -101,7 +101,7 @@ CVector* CFormationManager::GetFirstVector()
 CVector* CFormationManager::GetNextVector()
 {
 	int index = ++m_restartState;
-	if (index >= 8) {
+	if (index >= FORMATION_VECTOR_COUNT) {
 		return NULL;
 	}
 	return &m_transformedVectors[index];
@@ -110,8 +110,8 @@ CVector* CFormationManager::GetNextVector()
 // FUNCTION: LEMBALL 0x0041a320
 CVector* CFormationManager::GetAVector(int p_index)
 {
-	if (p_index >= 8) {
-		p_index -= 8;
+	if (p_index >= FORMATION_VECTOR_COUNT) {
+		p_index -= FORMATION_VECTOR_COUNT;
 	}
 	return &m_transformedVectors[p_index];
 }
