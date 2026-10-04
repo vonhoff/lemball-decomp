@@ -1,5 +1,7 @@
 #include "CMain2DDisplay.h"
 
+#include "Platform/Windows/Windowing/MenuList.h"
+
 #include "Gameplay/Simulation/CAI.h"
 #include "Application/CGame.h"
 #include "Application/GameMain.h"
@@ -561,36 +563,34 @@ char g_szMenuHelpOnHelp[16] = "H&elp On Help";
 // GLOBAL: LEMBALL 0x0049e78c
 char g_szMenuAbout[12] = "&About...";
 
-typedef void* MenuListStorage[6];
-
 // GLOBAL: LEMBALL 0x0049e5f8
-MenuListStorage g_aFileMenuItems[3] = {
-	{g_szMenuFile, NULL, NULL, (void*) 1, NULL, NULL},
-	{g_szMenuExit, (void*) 40001, (void*) MAIN_MENU_EXIT, (void*) 1, NULL, NULL},
-	{NULL, NULL, NULL, NULL, NULL, NULL},
+MenuList g_aFileMenuItems[3] = {
+	{g_szMenuFile, 0, 0, 1, 0, 0},
+	{g_szMenuExit, 40001, MAIN_MENU_EXIT, 1, 0, 0},
+	{NULL, 0, 0, 0, 0, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049e640
-MenuListStorage g_aOptionsMenuItems[3] = {
-	{g_szMenuOptions, NULL, NULL, (void*) 1, NULL, NULL},
-	{g_szMenuFullScreen, (void*) 40012, (void*) MAIN_MENU_TOGGLE_FULLSCREEN, (void*) 1, NULL, NULL},
-	{NULL, NULL, NULL, NULL, NULL, NULL},
+MenuList g_aOptionsMenuItems[3] = {
+	{g_szMenuOptions, 0, 0, 1, 0, 0},
+	{g_szMenuFullScreen, 40012, MAIN_MENU_TOGGLE_FULLSCREEN, 1, 0, 0},
+	{NULL, 0, 0, 0, 0, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049e688
-MenuListStorage g_aHelpMenuItems[6] = {
-	{g_szMenuHelp, NULL, NULL, (void*) 1, NULL, NULL},
-	{g_szMenuContents, (void*) 40003, (void*) MAIN_MENU_HELP_CONTENTS, (void*) 1, NULL, NULL},
-	{g_szMenuSearchTopic, (void*) 40016, (void*) MAIN_MENU_HELP_SEARCH, (void*) 1, NULL, NULL},
-	{g_szMenuHelpOnHelp, (void*) 40013, (void*) MAIN_MENU_HELP_ON_HELP, (void*) 1, NULL, NULL},
-	{g_szMenuAbout, (void*) 40011, (void*) MAIN_MENU_ABOUT, (void*) 1, NULL, NULL},
-	{NULL, NULL, NULL, NULL, NULL, NULL},
+MenuList g_aHelpMenuItems[6] = {
+	{g_szMenuHelp, 0, 0, 1, 0, 0},
+	{g_szMenuContents, 40003, MAIN_MENU_HELP_CONTENTS, 1, 0, 0},
+	{g_szMenuSearchTopic, 40016, MAIN_MENU_HELP_SEARCH, 1, 0, 0},
+	{g_szMenuHelpOnHelp, 40013, MAIN_MENU_HELP_ON_HELP, 1, 0, 0},
+	{g_szMenuAbout, 40011, MAIN_MENU_ABOUT, 1, 0, 0},
+	{NULL, 0, 0, 0, 0, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049e718
 MenuList* g_apMainDisplayMenus[4] = {
-	(MenuList*) g_aFileMenuItems,
-	(MenuList*) g_aOptionsMenuItems,
-	(MenuList*) g_aHelpMenuItems,
+	g_aFileMenuItems,
+	g_aOptionsMenuItems,
+	g_aHelpMenuItems,
 	NULL,
 };
