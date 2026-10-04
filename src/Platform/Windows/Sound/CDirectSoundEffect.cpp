@@ -63,13 +63,13 @@ const char* DescribeDirectSoundError(unsigned int p_error)
 	strcpy(g_directSoundErrorText, prefix);
 	int i = 0;
 	unsigned int code;
-	const unsigned int* codes = &g_directSoundErrors[0].m_code;
+	const DirectSoundError* entry = g_directSoundErrors;
 	do {
-		code = *codes;
+		code = entry->m_code;
 		if (code == p_error) {
 			return g_directSoundErrors[i].m_name;
 		}
-		codes += 2;
+		entry++;
 		i++;
 	} while (code != 0);
 	vsLtoa(p_error, g_directSoundErrorText + strlen(prefix), 10);
