@@ -201,7 +201,8 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 	current = m_handlerList;
 	index = 0;
 	previous = current;
-	if (m_handlerCount != 0) {
+	const unsigned int count = m_handlerCount;
+	if (count != 0) {
 		do {
 			if (current->m_priority == p_priority && current->m_handler == p_handler) {
 				if (index == 0) {
@@ -220,7 +221,7 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 			previous = current;
 			index = index + 1;
 			current = current->m_next;
-		} while (index < m_handlerCount);
+		} while (count > index);
 	}
 	LeaveCritical();
 	return false;
