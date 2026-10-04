@@ -8,6 +8,7 @@
 #include "../../Visos/Animation/CRepeatAnim.h"
 #include "../../Visos/Foundation/CTextManager.h"
 #include "../../Visos/Graphics/CBasePalManager.h"
+#include "../../Visos/Network/NetworkMode.h"
 #include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/CResFONT.h"
 #include "../../Visos/Resources/Manifest.h"
@@ -15,7 +16,9 @@
 #include "../Controls/CHiliteController.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Base/FrontendLayoutMode.h"
 #include "Frontend/Support/CoordPair.h"
+#include "Visos/Animation/AnimationConstants.h"
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/CVSSize.h"
 #include "Visos/Foundation/Message.h"
@@ -28,6 +31,11 @@ class CGWnd;
 class CRemap;
 
 #pragma intrinsic(strcpy, strlen)
+
+enum {
+	PREVIEW_ANIMATION_CYCLE_DURATION_MS = 500,
+	PREVIEW_TEXT_POSITION_UNSET = -1
+};
 
 #define PREVIEW_BUTTON_MESSAGE_GO 0xacef000c
 #define PREVIEW_BUTTON_MESSAGE_RETURN 0xacef000d
@@ -127,14 +135,14 @@ CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVS
 	m_drawSolid = 1;
 	Setup();
 	m_lemmingAnim = new CRepeatAnim(CAnimsManager::GetnAnims(m_lemmingAnimId), 1);
-	m_lemmingAnim->StartAnim(500);
-	m_lemmingAnim->m_fixedTime = 0xffffffff;
+	m_lemmingAnim->StartAnim(PREVIEW_ANIMATION_CYCLE_DURATION_MS);
+	m_lemmingAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 	m_teamAnim = new CRepeatAnim(CAnimsManager::GetnAnims(m_teamAnimId), 1);
-	m_teamAnim->StartAnim(500);
-	m_teamAnim->m_fixedTime = 0xffffffff;
+	m_teamAnim->StartAnim(PREVIEW_ANIMATION_CYCLE_DURATION_MS);
+	m_teamAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 	m_opponentAnim = new CRepeatAnim(CAnimsManager::GetnAnims(m_opponentAnimId), 1);
-	m_opponentAnim->StartAnim(500);
-	m_opponentAnim->m_fixedTime = 0xffffffff;
+	m_opponentAnim->StartAnim(PREVIEW_ANIMATION_CYCLE_DURATION_MS);
+	m_opponentAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 	RegisterRemaps();
 }
 
@@ -146,7 +154,7 @@ void CPreviewDrawer::Load()
 	unsigned long* goAnim;
 	PreviewLayout* layout;
 
-	if (m_mode == 1) {
+	if (m_mode == FRONTEND_LAYOUT_COMPACT) {
 		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_GUNLEMM);
 		m_layout = (PreviewLayout*) g_abPreviewLayoutCompact;
 		goAnim = &g_dwPreviewGoAnimIdsCompact;
@@ -270,7 +278,8 @@ void CPreviewDrawer::DrawBackGround()
 {
 	m_primitive[m_primitiveBank].m_bitmap.Draw(m_gdi);
 	DrawFrame(m_layout->m_positions[PreviewFormationAnchor],
-			  m_layout->m_positions[m_networkMode != 0 ? PreviewNetworkFrameEndpoint : PreviewFormationOffset]);
+			  m_layout->m_positions[m_networkMode != NETWORK_MODE_SINGLE_PLAYER ? PreviewNetworkFrameEndpoint
+																				: PreviewFormationOffset]);
 }
 
 // FUNCTION: LEMBALL 0x004497b0
@@ -286,22 +295,28 @@ void CPreviewDrawer::DrawText()
 	if (m_drawingBackBuffer != 0) {
 		line = (char*) m_levelNameLines;
 		positions = m_textPositions;
-		count = 3;
+		count = PREVIEW_LEVEL_NAME_LINE_COUNT;
 		do {
-			if (*positions != -1) {
-				pos.m_width = (short) *positions;
-				pos.m_height = (short) positions[1];
+			if (*positions != PREVIEW_TEXT_POSITION_UNSET) {
+				pos.m_width = (short) positions[PREVIEW_TEXT_POSITION_X];
+				pos.m_height = (short) positions[PREVIEW_TEXT_POSITION_Y];
 				advance.m_height = 0;
 				advance.m_width = 0;
-				m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, line, 0x20, NULL);
+				m_textManager->DrawString(m_gdi,
+										  (CVSPoint&) pos,
+										  advance,
+										  m_chalkFontId,
+										  line,
+										  PREVIEW_TEXT_MAX_CHARACTERS,
+										  NULL);
 			}
-			line = line + 0x20;
-			positions = positions + 2;
+			line = line + PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES;
+			positions = positions + PREVIEW_TEXT_POSITION_COMPONENT_COUNT;
 			count = count - 1;
 		} while (count != 0);
 
-		count = 3;
-		if (m_networkMode != 0) {
+		count = PREVIEW_LEVEL_NAME_LINE_COUNT;
+		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 			count = 4;
 		}
 		if (count > 0) {
@@ -313,7 +328,13 @@ void CPreviewDrawer::DrawText()
 				pos.m_width = (short) layoutPosition->m_x;
 				pos.m_height = (short) layoutPosition->m_y;
 				positions = positions + 1;
-				m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, g_szPreviewX, 0x20, NULL);
+				m_textManager->DrawString(m_gdi,
+										  (CVSPoint&) pos,
+										  advance,
+										  m_chalkFontId,
+										  g_szPreviewX,
+										  PREVIEW_TEXT_MAX_CHARACTERS,
+										  NULL);
 				count = count - 1;
 			} while (count != 0);
 		}
@@ -325,15 +346,26 @@ void CPreviewDrawer::DrawText()
 				advance.m_width = 0;
 				pos.m_width = (short) layout->m_positions[PreviewTimeText].m_x;
 				pos.m_height = (short) layout->m_positions[PreviewTimeText].m_y;
-				m_textManager
-					->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, g_szPreviewInfinite, 0x20, NULL);
+				m_textManager->DrawString(m_gdi,
+										  (CVSPoint&) pos,
+										  advance,
+										  m_chalkFontId,
+										  g_szPreviewInfinite,
+										  PREVIEW_TEXT_MAX_CHARACTERS,
+										  NULL);
 			}
 			else {
 				advance.m_height = 0;
 				advance.m_width = 0;
 				pos.m_width = (short) layout->m_positions[PreviewTimeText].m_x;
 				pos.m_height = (short) layout->m_positions[PreviewTimeText].m_y;
-				m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, m_timeText, 0x20, NULL);
+				m_textManager->DrawString(m_gdi,
+										  (CVSPoint&) pos,
+										  advance,
+										  m_chalkFontId,
+										  m_timeText,
+										  PREVIEW_TEXT_MAX_CHARACTERS,
+										  NULL);
 			}
 		}
 
@@ -341,21 +373,34 @@ void CPreviewDrawer::DrawText()
 		PreviewLayout* skillLayout = m_layout;
 		int skillX = skillLayout->m_positions[PreviewSkillText].m_x;
 		int skillY = skillLayout->m_positions[PreviewSkillText].m_y;
-		short halfWidth =
-			(short) (m_textManager->GetFont(m_chalkFontId)->GetSize(g_szPreviewSkillNames[skill], 0x20).m_width / 2);
+		short halfWidth = (short) (m_textManager->GetFont(m_chalkFontId)
+									   ->GetSize(g_szPreviewSkillNames[skill], PREVIEW_TEXT_MAX_CHARACTERS)
+									   .m_width /
+								   2);
 		pos.m_width = (short) (skillX - halfWidth);
 		advance.m_height = 0;
 		advance.m_width = 0;
 		pos.m_height = (short) skillY;
-		m_textManager
-			->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, g_szPreviewSkillNames[skill], 0x20, NULL);
+		m_textManager->DrawString(m_gdi,
+								  (CVSPoint&) pos,
+								  advance,
+								  m_chalkFontId,
+								  g_szPreviewSkillNames[skill],
+								  PREVIEW_TEXT_MAX_CHARACTERS,
+								  NULL);
 
 		if (m_teamCount > 4) {
 			advance.m_height = 0;
 			advance.m_width = 0;
 			pos.m_width = (short) m_layout->m_positions[PreviewTimeText].m_x;
 			pos.m_height = (short) m_layout->m_positions[PreviewNoneText].m_y;
-			m_textManager->DrawString(m_gdi, (CVSPoint&) pos, advance, m_chalkFontId, g_szPreviewNone, 0x20, NULL);
+			m_textManager->DrawString(m_gdi,
+									  (CVSPoint&) pos,
+									  advance,
+									  m_chalkFontId,
+									  g_szPreviewNone,
+									  PREVIEW_TEXT_MAX_CHARACTERS,
+									  NULL);
 		}
 	}
 }
@@ -389,7 +434,7 @@ void CPreviewDrawer::DrawAnims()
 			 m_teamAnim,
 			 NULL);
 
-	if (m_networkMode != 0) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		CAnimsManager::DrawAnim(CVSPoint((short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_x,
 										 (short) m_layout->m_positions[PreviewNetworkLemmingAnim].m_y),
 								m_lemmingAnimId,
@@ -456,28 +501,28 @@ bool CPreviewDrawer::ProcessMessages(Message* p_message)
 	default:
 		return false;
 	case PREVIEW_BUTTON_MESSAGE_GO:
-		if (m_networkMode != 0) {
-			Action(USER_ACTION_2, USER_ACTION_STAGE_REQUEST);
+		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
+			Action(USER_ACTION_PREVIEW_GO_REQUEST, USER_ACTION_STAGE_REQUEST);
 			return true;
 		}
 		m_quitYet = 1;
-		m_returnState = 2;
+		m_returnState = FLOW_MAIN_OPTIONS_1;
 		return true;
 	case PREVIEW_BUTTON_MESSAGE_RETURN:
-		if (m_networkMode != 0) {
-			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
+		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
+			Action(USER_ACTION_PREVIEW_RETURN_REQUEST, USER_ACTION_STAGE_REQUEST);
 			return true;
 		}
 		m_quitYet = 1;
-		m_returnState = 5;
+		m_returnState = FLOW_GAMEPLAY;
 		return true;
 	case PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL:
 		if (m_nextDisabled == 1) {
 			m_ready = 1;
 			return true;
 		}
-		if (m_networkMode != 0) {
-			Action(USER_ACTION_0, USER_ACTION_STAGE_REQUEST);
+		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
+			Action(USER_ACTION_NEXT_LEVEL, USER_ACTION_STAGE_REQUEST);
 			return true;
 		}
 		NextLevel();
@@ -487,8 +532,8 @@ bool CPreviewDrawer::ProcessMessages(Message* p_message)
 			m_ready = 1;
 			return true;
 		}
-		if (m_networkMode != 0) {
-			Action(USER_ACTION_1, USER_ACTION_STAGE_REQUEST);
+		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
+			Action(USER_ACTION_PREVIOUS_LEVEL, USER_ACTION_STAGE_REQUEST);
 			return true;
 		}
 		PreviousLevel();
@@ -514,30 +559,30 @@ void CPreviewDrawer::PreviousLevel()
 void CPreviewDrawer::Go()
 {
 	m_quitYet = 1;
-	m_returnState = 5;
+	m_returnState = FLOW_GAMEPLAY;
 }
 
 // FUNCTION: LEMBALL 0x00449ec0
 void CPreviewDrawer::Return()
 {
 	m_quitYet = 1;
-	m_returnState = 2;
+	m_returnState = FLOW_MAIN_OPTIONS_1;
 }
 
 // FUNCTION: LEMBALL 0x00449ee0
 bool CPreviewDrawer::ConfirmedAction(eUserActions p_action)
 {
 	switch (p_action) {
-	case USER_ACTION_0:
+	case USER_ACTION_NEXT_LEVEL:
 		NextLevel();
 		return true;
-	case USER_ACTION_1:
+	case USER_ACTION_PREVIOUS_LEVEL:
 		PreviousLevel();
 		return true;
-	case USER_ACTION_2:
+	case USER_ACTION_PREVIEW_RETURN_CONFIRM:
 		Return();
 		return true;
-	case USER_ACTION_3:
+	case USER_ACTION_PREVIEW_GO_CONFIRM:
 		Go();
 		return true;
 	default:
@@ -550,7 +595,7 @@ void CPreviewDrawer::Processing()
 {
 	if (g_nTestAllLevels) {
 		m_quitYet = 1;
-		m_returnState = 5;
+		m_returnState = FLOW_GAMEPLAY;
 	}
 }
 
@@ -561,7 +606,7 @@ void CPreviewDrawer::LoadLevelInformation()
 	char* source;
 	CResFONT* font;
 	short measuredWidth;
-	char candidateLine[32];
+	char candidateLine[PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES];
 	int sourcePos;
 	int linePos;
 	int lineIndex;
@@ -581,7 +626,7 @@ void CPreviewDrawer::LoadLevelInformation()
 									  g_pGameStatus->m_lastLevels[g_pGameStatus->m_skill],
 									  &preview);
 
-	if (m_networkMode != 0) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		m_lemmingCount = preview.m_opponentLemmingCount;
 	}
 	m_teamCount = preview.m_playerCount;
@@ -596,17 +641,17 @@ void CPreviewDrawer::LoadLevelInformation()
 
 	int i;
 	memset(candidateLine, 0, sizeof(candidateLine));
-	for (i = 0; i < 0x20; i++) {
+	for (i = 0; i < PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES; i++) {
 		m_levelNameLines[0][i] = 0;
 		m_levelNameLines[1][i] = 0;
 		m_levelNameLines[2][i] = 0;
 	}
 
 	targetPos = m_textPositions;
-	for (i = 0; i < 3; i++) {
-		targetPos[0] = -1;
-		targetPos[1] = -1;
-		targetPos += 2;
+	for (i = 0; i < PREVIEW_LEVEL_NAME_LINE_COUNT; i++) {
+		targetPos[PREVIEW_TEXT_POSITION_X] = PREVIEW_TEXT_POSITION_UNSET;
+		targetPos[PREVIEW_TEXT_POSITION_Y] = PREVIEW_TEXT_POSITION_UNSET;
+		targetPos += PREVIEW_TEXT_POSITION_COMPONENT_COUNT;
 	}
 
 	lineIndex = 0;
@@ -624,7 +669,7 @@ void CPreviewDrawer::LoadLevelInformation()
 		memset(candidateLine, '0', sizeof(candidateLine));
 		while (1) {
 			endOfSource = AddWord(source, candidateLine, sourcePos, linePos);
-			measuredWidth = font->GetSize(candidateLine, 0x20).m_width;
+			measuredWidth = font->GetSize(candidateLine, PREVIEW_TEXT_MAX_CHARACTERS).m_width;
 			if (measuredWidth > layoutWidth || endOfSource == 1) {
 				break;
 			}
@@ -637,16 +682,16 @@ void CPreviewDrawer::LoadLevelInformation()
 			endOfSource = 0;
 			SubWord(source, candidateLine, sourcePos, linePos);
 		}
-		const CVSSize& size = font->GetSize(candidateLine, 0x20);
+		const CVSSize& size = font->GetSize(candidateLine, PREVIEW_TEXT_MAX_CHARACTERS);
 		short measuredHeight = size.m_height;
-		targetPos[0] = (layoutWidth / 2 - (int) (size.m_width / 2)) + layoutX;
-		targetPos[1] = layoutY;
+		targetPos[PREVIEW_TEXT_POSITION_X] = (layoutWidth / 2 - (int) (size.m_width / 2)) + layoutX;
+		targetPos[PREVIEW_TEXT_POSITION_Y] = layoutY;
 		strcpy(targetLine, candidateLine);
 		layoutY = layoutY + measuredHeight;
 		lineIndex = lineIndex + 1;
-		targetLine = targetLine + 0x20;
-		targetPos = targetPos + 2;
-	} while (lineIndex < 3);
+		targetLine = targetLine + PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES;
+		targetPos = targetPos + PREVIEW_TEXT_POSITION_COMPONENT_COUNT;
+	} while (lineIndex < PREVIEW_LEVEL_NAME_LINE_COUNT);
 
 	m_timeText[0] = (char) (m_timeSeconds / 60) + '0';
 	m_timeText[1] = ':';

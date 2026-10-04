@@ -23,14 +23,14 @@ CGenericGroupManager::CGenericGroupManager(CAI* p_ai,
 	g_pGenericGroupFormationManager = p_formationManager;
 	m_groupCount = 0;
 	m_currentGroup = 0;
-	m_state = 1;
+	m_deleteEmptyGroups = true;
 	memset(m_groups, 0, sizeof(m_groups));
 }
 
 // FUNCTION: LEMBALL 0x0041e940
 CGenericGroupManager::~CGenericGroupManager()
 {
-	for (int i = 0; i < 40; i++) {
+	for (int i = 0; i < GENERIC_GROUP_CAPACITY; i++) {
 		if (m_groups[i] != NULL) {
 			delete m_groups[i];
 		}
@@ -45,6 +45,19 @@ void CGenericGroupManager::Restart()
 		group->Restart();
 		group = GetNextGroup();
 	}
+}
+
+// FUNCTION: LEMBALL 0x0041e9a0
+void CGenericGroupManager::ClearGroups()
+{
+	for (int index = 0; index < m_groupCount; ++index) {
+		if (m_groups[index] != 0) {
+			delete m_groups[index];
+		}
+		m_groups[index] = 0;
+	}
+	m_groupCount = 0;
+	m_currentGroup = 0;
 }
 
 // FUNCTION: LEMBALL 0x0041e9f0
@@ -174,7 +187,7 @@ CGenericGroup* CGenericGroupManager::GetGroupElementIsMemberOf(CGameObject* p_ob
 {
 	CGenericGroup* group = GetFirstGroup();
 	while (group != NULL) {
-		if (group->ConfirmElementIsInGroup(p_object) == 1) {
+		if (group->ConfirmElementIsInGroup(p_object) == true) {
 			return group;
 		}
 		group = GetNextGroup();
@@ -187,7 +200,7 @@ void CGenericGroupManager::AddNewGroup(CGenericGroup* p_group)
 {
 	int count = m_groupCount;
 
-	if (count < 0x28) {
+	if (count < GENERIC_GROUP_CAPACITY) {
 		m_groups[count] = p_group;
 		m_groupCount = m_groupCount + 1;
 	}
@@ -232,15 +245,15 @@ bool CGenericGroupManager::RemoveElementFromGroup(CGameObject* p_object, CGeneri
 	bool groupExists = true;
 	if (p_group != NULL) {
 		p_group->RemoveElementFromGroup(p_object);
-		if (m_state != 0 && p_group->GetElementsInGroup() < 1) {
+		if (m_deleteEmptyGroups && p_group->GetElementsInGroup() < 1) {
 			delete p_group;
 			m_groupCount--;
 			groupExists = false;
-			for (int index = 0; index < 40; index++) {
+			for (int index = 0; index < GENERIC_GROUP_CAPACITY; index++) {
 				if (m_groups[index] == p_group) {
 					int destination = index;
-					if (index < 39) {
-						int remaining = 39 - index;
+					if (index < GENERIC_GROUP_CAPACITY - 1) {
+						int remaining = GENERIC_GROUP_CAPACITY - 1 - index;
 						destination += remaining;
 						CGenericGroup** group = m_groups + index;
 						do {
@@ -305,7 +318,7 @@ bool CGenericGroupManager::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_co
 {
 	CGenericGroup* group = GetFirstGroup();
 	while (group != NULL) {
-		if (group->CheckGroupIntersection(p_rect, p_coordinate) == 1) {
+		if (group->CheckGroupIntersection(p_rect, p_coordinate) == true) {
 			return true;
 		}
 		group = GetNextGroup();

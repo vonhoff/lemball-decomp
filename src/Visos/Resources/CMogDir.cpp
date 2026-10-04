@@ -8,7 +8,7 @@
 #include "CRawRead.h"
 
 // GLOBAL: LEMBALL 0x004a1d78
-int g_emptyChunkIndex = -1;
+int g_emptyChunkIndex = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
 
 // GLOBAL: LEMBALL 0x004a1d7c
 ChunkInfo* g_pEmptyChunkInfo = NULL;
@@ -172,7 +172,7 @@ CMogDir* CMogDir::GetNextDir()
 	}
 
 	current = &m_currentDir;
-	if (current->m_index != -1) {
+	if (current->m_index != CHUNK_INDEX_BEFORE_FIRST_ENTRY) {
 
 		if (m_currentDir.m_info->m_child.m_info != NULL) {
 			*current = m_currentDir.m_info->m_child;
@@ -206,7 +206,7 @@ void CMogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 	Chunk* next;
 
 	do {
-		if (iterator->m_index != -1) {
+		if (iterator->m_index != CHUNK_INDEX_BEFORE_FIRST_ENTRY) {
 			if (m_chunkCount - iterator->m_index == 1) {
 				exhausted = 1;
 				break;
@@ -220,12 +220,12 @@ void CMogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 			next = &m_first;
 		}
 		*iterator = *next;
-		if ((int) type == -1) {
+		if (type == RESOURCE_CHUNK_ANY_TYPE) {
 			break;
 		}
 	} while (m_iterator.m_info->m_type != type);
 
-	if ((int) type == -1 || m_iterator.m_info->m_type == type) {
+	if (type == RESOURCE_CHUNK_ANY_TYPE || m_iterator.m_info->m_type == type) {
 		if (exhausted == 0) {
 			p_chunk = *iterator;
 			return;
@@ -241,7 +241,7 @@ void CMogDir::FindFirst(Chunk& p_chunk, unsigned int p_type)
 	Chunk* first = &m_first;
 
 	*iterator = *first;
-	m_iterator.m_index = -1;
+	m_iterator.m_index = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
 	FindNext(p_chunk, p_type);
 }
 
@@ -262,7 +262,7 @@ void CMogDir::Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse)
 		saved = *current;
 		root = &m_root;
 		*current = *root;
-		current->m_index = -1;
+		current->m_index = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
 		while (p_chunk.m_info == NULL) {
 			dir = GetNextDir();
 			if (dir == NULL) {

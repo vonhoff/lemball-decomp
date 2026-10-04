@@ -1,6 +1,7 @@
 #ifndef LEMBALL_CONTROL_SUPPORT_PREINIT_H
 #define LEMBALL_CONTROL_SUPPORT_PREINIT_H
 
+#include "../../Visos/Foundation/SmallMemoryConstants.h"
 #include "PreInit.h"
 
 // SIZE 0x1c
@@ -14,7 +15,7 @@ struct PreInit {
 	void* m_icon;                 // 0x18
 };
 
-extern unsigned int g_anPreInitCapabilities[7];
+extern unsigned int g_anPreInitCapabilities[SMALL_MEMORY_BUCKET_COUNT];
 extern PreInit g_preInitActive;
 extern PreInit g_preInit;
 #endif

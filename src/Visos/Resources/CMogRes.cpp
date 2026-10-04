@@ -6,6 +6,10 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 #pragma intrinsic(strcpy, strlen)
 
+enum {
+	RESOURCE_INDEX_NONE = -1
+};
+
 #include "../Animation/CStatManager.h"
 #include "../Foundation/CArena.h"
 #include "../Foundation/CVSRange.h"
@@ -115,7 +119,7 @@ bool CMogRes::SetWD(char* p_path)
 	{
 		Chunk* current = &m_workingDirectory->m_currentDir;
 		*current = m_workingDirectory->m_root;
-		current->m_index = -1;
+		current->m_index = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
 	}
 	for (;;) {
 		cursor = strchr(cursor, RESOURCE_PATH_SEPARATOR);
@@ -159,10 +163,13 @@ done:
 // FUNCTION: LEMBALL 0x0045c940
 int CMogRes::KillLeastResource(unsigned int p_requiredSize)
 {
+	enum eResourceEvictionInitialBound {
+		RESOURCE_REFERENCE_COUNT_INITIAL_UPPER_BOUND = 0xffffffffUL
+	};
 	register int scanned = 0;
 	register int i = 0;
-	register unsigned int bestRefs = 0xffffffff;
-	int bestIndex = -1;
+	register unsigned int bestRefs = RESOURCE_REFERENCE_COUNT_INITIAL_UPPER_BOUND;
+	int bestIndex = RESOURCE_INDEX_NONE;
 	unsigned int bestSize = 0;
 
 	if ((int) m_resourceCount > i) {
@@ -207,7 +214,7 @@ int CMogRes::KillLeastResource(unsigned int p_requiredSize)
 int CMogRes::GetFreeHandle()
 {
 	int i = 0;
-	int handle = -1;
+	int handle = RESOURCE_INDEX_NONE;
 
 	if ((int) m_resourceCount > 0) {
 		if ((int) m_resourceCount < RESOURCE_HANDLE_COUNT) {
@@ -243,9 +250,9 @@ unsigned char* CMogRes::AllocateMainMem(unsigned int p_size)
 				needed = size;
 			}
 			int handle = KillLeastResource(needed);
-			if (handle != -1) {
+			if (handle != RESOURCE_INDEX_NONE) {
 				m_resources[handle]->UnLoadData(1);
-				if (handle != -1) {
+				if (handle != RESOURCE_INDEX_NONE) {
 					continue;
 				}
 			}

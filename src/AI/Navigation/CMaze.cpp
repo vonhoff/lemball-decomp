@@ -1,6 +1,7 @@
 #include "CMaze.h"
 
 #include "../../Map/Base/CMap.h"
+#include "../../Map/Ground/CGround.h"
 #include "../Base/Solution.h"
 
 #include <string.h>
@@ -37,23 +38,23 @@ void CMaze::ReInitialise()
 			if (m_width > 0) {
 				do {
 					if (x < 0 || y < 0) {
-						collision = 3;
+						collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 					}
 					else {
 						map = m_map;
 						width = map->m_ground.m_width;
 						if (width <= x || map->m_ground.m_height <= y) {
-							collision = 3;
+							collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 						}
 						else {
 							collision = map->m_ground.m_ground[y * width + x].m_collision;
 						}
 					}
-					if ((collision & 1) != 0) {
-						m_distances[y][x] = 0xffff;
+					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
+						m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
 					}
 					else {
-						m_distances[y][x] = 0xff00;
+						m_distances[y][x] = MAZE_DISTANCE_UNREACHED;
 					}
 					x++;
 				} while (x < m_width);
@@ -173,7 +174,7 @@ void CMaze::UpdateChangeNext(int p_x, int p_y)
 		yMax = p_y + 1;
 	}
 
-	int offset = (yMin * 0x80 + xMin) >> 3;
+	int offset = (yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT;
 	unsigned char* pChange;
 	unsigned char* pOther;
 	if (m_changeSelect == 0) {
@@ -186,7 +187,7 @@ void CMaze::UpdateChangeNext(int p_x, int p_y)
 	}
 
 	unsigned int mask;
-	memcpy(&mask, &g_aChangeBitMasks[xMin & 7][0], 1);
+	memcpy(&mask, &g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK][0], 1);
 	for (int y = yMin; y <= yMax; y++) {
 		unsigned char currentMask;
 		memcpy(&currentMask, &mask, 1);
@@ -202,7 +203,7 @@ void CMaze::UpdateChangeNext(int p_x, int p_y)
 			if (currentMask == 0) {
 				pChangeRow++;
 				pOtherRow++;
-				currentMask = 0x80;
+				currentMask = MAZE_CHANGE_BITMAP_FIRST_COLUMN_MASK;
 			}
 			x++;
 		}
@@ -217,7 +218,7 @@ void CMaze::Clear(unsigned char* p_change)
 	int row = 0;
 	if (m_height > 0) {
 		do {
-			int rowBytes = m_width / 8;
+			int rowBytes = m_width / MAZE_CHANGE_BITMAP_BITS_PER_BYTE;
 			memset(p_change, 0, rowBytes);
 			p_change += 0x10;
 			row++;

@@ -9,7 +9,7 @@ void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned
 	int y = p_rect.m_y;
 	int step = 1;
 	if (p_reverse != 0) {
-		step = -1;
+		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
 	}
 	unsigned char* src = p_zrle->GetData();
@@ -20,11 +20,11 @@ void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					dst -= run;
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					int i = run;
 					unsigned char* copySrc = src;
 					unsigned char* copyDst = dst;
@@ -34,7 +34,7 @@ void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned
 					dst -= run;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			y += step;
 			row++;
 		} while (row < p_rect.m_height);

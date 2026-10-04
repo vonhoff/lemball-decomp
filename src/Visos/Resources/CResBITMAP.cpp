@@ -1,4 +1,5 @@
 #include "CResBITMAP.h"
+#include "ResourceChunkTypes.h"
 
 // FUNCTION: LEMBALL 0x0045e290
 void CResBITMAP::SetHeader()
@@ -15,6 +16,6 @@ void CResBITMAP::SetHeader()
 // FUNCTION: LEMBALL 0x0045eb70
 void CResBITMAP::SetType()
 {
-	m_chunkType = 0x42544d50;
+	m_chunkType = RESOURCE_CHUNK_BITMAP;
 	m_headerSkip = 0xc;
 }

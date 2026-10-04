@@ -4,6 +4,15 @@
 #include "CResBITMAP.h"
 #include "Visos/Resources/CResRaster.h"
 
+enum eZrleRunMarker {
+	ZRLE_ROW_END_MARKER = 0x80,
+	ZRLE_RUN_LENGTH_MASK = 0x7f
+};
+
+enum {
+	ZRLE_CLIPPED_DIMENSION_MAX = 0xff
+};
+
 // SIZE 0x0c
 struct ZrleHeader {
 	short m_x;

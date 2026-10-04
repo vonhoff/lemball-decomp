@@ -7,11 +7,23 @@
 #include "../../../Visos/Foundation/CVSOStream.h"
 #include "../../../Visos/Foundation/VsTime.h"
 #include "../../../Visos/Network/CConnect.h"
+#include "../../../Visos/Network/NetworkMode.h"
 #include "../../Animation/CLemmingAnimsManager.h"
 #include "../../Panel/CPanel.h"
 #include "../CMain2DDisplay.h"
 
 #include <stddef.h>
+
+enum {
+	CONNECTION_LOST_RETURN_DELAY_MS = 2 * MILLISECONDS_PER_SECOND
+};
+
+enum eLevelTestFrame {
+	LEVEL_TEST_FRAME_RESOLUTION_TOGGLE_FIRST = 50,
+	LEVEL_TEST_FRAME_RESOLUTION_TOGGLE_SECOND = 51,
+	LEVEL_TEST_FRAME_RESOLUTION_TOGGLE_THIRD = 52,
+	LEVEL_TEST_FRAME_COMPLETE = 53
+};
 
 // FUNCTION: LEMBALL 0x00436a10
 void C2D::Process()
@@ -21,7 +33,7 @@ void C2D::Process()
 		m_ai->GameState(GAME_STATUS_SUCCESS);
 	}
 	if (m_connectionTimeoutActive != 0) {
-		if (CurrentMilliTimer() - m_connectionTimeoutStart >= 2000) {
+		if (CurrentMilliTimer() - m_connectionTimeoutStart >= CONNECTION_LOST_RETURN_DELAY_MS) {
 			m_quitRequested = 1;
 			m_returnState = FLOW_MAIN_OPTIONS_1;
 		}
@@ -33,7 +45,7 @@ void C2D::Process()
 	}
 	SetMouseShape();
 	m_panel->Process();
-	if (m_ai->m_started == 0 && m_ai->m_networkMode != 0) {
+	if (m_ai->m_started == 0 && m_ai->m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		if (m_pauseMessage != PAUSE_MSG_PLEASE_WAIT) {
 			NewPauseWindow(PAUSE_MSG_PLEASE_WAIT);
 		}
@@ -46,15 +58,15 @@ void C2D::Process()
 		switch (m_pauseMessage) {
 		case PAUSE_MSG_PAUSED:
 			switch (m_optionSelection) {
-			case 2:
+			case PAUSE_OPTION_RESUME:
 				if (m_pauser != 0) {
 					m_panel->SetPause(0);
 				}
 				break;
-			case 3:
+			case PAUSE_OPTION_RESTART:
 				NewPauseWindow(PAUSE_MSG_ARE_YOU_SURE);
 				break;
-			case 4:
+			case PAUSE_OPTION_QUIT:
 				NewPauseWindow(PAUSE_MSG_ARE_YOU_SURE);
 				break;
 			default:
@@ -67,16 +79,16 @@ void C2D::Process()
 			goto optionHandled;
 		case PAUSE_MSG_ARE_YOU_SURE:
 			*g_pErrorOutput << "Confirmed\n";
-			if (m_optionSelection == 2) {
+			if (m_optionSelection == PAUSE_CONFIRM_YES) {
 				*g_pErrorOutput << "Confirmed Yes\n";
 				if (m_previousPauseMessage == PAUSE_MSG_PAUSED) {
 					*g_pErrorOutput << "Confirmed Yes Pause\n";
 					switch (m_pauseSelection) {
-					case 3:
+					case PAUSE_OPTION_RESTART:
 						*g_pErrorOutput << "Confirmed Yes Pause Restart\n";
 						m_ai->GameState(GAME_STATUS_RESTART);
 						break;
-					case 4:
+					case PAUSE_OPTION_QUIT:
 						*g_pErrorOutput << "Confirmed Yes Pause Quit\n";
 						m_ai->QuitGame();
 						break;
@@ -115,7 +127,7 @@ optionHandled:
 				m_score = m_ai->m_score;
 			}
 			m_returnState = FLOW_SUCCESS;
-			if (m_ai->m_networkMode == 0) {
+			if (m_ai->m_networkMode == NETWORK_MODE_SINGLE_PLAYER) {
 				int levelCount = g_pGameStatus->NoOfLevelsInSkill(g_pGameStatus->m_skill);
 				if (levelCount == g_pGameStatus->Level()) {
 					m_returnState = FLOW_LEVEL_INTRO;
@@ -150,19 +162,19 @@ optionHandled:
 		break;
 	}
 
-	if (m_ai->m_networkMode != 0 && g_pActiveConnection == NULL) {
+	if (m_ai->m_networkMode != NETWORK_MODE_SINGLE_PLAYER && g_pActiveConnection == NULL) {
 		NewPauseWindow(PAUSE_MSG_CONNECTION_LOST);
 		m_connectionTimeoutActive = 1;
 		m_connectionTimeoutStart = CurrentMilliTimer();
 	}
 	if (g_nTestAllLevels != 0) {
 		switch ((int) m_levelTestFrame) {
-		case 50:
-		case 51:
-		case 52:
+		case LEVEL_TEST_FRAME_RESOLUTION_TOGGLE_FIRST:
+		case LEVEL_TEST_FRAME_RESOLUTION_TOGGLE_SECOND:
+		case LEVEL_TEST_FRAME_RESOLUTION_TOGGLE_THIRD:
 			m_display->ToggleResolution();
 			break;
-		case 53:
+		case LEVEL_TEST_FRAME_COMPLETE:
 			m_ai->GameState(GAME_STATUS_SUCCESS);
 			break;
 		}

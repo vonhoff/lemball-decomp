@@ -18,9 +18,12 @@
 #include "AI/Base/Rect.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "AI/Objects/SwitchEntry.h"
+#include "Visos/Foundation/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x0041af60
-CObjectManager::CObjectManager(CAI* p_ai, int p_arg1) : CBaseObjectManager(0xc, 1)
+CObjectManager::CObjectManager(CAI* p_ai, int p_arg1)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_OBJECTS,
+						 OBJECT_MANAGER_TRANSPORT_OBJECTS)
 {
 	g_pObjectManager = this;
 	m_ai = p_ai;
@@ -161,7 +164,9 @@ CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
 									   unsigned short p_linkedObjectId,
 									   eObjectType p_linkedObjectType)
 {
-	AICOORD position(p_x << 12, p_y << 12, p_z << 12);
+	AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
+					 p_y << FIXED_POINT_FRACTION_BITS,
+					 p_z << FIXED_POINT_FRACTION_BITS);
 	return Add(p_id, position, p_objectType, p_linkedObjectId, p_linkedObjectType);
 }
 
@@ -246,7 +251,9 @@ CSwitch* CObjectManager::AddSwitch(unsigned short p_id,
 								   int p_legacyLast,
 								   int p_legacyAux)
 {
-	AICOORD position(p_x << 0xc, p_y << 0xc, p_z << 0xc);
+	AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
+					 p_y << FIXED_POINT_FRACTION_BITS,
+					 p_z << FIXED_POINT_FRACTION_BITS);
 	CSwitch* object = new CSwitch(position, (swMessage) p_message, p_legacyFirst, p_legacyLast, p_legacyAux);
 	object->Restart();
 	return (CSwitch*) AddObject(p_id, object, 1);
@@ -352,15 +359,15 @@ void CObjectManager::Remove(CGlobalGameObject* p_object)
 // FUNCTION: LEMBALL 0x0041b9f0
 CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position)
 {
-	int x = p_position.m_xFixed >> 12;
-	int y = p_position.m_yFixed >> 12;
+	int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int index = 0;
 	Rect bounds;
 	if (m_count != 0) {
 		CGlobalGameObject** objects = m_objects;
 		do {
-			bounds.m_left = ((*objects)->m_position.m_xFixed >> 12) - 8;
-			bounds.m_top = ((*objects)->m_position.m_yFixed >> 12) - 8;
+			bounds.m_left = ((*objects)->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
+			bounds.m_top = ((*objects)->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 			bounds.m_right = bounds.m_left + 8;
 			bounds.m_bottom = bounds.m_top + 8;
 			if (x > bounds.m_left && x < bounds.m_right && y > bounds.m_top && y < bounds.m_bottom) {
@@ -376,8 +383,8 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position)
 // FUNCTION: LEMBALL 0x0041ba80
 CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position, eObjectType p_objectType)
 {
-	int x = p_position.m_xFixed >> 12;
-	int y = p_position.m_yFixed >> 12;
+	int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int count = m_count;
 	int index = 0;
 	while (1) {
@@ -386,8 +393,8 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position, eObjectT
 		}
 		CGlobalGameObject* object = m_objects[index];
 		if (object->m_objectType == p_objectType) {
-			const int& left = (object->m_position.m_xFixed >> 12) - 8;
-			const int& top = (object->m_position.m_yFixed >> 12) - 8;
+			const int& left = (object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
+			const int& top = (object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 			int right = left + 8;
 			int bottom = top + 8;
 			if (left < x && x < right && y > top && y < bottom) {
@@ -416,8 +423,8 @@ CGlobalGameObject* CObjectManager::FindObjectInBounds(CVSRect* p_bounds, eObject
 		}
 		CGlobalGameObject* object = m_objects[index];
 		if (object->m_objectType == p_objectType) {
-			bounds.m_left = (object->m_position.m_xFixed >> 12) - 8;
-			bounds.m_top = (object->m_position.m_yFixed >> 12) - 8;
+			bounds.m_left = (object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
+			bounds.m_top = (object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 			bounds.m_right = bounds.m_left + 8;
 			bounds.m_bottom = bounds.m_top + 8;
 			if (bounds.m_left < query.m_right && query.m_left < bounds.m_right && bounds.m_top < query.m_bottom &&

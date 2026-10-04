@@ -5,6 +5,7 @@
 #include "../Foundation/CVSOStream.h"
 #include "CTCPIPNetwork.h"
 #include "CTCPIPNetworkAddress.h"
+#include "NetworkConstants.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 #include "Visos/Network/CBroadcast.h"
@@ -126,9 +127,9 @@ bool CTCPIPBroadcast::Start(const char* p_name)
 {
 	char hostName[0x100];
 
-	g_broadcastPort = 0x52f2;
+	g_broadcastPort = NETWORK_BROADCAST_PORT;
 	CBroadcast::Initialise(p_name);
-	if (gethostname(hostName, sizeof(hostName)) == -1) {
+	if (gethostname(hostName, sizeof(hostName)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return false;
 	}
@@ -172,9 +173,9 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 	operator delete(m_asyncBuffer);
 	m_asyncBuffer = NULL;
 	m_socketHandle = socket(AF_INET, SOCK_DGRAM, 0);
-	if (m_socketHandle == -1) {
+	if (m_socketHandle == NETWORK_SOCKET_HANDLE_INVALID) {
 		SocketError();
-		CBroadcast::SendFailedInit((NetworkErrors) 1);
+		CBroadcast::SendFailedInit(NETWORK_ERROR_SOCKET_CREATE);
 		return;
 	}
 	m_isOpen = 1;
@@ -188,7 +189,7 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 										   MAXGETHOSTSTRUCT);
 	if (m_asyncRequest == 0) {
 		SocketError();
-		CBroadcast::SendFailedInit((NetworkErrors) 2);
+		CBroadcast::SendFailedInit(NETWORK_ERROR_SERVICE_LOOKUP);
 	}
 }
 
@@ -213,17 +214,18 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 	operator delete(m_asyncBuffer);
 	m_asyncBuffer = NULL;
 	option = 1;
-	if (setsockopt(m_socketHandle, SOL_SOCKET, SO_BROADCAST, (const char*) &option, sizeof(option)) == -1) {
+	if (setsockopt(m_socketHandle, SOL_SOCKET, SO_BROADCAST, (const char*) &option, sizeof(option)) ==
+		NETWORK_SOCKET_ERROR) {
 		SocketError();
-		CBroadcast::SendFailedInit((NetworkErrors) 3);
+		CBroadcast::SendFailedInit(NETWORK_ERROR_BROADCAST_OPTION);
 		return;
 	}
 	address.m_family = AF_INET;
 	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
 	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
-	if (bind(m_socketHandle, &address, sizeof(address)) == -1) {
+	if (bind(m_socketHandle, &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
-		CBroadcast::SendFailedInit((NetworkErrors) 4);
+		CBroadcast::SendFailedInit(NETWORK_ERROR_BROADCAST_BIND);
 		return;
 	}
 	if (CBroadcast::m_listenEnabled != 0) {
@@ -232,14 +234,14 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 	else {
 		selectResult = WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_WRITE);
 	}
-	if (selectResult == -1) {
+	if (selectResult == NETWORK_SOCKET_ERROR) {
 		SocketError();
-		CBroadcast::SendFailedInit((NetworkErrors) 5);
+		CBroadcast::SendFailedInit(NETWORK_ERROR_EVENT_SELECT);
 		return;
 	}
 	m_readReady = 1;
 	m_writeReady = 0;
-	CBroadcast::m_lastBroadcastTime = timeGetTime() - 1000;
+	CBroadcast::m_lastBroadcastTime = timeGetTime() - NETWORK_BROADCAST_INTERVAL_MS;
 	message.m_type = 2;
 	message.m_code = 0;
 	g_pNetworkStatusQueue->Post(message);
@@ -273,7 +275,7 @@ int CTCPIPBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long
 		}
 		return 0;
 	case TCPIP_MESSAGE_SOCKET_EVENT:
-		if (m_socketHandle == -1) {
+		if (m_socketHandle == NETWORK_SOCKET_HANDLE_INVALID) {
 			return 0;
 		}
 		event = (unsigned short) p_lParam;
@@ -296,7 +298,8 @@ void CTCPIPBroadcast::StartListen()
 {
 	if (CBroadcast::m_listenEnabled == 0) {
 		if (m_readReady != 0 &&
-			WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) == -1) {
+			WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) ==
+				NETWORK_SOCKET_ERROR) {
 			SocketError();
 			return;
 		}
@@ -308,8 +311,8 @@ void CTCPIPBroadcast::StartListen()
 void CTCPIPBroadcast::StopListen()
 {
 	if (CBroadcast::m_listenEnabled != 0) {
-		if (m_readReady != 0 &&
-			WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_WRITE) == -1) {
+		if (m_readReady != 0 && WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_WRITE) ==
+									NETWORK_SOCKET_ERROR) {
 			SocketError();
 			return;
 		}

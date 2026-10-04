@@ -8,11 +8,17 @@
 #include "../Resources/CResBase.h"
 #include "../Resources/CResBaseLIST.h"
 #include "../Resources/CResZRLE.h"
+#include "../Resources/ResourceChunkTypes.h"
 #include "CAnim.h"
 #include "Visos/Animation/CAnimFrameBASE.h"
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
 #include "Visos/Graphics/CSolidRect.h"
+
+enum eAnimationBufferHalf {
+	ANIMATION_BUFFER_HALF_FIRST = 0,
+	ANIMATION_BUFFER_HALF_ALTERNATE = 1
+};
 
 // FUNCTION: LEMBALL 0x004358c0
 void CAnimsManager::FreeVram()
@@ -69,7 +75,7 @@ CAnimsManager::CAnimsManager(CGDI* p_gdi,
 		m_resourceSlots[i] = (short) m_resourceCapacity;
 	}
 	if (m_doubleBuffered != 0) {
-		m_bufferHalf = 0;
+		m_bufferHalf = ANIMATION_BUFFER_HALF_FIRST;
 		m_zrleCapacity = p_zrleCapacity * 2;
 		m_bufferedZrleCount = 0;
 		m_bufferedAnimCount = 0;
@@ -171,7 +177,7 @@ unsigned long CAnimsManager::GetnAnims(unsigned long p_resourceId)
 	CResBase* resource;
 
 	resource = m_resources[m_resourceSlots[p_resourceId]];
-	if (resource->m_chunkType == 0x5a524c45) {
+	if (resource->m_chunkType == RESOURCE_CHUNK_ZRLE) {
 		return 1;
 	}
 	return ((CResBaseLIST*) resource)->m_totalSize;
@@ -182,7 +188,7 @@ CVSSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_a
 {
 	CVSSize size;
 	CResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
-	if (resource->m_chunkType != 0x5a524c45) {
+	if (resource->m_chunkType != RESOURCE_CHUNK_ZRLE) {
 		CResZRLE* entry = ((CResANIM*) resource)->m_animationEntries + p_animIndex;
 		size.m_width = entry->m_width;
 		size.m_height = entry->m_height;
@@ -192,6 +198,39 @@ CVSSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_a
 		size.m_width = entry->m_width;
 		size.m_height = entry->m_height;
 	}
+	return size;
+}
+
+// FUNCTION: LEMBALL 0x004675d0
+CVSSize CAnimsManager::GetMaxAnimSize(unsigned long p_resourceId)
+{
+	CVSSize maxSize;
+	unsigned long animCount = GetnAnims(p_resourceId);
+	unsigned long animIndex = 0;
+
+	if (animCount != 0) {
+		do {
+			CVSSize animSize = GetAnimSize(p_resourceId, animIndex);
+			if (maxSize.m_width < animSize.m_width) {
+				maxSize.m_width = animSize.m_width;
+			}
+			if (maxSize.m_height < animSize.m_height) {
+				maxSize.m_height = animSize.m_height;
+			}
+			++animIndex;
+			animCount = GetnAnims(p_resourceId);
+		} while (animIndex < animCount);
+	}
+
+	return maxSize;
+}
+
+// FUNCTION: LEMBALL 0x00467660
+CVSSize CAnimsManager::GetMaxAnimHalfSize(unsigned long p_resourceId)
+{
+	CVSSize size = GetMaxAnimSize(p_resourceId);
+	size.m_width = (short) (size.m_width / 2);
+	size.m_height = (short) (size.m_height / 2);
 	return size;
 }
 
@@ -206,7 +245,7 @@ CResZRLE* CAnimsManager::ResolveAnimFrameData(unsigned long p_resourceId, CAnimF
 	else {
 		frame = 0;
 	}
-	if (resource->m_chunkType == 0x5a524c45) {
+	if (resource->m_chunkType == RESOURCE_CHUNK_ZRLE) {
 		return (CResZRLE*) resource;
 	}
 	return ((CResANIM*) resource)->m_animationEntries + frame;
@@ -246,5 +285,5 @@ void CAnimsManager::ResetPrimitives()
 	m_gdi->m_primitiveCount = 0;
 	m_bufferedZrleCount = 0;
 	m_bufferedAnimCount = 0;
-	m_bufferHalf ^= 1;
+	m_bufferHalf ^= ANIMATION_BUFFER_HALF_ALTERNATE;
 }

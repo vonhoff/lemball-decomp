@@ -1,7 +1,12 @@
 #include "CTimeBonus.h"
 
+#include "../Base/AIScoreConstants.h"
 #include "../Navigation/CAI.h"
 #include "Views/Sound/SoundEffects.h"
+
+enum {
+	TIME_BONUS_ADDED_SECONDS = 30
+};
 
 // FUNCTION: LEMBALL 0x00422c70
 void CTimeBonus::SetSFX()
@@ -12,7 +17,7 @@ void CTimeBonus::SetSFX()
 // FUNCTION: LEMBALL 0x00422c80
 int CTimeBonus::Collected()
 {
-	g_pAI->Score(0xfa);
-	g_pAI->AddTime(0x1e);
+	g_pAI->Score(AI_SCORE_TIME_BONUS_PICKUP_POINTS);
+	g_pAI->AddTime(TIME_BONUS_ADDED_SECONDS);
 	return 1;
 }

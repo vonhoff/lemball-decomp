@@ -14,8 +14,14 @@
 #include "CZRLE.h"
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/FixedPoint.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CPushActive.h"
+
+enum {
+	CURSOR_FRAME_UNSELECTED = -1,
+	CURSOR_FOCUS_FLAG_ACTIVE = 0x01
+};
 
 // GLOBAL: LEMBALL 0x004a9bec
 CGWnd* g_pCursorLastWindow = NULL;
@@ -35,7 +41,7 @@ CBaseCursor::CBaseCursor()
 // FUNCTION: LEMBALL 0x0046af30
 CBaseCursor::~CBaseCursor()
 {
-	g_pMasterInputQueue->Detach(this, -0x19);
+	g_pMasterInputQueue->Detach(this, MASTER_INPUT_QUEUE_PRIORITY);
 	if (m_resource != NULL) {
 		m_resource->UnLoad();
 	}
@@ -45,6 +51,10 @@ CBaseCursor::~CBaseCursor()
 // FUNCTION: LEMBALL 0x0046afd0
 void CBaseCursor::Initialise()
 {
+	enum {
+		CURSOR_INPUT_ACCELERATION_PER_20MS = 0x199,
+		CURSOR_MAX_VELOCITY_FIXED = 0x8000
+	};
 	m_resourceId = 0;
 	m_renderState = new CZRLE[1];
 	for (int i = 0; i < 1; i++) {
@@ -55,7 +65,7 @@ void CBaseCursor::Initialise()
 		state->m_flags = 0;
 		state->m_remap = NULL;
 	}
-	g_pMasterInputQueue->Attach(this, -0x19);
+	g_pMasterInputQueue->Attach(this, MASTER_INPUT_QUEUE_PRIORITY);
 	m_changingCursor = 0;
 	m_keyboardInput = 0;
 	m_mouseInput = 0;
@@ -71,14 +81,14 @@ void CBaseCursor::Initialise()
 	m_keys[3] = 2;
 	m_keys[4] = 0x1f;
 	m_keys[6] = 0x49;
-	m_maxSpeed = 0x199;
-	m_acceleration = 0x8000;
-	m_fixedX = (int) m_position.m_x << 12;
+	m_maxSpeed = CURSOR_INPUT_ACCELERATION_PER_20MS;
+	m_acceleration = CURSOR_MAX_VELOCITY_FIXED;
+	m_fixedX = (int) m_position.m_x << FIXED_POINT_FRACTION_BITS;
 	m_velocityX = 0;
 	m_velocityY = 0;
 	m_directionX = 0;
 	m_directionY = 0;
-	m_fixedY = (int) m_position.m_y << 12;
+	m_fixedY = (int) m_position.m_y << FIXED_POINT_FRACTION_BITS;
 	m_lastInputX = CurrentMilliTimer();
 	m_lastInputY = m_lastInputX;
 }
@@ -99,8 +109,8 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 	default:
 	done:
 		return 0;
-	case 3:
-	case 4: {
+	case MESSAGE_KEY_UP:
+	case MESSAGE_KEY_DOWN: {
 		Message posted;
 		if (m_keyboardInput == 0) {
 			goto done;
@@ -124,9 +134,9 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 			match = 1;
 		}
 		if (match != 0) {
-			posted.m_type = 8;
-			if (p_message->m_type != 4) {
-				posted.m_type = 9;
+			posted.m_type = MESSAGE_CURSOR_BUTTON_DOWN;
+			if (p_message->m_type != MESSAGE_KEY_DOWN) {
+				posted.m_type = MESSAGE_CURSOR_BUTTON_UP;
 			}
 			posted.m_time = time;
 			posted.m_code = PackParam(m_position.m_x, m_position.m_y);
@@ -135,7 +145,7 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 			return 0;
 		}
 	skipAction:
-		if (p_message->m_type == 3) {
+		if (p_message->m_type == MESSAGE_KEY_UP) {
 			if (m_keys[2] == code || m_keys[3] == code) {
 				m_velocityY = 0;
 				m_directionY = 0;
@@ -176,12 +186,13 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 		}
 		return 0;
 	}
-	case 7:
+	case MESSAGE_MOUSE_MOVED:
 		if (m_mouseInput == 0) {
 			return 0;
 		}
 		if (p_message->m_source == NULL) {
-			CVSPoint position((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
+			CVSPoint position((short) p_message->m_code,
+							  (short) ((unsigned int) p_message->m_code >> PACK_PARAM_HIGH_WORD_SHIFT));
 			SetPos(position);
 		}
 		return 0;
@@ -194,8 +205,8 @@ void CBaseCursor::SetPos(const CVSPoint& p_position)
 {
 	m_position.m_x = p_position.m_x;
 	m_position.m_y = p_position.m_y;
-	m_fixedX = (int) m_position.m_x << 12;
-	m_fixedY = (int) m_position.m_y << 12;
+	m_fixedX = (int) m_position.m_x << FIXED_POINT_FRACTION_BITS;
+	m_fixedY = (int) m_position.m_y << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x0046b310
@@ -245,7 +256,7 @@ void CBaseCursor::SetMainID(unsigned int p_resourceId, int p_frame)
 			m_resource->UnLoad();
 		}
 		m_resourceId = p_resourceId;
-		m_frame = -1;
+		m_frame = CURSOR_FRAME_UNSELECTED;
 		if (p_resourceId != 0) {
 			m_resource = CResANIM::Load(p_resourceId);
 		}
@@ -335,12 +346,12 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	CGDI* gdi;
 	CSurface* surface;
 
-	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & 1) == 0) &&
-		(m_keyboardInput == 0 || (g_pMasterInput->m_state & 6) == 0)) {
+	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) == 0) &&
+		(m_keyboardInput == 0 || (g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) == 0)) {
 		return;
 	}
-	if ((g_cursorFocusFlag & 1) == 0) {
-		g_cursorFocusFlag = (unsigned char) (g_cursorFocusFlag | 1);
+	if ((g_cursorFocusFlag & CURSOR_FOCUS_FLAG_ACTIVE) == 0) {
+		g_cursorFocusFlag = (unsigned char) (g_cursorFocusFlag | CURSOR_FOCUS_FLAG_ACTIVE);
 		g_pCursorLastWindow = p_window;
 	}
 	if (p_window->IsFocusWindow() == 0) {
@@ -424,6 +435,9 @@ void CBaseCursor::Draw(CGWnd* p_window)
 // FUNCTION: LEMBALL 0x0046b810
 void CBaseCursor::Process()
 {
+	enum {
+		CURSOR_ACCELERATION_INTERVAL_MS = 20
+	};
 	unsigned long now;
 	short boundRight;
 	short boundBottom;
@@ -431,8 +445,8 @@ void CBaseCursor::Process()
 	if (m_drawn == 0 && m_systemCursorVisible == 0) {
 		RestoreSystemCursor();
 	}
-	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & 1) == 0) &&
-		(m_keyboardInput == 0 || (g_pMasterInput->m_state & 6) == 0)) {
+	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) == 0) &&
+		(m_keyboardInput == 0 || (g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) == 0)) {
 		return;
 	}
 	if (m_active == 0) {
@@ -440,7 +454,7 @@ void CBaseCursor::Process()
 	}
 	now = CurrentMilliTimer();
 	if (m_directionX != 0) {
-		m_velocityX += (int) (m_directionX * (now - m_lastInputX)) / 0x14;
+		m_velocityX += (int) (m_directionX * (now - m_lastInputX)) / CURSOR_ACCELERATION_INTERVAL_MS;
 		m_lastInputX = now;
 		if (m_velocityX > m_acceleration) {
 			m_velocityX = m_acceleration;
@@ -450,7 +464,7 @@ void CBaseCursor::Process()
 		}
 	}
 	if (m_directionY != 0) {
-		m_velocityY += (int) ((now - m_lastInputY) * m_directionY) / 0x14;
+		m_velocityY += (int) ((now - m_lastInputY) * m_directionY) / CURSOR_ACCELERATION_INTERVAL_MS;
 		m_lastInputY = now;
 		if (m_velocityY > m_acceleration) {
 			m_velocityY = m_acceleration;
@@ -464,11 +478,11 @@ void CBaseCursor::Process()
 	int y = m_velocityY + m_fixedY;
 	m_fixedX = x;
 	m_fixedY = y;
-	m_position.m_x = (short) (x >> 12);
-	m_position.m_y = (short) (y >> 12);
+	m_position.m_x = (short) (x >> FIXED_POINT_FRACTION_BITS);
+	m_position.m_y = (short) (y >> FIXED_POINT_FRACTION_BITS);
 	if (m_keyboardInput != 0 && !m_position.Equals(oldPosition)) {
 		Message posted;
-		posted.m_type = 10;
+		posted.m_type = MESSAGE_CURSOR_MOVED;
 		posted.m_time = CurrentQueueTimer();
 		posted.m_code = PackParam(m_position.m_x, m_position.m_y);
 		posted.m_payload = NULL;

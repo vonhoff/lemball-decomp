@@ -14,6 +14,7 @@
 #include "CBroadcast.h"
 #include "CConnect.h"
 #include "CNetworkAddress.h"
+#include "NetworkConstants.h"
 #include "Visos/Foundation/Message.h"
 
 struct BasePacketHeader;
@@ -24,6 +25,11 @@ extern BasePacketHeader* g_pNetworkPacketScratch;
 extern char* g_szBroadcastPeerName;
 extern unsigned short g_broadcastPort;
 extern "C" unsigned long __stdcall timeGetTime(void);
+
+enum {
+	NETWORK_QUEUE_MESSAGE_CAPACITY = 0x1e,
+	CRITICAL_PACKET_RETRY_LIMIT = 0x50
+};
 
 // FUNCTION: LEMBALL 0x004619f0
 CBaseNetwork::CBaseNetwork()
@@ -42,12 +48,12 @@ CBaseNetwork::CBaseNetwork()
 	m_queueTransitionPending = 0;
 	m_shutdownRequested = 0;
 	m_serverMode = 0;
-	m_criticalRetryLimit = 0x50;
+	m_criticalRetryLimit = CRITICAL_PACKET_RETRY_LIMIT;
 	m_broadcast = NULL;
 
-	g_pNetworkStatusQueue = new CBaseQueue(0x1e);
-	g_pNetworkStatusQueue->Attach(this, 0x19);
-	g_pNetworkPacketQueue = new CBaseQueue(0x1e);
+	g_pNetworkStatusQueue = new CBaseQueue(NETWORK_QUEUE_MESSAGE_CAPACITY);
+	g_pNetworkStatusQueue->Attach(this, NETWORK_QUEUE_PRIORITY);
+	g_pNetworkPacketQueue = new CBaseQueue(NETWORK_QUEUE_MESSAGE_CAPACITY);
 }
 
 // FUNCTION: LEMBALL 0x00461aa0
@@ -63,7 +69,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 	start = timeGetTime();
 	if (m_initialised == 0) {
 		do {
-			if (g_lastNetworkError != 0 || timeGetTime() - start >= 10000) {
+			if (g_lastNetworkError != 0 || timeGetTime() - start >= NETWORK_LIFECYCLE_TIMEOUT_MS) {
 				break;
 			}
 			WaitProcess();
@@ -75,9 +81,9 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 
 	start = timeGetTime();
 	while (m_serverMode != 0 && !(m_serverMode != 0 && m_broadcast != NULL && m_broadcast->m_readReady != 0) &&
-		   g_lastNetworkError == 0 && timeGetTime() - start < 10000) {
+		   g_lastNetworkError == 0 && timeGetTime() - start < NETWORK_LIFECYCLE_TIMEOUT_MS) {
 		waitStart = timeGetTime();
-		while (timeGetTime() - waitStart < 100) {
+		while (timeGetTime() - waitStart < NETWORK_STARTUP_POLL_INTERVAL_MS) {
 		}
 		ForceProcess();
 	}
@@ -97,7 +103,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 	m_shutdownRequested = 1;
 	ForceProcess();
 	start = timeGetTime();
-	while (m_initialised != 0 && timeGetTime() - start < 10000) {
+	while (m_initialised != 0 && timeGetTime() - start < NETWORK_LIFECYCLE_TIMEOUT_MS) {
 	}
 	return false;
 }
@@ -144,7 +150,7 @@ CBaseNetwork::~CBaseNetwork()
 		delete queue;
 	}
 	g_pNetworkPacketQueue = NULL;
-	g_pNetworkStatusQueue->Detach(this, 0x19);
+	g_pNetworkStatusQueue->Detach(this, NETWORK_QUEUE_PRIORITY);
 	queue = *(CBaseQueue* volatile*) &g_pNetworkStatusQueue;
 	if (queue != NULL) {
 		delete queue;
@@ -174,7 +180,7 @@ void CBaseNetwork::ShutDown()
 				port = peer->m_port;
 				peer->Stop();
 				delete peer;
-				if (port != -1) {
+				if (port != NETWORK_PORT_UNASSIGNED) {
 					m_broadcast->ResetPort(port);
 				}
 				peer = next;
@@ -364,7 +370,7 @@ void CBaseNetwork::CtoSRequestConnect(CNetworkAddress* p_address)
 
 	peer = NewConnect();
 	port = m_broadcast->FindPort(g_pMessReqConnect->m_connectionData);
-	if (port == -1) {
+	if (port == NETWORK_PORT_NOT_FOUND) {
 		peer->Kill();
 		return;
 	}
@@ -392,7 +398,7 @@ void CBaseNetwork::CtoSRequestNewPort(CNetworkAddress* p_address)
 		}
 
 		port = m_broadcast->FindPort(g_pMessReqNewPort->m_connectionData);
-		if (port != -1) {
+		if (port != NETWORK_PORT_NOT_FOUND) {
 			peer->SetPort(port);
 			g_pMessOKConnect->m_assignedPort = peer->m_port;
 			g_pMessOKConnect->m_connectionId = (unsigned int) peer;
@@ -631,7 +637,7 @@ int CBaseNetwork::ProcessMsg(Message* p_message)
 	type = message->m_type;
 	switch (type) {
 	case NETWORK_QUEUE_SEND_ONE:
-		if (message->m_code == 1) {
+		if (message->m_code == NETWORK_QUEUE_SEND_REQUESTED) {
 			stream = (CNetworkMessage*) message->m_payload;
 			peer = (CConnect*) message->m_source;
 			peer->Send(*stream);
@@ -639,7 +645,7 @@ int CBaseNetwork::ProcessMsg(Message* p_message)
 		}
 		return 1;
 	case NETWORK_QUEUE_SEND_ALL:
-		if (message->m_code == 1) {
+		if (message->m_code == NETWORK_QUEUE_SEND_REQUESTED) {
 			stream = (CNetworkMessage*) message->m_payload;
 			SendAll(*stream);
 			stream->CloseDataStream();

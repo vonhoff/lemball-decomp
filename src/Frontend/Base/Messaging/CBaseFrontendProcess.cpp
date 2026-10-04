@@ -1,6 +1,7 @@
 #include "../CBaseFrontendProcess.h"
 
 #include "../../../Frontend/Support/CUserActionMessage.h"
+#include "../../../Network/Messages/CGameFlaggedMessage.h"
 #include "../../../Visos/Messaging/BasePacketHeader.h"
 #include "../../../Visos/Messaging/CReadPacket.h"
 #include "../../../Visos/Network/CConnect.h"
@@ -23,14 +24,14 @@ int CBaseFrontendProcess::ProcessMsg(Message* p_message)
 	}
 	if (ProcessMessages(message) == 0) {
 		switch ((unsigned int) message->m_type) {
-		case 5:
+		case NETWORK_EVENT_CRITICAL_PACKET_READY:
 			connection = (CConnect*) message->m_payload;
 			packet = (CReadPacket*) message->m_source;
 			if (code != 0) {
 				return 1;
 			}
 			id = ((BasePacketHeader*) packet->m_data)->m_messageId;
-			if (id != 8) {
+			if (id != GAME_MESSAGE_USER_ACTION) {
 				return ReceiveCritical(id, packet, connection);
 			}
 			((CUserActionMessage*) m_userActionMessage)->Set(packet->m_data + sizeof(BasePacketHeader));

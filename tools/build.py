@@ -32,10 +32,10 @@ def win_short_path(path: str) -> str:
 
 
 def resolve_cmake() -> str:
-    venv = ROOT / '.decomp-venv/Scripts/cmake.exe'
-    path = str(venv) if venv.exists() else shutil.which('cmake')
+    venv = ROOT / ".decomp-venv/Scripts/cmake.exe"
+    path = str(venv) if venv.exists() else shutil.which("cmake")
     if not path:
-        raise SystemExit('cmake not found')
+        raise SystemExit("cmake not found")
     return win_short_path(path)
 
 
@@ -46,7 +46,9 @@ def handle_link(args: list[str]) -> int:
     for env_var in ("LIB", "INCLUDE", "PATH"):
         val = os.environ.get(env_var, "")
         if val:
-            os.environ[env_var] = ';'.join(win_short_path(p) for p in val.split(';') if p)
+            os.environ[env_var] = ";".join(
+                win_short_path(p) for p in val.split(";") if p
+            )
 
     for arg in link_args:
         if arg.startswith("@"):
@@ -55,12 +57,18 @@ def handle_link(args: list[str]) -> int:
             # LINK 4.00 limits lines to 16383 characters; multiple response files crash it.
             rsp_path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
 
-    res = subprocess.run([linker, *link_args], stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT, text=True, errors="replace", check=False)
+    res = subprocess.run(
+        [linker, *link_args],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        errors="replace",
+        check=False,
+    )
     output = res.stdout
     sys.stdout.write(output)
     if MSVC_WARNING.search(output):
-        sys.stderr.write('linker emitted warnings\n')
+        sys.stderr.write("linker emitted warnings\n")
         return res.returncode or 1
     return res.returncode
 
@@ -72,29 +80,56 @@ def stale_link_inputs(build_dir: Path) -> list[Path]:
         return []
     target_dir = build_dir / "CMakeFiles" / "LEMBALL.dir"
     inputs = list(target_dir.rglob("*.obj"))
-    inputs.extend((build_dir / "LEMBALL.RES", target_dir / "build.make", target_dir / "objects1.rsp"))
+    inputs.extend(
+        (
+            build_dir / "LEMBALL.RES",
+            target_dir / "build.make",
+            target_dir / "objects1.rsp",
+        )
+    )
     timestamp = executable.stat().st_mtime_ns
-    return [path for path in inputs if path.exists() and path.stat().st_mtime_ns > timestamp]
+    return [
+        path for path in inputs if path.exists() and path.stat().st_mtime_ns > timestamp
+    ]
 
 
-def build_with_link_check(cmake_args: list[str], build_dir: Path, root: Path) -> tuple[int, str]:
+def build_with_link_check(
+    cmake_args: list[str], build_dir: Path, root: Path
+) -> tuple[int, str]:
     """Verify both link artifacts; force at most one relink for stale dependencies."""
-    output = ''
+    output = ""
     for attempt in range(2):
-        proc = subprocess.run(cmake_args, cwd=root, stdout=subprocess.PIPE,
-                              stderr=subprocess.STDOUT, text=True, errors='replace', check=False)
+        proc = subprocess.run(
+            cmake_args,
+            cwd=root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            errors="replace",
+            check=False,
+        )
         output += proc.stdout
         if proc.returncode:
             return proc.returncode, output
         stale = stale_link_inputs(build_dir)
         if not stale:
-            if all((build_dir / name).exists() for name in ('LEMBALL.EXE', 'LEMBALL.pdb')):
+            if all(
+                (build_dir / name).exists() for name in ("LEMBALL.EXE", "LEMBALL.pdb")
+            ):
                 return 0, output
-            return 1, output + '\nerror: build did not produce both LEMBALL.EXE and LEMBALL.pdb\n'
+            return (
+                1,
+                output
+                + "\nerror: build did not produce both LEMBALL.EXE and LEMBALL.pdb\n",
+            )
         if attempt == 0:
-            output += f'\nLink output is stale; forcing one relink after {stale[0]}\n'
-            (build_dir / 'LEMBALL.EXE').unlink()
-    return 1, output + '\nerror: executable is still older than its link inputs after retry\n'
+            output += f"\nLink output is stale; forcing one relink after {stale[0]}\n"
+            (build_dir / "LEMBALL.EXE").unlink()
+    return (
+        1,
+        output
+        + "\nerror: executable is still older than its link inputs after retry\n",
+    )
 
 
 def run_build(clean_first=False, disable_enforcements=False) -> int:
@@ -103,8 +138,14 @@ def run_build(clean_first=False, disable_enforcements=False) -> int:
     BUILD.mkdir(parents=True, exist_ok=True)
     startup_checks = "OFF" if disable_enforcements else "ON"
     configured = subprocess.run(
-        [cmake, "--preset", "msvc400", f"-DLEMBALL_ENFORCE_STARTUP_CHECKS={startup_checks}"],
-        cwd=ROOT, check=False,
+        [
+            cmake,
+            "--preset",
+            "msvc400",
+            f"-DLEMBALL_ENFORCE_STARTUP_CHECKS={startup_checks}",
+        ],
+        cwd=ROOT,
+        check=False,
     ).returncode
     if configured:
         return configured
@@ -115,7 +156,7 @@ def run_build(clean_first=False, disable_enforcements=False) -> int:
 
     cmake_args = [cmake, "--build", "--preset", "msvc400"]
     if clean_first:
-        cmake_args.append('--clean-first')
+        cmake_args.append("--clean-first")
 
     returncode, output = build_with_link_check(cmake_args, BUILD, ROOT)
     LOG_PATH.write_text(output, encoding="utf-8")
@@ -135,12 +176,19 @@ def main() -> int:
         return handle_link(sys.argv[2:])
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--clean-first", action="store_true", help="Perform full clean build")
-    parser.add_argument('--disable-enforcements', action='store_true',
-                        help='Disable startup CD and installation checks')
+    parser.add_argument(
+        "--clean-first", action="store_true", help="Perform full clean build"
+    )
+    parser.add_argument(
+        "--disable-enforcements",
+        action="store_true",
+        help="Disable startup CD and installation checks",
+    )
     args = parser.parse_args()
 
-    return run_build(clean_first=args.clean_first, disable_enforcements=args.disable_enforcements)
+    return run_build(
+        clean_first=args.clean_first, disable_enforcements=args.disable_enforcements
+    )
 
 
 if __name__ == "__main__":

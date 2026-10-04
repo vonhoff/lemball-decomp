@@ -3,6 +3,7 @@
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/VsInit.h"
 #include "../../Visos/Foundation/VsTime.h"
+#include "../../Visos/Messaging/CNetworkMessage.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CBroadcast.h"
 #include "../../Visos/Network/CConnect.h"
@@ -12,6 +13,7 @@
 #include "CNetworkGameStage.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Network/CReadSocket.h"
+#include "Visos/Network/NetworkConstants.h"
 
 #include <stddef.h>
 
@@ -23,14 +25,14 @@ CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler
 	m_connectionsChanged = networkLoaded;
 	m_externalDriverLoaded = networkLoaded;
 	m_localDriverLoaded = networkLoaded;
-	m_gameMessages = new CNetworkGameMessage[10];
+	m_gameMessages = new CNetworkGameMessage[NETWORK_GAME_SLOT_COUNT];
 	m_gameStage = new CNetworkGameStage;
-	m_lastGameStateSendTime = CurrentMilliTimer() - 2000;
+	m_lastGameStateSendTime = CurrentMilliTimer() - NETWORK_GAME_STATE_RESEND_INTERVAL_MS;
 	m_observedGameState = 0;
 	m_desiredGameState = 0;
 	m_gameMessage = new CNetworkGameMessage;
 	m_rejectMessage = new CGameRejectMessage;
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < NETWORK_GAME_SLOT_COUNT; i++) {
 		m_connections[i] = NULL;
 	}
 
@@ -48,9 +50,11 @@ CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler
 		if (p_filePeerName != NULL) {
 			((CFileNetwork*) g_pBaseNetwork)->Setup(p_filePeerName, "t:\\network");
 		}
-		if (g_pBaseNetwork->Initialise("Paintball v0.1", 0x400)) {
-			g_pBaseNetwork->SetCBuffers(100, 0x10);
-			g_pBaseNetwork->SetNCBuffers(4, 4, 0);
+		if (g_pBaseNetwork->Initialise("Paintball v0.1", NETWORK_PACKET_SIZE_BYTES)) {
+			g_pBaseNetwork->SetCBuffers(NETWORK_CRITICAL_PACKET_COUNT, NETWORK_CRITICAL_MESSAGE_CAPACITY_BYTES);
+			g_pBaseNetwork->SetNCBuffers(NETWORK_MESSAGE_GAME_STAGE,
+										 NETWORK_MESSAGE_GAME_STAGE,
+										 NETWORK_NONCRITICAL_MESSAGE_CAPACITY_BYTES);
 			m_networkInitialised = 0;
 			g_pActiveConnection = NULL;
 			m_killRequested = 0;
@@ -80,7 +84,7 @@ bool CNetworkManager::Start()
 		CBaseNetwork* network = g_pBaseNetwork;
 		network->m_activeStatusItem = this;
 		network->ForceProcess();
-		g_pNetworkPacketQueue->Attach(this, 0x19);
+		g_pNetworkPacketQueue->Attach(this, NETWORK_QUEUE_PRIORITY);
 		return true;
 	}
 	return false;
@@ -103,13 +107,14 @@ void CNetworkManager::Stop()
 		m_rejectMessage->m_flag = 1;
 		m_rejectMessage->Send(g_pActiveConnection);
 		unsigned int startTime = CurrentMilliTimer();
-		while (m_rejectMessage->m_pendingSendCount != 0 && CurrentMilliTimer() - startTime < 1000) {
+		while (m_rejectMessage->m_pendingSendCount != 0 &&
+			   CurrentMilliTimer() - startTime < NETWORK_MESSAGE_SEND_WAIT_TIMEOUT_MS) {
 		}
 		g_pActiveConnection->Kill();
 		g_pActiveConnection = NULL;
 	}
 	if (g_pBaseNetwork != NULL && g_pBaseNetwork->m_serverMode != 0) {
-		g_pNetworkPacketQueue->Detach(this, 0x19);
+		g_pNetworkPacketQueue->Detach(this, NETWORK_QUEUE_PRIORITY);
 		CBaseNetwork* network = g_pBaseNetwork;
 		network->m_pendingDetachQueue = this;
 		network->ForceProcess();
@@ -136,10 +141,10 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 	messageType = p_message->m_type;
 
 	switch (messageType) {
-	case 1:
+	case CONNECT_QUEUE_SEND_FAILED:
 		return 1;
-	case 3:
-		if (status == 0) {
+	case CONNECT_QUEUE_FIRST_RECEIVE:
+		if (status == NETWORK_ERROR_NONE) {
 			request = (CConnect*) p_message->m_payload;
 			if (g_pActiveConnection != NULL) {
 				*g_pDebugOutput << "Game connection request during game\n";
@@ -158,20 +163,20 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 				}
 				connections++;
 				slot++;
-			} while (slot < 10);
-			if (slot == 10) {
+			} while (slot < NETWORK_GAME_SLOT_COUNT);
+			if (slot == NETWORK_GAME_SLOT_COUNT) {
 				request->Kill();
 			}
 		}
 		return 1;
-	case 5: {
+	case NETWORK_EVENT_CRITICAL_PACKET_READY: {
 		CConnect* connection = (CConnect*) p_message->m_payload;
 		CReadPacket* packet = (CReadPacket*) p_message->m_source;
-		if (status != 0) {
+		if (status != NETWORK_ERROR_NONE) {
 			return 1;
 		}
 		switch ((unsigned int) ((BasePacketHeader*) packet->m_data)->m_messageId) {
-		case 6:
+		case GAME_MESSAGE_REJECT:
 			m_rejectMessage->Set(packet->m_data + sizeof(BasePacketHeader));
 			packet->m_used = 0;
 			if (m_rejectMessage->m_flag != 0) {
@@ -184,7 +189,7 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 		}
 		return 1;
 	}
-	case 10: {
+	case CONNECT_QUEUE_CLOSED: {
 		CConnect* connection = (CConnect*) p_message->m_payload;
 		int index = 0;
 		CConnect** connections = m_connections;
@@ -194,8 +199,8 @@ int CNetworkManager::ProcessMsg(Message* p_message)
 			}
 			connections++;
 			index++;
-		} while (index < 10);
-		if (index != 10) {
+		} while (index < NETWORK_GAME_SLOT_COUNT);
+		if (index != NETWORK_GAME_SLOT_COUNT) {
 			m_gameMessages[index].m_valid = 0;
 			m_connections[index] = NULL;
 			if (g_pNetworkOptionsProc != NULL) {
@@ -261,7 +266,8 @@ void CNetworkManager::GameProcess()
 				m_gameStage->Send(g_pActiveConnection);
 			}
 		}
-		if (m_observedGameState != m_desiredGameState && CurrentMilliTimer() - m_lastGameStateSendTime > 2000) {
+		if (m_observedGameState != m_desiredGameState &&
+			CurrentMilliTimer() - m_lastGameStateSendTime > NETWORK_GAME_STATE_RESEND_INTERVAL_MS) {
 			m_gameStage->m_stage = m_desiredGameState;
 			m_gameStage->Send(g_pActiveConnection);
 			m_lastGameStateSendTime = CurrentMilliTimer();
@@ -278,7 +284,7 @@ void CNetworkManager::Process()
 CNetworkGameMessage* CNetworkManager::GetGameMessage(CConnect* p_connection)
 {
 	int index = GetnGame(p_connection);
-	if (index == -1) {
+	if (index == NETWORK_GAME_INDEX_NOT_FOUND) {
 		return NULL;
 	}
 	return m_gameMessages + index;
@@ -296,7 +302,7 @@ int CNetworkManager::CountActiveGames()
 		}
 		connection++;
 		index++;
-	} while (index < 10);
+	} while (index < NETWORK_GAME_SLOT_COUNT);
 	return count;
 }
 
@@ -314,9 +320,9 @@ int CNetworkManager::GetnGame(CConnect* p_connection)
 		}
 		connection++;
 		index++;
-	} while (index < 10);
-	if (index == 10) {
-		return -1;
+	} while (index < NETWORK_GAME_SLOT_COUNT);
+	if (index == NETWORK_GAME_SLOT_COUNT) {
+		return NETWORK_GAME_INDEX_NOT_FOUND;
 	}
 	return index;
 }

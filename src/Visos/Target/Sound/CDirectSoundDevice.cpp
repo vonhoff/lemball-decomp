@@ -16,6 +16,11 @@
 
 #pragma intrinsic(memset, memcpy, strlen)
 
+enum {
+	DIRECT_SOUND_DEFAULT_SAMPLE_RATE_HZ = 22050,
+	DIRECT_SOUND_FALLBACK_SAMPLE_RATE_HZ = 11025
+};
+
 // GLOBAL: LEMBALL 0x004a3318
 static IDirectSoundBuffer* g_primarySoundBuffer = NULL;
 
@@ -47,9 +52,9 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
 		m_platform.m_effects[i] = NULL;
 	}
-	m_platform.m_sampleRate = 0x5622;
+	m_platform.m_sampleRate = DIRECT_SOUND_DEFAULT_SAMPLE_RATE_HZ;
 	m_platform.m_deviceId = 0;
-	m_platform.m_format.nSamplesPerSec = 0x5622;
+	m_platform.m_format.nSamplesPerSec = DIRECT_SOUND_DEFAULT_SAMPLE_RATE_HZ;
 	m_platform.m_format.cbSize = 0;
 	m_platform.m_format.wBitsPerSample = 16;
 	m_platform.m_format.nBlockAlign = 2;
@@ -121,7 +126,8 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 
 	result = m_platform.m_createDirectSound(NULL, &g_directSound, NULL);
 	if (result != 0) {
-		*g_pErrorOutput << "Direct Sound Create failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pErrorOutput << "Direct Sound Create failed: "
+						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		m_platform.m_available = 0;
 		return 0;
 	}
@@ -130,41 +136,44 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 	description.dwFlags = DSBCAPS_PRIMARYBUFFER;
 	description.dwBufferBytes = 0;
 	description.lpwfxFormat = NULL;
-	result = g_directSound->SetCooperativeLevel(m_platform.m_nativeWindow, 2);
+	result = g_directSound->SetCooperativeLevel(m_platform.m_nativeWindow, DSSCL_PRIORITY);
 	if (result != 0) {
-		*g_pErrorOutput << "Effect Buffer Set Cooperative Level failed: " << DescribeDirectSoundError(result & 0xfff)
-						<< "\n";
+		*g_pErrorOutput << "Effect Buffer Set Cooperative Level failed: "
+						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		m_platform.m_available = 0;
 		return 0;
 	}
 	result = g_directSound->CreateSoundBuffer(&description, &g_primarySoundBuffer, NULL);
 	if (result != 0) {
-		*g_pErrorOutput << "Primary Sound Buffer failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pErrorOutput << "Primary Sound Buffer failed: "
+						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		m_platform.m_available = 0;
 		return 0;
 	}
 	WAVEFORMATEX* format = &m_platform.m_format;
 	result = g_primarySoundBuffer->SetFormat(format);
 	if (result != 0) {
-		*g_pSysOutput << "Primary Buffer Set Format failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pSysOutput << "Primary Buffer Set Format failed: "
+					  << DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		*g_pSysOutput << "Trying 22Khz/8-bit...\n";
 		m_platform.m_format.wBitsPerSample = 8;
 		result = g_primarySoundBuffer->SetFormat(format);
 		if (result != 0) {
-			*g_pSysOutput << "Primary Buffer Set Format failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+			*g_pSysOutput << "Primary Buffer Set Format failed: "
+						  << DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 			*g_pSysOutput << "Trying 11khz/16-bit...\n";
-			m_platform.m_format.nSamplesPerSec = 0x2b11;
+			m_platform.m_format.nSamplesPerSec = DIRECT_SOUND_FALLBACK_SAMPLE_RATE_HZ;
 			m_platform.m_format.wBitsPerSample = 16;
 			result = g_primarySoundBuffer->SetFormat(format);
 			if (result != 0) {
-				*g_pSysOutput << "Primary Buffer Set Format failed: " << DescribeDirectSoundError(result & 0xfff)
-							  << "\n";
+				*g_pSysOutput << "Primary Buffer Set Format failed: "
+							  << DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 				*g_pSysOutput << "Trying 11khz/8-bit...\n";
 				m_platform.m_format.wBitsPerSample = 8;
 				result = g_primarySoundBuffer->SetFormat(format);
 				if (result != 0) {
-					*g_pErrorOutput << "Primary Buffer Set Format failed: " << DescribeDirectSoundError(result & 0xfff)
-									<< "\n";
+					*g_pErrorOutput << "Primary Buffer Set Format failed: "
+									<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 					*g_pErrorOutput << "Exausted iterations - cannot play sample\n";
 					return 0;
 				}
@@ -173,7 +182,8 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 	}
 	result = g_primarySoundBuffer->Play(0, 0, 1);
 	if (result != 0) {
-		*g_pErrorOutput << "Primary Sound Buffer play: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pErrorOutput << "Primary Sound Buffer play: "
+						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		m_platform.m_available = 0;
 		return 0;
 	}
@@ -212,7 +222,8 @@ int CDirectSoundDevice::Close()
 	if (g_primarySoundBuffer != NULL) {
 		unsigned int result = g_primarySoundBuffer->Release();
 		if (result != 0) {
-			*g_pErrorOutput << "Primary Sound Buffer Release: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+			*g_pErrorOutput << "Primary Sound Buffer Release: "
+							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 			return 0;
 		}
 		g_primarySoundBuffer = NULL;
@@ -220,7 +231,8 @@ int CDirectSoundDevice::Close()
 	if (g_directSound != NULL) {
 		unsigned int result = g_directSound->Release();
 		if (result != 0) {
-			*g_pErrorOutput << "Direct Sound Release failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+			*g_pErrorOutput << "Direct Sound Release failed: "
+							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 			return 0;
 		}
 		g_directSound = NULL;
@@ -351,7 +363,8 @@ int CDirectSoundDevice::FreeAllEffects()
 // FUNCTION: LEMBALL 0x0047e670
 unsigned char CDirectSoundDevice::GetMasterVolume()
 {
-	return 0xff;
+	enum { SOUND_VOLUME_MAX = 0xff };
+	return SOUND_VOLUME_MAX;
 }
 
 // FUNCTION: LEMBALL 0x0047e680
@@ -362,7 +375,8 @@ void CDirectSoundDevice::SetMasterVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047e690
 unsigned char CDirectSoundDevice::GetMusicVolume()
 {
-	return 0xff;
+	enum { SOUND_VOLUME_MAX = 0xff };
+	return SOUND_VOLUME_MAX;
 }
 
 // FUNCTION: LEMBALL 0x0047e6a0
@@ -373,7 +387,8 @@ void CDirectSoundDevice::SetMusicVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047e6b0
 unsigned char CDirectSoundDevice::GetEffectVolume()
 {
-	return 0xff;
+	enum { SOUND_VOLUME_MAX = 0xff };
+	return SOUND_VOLUME_MAX;
 }
 
 // FUNCTION: LEMBALL 0x0047e6c0
@@ -384,7 +399,8 @@ void CDirectSoundDevice::SetEffectVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047e700
 bool CDirectSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, unsigned char p_volume)
 {
-	int volume = (p_volume * 10000) / 0xff - 10000;
+	enum { SOUND_VOLUME_MAX = 0xff };
+	int volume = (p_volume * 10000) / SOUND_VOLUME_MAX - 10000;
 	return m_platform.m_effects[p_resourceId]->SetBufferVolume(p_index, volume);
 }
 
@@ -397,7 +413,8 @@ unsigned char CDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned 
 // FUNCTION: LEMBALL 0x0047e7e0
 unsigned char CDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume)
 {
-	int volume = (p_channel * 10000) / 0xff - 10000;
+	enum { SOUND_VOLUME_MAX = 0xff };
+	int volume = (p_channel * 10000) / SOUND_VOLUME_MAX - 10000;
 	return m_platform.m_effects[p_effectId]->PlayWithVolume(volume, p_volume);
 }
 

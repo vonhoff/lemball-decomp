@@ -9,6 +9,7 @@
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CBroadcast.h"
 #include "../../Visos/Network/CConnect.h"
+#include "../../Visos/Network/NetworkConstants.h"
 #include "../Base/CBaseFrontendDrawer.h"
 #include "../Drawers/CNetworkOptionsDrawer.h"
 
@@ -27,14 +28,14 @@ CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p
 {
 	void* storage;
 
-	storage = operator new(0x30);
+	storage = operator new(sizeof(CGameRejectMessage));
 	if (storage == NULL) {
 		m_rejectMessage = NULL;
 	}
 	else {
 		m_rejectMessage = new (storage) CGameRejectMessage();
 	}
-	storage = operator new(0x30);
+	storage = operator new(sizeof(CGameAcceptMessage));
 	if (storage == NULL) {
 		m_acceptMessage = NULL;
 	}
@@ -100,22 +101,24 @@ void CNetworkOptionsProc::StopBroadcast()
 		m_rejectMessage->m_flag = 1;
 		index = 0;
 		do {
-			if (index < 10) {
+			if (index < NETWORK_GAME_SLOT_COUNT) {
 				g_pNetworkOptionsDrawer->GameNotReady(index);
 			}
 			if (*connections != NULL && *connections != g_pActiveConnection) {
 				startTime = timeGetTime();
-				while (m_rejectMessage->m_pendingSendCount != 0 && timeGetTime() - startTime < 1000) {
+				while (m_rejectMessage->m_pendingSendCount != 0 &&
+					   timeGetTime() - startTime < NETWORK_MESSAGE_SEND_WAIT_TIMEOUT_MS) {
 				}
 				m_rejectMessage->Send(*connections);
 				startTime = timeGetTime();
-				while (m_rejectMessage->m_pendingSendCount != 0 && timeGetTime() - startTime < 1000) {
+				while (m_rejectMessage->m_pendingSendCount != 0 &&
+					   timeGetTime() - startTime < NETWORK_MESSAGE_SEND_WAIT_TIMEOUT_MS) {
 				}
 				(*connections)->Kill();
 			}
 			connections++;
 			index++;
-		} while (index < 10);
+		} while (index < NETWORK_GAME_SLOT_COUNT);
 	}
 }
 
@@ -130,7 +133,8 @@ void CNetworkOptionsProc::Stop()
 	}
 	if (g_pBaseNetwork != NULL) {
 		startTime = timeGetTime();
-		while (timeGetTime() - startTime < 2000 && g_pBaseNetwork->m_queueTransitionPending != 0) {
+		while (timeGetTime() - startTime < NETWORK_QUEUE_TRANSITION_TIMEOUT_MS &&
+			   g_pBaseNetwork->m_queueTransitionPending != 0) {
 		}
 	}
 	if (g_pNetworkManager != NULL) {
@@ -146,7 +150,7 @@ void CNetworkOptionsProc::NetworkEvent(NetworkEvents p_event)
 {
 	if (g_pNetworkOptionsDrawer != NULL) {
 		switch (p_event) {
-		case 10:
+		case NETWORK_EVENT_CONNECTION_CLOSED:
 			g_pNetworkOptionsDrawer->ResetHandlers();
 			break;
 		case NETWORK_EVENT_HOST_LOOKUP_FAILED:
@@ -164,26 +168,26 @@ bool CNetworkOptionsProc::ReceiveCritical(unsigned long p_id, CReadPacket* p_pac
 	CReadPacket* packet = p_packet;
 
 	switch (p_id) {
-	case 5: {
+	case GAME_MESSAGE_GAME_INFO: {
 		CNetworkMessage* message = (CNetworkMessage*) g_pNetworkManager->GetGameMessage(connection);
 		if (message != NULL) {
 			message->Set(packet->m_data + sizeof(BasePacketHeader));
 		}
 		packet->m_used = 0;
-		drawer->m_networkState = 1;
+		drawer->m_networkState = NETWORK_OPTIONS_HANDLERS_STALE;
 		return true;
 	}
-	case 6: {
+	case GAME_MESSAGE_REJECT: {
 		m_rejectMessage->Set(packet->m_data + sizeof(BasePacketHeader));
 		packet->m_used = 0;
 		drawer->GameNotReady(g_pNetworkManager->GetnGame(connection));
 		if (m_rejectMessage->m_flag != 0) {
 			connection->Kill();
 		}
-		drawer->m_networkState = 1;
+		drawer->m_networkState = NETWORK_OPTIONS_HANDLERS_STALE;
 		return true;
 	}
-	case 7: {
+	case GAME_MESSAGE_ACCEPT: {
 		m_acceptMessage->Set(packet->m_data + sizeof(BasePacketHeader));
 		packet->m_used = 0;
 		drawer->GameReady(g_pNetworkManager->GetnGame(connection));

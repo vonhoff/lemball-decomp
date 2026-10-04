@@ -9,7 +9,7 @@
 // FUNCTION: LEMBALL 0x004168d0
 CObjectChangeStateMess::CObjectChangeStateMess() : CGameObjectMess(MESSAGE_OBJECT_CHANGE_STATE)
 {
-	m_payloadCapacity += 14;
+	m_payloadCapacity += 3 * sizeof(unsigned long) + sizeof(unsigned short);
 }
 
 // FUNCTION: LEMBALL 0x004168f0

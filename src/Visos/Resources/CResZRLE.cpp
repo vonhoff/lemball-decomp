@@ -1,4 +1,5 @@
 #include "CResZRLE.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 
@@ -12,7 +13,7 @@ CResZRLE* CResZRLE::Load(unsigned int p_resourceId)
 	if (res == NULL) {
 		return (CResZRLE*) (new CResZRLE(id))->CheckError();
 	}
-	if (res->m_chunkType != 0x5a524c45) {
+	if (res->m_chunkType != RESOURCE_CHUNK_ZRLE) {
 		res->UnLoad();
 		return NULL;
 	}
@@ -50,6 +51,6 @@ CResZRLE::CResZRLE()
 // FUNCTION: LEMBALL 0x0045e840
 void CResZRLE::SetType()
 {
-	m_chunkType = 0x5a524c45;
+	m_chunkType = RESOURCE_CHUNK_ZRLE;
 	m_headerSkip = 0xc;
 }

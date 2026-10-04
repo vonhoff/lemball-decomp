@@ -1,6 +1,7 @@
 #include "CMainOptions1Drawer.h"
 
 #include "../../Control/Game/CGameStatus.h"
+#include "../../Control/Level/CLevelLoader.h"
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Frontend/Controls/CGunController.h"
 #include "../../Views/Display/CMain2DDisplay.h"
@@ -8,6 +9,8 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Base/FrontendLayoutMode.h"
+#include "Frontend/Controls/ButtonActionMessages.h"
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/tagPRIMS.h"
 #include "Visos/Graphics/CBigBitmap.h"
@@ -56,7 +59,7 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_1, 0, 0, 0, 0, 0)
 {
-	m_idleDeadline = timeGetTime() + 20000;
+	m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 	m_toggleResolutionButton = 0;
 	m_navigationButton = 0;
 	m_auxButtonState1 = 0;
@@ -64,19 +67,19 @@ CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, c
 	m_previousModeButton = 0;
 	m_nextModeButton = 0;
 	switch (g_pGameStatus->m_skill) {
-	case 1:
+	case SKILL_TRICKY:
 		m_selectedDisplayMode = 1;
 		break;
-	case 2:
+	case SKILL_TAXING:
 		m_selectedDisplayMode = 2;
 		break;
-	case 3:
+	case SKILL_MAYHEM:
 		m_selectedDisplayMode = 3;
 		break;
-	case 0:
+	case SKILL_FUN:
 		m_selectedDisplayMode = 0;
 		break;
-	case 4:
+	case SKILL_NETWORK:
 		m_selectedDisplayMode = 0;
 		break;
 	}
@@ -98,7 +101,7 @@ void CMainOptions1Drawer::Load()
 	unsigned long* quitAnim;
 	int i;
 
-	if (m_mode != 0) {
+	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
 		m_buttonLayout = g_anMainOptions1CompactButtonLayout;
 		previousModeAnim = &g_dwMainOptions1CompactAnimIds[0];
 		nextModeAnim = &g_dwMainOptions1CompactAnimIds[1];
@@ -128,7 +131,7 @@ void CMainOptions1Drawer::Load()
 	m_gunController->AddButton(m_buttonLayout[0],
 							   m_buttonLayout[1],
 							   previousModeAnim,
-							   1,
+							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
 							   0,
@@ -137,7 +140,7 @@ void CMainOptions1Drawer::Load()
 	m_gunController->AddButton(m_buttonLayout[2],
 							   m_buttonLayout[3],
 							   playAnim,
-							   1,
+							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
 							   0,
@@ -146,7 +149,7 @@ void CMainOptions1Drawer::Load()
 	m_gunController->AddButton(m_buttonLayout[4],
 							   m_buttonLayout[5],
 							   nextModeAnim,
-							   1,
+							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
 							   0,
@@ -155,18 +158,25 @@ void CMainOptions1Drawer::Load()
 	m_gunController->AddButton(m_buttonLayout[8],
 							   m_buttonLayout[9],
 							   toggleAnim,
-							   1,
+							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
 							   0,
 							   &m_toggleResolutionButton,
 							   MAIN_OPTIONS1_BUTTON_MESSAGE_RESOLUTION);
-	m_gunController
-		->AddButton(m_buttonLayout[6], m_buttonLayout[7], modeAnim, 0, 0, 3, 0, &m_selectedDisplayMode, 0xffffffff);
+	m_gunController->AddButton(m_buttonLayout[6],
+							   m_buttonLayout[7],
+							   modeAnim,
+							   GUN_BUTTON_CYCLE_VALUE,
+							   0,
+							   3,
+							   0,
+							   &m_selectedDisplayMode,
+							   BUTTON_ACTION_MESSAGE_UNASSIGNED);
 	m_gunController->AddButton(m_buttonLayout[10],
 							   m_buttonLayout[11],
 							   quitAnim,
-							   1,
+							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
 							   0,
@@ -190,25 +200,25 @@ CMainOptions1Drawer::~CMainOptions1Drawer()
 	CGameStatus* status;
 
 	switch (m_selectedDisplayMode) {
-	case 0:
+	case SKILL_FUN:
 		status = g_pGameStatus;
-		status->m_level = status->m_lastLevels[0];
-		status->m_skill = 0;
+		status->m_level = status->m_lastLevels[SKILL_FUN];
+		status->m_skill = SKILL_FUN;
 		break;
-	case 1:
+	case SKILL_TRICKY:
 		status = g_pGameStatus;
-		status->m_level = status->m_lastLevels[1];
-		status->m_skill = 1;
+		status->m_level = status->m_lastLevels[SKILL_TRICKY];
+		status->m_skill = SKILL_TRICKY;
 		break;
-	case 2:
+	case SKILL_TAXING:
 		status = g_pGameStatus;
-		status->m_level = status->m_lastLevels[2];
-		status->m_skill = 2;
+		status->m_level = status->m_lastLevels[SKILL_TAXING];
+		status->m_skill = SKILL_TAXING;
 		break;
-	case 3:
+	case SKILL_MAYHEM:
 		status = g_pGameStatus;
-		status->m_level = status->m_lastLevels[3];
-		status->m_skill = 3;
+		status->m_level = status->m_lastLevels[SKILL_MAYHEM];
+		status->m_skill = SKILL_MAYHEM;
 		break;
 	}
 	g_nDisplayMode = m_selectedDisplayMode;
@@ -230,13 +240,13 @@ void CMainOptions1Drawer::Processing()
 	if (g_nTestAllLevels != 0) {
 		CGameStatus* status = g_pGameStatus;
 		status->m_level = status->m_lastLevels[0];
-		status->m_skill = 0;
+		status->m_skill = SKILL_FUN;
 		m_quitYet = 1;
 		m_returnState = FLOW_PREVIEW;
 	}
 	now = timeGetTime();
 	if (m_display->IsWindowValid() == 0 || m_display->IsFocusWindow() == 0) {
-		m_idleDeadline = timeGetTime() + 20000;
+		m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 		return;
 	}
 	if (now <= m_idleDeadline) {

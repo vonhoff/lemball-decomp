@@ -8,6 +8,7 @@
 #include "Visos/Foundation/CSmallMemory.h"
 #include "Visos/Foundation/CVSDebugStreambuf.h"
 #include "Visos/Foundation/CVSOStream.h"
+#include "Visos/Foundation/VisosVersion.h"
 #include "Visos/Foundation/VsDebug.h"
 #include "Visos/Foundation/VsString.h"
 #include "Visos/Target/System/CPlatformServices.h"
@@ -16,6 +17,12 @@
 #include <new.h>
 #include <stdlib.h>
 #include <string.h>
+
+enum ePreInitDisplayMode {
+	PREINIT_DISPLAY_MODE_WING = 0,
+	PREINIT_DISPLAY_MODE_CDS = 1,
+	PREINIT_DISPLAY_MODE_GDK = 2
+};
 
 #pragma intrinsic(memcpy, memset)
 
@@ -190,7 +197,8 @@ void INIT_SubSystems()
 	g_nDebugInitialised = dbgOk;
 	InitPlatformServices();
 
-	*g_pSysOutput << "ViSOS v" << g_nVisosVersionMajor << "." << g_nVisosVersionMinor << "(" << 201 << ")"
+	*g_pSysOutput << "ViSOS v" << g_nVisosVersionMajor << "." << g_nVisosVersionMinor << "(" << (int) VISOS_BUILD_NUMBER
+				  << ")"
 				  << "\n";
 	*g_pSysOutput << "(c)" << "1994,1995" << " Visual Sciences Ltd\n\n";
 	*g_pSysOutput << "_MEM_Init   : " << OkFailed(memOk) << "...\t(" << (int) g_preInitActive.m_memoryBudget << ")\n";
@@ -389,6 +397,10 @@ int INIT_Main(char* p_commandLine)
 	return mainResult;
 }
 
+#define SMALL_MEMORY_DEFAULT_BUCKET_BLOCKS_REQUESTED 0x100
+enum {
+	MEMORY_BUDGET_CONFIG_TO_BYTES_SHIFT = 19
+};
 // FUNCTION: LEMBALL 0x004727b0
 void INIT_PreInit()
 {
@@ -399,17 +411,17 @@ void INIT_PreInit()
 	int displayMode;
 
 	capability = g_anPreInitCapabilities;
-	for (i = 7; i != 0; i = i - 1) {
-		*capability = 0x100;
+	for (i = SMALL_MEMORY_BUCKET_COUNT; i != 0; i = i - 1) {
+		*capability = SMALL_MEMORY_DEFAULT_BUCKET_BLOCKS_REQUESTED;
 		capability = capability + 1;
 	}
-	g_preInitActive.m_memoryBudget = g_preInitActive.m_memoryBudget << 0x13;
+	g_preInitActive.m_memoryBudget = g_preInitActive.m_memoryBudget << MEMORY_BUDGET_CONFIG_TO_BYTES_SHIFT;
 	result = VSPreInit(&g_preInitActive);
 	if (result != NULL) {
 		g_preInitActive = *result;
 	}
-	if (7 < g_preInitActive.m_capabilityCount) {
-		g_preInitActive.m_capabilityCount = 7;
+	if (SMALL_MEMORY_BUCKET_COUNT < g_preInitActive.m_capabilityCount) {
+		g_preInitActive.m_capabilityCount = SMALL_MEMORY_BUCKET_COUNT;
 	}
 	if (g_preInitActive.m_capabilityCount <= 0) {
 		g_nSmallMemoryEnabled = 0;
@@ -417,27 +429,30 @@ void INIT_PreInit()
 	capability = g_anPreInitCapabilities;
 	do {
 		value = *capability;
-		if ((int) value % 32 != 0) {
-			*capability = ((int) (value + 0x1f) / 32) * 32;
+		if ((int) value % SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD != 0) {
+			*capability =
+				((int) (value + SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD - 1) / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD) *
+				SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
 		}
 		capability = capability + 1;
-	} while (capability < g_anPreInitCapabilities + 7);
+	} while (capability < g_anPreInitCapabilities + SMALL_MEMORY_BUCKET_COUNT);
 	displayMode = g_preInitActive.m_shift;
 	switch (displayMode) {
-	case 0:
+	case PREINIT_DISPLAY_MODE_WING:
 		g_nGraphicsDriverCds = 0;
 		g_nGraphicsDriverWing = 1;
 		g_nGraphicsDriverGdk = 0;
 		return;
-	case 1:
+	case PREINIT_DISPLAY_MODE_CDS:
 		g_nGraphicsDriverWing = 0;
 		g_nGraphicsDriverCds = 1;
 		g_nGraphicsDriverGdk = 0;
 		return;
-	case 2:
+	case PREINIT_DISPLAY_MODE_GDK:
 		g_nGraphicsDriverWing = 0;
 		g_nGraphicsDriverGdk = 1;
 		g_nGraphicsDriverCds = 0;
 		return;
 	}
 }
+#undef SMALL_MEMORY_DEFAULT_BUCKET_BLOCKS_REQUESTED

@@ -7,6 +7,7 @@
 #include "../Sound/CSoundView.h"
 #include "CPanel.h"
 #include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CBaseCursor.h"
 #include "Visos/Graphics/CGraphicButton.h"
 #include "Visos/Graphics/CPVButton.h"
@@ -46,7 +47,7 @@ void CPanelPauseButton::OnPaint(const CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x00442280
 void CPanelPauseButton::OnPressed(int p_flags)
 {
-	if (p_flags == 0) {
+	if (p_flags == MOUSE_BUTTON_INDEX_LEFT) {
 		m_pressedInside = 1;
 		CursorChangeType(CURSOR_DISPLAY_HAND, 1);
 		g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
@@ -56,13 +57,13 @@ void CPanelPauseButton::OnPressed(int p_flags)
 // FUNCTION: LEMBALL 0x004422b0
 void CPanelPauseButton::OnReleased(int p_flags)
 {
-	if (p_flags == 0) {
+	if (p_flags == MOUSE_BUTTON_INDEX_LEFT) {
 		unsigned int paused = m_toggled ^ 1;
 		m_toggled = paused;
 		m_enabled = paused;
 
 		if ((paused == 0 && m_panel->m_game->GetPauser() != 0) ||
-			(paused != 0 && m_panel->m_game->m_ai->m_gameStatus != 1)) {
+			(paused != 0 && m_panel->m_game->m_ai->m_gameStatus != GAME_STATUS_PAUSED)) {
 			m_panel->m_game->TriggerPause(paused);
 		}
 
@@ -77,7 +78,7 @@ void CPanelPauseButton::OnReleased(int p_flags)
 void CPanelPauseButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 {
 	CPVButton::OnExternalButtonUp(p_point, p_flags);
-	if (p_flags == 0 && m_pressedInside != 0) {
+	if (p_flags == MOUSE_BUTTON_INDEX_LEFT && m_pressedInside != 0) {
 		m_pressedInside = 0;
 		CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 	}

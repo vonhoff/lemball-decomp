@@ -19,6 +19,7 @@ public:
 	virtual ~CLaserManager();                       // vtable+0x14
 	void Restart();
 	void RemoveLaser(CLaser* p_laser);
+	void ResetCount();
 	void Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectType p_orientation);
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);

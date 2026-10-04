@@ -2,6 +2,7 @@
 #define LEMBALL_AI_MANAGERS_CSLINKYMANAGER_H
 
 class CAI;
+class CGameObject;
 class CSlinky;
 class CViewData;
 // SIZE 0x10
@@ -14,6 +15,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
+	void RemoveSlinkyByObject(CGameObject* p_object);
 	~CSlinkyManager();
 
 	friend class CAI;

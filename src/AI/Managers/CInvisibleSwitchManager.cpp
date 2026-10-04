@@ -1,10 +1,13 @@
 #include "CInvisibleSwitchManager.h"
 
 #include "../Objects/CInvisibleSwitch.h"
+#include "AI/Base/tCoord3d.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0040a210
-CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x20, 0x15)
+CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_INVISIBLE_SWITCHES,
+						 OBJECT_MANAGER_TRANSPORT_INVISIBLE_SWITCHES)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -71,6 +74,20 @@ void CInvisibleSwitchManager::AddSwitch(unsigned short p_id, const tCoord3d& p_m
 		m_switches[m_count].Set(p_min, p_max);
 		m_count++;
 	}
+}
+
+// FUNCTION: LEMBALL 0x0040a440
+void CInvisibleSwitchManager::AddPointSwitch(unsigned short p_id, short p_x, short p_y, short p_z)
+{
+	tCoord3d minimum;
+	minimum.m_x = p_x;
+	minimum.m_y = p_y;
+	minimum.m_z = p_z;
+	tCoord3d maximum;
+	maximum.m_x = p_x;
+	maximum.m_y = p_y;
+	maximum.m_z = p_z;
+	AddSwitch(p_id, minimum, maximum);
 }
 
 // FUNCTION: LEMBALL 0x0040a490

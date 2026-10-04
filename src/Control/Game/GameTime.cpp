@@ -24,6 +24,8 @@ void ResetGameTimes()
 	g_dwGameTimeTick = g_dwCurrentMilli / GAME_TICK_MILLISECONDS;
 }
 
+#define DEMO_FRAME_DURATION_MILLISECONDS 80
+#define MAX_GAME_TICKS_PER_UPDATE 2
 // FUNCTION: LEMBALL 0x004080d0
 void SetGameTime()
 {
@@ -31,12 +33,12 @@ void SetGameTime()
 		return;
 	}
 	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
-		unsigned int nextElapsed = g_dwLastElapsedMilli + 80;
+		unsigned int nextElapsed = g_dwLastElapsedMilli + DEMO_FRAME_DURATION_MILLISECONDS;
 		unsigned int elapsed;
 		do {
 			elapsed = CurrentMilliTimer() - g_dwCurrentMilli;
 		} while (elapsed < nextElapsed);
-		g_dwPausedMilli += 80;
+		g_dwPausedMilli += DEMO_FRAME_DURATION_MILLISECONDS;
 		g_dwLastElapsedMilli = elapsed;
 		g_dwGameTick = g_dwPausedMilli / GAME_TICK_MILLISECONDS;
 		g_dwSimulationTimestamp = g_dwGameTick * GAME_TICK_MILLISECONDS;
@@ -44,14 +46,16 @@ void SetGameTime()
 	}
 
 	unsigned int gameTick = CurrentMilliTimer() / GAME_TICK_MILLISECONDS - g_dwGameTimeTick;
-	if (gameTick > g_dwLastElapsedMilli + 2) {
-		g_dwGameTimeTick += gameTick - g_dwLastElapsedMilli - 2;
-		gameTick = g_dwLastElapsedMilli + 2;
+	if (gameTick > g_dwLastElapsedMilli + MAX_GAME_TICKS_PER_UPDATE) {
+		g_dwGameTimeTick += gameTick - g_dwLastElapsedMilli - MAX_GAME_TICKS_PER_UPDATE;
+		gameTick = g_dwLastElapsedMilli + MAX_GAME_TICKS_PER_UPDATE;
 	}
 	g_dwGameTick = gameTick;
 	g_dwSimulationTimestamp = gameTick * GAME_TICK_MILLISECONDS;
 	g_dwLastElapsedMilli = gameTick;
 }
+#undef DEMO_FRAME_DURATION_MILLISECONDS
+#undef MAX_GAME_TICKS_PER_UPDATE
 
 // FUNCTION: LEMBALL 0x00408190
 void SetRemoteGameTimeReal(unsigned long p_timestamp)

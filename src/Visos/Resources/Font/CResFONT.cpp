@@ -1,5 +1,7 @@
 #include "../CResFONT.h"
 
+#include "../../Foundation/CText.h"
+
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045db30
@@ -21,7 +23,7 @@ CVSSize CResFONT::GetSize(const char* p_text, unsigned int p_flags)
 			}
 			short* glyphDimensions = &glyph->m_width;
 			short* glyphOrigin = &glyph->m_x;
-			if ((p_flags & 0x60) != 0) {
+			if ((p_flags & TEXT_ADVANCE_HORIZONTAL_MASK) != 0) {
 				size.m_width += *glyphDimensions + 1;
 			}
 			else {
@@ -29,7 +31,7 @@ CVSSize CResFONT::GetSize(const char* p_text, unsigned int p_flags)
 					size.m_width = glyphOrigin[0] + *glyphDimensions;
 				}
 			}
-			if ((p_flags & 0x180) != 0) {
+			if ((p_flags & TEXT_ADVANCE_VERTICAL_MASK) != 0) {
 				size.m_height += glyphDimensions[1] + 1;
 			}
 			else {
@@ -40,10 +42,10 @@ CVSSize CResFONT::GetSize(const char* p_text, unsigned int p_flags)
 			textIndex++;
 		} while (p_text[textIndex] != '\0');
 	}
-	if ((p_flags & 0x60) != 0) {
+	if ((p_flags & TEXT_ADVANCE_HORIZONTAL_MASK) != 0) {
 		size.m_width--;
 	}
-	if ((p_flags & 0x180) != 0) {
+	if ((p_flags & TEXT_ADVANCE_VERTICAL_MASK) != 0) {
 		size.m_height--;
 	}
 	return sizeValue;

@@ -28,11 +28,14 @@ void CPVButton::Destroy()
 	CWnd::Destroy();
 }
 
+#define CPV_BUTTON_INIT_HOT_AREA_LIST_STYLE 0x800
 // FUNCTION: LEMBALL 0x0043a570
 unsigned int CPVButton::GetStyle()
 {
-	return 2147485697;
+	return (unsigned int) (WINDOW_STYLE_DIRECT_SCROLL | CPV_BUTTON_INIT_HOT_AREA_LIST_STYLE |
+						   WINDOW_STYLE_SHOW_ON_CREATE);
 }
+#undef CPV_BUTTON_INIT_HOT_AREA_LIST_STYLE
 
 // FUNCTION: LEMBALL 0x0043a580
 void CPVButton::Move(const CVSPoint& p_point)
@@ -167,7 +170,7 @@ void CPVButton::Draw(unsigned int p_force)
 // FUNCTION: LEMBALL 0x00467fa0
 void CPVButton::OnEnter()
 {
-	if (m_buttonState[0] != 0 || m_buttonState[3] != 0) {
+	if (m_buttonState[MOUSE_BUTTON_INDEX_LEFT] != 0 || m_buttonState[MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK] != 0) {
 		m_pressed = 1;
 	}
 	_OnEnterButton();
@@ -186,17 +189,17 @@ void CPVButton::OnExit()
 int CPVButton::ConvertDoubleClick(int p_flags)
 {
 	switch (p_flags) {
-	case 0:
-	case 3:
-		return 0;
-	case 1:
-	case 4:
-		return 1;
-	case 2:
-	case 5:
-		return 2;
+	case MOUSE_BUTTON_INDEX_LEFT:
+	case MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK:
+		return MOUSE_BUTTON_INDEX_LEFT;
+	case MOUSE_BUTTON_INDEX_RIGHT:
+	case MOUSE_BUTTON_INDEX_RIGHT_DOUBLE_CLICK:
+		return MOUSE_BUTTON_INDEX_RIGHT;
+	case MOUSE_BUTTON_INDEX_MIDDLE:
+	case MOUSE_BUTTON_INDEX_MIDDLE_DOUBLE_CLICK:
+		return MOUSE_BUTTON_INDEX_MIDDLE;
 	default:
-		return 6;
+		return MOUSE_BUTTON_INDEX_UNSUPPORTED;
 	}
 }
 
@@ -206,7 +209,7 @@ void CPVButton::OnButtonDown(const CVSPoint& p_point, int p_flags)
 	int converted;
 	CVSPoint clickPos;
 
-	if (p_flags == 0 || p_flags == 3) {
+	if (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK) {
 		m_pressed = 1;
 	}
 	converted = ConvertDoubleClick(p_flags);

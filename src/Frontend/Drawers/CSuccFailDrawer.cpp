@@ -2,22 +2,26 @@
 
 #include "../../Control/Game/CGameStatus.h"
 #include "../../Control/Game/GameMain.h"
+#include "../../Control/Level/CLevelLoader.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Animation/CStatManager.h"
 #include "../../Visos/Foundation/CArena.h"
 #include "../../Visos/Foundation/CTextManager.h"
 #include "../../Visos/Foundation/CVSOStream.h"
+#include "../../Visos/Network/NetworkMode.h"
 #include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Base/CBaseFrontendProcess.h"
 #include "../Controls/CHiliteController.h"
+#include "Frontend/Base/FrontendLayoutMode.h"
 #include "Visos/Foundation/tagPRIMS.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "../../Visos/Graphics/CBigBitmap.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
+#include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CoordPair.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
 #include "Views/Sound/SoundEffects.h"
@@ -180,7 +184,7 @@ void CSuccFailDrawer::Load()
 	int bitmapX;
 	int i;
 
-	if (m_mode != 0) {
+	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
 		m_layout = &g_succFailLayoutCompact;
 		returnAnim = &g_dwSuccFailReturnAnimIdsCompact;
 		goAnim = &g_dwSuccFailGoAnimIdsCompact;
@@ -342,18 +346,32 @@ void CSuccFailDrawer::DrawText()
 	if (m_drawingBackBuffer != 0) {
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_firstLinePos, advance, m_chalkFontId, m_firstLine, 0x20, NULL);
+		m_textManager
+			->DrawString(m_gdi, m_firstLinePos, advance, m_chalkFontId, m_firstLine, TEXT_ADVANCE_X_POSITIVE, NULL);
 		if (m_secondLine != NULL) {
 			advance.m_height = 0;
 			advance.m_width = 0;
-			m_textManager->DrawString(m_gdi, m_secondLinePos, advance, m_chalkFontId, m_secondLine, 0x20, NULL);
+			m_textManager->DrawString(m_gdi,
+									  m_secondLinePos,
+									  advance,
+									  m_chalkFontId,
+									  m_secondLine,
+									  TEXT_ADVANCE_X_POSITIVE,
+									  NULL);
 		}
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_passwordLabelPos, advance, m_chalkFontId, g_szPasswordLabel, 0x20, NULL);
+		m_textManager->DrawString(m_gdi,
+								  m_passwordLabelPos,
+								  advance,
+								  m_chalkFontId,
+								  g_szPasswordLabel,
+								  TEXT_ADVANCE_X_POSITIVE,
+								  NULL);
 		advance.m_height = 0;
 		advance.m_width = 0;
-		m_textManager->DrawString(m_gdi, m_passwordPos, advance, m_chalkFontId, m_password, 0x20, NULL);
+		m_textManager
+			->DrawString(m_gdi, m_passwordPos, advance, m_chalkFontId, m_password, TEXT_ADVANCE_X_POSITIVE, NULL);
 	}
 }
 
@@ -370,16 +388,16 @@ bool CSuccFailDrawer::ProcessMessages(Message* p_message)
 
 	switch ((unsigned int) p_message->m_code) {
 	case SUCC_FAIL_BUTTON_MESSAGE_GO:
-		if (m_networkMode != 0) {
-			Action(USER_ACTION_3, USER_ACTION_STAGE_REQUEST);
+		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
+			Action(USER_ACTION_SUCC_FAIL_GO_REQUEST, USER_ACTION_STAGE_REQUEST);
 			return true;
 		}
 		Go();
 		return true;
 
 	case SUCC_FAIL_BUTTON_MESSAGE_RETURN:
-		if (m_networkMode != 0) {
-			Action(USER_ACTION_2, USER_ACTION_STAGE_REQUEST);
+		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
+			Action(USER_ACTION_SUCC_FAIL_RETURN_REQUEST, USER_ACTION_STAGE_REQUEST);
 			return true;
 		}
 		Return();
@@ -394,7 +412,7 @@ bool CSuccFailDrawer::ProcessMessages(Message* p_message)
 void CSuccFailDrawer::Return()
 {
 	m_quitYet = 1;
-	m_returnState = 2;
+	m_returnState = FLOW_MAIN_OPTIONS_1;
 }
 
 // FUNCTION: LEMBALL 0x00450a10
@@ -407,17 +425,17 @@ void CSuccFailDrawer::Go()
 		g_pMasterArena->StreamOut(*g_pSysOutput);
 	}
 	m_quitYet = 1;
-	m_returnState = 4;
+	m_returnState = FLOW_PREVIEW;
 }
 
 // FUNCTION: LEMBALL 0x00450a60
 bool CSuccFailDrawer::ConfirmedAction(eUserActions p_action)
 {
 	switch (p_action) {
-	case USER_ACTION_2:
+	case USER_ACTION_SUCC_FAIL_GO_CONFIRM:
 		Go();
 		return true;
-	case USER_ACTION_3:
+	case USER_ACTION_SUCC_FAIL_RETURN_CONFIRM:
 		Return();
 		return true;
 	default:
@@ -451,7 +469,7 @@ void CSuccFailDrawer::Processing()
 	}
 	if (g_nTestAllLevels != 0) {
 		int skill = g_pGameStatus->m_skill;
-		if (skill != 3 || g_pGameStatus->m_lastLevels[skill] != 0x15) {
+		if (skill != SKILL_MAYHEM || g_pGameStatus->m_lastLevels[skill] != SKILL_LEVEL_COUNT_MAYHEM) {
 			Go();
 		}
 	}

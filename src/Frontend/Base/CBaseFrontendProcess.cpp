@@ -5,6 +5,7 @@
 #include "../../Visos/Messaging/CReadPacket.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CConnect.h"
+#include "../../Visos/Network/NetworkConstants.h"
 #include "CBaseFrontendDrawer.h"
 #include "Visos/Foundation/Message.h"
 
@@ -52,7 +53,7 @@ void CBaseFrontendProcess::Action(eUserActions p_action, eUserActionStages p_sta
 		started = CurrentMilliTimer();
 		while (((CUserActionMessage*) m_userActionMessage)->m_pendingSendCount != 0) {
 			now = CurrentMilliTimer();
-			if (now - started >= 2000) {
+			if (now - started >= NETWORK_PENDING_SEND_TIMEOUT_MS) {
 				break;
 			}
 			g_pBaseNetwork->WaitProcess();

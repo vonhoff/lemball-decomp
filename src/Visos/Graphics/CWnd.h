@@ -4,6 +4,12 @@
 #include "CPVWnd.h"
 struct CVSPoint;
 
+enum eWindowStyleFlags {
+	WINDOW_STYLE_SHOW_ON_CREATE = 0x00000001,
+	WINDOW_STYLE_CHILD = 0x40000000,
+	WINDOW_STYLE_DIRECT_SCROLL = 0x80000000
+};
+
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x004993d0
 class CWnd : public CPVWnd {

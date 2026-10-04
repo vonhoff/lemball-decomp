@@ -1,5 +1,6 @@
 #include "CSheep.h"
 
+#include "../Base/AIScoreConstants.h"
 #include "../Base/StateMachine.h"
 #include "../Navigation/CAI.h"
 #include "AI/Base/AICOORD.h"
@@ -9,13 +10,19 @@
 
 #include <string.h>
 
+enum {
+	SHEEP_DESTINATION_CAPACITY = 20,
+	SHEEP_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED = 10 * FIXED_POINT_ONE
+};
+
 // FUNCTION: LEMBALL 0x0041f990
-CSheep::CSheep(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection) : CGameObject(OBJECT_SHEEP, 0x108, 0x14)
+CSheep::CSheep(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
+	: CGameObject(OBJECT_SHEEP, GAME_OBJECT_COLLISION_SHEEP, SHEEP_DESTINATION_CAPACITY)
 {
 	g_pAI = p_ai;
-	m_spawnPosition.m_xFixed = p_x << 12;
-	m_spawnPosition.m_yFixed = p_y << 12;
-	m_spawnPosition.m_zFixed = p_z << 12;
+	m_spawnPosition.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 	m_initialFacingDirection = (short) p_facingDirection;
 	SetId(NextLoadingId());
 }
@@ -27,16 +34,16 @@ void CSheep::Restart()
 	m_position.m_xFixed = m_spawnPosition.m_xFixed;
 	m_position.m_yFixed = m_spawnPosition.m_yFixed;
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
-	int tileX = m_spawnPosition.m_xFixed >> 12;
-	int tileY = m_spawnPosition.m_yFixed >> 12;
-	int tileZ = m_spawnPosition.m_zFixed >> 12;
+	int tileX = m_spawnPosition.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int tileY = m_spawnPosition.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int tileZ = m_spawnPosition.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	int collision[6];
-	collision[0] = tileX - 8;
-	collision[1] = tileY - 8;
+	collision[0] = tileX - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+	collision[1] = tileY - GAME_OBJECT_COLLISION_XY_MIN_INSET;
 	collision[2] = tileZ;
-	collision[3] = tileX + 7;
-	collision[4] = tileY + 7;
-	collision[5] = tileZ + 15;
+	collision[3] = tileX + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+	collision[4] = tileY + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+	collision[5] = tileZ + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
 	memcpy(&m_collisionBounds, collision, sizeof(collision));
 	m_facingDirection = m_initialFacingDirection;
 	CAI* objectAi = g_pAI;
@@ -56,16 +63,16 @@ bool CSheep::Process()
 // FUNCTION: LEMBALL 0x0041fab0
 void CSheep::HitBall()
 {
-	g_pAI->Score(0x96);
+	g_pAI->Score(AI_SCORE_SHEEP_HIT_POINTS);
 }
 
 // FUNCTION: LEMBALL 0x0041fad0
 void CSheep::HitMine()
 {
-	g_pAI->Score(0x96);
+	g_pAI->Score(AI_SCORE_SHEEP_HIT_POINTS);
 	C3DVector velocity;
 	velocity.m_xFixed = 0;
 	velocity.m_yFixed = 0;
-	velocity.m_zFixed = 0xa000;
+	velocity.m_zFixed = SHEEP_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
 	StartFly(velocity, NULL);
 }

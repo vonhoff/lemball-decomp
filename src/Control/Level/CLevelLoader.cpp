@@ -1,5 +1,6 @@
 #include "CLevelLoader.h"
 
+#include "../../AI/Base/LevelVersions.h"
 #include "../../AI/Groups/CEnemyGroupManager.h"
 #include "../../AI/Groups/CPlayerLemmingGroupManager.h"
 #include "../../AI/Groups/CSheepGroupManager.h"
@@ -45,10 +46,10 @@ extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
 														   unsigned int p_type);
 
 #define LEVEL_AI_UNVERSIONED_DATA_BYTES (2 * sizeof(unsigned short))
-#define LEVEL_AI_FIRST_VERSION_WITH_COUNTS 4
 #define LEVEL_AI_LEGACY_LEMMING_COUNT 4
 #define LEVEL_AI_LEGACY_PLAYER_COUNT 1
 #define LEVEL_START_COORDINATE_WORDS 3
+#define LEVEL_REQUEST_FALLBACK 9999
 
 extern char g_szNSkillFormat[];
 extern char g_szNLevelFormat[];
@@ -73,7 +74,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 	unsigned int dataSize;
 	unsigned int blockType;
 
-	if (p_level == 9999) {
+	if (p_level == LEVEL_REQUEST_FALLBACK) {
 		p_level = m_fallbackLevel;
 	}
 	if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
@@ -159,11 +160,11 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 			m_ai->m_map->LoadLevelName((tagLoadGroundName*) (header + 1), dataSize);
 			break;
 		case LEVEL_BLOCK_NETWORK_STARTS:
-			if (m_ai->m_networkMode != 1) {
+			if (m_ai->m_networkMode != NETWORK_MODE_MULTIPLAYER) {
 				m_ai->m_trapDoorManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			}
 			else {
-				if (m_ai->m_isHost == 0) {
+				if (m_ai->m_isHost == NETWORK_ROLE_CLIENT) {
 					m_ai->m_playerGroupManager->LoadAdditionalPlayerStartPositions((unsigned char*) (header + 1),
 																				   dataSize,
 																				   p_skip);
@@ -183,13 +184,13 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 			m_ai->m_playerGroupManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
 			break;
 		case LEVEL_BLOCK_PLAYER_STARTS:
-			if (m_ai->m_networkMode != 1) {
+			if (m_ai->m_networkMode != NETWORK_MODE_MULTIPLAYER) {
 				m_ai->m_playerGroupManager->LoadAdditionalPlayerStartPositions((unsigned char*) (header + 1),
 																			   dataSize,
 																			   p_skip);
 			}
 			else {
-				if (m_ai->m_isHost == 1) {
+				if (m_ai->m_isHost == NETWORK_ROLE_HOST) {
 					m_ai->m_playerGroupManager->LoadAdditionalPlayerStartPositions((unsigned char*) (header + 1),
 																				   dataSize,
 																				   p_skip);
@@ -298,11 +299,11 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 
 		switch (blockType) {
 		case LEVEL_BLOCK_AI: {
-			unsigned short version = dataSize > LEVEL_AI_UNVERSIONED_DATA_BYTES ? *data16++ : 0;
+			unsigned short version = dataSize > LEVEL_AI_UNVERSIONED_DATA_BYTES ? *data16++ : LEVEL_VERSION_UNVERSIONED;
 			data16++;
 			p_preview->m_timeLimit = *data16;
 			data16++;
-			if (version >= LEVEL_AI_FIRST_VERSION_WITH_COUNTS) {
+			if (version >= LEVEL_VERSION_WITH_PLAYER_COUNTS) {
 				p_preview->m_lemmingCount = data16[0];
 				p_preview->m_playerCount = data16[1];
 			}
@@ -350,7 +351,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 			if (g_pActiveConnection == NULL) {
 				p_preview->m_opponentLemmingCount = total;
 			}
-			else if (g_pActiveConnection->m_isHost == 1) {
+			else if (g_pActiveConnection->m_isHost == NETWORK_ROLE_HOST) {
 				p_preview->m_opponentLemmingCount = total;
 			}
 			else {
@@ -374,7 +375,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 				p_preview->m_lemmingCount = total;
 			}
 			else {
-				if (g_pActiveConnection->m_isHost == 1) {
+				if (g_pActiveConnection->m_isHost == NETWORK_ROLE_HOST) {
 					p_preview->m_lemmingCount = total;
 				}
 				else {

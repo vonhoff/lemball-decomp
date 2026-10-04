@@ -30,6 +30,8 @@ public:
 					 CAnimFrameBASE* p_frame,
 					 CRemap* p_remap);
 	CVSSize GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex);
+	CVSSize GetMaxAnimSize(unsigned long p_resourceId);
+	CVSSize GetMaxAnimHalfSize(unsigned long p_resourceId);
 	unsigned long GetnAnims(unsigned long p_resourceId);
 	virtual void FreeVram(); // vtable+0x00
 	void LoadAnims(unsigned long p_resourceId);

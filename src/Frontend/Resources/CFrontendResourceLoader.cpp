@@ -106,7 +106,7 @@ CFrontendResourceLoader::~CFrontendResourceLoader()
 	unsigned int i;
 	unsigned int* id;
 
-	g_pSoundView->ChangeState(0, NULL);
+	g_pSoundView->ChangeState(SOUND_STATE_SILENT, NULL);
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
 		UnLoadANIM(m_animResourceIds[i]);
 	}

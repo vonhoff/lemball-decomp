@@ -65,7 +65,7 @@ void CAICursor::GetCursorSurfaceCoordinates(int& p_x, int& p_y)
 int CAICursor::ProcessMsg(Message* p_message)
 {
 	switch (p_message->m_type) {
-	case 1:
+	case AI_MESSAGE_CURSOR_POSITION:
 		SetCursorXY(p_message->m_code, (int) p_message->m_payload);
 		return 1;
 	default:

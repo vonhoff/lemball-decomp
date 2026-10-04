@@ -14,6 +14,19 @@ class CGunButtons;
 class CPlayThruAnim;
 class CSpriteWindow;
 class CVSRect;
+
+enum eGunSelectionState {
+	GUN_SELECTION_IDLE = 0,
+	GUN_SELECTION_TURNING = 1,
+	GUN_SELECTION_AIMING = 2,
+	GUN_SELECTION_FIRING = 3
+};
+
+enum eGunButtonPostAction {
+	GUN_BUTTON_CYCLE_VALUE = 0U,
+	GUN_BUTTON_POST_ACTION_MESSAGE = 1U
+};
+
 // SIZE 0x27c
 // VTABLE: LEMBALL 0x00497f10 CBaseQueueHandler
 // VTABLE: LEMBALL 0x00497f0c CAnimsManager

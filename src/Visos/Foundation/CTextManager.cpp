@@ -114,7 +114,7 @@ void CTextManager::DrawString(CGDI* p_gdi,
 		height = p_advance.m_height;
 		text->m_offsetX = width;
 		text->m_offsetY = height;
-		p_flags |= 0x200;
+		p_flags |= TEXT_ADVANCE_USE_CUSTOM_OFFSETS;
 	}
 	text->Set(p_position, m_fonts[m_fontIndices[p_fontId]], p_text, p_flags, p_remap);
 	text->Draw(p_gdi);
@@ -133,7 +133,7 @@ void CTextManager::DrawString(CGDI* p_gdi,
 	if (p_advance.m_width != 0 || p_advance.m_height != 0) {
 		text->m_offsetX = p_advance.m_width;
 		text->m_offsetY = p_advance.m_height;
-		p_flags |= 0x200;
+		p_flags |= TEXT_ADVANCE_USE_CUSTOM_OFFSETS;
 	}
 	text->Set(p_position, m_fonts[m_fontIndices[p_fontId]], p_text, p_flags, p_remap);
 	text->Draw(p_gdi);

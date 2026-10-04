@@ -13,6 +13,8 @@
 #include "../Windows/CTrackWindow.h"
 #include "CGunButtons.h"
 #include "CTrackerButton.h"
+#include "ControlMessageIds.h"
+#include "Frontend/Base/FrontendLayoutMode.h"
 #include "Frontend/Controls/GunControllerJunction.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
@@ -29,6 +31,13 @@
 class CAnimFrameBASE;
 
 int sgn(int p_value);
+
+enum {
+	GUN_CONTROLLER_CURSOR_ANIMATION_DURATION_MS = 250,
+	GUN_CONTROLLER_SIDE_ANIMATION_DURATION_MS = 250,
+	GUN_CONTROLLER_FIRE_ANIMATION_DURATION_MS = 500,
+	GUN_CONTROLLER_HIGHEST_SEARCH_Y = 999999
+};
 
 // GLOBAL: LEMBALL 0x004a7b38
 unsigned long g_gunEffectLeftResourceId = 0;
@@ -64,22 +73,22 @@ CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigne
 	m_mode = p_mode;
 	m_window = p_window;
 	m_gdi = p_gdi;
-	m_nextMessageId = 0xabcd0000;
+	m_nextMessageId = FRONTEND_CONTROL_MESSAGE_ID_BASE;
 	i = 0;
 	while (i < 8) {
-		m_junctions[i].m_y = -1;
-		m_junctions[i].m_leftX = -1;
-		m_junctions[i].m_direction = 3;
+		m_junctions[i].m_y = GUN_JUNCTION_COORDINATE_UNASSIGNED;
+		m_junctions[i].m_leftX = GUN_JUNCTION_COORDINATE_UNASSIGNED;
+		m_junctions[i].m_direction = GUN_JUNCTION_UNASSIGNED;
 		m_buttons[i] = NULL;
 		i = i + 1;
 	}
 	m_controllerActive = 0;
 	m_buttonCount = 0;
 	m_verticalMoving = 0;
-	m_selectionState = 0;
+	m_selectionState = GUN_SELECTION_IDLE;
 	m_messageSent = 0;
 	g_pMasterInputQueue->Attach(this, 0);
-	if (m_mode == 1) {
+	if (m_mode == FRONTEND_LAYOUT_COMPACT) {
 		m_alternateAssets = 1;
 		g_gunBulletLeftResourceId = RES_NEWFRONT_ANIMS_LORES_BULLET_LEFT;
 		g_gunBulletRightResourceId = RES_NEWFRONT_ANIMS_LORES_BULLET_RIGHT;
@@ -113,15 +122,15 @@ CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigne
 	CAnimsManager::LoadAnims(g_gunSplatLeftResourceId);
 	CAnimsManager::LoadAnims(g_gunSplatRightResourceId);
 	m_sideAnim = new CPlayThruAnim(CAnimsManager::GetnAnims(g_gunTurnResourceId), 1);
-	m_sideAnim->m_fixedTime = 0xffffffff;
+	m_sideAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 	m_leftShotAnim = new CPlayThruAnim(CAnimsManager::GetnAnims(g_gunEffectLeftResourceId), 1);
-	m_leftShotAnim->m_fixedTime = 0xffffffff;
+	m_leftShotAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 	m_cursorAnim = new CPlayThruAnim(CAnimsManager::GetnAnims(g_gunBulletLeftResourceId), 1);
-	m_cursorAnim->m_fixedTime = 0xffffffff;
+	m_cursorAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 	m_rightShotAnim = new CPlayThruAnim(CAnimsManager::GetnAnims(g_gunSplatLeftResourceId), 1);
-	m_rightShotAnim->m_fixedTime = 0xffffffff;
+	m_rightShotAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 	m_hitAnim = new CPlayThruAnim(CAnimsManager::GetnAnims(g_gunFireLeftResourceId), 1);
-	m_hitAnim->m_fixedTime = 0xffffffff;
+	m_hitAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 	m_inputReadyTime = CurrentQueueTimer();
 }
 
@@ -198,7 +207,7 @@ int CGunController::ProcessMsg(Message* p_message)
 		return 0;
 	}
 	switch ((unsigned int) p_message->m_type) {
-	case 4:
+	case MESSAGE_KEY_DOWN:
 		break;
 	default:
 		m_processedCount = m_processedCount + 1;
@@ -218,7 +227,7 @@ int CGunController::ProcessMsg(Message* p_message)
 		MoveRight();
 		return 1;
 	case INPUT_KEY_SPACE:
-	case 0x22:
+	case INPUT_KEY_ACTIVATE:
 	case INPUT_KEY_RETURN:
 		SelectOption();
 		break;
@@ -284,7 +293,7 @@ void CGunController::AddButtonWithRect(int p_x,
 											   message,
 											   p_binding,
 											   p_actionMessage);
-	AddJunction(p_x, p_y, 1, m_buttons[m_buttonCount]->m_controlMessage);
+	AddJunction(p_x, p_y, GUN_SIDE_RIGHT, m_buttons[m_buttonCount]->m_controlMessage);
 	m_buttons[m_buttonCount]->m_trackerButton->m_trackWindow->m_contextId = p_context;
 	m_buttonCount++;
 }
@@ -295,23 +304,23 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 	int centreX = (short) ((int) m_window->m_rect.m_width / 2);
 	int side;
 	if (p_x < centreX) {
-		side = 0;
+		side = GUN_SIDE_LEFT;
 	}
 	else if (p_x > centreX) {
-		side = 1;
+		side = GUN_SIDE_RIGHT;
 	}
 	else {
 		side = p_side;
 	}
-	int junctionIndex = -1;
+	int junctionIndex = GUN_JUNCTION_INDEX_NOT_FOUND;
 	for (int i = 0; i < 8; i++) {
-		if (m_junctions[i].m_direction != 3 && m_junctions[i].m_y == p_y) {
+		if (m_junctions[i].m_direction != GUN_JUNCTION_UNASSIGNED && m_junctions[i].m_y == p_y) {
 			junctionIndex = i;
 		}
 	}
-	if (junctionIndex != -1) {
-		m_junctions[junctionIndex].m_direction = 2;
-		if (side == 0) {
+	if (junctionIndex != GUN_JUNCTION_INDEX_NOT_FOUND) {
+		m_junctions[junctionIndex].m_direction = GUN_JUNCTION_BOTH;
+		if (side == GUN_SIDE_LEFT) {
 			m_junctions[junctionIndex].m_leftMessage = p_side;
 			m_junctions[junctionIndex].m_leftBinding = (void*) p_message;
 			m_junctions[junctionIndex].m_leftX = p_x;
@@ -323,10 +332,10 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 		return;
 	}
 	for (int j = 0; j < 8; j++) {
-		if (m_junctions[j].m_direction == 3) {
+		if (m_junctions[j].m_direction == GUN_JUNCTION_UNASSIGNED) {
 			m_junctions[j].m_y = p_y;
 			m_junctions[j].m_direction = side;
-			if (side == 0) {
+			if (side == GUN_SIDE_LEFT) {
 				m_junctions[j].m_leftMessage = p_side;
 				m_junctions[j].m_leftX = p_x;
 				m_junctions[j].m_leftBinding = (void*) p_message;
@@ -375,9 +384,9 @@ void CGunController::DrawSpriteWindow()
 	position.m_x = 0;
 	position.m_y = 0;
 	switch (m_selectionState) {
-	case 0:
+	case GUN_SELECTION_IDLE:
 		frame = 0;
-		if (m_currentSide != 0) {
+		if (m_currentSide != GUN_SIDE_LEFT) {
 			frame = CAnimsManager::GetnAnims(g_gunTurnResourceId) - 1;
 		}
 		m_staticAnim.m_frameState = frame;
@@ -388,7 +397,7 @@ void CGunController::DrawSpriteWindow()
 		CAnimsManager::DrawAnim(position, g_gunTurnResourceId, 0, (CAnimFrameBASE*) &m_staticAnim, NULL);
 		CAnimsManager::m_gdi = previousGdi;
 		break;
-	case 1:
+	case GUN_SELECTION_TURNING:
 		position.m_x = (short) (m_gunX + offsets[0]);
 		position.m_y = (short) (offsets[1] + m_gunY);
 		previousGdi = CAnimsManager::m_gdi;
@@ -396,10 +405,10 @@ void CGunController::DrawSpriteWindow()
 		CAnimsManager::DrawAnim(position, g_gunTurnResourceId, 0, (CAnimFrameBASE*) m_sideAnim, NULL);
 		CAnimsManager::m_gdi = previousGdi;
 		break;
-	case 2:
+	case GUN_SELECTION_AIMING:
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
-		if (m_targetSide == 0) {
+		if (m_targetSide == GUN_SIDE_LEFT) {
 			position.m_x = (short) m_projectileX;
 			position.m_y = (short) m_projectileY;
 			CAnimsManager::DrawAnim(position, g_gunBulletLeftResourceId, 0, (CAnimFrameBASE*) m_cursorAnim, NULL);
@@ -436,10 +445,10 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		break;
-	case 3:
+	case GUN_SELECTION_FIRING:
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
-		if (m_targetSide == 0) {
+		if (m_targetSide == GUN_SIDE_LEFT) {
 			position.m_x = (short) m_projectileEndX;
 			position.m_y = (short) m_projectileEndY;
 			CAnimsManager::DrawAnim(position, g_gunSplatLeftResourceId, 0, (CAnimFrameBASE*) m_rightShotAnim, NULL);
@@ -478,14 +487,14 @@ void CGunController::MoveDown()
 	int y;
 	int bestY;
 
-	bestY = 999999;
-	foundY = -1;
+	bestY = GUN_CONTROLLER_HIGHEST_SEARCH_Y;
+	foundY = GUN_JUNCTION_COORDINATE_UNASSIGNED;
 	directionField = &m_junctions[0].m_direction;
 	remaining = 8;
 	do {
 		direction = *directionField;
-		if (direction != 3 && m_targetY < (y = directionField[-2]) && y < bestY) {
-			if (direction != 2) {
+		if (direction != GUN_JUNCTION_UNASSIGNED && m_targetY < (y = directionField[-2]) && y < bestY) {
+			if (direction != GUN_JUNCTION_BOTH) {
 				m_targetSide = direction;
 			}
 			foundY = directionField[-2];
@@ -494,7 +503,7 @@ void CGunController::MoveDown()
 		}
 		directionField += 8;
 	} while (--remaining != 0);
-	if (foundY != -1) {
+	if (foundY != GUN_JUNCTION_COORDINATE_UNASSIGNED) {
 		m_targetY = foundY;
 	}
 	m_moveStartTime = CurrentMilliTimer();
@@ -512,8 +521,8 @@ void CGunController::MoveLeft()
 		i = 0;
 		while (i < 8) {
 			if (m_junctions[i].m_y == m_targetY &&
-				(m_junctions[i].m_direction == 0 || m_junctions[i].m_direction == 2)) {
-				m_targetSide = 0;
+				(m_junctions[i].m_direction == GUN_JUNCTION_LEFT || m_junctions[i].m_direction == GUN_JUNCTION_BOTH)) {
+				m_targetSide = GUN_SIDE_LEFT;
 			}
 			i = i + 1;
 		}
@@ -529,8 +538,8 @@ void CGunController::MoveRight()
 		i = 0;
 		while (i < 8) {
 			if (m_junctions[i].m_y == m_targetY &&
-				(m_junctions[i].m_direction == 1 || m_junctions[i].m_direction == 2)) {
-				m_targetSide = 1;
+				(m_junctions[i].m_direction == GUN_JUNCTION_RIGHT || m_junctions[i].m_direction == GUN_JUNCTION_BOTH)) {
+				m_targetSide = GUN_SIDE_RIGHT;
 			}
 			i = i + 1;
 		}
@@ -558,15 +567,15 @@ void CGunController::SetGun(int p_junction)
 	m_gunX = (int) (m_window->m_rect.m_width / 2) - (int) (animSize.m_width / 2);
 	m_gunY = m_junctions[p_junction].m_y;
 	direction = m_junctions[p_junction].m_direction;
-	if (direction == 0 || direction != 1) {
-		m_currentSide = 0;
+	if (direction == GUN_JUNCTION_LEFT || direction != GUN_JUNCTION_RIGHT) {
+		m_currentSide = GUN_SIDE_LEFT;
 	}
 	else {
-		m_currentSide = 1;
+		m_currentSide = GUN_SIDE_RIGHT;
 	}
 	m_selectionStartX = m_gunX;
 	m_targetY = m_gunY;
-	m_selectionState = 0;
+	m_selectionState = GUN_SELECTION_IDLE;
 	m_targetSide = m_currentSide;
 }
 
@@ -579,11 +588,11 @@ void CGunController::SelectOption()
 	unsigned int delta;
 
 	m_selectionMessage.m_type = MESSAGE_BUTTON_RELEASED;
-	if (m_gunY == m_targetY && m_selectionState == 0) {
+	if (m_gunY == m_targetY && m_selectionState == GUN_SELECTION_IDLE) {
 		i = 0;
 		while (i < 8) {
 			if (m_junctions[i].m_y == m_targetY) {
-				if (m_targetSide == 0) {
+				if (m_targetSide == GUN_SIDE_LEFT) {
 					m_selectionMessage.m_code = (int) m_junctions[i].m_leftBinding;
 					m_selectedMessage = m_junctions[i].m_leftMessage;
 				}
@@ -599,11 +608,11 @@ void CGunController::SelectOption()
 		if (m_alternateAssets != 1) {
 			offsets = g_anGunSpriteOffset;
 		}
-		m_cursorAnim->StartAnim(0xfa);
-		m_hitAnim->StartAnim(500);
-		m_leftShotAnim->StartAnim(500);
+		m_cursorAnim->StartAnim(GUN_CONTROLLER_CURSOR_ANIMATION_DURATION_MS);
+		m_hitAnim->StartAnim(GUN_CONTROLLER_FIRE_ANIMATION_DURATION_MS);
+		m_leftShotAnim->StartAnim(GUN_CONTROLLER_FIRE_ANIMATION_DURATION_MS);
 		targetX = &m_projectileTargetX;
-		if (m_targetSide == 0) {
+		if (m_targetSide == GUN_SIDE_LEFT) {
 			m_projectileX = offsets[6] + m_selectionStartX;
 			m_projectileY = offsets[7] + m_targetY;
 			*targetX = offsets[8] + m_junctions[i].m_leftX;
@@ -621,7 +630,7 @@ void CGunController::SelectOption()
 		delta = *targetX - m_projectileX;
 		delta = abs((int) delta);
 		m_selectEndTime = delta * 2 + m_selectStartTime;
-		m_selectionState = 2;
+		m_selectionState = GUN_SELECTION_AIMING;
 		g_pSoundView->PlayEffect(SFX_BIGGUN);
 	}
 }
@@ -634,33 +643,33 @@ void CGunController::Process()
 	int step;
 	unsigned long elapsed;
 	now = CurrentMilliTimer();
-	if (m_currentSide != m_targetSide && m_selectionState != 1) {
+	if (m_currentSide != m_targetSide && m_selectionState != GUN_SELECTION_TURNING) {
 		m_sideStartTime = now;
-		m_sideEndTime = now + 0xfa;
-		m_selectionState = 1;
-		m_sideAnim->StartAnim(0xfa);
-		if (m_targetSide == 0) {
+		m_sideEndTime = now + GUN_CONTROLLER_SIDE_ANIMATION_DURATION_MS;
+		m_selectionState = GUN_SELECTION_TURNING;
+		m_sideAnim->StartAnim(GUN_CONTROLLER_SIDE_ANIMATION_DURATION_MS);
+		if (m_targetSide == GUN_SIDE_LEFT) {
 			m_sideAnim->SetAnimDirection(0xffffffff);
 		}
 		else {
-			m_sideAnim->SetAnimDirection(1);
+			m_sideAnim->SetAnimDirection(ANIMATION_DIRECTION_FORWARD);
 		}
 	}
 	else {
 		switch (m_selectionState) {
-		case 1:
+		case GUN_SELECTION_TURNING:
 			if (m_sideEndTime <= now) {
-				m_selectionState = 0;
+				m_selectionState = GUN_SELECTION_IDLE;
 				m_currentSide = m_targetSide;
 			}
 			break;
-		case 2:
+		case GUN_SELECTION_AIMING:
 			if (m_selectEndTime <= now) {
 				g_pSoundView->PlayEffect(SFX_GUNHIT);
 				m_fireStartTime = now;
-				m_fireEndTime = now + 500;
-				m_selectionState = 3;
-				m_rightShotAnim->StartAnim(500);
+				m_fireEndTime = now + GUN_CONTROLLER_FIRE_ANIMATION_DURATION_MS;
+				m_selectionState = GUN_SELECTION_FIRING;
+				m_rightShotAnim->StartAnim(GUN_CONTROLLER_FIRE_ANIMATION_DURATION_MS);
 			}
 			else {
 				elapsed = (now - m_selectStartTime) >> 1;
@@ -670,7 +679,7 @@ void CGunController::Process()
 				m_projectileX = displacement + step;
 			}
 			break;
-		case 3:
+		case GUN_SELECTION_FIRING:
 			fireTime = m_fireEndTime;
 			if (m_selectedMessage != 0) {
 				fireTime -= 0x177;
@@ -681,7 +690,7 @@ void CGunController::Process()
 				m_messageSent = 1;
 			}
 			if (m_fireEndTime <= now) {
-				m_selectionState = 0;
+				m_selectionState = GUN_SELECTION_IDLE;
 				m_messageSent = 0;
 			}
 			break;

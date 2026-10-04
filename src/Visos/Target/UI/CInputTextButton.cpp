@@ -10,7 +10,10 @@ CInputTextButton::CInputTextButton(const CVSRect& p_rect,
 								   CPVGWnd* p_parent,
 								   unsigned int p_controlMessage,
 								   char* p_text)
-	: CTextButton(p_rect, p_parent, RES_GAME_FONT1, 0x0c)
+	: CTextButton(p_rect,
+				  p_parent,
+				  RES_GAME_FONT1,
+				  TEXT_BUTTON_ALIGN_HORIZONTAL_CENTER | TEXT_BUTTON_ALIGN_VERTICAL_CENTER)
 {
 	m_ownedText = NULL;
 	SetOwnedText(p_text);

@@ -4,10 +4,13 @@
 #include "../Objects/CHand.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x00427e60
-CHandManager::CHandManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x16, 0xb)
+CHandManager::CHandManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_HANDS,
+						 OBJECT_MANAGER_TRANSPORT_HANDS)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -61,7 +64,7 @@ void CHandManager::RemoveHand(CGameObject* p_object)
 	short id = p_object->GetId();
 	for (; index < m_count; index++) {
 		if (m_hands[index].GetId() == id) {
-			m_hands[index++].SetId(0xffff);
+			m_hands[index++].SetId(INVALID_OBJECT_ID);
 			for (int next = index; next < m_count; next++) {
 				m_hands[next - 1] = m_hands[next];
 			}
@@ -115,7 +118,9 @@ int CHandManager::GetViewData(CViewData* p_viewData)
 void CHandManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
-		AICOORD position(p_x << 12, p_y << 12, p_z << 12);
+		AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
+						 p_y << FIXED_POINT_FRACTION_BITS,
+						 p_z << FIXED_POINT_FRACTION_BITS);
 		m_hands[m_count].Set(p_id, position);
 		m_count++;
 	}
@@ -131,7 +136,7 @@ void CHandManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 	if (count != 0) {
 		do {
 			unsigned short id;
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *(unsigned short*) p_data;
 				p_data += 2;
 			}

@@ -15,6 +15,7 @@
 #include "../../Visos/Resources/CResFONT.h"
 #include "../../Visos/Resources/CResSTRING.h"
 #include "../../Visos/Resources/Manifest.h"
+#include "Frontend/Base/FlowProcesses.h"
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
@@ -27,6 +28,10 @@
 
 #include <new.h>
 #include <string.h>
+
+enum {
+	ABOUT_SCREEN_DISPLAY_DURATION_MS = 5 * MILLISECONDS_PER_SECOND
+};
 
 class ChangeListItem;
 
@@ -50,7 +55,7 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect
 {
 	void* storage;
 
-	m_returnState = 0;
+	m_returnState = FLOW_NONE;
 	g_pCursor->SetActive(0);
 	m_complete = 0;
 	g_pMasterInputQueue->Attach(this, 0);
@@ -80,7 +85,7 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect
 	aboutString->m_directUseCount = aboutString->m_directUseCount + 1;
 	m_aboutText = (char*) aboutString->m_data;
 	m_startTime = CurrentMilliTimer();
-	m_endTime = m_startTime + 5000;
+	m_endTime = m_startTime + ABOUT_SCREEN_DISPLAY_DURATION_MS;
 }
 
 // FUNCTION: LEMBALL 0x0044b8f0
@@ -118,7 +123,7 @@ void CAboutScreen::DrawRegistrationText()
 	int index;
 
 	font = m_textManager->GetFont(RES_GAME_FONT3);
-	CVSSize sizeValue = font->GetSize(g_szRegisteredTo, 0x20);
+	CVSSize sizeValue = font->GetSize(g_szRegisteredTo, TEXT_ADVANCE_X_POSITIVE);
 	CVSSize& size = sizeValue;
 	labelY = (int) (m_size.m_height / 2) - (int) (size.m_height / 2);
 	short labelPointStorage[2];
@@ -129,12 +134,18 @@ void CAboutScreen::DrawRegistrationText()
 		advance.m_width = 0;
 		labelPosition.m_x = (short) (m_size.m_width / 2 - size.m_width / 2);
 		labelPosition.m_y = (short) labelY;
-		m_textManager->DrawString(m_gdi, labelPosition, advance, RES_GAME_FONT3, g_szRegisteredTo, 0x20, NULL);
+		m_textManager->DrawString(m_gdi,
+								  labelPosition,
+								  advance,
+								  RES_GAME_FONT3,
+								  g_szRegisteredTo,
+								  TEXT_ADVANCE_X_POSITIVE,
+								  NULL);
 	}
 	strcpy(g_szVisosBuildBuffer, g_szVisosBuild);
 	vsLtoa(0xc9, g_szVisosBuildBuffer + strlen(g_szVisosBuildBuffer), 10);
 	{
-		const CVSSize& measuredSize = font->GetSize(g_szVisosBuildBuffer, 0x20);
+		const CVSSize& measuredSize = font->GetSize(g_szVisosBuildBuffer, TEXT_ADVANCE_X_POSITIVE);
 		size.m_width = measuredSize.m_width;
 		size.m_height = measuredSize.m_height;
 	}
@@ -147,7 +158,8 @@ void CAboutScreen::DrawRegistrationText()
 		position.m_x = (short) (m_size.m_width - size.m_width) / 2;
 		position.m_y = (short) (m_size.m_height - size.m_height) / 2;
 		position.m_y += size.m_height * 4;
-		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, 0x20, NULL);
+		m_textManager
+			->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, TEXT_ADVANCE_X_POSITIVE, NULL);
 	}
 	index = 0;
 	while (m_aboutText[index] != '\0') {
@@ -157,7 +169,7 @@ void CAboutScreen::DrawRegistrationText()
 	}
 	g_szAboutDecodeBuffer[index] = '\0';
 	{
-		const CVSSize& measuredSize = font->GetSize(g_szAboutDecodeBuffer, 0x20);
+		const CVSSize& measuredSize = font->GetSize(g_szAboutDecodeBuffer, TEXT_ADVANCE_X_POSITIVE);
 		size.m_width = measuredSize.m_width;
 		size.m_height = measuredSize.m_height;
 	}
@@ -166,7 +178,13 @@ void CAboutScreen::DrawRegistrationText()
 		advance.m_height = 0;
 		advance.m_width = 0;
 		CVSPoint position((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY + 0x23);
-		m_textManager->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szAboutDecodeBuffer, 0x20, NULL);
+		m_textManager->DrawString(m_gdi,
+								  position,
+								  advance,
+								  RES_GAME_FONT3,
+								  g_szAboutDecodeBuffer,
+								  TEXT_ADVANCE_X_POSITIVE,
+								  NULL);
 	}
 	m_textManager->ResetPrimitives();
 }
@@ -255,7 +273,7 @@ void CAboutScreen::DrawChangedRegion()
 int CAboutScreen::ProcessMsg(Message* p_message)
 {
 	switch (p_message->m_type) {
-	case 4:
+	case MESSAGE_KEY_DOWN:
 		return 1;
 	default:
 		m_processedCount = m_processedCount + 1;
@@ -268,7 +286,7 @@ bool CAboutScreen::QuitYet()
 {
 	if (m_endTime < CurrentMilliTimer()) {
 		m_complete = 1;
-		m_returnState = 1;
+		m_returnState = FLOW_INTRO_ANIM;
 	}
 	return m_complete;
 }

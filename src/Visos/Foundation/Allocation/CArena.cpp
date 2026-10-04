@@ -4,6 +4,10 @@
 #include "../CMBlock.h"
 #include "../CVSOStream.h"
 
+enum {
+	ARENA_ALLOCATION_ALIGNMENT_BYTES = 4
+};
+
 // FUNCTION: LEMBALL 0x00459d70
 bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_description)
 {
@@ -15,7 +19,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 
 	EnterCritical();
 	*p_data = NULL;
-	aligned = (p_size + 3) & 0xfffffffc;
+	aligned = (p_size + ARENA_ALLOCATION_ALIGNMENT_BYTES - 1) & ~(ARENA_ALLOCATION_ALIGNMENT_BYTES - 1);
 	headerSize = GetSizeOfBlock();
 	needed = aligned + headerSize;
 	if (aligned > m_freeSize) {
@@ -45,17 +49,17 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		CMBlock* leftover;
 		block->m_size = aligned;
 		block->SetDesc(p_description);
-		block->m_flags &= ~1;
+		block->m_flags &= ~MEMORY_BLOCK_FLAG_FREE;
 		RemoveFromFreeList(block);
 		unsigned char* nextData = block->m_data + aligned;
 		leftover = CreateNewBlock(nextData, block->m_ownerArena, NULL, "Free", oldSize - aligned);
-		leftover->m_flags |= 1;
+		leftover->m_flags |= MEMORY_BLOCK_FLAG_FREE;
 		AddToFreeList(leftover);
 		AddToBlockList(leftover, block);
 		m_freeSize -= block->m_size + GetSizeOfBlock();
 	}
 	else {
-		block->m_flags &= ~1;
+		block->m_flags &= ~MEMORY_BLOCK_FLAG_FREE;
 		RemoveFromFreeList(block);
 		block->SetDesc(p_description);
 		m_freeSize -= block->m_size;

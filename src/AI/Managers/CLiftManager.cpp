@@ -8,11 +8,17 @@
 #include "AI/Managers/CBaseObjectManager.h"
 #include "AI/Objects/SwitchEntry.h"
 
+enum {
+	LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS = 48
+};
+
 // GLOBAL: LEMBALL 0x0049e1c0
 unsigned short g_wMovingLiftCount = 0;
 
 // FUNCTION: LEMBALL 0x00425680
-CLiftManager::CLiftManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x12, 7)
+CLiftManager::CLiftManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_LIFTS,
+						 OBJECT_MANAGER_TRANSPORT_LIFTS)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -54,6 +60,15 @@ CLiftManager::~CLiftManager()
 	delete[] m_lifts;
 }
 
+// FUNCTION: LEMBALL 0x004257e0
+int CLiftManager::ExportLiftStartCoordinates(tCoord3d* p_records)
+{
+	for (int index = 0; index < m_count; ++index) {
+		p_records[index] = m_lifts[index].m_start;
+	}
+	return m_count;
+}
+
 // FUNCTION: LEMBALL 0x00425830
 int CLiftManager::ExportEndpoints(LiftEndpointRecord* p_records)
 {
@@ -75,7 +90,7 @@ void CLiftManager::RemoveLift(CLift* p_lift)
 		CLift* lift = m_lifts;
 		do {
 			if (lift == p_lift) {
-				m_lifts[i].SetId(0xffff);
+				m_lifts[i].SetId(INVALID_OBJECT_ID);
 				for (int next = i + 1; next < m_count; next++) {
 					m_lifts[next - 1] = m_lifts[next];
 				}
@@ -93,7 +108,8 @@ void CLiftManager::AddLiftFromXyz(unsigned short p_id, int p_x, int p_y, int p_z
 {
 	if (m_count < m_capacity) {
 		m_lifts[m_count].SetId(p_id);
-		m_lifts[m_count].Set(p_x, p_y, p_z, 1, -1, 0x30, LIFT_ACTIVATE_CONTINUOUS, 1);
+		m_lifts[m_count]
+			.Set(p_x, p_y, p_z, 1, -1, LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS, LIFT_ACTIVATE_CONTINUOUS, 1);
 		m_count++;
 	}
 }
@@ -103,8 +119,17 @@ void CLiftManager::AddLiftFromEndpoints(unsigned short p_id, tCoord3d& p_start, 
 {
 	if (m_count < m_capacity) {
 		m_lifts[m_count].SetId(p_id);
-		m_lifts[m_count].Set(p_start, p_end, 1, -1, 0x30, LIFT_ACTIVATE_CONTINUOUS, 1);
+		m_lifts[m_count]
+			.Set(p_start, p_end, 1, -1, LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS, LIFT_ACTIVATE_CONTINUOUS, 1);
 		m_count++;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00425dc0
+void CLiftManager::CalculateAllLiftCliffs()
+{
+	for (int index = 0; index < m_count; ++index) {
+		m_lifts[index].CalculateCliff();
 	}
 }
 
@@ -135,7 +160,7 @@ void CLiftManager::Switch(swMessage p_message, int p_id, int p_legacyA, int p_le
 				return;
 			}
 		}
-		if (p_message == 1) {
+		if (p_message == SW_LIFT) {
 			CLift* lift = &m_lifts[i];
 			if (lift->m_activateType != LIFT_ACTIVATE_SWITCH_ONCE) {
 				if (lift->m_activateType == LIFT_ACTIVATE_SWITCH_TOGGLE) {
@@ -143,7 +168,7 @@ void CLiftManager::Switch(swMessage p_message, int p_id, int p_legacyA, int p_le
 				}
 				return;
 			}
-			if (lift->m_activationLatched == 0) {
+			if (lift->m_activationLatched == LIFT_ACTIVATION_NOT_LATCHED) {
 				lift->Activate();
 			}
 		}
@@ -154,7 +179,7 @@ void CLiftManager::Switch(swMessage p_message, int p_id, int p_legacyA, int p_le
 unsigned short CLiftManager::Id(int p_index)
 {
 	if (p_index >= m_count) {
-		return 0xffff;
+		return INVALID_OBJECT_ID;
 	}
 	return m_lifts[p_index].GetId();
 }

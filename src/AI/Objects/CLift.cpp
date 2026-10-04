@@ -31,13 +31,13 @@ CLift::~CLift()
 // FUNCTION: LEMBALL 0x00424d30
 void CLift::CalculateCliff()
 {
-	int startX = (short) (m_start.m_x / 16);
-	int startY = (short) (m_start.m_y / 16);
-	int endX = (short) (m_end.m_x / 16);
+	int startX = (short) (m_start.m_x / GROUND_BLOCK_PIXEL_SIZE);
+	int startY = (short) (m_start.m_y / GROUND_BLOCK_PIXEL_SIZE);
+	int endX = (short) (m_end.m_x / GROUND_BLOCK_PIXEL_SIZE);
 	if (startY > 0) {
 		for (int x = startX; x <= endX; x++) {
 			CGround* ground = &g_pActiveMap->m_ground.m_ground[(startY - 1) * g_pActiveMap->m_ground.m_width + x];
-			ground->m_cliff = (short) (((short) ground->m_height + 15) / 16);
+			ground->m_cliff = (short) (((short) ground->m_height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE);
 		}
 	}
 	if (startX > 0) {
@@ -45,7 +45,8 @@ void CLift::CalculateCliff()
 			do {
 				CGround* ground =
 					&g_pActiveMap->m_ground.m_ground[startY * g_pActiveMap->m_ground.m_width + startX - 1];
-				ground->m_cliff = (short) (((short) ground->m_height + 15) / 16);
+				ground->m_cliff =
+					(short) (((short) ground->m_height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE);
 				startY++;
 			} while (startY <= endX);
 		}
@@ -60,7 +61,7 @@ void CLift::Edit(int p_height,
 				 eLiftActivateType p_activateType,
 				 unsigned int p_initialActive)
 {
-	if (p_lowHeight == -1) {
+	if (p_lowHeight == LIFT_LOW_HEIGHT_FOLLOWS_START_HEIGHT) {
 		p_lowHeight = p_height;
 	}
 	m_lowHeight = p_lowHeight;
@@ -69,22 +70,22 @@ void CLift::Edit(int p_height,
 	m_defaultActive = p_initialActive;
 	m_activateType = p_activateType;
 	m_action = ACTION_READY;
-	m_activationLatched = 0;
+	m_activationLatched = LIFT_ACTIVATION_NOT_LATCHED;
 	for (int i = 0; i < 8; i++) {
 		m_objects[i] = NULL;
 	}
 	m_start.m_z = p_height;
 	m_end.m_z = p_height;
-	if (m_lowHeight == m_start.m_z && m_direction != 1) {
-		m_direction = 1;
+	if (m_lowHeight == m_start.m_z && m_direction != LIFT_DIRECTION_RISING) {
+		m_direction = LIFT_DIRECTION_RISING;
 	}
-	else if (m_highHeight == m_start.m_z && m_direction == 1) {
-		m_direction = -1;
+	else if (m_highHeight == m_start.m_z && m_direction == LIFT_DIRECTION_RISING) {
+		m_direction = LIFT_DIRECTION_LOWERING;
 	}
 	for (int x = m_start.m_x; x <= m_end.m_x; x += 16) {
 		for (int y = m_start.m_y; y <= m_end.m_y; y += 16) {
-			int bx = x / 16;
-			int by = y / 16;
+			int bx = x / GROUND_BLOCK_PIXEL_SIZE;
+			int by = y / GROUND_BLOCK_PIXEL_SIZE;
 			switch (p_activateType) {
 			case LIFT_ACTIVATE_SWITCH_TOGGLE:
 				m_active = 0;
@@ -105,11 +106,11 @@ void CLift::Edit(int p_height,
 			}
 			if (bx >= 0 && by >= 0 && bx < g_pActiveMap->m_ground.m_width && by < g_pActiveMap->m_ground.m_height) {
 				CGround* ground = g_pActiveMap->m_ground.m_ground + by * g_pActiveMap->m_ground.m_width + bx;
-				ground->m_collision |= 0x8020;
+				ground->m_collision |= GROUND_COLLISION_OBJECT_INTERACTION | GROUND_COLLISION_SPECIAL_RENDER;
 			}
 			m_mapCell = g_pActiveMap->m_ground.m_ground + g_pActiveMap->m_ground.m_width * by + bx;
 			m_mapCell->m_height = p_height;
-			m_mapCell->m_cliff = (p_height + 15) / 16;
+			m_mapCell->m_cliff = (p_height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
 		}
 	}
 	CalculateCliff();
@@ -144,9 +145,9 @@ void CLift::Set(tCoord3d& p_start,
 	int startY = p_start.m_y;
 	int startZ = p_start.m_z;
 	int startX = p_start.m_x;
-	m_position.m_yFixed = startY << 12;
-	m_position.m_zFixed = startZ << 12;
-	m_position.m_xFixed = startX << 12;
+	m_position.m_yFixed = startY << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = startZ << FIXED_POINT_FRACTION_BITS;
+	m_position.m_xFixed = startX << FIXED_POINT_FRACTION_BITS;
 	m_liftId = g_wMovingLiftCount++;
 	m_start = p_start;
 	m_end = p_end;
@@ -170,11 +171,11 @@ bool CLift::Process()
 		break;
 	case ACTION_ACTIVATING:
 		m_active = 1;
-		m_activationLatched = 1;
+		m_activationLatched = LIFT_ACTIVATION_LATCHED;
 		SetSndEffect(SFX_LIFT);
 		if (m_active && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 			m_stateTimer = time;
-			if (m_direction == 1) {
+			if (m_direction == LIFT_DIRECTION_RISING) {
 				Action(ACTION_LIFT_START_RISING);
 			}
 			else {
@@ -185,7 +186,7 @@ bool CLift::Process()
 	case ACTION_LIFT_START_RISING: {
 		int startHeight = m_start.m_z;
 		m_movementStartHeight = startHeight;
-		m_direction = 1;
+		m_direction = LIFT_DIRECTION_RISING;
 		m_start.m_z = startHeight + time - m_stateTimer;
 		m_active = 1;
 		m_action = ACTION_LIFT_RISING;
@@ -196,7 +197,7 @@ bool CLift::Process()
 		if (m_start.m_z >= m_highHeight) {
 			m_start.m_z = m_highHeight;
 			m_active = m_defaultActive;
-			m_direction = -1;
+			m_direction = LIFT_DIRECTION_LOWERING;
 			if (m_defaultActive && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
 				Action(ACTION_LIFT_START_LOWERING);
@@ -211,7 +212,7 @@ bool CLift::Process()
 		if (m_start.m_z <= m_lowHeight) {
 			m_start.m_z = m_lowHeight;
 			m_active = m_defaultActive;
-			m_direction = 1;
+			m_direction = LIFT_DIRECTION_RISING;
 			if (m_defaultActive && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
 				Action(ACTION_LIFT_START_RISING);
@@ -223,7 +224,7 @@ bool CLift::Process()
 		break;
 	case ACTION_LIFT_START_LOWERING:
 		m_movementStartHeight = m_start.m_z;
-		m_direction = -1;
+		m_direction = LIFT_DIRECTION_LOWERING;
 		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
 		m_action = ACTION_LIFT_LOWERING;
 		m_active = 1;
@@ -232,10 +233,11 @@ bool CLift::Process()
 	int height = m_start.m_z;
 	for (int y = m_start.m_y; y <= m_end.m_y; y += 16) {
 		short startX = m_start.m_x;
-		m_mapCell = g_pActiveMap->m_ground.m_ground + g_pActiveMap->m_ground.m_width * (y / 16) + (short) (startX / 16);
+		m_mapCell = g_pActiveMap->m_ground.m_ground + g_pActiveMap->m_ground.m_width * (y / GROUND_BLOCK_PIXEL_SIZE) +
+					(short) (startX / GROUND_BLOCK_PIXEL_SIZE);
 		for (int x = startX; x <= m_end.m_x; x += 16) {
 			m_mapCell->m_height = height;
-			m_mapCell->m_cliff = (height + 15) / 16;
+			m_mapCell->m_cliff = (height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
 			m_mapCell++;
 		}
 	}
@@ -250,7 +252,7 @@ void CLift::CheckObjects()
 	do {
 		if (*object != NULL) {
 			if ((*object)->QOnBalloon() || !(*object)->OnLift(m_start, m_end)) {
-				(*object)->m_liftId = 0xffff;
+				(*object)->m_liftId = INVALID_OBJECT_ID;
 				*object = NULL;
 			}
 		}

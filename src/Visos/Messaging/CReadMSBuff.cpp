@@ -15,7 +15,7 @@ CReadMSBuff::CReadMSBuff(int p_messageSlots, int p_messageCapacity, unsigned sho
 	m_messageSlotCount = p_messageSlots;
 	m_assembledSize = 0;
 	m_receivedSubpacketCount = 0;
-	payloadSize = (p_packetSize & 0xffff) - sizeof(BasePacketHeader);
+	payloadSize = p_packetSize - sizeof(BasePacketHeader);
 	m_subpacketPayloadSize = payloadSize;
 	if (p_messageSlots != 0 && payloadSize != 0) {
 		m_data = (unsigned char*) operator new(p_messageCapacity + sizeof(BasePacketHeader));

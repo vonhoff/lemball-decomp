@@ -2,6 +2,7 @@
 
 #include "../Foundation/CBaseQueue.h"
 #include "../Foundation/CVSRect.h"
+#include "../Messaging/PackParam.h"
 #include "CHotAreaElement.h"
 #include "Visos/Foundation/CVSPoint.h"
 #include "Visos/Foundation/Message.h"
@@ -53,7 +54,7 @@ CHotAreaList::CHotAreaList(const CVSRect& p_rect, const CVSPoint& p_relativeTopL
 	m_relativeTopLeft.m_y = p_relativeTopLeft.m_y;
 	m_innerOrigin.m_x = p_innerOrigin.m_x;
 	m_innerOrigin.m_y = p_innerOrigin.m_y;
-	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), -0x19);
+	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), MASTER_INPUT_QUEUE_PRIORITY);
 	m_tail = NULL;
 	m_head = NULL;
 	m_scale = 1;
@@ -93,14 +94,15 @@ void CHotAreaList::DeleteEntry(CHotAreaElement* p_entry)
 int CHotAreaList::ProcessMsg(Message* p_message)
 {
 	switch ((int) p_message->m_type) {
-	case 5:
-	case 6:
-	case 7:
-	case 8:
-	case 9:
-	case 10:
+	case MESSAGE_MOUSE_BUTTON_UP:
+	case MESSAGE_MOUSE_BUTTON_DOWN:
+	case MESSAGE_MOUSE_MOVED:
+	case MESSAGE_CURSOR_BUTTON_DOWN:
+	case MESSAGE_CURSOR_BUTTON_UP:
+	case MESSAGE_CURSOR_MOVED:
 		if (p_message->m_source == NULL) {
-			CVSPoint point((short) p_message->m_code, (short) ((unsigned int) p_message->m_code >> 16));
+			CVSPoint point((short) p_message->m_code,
+						   (short) ((unsigned int) p_message->m_code >> PACK_PARAM_HIGH_WORD_SHIFT));
 			CVSPoint* cursor = g_pHotAreaCursor;
 			cursor->m_x = point.m_x;
 			cursor->m_y = point.m_y;
@@ -120,7 +122,7 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
 	unsigned int type;
 	const CVSPoint* origin;
 
-	fallback.m_type = 7;
+	fallback.m_type = MESSAGE_MOUSE_MOVED;
 	fallback.m_time = 0;
 	fallback.m_code = 0;
 	fallback.m_payload = NULL;
@@ -145,7 +147,7 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
 				handler->m_entered = 0;
 				handler->OnExit();
 			}
-			if ((type == 5 || type == 9) && handler->m_reserved != 0) {
+			if ((type == MESSAGE_MOUSE_BUTTON_UP || type == MESSAGE_CURSOR_BUTTON_UP) && handler->m_reserved != 0) {
 				handler->ProcessArea(p_message, localPoint, m_currentHandler);
 			}
 		}
@@ -168,7 +170,7 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
 			m_entered = 0;
 			OnExit();
 		}
-		if ((type == 5 || type == 9) && m_reserved != 0) {
+		if ((type == MESSAGE_MOUSE_BUTTON_UP || type == MESSAGE_CURSOR_BUTTON_UP) && m_reserved != 0) {
 			ProcessArea(p_message, localPoint, m_currentHandler);
 			m_currentHandler = this;
 		}

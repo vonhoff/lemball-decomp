@@ -3,6 +3,15 @@
 
 #include "../Base/AICOORD.h"
 #include "../Base/CGameObject.h"
+
+enum eSlinkyDirection {
+	SLINKY_DIRECTION_EAST = 0,
+	SLINKY_DIRECTION_WEST = 1,
+	SLINKY_DIRECTION_SOUTH = 2,
+	SLINKY_DIRECTION_NORTH = 3,
+	SLINKY_DIRECTION_COUNT = 4
+};
+
 // SIZE 0x150
 // VTABLE: LEMBALL 0x004932f8
 class CSlinky : public CGameObject {

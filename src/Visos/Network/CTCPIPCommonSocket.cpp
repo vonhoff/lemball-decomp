@@ -11,10 +11,11 @@ extern int g_socketWindowClassRegistered;
 // FUNCTION: LEMBALL 0x0046fcf0
 CTCPIPCommonSocket::CTCPIPCommonSocket() : CNetworkWnd("Socket Window", &g_socketWindowClassRegistered)
 {
+	enum { TCPIP_SOCKET_MESSAGE_RANGE_LAST = 0x45f };
 	m_asyncBuffer = NULL;
 	m_asyncRequest = 0;
-	m_firstMessage = 0x440;
-	m_lastMessage = 0x45f;
+	m_firstMessage = TCPIP_MESSAGE_LOCAL_HOST_RESOLVED;
+	m_lastMessage = TCPIP_SOCKET_MESSAGE_RANGE_LAST;
 }
 
 // FUNCTION: LEMBALL 0x0046fd70

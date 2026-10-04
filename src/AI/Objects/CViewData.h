@@ -1,11 +1,21 @@
 #ifndef LEMBALL_AI_OBJECTS_CVIEWDATA_H
 #define LEMBALL_AI_OBJECTS_CVIEWDATA_H
 
+enum eLemmingViewStatusFlag {
+	LEMMING_VIEW_STATUS_GROUP_LEADER = 0x01,
+	LEMMING_VIEW_STATUS_IN_GROUP = 0x02
+};
+
 #include "../../Views/Sound/SoundEffects.h"
 #include "../Base/AICOORD.h"
 #include "../Base/ObjectActions.h"
 #include "../Base/ObjectIds.h"
 #include "../Base/ObjectTypes.h"
+
+enum eRemotePaletteRemap {
+	REMOTE_PALETTE_REMAP_DISABLED = 0,
+	REMOTE_PALETTE_REMAP_ENABLED = 1
+};
 
 // SIZE 0x4c
 class CViewData {

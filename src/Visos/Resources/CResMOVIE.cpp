@@ -1,4 +1,5 @@
 #include "CResMOVIE.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 #include "ResourceTypeList.h"
@@ -15,7 +16,7 @@ CResMOVIE* CResMOVIE::Load(unsigned int p_resourceId)
 	if (res == NULL) {
 		return (CResMOVIE*) (new CResMOVIE(p_resourceId))->CheckError();
 	}
-	if (res->m_chunkType != 0x4c495354) {
+	if (res->m_chunkType != RESOURCE_CHUNK_LIST) {
 		res->UnLoad();
 		return NULL;
 	}

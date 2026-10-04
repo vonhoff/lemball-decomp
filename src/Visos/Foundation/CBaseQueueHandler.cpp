@@ -3,12 +3,19 @@
 #include <stddef.h>
 struct Message;
 
+namespace
+{
+enum {
+	QUEUE_HANDLER_SIGNATURE = 0x51484452
+};
+}
+
 // FUNCTION: LEMBALL 0x00462ea0
 CBaseQueueHandler::CBaseQueueHandler()
 {
 	m_dispatchState = 0;
 	m_processedCount = 0;
-	m_signature = 0x51484452;
+	m_signature = QUEUE_HANDLER_SIGNATURE;
 }
 
 // FUNCTION: LEMBALL 0x00462ec0

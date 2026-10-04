@@ -14,13 +14,17 @@
 #include "AI/Base/CPt3.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
+
+enum {
+	AUTOMATIC_MOVER_TURNING_DELAY_TICKS = 20
+};
+#include "../Base/CGameObject.h"
 #include "CAI.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
 #include <stddef.h>
 
-#define MOVER_POSITION_FRACTION_BITS 12
 #define MOVER_FOOTPRINT_HALF_SIZE 8
 #define MOVER_FOOTPRINT_LAST_OFFSET 15
 #define MOVER_SURFACE_Z_OFFSET 8
@@ -43,7 +47,7 @@ void CMover::Initialise()
 	m_stateTimer = 0;
 	m_active = 0;
 	m_moving = 0;
-	m_movementMode = 0;
+	m_movementMode = MOVER_MODE_AUTOMATIC;
 	m_switchRequested = 0;
 	m_objectCount = 0;
 	m_findOccupants = 1;
@@ -59,12 +63,12 @@ CMover::~CMover()
 bool CMover::IsAt(int p_x, int p_y, int& p_height)
 {
 
-	int x = (m_position.m_xFixed >> MOVER_POSITION_FRACTION_BITS) - MOVER_FOOTPRINT_HALF_SIZE;
+	int x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - MOVER_FOOTPRINT_HALF_SIZE;
 	int xMax = x + MOVER_FOOTPRINT_LAST_OFFSET;
-	int y = (m_position.m_yFixed >> MOVER_POSITION_FRACTION_BITS) - MOVER_FOOTPRINT_HALF_SIZE;
+	int y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - MOVER_FOOTPRINT_HALF_SIZE;
 	int yMax = y + MOVER_FOOTPRINT_LAST_OFFSET;
 	if (p_x >= x && p_x <= xMax && p_y >= y && p_y <= yMax) {
-		p_height = (m_position.m_zFixed >> MOVER_POSITION_FRACTION_BITS) + MOVER_SURFACE_Z_OFFSET;
+		p_height = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) + MOVER_SURFACE_Z_OFFSET;
 		return true;
 	}
 	return false;
@@ -79,24 +83,24 @@ void CMover::Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode,
 	m_position.m_yFixed = position.m_y;
 	m_position.m_zFixed = position.m_z;
 
-	int y = m_position.m_yFixed >> 12;
-	int x = m_position.m_xFixed >> 12;
-	int groundX = x >> 4;
-	int groundY = y >> 4;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int groundX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int groundY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	CMap* map = g_pMap;
 	unsigned short z;
 	if (x < 0 || y < 0 || map->m_ground.m_width <= groundX || map->m_ground.m_height <= groundY) {
 		z = 0;
 	}
 	else {
-		x &= 0xf;
-		y &= 0xf;
+		x &= GROUND_BLOCK_PIXEL_MASK;
+		y &= GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
 	}
 
 	m_active = 1;
 	m_actionArgument = (short) p_pathId;
-	m_position.m_zFixed = (unsigned int) z << 12;
+	m_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 	m_startNode = p_startNode;
 	m_currentNode = 0;
 	m_objectCount = 0;
@@ -114,12 +118,12 @@ void CMover::SetUpNextNode(unsigned int p_time)
 
 	CPt3 nextPosition = g_pAI->GetNodePosition(m_startNode + nextNode);
 	CMap* map = g_pMap;
-	int y = nextPosition.m_y >> 12;
-	int x = nextPosition.m_x >> 12;
+	int y = nextPosition.m_y >> FIXED_POINT_FRACTION_BITS;
+	int x = nextPosition.m_x >> FIXED_POINT_FRACTION_BITS;
 	int blockX;
 	int blockY;
-	blockY = y >> 4;
-	blockX = x >> 4;
+	blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
+	blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	int width;
 	if (x < 0 || y < 0 || blockX >= (width = g_pMap->m_ground.m_width) || blockY >= g_pMap->m_ground.m_height) {
@@ -131,19 +135,19 @@ void CMover::SetUpNextNode(unsigned int p_time)
 		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
 	}
 	const unsigned int& height = (unsigned int) z;
-	nextPosition.m_z = height << 12;
+	nextPosition.m_z = height << FIXED_POINT_FRACTION_BITS;
 
 	int startY;
 	int startX;
-	startX = m_position.m_xFixed >> 12;
-	startY = m_position.m_yFixed >> 12;
-	int startZ = m_position.m_zFixed >> 12;
+	startX = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	startY = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int startZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	CPt3 start(startX, startY, startZ);
 	int endY;
 	int endX;
-	endX = nextPosition.m_x >> 12;
-	endY = nextPosition.m_y >> 12;
-	int endZ = nextPosition.m_z >> 12;
+	endX = nextPosition.m_x >> FIXED_POINT_FRACTION_BITS;
+	endY = nextPosition.m_y >> FIXED_POINT_FRACTION_BITS;
+	int endZ = nextPosition.m_z >> FIXED_POINT_FRACTION_BITS;
 	CPt3 end(endX, endY, endZ);
 
 	unsigned int distance = Distance(startX, startY, endX, endY);
@@ -156,19 +160,19 @@ void CMover::SetUpNextNode(unsigned int p_time)
 void CMover::FindObjectsOnTopOfMe()
 {
 	int objectCount = g_wObjectCount;
-	const int& minX = (m_position.m_xFixed >> 12) - 8;
+	const int& minX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 	CMover* const& mover = this;
 	const int& maxX = minX + 15;
-	int minY = (m_position.m_yFixed >> 12) - 8;
+	int minY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 	const int& maxY = minY + 15;
 	int index = 0;
 	if (objectCount > 0) {
 		do {
 			CGameObject* object = g_pObjects[(unsigned short) index];
-			if (object != NULL && object->GetId() != (short) 0xffff && mover->GetId() != object->GetId() &&
+			if (object != NULL && object->GetId() != (short) INVALID_OBJECT_ID && mover->GetId() != object->GetId() &&
 				object->m_objectType != OBJECT_SHEEP) {
-				int objectX = object->m_position.m_xFixed >> 12;
-				int objectY = object->m_position.m_yFixed >> 12;
+				int objectX = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+				int objectY = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 				if (objectX >= minX && objectX <= maxX && minY <= objectY && maxY >= objectY) {
 					mover->GetOn(object);
 				}
@@ -183,9 +187,18 @@ void CMover::MoveObjects(int p_deltaX, int p_deltaY, int p_deltaZ)
 {
 	for (int i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		object->m_position.m_xFixed += p_deltaX << 12;
-		object->m_position.m_yFixed += p_deltaY << 12;
-		object->m_position.m_zFixed += p_deltaZ << 12;
+		object->m_position.m_xFixed += p_deltaX << FIXED_POINT_FRACTION_BITS;
+		object->m_position.m_yFixed += p_deltaY << FIXED_POINT_FRACTION_BITS;
+		object->m_position.m_zFixed += p_deltaZ << FIXED_POINT_FRACTION_BITS;
+	}
+}
+
+// FUNCTION: LEMBALL 0x0042eac0
+void CMover::MoveOccupantsToDestination()
+{
+	for (int index = 0; index < m_objectCount; ++index) {
+		m_objects[index]->AddDestination(m_position);
+		m_objects[index]->StartMoving();
 	}
 }
 
@@ -236,37 +249,40 @@ bool CMover::Process()
 		{
 			const CPt3& position = g_pAI->GetNodePosition(m_startNode + next);
 			m_position.m_xFixed = position.m_x;
-			x = m_position.m_xFixed >> 12;
+			x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 			m_position.m_yFixed = position.m_y;
-			y = m_position.m_yFixed >> 12;
-			groundX = x >> 4;
+			y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+			groundX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 			m_position.m_zFixed = position.m_z;
 		}
-		int groundY = y >> 4;
+		int groundY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = g_pMap;
 		unsigned short z;
 		if (x < 0 || y < 0 || groundX >= g_pMap->m_ground.m_width || g_pMap->m_ground.m_height <= groundY) {
 			z = 0;
 		}
 		else {
-			x &= 0xf;
-			y &= 0xf;
+			x &= GROUND_BLOCK_PIXEL_MASK;
+			y &= GROUND_BLOCK_PIXEL_MASK;
 			z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
 		}
 		const unsigned int& height = (unsigned int) z;
-		m_position.m_zFixed = height << 12;
-		oldPosition.m_xFixed = (oldPosition.m_xFixed >> 12) - (m_position.m_xFixed >> 12);
-		oldPosition.m_yFixed = (oldPosition.m_yFixed >> 12) - (m_position.m_yFixed >> 12);
-		oldPosition.m_zFixed = (oldPosition.m_zFixed >> 12) - (m_position.m_zFixed >> 12);
+		m_position.m_zFixed = height << FIXED_POINT_FRACTION_BITS;
+		oldPosition.m_xFixed =
+			(oldPosition.m_xFixed >> FIXED_POINT_FRACTION_BITS) - (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
+		oldPosition.m_yFixed =
+			(oldPosition.m_yFixed >> FIXED_POINT_FRACTION_BITS) - (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
+		oldPosition.m_zFixed =
+			(oldPosition.m_zFixed >> FIXED_POINT_FRACTION_BITS) - (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS);
 		MoveObjects(-oldPosition.m_xFixed, -oldPosition.m_yFixed, -oldPosition.m_zFixed);
-		if (m_movementMode != 0) {
+		if (m_movementMode != MOVER_MODE_AUTOMATIC) {
 			m_lastMovementTick = g_dwGameTick;
 			if (local) {
 				Action(ACTION_MOVER_WAITING_FOR_SWITCH);
 			}
 		}
 		else {
-			m_lastMovementTick = g_dwGameTick + 0x14;
+			m_lastMovementTick = g_dwGameTick + AUTOMATIC_MOVER_TURNING_DELAY_TICKS;
 			if (local) {
 				Action(ACTION_TURNING);
 			}
@@ -294,14 +310,14 @@ bool CMover::Process()
 			position.m_y = 0;
 			position.m_z = 0;
 			m_motion.Position(position, time);
-			int dx = position.m_x - (m_position.m_xFixed >> 12);
-			int dz = m_position.m_zFixed >> 12;
-			int dy = position.m_y - (m_position.m_yFixed >> 12);
+			int dx = position.m_x - (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
+			int dz = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+			int dy = position.m_y - (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 			dz = position.m_z - dz;
 			MoveObjects(dx, dy, dz);
-			m_position.m_xFixed = position.m_x << 12;
-			m_position.m_yFixed = position.m_y << 12;
-			m_position.m_zFixed = position.m_z << 12;
+			m_position.m_xFixed = position.m_x << FIXED_POINT_FRACTION_BITS;
+			m_position.m_yFixed = position.m_y << FIXED_POINT_FRACTION_BITS;
+			m_position.m_zFixed = position.m_z << FIXED_POINT_FRACTION_BITS;
 		}
 		break;
 	case ACTION_STARTING_ROUTE:
@@ -334,12 +350,12 @@ void CMover::Switch()
 // FUNCTION: LEMBALL 0x0042eee0
 bool CMover::IsOn(const AICOORD& p_position)
 {
-	int minX = (m_position.m_xFixed >> 12) - 8;
+	int minX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 	int maxX = minX + 15;
-	int minY = (m_position.m_yFixed >> 12) - 8;
+	int minY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 	int maxY = minY + 15;
-	int x = p_position.m_xFixed >> 12;
-	int y = p_position.m_yFixed >> 12;
+	int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
 		return true;
 	}
@@ -349,9 +365,9 @@ bool CMover::IsOn(const AICOORD& p_position)
 // FUNCTION: LEMBALL 0x0042ef40
 void CMover::VerifyObjects()
 {
-	int minX = (m_position.m_xFixed >> 12) - 8;
+	int minX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 	int maxX = minX + 15;
-	int minY = (m_position.m_yFixed >> 12) - 8;
+	int minY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 	int maxY = minY + 15;
 	int i = 0;
 	if (m_objectCount > 0) {
@@ -359,8 +375,8 @@ void CMover::VerifyObjects()
 			int x;
 			int y;
 			CGameObject* object = m_objects[i];
-			x = object->m_position.m_xFixed >> 12;
-			y = object->m_position.m_yFixed >> 12;
+			x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+			y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 			if (minX > x || maxX < x || minY > y || maxY < y) {
 				object->m_onMover = 0;
 				int next = i + 1;
@@ -385,8 +401,8 @@ bool CMover::GetOn(CGameObject* p_object)
 	objectPosition.m_xFixed = p_object->m_position.m_xFixed;
 	objectPosition.m_yFixed = p_object->m_position.m_yFixed;
 	objectPosition.m_zFixed = p_object->m_position.m_zFixed;
-	int objectZ = objectPosition.m_zFixed >> 12;
-	int moverZ = m_position.m_zFixed >> 12;
+	int objectZ = objectPosition.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+	int moverZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	if (objectZ < moverZ - 16 || objectZ > moverZ + 16) {
 		return false;
 	}
@@ -420,7 +436,7 @@ bool CMover::GetOn(CGameObject* p_object)
 			p_object->StartMoving();
 		}
 		else {
-			objectPosition.m_zFixed = m_position.m_zFixed + 0x8000;
+			objectPosition.m_zFixed = m_position.m_zFixed + (MOVER_SURFACE_Z_OFFSET << FIXED_POINT_FRACTION_BITS);
 			p_object->m_position.m_xFixed = objectPosition.m_xFixed;
 			p_object->m_position.m_yFixed = objectPosition.m_yFixed;
 			p_object->m_position.m_zFixed = objectPosition.m_zFixed;

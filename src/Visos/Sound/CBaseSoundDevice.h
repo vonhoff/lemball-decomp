@@ -3,6 +3,7 @@
 
 class CWnd;
 
+
 // SIZE 0x04
 // VTABLE: LEMBALL 0x0049ade8
 class CBaseSoundDevice {

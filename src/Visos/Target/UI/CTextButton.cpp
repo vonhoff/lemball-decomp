@@ -12,12 +12,19 @@
 
 extern char g_szButton[];
 
+namespace
+{
+enum {
+	TEXT_BUTTON_FRAME_COLOUR_INDEX = 0xf7
+};
+}
+
 // FUNCTION: LEMBALL 0x00468f90
 CTextButton::CTextButton(const CVSRect& p_rect,
 						 CPVGWnd* p_parent,
 						 unsigned int p_fontResourceId,
 						 unsigned int p_alignmentFlags)
-	: CFramedButton(p_parent, 0xf7)
+	: CFramedButton(p_parent, TEXT_BUTTON_FRAME_COLOUR_INDEX)
 {
 	const CVSPoint* position = &p_rect;
 	m_buttonX = position->m_x;
@@ -53,16 +60,16 @@ void CTextButton::ExpandToFitText(const CVSSize& p_textSize)
 // FUNCTION: LEMBALL 0x00469180
 void CTextButton::AlignTextPosition(CVSPoint& p_position, const CVSSize& p_textSize)
 {
-	if ((m_alignmentFlags & 0x10) != 0) {
+	if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_RIGHT) != 0) {
 		p_position.m_x = (short) (m_bounds.m_width - p_textSize.m_width);
 	}
-	else if ((m_alignmentFlags & 4) != 0) {
+	else if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_HORIZONTAL_CENTER) != 0) {
 		p_position.m_x = (short) ((m_bounds.m_width - p_textSize.m_width) / 2);
 	}
-	if ((m_alignmentFlags & 0x20) != 0) {
+	if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_BOTTOM) != 0) {
 		p_position.m_y = (short) (m_bounds.m_height - p_textSize.m_height);
 	}
-	else if ((m_alignmentFlags & 8) != 0) {
+	else if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_VERTICAL_CENTER) != 0) {
 		p_position.m_y = (short) ((m_bounds.m_height - p_textSize.m_height) / 2);
 	}
 	m_forceDrawCount = 1;
@@ -73,11 +80,11 @@ void CTextButton::SetText(char* p_normalText, char* p_pressedText)
 {
 	m_pressedText = p_pressedText;
 	m_normalText = p_normalText;
-	CVSSize normalSize = m_font->GetSize(p_normalText, 0x20);
+	CVSSize normalSize = m_font->GetSize(p_normalText, TEXT_ADVANCE_X_POSITIVE);
 	ExpandToFitText(normalSize);
 	CVSSize pressedSize(normalSize);
 	if (m_pressedText != NULL) {
-		const CVSSize& size = m_font->GetSize(m_pressedText, 0x20);
+		const CVSSize& size = m_font->GetSize(m_pressedText, TEXT_ADVANCE_X_POSITIVE);
 		pressedSize.m_width = size.m_width;
 		pressedSize.m_height = size.m_height;
 		ExpandToFitText(pressedSize);
@@ -145,7 +152,7 @@ void CTextButton::DrawButton()
 	}
 	if (text != NULL) {
 		m_gdi->m_renderTarget->GetCurrDB();
-		m_textPrimitive->Set(position, m_font, text, 0x20, m_remap);
+		m_textPrimitive->Set(position, m_font, text, TEXT_ADVANCE_X_POSITIVE, m_remap);
 		m_textPrimitive->Draw(m_gdi);
 	}
 }

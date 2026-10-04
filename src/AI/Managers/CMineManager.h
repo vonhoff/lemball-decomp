@@ -20,6 +20,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
+	void RemoveMine(CMine* p_mine);
 	void StepOn(const AICOORD& p_position, CGameObject* p_object);
 	void Trigger(int p_index, int p_delay);
 	void Triggered(CMine* p_mine);

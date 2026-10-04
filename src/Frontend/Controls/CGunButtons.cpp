@@ -1,4 +1,6 @@
 #include "CGunButtons.h"
+#include "CGunController.h"
+#include "Frontend/Controls/ButtonActionMessages.h"
 
 #include "../../Visos/Foundation/CBaseQueue.h"
 #include "../../Visos/Foundation/VsTime.h"
@@ -17,6 +19,11 @@
 
 class CPVGWnd;
 
+enum eGunButtonMode {
+	GUN_BUTTON_MODE_CYCLE = 0,
+	GUN_BUTTON_MODE_TRACKER = 1
+};
+
 // FUNCTION: LEMBALL 0x0044c270
 CGunButtons::CGunButtons(CGWnd* p_window,
 						 CGDI* p_gdi,
@@ -33,7 +40,7 @@ CGunButtons::CGunButtons(CGWnd* p_window,
 {
 	int range;
 
-	m_mode = 0;
+	m_mode = GUN_BUTTON_MODE_CYCLE;
 	m_window = p_window;
 	m_gdi = p_gdi;
 	m_active = 1;
@@ -59,7 +66,7 @@ CGunButtons::CGunButtons(CGWnd* p_window,
 	else {
 		m_value = 0;
 	}
-	if (p_actionMessage != 0xffffffff) {
+	if (p_actionMessage != BUTTON_ACTION_MESSAGE_UNASSIGNED) {
 		m_actionMessage = p_actionMessage;
 	}
 	m_binding = binding;
@@ -81,7 +88,7 @@ CGunButtons::CGunButtons(const CVSRect& p_rect,
 						 int* p_binding,
 						 int p_actionMessage)
 {
-	m_mode = 1;
+	m_mode = GUN_BUTTON_MODE_TRACKER;
 	m_trackRect.m_width = p_rect.m_width;
 	m_trackRect.m_height = p_rect.m_height;
 	const CVSPoint& position = p_rect;
@@ -96,7 +103,7 @@ CGunButtons::CGunButtons(const CVSRect& p_rect,
 	m_valueCount = 1;
 	m_minimum = 0;
 	m_maximum = 100;
-	if (p_actionMessage != -1) {
+	if (p_actionMessage != BUTTON_ACTION_MESSAGE_UNASSIGNED) {
 		m_actionMessage = p_actionMessage;
 	}
 	m_binding = p_binding;
@@ -140,8 +147,8 @@ int CGunButtons::ProcessMsg(Message* p_message)
 	switch ((unsigned int) p_message->m_type) {
 	case MESSAGE_BUTTON_RELEASED:
 		switch (m_mode) {
-		case 0:
-			if (m_postAction == 1) {
+		case GUN_BUTTON_MODE_CYCLE:
+			if (m_postAction == GUN_BUTTON_POST_ACTION_MESSAGE) {
 				posted.m_code = (int) m_actionMessage;
 				g_pMasterInputQueue->Post(posted);
 				return 0;
@@ -174,7 +181,7 @@ int CGunButtons::ProcessMsg(Message* p_message)
 			}
 			g_nGunButtonsRedrawPending = 1;
 			return 0;
-		case 1: {
+		case GUN_BUTTON_MODE_TRACKER: {
 			int maximum;
 			int value = m_trackerButton->m_trackWindow->m_value;
 			maximum = m_maximum;
@@ -233,7 +240,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 			i = i + 1;
 		} while (i < m_valueCount);
 	}
-	if (m_mode == 0) {
+	if (m_mode == GUN_BUTTON_MODE_CYCLE) {
 		m_graphicButton =
 			new CGunButton(CVSPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
 		CSurface* surface = m_graphicButton->m_gdi->m_renderTarget;

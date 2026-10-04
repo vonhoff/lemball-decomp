@@ -29,6 +29,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+enum eCircleClipResult {
+	CIRCLE_OUTSIDE_CLIP = 1,
+	CIRCLE_FULLY_INSIDE_CLIP = 2,
+	CIRCLE_PARTIALLY_CLIPPED = 3
+};
+
 #define WIN32_LEAN_AND_MEAN
 #include "Visos/Foundation/CVSRect.h"
 #include "Visos/Foundation/CVSSize.h"
@@ -48,8 +54,31 @@ struct SurfaceListHead {
 	int m_count;
 };
 
+#define SURFACE_PALETTE_ENTRY_COUNT 0x100
+#define SURFACE_PALETTE_VERSION_WIN3 0x0300
+#define SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT 10
+#define SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START                                                                     \
+	(SURFACE_PALETTE_ENTRY_COUNT - SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT)
+#define SURFACE_PALETTE_SYSTEM_USABLE_ENTRY_COUNT                                                                      \
+	(SURFACE_PALETTE_ENTRY_COUNT - 2 * SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT)
+#define SURFACE_PALETTE_APP_FIRST_INDEX 12
+#define SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT 2
+#define SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES 4
+#define SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES 4
+#define SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES                                                                 \
+	(SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START * SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES)
+#define SURFACE_PALETTE_HIGH_RESERVED_GREEN_OFFSET_BYTES (SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES - 1)
+#define SURFACE_PALETTE_HIGH_RESERVED_BLUE_OFFSET_BYTES (SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES - 2)
+#define SURFACE_PALETTE_HIGH_RESERVED_FLAGS_OFFSET_BYTES (SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES + 1)
+#define SURFACE_PALETTE_BUFFER_BYTES (sizeof(LOGPALETTE) + (SURFACE_PALETTE_ENTRY_COUNT - 1) * sizeof(PALETTEENTRY))
+
 // GLOBAL: LEMBALL 0x004a2010
 SurfaceListHead* g_pSurfaceList = NULL;
+
+enum {
+	SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS = 8,
+	GDI_HELPER_CHANGE_LIST_CAPACITY = 0x1000
+};
 
 // FUNCTION: LEMBALL 0x0046c050
 CSurface::CSurface(const CVSRect& p_rect, class CSurface* p_parentSurface)
@@ -125,10 +154,16 @@ CSurface::CSurface(const CVSRect& p_rect, class CSurface* p_parentSurface)
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
 	m_lockInitialised = 1;
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
-		m_changeList = new CChangeList(0x1000, p_rect, CVSSize(8, 8));
+		m_changeList = new CChangeList(
+			GDI_HELPER_CHANGE_LIST_CAPACITY,
+			p_rect,
+			CVSSize(SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS, SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS));
 	}
 	else {
-		m_changeList = new CChangeList(0, p_rect, CVSSize(8, 8));
+		m_changeList = new CChangeList(
+			0,
+			p_rect,
+			CVSSize(SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS, SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS));
 	}
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
 		BuildSurfaceColourTable((unsigned int*) m_colourTable,
@@ -168,15 +203,18 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 							 void* p_unused,
 							 unsigned int* p_fallbackEntries)
 {
-	unsigned char paletteStorage[0x404];
+	unsigned char paletteStorage[SURFACE_PALETTE_BUFFER_BYTES];
 	int count;
-	PALETTEENTRY* systemEntries = (PALETTEENTRY*) (paletteStorage + 4);
+	PALETTEENTRY* systemEntries = ((LOGPALETTE*) paletteStorage)->palPalEntry;
 	unsigned char* output;
 	PALETTEENTRY* entry;
 	const unsigned char* source;
 	HDC hdc = GetDC(NULL);
-	unsigned int first = GetSystemPaletteEntries(hdc, 0, 10, systemEntries);
-	unsigned int last = GetSystemPaletteEntries(hdc, 0xf6, 10, systemEntries + 0xf6);
+	unsigned int first = GetSystemPaletteEntries(hdc, 0, SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT, systemEntries);
+	unsigned int last = GetSystemPaletteEntries(hdc,
+												SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START,
+												SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT,
+												systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START);
 	first |= last;
 	if (first == 0) {
 		source = &g_anFallbackSystemColours[0][0];
@@ -187,21 +225,21 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 			entry->peBlue = *source++;
 			entry++;
 
-		} while (entry < systemEntries + 10);
-		entry = systemEntries + 0xf6;
+		} while (entry < systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT);
+		entry = systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START;
 		do {
 			entry->peRed = *source++;
 			entry->peGreen = *source++;
 			entry->peBlue = *source++;
 			entry++;
 
-		} while (entry < systemEntries + 0x100);
+		} while (entry < systemEntries + SURFACE_PALETTE_ENTRY_COUNT);
 	}
 	if (hdc != NULL) {
 		ReleaseDC(NULL, hdc);
 	}
-	((LOGPALETTE*) paletteStorage)->palVersion = 0x300;
-	((LOGPALETTE*) paletteStorage)->palNumEntries = 0x100;
+	((LOGPALETTE*) paletteStorage)->palVersion = SURFACE_PALETTE_VERSION_WIN3;
+	((LOGPALETTE*) paletteStorage)->palNumEntries = SURFACE_PALETTE_ENTRY_COUNT;
 	output = &((RGBQUAD*) p_entries)[0].rgbRed;
 	entry = systemEntries;
 	do {
@@ -209,33 +247,35 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 		output[-1] = entry->peGreen;
 		output[-2] = entry->peBlue;
 		entry->peFlags = 0;
-		unsigned char red = entry[0xf6].peRed;
+		unsigned char red = entry[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].peRed;
 		output[1] = 0;
-		output[0x3d8] = red;
-		output[0x3d7] = entry[0xf6].peGreen;
-		output[0x3d6] = entry[0xf6].peBlue;
-		entry[0xf6].peFlags = 0;
-		output[0x3d9] = 0;
+		output[SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES] = red;
+		output[SURFACE_PALETTE_HIGH_RESERVED_GREEN_OFFSET_BYTES] =
+			entry[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].peGreen;
+		output[SURFACE_PALETTE_HIGH_RESERVED_BLUE_OFFSET_BYTES] =
+			entry[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].peBlue;
+		entry[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].peFlags = 0;
+		output[SURFACE_PALETTE_HIGH_RESERVED_FLAGS_OFFSET_BYTES] = 0;
 		entry++;
-		output += 4;
-	} while (entry < systemEntries + 10);
+		output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
+	} while (entry < systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT);
 	source = &g_anReservedOutputColours[0][0];
-	output = &((RGBQUAD*) p_entries)[10].rgbRed;
-	count = 2;
+	output = &((RGBQUAD*) p_entries)[SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT].rgbRed;
+	count = SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT;
 	do {
 		output[0] = *source++;
 		output[-1] = *source++;
 		output[-2] = *source++;
 		output[1] = 0;
-		output += 4;
+		output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
 		count--;
 	} while (count != 0);
 	if (p_palette == NULL) {
 		if (p_fallbackEntries == NULL) {
 			PALETTEENTRY* entry;
-			int index = 12;
-			entry = systemEntries + 12;
-			output = &((RGBQUAD*) p_entries)[12].rgbRed;
+			int index = SURFACE_PALETTE_APP_FIRST_INDEX;
+			entry = systemEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
+			output = &((RGBQUAD*) p_entries)[SURFACE_PALETTE_APP_FIRST_INDEX].rgbRed;
 			do {
 				unsigned char colour = -index;
 				entry->peRed = colour;
@@ -245,17 +285,17 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 				entry->peBlue = colour;
 				output[-2] = colour;
 				output[1] = 0;
-				entry->peFlags = 1;
+				entry->peFlags = PC_RESERVED;
 				entry++;
-				output += 4;
+				output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
 				index++;
-			} while (entry < systemEntries + 0xf6);
+			} while (entry < systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START);
 		}
 		else {
 			unsigned char* fallback;
-			PALETTEENTRY* entry = systemEntries + 12;
-			output = &((RGBQUAD*) p_entries)[12].rgbRed;
-			fallback = &((RGBQUAD*) p_fallbackEntries)[12].rgbRed;
+			PALETTEENTRY* entry = systemEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
+			output = &((RGBQUAD*) p_entries)[SURFACE_PALETTE_APP_FIRST_INDEX].rgbRed;
+			fallback = &((RGBQUAD*) p_fallbackEntries)[SURFACE_PALETTE_APP_FIRST_INDEX].rgbRed;
 			do {
 				unsigned char colour = fallback[0];
 				output[0] = colour;
@@ -267,24 +307,24 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 				entry->peBlue = colour;
 				output[-2] = colour;
 				output[1] = 0;
-				entry->peFlags = 1;
+				entry->peFlags = PC_RESERVED;
 				entry++;
-				output += 4;
-				fallback += 4;
-			} while (entry < systemEntries + 0xf6);
+				output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
+				fallback += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
+			} while (entry < systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START);
 		}
 	}
 	else {
-		int paletteCount = (int) p_palette->m_entryCount - 10;
-		if (paletteCount > 0xf6) {
-			paletteCount = 0xec;
+		int paletteCount = (int) p_palette->m_entryCount - SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT;
+		if (paletteCount > SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START) {
+			paletteCount = SURFACE_PALETTE_SYSTEM_USABLE_ENTRY_COUNT;
 		}
-		if (paletteCount > 12) {
-			int i = 12;
-			output = &((RGBQUAD*) p_entries)[12].rgbRed;
-			paletteCount -= 12;
+		if (paletteCount > SURFACE_PALETTE_APP_FIRST_INDEX) {
+			int i = SURFACE_PALETTE_APP_FIRST_INDEX;
+			output = &((RGBQUAD*) p_entries)[SURFACE_PALETTE_APP_FIRST_INDEX].rgbRed;
+			paletteCount -= SURFACE_PALETTE_APP_FIRST_INDEX;
 			do {
-				source = p_palette->m_data + i * 4;
+				source = p_palette->m_data + i * SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES;
 				unsigned char colour = source[0];
 				systemEntries[i].peRed = colour;
 				output[0] = colour;
@@ -295,8 +335,8 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 				systemEntries[i].peBlue = colour;
 				output[-2] = colour;
 				output[1] = 0;
-				systemEntries[i].peFlags = 1;
-				output += 4;
+				systemEntries[i].peFlags = PC_RESERVED;
+				output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
 				i++;
 				paletteCount--;
 			} while (paletteCount != 0);
@@ -909,7 +949,7 @@ copiedRows:
 // FUNCTION: LEMBALL 0x0046d930
 void CSurface::SetDefaultCtable()
 {
-	unsigned char logPalette[4 + 256 * 4];
+	unsigned char logPalette[SURFACE_PALETTE_BUFFER_BYTES];
 	LOGPALETTE* palette;
 	PALETTEENTRY* entries;
 	unsigned int* source;
@@ -918,8 +958,8 @@ void CSurface::SetDefaultCtable()
 	CSurface* surface;
 
 	palette = (LOGPALETTE*) logPalette;
-	palette->palVersion = 0x300;
-	palette->palNumEntries = 0x100;
+	palette->palVersion = SURFACE_PALETTE_VERSION_WIN3;
+	palette->palNumEntries = SURFACE_PALETTE_ENTRY_COUNT;
 	source = g_dwWinGDrawColourTable;
 	i = 0;
 	entries = palette->palPalEntry;
@@ -927,7 +967,7 @@ void CSurface::SetDefaultCtable()
 		entries->peRed = ((unsigned char*) source)[2];
 		entries->peGreen = ((unsigned char*) source)[1];
 		entries->peBlue = ((unsigned char*) source)[0];
-		entries->peFlags = 4;
+		entries->peFlags = PC_NOCOLLAPSE;
 		entries++;
 		i++;
 		source++;
@@ -936,16 +976,30 @@ void CSurface::SetDefaultCtable()
 	node = (SurfaceListNode*) g_pSurfaceList->m_first;
 	while (node != NULL) {
 		surface = node->m_surface;
-		memcpy(m_colourTable, g_dwWinGDrawColourTable, 0x400);
+		memcpy(m_colourTable, g_dwWinGDrawColourTable, sizeof(m_colourTable));
 		if (surface->m_drawingPort != NULL) {
 			g_pTargetGraphicsDriver->UpdateDibColourTable((CDrawingContext*) surface->m_drawingPort,
 														  0,
-														  0x100,
+														  SURFACE_PALETTE_ENTRY_COUNT,
 														  g_dwWinGDrawColourTable);
 		}
 		node = node->m_next;
 	}
 }
+#undef SURFACE_PALETTE_ENTRY_COUNT
+#undef SURFACE_PALETTE_VERSION_WIN3
+#undef SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT
+#undef SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START
+#undef SURFACE_PALETTE_SYSTEM_USABLE_ENTRY_COUNT
+#undef SURFACE_PALETTE_APP_FIRST_INDEX
+#undef SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT
+#undef SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES
+#undef SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES
+#undef SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES
+#undef SURFACE_PALETTE_HIGH_RESERVED_GREEN_OFFSET_BYTES
+#undef SURFACE_PALETTE_HIGH_RESERVED_BLUE_OFFSET_BYTES
+#undef SURFACE_PALETTE_HIGH_RESERVED_FLAGS_OFFSET_BYTES
+#undef SURFACE_PALETTE_BUFFER_BYTES
 
 // FUNCTION: LEMBALL 0x0046d9f0
 bool CSurface::BeginRender()
@@ -1166,7 +1220,7 @@ void CSurface::Blit(CLine* p_line)
 	int stepY = 1;
 	int absDy;
 	if (remaining < 0) {
-		stepY = -1;
+		stepY = SURFACE_STEP_BACKWARD;
 		absDy = -remaining;
 	}
 	else {
@@ -1222,9 +1276,9 @@ void CSurface::Blit(CCircle* p_circle)
 	int centreX = p_circle->m_x;
 	int radius = abs((int) p_circle->m_radius);
 	int clipResult = ClipCircle(centreX, centreY, radius);
-	if (clipResult != 1) {
+	if (clipResult != CIRCLE_OUTSIDE_CLIP) {
 		switch (clipResult) {
-		case 2: {
+		case CIRCLE_FULLY_INSIDE_CLIP: {
 			int curX = 0;
 			int curY = radius;
 			int err = 0;
@@ -1253,7 +1307,7 @@ void CSurface::Blit(CCircle* p_circle)
 			}
 			break;
 		}
-		case 3:
+		case CIRCLE_PARTIALLY_CLIPPED:
 			DrawClippedCircleOutline(centreX, centreY, radius, colour);
 			break;
 		}
@@ -1287,9 +1341,9 @@ void CSurface::Blit(CFilledCircle* p_circle)
 	int x = p_circle->m_x;
 	int radius = abs((int) p_circle->m_radius);
 	int clipResult = ClipCircle(x, y, radius);
-	if (clipResult != 1) {
+	if (clipResult != CIRCLE_OUTSIDE_CLIP) {
 		switch (clipResult) {
-		case 2: {
+		case CIRCLE_FULLY_INSIDE_CLIP: {
 			int curRadius;
 			int curX = 0;
 			curRadius = radius;
@@ -1323,7 +1377,7 @@ void CSurface::Blit(CFilledCircle* p_circle)
 			}
 			break;
 		}
-		case 3:
+		case CIRCLE_PARTIALLY_CLIPPED:
 			DrawClippedFilledCircle(x, y, radius, colour);
 			break;
 		}
@@ -1396,17 +1450,17 @@ int CSurface::ClipCircle(int p_centreX, int p_centreY, int p_radius)
 	int bottom = p_centreY + p_radius;
 
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
-		return 1;
+		return CIRCLE_OUTSIDE_CLIP;
 	}
 	if (right >= m_clipRect.m_x && left <= ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1) &&
 		bottom >= m_clipRect.m_y && top <= ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1)) {
 		if (left >= m_clipRect.m_x && right <= ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1) &&
 			top >= m_clipRect.m_y && bottom <= ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1)) {
-			return 2;
+			return CIRCLE_FULLY_INSIDE_CLIP;
 		}
-		return 3;
+		return CIRCLE_PARTIALLY_CLIPPED;
 	}
-	return 1;
+	return CIRCLE_OUTSIDE_CLIP;
 }
 
 // FUNCTION: LEMBALL 0x00475ce0
@@ -1673,7 +1727,7 @@ void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZR
 	int y = p_rect.m_y;
 	unsigned char* src = p_zrle->GetData();
 	if (p_reverse != 0) {
-		step = -1;
+		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
 		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
 		if (skipRows > 0) {
@@ -1681,11 +1735,11 @@ void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZR
 				unsigned char run;
 				do {
 					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 				skipRows--;
 			} while (skipRows != 0);
 		}
@@ -1697,11 +1751,11 @@ void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZR
 				unsigned char run;
 				do {
 					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 				skipRows--;
 			} while (skipRows != 0);
 		}
@@ -1715,15 +1769,15 @@ void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZR
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					clipX -= run;
 					if (clipX < 0) {
 						width += clipX;
 						dst -= clipX;
 					}
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					clipX -= run;
 					if (clipX < 0) {
 						int copyLen = -clipX;
@@ -1738,23 +1792,23 @@ void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZR
 					}
 					src += run;
 				}
-				if (run == 0x80) {
+				if (run == ZRLE_ROW_END_MARKER) {
 					break;
 				}
 			} while (clipX > 0);
-			if (run != 0x80) {
+			if (run != ZRLE_ROW_END_MARKER) {
 				do {
 					if (width <= 0) {
 						break;
 					}
 					run = *src++;
 					if (width > 0) {
-						if (run < 0x80) {
+						if (run < ZRLE_ROW_END_MARKER) {
 							dst += run;
 							width -= run;
 						}
-						else if (run > 0x80) {
-							run &= 0x7f;
+						else if (run > ZRLE_ROW_END_MARKER) {
+							run &= ZRLE_RUN_LENGTH_MASK;
 							if (run < width) {
 								memcpy(dst, src, run);
 								width -= run;
@@ -1768,12 +1822,12 @@ void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZR
 							src += run;
 						}
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 			}
-			while (run != 0x80) {
+			while (run != ZRLE_ROW_END_MARKER) {
 				run = *src++;
-				if (run > 0x80) {
-					run &= 0x7f;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
 			}
@@ -1793,11 +1847,11 @@ void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, C
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run > 0x80) {
-					run &= 0x7f;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			skipRows--;
 		} while (skipRows != 0);
 	}
@@ -1813,7 +1867,7 @@ void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, C
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					clipX -= run;
 					if (clipX < 0) {
 						dst -= clipX;
@@ -1821,8 +1875,8 @@ void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, C
 						width += clipX;
 					}
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					clipX -= run;
 					if (clipX < 0) {
 						int copyLen = -clipX;
@@ -1844,24 +1898,24 @@ void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, C
 					}
 					src += run;
 				}
-				if (run == 0x80) {
+				if (run == ZRLE_ROW_END_MARKER) {
 					break;
 				}
 			} while (clipX > 0);
-			if (run != 0x80) {
+			if (run != ZRLE_ROW_END_MARKER) {
 				do {
 					if (width <= 0) {
 						break;
 					}
 					run = *src++;
 					if (width > 0) {
-						if (run < 0x80) {
+						if (run < ZRLE_ROW_END_MARKER) {
 							dst += run;
 							zlines += run;
 							width -= run;
 						}
-						else if (run > 0x80) {
-							run &= 0x7f;
+						else if (run > ZRLE_ROW_END_MARKER) {
+							run &= ZRLE_RUN_LENGTH_MASK;
 							if (run < width) {
 								memcpy(dst, src, run);
 								for (unsigned int i = 0; i < (unsigned int) run; i++) {
@@ -1883,12 +1937,12 @@ void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, C
 							src += run;
 						}
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 			}
-			while (run != 0x80) {
+			while (run != ZRLE_ROW_END_MARKER) {
 				run = *src++;
-				if (run > 0x80) {
-					run &= 0x7f;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
 			}
@@ -1911,11 +1965,11 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run > 0x80) {
-					run &= 0x7f;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			skipRows--;
 		} while (skipRows != 0);
 	}
@@ -1933,7 +1987,7 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					clipX -= run;
 					if (clipX < 0) {
 						dst -= clipX;
@@ -1941,8 +1995,8 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 						width += clipX;
 					}
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					runCount = run;
 					clipX -= runCount;
 					if (clipX < 0) {
@@ -1983,24 +2037,24 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 					}
 					src += runCount;
 				}
-				if (run == 0x80) {
+				if (run == ZRLE_ROW_END_MARKER) {
 					break;
 				}
 			} while (clipX > 0);
-			if (run != 0x80) {
+			if (run != ZRLE_ROW_END_MARKER) {
 				do {
 					if (width <= 0) {
 						break;
 					}
 					run = *src++;
 					if (width > 0) {
-						if (run < 0x80) {
+						if (run < ZRLE_ROW_END_MARKER) {
 							dst += run;
 							width -= run;
 							zlines += run;
 						}
-						else if (run > 0x80) {
-							run &= 0x7f;
+						else if (run > ZRLE_ROW_END_MARKER) {
+							run &= ZRLE_RUN_LENGTH_MASK;
 							runCount = run;
 							if (runCount < width) {
 								unsigned char count = (unsigned char) runCount;
@@ -2041,12 +2095,12 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 							src += runCount;
 						}
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 			}
-			while (run != 0x80) {
+			while (run != ZRLE_ROW_END_MARKER) {
 				run = *src++;
-				if (run > 0x80) {
-					run &= 0x7f;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
 			}
@@ -2066,7 +2120,7 @@ void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZ
 	int step = 1;
 	int y = p_rect.m_y;
 	if (p_reverse != 0) {
-		step = -1;
+		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
 		int skipRows = sourceHeight - p_clip.m_y - p_rect.m_height;
 		if (skipRows > 0) {
@@ -2074,11 +2128,11 @@ void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZ
 				unsigned char run;
 				do {
 					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 				skipRows--;
 			} while (skipRows != 0);
 		}
@@ -2089,11 +2143,11 @@ void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZ
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run > 0x80) {
-					run &= 0x7f;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			skipRows--;
 		} while (skipRows != 0);
 	}
@@ -2107,15 +2161,15 @@ void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZ
 			do {
 				run = *src++;
 				if (skipX > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						skipX -= run;
 						if (skipX < 0) {
 							dst += skipX;
 							width += skipX;
 						}
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						int count = run;
 						skipX -= count;
 						if (skipX < 0) {
@@ -2145,12 +2199,12 @@ void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZ
 					}
 				}
 				else if (width > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						width -= run;
 						dst -= run;
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						int count = run;
 						if (count < width) {
 							unsigned char* copySrc;
@@ -2180,11 +2234,11 @@ void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZ
 						}
 					}
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			y += step;
 			row++;
 		} while (row < p_rect.m_height);
@@ -2198,7 +2252,7 @@ void CSurface::BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned 
 	int step = 1;
 	int y = p_rect.m_y;
 	if (p_reverse != 0) {
-		step = -1;
+		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
 	}
 	unsigned char* src = p_zrle->GetData();
@@ -2209,16 +2263,16 @@ void CSurface::BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned 
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					dst += run;
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					memcpy(dst, src, run);
 					dst += run;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			y += step;
 			row++;
 		} while (row < p_rect.m_height);
@@ -2239,12 +2293,12 @@ void CSurface::BlitZRLENoClipZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsi
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					dst += run;
 					zlines += run;
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					memcpy(dst, src, run);
 					for (unsigned int i = 0; i < run; i++) {
 						zlines[i] = p_depth;
@@ -2253,7 +2307,7 @@ void CSurface::BlitZRLENoClipZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsi
 					dst += run;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			row++;
 			y++;
 		} while (row < p_rect.m_height);
@@ -2277,12 +2331,12 @@ void CSurface::BlitZRLENoClipZBuffRemap(const CVSRect& p_rect,
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					dst += run;
 					zlines += run;
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					int count = run;
 					unsigned char* copySrc = src;
 					unsigned char* copyDst = dst;
@@ -2297,7 +2351,7 @@ void CSurface::BlitZRLENoClipZBuffRemap(const CVSRect& p_rect,
 					zlines += run;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			row++;
 			y++;
 		} while (row < p_rect.m_height);
@@ -2316,7 +2370,7 @@ void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
 	if (p_reverse != 0) {
-		step = -1;
+		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
 		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
 		if (skipRows > 0) {
@@ -2324,11 +2378,11 @@ void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 				unsigned char run;
 				do {
 					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 				skipRows--;
 			} while (skipRows != 0);
 		}
@@ -2340,11 +2394,11 @@ void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 				unsigned char run;
 				do {
 					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 				skipRows--;
 			} while (skipRows != 0);
 		}
@@ -2359,15 +2413,15 @@ void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 			do {
 				run = *src++;
 				if (clipX > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						clipX -= run;
 						if (clipX < 0) {
 							dst -= clipX;
 							width += clipX;
 						}
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						int count = run;
 						clipX -= count;
 						if (clipX < 0) {
@@ -2395,12 +2449,12 @@ void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 					}
 				}
 				else if (width > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						dst += run;
 						width -= run;
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						int count = run;
 						if (width > count) {
 							int i = count;
@@ -2427,12 +2481,12 @@ void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 					}
 				}
 				else {
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			y += step;
 			row++;
 		} while (row < p_rect.m_height);
@@ -2455,11 +2509,11 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run > 0x80) {
-					run &= 0x7f;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			skipRows--;
 		} while (skipRows != 0);
 	}
@@ -2474,7 +2528,7 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
 			do {
 				run = *src++;
 				if (clipX > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						clipX -= run;
 						if (clipX < 0) {
 							dst -= clipX;
@@ -2482,8 +2536,8 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
 							width += clipX;
 						}
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						int count = run;
 						clipX -= count;
 						if (clipX < 0) {
@@ -2514,13 +2568,13 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
 					}
 				}
 				else if (width > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						dst += run;
 						width -= run;
 						zlines += run;
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						int count = run;
 						if (count < width) {
 							int i = count;
@@ -2551,12 +2605,12 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
 					}
 				}
 				else {
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			y++;
 			row++;
 		} while (row < p_rect.m_height);
@@ -2579,11 +2633,11 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
 		do {
 			do {
 				run = *src++;
-				if (run > 0x80) {
-					run &= 0x7f;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			skipRows--;
 		} while (skipRows != 0);
 	}
@@ -2600,7 +2654,7 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
 			do {
 				run = *src++;
 				if (clipX > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						clipX -= run;
 						if (clipX < 0) {
 							dst -= clipX;
@@ -2608,8 +2662,8 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
 							width += clipX;
 						}
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						count = run;
 						clipX -= count;
 						if (clipX < 0) {
@@ -2654,13 +2708,13 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
 					}
 				}
 				else if (width > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						dst += run;
 						width -= run;
 						zlines += run;
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						count = run;
 						if (width > count) {
 							unsigned short* copyZ = zlines;
@@ -2701,12 +2755,12 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
 					}
 				}
 				else {
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			lineIndex++;
 			row++;
 		} while (row < p_rect.m_height);
@@ -2727,7 +2781,7 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 	short zrleWidth = p_zrle->m_width;
 	short zrleHeight = p_zrle->m_height;
 	if (p_reverse != 0) {
-		step = -1;
+		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
 		int skipRows = (zrleHeight - p_clip.m_y) - p_rect.m_height;
 		if (skipRows > 0) {
@@ -2735,11 +2789,11 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 				unsigned char run;
 				do {
 					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 				skipRows--;
 			} while (skipRows != 0);
 		}
@@ -2751,11 +2805,11 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 				unsigned char run;
 				do {
 					run = *src++;
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
-				} while (run != 0x80);
+				} while (run != ZRLE_ROW_END_MARKER);
 				skipRows--;
 			} while (skipRows != 0);
 		}
@@ -2772,7 +2826,7 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 			do {
 				run = *src++;
 				if (skipX > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						skipX -= run;
 						if (skipX < 0) {
 							int overshoot = skipX;
@@ -2780,8 +2834,8 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 							width += overshoot;
 						}
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						int count = run;
 						skipX -= count;
 						if (skipX < 0) {
@@ -2809,12 +2863,12 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 					}
 				}
 				else if (width > 0) {
-					if (run < 0x80) {
+					if (run < ZRLE_ROW_END_MARKER) {
 						width -= run;
 						dst -= run;
 					}
-					else if (run > 0x80) {
-						run &= 0x7f;
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						int count = run;
 						if (count < width) {
 							int i = count;
@@ -2841,12 +2895,12 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 					}
 				}
 				else {
-					if (run > 0x80) {
-						run &= 0x7f;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
 						src += run;
 					}
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			lineOffset += stepOffset;
 			row++;
 		} while (row < p_rect.m_height);
@@ -2863,7 +2917,7 @@ void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect,
 	int y = p_rect.m_y;
 	int step = 1;
 	if (p_reverse != 0) {
-		step = -1;
+		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
 	}
 	unsigned char* src = p_zrle->GetData();
@@ -2874,11 +2928,11 @@ void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect,
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					dst += run;
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					int count = (int) run;
 					int i = count;
 					unsigned char* copySrc = src;
@@ -2889,7 +2943,7 @@ void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect,
 					dst += count;
 					src += count;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			y += step;
 			row++;
 		} while (row < p_rect.m_height);
@@ -2906,7 +2960,7 @@ void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect,
 	int y = p_rect.m_y;
 	int step = 1;
 	if (p_reverse != 0) {
-		step = -1;
+		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
 	}
 	unsigned char* src = p_zrle->GetData();
@@ -2917,11 +2971,11 @@ void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect,
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					dst -= run;
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					int count = (int) run;
 					int i = count;
 					unsigned char* copySrc = src;
@@ -2932,7 +2986,7 @@ void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect,
 					dst -= count;
 					src += count;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			y += step;
 			row++;
 		} while (row < p_rect.m_height);
@@ -2943,13 +2997,13 @@ void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect,
 char g_szClippingHeightTo[] = "Clipping height to ";
 
 // GLOBAL: LEMBALL 0x004a2d64
-char g_szClippingDotNewline[] = ".\n";
+char g_szClippingDotNewline[] = ".\r\n";
 
 // GLOBAL: LEMBALL 0x004a2d68
 char g_szClippingWidthTo[] = "Clipping width to ";
 
 // GLOBAL: LEMBALL 0x004a2d7c
-char g_szClippingHighNewline[] = " high.\n";
+char g_szClippingHighNewline[] = " high.\r\n";
 
 // GLOBAL: LEMBALL 0x004a2d84
 char g_szClippingWideAnd[] = " wide and ";
@@ -2962,7 +3016,7 @@ char g_szWarningZrleIs[] = "Warning: ZRLE is ";
 void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 {
 	unsigned int flags = p_primitive->m_flags;
-	if ((flags & 0xc0000) == 0) {
+	if ((flags & (ZRLE_DRAW_FLAG_Z_BUFFER | ZRLE_DRAW_FLAG_QUICK_Z_BUFFER)) == 0) {
 		BlitZRLE((int) p_primitive->m_x, (int) p_primitive->m_y, p_zrle, flags, p_primitive->m_remap, 0);
 		return;
 	}
@@ -2977,30 +3031,30 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 		}
 		{
 			CVSRect dest((short) primitiveX, (short) primitiveY, (CVSSize*) &p_zrle->m_width);
-			if ((flags & 0x400) == 0) {
+			if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
 				((CVSPoint*) &dest.m_x)->AddInPlace((CVSPoint*) &p_zrle->m_x);
 			}
 			{
 				CVSRect clipped;
 
-				if (dest.m_width > 0xff || dest.m_height > 0xff) {
+				if (dest.m_width > ZRLE_CLIPPED_DIMENSION_MAX || dest.m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
 					short warningWidth = dest.m_width;
 					CVSOStream& warningStream = *g_pDebugOutput << g_szWarningZrleIs;
 					short warningHeight = dest.m_height;
 					CVSOStream& widthStream = warningStream << (int) warningWidth << g_szClippingWideAnd;
 					widthStream << (int) warningHeight << g_szClippingHighNewline;
-					if (dest.m_width > 0xff) {
-						*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
-						dest.m_width = 0xff;
+					if (dest.m_width > ZRLE_CLIPPED_DIMENSION_MAX) {
+						*g_pDebugOutput << g_szClippingWidthTo << (int) ZRLE_CLIPPED_DIMENSION_MAX << g_szClippingDotNewline;
+						dest.m_width = ZRLE_CLIPPED_DIMENSION_MAX;
 					}
-					if (dest.m_height > 0xff) {
-						*g_pDebugOutput << g_szClippingHeightTo << 0xff << g_szClippingDotNewline;
-						dest.m_height = 0xff;
+					if (dest.m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+						*g_pDebugOutput << g_szClippingHeightTo << (int) ZRLE_CLIPPED_DIMENSION_MAX << g_szClippingDotNewline;
+						dest.m_height = ZRLE_CLIPPED_DIMENSION_MAX;
 					}
 				}
 				if (ClipRect(dest, &clipped) == 0) {
 					AddToChangeList(dest);
-					if ((flags & 0x40000) != 0) {
+					if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
 						if (remap == NULL) {
 							BlitZRLENoClipZBuff(dest, p_zrle, stateDepth);
 							return;
@@ -3008,7 +3062,7 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 						BlitZRLENoClipZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
 						return;
 					}
-					if ((flags & 0x80000) != 0) {
+					if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
 						if (remap == NULL) {
 							BlitZRLENoClipQZBuff(dest, p_zrle, stateDepth);
 							return;
@@ -3017,25 +3071,28 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 						return;
 					}
 					if (remap == NULL) {
-						if ((flags & 1) != 0) {
-							BlitZRLENoClipR(dest, p_zrle, (flags & 2) >> 1);
+						if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+							BlitZRLENoClipR(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 							return;
 						}
-						BlitZRLENoClip(dest, p_zrle, (flags & 2) >> 1);
+						BlitZRLENoClip(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 						return;
 					}
-					if ((flags & 1) != 0) {
-						BlitZRLENoClipRemapR(dest, p_zrle, (flags & 2) >> 1, remap->m_remap);
+					if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+						BlitZRLENoClipRemapR(dest,
+											 p_zrle,
+											 ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+											 remap->m_remap);
 						return;
 					}
-					BlitZRLENoClipRemap(dest, p_zrle, (flags & 2) >> 1, remap->m_remap);
+					BlitZRLENoClipRemap(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
 					return;
 				}
 				if (clipped.m_width <= 0 || clipped.m_height <= 0) {
 					return;
 				}
 				AddToChangeList(dest);
-				if ((flags & 0x40000) != 0) {
+				if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
 					if (remap == NULL) {
 						BlitZRLEClipZBuff(dest, clipped, p_zrle, stateDepth);
 						return;
@@ -3043,7 +3100,7 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 					BlitZRLEClipZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
 					return;
 				}
-				if ((flags & 0x80000) != 0) {
+				if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
 					if (remap == NULL) {
 						BlitZRLEClipQZBuff(dest, clipped, p_zrle, stateDepth);
 						return;
@@ -3052,18 +3109,26 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 					return;
 				}
 				if (remap == NULL) {
-					if ((flags & 1) != 0) {
-						BlitZRLEClipR(dest, clipped, p_zrle, (flags & 2) >> 1);
+					if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+						BlitZRLEClipR(dest, clipped, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 						return;
 					}
-					BlitZRLEClip(dest, clipped, p_zrle, (flags & 2) >> 1);
+					BlitZRLEClip(dest, clipped, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 					return;
 				}
-				if ((flags & 1) != 0) {
-					BlitZRLEClipRemapR(dest, clipped, p_zrle, (flags & 2) >> 1, remap->m_remap);
+				if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+					BlitZRLEClipRemapR(dest,
+									   clipped,
+									   p_zrle,
+									   ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+									   remap->m_remap);
 					return;
 				}
-				BlitZRLEClipRemap(dest, clipped, p_zrle, (flags & 2) >> 1, remap->m_remap);
+				BlitZRLEClipRemap(dest,
+								  clipped,
+								  p_zrle,
+								  ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+								  remap->m_remap);
 			}
 		}
 	}
@@ -3099,7 +3164,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 		int destY = dest.m_y;
 		int yStep = 1;
 		if ((flags & CBitmap::BITMAP_REVERSE_ROWS) != 0) {
-			yStep = -1;
+			yStep = SURFACE_STEP_BACKWARD;
 			destY += dest.m_height - 1;
 		}
 		int bitmapWidth = (int) p_bitmap->m_x;

@@ -2,6 +2,7 @@
 
 #include "Visos/Foundation/CFixed.h"
 #include "Visos/Foundation/CVector.h"
+#include "Visos/Foundation/FixedPoint.h"
 
 #include <stddef.h>
 
@@ -9,24 +10,25 @@
 CVector VSTrig::Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos)
 {
 	int sin = p_sin.m_value;
-	int cosLo = p_cos.m_value & 0xfff;
+	int cosLo = p_cos.m_value & FIXED_POINT_FRACTION_MASK;
 	int negSin = -sin;
-	int xLo = p_vector.m_xFixed & 0xfff;
-	int xHi = p_vector.m_xFixed >> 12;
-	int yLo = p_vector.m_yFixed & 0xfff;
-	int yHi = p_vector.m_yFixed >> 12;
-	int cosHi = p_cos.m_value >> 12;
-	int sinHi = p_sin.m_value >> 12;
-	int sinLo = p_sin.m_value & 0xfff;
+	int xLo = p_vector.m_xFixed & FIXED_POINT_FRACTION_MASK;
+	int xHi = p_vector.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int yLo = p_vector.m_yFixed & FIXED_POINT_FRACTION_MASK;
+	int yHi = p_vector.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int cosHi = p_cos.m_value >> FIXED_POINT_FRACTION_BITS;
+	int sinHi = p_sin.m_value >> FIXED_POINT_FRACTION_BITS;
+	int sinLo = p_sin.m_value & FIXED_POINT_FRACTION_MASK;
 
-	int resY = ((sinLo * xLo) >> 12) + (sinHi * xLo) + ((cosLo * yLo) >> 12) + (yLo * cosHi) + (xHi * p_sin.m_value) +
+	int resY = ((sinLo * xLo) >> FIXED_POINT_FRACTION_BITS) + (sinHi * xLo) +
+			   ((cosLo * yLo) >> FIXED_POINT_FRACTION_BITS) + (yLo * cosHi) + (xHi * p_sin.m_value) +
 			   (yHi * p_cos.m_value);
 
-	int negSinHi = negSin >> 12;
-	int negSinLo = negSin & 0xfff;
+	int negSinHi = negSin >> FIXED_POINT_FRACTION_BITS;
+	int negSinLo = negSin & FIXED_POINT_FRACTION_MASK;
 
-	int resX = ((negSinLo * yLo) >> 12) + (negSinHi * yLo) + ((cosLo * xLo) >> 12) + (negSin * yHi) + (xLo * cosHi) +
-			   (xHi * p_cos.m_value);
+	int resX = ((negSinLo * yLo) >> FIXED_POINT_FRACTION_BITS) + (negSinHi * yLo) +
+			   ((cosLo * xLo) >> FIXED_POINT_FRACTION_BITS) + (negSin * yHi) + (xLo * cosHi) + (xHi * p_cos.m_value);
 
 	return CVector(resX, resY);
 }
@@ -35,19 +37,19 @@ CVector VSTrig::Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos)
 CFixed VSTrig::Sin(int p_angle)
 {
 	if (p_angle < 0) {
-		return CFixed(-m_sine[(-p_angle) % 512].m_value);
+		return CFixed(-m_sine[(-p_angle) % TRIG_ANGLE_FULL_TURN].m_value);
 	}
-	return CFixed(m_sine[p_angle % 512].m_value);
+	return CFixed(m_sine[p_angle % TRIG_ANGLE_FULL_TURN].m_value);
 }
 
 // FUNCTION: LEMBALL 0x0044b6f0
 CFixed VSTrig::Cos(int p_angle)
 {
-	int angle = p_angle + 128;
+	int angle = p_angle + TRIG_ANGLE_QUARTER_TURN;
 	if (angle < 0) {
-		return CFixed(-m_sine[(-128 - p_angle) % 512].m_value);
+		return CFixed(-m_sine[(-TRIG_ANGLE_QUARTER_TURN - p_angle) % TRIG_ANGLE_FULL_TURN].m_value);
 	}
-	return CFixed(m_sine[angle % 512].m_value);
+	return CFixed(m_sine[angle % TRIG_ANGLE_FULL_TURN].m_value);
 }
 
 // FUNCTION: LEMBALL 0x0045a940
@@ -58,7 +60,7 @@ VSTrig::VSTrig()
 		CFixed* pTable = m_sine;
 		do {
 			int val = *pSource++;
-			int fixedVal = val << 12;
+			int fixedVal = val << FIXED_POINT_FRACTION_BITS;
 			pTable->m_value = fixedVal / 4096;
 			pTable++;
 		} while (pSource < (const int*) &g_dwVSTrigInitialised);
@@ -70,7 +72,7 @@ VSTrig::VSTrig()
 VSTrig* g_pVSTrig = NULL;
 
 // GLOBAL: LEMBALL 0x004a13c8
-int g_nVSTrigSource[512] = {
+int g_nVSTrigSource[TRIG_TABLE_SIZE] = {
 	0,     50,    100,   150,   200,   251,   301,   351,   401,   451,   501,   551,   601,   650,   700,   749,
 	799,   848,   897,   946,   995,   1043,  1092,  1140,  1189,  1237,  1284,  1332,  1379,  1427,  1474,  1520,
 	1567,  1613,  1659,  1705,  1751,  1796,  1841,  1886,  1930,  1975,  2018,  2062,  2105,  2148,  2191,  2233,

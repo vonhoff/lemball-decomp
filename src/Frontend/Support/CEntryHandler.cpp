@@ -1,5 +1,7 @@
 #include "CEntryHandler.h"
 
+#include "../../Visos/Foundation/Message.h"
+
 // FUNCTION: LEMBALL 0x00453250
 void CEntryHandler::Reset()
 {
@@ -11,7 +13,7 @@ void CEntryHandler::Reset()
 // FUNCTION: LEMBALL 0x00453260
 void CEntryHandler::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
-	if (p_flags == 0 || p_flags == 3) {
+	if (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK) {
 		m_pressed = 1;
 	}
 }

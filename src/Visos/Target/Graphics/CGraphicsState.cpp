@@ -7,6 +7,7 @@
 #include "../../Graphics/CGDI.h"
 #include "../../Graphics/CPVWnd.h"
 #include "../../Graphics/CSurface.h"
+#include "../../Graphics/CWnd.h"
 #include "CDirectDrawDriver.h"
 #include "CDisplayDibDriver.h"
 #include "CGdiDriver.h"
@@ -50,22 +51,22 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 {
 	int resolvedDriverMode = p_driverMode;
 	void* driverStorage;
-	if (p_driverMode < 9) {
+	if (p_driverMode < GFX_MODE_AUTO + 1) {
 		*g_pDebugOutput << "Initialising graphics device driver: " << g_graphicsDriverNames[p_driverMode] << "...\n";
 	}
-	if (p_driverMode == 8) {
+	if (p_driverMode == GFX_MODE_AUTO) {
 		if (g_nGraphicsDriverGdk != 0) {
-			resolvedDriverMode = g_nFullscreen != 0 ? 4 : 6;
+			resolvedDriverMode = g_nFullscreen != 0 ? GFX_MODE_DD_FS_640X480 : GFX_MODE_DD_WIN_640X480;
 		}
 		else {
-			resolvedDriverMode = g_nFullscreen != 0 ? 3 : 1;
+			resolvedDriverMode = g_nFullscreen != 0 ? GFX_MODE_VGA_320X240 : GFX_MODE_GDI;
 		}
 	}
 	switch (resolvedDriverMode) {
-	case 1:
+	case GFX_MODE_GDI:
 		g_pTargetGraphicsDriver = new CGdiDriver();
 		break;
-	case 2:
+	case GFX_MODE_VGA_320X200:
 		driverStorage = operator new(sizeof(CDisplayDibDriver));
 		if (driverStorage != NULL) {
 			CVSSize size;
@@ -77,7 +78,7 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 			g_pTargetGraphicsDriver = NULL;
 		}
 		break;
-	case 3:
+	case GFX_MODE_VGA_320X240:
 		driverStorage = operator new(sizeof(CPlanarDibDriver));
 		if (driverStorage != NULL) {
 			CVSSize size;
@@ -89,13 +90,13 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 			g_pTargetGraphicsDriver = NULL;
 		}
 		break;
-	case 4: {
+	case GFX_MODE_DD_FS_640X480: {
 		CVSSize size(640, 480);
 		g_pTargetGraphicsDriver = new CDirectDrawDriver(&size, 1);
 		break;
 	}
-	case 6: {
-		resolvedDriverMode = 4;
+	case GFX_MODE_DD_WIN_640X480: {
+		resolvedDriverMode = GFX_MODE_DD_FS_640X480;
 		CVSSize size(640, 480);
 		g_pTargetGraphicsDriver = new CDirectDrawDriver(&size, 1);
 		break;
@@ -114,10 +115,10 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 		if (m_fallbackWarningShown == 0) {
 			CString warning(g_graphicsDriverErrors[resolvedDriverMode]);
 			warning += ". Defaulting to normal window mode (using CreateDIBSection)";
-			MessageBoxA(NULL, warning, "WARNING", 0x12000);
+			MessageBoxA(NULL, warning, "WARNING", MB_TASKMODAL | MB_SETFOREGROUND);
 			m_fallbackWarningShown = 1;
 		}
-		resolvedDriverMode = 1;
+		resolvedDriverMode = GFX_MODE_GDI;
 	}
 	if (resolvedDriverMode != p_driverMode) {
 		*g_pDebugOutput << "[ Auto selected: " << g_graphicsDriverNames[resolvedDriverMode] << " ]\n";
@@ -135,14 +136,14 @@ void CGraphicsState::NotifyDriverChange()
 			CWnd* window = (CWnd*) node->m_window;
 			HWND nativeWindow = (HWND) window->m_nativeWindow;
 			if (nativeWindow != NULL) {
-				if ((window->GetStyle() & 0x80000000) != 0) {
+				if ((window->GetStyle() & WINDOW_STYLE_DIRECT_SCROLL) != 0) {
 					int directScroll = 1;
-					if (m_driverMode == 3) {
+					if (m_driverMode == GFX_MODE_VGA_320X240) {
 						directScroll = 0;
 					}
 					((CPVGWnd*) window)->m_gdi->m_renderTarget->m_directScroll = directScroll;
 				}
-				SendMessageA(nativeWindow, 0x1c, 1, 0);
+				SendMessageA(nativeWindow, WM_ACTIVATEAPP, TRUE, 0);
 				window->OnDriverChange();
 			}
 			node = node->m_next;
@@ -168,10 +169,10 @@ bool CGraphicsState::ChangeDriver(int p_driverMode)
 bool CGraphicsState::IsFullscreenDriver()
 {
 	switch (m_driverMode) {
-	case 2:
-	case 3:
-	case 4:
-	case 5:
+	case GFX_MODE_VGA_320X200:
+	case GFX_MODE_VGA_320X240:
+	case GFX_MODE_DD_FS_640X480:
+	case GFX_MODE_DD_FS_320X200:
 		return true;
 	default:
 		return false;
@@ -182,7 +183,7 @@ bool CGraphicsState::IsFullscreenDriver()
 bool CGraphicsState::IsDirectDrawDriver()
 {
 	switch (m_driverMode) {
-	case 4:
+	case GFX_MODE_DD_FS_640X480:
 		return true;
 	default:
 		return false;
@@ -193,9 +194,9 @@ bool CGraphicsState::IsDirectDrawDriver()
 bool CGraphicsState::IsDisplayDibDriver()
 {
 	switch (m_driverMode) {
-	case 2:
-	case 3:
-	case 5:
+	case GFX_MODE_VGA_320X200:
+	case GFX_MODE_VGA_320X240:
+	case GFX_MODE_DD_FS_320X200:
 		return true;
 	default:
 		return false;

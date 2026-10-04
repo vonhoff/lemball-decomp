@@ -48,6 +48,34 @@ bool CMasterInput::AddItem(void* p_item)
 	return true;
 }
 
+// FUNCTION: LEMBALL 0x00472110
+bool CMasterInput::RemoveItem(void* p_item)
+{
+	struct CNode {
+		void* m_item;
+		CNode* m_next;
+	};
+
+	CNode* node = (CNode*) m_firstItem;
+	CNode* previous;
+	for (unsigned int index = 0; index < m_itemCount; ++index) {
+		if (node->m_item == p_item) {
+			if (index == 0) {
+				m_firstItem = node->m_next;
+			}
+			else {
+				previous->m_next = node->m_next;
+			}
+			delete node;
+			--m_itemCount;
+			return true;
+		}
+		previous = node;
+		node = node->m_next;
+	}
+	return false;
+}
+
 // FUNCTION: LEMBALL 0x00472190
 bool CMasterInput::ProcessItems()
 {

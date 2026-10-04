@@ -9,6 +9,7 @@
 #include "../../Map/Ground/CGroundArray.h"
 #include "../../Visos/Foundation/CVSMath.h"
 #include "../../Visos/Network/CConnect.h"
+#include "../Base/AIScoreConstants.h"
 #include "../Base/CBaseGlobalObject.h"
 #include "../Base/CGlobalGameObject.h"
 #include "../Base/StateMachine.h"
@@ -27,10 +28,33 @@
 #include "AI/Base/CGameObject.h"
 #include "AI/Messages/GameMessageIds.h"
 #include "CViewData.h"
+#include "Visos/Foundation/RandomConstants.h"
 #include "Visos/Foundation/VsDebug.h"
 
 #include <string.h>
 
+#define PLAYER_LEMMING_ACTION_ARGUMENT_MASK 0x07
+#define PLAYER_LEMMING_ACTION_ARGUMENT_FIELD_MASK 0x38
+#define PLAYER_LEMMING_ACTION_ARGUMENT_SHIFT 3
+#define PLAYER_LEMMING_ACTION_BYTE_MASK 0xff
+#define PLAYER_LEMMING_SOUND_BYTE_SHIFT 8
+
+enum {
+	PLAYER_LEMMING_DESTINATION_CAPACITY = 20,
+	PLAYER_LEMMING_NETWORK_STATE_SIZE_BYTES = 17,
+	PLAYER_LEMMING_VERTICAL_CORRECTION_STEP_FIXED = 2 * FIXED_POINT_ONE,
+	PLAYER_LEMMING_BULLET_HIT_STUN_TICKS = 40,
+	PLAYER_LEMMING_BALL_HIT_STUN_TICKS = 60,
+	PLAYER_LEMMING_IDLE_JIG_DURATION_TICKS = 56,
+	PLAYER_LEMMING_IDLE_TOSS_DURATION_TICKS = 33,
+	PLAYER_LEMMING_IDLE_LOOK_DURATION_TICKS = 38,
+	PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED = 3 * FIXED_POINT_ONE,
+	PLAYER_LEMMING_INITIAL_FALL_VERTICAL_VELOCITY_FIXED = 10 * FIXED_POINT_ONE,
+	PLAYER_LEMMING_BULLET_MUZZLE_HEIGHT_FIXED = 10 * FIXED_POINT_ONE,
+	PLAYER_LEMMING_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED = 10 * FIXED_POINT_ONE,
+	PLAYER_LEMMING_SPAWN_HEIGHT_OFFSET_FIXED = 68 * FIXED_POINT_ONE,
+	PLAYER_LEMMING_BOREDOM_DEADLINE_QUANTUM_MS = 66
+};
 // FUNCTION: LEMBALL 0x0040ecb0
 CPlayerLemming::CPlayerLemming(int p_x,
 							   int p_y,
@@ -38,25 +62,30 @@ CPlayerLemming::CPlayerLemming(int p_x,
 							   int p_facing,
 							   unsigned int p_alternatePlayer,
 							   unsigned long p_spawnDelay)
-	: CGlobalGameObject(p_alternatePlayer ? OBJECT_PLAYER_1 : OBJECT_PLAYER_2, 0x17f, 0x14)
+	: CGlobalGameObject(p_alternatePlayer ? OBJECT_PLAYER_1 : OBJECT_PLAYER_2,
+						GAME_OBJECT_COLLISION_PLAYER_LEMMING,
+						PLAYER_LEMMING_DESTINATION_CAPACITY)
 {
 	m_alternatePlayer = p_alternatePlayer;
-	m_spawnPosition.m_xFixed = p_x << 12;
-	m_spawnPosition.m_yFixed = p_y << 12;
-	m_spawnPosition.m_zFixed = p_z << 12;
+	m_spawnPosition.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 	m_spawnDelay = p_spawnDelay;
 	m_initialFacingDirection = (short) p_facing;
 	if (p_alternatePlayer != 0) {
 		SetId(NextLoadingId());
 	}
 	else {
-		m_payloadCapacity += 0x11;
+		m_payloadCapacity += PLAYER_LEMMING_NETWORK_STATE_SIZE_BYTES;
 	}
 }
 
 // FUNCTION: LEMBALL 0x0040ed90
 void CPlayerLemming::Restart()
 {
+	enum {
+		NETWORK_LEMMING_SLOTS_PER_PLAYER = 4
+	};
 	CGlobalGameObject::Restart();
 	if (m_alternatePlayer == 0) {
 		m_playerIndex = g_wNetworkLemmingIndex;
@@ -66,33 +95,34 @@ void CPlayerLemming::Restart()
 		m_action = ACTION_WAITING_TO_SPAWN;
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_actionDeadline = m_spawnDelay + g_dwGameTick;
-		int tileX = m_spawnPosition.m_xFixed >> 12;
-		int tileY = m_spawnPosition.m_yFixed >> 12;
-		int tileZ = m_spawnPosition.m_zFixed >> 12;
+		int tileX = m_spawnPosition.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		int tileY = m_spawnPosition.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+		int tileZ = m_spawnPosition.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		int collision[6];
-		collision[0] = tileX - 8;
-		collision[1] = tileY - 8;
+		collision[0] = tileX - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+		collision[1] = tileY - GAME_OBJECT_COLLISION_XY_MIN_INSET;
 		collision[2] = tileZ;
-		collision[3] = tileX + 7;
-		collision[4] = tileY + 7;
-		collision[5] = tileZ + 15;
+		collision[3] = tileX + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+		collision[4] = tileY + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+		collision[5] = tileZ + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
 		memcpy(&m_collisionBounds, collision, sizeof(collision));
 		int& objectCount = g_pAI->m_objectCount;
 		g_pAI->m_objects[objectCount] = this;
 		objectCount++;
-		m_flightVelocity.m_xFixed = 0x3000;
+		m_flightVelocity.m_xFixed = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
 		m_flightVelocity.m_yFixed = 0;
-		m_flightVelocity.m_zFixed = 0xa000;
+		m_flightVelocity.m_zFixed = PLAYER_LEMMING_INITIAL_FALL_VERTICAL_VELOCITY_FIXED;
 		m_isGroupLeader = 0;
 		m_wasHitByBullet = 0;
 		m_hasDestination = 0;
 		m_fireRequestState = FIRE_REQUEST_NONE;
 		m_desiredFacingDirection = m_initialFacingDirection;
-		SetBored(4000);
+		SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 		AICOORD dest;
-		dest.m_xFixed = ((4 - m_playerIndex) * 16 + tileX) << 12;
-		dest.m_yFixed = tileY << 12;
-		dest.m_zFixed = tileZ << 12;
+		dest.m_xFixed = ((NETWORK_LEMMING_SLOTS_PER_PLAYER - m_playerIndex) * GROUND_BLOCK_PIXEL_SIZE + tileX)
+						<< FIXED_POINT_FRACTION_BITS;
+		dest.m_yFixed = tileY << FIXED_POINT_FRACTION_BITS;
+		dest.m_zFixed = tileZ << FIXED_POINT_FRACTION_BITS;
 		AddDestination(dest);
 		m_position.m_xFixed = m_spawnPosition.m_xFixed;
 		m_position.m_yFixed = m_spawnPosition.m_yFixed;
@@ -107,11 +137,11 @@ void CPlayerLemming::Restart()
 	else {
 		m_playerIndex = g_wLocalLemmingIndex;
 		g_wLocalLemmingIndex++;
-		g_pAI->m_networkLemmings[m_playerIndex + 4] = this;
+		g_pAI->m_networkLemmings[m_playerIndex + NETWORK_LEMMING_SLOTS_PER_PLAYER] = this;
 		m_isRemoteObject = 1;
 		m_action = ACTION_DEAD;
 	}
-	m_position.m_zFixed += 0x44000;
+	m_position.m_zFixed += PLAYER_LEMMING_SPAWN_HEIGHT_OFFSET_FIXED;
 	m_facingDirection = m_initialFacingDirection;
 	m_inventoryCount = 0;
 }
@@ -124,11 +154,11 @@ CPlayerLemming::~CPlayerLemming()
 // FUNCTION: LEMBALL 0x0040f000
 void CPlayerLemming::HitBullet(CBullet* p_bullet)
 {
-	if (g_pGameStatus->m_status0 == 0) {
+	if (!g_pGameStatus->m_bulletHitHandlingDisabled) {
 		if ((int) m_action < ACTION_FLYING || ((int) m_action > ACTION_HIDDEN && m_action != ACTION_ON_BALLOON)) {
 			switch (p_bullet->m_owner) {
 			case OWNER_ENEMY: {
-				int randVal = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+				int randVal = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 				*g_pRandomSeed = randVal;
 				if (randVal % 2) {
 					return;
@@ -145,8 +175,9 @@ void CPlayerLemming::HitBullet(CBullet* p_bullet)
 			}
 			m_hidden = 0;
 			m_wasHitByBullet = 1;
-			m_actionDeadline = g_dwGameTick + 40;
-			m_facingDirection = (p_bullet->m_facingDirection + 4) & 7;
+			m_actionDeadline = g_dwGameTick + PLAYER_LEMMING_BULLET_HIT_STUN_TICKS;
+			m_facingDirection =
+				(p_bullet->m_facingDirection + FACING_DIRECTION_OPPOSITE_OFFSET) & FACING_DIRECTION_MASK;
 		}
 	}
 }
@@ -201,16 +232,18 @@ void CPlayerLemming::TurnToFaceCursor()
 		int cursorX;
 		int cursorY;
 		g_pAI->m_cursor->GetCursorSurfaceCoordinates(cursorX, cursorY);
-		unsigned int facing =
-			ReturnFacingDirection(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, cursorX, cursorY);
+		unsigned int facing = ReturnFacingDirection(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+													m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+													cursorX,
+													cursorY);
 		if (facing != (unsigned int) m_facingDirection) {
-			if (g_anRotationDirections[(facing - m_facingDirection) & 7] < 0) {
+			if (g_anRotationDirections[(facing - m_facingDirection) & FACING_DIRECTION_MASK] < 0) {
 				RotateAnticlockwise();
 			}
 			else {
 				RotateClockwise();
 			}
-			SetBored(4000);
+			SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 		}
 		m_actionDeadline = g_dwGameTick + g_anTurnDelayCursor[m_objectType] / GAME_TICK_MILLISECONDS;
 	}
@@ -219,18 +252,18 @@ void CPlayerLemming::TurnToFaceCursor()
 // FUNCTION: LEMBALL 0x0040f220
 void CPlayerLemming::TurnToFaceTarget()
 {
-	int facing = ReturnFacingDirection(m_position.m_xFixed >> 12,
-									   m_position.m_yFixed >> 12,
-									   m_fireTarget.m_xFixed >> 12,
-									   m_fireTarget.m_yFixed >> 12);
+	int facing = ReturnFacingDirection(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+									   m_fireTarget.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									   m_fireTarget.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 	if (facing != (int) m_facingDirection) {
-		if (g_anRotationDirections[(facing - m_facingDirection) & 7] < 0) {
+		if (g_anRotationDirections[(facing - m_facingDirection) & FACING_DIRECTION_MASK] < 0) {
 			RotateAnticlockwise();
 		}
 		else {
 			RotateClockwise();
 		}
-		SetBored(4000);
+		SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 	}
 	m_actionDeadline = g_dwGameTick + g_anTurnDelayTarget[m_objectType] / GAME_TICK_MILLISECONDS;
 }
@@ -238,7 +271,7 @@ void CPlayerLemming::TurnToFaceTarget()
 // FUNCTION: LEMBALL 0x0040f2b0
 bool CPlayerLemming::IsRequestingFire()
 {
-	return m_fireRequestState == 1;
+	return m_fireRequestState == FIRE_REQUEST_PENDING;
 }
 
 // FUNCTION: LEMBALL 0x0040f2c0
@@ -247,8 +280,8 @@ void CPlayerLemming::RequestFire(int p_x, int p_y)
 	if (m_fireRequestState == FIRE_REQUEST_NONE &&
 		(m_action == ACTION_NONE || m_action == ACTION_WALKING || m_action == ACTION_IDLE_ANIMATION)) {
 		m_fireRequestState = FIRE_REQUEST_PENDING;
-		m_fireTarget.m_xFixed = p_x << 12;
-		m_fireTarget.m_yFixed = p_y << 12;
+		m_fireTarget.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+		m_fireTarget.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
 	}
 }
 
@@ -259,7 +292,7 @@ void CPlayerLemming::Fire()
 	start.m_xFixed = m_position.m_xFixed;
 	int facing = m_facingDirection;
 	start.m_yFixed = m_position.m_yFixed;
-	start.m_zFixed = m_position.m_zFixed + 0xa000;
+	start.m_zFixed = m_position.m_zFixed + PLAYER_LEMMING_BULLET_MUZZLE_HEIGHT_FIXED;
 	switch (m_action) {
 	case ACTION_FLYING:
 	case ACTION_HIDDEN:
@@ -273,11 +306,11 @@ void CPlayerLemming::Fire()
 	case ACTION_EXTERNAL_CONTROL:
 		break;
 	default:
-		if (g_pGameStatus->m_status1 != 0 || m_ammoCount != 0) {
-			SetBored(4000);
+		if (g_pGameStatus->m_unlimitedAmmo || m_ammoCount != 0) {
+			SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_PLAYER, facing, start, m_fireTarget);
 			m_soundEffect = SFX_GUN;
-			if (g_pGameStatus->m_status1 == 0) {
+			if (!g_pGameStatus->m_unlimitedAmmo) {
 				m_ammoCount--;
 			}
 		}
@@ -288,7 +321,7 @@ void CPlayerLemming::Fire()
 // FUNCTION: LEMBALL 0x0040f410
 void CPlayerLemming::StartFiring()
 {
-	m_actionDeadline = g_dwGameTick + 10;
+	m_actionDeadline = g_dwGameTick + GAME_OBJECT_FIRE_WINDUP_TICKS;
 }
 
 // FUNCTION: LEMBALL 0x0040f420
@@ -306,17 +339,20 @@ bool CPlayerLemming::FacingCursor()
 	int cursorX;
 	int cursorY;
 	g_pAI->m_cursor->GetCursorSurfaceCoordinates(cursorX, cursorY);
-	unsigned int facing = ReturnFacingDirection(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, cursorX, cursorY);
+	unsigned int facing = ReturnFacingDirection(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+												m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+												cursorX,
+												cursorY);
 	return (int) m_facingDirection == (int) facing;
 }
 
 // FUNCTION: LEMBALL 0x0040f4b0
 bool CPlayerLemming::FacingTarget()
 {
-	unsigned int facing = ReturnFacingDirection(m_position.m_xFixed >> 12,
-												m_position.m_yFixed >> 12,
-												m_fireTarget.m_xFixed >> 12,
-												m_fireTarget.m_yFixed >> 12);
+	unsigned int facing = ReturnFacingDirection(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+												m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+												m_fireTarget.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+												m_fireTarget.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 	return (int) m_facingDirection == (int) facing;
 }
 
@@ -372,7 +408,7 @@ void CPlayerLemming::HitMine()
 	vel.m_xFixed = 0;
 	vel.m_yFixed = 0;
 	m_wasHitByMine = 1;
-	vel.m_zFixed = 0xa000;
+	vel.m_zFixed = PLAYER_LEMMING_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
 	StartFly(vel, NULL);
 	m_deathRequested = 1;
 }
@@ -381,15 +417,16 @@ void CPlayerLemming::HitMine()
 void CPlayerLemming::GetData()
 {
 	unsigned short packedState[8];
-	m_position.m_xFixed = (int) (unsigned int) GetWORD() << 12;
-	m_position.m_yFixed = (int) (unsigned int) GetWORD() << 12;
-	m_position.m_zFixed = (int) (unsigned int) GetWORD() << 12;
+	m_position.m_xFixed = (int) (unsigned int) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	m_position.m_yFixed = (int) (unsigned int) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = (int) (unsigned int) GetWORD() << FIXED_POINT_FRACTION_BITS;
 	Get(packedState[1]);
-	m_facingDirection = packedState[1] & 7;
-	m_actionArgument = (packedState[1] & 0x38) >> 3;
+	m_facingDirection = packedState[1] & FACING_DIRECTION_MASK;
+	m_actionArgument =
+		(packedState[1] & PLAYER_LEMMING_ACTION_ARGUMENT_FIELD_MASK) >> PLAYER_LEMMING_ACTION_ARGUMENT_SHIFT;
 	Get(packedState[1]);
-	m_action = (eAction) (packedState[1] & 0xff);
-	m_soundEffect = (eSoundEffect) (packedState[1] >> 8);
+	m_action = (eAction) (packedState[1] & PLAYER_LEMMING_ACTION_BYTE_MASK);
+	m_soundEffect = (eSoundEffect) (packedState[1] >> PLAYER_LEMMING_SOUND_BYTE_SHIFT);
 	m_stateTimer = GetDWORD();
 }
 
@@ -398,11 +435,14 @@ void CPlayerLemming::AddData()
 {
 	Add((unsigned short) MESSAGE_PLAYER_LEMMING_STATE);
 	Add((unsigned char) m_playerIndex);
-	Add((unsigned short) (m_position.m_xFixed >> 12));
-	Add((unsigned short) (m_position.m_yFixed >> 12));
-	Add((unsigned short) (m_position.m_zFixed >> 12));
-	Add((unsigned short) (((m_actionArgument & 7) << 3) | (m_facingDirection & 7)));
-	Add((unsigned short) ((m_soundEffect << 8) | (m_action & 0xff)));
+	Add((unsigned short) (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((unsigned short) (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((unsigned short) (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((unsigned short) (((m_actionArgument & PLAYER_LEMMING_ACTION_ARGUMENT_MASK)
+						   << PLAYER_LEMMING_ACTION_ARGUMENT_SHIFT) |
+						  (m_facingDirection & FACING_DIRECTION_MASK)));
+	Add((unsigned short) ((m_soundEffect << PLAYER_LEMMING_SOUND_BYTE_SHIFT) |
+						  (m_action & PLAYER_LEMMING_ACTION_BYTE_MASK)));
 	if (g_dwSimulationTimestamp < m_stateTimer) {
 		m_stateTimer = g_dwSimulationTimestamp;
 	}
@@ -429,11 +469,11 @@ bool CPlayerLemming::CheckSFX()
 unsigned int CPlayerLemming::CheckNetworkStateChanged()
 {
 	int x = m_position.m_xFixed;
-	m_sfxChanged = ((m_networkPositionCache.m_xFixed ^ x) & 0xfffff000) != 0 || m_sfxChanged;
+	m_sfxChanged = ((m_networkPositionCache.m_xFixed ^ x) & FIXED_POINT_INTEGER_MASK) != 0 || m_sfxChanged;
 	int y = m_position.m_yFixed;
-	m_sfxChanged = ((m_networkPositionCache.m_yFixed ^ y) & 0xfffff000) != 0 || m_sfxChanged;
+	m_sfxChanged = ((m_networkPositionCache.m_yFixed ^ y) & FIXED_POINT_INTEGER_MASK) != 0 || m_sfxChanged;
 	int z = m_position.m_zFixed;
-	m_sfxChanged = ((m_networkPositionCache.m_zFixed ^ z) & 0xfffff000) != 0 || m_sfxChanged;
+	m_sfxChanged = ((m_networkPositionCache.m_zFixed ^ z) & FIXED_POINT_INTEGER_MASK) != 0 || m_sfxChanged;
 	eAction action = m_action;
 	switch (action) {
 	case ACTION_NONE:
@@ -498,19 +538,19 @@ bool CPlayerLemming::AddObject(eObjectType p_objectType, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x0040fa10
 void CPlayerLemming::RandomAction()
 {
-	int randVal = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+	int randVal = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 	*g_pRandomSeed = randVal;
-	int idleAnim = randVal % 3;
+	int idleAnim = randVal % LEMMING_IDLE_ANIMATION_COUNT;
 	m_actionArgument = (short) idleAnim;
 	switch (idleAnim) {
-	case 0:
-		m_actionDeadline = g_dwGameTick + 0x38;
+	case LEMMING_IDLE_JIG:
+		m_actionDeadline = g_dwGameTick + PLAYER_LEMMING_IDLE_JIG_DURATION_TICKS;
 		break;
-	case 1:
-		m_actionDeadline = g_dwGameTick + 0x21;
+	case LEMMING_IDLE_TOSS:
+		m_actionDeadline = g_dwGameTick + PLAYER_LEMMING_IDLE_TOSS_DURATION_TICKS;
 		break;
-	case 2:
-		m_actionDeadline = g_dwGameTick + 0x26;
+	case LEMMING_IDLE_LOOK:
+		m_actionDeadline = g_dwGameTick + PLAYER_LEMMING_IDLE_LOOK_DURATION_TICKS;
 		break;
 	}
 }
@@ -542,30 +582,30 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_isJumping = 0;
 	m_isFalling = 0;
 	m_wasHitByMine = 0;
-	m_liftId = 0xffff;
+	m_liftId = INVALID_OBJECT_ID;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
 	m_flightVelocity.m_xFixed = 0;
 	m_flightVelocity.m_yFixed = 0;
 	unsigned short& switchId = m_invisibleSwitchId;
-	switchId = 0xffff;
+	switchId = INVALID_OBJECT_ID;
 	m_flightVelocity.m_zFixed = 0;
 	short& facing = m_desiredFacingDirection;
 	facing = 0;
 	m_unk0x58 = 0;
 	m_onMover = 0;
 	m_ammoCount = PLAYER_START_AMMO;
-	SetBored(4000);
-	int tileX = m_position.m_xFixed >> 12;
-	int tileY = m_position.m_yFixed >> 12;
-	int tileZ = m_position.m_zFixed >> 12;
+	SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
+	int tileX = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int tileY = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int tileZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	int collision[6];
-	collision[0] = tileX - 8;
-	collision[1] = tileY - 8;
+	collision[0] = tileX - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+	collision[1] = tileY - GAME_OBJECT_COLLISION_XY_MIN_INSET;
 	collision[2] = tileZ;
-	collision[3] = tileX + 7;
-	collision[4] = tileY + 7;
-	collision[5] = tileZ + 15;
+	collision[3] = tileX + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+	collision[4] = tileY + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+	collision[5] = tileZ + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
 	memcpy(&m_collisionBounds, collision, sizeof(collision));
 	int& objectCount = g_pAI->m_objectCount;
 	g_pAI->m_objects[objectCount] = this;
@@ -612,7 +652,7 @@ void CPlayerLemming::RemoveObject(eObjectType p_objectType)
 int CPlayerLemming::GetObject(int p_index)
 {
 	if ((int) m_inventoryCount <= p_index) {
-		return 0xffff;
+		return OBJECT_INVALID;
 	}
 	return m_inventoryTypes[p_index];
 }
@@ -622,8 +662,8 @@ void CPlayerLemming::ExternalControlEnd()
 {
 	int actionArgument = (unsigned short) m_actionArgument;
 	switch (actionArgument) {
-	case 1:
-	case 2:
+	case EXTERNAL_CONTROL_ELECTROCUTED:
+	case EXTERNAL_CONTROL_ON_FIRE:
 		Die();
 		Action(ACTION_DEAD);
 		break;
@@ -641,8 +681,10 @@ void CPlayerLemming::OnBalloon()
 	postPos.m_yFixed = DEBUG_SENTINEL;
 	postPos.m_zFixed = DEBUG_SENTINEL;
 	g_pAI->m_balloonPost->FindPost(m_balloonObjectType, postPos);
-	int dist =
-		Distance(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, postPos.m_xFixed >> 12, postPos.m_yFixed >> 12);
+	int dist = Distance(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+						m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+						postPos.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+						postPos.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 	if (dist < 16) {
 		m_balloonPostActive = 0;
 		SetSndEffect(SFX_BALLOON_EXPLODE);
@@ -650,46 +692,46 @@ void CPlayerLemming::OnBalloon()
 		m_actionArgument = 0;
 		m_lastMovementTick = g_dwGameTick;
 		m_action = ACTION_FALLING;
-		m_flightZ = m_position.m_zFixed >> 12;
+		m_flightZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		ResetInstructions();
 		int posX = m_position.m_xFixed;
 		int posY = m_position.m_yFixed;
 		m_groundPosition.m_xFixed = posX;
 		m_groundPosition.m_yFixed = posY;
-		int tileY = posY >> 12;
-		int tileX = posX >> 12;
-		int blockY = tileY >> 4;
-		int blockX = tileX >> 4;
+		int tileY = posY >> FIXED_POINT_FRACTION_BITS;
+		int tileX = posX >> FIXED_POINT_FRACTION_BITS;
+		int blockY = tileY >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockX = tileX >> GROUND_BLOCK_PIXEL_SHIFT;
 		unsigned short groundZ;
 		if (tileX < 0 || tileY < 0 || blockX >= g_pMap->m_ground.m_width || blockY >= g_pMap->m_ground.m_height) {
 			groundZ = 0;
 		}
 		else {
-			int cellX = tileX & 0xf;
-			int cellY = tileY & 0xf;
+			int cellX = tileX & GROUND_BLOCK_PIXEL_MASK;
+			int cellY = tileY & GROUND_BLOCK_PIXEL_MASK;
 			groundZ = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY);
 		}
-		m_groundPosition.m_zFixed = (int) (unsigned int) groundZ << 12;
+		m_groundPosition.m_zFixed = (int) (unsigned int) groundZ << FIXED_POINT_FRACTION_BITS;
 		return;
 	}
 	int posY = m_position.m_yFixed;
 	int posX = m_position.m_xFixed;
-	int tileY = posY >> 12;
-	int tileX = posX >> 12;
-	int blockY = tileY >> 4;
-	int blockX = tileX >> 4;
+	int tileY = posY >> FIXED_POINT_FRACTION_BITS;
+	int tileX = posX >> FIXED_POINT_FRACTION_BITS;
+	int blockY = tileY >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockX = tileX >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short groundZ;
 	if (tileX < 0 || tileY < 0 || blockX >= g_pMap->m_ground.m_width || blockY >= g_pMap->m_ground.m_height) {
 		groundZ = 0;
 	}
 	else {
-		int cellX = tileX & 0xf;
-		int cellY = tileY & 0xf;
+		int cellX = tileX & GROUND_BLOCK_PIXEL_MASK;
+		int cellY = tileY & GROUND_BLOCK_PIXEL_MASK;
 		groundZ = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	int baseZ = (int) groundZ + 32;
 	int curZ = m_position.m_zFixed;
-	int tileZ = curZ >> 12;
+	int tileZ = curZ >> FIXED_POINT_FRACTION_BITS;
 	if (dist != 0) {
 		int factor = (g_dwGameTick - m_lastMovementTick) * 2;
 		m_position.m_xFixed += ((postPos.m_xFixed - m_position.m_xFixed) * factor) / dist;
@@ -697,10 +739,10 @@ void CPlayerLemming::OnBalloon()
 	}
 	if (tileZ < baseZ - 6 || tileZ > baseZ + 6) {
 		if (tileZ > baseZ) {
-			curZ -= 0x2000;
+			curZ -= PLAYER_LEMMING_VERTICAL_CORRECTION_STEP_FIXED;
 		}
 		else {
-			curZ += 0x2000;
+			curZ += PLAYER_LEMMING_VERTICAL_CORRECTION_STEP_FIXED;
 		}
 		m_position.m_zFixed = curZ;
 	}
@@ -747,16 +789,16 @@ void CPlayerLemming::RequestBalloon()
 	}
 	m_balloonPostActive = g_pAI->m_balloonPost->FindPost(m_balloonObjectType, postPos);
 	m_lastMovementTick = g_dwGameTick;
-	g_pAI->Score(10);
+	g_pAI->Score(AI_SCORE_BALLOON_POST_ACTIVATION_POINTS);
 }
 
 // FUNCTION: LEMBALL 0x00410090
 void CPlayerLemming::SetBored(unsigned long p_minimumDelay)
 {
-	int random = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+	int random = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 	*g_pRandomSeed = random;
-	m_boredDeadline = p_minimumDelay + random % 5000;
-	m_boredDeadline = m_boredDeadline - m_boredDeadline % 0x42;
+	m_boredDeadline = p_minimumDelay + random % GAME_OBJECT_BOREDOM_RANDOM_DELAY_RANGE_MS;
+	m_boredDeadline = m_boredDeadline - m_boredDeadline % PLAYER_LEMMING_BOREDOM_DEADLINE_QUANTUM_MS;
 	m_boredDeadline = m_boredDeadline / GAME_TICK_MILLISECONDS;
 	m_boredDeadline = m_actionDeadline + m_boredDeadline;
 }
@@ -765,24 +807,26 @@ void CPlayerLemming::SetBored(unsigned long p_minimumDelay)
 void CPlayerLemming::StartStanding()
 {
 	CMover* mover = NULL;
-	unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
-	int tileZ = m_position.m_zFixed >> 12;
+	unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+										m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+										&mover);
+	int tileZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	if (m_onMover == 0 && mover != NULL) {
 		mover->GetOn(this);
 	}
 	if (tileZ <= (int) groundZ + 2) {
 		if (mover == NULL) {
-			m_position.m_zFixed = groundZ << 12;
+			m_position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 		}
 		g_pAI->StepOn(m_position, this, m_collisionFlags);
 		return;
 	}
 	m_actionDeadline = g_dwGameTick;
-	if ((m_collisionFlags & 4) != 0) {
+	if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
 		m_flightVelocity.m_yFixed = 0;
 		m_isFalling = 1;
-		m_flightVelocity.m_xFixed = 0x3000;
-		m_flightVelocity.m_zFixed = (((tileZ - (int) groundZ) / 8) + 1) * 0x1000;
+		m_flightVelocity.m_xFixed = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
+		m_flightVelocity.m_zFixed = (((tileZ - (int) groundZ) / 8) + 1) * FIXED_POINT_ONE;
 		unsigned int now = g_dwGameTick;
 		int posY = m_position.m_yFixed;
 		m_actionArgument = 0;
@@ -791,7 +835,7 @@ void CPlayerLemming::StartStanding()
 		m_flightZ = tileZ;
 		m_groundPosition.m_xFixed = posX;
 		m_groundPosition.m_yFixed = posY;
-		m_groundPosition.m_zFixed = groundZ << 12;
+		m_groundPosition.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 	}
 }
 
@@ -830,7 +874,7 @@ bool CPlayerLemming::IsSelectable()
 	}
 	if (m_action == ACTION_EXTERNAL_CONTROL) {
 		int actionArgument = (unsigned short) m_actionArgument;
-		if (actionArgument >= 1 && actionArgument <= 2) {
+		if (actionArgument >= EXTERNAL_CONTROL_ELECTROCUTED && actionArgument <= EXTERNAL_CONTROL_ON_FIRE) {
 			return false;
 		}
 	}
@@ -876,7 +920,7 @@ void CPlayerLemming::GetHit()
 void CPlayerLemming::HitBall()
 {
 	m_wasHitByBullet = 1;
-	m_actionDeadline = g_dwGameTick + 0x3c;
+	m_actionDeadline = g_dwGameTick + PLAYER_LEMMING_BALL_HIT_STUN_TICKS;
 }
 
 // FUNCTION: LEMBALL 0x00410ac0

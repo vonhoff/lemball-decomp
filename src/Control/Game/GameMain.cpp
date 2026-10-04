@@ -12,11 +12,22 @@
 #include "../Support/PreInit.h"
 #include "CDemo.h"
 #include "CGame.h"
+#include "Frontend/Base/FrontendLayoutMode.h"
 #include "GameTime.h"
 
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy)
+
+enum {
+	GAME_GDI_SURFACE_SLOT_CAPACITY = 80,
+	GAME_MEMORY_BUDGET_BYTES = 3 * 1024 * 1024,
+	GAME_RANDOM_INITIAL_SEED = 0xad28,
+	GAME_WINDOW_ICON_RESOURCE_ID = 117,
+	GAME_DEMO_QUEUE_SOURCE_ID = 0x19000,
+	COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH = 99,
+	COMMAND_LINE_LEVEL_PATH_MIN_LENGTH = 1
+};
 
 extern "C" __declspec(dllimport) void* __stdcall LoadIconA(void* p_instance, const char* p_name);
 
@@ -24,16 +35,17 @@ extern "C" __declspec(dllimport) void* __stdcall LoadIconA(void* p_instance, con
 PreInit* VSPreInit(PreInit* p_preInit)
 {
 	memcpy(&g_preInit, p_preInit, sizeof(g_preInit));
-	g_preInit.m_flags = 0x50;
-	g_preInit.m_memoryBudget = 0x300000;
-	g_preInit.m_icon = LoadIconA(g_pApplicationInstance, (char*) 0x75);
-	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 1] = 0x80;
-	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 2] = 0x200;
-	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 3] = 0x400;
-	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 4] = 0x140;
-	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 5] = 0x140;
-	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 6] = 0xc0;
-	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 7] = 100;
+	g_preInit.m_flags = GAME_GDI_SURFACE_SLOT_CAPACITY;
+	g_preInit.m_memoryBudget = GAME_MEMORY_BUDGET_BYTES;
+	g_preInit.m_icon = LoadIconA(g_pApplicationInstance, (char*) GAME_WINDOW_ICON_RESOURCE_ID);
+	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 1] = SMALL_MEMORY_256_BYTE_BUCKET_BLOCKS_REQUESTED;
+	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 2] = SMALL_MEMORY_128_BYTE_BUCKET_BLOCKS_REQUESTED;
+	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 3] = SMALL_MEMORY_64_BYTE_BUCKET_BLOCKS_REQUESTED;
+	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 4] = SMALL_MEMORY_32_BYTE_BUCKET_BLOCKS_REQUESTED;
+	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 5] = SMALL_MEMORY_16_BYTE_BUCKET_BLOCKS_REQUESTED;
+	g_preInit.m_capabilities[g_preInit.m_capabilityCount - 6] = SMALL_MEMORY_8_BYTE_BUCKET_BLOCKS_REQUESTED;
+	g_preInit.m_capabilities[g_preInit.m_capabilityCount - SMALL_MEMORY_BUCKET_COUNT] =
+		SMALL_MEMORY_4_BYTE_BUCKET_BLOCKS_REQUESTED;
 	return &g_preInit;
 }
 
@@ -41,11 +53,17 @@ PreInit* VSPreInit(PreInit* p_preInit)
 void SetGameDefaults()
 {
 	CGraphicsState* graphicsSystem;
-
+#if LEMBALL_ENFORCE_STARTUP_CHECKS
 	g_nAnimationsAvailable = 1;
 	g_nAnimationsDisabled = 0;
 	g_nMusicAvailable = 1;
 	g_nMusicVolume = 1;
+#else
+	g_nAnimationsAvailable = 0;
+	g_nAnimationsDisabled = 1;
+	g_nMusicAvailable = 0;
+	g_nMusicVolume = 0;
+#endif
 	g_nEffectsAvailable = 1;
 	g_nEffectsVolume = 1;
 	g_nStatusDebugRequested = 0;
@@ -59,12 +77,12 @@ void SetGameDefaults()
 	g_nEditLevelMode = 0;
 	g_nPlayLevelMode = 0;
 	switch (graphicsSystem->m_driverMode) {
-	case 2:
-	case 3:
-		g_nCompactPrimaryContextLayout = 1;
+	case GFX_MODE_VGA_320X200:
+	case GFX_MODE_VGA_320X240:
+		g_nCompactPrimaryContextLayout = FRONTEND_LAYOUT_COMPACT;
 		break;
 	default:
-		g_nCompactPrimaryContextLayout = 0;
+		g_nCompactPrimaryContextLayout = FRONTEND_LAYOUT_STANDARD;
 	}
 	g_nLevelViewportHorizontalRemainder = 0;
 	g_nLevelViewportVerticalRemainder = 0;
@@ -88,14 +106,14 @@ int VSmain(int p_argc, char** p_argv)
 
 	seed = (int*) operator new(4);
 	if (seed != NULL) {
-		*seed = 0xad28;
+		*seed = GAME_RANDOM_INITIAL_SEED;
 		g_pRandomSeed = seed;
 	}
 	else {
 		g_pRandomSeed = NULL;
 	}
 
-	_DEMO_Init(0x19000);
+	_DEMO_Init(GAME_DEMO_QUEUE_SOURCE_ID);
 	SetGameDefaults();
 	if (DoCommandLine(p_argc, p_argv) == 1) {
 		game = NULL;
@@ -132,34 +150,35 @@ int DoCommandLine(int p_argc, char** p_argv)
 	if (0 < argc) {
 		argv = p_argv;
 		do {
-			if (StrCmpI(*argv, g_szSwitchNoMusic, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchNoMusic, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nMusicAvailable = 0;
 			}
-			if (StrCmpI(*argv, g_szSwitchNoEffects, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchNoEffects, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nEffectsAvailable = 0;
 			}
-			if (StrCmpI(*argv, g_szSwitchSoundDebug, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchSoundDebug, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nSoundDebugRequested = 1;
 			}
-			if (StrCmpI(*argv, g_szSwitchStatusDebug, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchStatusDebug, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nStatusDebugRequested = 1;
 			}
-			if (StrCmpI(*argv, g_szSwitchMemoryDebug, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchMemoryDebug, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nMemoryDebugRequested = 1;
 			}
-			if (StrCmpI(*argv, g_szSwitchNoAnim, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchNoAnim, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nAnimationsAvailable = 0;
 			}
-			if (StrCmpI(*argv, g_szSwitchNoZoom, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchNoZoom, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nZoomAvailable = 0;
 			}
-			if (StrCmpI(*argv, g_szSwitchCompact, 99) == 0) {
-				g_nCompactPrimaryContextLayout = 1;
+			if (StrCmpI(*argv, g_szSwitchCompact, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
+				g_nCompactPrimaryContextLayout = FRONTEND_LAYOUT_COMPACT;
 			}
-			if (StrCmpI(*argv, g_szSwitchTestAllLevels, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchTestAllLevels, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nTestAllLevels = 1;
 			}
-			if (StrCmpI(*argv, g_szSwitchHelp0, 99) == 0 || StrCmpI(*argv, g_szSwitchHelp1, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchHelp0, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0 ||
+				StrCmpI(*argv, g_szSwitchHelp1, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				DisplayHelp();
 				keepGoing = 0;
 			}
@@ -167,17 +186,17 @@ int DoCommandLine(int p_argc, char** p_argv)
 			if (StrCmpI(*argv, g_szSwitchEditPrefix1, prefixLength) == 0) {
 				unsigned int editLength;
 				editLength = strlen(*argv + strlen(g_szSwitchEditPrefix2));
-				g_nEditLevelMode = editLength >= 1;
+				g_nEditLevelMode = editLength >= COMMAND_LINE_LEVEL_PATH_MIN_LENGTH;
 				strcpy(g_szCommandLineLevelFile, *argv + strlen(g_szSwitchEditPrefix3));
 			}
 			prefixLength = strlen(g_szSwitchPlayPrefix0);
 			if (StrCmpI(*argv, g_szSwitchPlayPrefix1, prefixLength) == 0) {
 				unsigned int playLength;
 				playLength = strlen(*argv + strlen(g_szSwitchPlayPrefix2));
-				g_nPlayLevelMode = playLength >= 1;
+				g_nPlayLevelMode = playLength >= COMMAND_LINE_LEVEL_PATH_MIN_LENGTH;
 				strcpy(g_szCommandLineLevelFile, *argv + strlen(g_szSwitchPlayPrefix3));
 			}
-			if (StrCmpI(*argv, g_szSwitchGraphics, 99) == 0) {
+			if (StrCmpI(*argv, g_szSwitchGraphics, COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH) == 0) {
 				g_nStartupGraphicsDialogRequested = 1;
 			}
 			argv = argv + 1;
@@ -281,7 +300,7 @@ int g_nStatusDebugRequested = 0;
 int g_nMemoryDebugRequested = 0;
 
 // GLOBAL: LEMBALL 0x004a630c
-int g_nCompactPrimaryContextLayout = 0;
+int g_nCompactPrimaryContextLayout = FRONTEND_LAYOUT_STANDARD;
 
 // GLOBAL: LEMBALL 0x004a6310
 short g_nLevelViewportHorizontalRemainder = 0;

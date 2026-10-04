@@ -8,6 +8,7 @@
 #include "../../Visos/Foundation/CVSPoint.h"
 #include "../../Visos/Foundation/CVSRect.h"
 #include "../../Visos/Foundation/CVector.h"
+#include "../../Visos/Foundation/FixedPoint.h"
 #include "../../Visos/Foundation/VSTrig.h"
 #include "../../Visos/Graphics/CCursor.h"
 #include "../../Visos/Graphics/CGDI.h"
@@ -28,6 +29,10 @@
 #include <stddef.h>
 
 class CAnimFrameBASE;
+
+enum {
+	CD_LOAD_ANIMATION_FRAME_DURATION_MS = 66
+};
 
 // FUNCTION: LEMBALL 0x0044aa80
 CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager(p_gdi, RESOURCE_ID_COUNT, 1, 1, 0, 0)
@@ -60,7 +65,7 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager
 	LoadAnims(m_animResourceId);
 	palette = CResPALETTE::Load(RES_FRONTEND_LOADING_LORES_PALETTE);
 	if (m_display->m_lifecycleRefs == 1) {
-		m_display->Clear(-1);
+		m_display->Clear(WINDOW_CLEAR_DEFAULT_COLOUR);
 	}
 	p_display->AttachPalette(RES_FRONTEND_LOADING_LORES_PALETTE);
 	palette->UnLoad();
@@ -82,8 +87,8 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager
 	m_initialDraw = 1;
 	animCount = GetnAnims(m_animResourceId);
 	m_repeatAnim = new CRepeatAnim(animCount, 1);
-	m_repeatAnim->m_fixedTime = 0xffffffff;
-	m_repeatAnim->StartAnim(animCount * 0x42);
+	m_repeatAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
+	m_repeatAnim->StartAnim(animCount * CD_LOAD_ANIMATION_FRAME_DURATION_MS);
 }
 
 // FUNCTION: LEMBALL 0x0044ad60
@@ -97,7 +102,7 @@ CCDLoadAnim::~CCDLoadAnim()
 	}
 	m_foregroundBitmap->UnLoad();
 	if (m_display->m_lifecycleRefs == 1) {
-		m_display->Clear(-1);
+		m_display->Clear(WINDOW_CLEAR_DEFAULT_COLOUR);
 	}
 }
 
@@ -120,6 +125,9 @@ void CCDLoadAnim::InitialiseScreen()
 // FUNCTION: LEMBALL 0x0044aec0
 void CCDLoadAnim::Draw()
 {
+	enum {
+		CCD_LOAD_ANIM_PROGRESS_PERCENT_MAX = 100
+	};
 	short tipY;
 	short tipX;
 	int angle;
@@ -165,25 +173,25 @@ void CCDLoadAnim::Draw()
 	const short& originY = originStorage[1];
 	CVector radius((long) (short) -m_points[3].m_x, 0L);
 	const CVSPoint& thickness = m_points[4];
-	int thicknessY = ((int) thickness.m_y) << 12;
-	int thicknessX = ((int) thickness.m_x) << 12;
+	int thicknessY = ((int) thickness.m_y) << FIXED_POINT_FRACTION_BITS;
+	int thicknessX = ((int) thickness.m_x) << FIXED_POINT_FRACTION_BITS;
 	CVector left = radius + CVector(thicknessX, thicknessY);
-	thicknessY = (-(int) m_points[4].m_y) << 12;
-	thicknessX = ((int) m_points[4].m_x) << 12;
+	thicknessY = (-(int) m_points[4].m_y) << FIXED_POINT_FRACTION_BITS;
+	thicknessX = ((int) m_points[4].m_x) << FIXED_POINT_FRACTION_BITS;
 	CVector right = radius + CVector(thicknessX, thicknessY);
 	angle = m_progress;
-	if (100 < angle) {
-		angle = 100;
+	if (CCD_LOAD_ANIM_PROGRESS_PERCENT_MAX < angle) {
+		angle = CCD_LOAD_ANIM_PROGRESS_PERCENT_MAX;
 	}
-	angle = (angle << 8) / 100;
+	angle = (angle * TRIG_ANGLE_HALF_TURN) / CCD_LOAD_ANIM_PROGRESS_PERCENT_MAX;
 	VSTrig* trig = g_pVSTrig;
 	short radiusPoint[2];
 	{
 		CFixed sine = trig->Sin(angle);
 		CFixed cosine = trig->Cos(angle);
 		CVector rotated = trig->Rotate(radius, sine, cosine);
-		radiusPoint[0] = (short) (rotated.m_xFixed >> 12);
-		radiusPoint[1] = (short) (rotated.m_yFixed >> 12);
+		radiusPoint[0] = (short) (rotated.m_xFixed >> FIXED_POINT_FRACTION_BITS);
+		radiusPoint[1] = (short) (rotated.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 	}
 	const short& radiusX = radiusPoint[0];
 	const short& radiusY = radiusPoint[1];
@@ -201,10 +209,10 @@ void CCDLoadAnim::Draw()
 	{
 		short pointStorage[2];
 		CVSPoint& point = *(CVSPoint*) pointStorage;
-		point.m_x = (short) ((rotatedLeft.m_xFixed >> 12) + originX);
+		point.m_x = (short) ((rotatedLeft.m_xFixed >> FIXED_POINT_FRACTION_BITS) + originX);
 		m_needle1[0].m_start.m_x = tipX;
 		m_needle1[0].m_start.m_y = tipY;
-		point.m_y = (short) ((rotatedLeft.m_yFixed >> 12) + originY);
+		point.m_y = (short) ((rotatedLeft.m_yFixed >> FIXED_POINT_FRACTION_BITS) + originY);
 		m_needle1[0].m_end.operator=(point);
 		m_needle1[0].m_colour = 0xba;
 		m_needle1[0].Draw(m_gdi);
@@ -212,10 +220,10 @@ void CCDLoadAnim::Draw()
 	{
 		short pointStorage[2];
 		CVSPoint& point = *(CVSPoint*) pointStorage;
-		point.m_x = (short) ((rotatedRight.m_xFixed >> 12) + originX);
+		point.m_x = (short) ((rotatedRight.m_xFixed >> FIXED_POINT_FRACTION_BITS) + originX);
 		m_needle2[0].m_start.m_x = tipX;
 		m_needle2[0].m_start.m_y = tipY;
-		point.m_y = (short) ((rotatedRight.m_yFixed >> 12) + originY);
+		point.m_y = (short) ((rotatedRight.m_yFixed >> FIXED_POINT_FRACTION_BITS) + originY);
 		m_needle2[0].m_end.operator=(point);
 		m_needle2[0].m_colour = 0xbf;
 		m_needle2[0].Draw(m_gdi);

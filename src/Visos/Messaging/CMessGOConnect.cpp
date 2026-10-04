@@ -1,12 +1,13 @@
 #include "CMessGOConnect.h"
 
 #include "Visos/Messaging/CBroadcastMessage.h"
+#include "Visos/Network/NetworkConstants.h"
 
 // FUNCTION: LEMBALL 0x0045f580
 CMessGOConnect::CMessGOConnect(const char* p_header) : CBroadcastMessage(p_header)
 {
-	m_payloadCapacity += 0x38;
-	m_payloadCapacity += 0x101;
+	m_payloadCapacity += sizeof(CMessGOConnect);
+	m_payloadCapacity += NETWORK_CONNECTION_MESSAGE_EXTRA_CAPACITY_BYTES;
 }
 
 // FUNCTION: LEMBALL 0x0045f5d0

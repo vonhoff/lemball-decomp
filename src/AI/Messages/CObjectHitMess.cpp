@@ -1,5 +1,6 @@
 #include "CObjectHitMess.h"
 
+#include "../Base/AIScoreConstants.h"
 #include "../Base/CGlobalGameObject.h"
 #include "../Navigation/CAI.h"
 #include "AI/Messages/CGameObjectMess.h"
@@ -8,7 +9,7 @@
 // FUNCTION: LEMBALL 0x00416c80
 CObjectHitMess::CObjectHitMess() : CGameObjectMess(MESSAGE_OBJECT_HIT)
 {
-	m_payloadCapacity += 4;
+	m_payloadCapacity += sizeof(unsigned long);
 }
 
 // FUNCTION: LEMBALL 0x00416ca0
@@ -22,5 +23,5 @@ void CObjectHitMess::AddData()
 void CObjectHitMess::GetData()
 {
 	GetDWORD();
-	g_pAI->Score(0x9c4);
+	g_pAI->Score(AI_SCORE_OBJECT_HIT_MESSAGE_POINTS);
 }

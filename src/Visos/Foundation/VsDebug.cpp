@@ -4,6 +4,7 @@
 #include "CDebugOStream.h"
 #include "CString.h"
 #include "CVSDebugStreambuf.h"
+#include "ProcessExitCodes.h"
 #include "Visos/Foundation/CVSOStream.h"
 #include "VsFile.h"
 #include "VsInit.h"
@@ -11,6 +12,15 @@
 
 #include <setjmp.h>
 #include <string.h>
+
+namespace
+{
+enum {
+	DEBUG_WINDOW_DEBUG_TEXT_COLOUR = 0x8000,
+	DEBUG_WINDOW_ERROR_TEXT_COLOUR = 0xff,
+	DEBUG_WINDOW_SYSTEM_TEXT_COLOUR = 0xff0000,
+};
+}
 
 struct FILE;
 struct _Filet;
@@ -56,7 +66,7 @@ int _RAWOUT_DebugString(char* p_text)
 		return 1;
 	}
 	if (g_pDebugWindow != NULL) {
-		g_pDebugWindow->PostText(p_text, 0x8000);
+		g_pDebugWindow->PostText(p_text, DEBUG_WINDOW_DEBUG_TEXT_COLOUR);
 	}
 	else if (g_nDebugFileOutputEnabled != 0) {
 		WriteDebugString2File(p_text);
@@ -72,7 +82,7 @@ int _RAWOUT_ErrorString(char* p_text)
 		return 1;
 	}
 	if (g_pDebugWindow != NULL) {
-		g_pDebugWindow->PostText(p_text, 0xff);
+		g_pDebugWindow->PostText(p_text, DEBUG_WINDOW_ERROR_TEXT_COLOUR);
 	}
 	else if (g_nDebugFileOutputEnabled != 0) {
 		WriteDebugString2File(p_text);
@@ -88,7 +98,7 @@ int _RAWOUT_SysString(char* p_text)
 		return 1;
 	}
 	if (g_pDebugWindow != NULL) {
-		g_pDebugWindow->PostText(p_text, 0xff0000);
+		g_pDebugWindow->PostText(p_text, DEBUG_WINDOW_SYSTEM_TEXT_COLOUR);
 	}
 	else if (g_nDebugFileOutputEnabled != 0) {
 		WriteDebugString2File(p_text);
@@ -111,7 +121,7 @@ void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line)
 	vsLtoa(p_line, lineBuf, 10);
 	msg += lineBuf;
 	MessageBoxA(NULL, msg, "Error", 0);
-	_VSExit(0xaaaa);
+	_VSExit(VISOS_FATAL_EXIT_CODE);
 }
 
 // FUNCTION: LEMBALL 0x00473790
@@ -124,5 +134,5 @@ void FatalWin32Error(char* p_context)
 		stream << p_context << '\n' << " GetLastError()=" << (long) error << ", " << Hex8(error);
 	}
 	MessageBoxA(NULL, buffer, "FATAL ERROR", 0);
-	ExitProcess(0xaaaa);
+	ExitProcess(VISOS_FATAL_EXIT_CODE);
 }

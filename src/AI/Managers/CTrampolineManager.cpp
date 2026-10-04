@@ -4,10 +4,13 @@
 #include "../Objects/CTrampoline.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0042af60
-CTrampolineManager::CTrampolineManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x18, 0xd)
+CTrampolineManager::CTrampolineManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_TRAMPOLINES,
+						 OBJECT_MANAGER_TRANSPORT_TRAMPOLINES)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -52,6 +55,21 @@ CTrampolineManager::~CTrampolineManager()
 void CTrampolineManager::ResetCount()
 {
 	m_count = 0;
+}
+
+// FUNCTION: LEMBALL 0x0042b0c0
+void CTrampolineManager::RemoveTrampoline(CTrampoline* p_trampoline)
+{
+	for (int index = 0; index < m_count; index++) {
+		if (&m_trampolines[index] == p_trampoline) {
+			m_trampolines[index].SetId(INVALID_OBJECT_ID);
+			for (int next = index + 1; next < m_count; next++) {
+				m_trampolines[next - 1] = m_trampolines[next];
+			}
+			m_count--;
+			return;
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x0042b440
@@ -110,7 +128,9 @@ int CTrampolineManager::Hit(const AICOORD& p_position, CGameObject* p_object)
 void CTrampolineManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
-		AICOORD position(p_x << 12, p_y << 12, p_z << 12);
+		AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
+						 p_y << FIXED_POINT_FRACTION_BITS,
+						 p_z << FIXED_POINT_FRACTION_BITS);
 		m_trampolines[m_count].Set(p_id, position);
 		m_count++;
 	}
@@ -127,7 +147,7 @@ void CTrampolineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsign
 	if (count != 0) {
 		do {
 			unsigned short id;
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *(unsigned short*) cursor;
 				cursor += 2;
 			}

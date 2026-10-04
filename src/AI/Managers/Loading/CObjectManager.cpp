@@ -2,9 +2,11 @@
 
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Navigation/CAI.h"
 #include "AI/Objects/CAmmo.h"
 #include "AI/Objects/CSwitch.h"
+#include "Visos/Foundation/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x0041bbc0
 void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, unsigned int p_append)
@@ -19,7 +21,7 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 	if (count != 0) {
 		unsigned int remaining = count;
 		do {
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *(unsigned short*) p_data;
 				p_data += 2;
 			}
@@ -34,7 +36,9 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 			p_data += 2;
 			eObjectType objectType = (eObjectType) * (unsigned short*) p_data;
 			p_data += 4;
-			AICOORD position(x << 0xc, y << 0xc, z << 0xc);
+			AICOORD position(x << FIXED_POINT_FRACTION_BITS,
+							 y << FIXED_POINT_FRACTION_BITS,
+							 z << FIXED_POINT_FRACTION_BITS);
 			switch (objectType) {
 			case OBJECT_CATAPULT:
 			case OBJECT_TOWER:
@@ -48,12 +52,12 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 			case OBJECT_BALLOON_4:
 			case OBJECT_BALLOON_6:
 				if (p_append == 0) {
-					Add(id, position, objectType, 0xffff, OBJECT_INVALID);
+					Add(id, position, objectType, INVALID_OBJECT_ID, OBJECT_INVALID);
 				}
 				break;
 			case OBJECT_AMMO: {
 				unsigned short ammoCount;
-				if (m_ai->m_levelVersion >= 8) {
+				if (m_ai->m_levelVersion >= LEVEL_VERSION_WITH_AMMO_COUNTS) {
 					ammoCount = *(unsigned short*) p_data;
 					p_data += 2;
 				}
@@ -61,7 +65,7 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 					ammoCount = 0;
 				}
 				if (p_append == 0) {
-					CAmmo* ammo = (CAmmo*) Add(id, position, objectType, 0xffff, OBJECT_INVALID);
+					CAmmo* ammo = (CAmmo*) Add(id, position, objectType, INVALID_OBJECT_ID, OBJECT_INVALID);
 					ammo->m_ammo = ammoCount;
 				}
 				break;
@@ -70,7 +74,7 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 				eObjectType contentsType = (eObjectType) * (unsigned short*) p_data;
 				p_data += 2;
 				unsigned short contentsId;
-				if (m_ai->m_levelVersion > 1) {
+				if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 					contentsId = *(unsigned short*) p_data;
 					p_data += 2;
 				}
@@ -83,10 +87,10 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 				break;
 			}
 			case OBJECT_SWITCH:
-				if (m_ai->m_levelVersion > 1) {
+				if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_SERIALIZED_SWITCH_DATA) {
 					CSwitch* object;
 					if (p_append == 0) {
-						object = (CSwitch*) Add(id, position, objectType, 0xffff, OBJECT_INVALID);
+						object = (CSwitch*) Add(id, position, objectType, INVALID_OBJECT_ID, OBJECT_INVALID);
 					}
 					else {
 						CGlobalGameObject** objects = m_objects + switchIndex;

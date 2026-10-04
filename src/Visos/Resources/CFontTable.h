@@ -6,6 +6,10 @@
 class CResFONT;
 class CResZRLE;
 
+enum {
+	FONT_CHARACTER_NOT_FOUND = -1
+};
+
 // SIZE 0x08
 // VTABLE: LEMBALL 0x0049a480
 class CFontTable : public CPvFontTable {

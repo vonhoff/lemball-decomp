@@ -3,8 +3,13 @@
 #include "../../Foundation/CVSOStream.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
+#include "PCMSampleFormat.h"
 
 #include <string.h>
+
+enum {
+	LOW_WORD_MASK = 0xffff
+};
 
 inline CVSOStream& operator<<(CVSOStream& p_stream, unsigned short p_value)
 {
@@ -22,7 +27,7 @@ unsigned short SwapBytes16(unsigned short p_value)
 // FUNCTION: LEMBALL 0x0047c230
 unsigned int SwapBytes32(unsigned int p_value)
 {
-	unsigned int low = p_value & 0xffff;
+	unsigned int low = p_value & LOW_WORD_MASK;
 	p_value >>= 16;
 	low = SwapBytes16((unsigned short) low);
 	low <<= 16;
@@ -50,7 +55,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	patchHeader.m_waveCount = SwapBytes16(patchHeader.m_waveCount);
 	m_prepared = 0;
 	m_waveOut = p_waveOut;
-	if (patchHeader.m_waveCount != 1) {
+	if (patchHeader.m_waveCount != EFFECT_PATCH_SUPPORTED_WAVE_COUNT) {
 		*g_pErrorOutput << "Warning! Effect Patch " << ((EffPatchHeader*) p_patch)->m_name << " has more than ";
 		*g_pErrorOutput << "one Wave. Only one is supported!\n";
 	}
@@ -131,7 +136,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 				do {
 					unsigned char high = *source++;
 					*dest++ = *source++;
-					*dest++ = (unsigned char) (high ^ 0x80);
+					*dest++ = (unsigned char) (high ^ PCM_8BIT_SIGN_BIT_MASK);
 				} while (--length != 0);
 			}
 		}
@@ -141,7 +146,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 				unsigned char high = source[0];
 				source++;
 				*dest++ = *source++;
-				*dest++ = (unsigned char) (high ^ 0x80);
+				*dest++ = (unsigned char) (high ^ PCM_8BIT_SIGN_BIT_MASK);
 				source += 2;
 			} while (--length != 0);
 		}

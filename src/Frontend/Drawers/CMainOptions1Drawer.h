@@ -3,6 +3,7 @@
 
 #include "../../Visos/Foundation/CBaseProcess.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
+#include "../../Visos/Foundation/VsTime.h"
 #include "../Base/CBaseFrontendDrawer.h"
 
 #define MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS 0xacef0001
@@ -10,6 +11,10 @@
 #define MAIN_OPTIONS1_BUTTON_MESSAGE_RESOLUTION 0xacef00a5
 #define MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW 0xacef00a6
 #define MAIN_OPTIONS1_BUTTON_MESSAGE_NETWORK 0xacef00a7
+
+enum {
+	MAIN_OPTIONS1_IDLE_TIMEOUT_MS = 20 * MILLISECONDS_PER_SECOND
+};
 
 class CGDI;
 class CMain2DDisplay;

@@ -1,5 +1,24 @@
 #include "CResINT.h"
 
+#include "CMogRes.h"
+#include "ResourceChunkTypes.h"
+
+#include <stddef.h>
+
+// FUNCTION: LEMBALL 0x0045dcb0
+CResINT* CResINT::Load(unsigned int p_resourceId)
+{
+	CResINT* res = (CResINT*) g_pActiveMogRes->Find(p_resourceId);
+	if (res == NULL) {
+		return (CResINT*) (new CResINT(p_resourceId))->CheckError();
+	}
+	if (res->m_chunkType != RESOURCE_CHUNK_INT) {
+		res->UnLoad();
+		return NULL;
+	}
+	return res;
+}
+
 // FUNCTION: LEMBALL 0x0045e8f0
 CResINT::CResINT()
 {
@@ -9,7 +28,7 @@ CResINT::CResINT()
 // FUNCTION: LEMBALL 0x0045e910
 void CResINT::SetType()
 {
-	m_chunkType = 0x494e5420;
+	m_chunkType = RESOURCE_CHUNK_INT;
 }
 
 // FUNCTION: LEMBALL 0x0045e920

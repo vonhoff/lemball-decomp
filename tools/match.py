@@ -14,9 +14,15 @@ from lib.effective import additional_effective_matches
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("addrs", nargs="+", type=lambda value: int(value, 16),
-                        help="Hex addresses (e.g. 0x0045ca30)")
-    parser.add_argument("--no-build", action="store_true", help="Skip incremental build")
+    parser.add_argument(
+        "addrs",
+        nargs="+",
+        type=lambda value: int(value, 16),
+        help="Hex addresses (e.g. 0x0045ca30)",
+    )
+    parser.add_argument(
+        "--no-build", action="store_true", help="Skip incremental build"
+    )
     args = parser.parse_args()
     if not args.no_build:
         code = run_build()
@@ -27,18 +33,27 @@ def main() -> int:
     _, engine = load_engine()
     comparisons = [engine.compare_address(address) for address in args.addrs]
     additional = additional_effective_matches(
-        engine, {comparison.orig_addr: comparison for comparison in comparisons if comparison is not None}
+        engine,
+        {
+            comparison.orig_addr: comparison
+            for comparison in comparisons
+            if comparison is not None
+        },
     )
-    for address, comparison in zip(args.addrs, comparisons):
+    for address, comparison in zip(args.addrs, comparisons, strict=True):
         if comparison is None:
             print(f"0x{address:08x}: NOT_FOUND")
         elif comparison.is_stub:
             print_match_oneline(comparison)
         else:
             effective = replace(
-                comparison, is_effective_match=comparison.is_effective_match or address in additional,
+                comparison,
+                is_effective_match=comparison.is_effective_match
+                or address in additional,
             )
-            print(f"Raw: {comparison.accuracy * 100:.2f}%  Effective: {effective.effective_accuracy * 100:.2f}%")
+            print(
+                f"Raw: {comparison.accuracy * 100:.2f}%  Effective: {effective.effective_accuracy * 100:.2f}%"
+            )
             print_match_verbose(effective)
     return 0
 

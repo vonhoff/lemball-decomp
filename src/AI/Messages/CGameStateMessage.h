@@ -4,14 +4,14 @@
 #include "../../Visos/Messaging/CNetworkMessage.h"
 
 enum eGameStates {
-	GAME_STATE_0 = 0,
-	GAME_STATE_1 = 1,
-	GAME_STATE_2 = 2,
-	GAME_STATE_3 = 3,
-	GAME_STATE_4 = 4,
-	GAME_STATE_6 = 6,
-	GAME_STATE_7 = 7,
-	GAME_STATE_8 = 8
+	GAME_STATE_PAUSED = 0,
+	GAME_STATE_RUNNING = 1,
+	GAME_STATE_SUCCESS = 2,
+	GAME_STATE_COMPLETING = 3,
+	GAME_STATE_FAILURE = 4,
+	GAME_STATE_QUIT = 6,
+	GAME_STATE_TIME_EXPIRED = 7,
+	GAME_STATE_RESTART = 8
 };
 
 enum eGameStateStages {

@@ -3,11 +3,20 @@
 
 class CConnect;
 
+enum eNetworkMessageId {
+	NETWORK_MESSAGE_FILE_OPEN_COUNT = 0,
+	NETWORK_MESSAGE_PULSE = 1,
+	NETWORK_MESSAGE_ACKNOWLEDGEMENT = 2,
+	NETWORK_MESSAGE_GAMEPLAY_STATE = 3,
+	NETWORK_MESSAGE_GAME_STAGE = 4,
+	NETWORK_MESSAGE_SEQUENCE_TRACKING_START_ID = NETWORK_MESSAGE_GAMEPLAY_STATE
+};
+
 // SIZE 0x2c
 // VTABLE: LEMBALL 0x004932c8
 class CNetworkMessage {
 public:
-	inline CNetworkMessage(unsigned long p_messageId = 0)
+	inline CNetworkMessage(unsigned long p_messageId = NETWORK_MESSAGE_FILE_OPEN_COUNT)
 	{
 		m_messageId = p_messageId;
 		Initialise();

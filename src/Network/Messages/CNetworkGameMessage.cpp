@@ -1,11 +1,13 @@
 #include "CNetworkGameMessage.h"
 
+#include "CGameFlaggedMessage.h"
+
 // FUNCTION: LEMBALL 0x004523e0
-CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(5)
+CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(GAME_MESSAGE_GAME_INFO)
 {
 	m_gameName[0] = '\0';
 	m_valid = 0;
-	m_payloadCapacity += 0x1e;
+	m_payloadCapacity += sizeof(m_gameName) + sizeof(m_peerName);
 	m_headerEnabled = 1;
 }
 

@@ -1,9 +1,11 @@
 #include "CIntroAnimAnimWindow.h"
 
 #include "../../Control/Game/CGameStatus.h"
+#include "../../Control/Level/CLevelLoader.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Drawers/CIntroAnimDrawer.h"
 #include "Visos/Graphics/CAnimWnd.h"
+#include "Visos/Graphics/CWnd.h"
 
 // GLOBAL: LEMBALL 0x0049f194
 char g_szMoviePrefix[] = "lemball";
@@ -26,12 +28,12 @@ void CIntroAnimAnimWindow::SetAnim()
 		return;
 	}
 	switch (g_pGameStatus->m_skill) {
-	case 0:
-	case 3:
+	case SKILL_FUN:
+	case SKILL_MAYHEM:
 		CAnimWnd::SetAnim(RES_NEWFRONT_STRINGS_EXTRONAME);
 		return;
-	case 1:
-	case 2:
+	case SKILL_TRICKY:
+	case SKILL_TAXING:
 		CAnimWnd::SetAnim(RES_NEWFRONT_STRINGS_SUCCFAIL);
 		return;
 	default:
@@ -49,5 +51,5 @@ void CIntroAnimAnimWindow::OnStop()
 // FUNCTION: LEMBALL 0x00447990
 unsigned int CIntroAnimAnimWindow::GetStyle()
 {
-	return 1073741825;
+	return WINDOW_STYLE_CHILD | WINDOW_STYLE_SHOW_ON_CREATE;
 }

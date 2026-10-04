@@ -8,7 +8,8 @@ extern const unsigned char g_aChangeBitMasks[8][4];
 bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 {
 	p_reached = 0;
-	if (m_endY < 0 || m_endX < 0 || m_height <= m_endY || m_width <= m_endX || m_distances[m_endY][m_endX] == 0xffff) {
+	if (m_endY < 0 || m_endX < 0 || m_height <= m_endY || m_width <= m_endX ||
+		m_distances[m_endY][m_endX] == MAZE_DISTANCE_BLOCKED) {
 		return true;
 	}
 
@@ -34,15 +35,17 @@ bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 
 	unsigned char* pChange;
 	if (m_changeSelect != 0) {
-		pChange = m_changeA + ((yMin * 0x80 + xMin) >> 3);
+		pChange =
+			m_changeA + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
 	}
 	else {
-		pChange = m_changeB + ((yMin * 0x80 + xMin) >> 3);
+		pChange =
+			m_changeB + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
 	}
 
 	if (yMin <= yMax) {
 		unsigned int mask;
-		memcpy(&mask, &g_aChangeBitMasks[xMin & 7][0], 1);
+		memcpy(&mask, &g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK][0], 1);
 		int y = yMin;
 		do {
 			unsigned short* pDistance = m_distances[y] + xMin;
@@ -51,13 +54,13 @@ bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 			unsigned char currentMask;
 			memcpy(&currentMask, &mask, 1);
 			for (x = xMin; x <= xMax; x++, pDistance++) {
-				if ((currentMask & *pChangeRow) != 0 && *pDistance != 0xffff && CalcNewDistance(x, y)) {
+				if ((currentMask & *pChangeRow) != 0 && *pDistance != MAZE_DISTANCE_BLOCKED && CalcNewDistance(x, y)) {
 					changed = true;
 					UpdateChangeNext(x, y);
 				}
 				currentMask >>= 1;
 				if (currentMask == 0) {
-					currentMask = 0x80;
+					currentMask = MAZE_CHANGE_BITMAP_FIRST_COLUMN_MASK;
 					pChangeRow++;
 				}
 			}
@@ -66,7 +69,7 @@ bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 		} while (y <= yMax);
 	}
 
-	p_reached = m_distances[m_endY][m_endX] != 0xff00;
+	p_reached = m_distances[m_endY][m_endX] != MAZE_DISTANCE_UNREACHED;
 	p_noChanges = !p_reached || changed ? 0 : 1;
 	if (!p_reached && changed && m_radius < 0x14) {
 		return false;

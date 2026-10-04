@@ -16,5 +16,6 @@ class CPlayerLemming;
 #define MESSAGE_PLAYER_LEMMING_STATE 0x2c
 #define MESSAGE_SIMULATION_TIME 0x2d
 #define MESSAGE_GAME_STREAM_END 0x2f
+#define MESSAGE_GAME_STATE 10
 
 #endif

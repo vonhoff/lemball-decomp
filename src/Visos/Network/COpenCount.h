@@ -7,9 +7,9 @@
 // VTABLE: LEMBALL 0x0049a848
 class COpenCount : public CNetworkMessage {
 public:
-	COpenCount() : CNetworkMessage(0)
+	COpenCount() : CNetworkMessage(NETWORK_MESSAGE_FILE_OPEN_COUNT)
 	{
-		m_payloadCapacity += 2;
+		m_payloadCapacity += sizeof(m_openCount);
 		m_openCount = 0;
 	}
 	virtual void AddData(); // vtable+0x10

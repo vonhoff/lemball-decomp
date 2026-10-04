@@ -13,7 +13,9 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CConnect.h"
+#include "../../Visos/Network/NetworkConstants.h"
 #include "../Base/CGameObject.h"
+#include "../Base/Rect.h"
 #include "../Groups/CEnemyGroupManager.h"
 #include "../Groups/CFormationManager.h"
 #include "../Groups/CPlayerLemmingGroupManager.h"
@@ -41,11 +43,13 @@
 #include "../Objects/CBalloonPost.h"
 #include "../Objects/CGroundAnim.h"
 #include "../Objects/CPlayerLemming.h"
+#include "../Objects/CTrapDoor.h"
 #include "../Objects/CViewData.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/CPt3.h"
 #include "AI/Base/CRect3.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "AI/Objects/CBullet.h"
@@ -63,6 +67,38 @@
 
 extern int g_anDefaultTrapDoorLemmings[4][4];
 
+enum {
+	OBJECT_REQUIREMENT_SLOT_COUNT = OBJECT_INVISIBLE_SWITCH + 1,
+	OBJECT_REQUIREMENT_TRACKING_EXCLUSION_START = 0x211
+};
+
+enum {
+	AI_NAVIGATION_NODE_CAPACITY = 300
+};
+
+enum {
+	AI_GAME_OBJECT_CAPACITY = 100,
+	AI_DEFAULT_LEVEL_TIME_LIMIT_SECONDS = 180,
+	AI_LEVEL_TIME_COUNTDOWN_THRESHOLD_SECONDS = 600,
+	AI_GAME_TICKS_PER_SECOND = 1000 / GAME_TICK_MILLISECONDS,
+	AI_GAME_OVER_SUCCESS_DELAY_TICKS = 60,
+	AI_NETWORK_SEND_INTERVAL_MILLISECONDS = 66,
+	AI_LEVEL_TIME_EXPIRED_ADJUSTED_VALUE = -1,
+	AI_DEMO_RANDOM_SEED = 0xad28,
+	NETWORK_START_TRAP_DOOR_DEFAULT = -1
+};
+
+#define NETWORK_START_POSITION_COUNT 4
+#define NETWORK_LEMMINGS_PER_TEAM 4
+
+enum {
+	CAI_NETWORK_STATE_BUFFER_RESERVE_BYTES = 0x60
+};
+
+enum {
+	AI_EMPTY_COLLISION_RECT_MAX_COORDINATE = -1
+};
+
 // FUNCTION: LEMBALL 0x00410c10
 CAI::CAI(CGame* p_game)
 {
@@ -72,12 +108,12 @@ CAI::CAI(CGame* p_game)
 	m_collisionRect.m_x1 = 0;
 	m_collisionRect.m_y1 = 0;
 	m_collisionRect.m_z1 = 0;
-	m_collisionRect.m_x2 = 0xffffffff;
-	m_collisionRect.m_y2 = 0xffffffff;
-	m_collisionRect.m_z2 = 0xffffffff;
+	m_collisionRect.m_x2 = AI_EMPTY_COLLISION_RECT_MAX_COORDINATE;
+	m_collisionRect.m_y2 = AI_EMPTY_COLLISION_RECT_MAX_COORDINATE;
+	m_collisionRect.m_z2 = AI_EMPTY_COLLISION_RECT_MAX_COORDINATE;
 	m_objectCount = 0;
-	m_objectCapacity = 100;
-	m_objects = new CGameObject*[100];
+	m_objectCapacity = AI_GAME_OBJECT_CAPACITY;
+	m_objects = new CGameObject*[AI_GAME_OBJECT_CAPACITY];
 	CGameObject** objects = m_objects;
 	for (int i = 0; i < m_objectCapacity; i++) {
 		objects[i] = NULL;
@@ -104,20 +140,20 @@ void CAI::Restart()
 	}
 	g_wNetworkLemmingIndex = 0;
 	g_wLocalLemmingIndex = 0;
-	g_pGameStatus->m_skillState = 0;
+	g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_UNSET;
 	m_isSinglePlayer = 0;
 	ResetGameTimes();
 	m_clockSourceReady = 0;
-	network = g_pGameStatus->m_skill == 4;
+	network = g_pGameStatus->m_skill == SKILL_NETWORK;
 	m_started = 0;
 	m_gameStatePending = 0;
 	m_isHost = 0;
 	m_gameplayStartDelay = 0;
 	m_gameplayEnabled = 0;
 	m_networkStartReady = 1;
-	m_payloadCapacity += 0x60;
+	m_payloadCapacity += CAI_NETWORK_STATE_BUFFER_RESERVE_BYTES;
 	m_networkMode = network;
-	if (m_networkMode != 0) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		if (m_initialised == 0) {
 			m_networkGame = new CPBNetworkGame(this);
 		}
@@ -127,7 +163,7 @@ void CAI::Restart()
 		}
 		g_pGameStatus->m_levelState = 0;
 	}
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < NETWORK_START_POSITION_COUNT; i++) {
 		m_networkStartsZ[i] = 0;
 		m_networkStartsY[i] = 0;
 		m_networkStartsX[i] = 0;
@@ -135,7 +171,7 @@ void CAI::Restart()
 	}
 	m_networkTrapDoors[0] = 4;
 	m_networkTrapDoorCount = 1;
-	m_levelVersion = 0;
+	m_levelVersion = LEVEL_VERSION_UNVERSIONED;
 	m_unk0xd4 = 4;
 	m_flagCounts[1] = 1;
 	m_gameTime = 0;
@@ -148,9 +184,9 @@ void CAI::Restart()
 	m_clockStartPending = 1;
 	m_mapType = 0;
 	m_levelTimeRemaining = 0;
-	m_gameStatus = GAME_STATUS_0;
-	m_processState = 0;
-	m_timeLimit = 180;
+	m_gameStatus = GAME_STATUS_NOT_STARTED;
+	m_processState = PROCESS_RESULT_CONTINUE;
+	m_timeLimit = AI_DEFAULT_LEVEL_TIME_LIMIT_SECONDS;
 	if (m_initialised == 0) {
 		m_map = new CMap;
 	}
@@ -167,7 +203,7 @@ void CAI::Restart()
 		m_aiQueue = new CBaseQueue(10, "AIQueue");
 		m_aiQueue->Attach(this, 0);
 	}
-	if (m_networkMode != 0 && g_pActiveConnection != NULL) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER && g_pActiveConnection != NULL) {
 		g_pActiveConnection->CReadSocket::UnUseAllNC();
 		g_pActiveConnection->CReadSocket::UnUseAllC();
 	}
@@ -202,7 +238,7 @@ void CAI::Restart()
 		g_pGodManager->Register(m_bulletManager);
 	}
 	if (m_initialised == 0) {
-		m_cursor = new CAICursor(this, 1024, 1024);
+		m_cursor = new CAICursor(this, MAP_COORDINATE_MAX, MAP_COORDINATE_MAX);
 	}
 	if (m_initialised == 0) {
 		m_sheepGroupManager = new CSheepGroupManager(this, m_objectManager, m_formationManager);
@@ -213,7 +249,7 @@ void CAI::Restart()
 	}
 	m_enemyGroupManager->Restart();
 	if (m_initialised == 0) {
-		m_nodeManager = new CNodeManager(300);
+		m_nodeManager = new CNodeManager(AI_NAVIGATION_NODE_CAPACITY);
 	}
 	m_nodeManager->Restart();
 	if (m_initialised == 0) {
@@ -287,8 +323,8 @@ void CAI::Restart()
 		g_pDemo->GetUserPacket(packet, packetSize);
 		level = packet[0];
 		skill = (eSkill) packet[1];
-		*g_pSysOutput << "Starting demo mode for level " << level << " on skill " << (int) skill << "\n";
-		*g_pRandomSeed = 0xad28;
+		*g_pSysOutput << "Starting demo mode for level " << level << " on skill " << (int) skill << "\r\n";
+		*g_pRandomSeed = AI_DEMO_RANDOM_SEED;
 	}
 	else {
 		level = g_pGameStatus->Level();
@@ -307,14 +343,14 @@ void CAI::Restart()
 		m_animSpecial = new CAnimSpecial;
 	}
 	m_animSpecial->Initialise(m_map);
-	if (m_levelVersion == 0) {
+	if (m_levelVersion == LEVEL_VERSION_UNVERSIONED) {
 		FixUpLevel();
 	}
-	m_levelVersion = 10;
+	m_levelVersion = LEVEL_VERSION_CURRENT;
 	if (m_initialised == 0) {
-		m_objectRequired = new unsigned int[55];
+		m_objectRequired = new unsigned int[OBJECT_REQUIREMENT_SLOT_COUNT];
 	}
-	for (i = 0; i < 55; i++) {
+	for (i = 0; i < OBJECT_REQUIREMENT_SLOT_COUNT; i++) {
 		m_objectRequired[i] = 0;
 	}
 	DecideAnimsRequired();
@@ -361,7 +397,7 @@ CAI::~CAI()
 	delete m_animSpecial;
 	delete g_pGodManager;
 	delete m_aiQueue;
-	if (m_networkMode != 0) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		delete m_networkGame;
 		delete m_gameStateMessage;
 	}
@@ -378,7 +414,7 @@ void CAI::Start()
 	CDemo* demo;
 	CNetworkManager* networkManager;
 
-	if (m_networkMode != 0) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		m_gameStatePending = 1;
 		m_networkStartReady = 0;
 		networkManager = g_pNetworkManager;
@@ -403,7 +439,8 @@ void CAI::SendGameState(eGameStates p_state, eGameStateStages p_stage)
 	if (g_pActiveConnection != NULL) {
 		if (m_gameStateMessage->m_pendingSendCount != 0) {
 			unsigned long start = CurrentMilliTimer();
-			while (m_gameStateMessage->m_pendingSendCount != 0 && CurrentMilliTimer() - start < 2000) {
+			while (m_gameStateMessage->m_pendingSendCount != 0 &&
+				   CurrentMilliTimer() - start < NETWORK_PENDING_SEND_TIMEOUT_MS) {
 				g_pBaseNetwork->WaitProcess();
 			}
 		}
@@ -430,7 +467,7 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 	apply = 0;
 	state = message.m_state;
 	stage = message.m_stage;
-	*g_pSysOutput << "Received Game State " << (int) state << ", stage " << (int) stage << "\n";
+	*g_pSysOutput << "Received Game State " << (int) state << ", stage " << (int) stage << "\r\n";
 	switch (stage) {
 	case GAME_STATE_STAGE_REQUEST:
 		if (m_gameStatePending != 0) {
@@ -441,7 +478,7 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 			m_gameStatePending = 0;
 		}
 		switch (state) {
-		case GAME_STATE_0:
+		case GAME_STATE_PAUSED:
 			if (m_gameStatus == GAME_STATUS_PAUSED) {
 				SendGameState(state, GAME_STATE_STAGE_REJECT);
 				m_gameStatePending = 0;
@@ -450,25 +487,25 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 			apply = 1;
 			m_isSinglePlayer = 1;
 			break;
-		case GAME_STATE_2:
-			g_pGameStatus->m_skillState = 2;
+		case GAME_STATE_SUCCESS:
+			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_FLAGS_COLLECTED;
 			m_gameStatus = GAME_STATUS_FAILURE;
 			break;
-		case GAME_STATE_3:
-			if (m_gameStatus == GAME_STATUS_4 || m_gameStatus == GAME_STATUS_SUCCESS) {
+		case GAME_STATE_COMPLETING:
+			if (m_gameStatus == GAME_STATUS_COMPLETING || m_gameStatus == GAME_STATUS_SUCCESS) {
 				SendGameState(state, GAME_STATE_STAGE_REJECT);
 				m_gameStatePending = 0;
 				return;
 			}
-			m_gameStatus = GAME_STATUS_6;
+			m_gameStatus = GAME_STATUS_GAME_OVER;
 			g_nGameOver = 1;
 			break;
-		case GAME_STATE_4:
-			g_pGameStatus->m_skillState = 3;
+		case GAME_STATE_FAILURE:
+			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_LEMMING_ELIMINATION;
 			m_gameStatus = GAME_STATUS_SUCCESS;
 			break;
-		case GAME_STATE_6:
-			g_pGameStatus->m_skillState = 5;
+		case GAME_STATE_QUIT:
+			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_GAVE_UP;
 			m_gameStatus = GAME_STATUS_SUCCESS;
 			break;
 		default:
@@ -482,56 +519,56 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 		}
 	case GAME_STATE_STAGE_CONFIRM:
 		switch (state) {
-		case GAME_STATE_0:
+		case GAME_STATE_PAUSED:
 			m_gameStatus = GAME_STATUS_PAUSED;
 			break;
-		case GAME_STATE_1:
+		case GAME_STATE_RUNNING:
 			if (m_gameStatus != GAME_STATUS_RESTART) {
 				m_started = 1;
 				m_gameStatus = GAME_STATUS_RUNNING;
 			}
 			break;
-		case GAME_STATE_2:
-			g_pGameStatus->m_skillState = 2;
+		case GAME_STATE_SUCCESS:
+			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_FLAGS_COLLECTED;
 			m_gameStatus = GAME_STATUS_SUCCESS;
 			break;
-		case GAME_STATE_3:
-			m_gameStatus = GAME_STATUS_4;
+		case GAME_STATE_COMPLETING:
+			m_gameStatus = GAME_STATUS_COMPLETING;
 			break;
-		case GAME_STATE_4:
-			g_pGameStatus->m_skillState = 3;
+		case GAME_STATE_FAILURE:
+			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_LEMMING_ELIMINATION;
 			m_gameStatus = GAME_STATUS_FAILURE;
 			break;
-		case GAME_STATE_6:
-			g_pGameStatus->m_skillState = 5;
+		case GAME_STATE_QUIT:
+			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_GAVE_UP;
 			m_gameStatus = GAME_STATUS_FAILURE;
 			break;
-		case GAME_STATE_7:
+		case GAME_STATE_TIME_EXPIRED:
 			if ((unsigned int) m_gameTime > message.m_levelTime) {
-				g_pGameStatus->m_skillState = 4;
+				g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_TIME_EXPIRED;
 				m_gameStatus = GAME_STATUS_SUCCESS;
 			}
 			else if ((unsigned int) m_gameTime != message.m_levelTime) {
-				g_pGameStatus->m_skillState = 4;
+				g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_TIME_EXPIRED;
 				m_gameStatus = GAME_STATUS_FAILURE;
 			}
 			else {
 				unsigned int score = m_score;
 				if (score > message.m_score) {
-					g_pGameStatus->m_skillState = 1;
+					g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_BEST_SCORE;
 					m_gameStatus = GAME_STATUS_SUCCESS;
 				}
 				else if (score < message.m_score) {
-					g_pGameStatus->m_skillState = 1;
+					g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_BEST_SCORE;
 					m_gameStatus = GAME_STATUS_FAILURE;
 				}
 				else {
-					g_pGameStatus->m_skillState = 4;
+					g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_TIME_EXPIRED;
 					m_gameStatus = GAME_STATUS_FAILURE;
 				}
 			}
 			break;
-		case GAME_STATE_8:
+		case GAME_STATE_RESTART:
 			m_gameStatus = GAME_STATUS_RESTART;
 			return;
 		}
@@ -546,20 +583,20 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 // FUNCTION: LEMBALL 0x00411f20
 void CAI::GameState(eGameStatus p_status)
 {
-	if (m_networkMode == 0) {
+	if (m_networkMode == NETWORK_MODE_SINGLE_PLAYER) {
 		switch (p_status) {
 		case GAME_STATUS_SUCCESS:
-			g_pGameStatus->m_skillState = 2;
+			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_FLAGS_COLLECTED;
 			m_gameStatus = GAME_STATUS_SUCCESS;
 			return;
 		case GAME_STATUS_FAILURE:
-			if (g_pGameStatus->m_skillState == 0) {
-				g_pGameStatus->m_skillState = 3;
+			if (g_pGameStatus->m_skillState == GAME_RESULT_MESSAGE_UNSET) {
+				g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_LEMMING_ELIMINATION;
 			}
 			m_gameStatus = GAME_STATUS_FAILURE;
 			return;
-		case GAME_STATUS_7:
-			g_pGameStatus->m_skillState = 4;
+		case GAME_STATUS_TIME_EXPIRED:
+			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_TIME_EXPIRED;
 			m_gameStatus = GAME_STATUS_FAILURE;
 			return;
 		default:
@@ -571,33 +608,33 @@ void CAI::GameState(eGameStatus p_status)
 		switch (p_status) {
 		case GAME_STATUS_PAUSED:
 			m_isSinglePlayer = 0;
-			SendGameState(GAME_STATE_0, GAME_STATE_STAGE_REQUEST);
+			SendGameState(GAME_STATE_PAUSED, GAME_STATE_STAGE_REQUEST);
 			return;
 		case GAME_STATUS_RUNNING:
-			SendGameState(GAME_STATE_1, GAME_STATE_STAGE_CONFIRM);
+			SendGameState(GAME_STATE_RUNNING, GAME_STATE_STAGE_CONFIRM);
 			if (m_gameStatus == GAME_STATUS_RUNNING) {
 				m_gameStatePending = 0;
 				return;
 			}
 			break;
 		case GAME_STATUS_SUCCESS:
-			SendGameState(GAME_STATE_2, GAME_STATE_STAGE_REQUEST);
+			SendGameState(GAME_STATE_SUCCESS, GAME_STATE_STAGE_REQUEST);
 			return;
-		case GAME_STATUS_4:
-			SendGameState(GAME_STATE_3, GAME_STATE_STAGE_REQUEST);
+		case GAME_STATUS_COMPLETING:
+			SendGameState(GAME_STATE_COMPLETING, GAME_STATE_STAGE_REQUEST);
 			return;
 		case GAME_STATUS_FAILURE:
-			if (g_pGameStatus->m_skillState == 5) {
-				SendGameState(GAME_STATE_6, GAME_STATE_STAGE_REQUEST);
+			if (g_pGameStatus->m_skillState == GAME_RESULT_MESSAGE_GAVE_UP) {
+				SendGameState(GAME_STATE_QUIT, GAME_STATE_STAGE_REQUEST);
 				return;
 			}
-			SendGameState(GAME_STATE_4, GAME_STATE_STAGE_REQUEST);
+			SendGameState(GAME_STATE_FAILURE, GAME_STATE_STAGE_REQUEST);
 			return;
-		case GAME_STATUS_7:
-			SendGameState(GAME_STATE_7, GAME_STATE_STAGE_REQUEST);
+		case GAME_STATUS_TIME_EXPIRED:
+			SendGameState(GAME_STATE_TIME_EXPIRED, GAME_STATE_STAGE_REQUEST);
 			return;
 		case GAME_STATUS_RESTART:
-			SendGameState(GAME_STATE_8, GAME_STATE_STAGE_REQUEST);
+			SendGameState(GAME_STATE_RESTART, GAME_STATE_STAGE_REQUEST);
 		}
 	}
 }
@@ -675,11 +712,11 @@ void CAI::AddTime(int p_time)
 // FUNCTION: LEMBALL 0x004121f0
 void CAI::Process(int p_paused)
 {
-	if (m_networkMode != 0 && g_pActiveConnection == NULL) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER && g_pActiveConnection == NULL) {
 		return;
 	}
 	m_aiQueue->ProcessNMsgs(m_aiQueue->GetMessageCount());
-	if (m_networkMode != 0 && m_networkStartReady == 0 &&
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER && m_networkStartReady == 0 &&
 		g_pNetworkManager->m_desiredGameState == g_pNetworkManager->m_observedGameState) {
 		m_gameStatePending = 0;
 		m_networkStartReady = 1;
@@ -690,10 +727,10 @@ void CAI::Process(int p_paused)
 		return;
 	}
 	switch (m_gameStatus) {
-	case 0:
-	case 2:
-	case 4:
-	case 6:
+	case GAME_STATUS_NOT_STARTED:
+	case GAME_STATUS_RUNNING:
+	case GAME_STATUS_COMPLETING:
+	case GAME_STATUS_GAME_OVER:
 		break;
 	default:
 		SetGameTime();
@@ -703,14 +740,15 @@ void CAI::Process(int p_paused)
 		return;
 	}
 	SetGameTime();
-	if (m_networkMode != 0) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		if (g_pActiveConnection != NULL && g_pActiveConnection->IsChanged(*m_networkGame)) {
 			g_pActiveConnection->GetLatest(*m_networkGame);
 			m_clockSourceReady = 1;
 		}
 	}
 	unsigned int time;
-	if (m_networkMode != 0 && g_pActiveConnection != NULL && g_pActiveConnection->m_isHost != 0) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER && g_pActiveConnection != NULL &&
+		g_pActiveConnection->m_isHost != 0) {
 		time = g_dwRemoteGameTick;
 	}
 	else {
@@ -725,14 +763,14 @@ void CAI::Process(int p_paused)
 		}
 	}
 	else {
-		if (g_nGameOver == 0 && m_levelTimeRemaining < 600) {
-			m_levelTimeRemaining = m_timeLimit - (time - m_levelStartTick) / 20;
+		if (g_nGameOver == 0 && m_levelTimeRemaining < AI_LEVEL_TIME_COUNTDOWN_THRESHOLD_SECONDS) {
+			m_levelTimeRemaining = m_timeLimit - (time - m_levelStartTick) / AI_GAME_TICKS_PER_SECOND;
 		}
 		int remaining = m_levelTimeRemaining;
 		remaining += m_gameTime;
 		if (remaining < 0) {
-			GameState(GAME_STATUS_7);
-			m_levelTimeRemaining = -1 - m_gameTime;
+			GameState(GAME_STATUS_TIME_EXPIRED);
+			m_levelTimeRemaining = AI_LEVEL_TIME_EXPIRED_ADJUSTED_VALUE - m_gameTime;
 		}
 		if (m_gameplayEnabled == 0 && m_gameplayStartDelay < time - m_levelStartTick) {
 			m_gameplayEnabled = 1;
@@ -747,16 +785,16 @@ void CAI::Process(int p_paused)
 	g_pGodManager->Process();
 	if (m_flagCounts[0] <= 0) {
 		if (g_nGameOver == 0) {
-			GameState(GAME_STATUS_4);
+			GameState(GAME_STATUS_COMPLETING);
 			g_nGameOver = 1;
-			m_gameOverDeadline = g_dwGameTick + 0x3c;
+			m_gameOverDeadline = g_dwGameTick + AI_GAME_OVER_SUCCESS_DELAY_TICKS;
 		}
-		if (m_gameStatus == 4 && m_gameOverDeadline < g_dwGameTick) {
+		if (m_gameStatus == GAME_STATUS_COMPLETING && m_gameOverDeadline < g_dwGameTick) {
 			GameState(GAME_STATUS_SUCCESS);
 		}
 	}
-	if (g_pActiveConnection != NULL &&
-		(LemmingsSFXChanged() || g_dwSimulationTimestamp - m_lastNetworkSendCheckTick > 0x42)) {
+	if (g_pActiveConnection != NULL && (LemmingsSFXChanged() || g_dwSimulationTimestamp - m_lastNetworkSendCheckTick >
+																	AI_NETWORK_SEND_INTERVAL_MILLISECONDS)) {
 		CConnect* connection = g_pActiveConnection;
 		if (m_networkGame->m_pendingSendCount == 0) {
 			m_networkGame->Send(connection);
@@ -814,28 +852,28 @@ void CAI::FireBullet(unsigned short p_id,
 int CAI::ProcessMsg(Message* p_message)
 {
 	unsigned int messageType = p_message->m_type;
-	if (messageType != 4) {
+	if (messageType != AI_MESSAGE_REQUEST_FIRE) {
 		if (m_gameplayEnabled == 0) {
 			return 1;
 		}
 		switch (messageType) {
-		case 2:
+		case AI_MESSAGE_MOVE_GROUP:
 			m_playerGroupManager->AddNewWaypointToCurrentGroup(p_message->m_code, (int) p_message->m_payload);
 			return 0;
-		case 3:
+		case AI_MESSAGE_CANCEL_MOVES:
 			m_playerGroupManager->RemoveWaypointsFromCurrentGroup();
 			return 0;
-		case 5:
+		case AI_MESSAGE_FORM_GROUP:
 			m_playerGroupManager->CreateNewGroup((unsigned short) p_message->m_code,
 												 (unsigned short*) p_message->m_payload);
 			return 0;
-		case 6:
+		case AI_MESSAGE_PREVIOUS_GROUP:
 			m_playerGroupManager->MakePreviousGroupPlayerControlled();
 			return 0;
-		case 7:
+		case AI_MESSAGE_NEXT_GROUP:
 			m_playerGroupManager->MakeNextGroupPlayerControlled();
 			return 0;
-		case 8:
+		case AI_MESSAGE_USE_OBJECT:
 			m_playerGroupManager->UseObject(p_message->m_code);
 			return 0;
 		default:
@@ -845,6 +883,17 @@ int CAI::ProcessMsg(Message* p_message)
 	}
 	m_playerGroupManager->PlayerGroupRequestFire(p_message->m_code, (int) p_message->m_payload);
 	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00412740
+void CAI::CollectNetworkGroupData(int* p_output)
+{
+	*p_output = 0;
+	int sheepCount = m_sheepGroupManager->GetAllBoundingBoxes(reinterpret_cast<Rect*>(p_output + 1));
+	*p_output = sheepCount;
+	int playerCount = m_playerGroupManager->GetAllBoundingBoxes(
+		reinterpret_cast<Rect*>(p_output + sheepCount * (sizeof(Rect) / sizeof(int)) + 1));
+	*p_output = sheepCount + playerCount;
 }
 
 // FUNCTION: LEMBALL 0x00412780
@@ -890,13 +939,13 @@ CGlobalGameObject* CAI::FindObjectInBounds(CVSRect* p_bounds, eObjectType p_obje
 }
 
 // FUNCTION: LEMBALL 0x00412890
-void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned short p_mask)
+void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned short p_collisionFlags)
 {
 	int y;
-	int x = p_position.m_xFixed >> 12;
-	y = p_position.m_yFixed >> 12;
-	int blockX = x / 16;
-	int blockY = y / 16;
+	int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int blockX = x / GROUND_BLOCK_PIXEL_SIZE;
+	int blockY = y / GROUND_BLOCK_PIXEL_SIZE;
 
 	if (p_object->m_onMover != 0) {
 		return;
@@ -905,31 +954,31 @@ void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned shor
 	unsigned short groundZ;
 	{
 		CMap* map = m_map;
-		int groundX = x >> 4;
-		int groundY = y >> 4;
+		int groundX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int groundY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		if (x < 0 || y < 0 || groundX >= map->m_ground.m_width || groundY >= map->m_ground.m_height) {
 			groundZ = 0;
 		}
 		else {
-			int cellX = x & 0xf;
-			int cellY = y & 0xf;
+			int cellX = x & GROUND_BLOCK_PIXEL_MASK;
+			int cellY = y & GROUND_BLOCK_PIXEL_MASK;
 			groundZ = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(cellX, cellY);
 		}
 	}
 
 	int groundThreshold = (int) groundZ + 4;
-	if (groundThreshold < (p_object->m_position.m_zFixed >> 12)) {
+	if (groundThreshold < (p_object->m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 		return;
 	}
 
 	unsigned short collision;
 	if (blockX < 0 || blockY < 0) {
-		collision = 3;
+		collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 	}
 	else {
 		CMap* map = m_map;
 		if (blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
-			collision = 3;
+			collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 		}
 		else {
 			collision = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].m_collision;
@@ -940,64 +989,65 @@ void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned shor
 		return;
 	}
 
-	if ((collision & 4) != 0 && (p_mask & 0x40) != 0) {
+	if ((collision & GROUND_COLLISION_HAZARD) != 0 && (p_collisionFlags & GAME_OBJECT_COLLISION_TRIGGER_HAZARDS) != 0) {
 		eObjectType objectType = m_map->m_ground.m_ground[blockY * m_map->m_ground.m_width + blockX].m_objectType;
-		p_object->m_actionDeadline = g_dwGameTick + 26;
+		p_object->m_actionDeadline = g_dwGameTick + HAZARD_DEATH_DELAY_TICKS;
 		p_object->m_action = ACTION_EXTERNAL_CONTROL;
 		switch (objectType) {
 		default:
-			p_object->m_actionArgument = 2;
-			p_object->m_stateTimer = g_dwGameTick * 50;
+			p_object->m_actionArgument = EXTERNAL_CONTROL_ON_FIRE;
+			p_object->m_stateTimer = g_dwGameTick * GAME_TICK_MILLISECONDS;
 			p_object->SetSndEffect(SFX_AAAAH1);
 			return;
 
 		case TERRAIN_ELECTRIC:
-			p_object->m_actionArgument = 1;
-			p_object->m_stateTimer = g_dwGameTick * 50;
+			p_object->m_actionArgument = EXTERNAL_CONTROL_ELECTROCUTED;
+			p_object->m_stateTimer = g_dwGameTick * GAME_TICK_MILLISECONDS;
 			p_object->SetSndEffect(SFX_AAAAH2);
 			return;
 		}
 	}
 
-	if ((collision & 0x8000) == 0) {
+	if ((collision & GROUND_COLLISION_OBJECT_INTERACTION) == 0) {
 		return;
 	}
 
-	if ((p_mask & 8) != 0) {
+	if ((p_collisionFlags & GAME_OBJECT_COLLISION_STEP_ON_MINE) != 0) {
 		m_mineManager->StepOn(p_position, p_object);
 	}
-	if ((p_mask & 0x10) != 0) {
+	if ((p_collisionFlags & GAME_OBJECT_COLLISION_STEP_ON_SPECIAL_OBJECTS) != 0) {
 		m_liftManager->StepOn(p_position, p_object);
 		m_rocketManager->StepOn(p_position, p_object);
 		m_handManager->StepOn(p_position, p_object);
 		m_laserManager->StepOn(p_position, p_object);
 		m_iceManager->StepOn(p_position, p_object);
 	}
-	if ((p_mask & 0x100) != 0) {
+	if ((p_collisionFlags & GAME_OBJECT_COLLISION_STEP_ON_INVISIBLE_SWITCHES) != 0) {
 		m_invisibleSwitchManager->StepOn(p_position, p_object);
 	}
 }
 
 // FUNCTION: LEMBALL 0x00412ad0
-bool CAI::OpenDoor(const AICOORD& p_position, CGameObject* p_object, unsigned short p_mask)
+bool CAI::OpenDoor(const AICOORD& p_position, CGameObject* p_object, unsigned short p_collisionFlags)
 {
-	int blockX = (p_position.m_xFixed >> 12) / 16;
-	int blockY = (p_position.m_yFixed >> 12) / 16;
+	int blockX = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
+	int blockY = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	unsigned short collision;
 	if (blockX < 0 || blockY < 0) {
-		collision = 3;
+		collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 	}
 	else {
 		CMap* map = m_map;
 		int width = map->m_ground.m_width;
 		if (width <= blockX || map->m_ground.m_height <= blockY) {
-			collision = 3;
+			collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 		}
 		else {
 			collision = map->m_ground.m_ground[blockY * width + blockX].m_collision;
 		}
 	}
-	if ((collision & 0x8000) != 0 && (p_mask & 0x20) != 0) {
+	if ((collision & GROUND_COLLISION_OBJECT_INTERACTION) != 0 &&
+		(p_collisionFlags & GAME_OBJECT_COLLISION_OPEN_DOORS) != 0) {
 		return m_doorManager->Open(p_position, p_object);
 	}
 	return false;
@@ -1012,7 +1062,7 @@ CPt3 CAI::GetNodePosition(int p_node)
 // FUNCTION: LEMBALL 0x00412b80
 void CAI::AddData()
 {
-	int remaining = 4;
+	int remaining = NETWORK_LEMMINGS_PER_TEAM;
 	CPlayerLemming** lemming = m_networkLemmings;
 	do {
 		CNetworkMessage* stream = this;
@@ -1027,8 +1077,8 @@ void CAI::AddData()
 // FUNCTION: LEMBALL 0x00412be0
 void CAI::GetData()
 {
-	CPlayerLemming** lemming = &m_networkLemmings[4];
-	for (int i = 0; i < 4; i++) {
+	CPlayerLemming** lemming = &m_networkLemmings[NETWORK_LEMMINGS_PER_TEAM];
+	for (int i = 0; i < NETWORK_LEMMINGS_PER_TEAM; i++) {
 		CNetworkMessage* stream = this;
 		CPlayerLemming& message = **lemming;
 		if (message.Set(stream->m_readCursor)) {
@@ -1036,6 +1086,12 @@ void CAI::GetData()
 		}
 		lemming++;
 	}
+}
+
+// FUNCTION: LEMBALL 0x00412c40
+bool CAI::CheckNetworkStateChanged()
+{
+	return m_playerGroupManager->CheckNetworkStateChanged();
 }
 
 // FUNCTION: LEMBALL 0x00412c50
@@ -1048,7 +1104,7 @@ bool CAI::LemmingsSFXChanged()
 void CAI::QuitGame()
 {
 	m_paused = 0;
-	g_pGameStatus->m_skillState = 5;
+	g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_GAVE_UP;
 	GameState(GAME_STATUS_FAILURE);
 }
 
@@ -1114,7 +1170,7 @@ void CAI::GetPlayerPos(int p_id, AICOORD& p_position)
 		}
 		lemming++;
 		index++;
-	} while (index < 4);
+	} while (index < NETWORK_LEMMINGS_PER_TEAM);
 }
 
 // FUNCTION: LEMBALL 0x00412e20
@@ -1140,15 +1196,17 @@ int CAI::ExportLiftEndpointRecords(LiftEndpointRecord* p_records)
 void CAI::AddNewTrapDoor(const AICOORD& p_position, unsigned long p_time)
 {
 	short id = CGameObject::NextLoadingId();
-	m_trapDoorManager->AddNewDoor(id, p_position, 0, p_time);
+	m_trapDoorManager->AddNewDoor(id, p_position, TRAPDOOR_MODE_LOCAL_AUTOMATIC, p_time);
 }
 
 // FUNCTION: LEMBALL 0x00412eb0
 void CAI::AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time)
 {
 	short id = CGameObject::NextLoadingId();
-	AICOORD position(p_x << 12, p_y << 12, p_z << 12);
-	m_trapDoorManager->AddNewDoor(id, position, 0, p_time);
+	AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
+					 p_y << FIXED_POINT_FRACTION_BITS,
+					 p_z << FIXED_POINT_FRACTION_BITS);
+	m_trapDoorManager->AddNewDoor(id, position, TRAPDOOR_MODE_LOCAL_AUTOMATIC, p_time);
 }
 
 // FUNCTION: LEMBALL 0x00412f00
@@ -1166,7 +1224,7 @@ void CAI::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 		m_levelVersion = *data++;
 	}
 	else {
-		m_levelVersion = 0;
+		m_levelVersion = LEVEL_VERSION_UNVERSIONED;
 		data = (unsigned short*) p_data;
 	}
 	unsigned int mapType = *data++;
@@ -1175,7 +1233,7 @@ void CAI::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 	CMap* map = m_map;
 	map->m_mapType = mapType;
 	map->m_ground.Clear();
-	if (m_levelVersion >= 4) {
+	if (m_levelVersion >= LEVEL_VERSION_WITH_PLAYER_COUNTS) {
 		m_lemmingCount = data[0];
 		m_flagCounts[0] = data[1];
 	}
@@ -1192,7 +1250,7 @@ void CAI::FixUpLevel()
 	int count = g_wObjectCount;
 	for (int i = 0; i < count; i++) {
 		CGameObject* object = g_pObjects[(unsigned short) i];
-		if (object->GetId() == (short) 0xffff) {
+		if (object->GetId() == (short) INVALID_OBJECT_ID) {
 			object->SetId(CGameObject::NextId());
 		}
 	}
@@ -1226,7 +1284,7 @@ bool CAI::GetObjectRequired(eObjectType p_objectType)
 // FUNCTION: LEMBALL 0x004130a0
 void CAI::SetObjectRequired(eObjectType p_objectType, unsigned int p_required)
 {
-	if (p_objectType < (eObjectType) 0x211 || p_objectType > TERRAIN_LIFT) {
+	if (p_objectType < (eObjectType) OBJECT_REQUIREMENT_TRACKING_EXCLUSION_START || p_objectType > TERRAIN_LIFT) {
 		m_objectRequired[p_objectType] = p_required;
 	}
 }
@@ -1290,7 +1348,7 @@ void CAI::SetNetworkTrapDoorCount(int p_count)
 void CAI::SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_third, int p_fourth)
 {
 	m_networkTrapDoorCount = p_count;
-	if (p_first == -1) {
+	if (p_first == NETWORK_START_TRAP_DOOR_DEFAULT) {
 		m_networkTrapDoors[0] = g_anDefaultTrapDoorLemmings[p_count - 1][0];
 		m_networkTrapDoors[1] = g_anDefaultTrapDoorLemmings[p_count - 1][1];
 		m_networkTrapDoors[2] = g_anDefaultTrapDoorLemmings[p_count - 1][2];
@@ -1303,11 +1361,11 @@ void CAI::SetNetworkTrapDoors(int p_count, int p_first, int p_second, int p_thir
 		m_networkTrapDoors[3] = p_fourth;
 	}
 	for (int i = 0; i < p_count; i++) {
-		if (m_networkStartsX[i] > 1024 || m_networkStartsX[i] < 0) {
-			m_networkStartsX[i] = i * 16;
+		if (m_networkStartsX[i] > MAP_COORDINATE_MAX || m_networkStartsX[i] < 0) {
+			m_networkStartsX[i] = i * GROUND_BLOCK_PIXEL_SIZE;
 		}
-		if (m_networkStartsY[i] > 1024 || m_networkStartsY[i] < 0) {
-			m_networkStartsY[i] = i * 16;
+		if (m_networkStartsY[i] > MAP_COORDINATE_MAX || m_networkStartsY[i] < 0) {
+			m_networkStartsY[i] = i * GROUND_BLOCK_PIXEL_SIZE;
 		}
 	}
 }
@@ -1327,17 +1385,17 @@ void CAI::SetNetworkTrapDoor(int p_value, int p_index)
 // FUNCTION: LEMBALL 0x004132c0
 void CAI::GetNetworkStartPosition(AICOORD& p_position, int p_index)
 {
-	p_position.m_xFixed = m_networkStartsX[p_index] << 12;
-	p_position.m_yFixed = m_networkStartsY[p_index] << 12;
-	p_position.m_zFixed = m_networkStartsZ[p_index] << 12;
+	p_position.m_xFixed = m_networkStartsX[p_index] << FIXED_POINT_FRACTION_BITS;
+	p_position.m_yFixed = m_networkStartsY[p_index] << FIXED_POINT_FRACTION_BITS;
+	p_position.m_zFixed = m_networkStartsZ[p_index] << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x00413300
 void CAI::LoadFlagInfo(unsigned char* p_data, int p_size)
 {
 	unsigned short* data = (unsigned short*) p_data;
-	if (m_networkMode == 1) {
-		if (m_isHost == 1) {
+	if (m_networkMode == NETWORK_MODE_MULTIPLAYER) {
+		if (m_isHost == NETWORK_ROLE_HOST) {
 			m_flagCounts[0] = data[0];
 			m_flagCounts[1] = data[1];
 		}
@@ -1358,12 +1416,18 @@ int CAI::nDead()
 	return m_playerGroupManager->m_deadCount;
 }
 
+// FUNCTION: LEMBALL 0x00413380
+void CAI::ProcessLiftCliffs()
+{
+	m_liftManager->CalculateAllLiftCliffs();
+}
+
 // FUNCTION: LEMBALL 0x00413390
 void CAI::Score(int p_score)
 {
 	m_score += p_score;
-	if (m_score > 9999999) {
-		m_score = 9999999;
+	if (m_score > GAME_SCORE_MAX_DISPLAY_VALUE) {
+		m_score = GAME_SCORE_MAX_DISPLAY_VALUE;
 	}
 }
 

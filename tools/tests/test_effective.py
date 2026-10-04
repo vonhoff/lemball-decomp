@@ -20,49 +20,81 @@ THUNK = b"\xe9" + struct.pack("<i", 16)
 
 
 def fixture(original="c3", rebuilt=None, thunk=THUNK, opcode="e8"):
-    bodies = [bytes.fromhex(opcode + "fb2f0000 " + tail)
-              for tail in (original, original if rebuilt is None else rebuilt)]
+    bodies = [
+        bytes.fromhex(opcode + "fb2f0000 " + tail)
+        for tail in (original, original if rebuilt is None else rebuilt)
+    ]
     images = []
-    for start, body in zip((0x1000, 0x2000), bodies):
-        images.append(SimpleNamespace(
-            read=lambda address, size, start=start, body=body:
-                (body if address == start else thunk if address == 0x4000 else b"")[:size],
-            imagebase=0, is_relocated_addr=lambda _address: False,
-        ))
+    for start, body in zip((0x1000, 0x2000), bodies, strict=True):
+        images.append(
+            SimpleNamespace(
+                read=lambda address, size, start=start, body=body: (
+                    body if address == start else thunk if address == 0x4000 else b""
+                )[:size],
+                imagebase=0,
+                is_relocated_addr=lambda _address: False,
+            )
+        )
     lines = Mock()
     lines.find_line_of_recomp_address.return_value = None
-    comparator = FunctionComparator(EntityDb(), lines, images[0], images[1], Mock(), Mock())
+    comparator = FunctionComparator(
+        EntityDb(), lines, images[0], images[1], Mock(), Mock()
+    )
     with comparator.db.batch() as batch:
         for side, address in ((ImageId.ORIG, 0x4015), (ImageId.RECOMP, 0x5000)):
             batch.set(side, address, type=EntityType.FUNCTION, name="Target", size=1)
         batch.match(0x4015, 0x5000)
-    match = ReccmpMatch(0x1000, 0x2000, {
-        "name": "Caller", "type": EntityType.FUNCTION,
-        "orig_size": len(bodies[0]), "recomp_size": len(bodies[1]),
-    })
+    match = ReccmpMatch(
+        0x1000,
+        0x2000,
+        {
+            "name": "Caller",
+            "type": EntityType.FUNCTION,
+            "orig_size": len(bodies[0]),
+            "recomp_size": len(bodies[1]),
+        },
+    )
     return comparator, match
 
 
 def compare(comparator, match, **flags):
     raw = comparator.compare_function(match)
     comparison = ReccmpComparedEntity(
-        match.orig_addr, "Caller", raw.match_ratio, EntityType.FUNCTION, match.recomp_addr,
+        match.orig_addr,
+        "Caller",
+        raw.match_ratio,
+        EntityType.FUNCTION,
+        match.recomp_addr,
         **flags,
     )
-    engine = SimpleNamespace(function_comparator=comparator, get_functions=lambda: [match])
+    engine = SimpleNamespace(
+        function_comparator=comparator, get_functions=lambda: [match]
+    )
     return additional_effective_matches(engine, {match.orig_addr: comparison})
 
 
-def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
-                   indices=b"\x00\x01", rebuilt_indices=None, suffix=b"",
-                   branch_to_table=False, fallthrough=False, padding=b"", branch_to_padding=False):
+def switch_fixture(
+    indexed=False,
+    targets=None,
+    rebuilt_targets=None,
+    indices=b"\x00\x01",
+    rebuilt_indices=None,
+    suffix=b"",
+    branch_to_table=False,
+    fallthrough=False,
+    padding=b"",
+    branch_to_padding=False,
+):
     table_offset = (39 if indexed else 32) + len(padding)
     targets = targets or ((24, 27) if indexed else (17, 20))
     tails = []
     for start, destinations, index_bytes in (
         (0x1000, targets, indices),
-        (0x2000, targets if rebuilt_targets is None else rebuilt_targets,
-         indices if rebuilt_indices is None else rebuilt_indices),
+        (
+            0x2000,
+            targets if rebuilt_targets is None else rebuilt_targets,
+            indices if rebuilt_indices is None else rebuilt_indices,
+        ),
     ):
         default_offset = table_offset - len(padding) - 6
         branch_target = table_offset if branch_to_table else default_offset
@@ -71,7 +103,9 @@ def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
         displacement = branch_target - 10
         tail = bytes.fromhex("83f80177") + bytes([displacement])
         if indexed:
-            tail += bytes.fromhex("0fb680") + struct.pack("<I", start + table_offset + 8)
+            tail += bytes.fromhex("0fb680") + struct.pack(
+                "<I", start + table_offset + 8
+            )
         tail += bytes.fromhex("ff2485") + struct.pack("<I", start + table_offset)
         tail += bytes.fromhex("31c0c3 b801000000c3 b802000000")
         tail += b"\x90" if fallthrough else b"\xc3"
@@ -79,18 +113,25 @@ def switch_fixture(indexed=False, targets=None, rebuilt_targets=None,
         tail += b"".join(struct.pack("<I", start + offset) for offset in destinations)
         tails.append((tail + (index_bytes if indexed else b"") + suffix).hex())
     comparator, match = fixture(*tails)
-    for start, image in ((0x1000, comparator.orig_bin), (0x2000, comparator.recomp_bin)):
-        image.is_relocated_addr = lambda address, start=start: start <= address < start + 100
+    for start, image in (
+        (0x1000, comparator.orig_bin),
+        (0x2000, comparator.recomp_bin),
+    ):
+        image.is_relocated_addr = lambda address, start=start: (
+            start <= address < start + 100
+        )
     return comparator, match
 
 
 def patch_body(image, start, offset, replacement):
     read = image.read
+
     def patched(address, size):
         data = read(address, size)
         if address == start:
-            data = data[:offset] + replacement + data[offset + len(replacement):]
+            data = data[:offset] + replacement + data[offset + len(replacement) :]
         return data
+
     image.read = patched
 
 
@@ -100,7 +141,11 @@ def callee_fixture(original_prefix, rebuilt_prefix=None):
     comparator, match = fixture(original, rebuilt)
     for image, target, prefix in (
         (comparator.orig_bin, 0x4015, original_prefix),
-        (comparator.recomp_bin, 0x5000, original_prefix if rebuilt_prefix is None else rebuilt_prefix),
+        (
+            comparator.recomp_bin,
+            0x5000,
+            original_prefix if rebuilt_prefix is None else rebuilt_prefix,
+        ),
     ):
         read = image.read
         image.read = lambda address, size, read=read, target=target, prefix=prefix: (
@@ -114,7 +159,9 @@ def comparison_switch_fixture(table_enters_branch=False):
     for start, compare_branch in ((0x1000, "3bc7 7203"), (0x2000, "3bf8 7703")):
         tail = bytes.fromhex("83f801 7711 ff2485") + struct.pack("<I", start + 32)
         tail += bytes.fromhex(compare_branch + " 39c0c3 39c0c3 39c0c3 9090")
-        tail += struct.pack("<II", start + (19 if table_enters_branch else 17), start + 27)
+        tail += struct.pack(
+            "<II", start + (19 if table_enters_branch else 17), start + 27
+        )
         tails.append(tail.hex())
     comparator, match = fixture(*tails)
     for image in (comparator.orig_bin, comparator.recomp_bin):
@@ -129,8 +176,17 @@ class ThunkTests(unittest.TestCase):
                 self.assertTrue(compare(*callee_fixture(prefix)))
 
     def test_both_callee_prefixes_must_overwrite_flags_before_observing_them(self):
-        for prefix in ("c3", "11c0 39c0 c3", "9c 39c0 c3", "40 c3", "0f",
-                       "e800000000 39c0 c3", "ebfe", "ffe0", "90" * 32 + "39c0 c3"):
+        for prefix in (
+            "c3",
+            "11c0 39c0 c3",
+            "9c 39c0 c3",
+            "40 c3",
+            "0f",
+            "e800000000 39c0 c3",
+            "ebfe",
+            "ffe0",
+            "90" * 32 + "39c0 c3",
+        ):
             for original, rebuilt in ((prefix, "39c0c3"), ("39c0c3", prefix)):
                 with self.subTest(original=original, rebuilt=rebuilt):
                     self.assertEqual(compare(*callee_fixture(original, rebuilt)), {})
@@ -138,110 +194,194 @@ class ThunkTests(unittest.TestCase):
     def test_unreadable_callee_prefix_cannot_prove_flag_lifetime(self):
         comparator, match = callee_fixture("39c0c3")
         read = comparator.recomp_bin.read
+
         def unreadable(address, size):
             if address == 0x5000:
                 raise InvalidVirtualAddressError(address)
             return read(address, size)
+
         comparator.recomp_bin.read = unreadable
         self.assertEqual(compare(comparator, match), {})
 
     def test_switch_dispatch_must_not_enter_the_guarded_branch(self):
         self.assertTrue(compare(*comparison_switch_fixture()))
-        self.assertEqual(compare(*comparison_switch_fixture(table_enters_branch=True)), {})
+        self.assertEqual(
+            compare(*comparison_switch_fixture(table_enters_branch=True)), {}
+        )
 
     def test_reversed_comparison_requires_matching_condition_and_dead_flags(self):
-        for original, rebuilt in (("72", "77"), ("76", "73"), ("7c", "7f"),
-                                  ("7e", "7d"), ("74", "74"), ("75", "75")):
+        for original, rebuilt in (
+            ("72", "77"),
+            ("76", "73"),
+            ("7c", "7f"),
+            ("7e", "7d"),
+            ("74", "74"),
+            ("75", "75"),
+        ):
             with self.subTest(branch=original):
                 left = "3bc7 " + original + "03 39c0c3 39c0c3"
                 right = "3bf8 " + rebuilt + "03 39c0c3 39c0c3"
                 self.assertTrue(compare(*fixture(left, right)))
         for left, right in (("663bc7", "663bf8"), ("3ac3", "3ad8")):
             with self.subTest(compare=left):
-                self.assertTrue(compare(*fixture(left + " 7203 39c0c3 39c0c3",
-                                                 right + " 7703 39c0c3 39c0c3")))
+                self.assertTrue(
+                    compare(
+                        *fixture(
+                            left + " 7203 39c0c3 39c0c3", right + " 7703 39c0c3 39c0c3"
+                        )
+                    )
+                )
 
     def test_changed_operands_or_branch_targets_are_not_comparison_reversals(self):
         original = "3bc7 7203 39c0c3 39c0c3"
-        for rebuilt in ("3bf8 7303 39c0c3 39c0c3",  # Wrong unsigned relation.
-                        "3bf9 7703 39c0c3 39c0c3",  # Different register.
-                        "3bf8 7700 39c0c3 39c0c3",  # Different valid target.
-                        "3bf8 7703 39c8c3 39c0c3"):  # Changed flag overwrite.
+        for rebuilt in (
+            "3bf8 7303 39c0c3 39c0c3",  # Wrong unsigned relation.
+            "3bf9 7703 39c0c3 39c0c3",  # Different register.
+            "3bf8 7700 39c0c3 39c0c3",  # Different valid target.
+            "3bf8 7703 39c8c3 39c0c3",
+        ):  # Changed flag overwrite.
             with self.subTest(rebuilt=rebuilt):
                 self.assertEqual(compare(*fixture(original, rebuilt)), {})
 
     def test_comparison_flags_must_be_overwritten_on_both_paths(self):
-        for observer in ("11c0", "19c0", "9c", "9f", "0f92c0", "7200",
-                         "40", "c3", "ff10", "e800000000"):
+        for observer in (
+            "11c0",
+            "19c0",
+            "9c",
+            "9f",
+            "0f92c0",
+            "7200",
+            "40",
+            "c3",
+            "ff10",
+            "e800000000",
+        ):
             for taken in (False, True):
                 with self.subTest(observer=observer, taken=taken):
                     blocks = ["39c0c3", observer + "39c0c3"]
                     if taken:
                         blocks.reverse()
                     tail = f"{len(bytes.fromhex(blocks[0])):02x} " + " ".join(blocks)
-                    self.assertEqual(compare(*fixture("3bc7 72" + tail, "3bf8 77" + tail)), {})
+                    self.assertEqual(
+                        compare(*fixture("3bc7 72" + tail, "3bf8 77" + tail)), {}
+                    )
 
     def test_comparison_proof_follows_preserving_instructions_and_direct_jumps(self):
         for path in ("89c1 50 5a 8d09 90", "eb00", "663bc0", "d3e0"):
             with self.subTest(path=path):
                 tail = " 7200 " + path + " 39c0c3"
-                self.assertTrue(compare(*fixture("3bc7" + tail,
-                                                 "3bf8" + tail.replace("7200", "7700"))))
+                self.assertTrue(
+                    compare(
+                        *fixture("3bc7" + tail, "3bf8" + tail.replace("7200", "7700"))
+                    )
+                )
         for path in ("ebfe", "ffe0", "c3"):
             with self.subTest(unproven_path=path):
-                self.assertEqual(compare(*fixture("3bc7 7200 " + path,
-                                                 "3bf8 7700 " + path)), {})
+                self.assertEqual(
+                    compare(*fixture("3bc7 7200 " + path, "3bf8 7700 " + path)), {}
+                )
 
     def test_memory_comparison_keeps_the_same_address_and_width(self):
-        for original, rebuilt in (("39442420", "3b442420"),
-                                  ("6639442420", "663b442420"),
-                                  ("38442420", "3a442420")):
+        for original, rebuilt in (
+            ("39442420", "3b442420"),
+            ("6639442420", "663b442420"),
+            ("38442420", "3a442420"),
+        ):
             with self.subTest(original=original):
-                self.assertTrue(compare(*fixture(original + " 7203 39c0c3 39c0c3",
-                                                 rebuilt + " 7703 39c0c3 39c0c3")))
+                self.assertTrue(
+                    compare(
+                        *fixture(
+                            original + " 7203 39c0c3 39c0c3",
+                            rebuilt + " 7703 39c0c3 39c0c3",
+                        )
+                    )
+                )
         for rebuilt in ("3b442424", "3b442520", "3b4c2420"):
             with self.subTest(changed_memory_operand=rebuilt):
-                self.assertEqual(compare(*fixture("39442420 7203 39c0c3 39c0c3",
-                                                 rebuilt + " 7703 39c0c3 39c0c3")), {})
+                self.assertEqual(
+                    compare(
+                        *fixture(
+                            "39442420 7203 39c0c3 39c0c3",
+                            rebuilt + " 7703 39c0c3 39c0c3",
+                        )
+                    ),
+                    {},
+                )
 
     def test_logical_writes_leave_auxiliary_flag_live_on_every_successor(self):
         for logical in ("85c0", "83e007", "09c0", "31c0"):
             with self.subTest(logical=logical):
                 body = logical + " 7403 39c0c3 39c0c3"
-                self.assertTrue(compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body)))
+                self.assertTrue(
+                    compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body))
+                )
             for observer in ("9f", "9c", "27", "c3", "7503 39c0c3 9f", "75fe"):
                 with self.subTest(logical=logical, observer=observer):
                     body = logical + " " + observer + " 39c0c3"
-                    self.assertEqual(compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body)), {})
+                    self.assertEqual(
+                        compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body)), {}
+                    )
 
     def test_shifts_do_not_prove_that_incoming_flags_were_overwritten(self):
         for body in ("d3e0 c3", "d3e0 7200 39c0c3", "d1e0 9f 39c0c3"):
             with self.subTest(body=body):
-                self.assertEqual(compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body)), {})
+                self.assertEqual(
+                    compare(*fixture("3bc7 7200 " + body, "3bf8 7700 " + body)), {}
+                )
 
     def test_full_arithmetic_writes_end_the_comparison_flag_lifetime(self):
         for writer in ("01c0", "29c0", "f7d8", "39c0"):
             with self.subTest(writer=writer):
-                self.assertTrue(compare(*fixture("3bc7 7200 " + writer + " c3",
-                                                 "3bf8 7700 " + writer + " c3")))
+                self.assertTrue(
+                    compare(
+                        *fixture(
+                            "3bc7 7200 " + writer + " c3", "3bf8 7700 " + writer + " c3"
+                        )
+                    )
+                )
 
     def test_comparison_proof_preserves_near_branch_targets(self):
-        self.assertTrue(compare(*fixture("3bc7 0f8203000000 39c0c3 39c0c3",
-                                         "3bf8 0f8703000000 39c0c3 39c0c3")))
-        self.assertEqual(compare(*fixture("3bc7 0f8203000000 39c0c3 39c0c3",
-                                          "3bf8 0f8700000000 39c0c3 39c0c3")), {})
+        self.assertTrue(
+            compare(
+                *fixture(
+                    "3bc7 0f8203000000 39c0c3 39c0c3", "3bf8 0f8703000000 39c0c3 39c0c3"
+                )
+            )
+        )
+        self.assertEqual(
+            compare(
+                *fixture(
+                    "3bc7 0f8203000000 39c0c3 39c0c3", "3bf8 0f8700000000 39c0c3 39c0c3"
+                )
+            ),
+            {},
+        )
 
     def test_branch_entry_cannot_bypass_the_reversed_comparison(self):
         for entry in ("eb02", "e802000000", "7402"):
             with self.subTest(entry=entry):
-                self.assertEqual(compare(*fixture(entry + " 3bc7 7203 39c0c3 39c0c3",
-                                                 entry + " 3bf8 7703 39c0c3 39c0c3")), {})
+                self.assertEqual(
+                    compare(
+                        *fixture(
+                            entry + " 3bc7 7203 39c0c3 39c0c3",
+                            entry + " 3bf8 7703 39c0c3 39c0c3",
+                        )
+                    ),
+                    {},
+                )
 
     def test_comparison_proof_does_not_hide_partial_flags_or_unknown_control_flow(self):
         for prefix in ("ffe0", "ff2485aabbccdd"):
             with self.subTest(prefix=prefix):
-                self.assertEqual(compare(*fixture(prefix + " 3bc7 7203 39c0c3 39c0c3",
-                                                 prefix + " 3bf8 7703 39c0c3 39c0c3")), {})
+                self.assertEqual(
+                    compare(
+                        *fixture(
+                            prefix + " 3bc7 7203 39c0c3 39c0c3",
+                            prefix + " 3bf8 7703 39c0c3 39c0c3",
+                        )
+                    ),
+                    {},
+                )
 
     def test_direct_calls_and_tail_jumps_reach_the_paired_function(self):
         for opcode in ("e8", "e9"):
@@ -250,7 +390,10 @@ class ThunkTests(unittest.TestCase):
                 raw = comparator.compare_function(match)
                 self.assertLess(raw.match_ratio, 1)
                 self.assertFalse(raw.is_effective_match)
-                self.assertEqual(compare(comparator, match), {0x1000: ("verified jump thunk target",)})
+                self.assertEqual(
+                    compare(comparator, match),
+                    {0x1000: ("verified jump thunk target",)},
+                )
 
     def test_thunk_requires_a_complete_e9_to_a_paired_function(self):
         for thunk in (THUNK[:4], b"\xe8" + THUNK[1:], b"\xe9" + struct.pack("<i", 17)):
@@ -258,28 +401,39 @@ class ThunkTests(unittest.TestCase):
                 self.assertEqual(compare(*fixture(thunk=thunk)), {})
         comparator, match = fixture()
         read = comparator.orig_bin.read
+
         def invalid(address, size):
             if address == 0x4000:
                 raise InvalidVirtualAddressError(address)
             return read(address, size)
+
         comparator.orig_bin.read = invalid
         self.assertEqual(compare(comparator, match), {})
 
     def test_function_pointers_and_indirect_calls_keep_their_identity(self):
         for call_first in (True, False):
             parser = ThunkParseAsm(
-                SimpleNamespace(read=lambda _address, _size: THUNK), {0x4015},
-                ParseAsm(addr_test=lambda _address: True, name_lookup=lambda addr, exact=False, indirect=False: {
-                    0x4000: "Wrapper", 0x4015: "Target",
-                }.get(addr)),
+                SimpleNamespace(read=lambda _address, _size: THUNK),
+                {0x4015},
+                ParseAsm(
+                    addr_test=lambda _address: True,
+                    name_lookup=lambda addr, exact=False, indirect=False: {
+                        0x4000: "Wrapper",
+                        0x4015: "Target",
+                    }.get(addr),
+                ),
             )
             call = (0x1000, 5, "call", "0x4000")
             pointer = (0x1005, 5, "mov", "eax, 0x4000")
-            results = dict(parser.sanitize(inst) for inst in
-                           ((call, pointer) if call_first else (pointer, call)))
+            results = dict(
+                parser.sanitize(inst)
+                for inst in ((call, pointer) if call_first else (pointer, call))
+            )
             self.assertEqual(results, {"call": "Target", "mov": "eax, Wrapper"})
-            self.assertEqual(parser.sanitize((0x100a, 6, "call", "dword ptr [0x4000]")),
-                             ("call", "dword ptr [Wrapper]"))
+            self.assertEqual(
+                parser.sanitize((0x100A, 6, "call", "dword ptr [0x4000]")),
+                ("call", "dword ptr [Wrapper]"),
+            )
             parser.targets.add(0x4000)
             self.assertEqual(parser.sanitize(call), ("call", "Wrapper"))
 
@@ -340,7 +494,9 @@ class ThunkTests(unittest.TestCase):
                 self.assertLess(raw.match_ratio, 1)
                 self.assertTrue(compare(comparator, match))
         self.assertEqual(compare(*switch_fixture(rebuilt_targets=(20, 17))), {})
-        self.assertEqual(compare(*switch_fixture(indexed=True, rebuilt_indices=b"\x01\x00")), {})
+        self.assertEqual(
+            compare(*switch_fixture(indexed=True, rebuilt_indices=b"\x01\x00")), {}
+        )
 
     def test_switch_targets_must_be_decoded_code_boundaries(self):
         for targets in ((18, 20), (32, 20), (0x5000, 20)):
@@ -353,9 +509,16 @@ class ThunkTests(unittest.TestCase):
         for padding in (b"\x90", b"\x90" * 2, b"\x90" * 3, b"\x8b\xff", b"\x8d\x09"):
             with self.subTest(padding=padding):
                 self.assertTrue(compare(*switch_fixture(padding=padding)))
-                self.assertEqual(compare(*switch_fixture(padding=padding, branch_to_padding=True)), {})
-                self.assertEqual(compare(*switch_fixture(padding=padding, targets=(32, 20))), {})
-                self.assertEqual(compare(*switch_fixture(padding=padding, fallthrough=True)), {})
+                self.assertEqual(
+                    compare(*switch_fixture(padding=padding, branch_to_padding=True)),
+                    {},
+                )
+                self.assertEqual(
+                    compare(*switch_fixture(padding=padding, targets=(32, 20))), {}
+                )
+                self.assertEqual(
+                    compare(*switch_fixture(padding=padding, fallthrough=True)), {}
+                )
         comparator, match = switch_fixture(padding=b"\x90")
         patch_body(comparator.recomp_bin, 0x2000, 32, b"\xcc")
         self.assertEqual(compare(comparator, match), {})
@@ -386,11 +549,15 @@ class ThunkTests(unittest.TestCase):
 
     def test_actual_assertion_arguments_are_compared(self):
         for changed in (False, True):
-            comparator, match = fixture("6a01 6a02 6a03 e8f04f0000 c3",
-                                        "6a01 6a02 " + ("6a04" if changed else "6a03") + " e8f04f0000 c3")
+            comparator, match = fixture(
+                "6a01 6a02 6a03 e8f04f0000 c3",
+                "6a01 6a02 " + ("6a04" if changed else "6a03") + " e8f04f0000 c3",
+            )
             with comparator.db.batch() as batch:
                 for side, address in ((ImageId.ORIG, 0x6000), (ImageId.RECOMP, 0x7000)):
-                    batch.set(side, address, type=EntityType.FUNCTION, name="__assert", size=1)
+                    batch.set(
+                        side, address, type=EntityType.FUNCTION, name="__assert", size=1
+                    )
                 batch.match(0x6000, 0x7000)
             with patch("reccmp.compare.functions.has_asserts", return_value=True):
                 self.assertEqual(bool(compare(comparator, match)), not changed)
@@ -398,15 +565,25 @@ class ThunkTests(unittest.TestCase):
     def test_raw_comparison_and_upstream_parsers_are_preserved(self):
         comparator, match = fixture()
         raw = comparator.compare_function(match)
-        comparison = ReccmpComparedEntity(0x1000, "Caller", raw.match_ratio,
-                                         EntityType.FUNCTION, 0x2000, rdiff=raw.diff)
+        comparison = ReccmpComparedEntity(
+            0x1000,
+            "Caller",
+            raw.match_ratio,
+            EntityType.FUNCTION,
+            0x2000,
+            rdiff=raw.diff,
+        )
         comparisons = {0x1000: comparison}
         saved = copy.deepcopy(comparisons)
         parsers = (comparator.orig_sanitize, comparator.recomp_sanitize)
-        engine = SimpleNamespace(function_comparator=comparator, get_functions=lambda: [match])
+        engine = SimpleNamespace(
+            function_comparator=comparator, get_functions=lambda: [match]
+        )
         self.assertTrue(additional_effective_matches(engine, comparisons))
         self.assertEqual(comparisons, saved)
-        self.assertEqual((comparator.orig_sanitize, comparator.recomp_sanitize), parsers)
+        self.assertEqual(
+            (comparator.orig_sanitize, comparator.recomp_sanitize), parsers
+        )
         for flags in ({"is_stub": True}, {"is_effective_match": True}):
             self.assertEqual(compare(comparator, match, **flags), {})
         comparison.accuracy = 1

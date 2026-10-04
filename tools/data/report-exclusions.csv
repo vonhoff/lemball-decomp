@@ -1,0 +1,51 @@
+# CRT support helpers duplicate compiler bodies adjustor thunks and dead stubs excluded from game progress.
+# Original code extents remain in original-function-sizes.csv.
+address,reason,evidence
+0x00480770,CRT stdio flush,Walks the CRT FILE table and calls __fflush_lk; Ghidra callers include _fflush.
+0x00481850,CRT termination,Runs CRT termination callbacks and calls ExitProcess; Ghidra callers include __exit.
+0x00481900,CRT initialization,Ghidra identifies __initterm as a Visual Studio 1998 library function.
+0x00481bf0,CRT exception handling,Ghidra identifies _xcptlookup as a Visual Studio 1998 library function.
+0x00481d90,CRT multibyte locale,Ghidra identifies _x_ismbbtype as a Visual Studio 1998 library function.
+0x00481f50,CRT command-line parsing,Ghidra identifies _parse_cmdline as a Visual Studio 1998 library function.
+0x00482700,CRT code-page locale,Ghidra identifies _getSystemCP as a Visual Studio 1998 library function.
+0x00482750,CRT code-page locale,Ghidra identifies _CPtoLCID as a Visual Studio 1998 library function.
+0x004827b0,CRT code-page locale,Ghidra identifies _setSBCS as a Visual Studio 1998 library function.
+0x00485790,CRT exception handling,Ghidra identifies _siglookup as a Visual Studio 1998 library function.
+0x004864f0,CRT formatted output,Advances the FILE output buffer and writes one character; called by CRT string and repeat writers.
+0x00486540,CRT formatted output,Repeats a character through the CRT FILE output helper at 0x004864f0.
+0x00486580,CRT formatted output,Writes a string through the CRT FILE output helper at 0x004864f0.
+0x004865c0,CRT formatted output,Reads a 32-bit variadic argument from the CRT output argument cursor.
+0x004865d0,CRT formatted output,Reads a 64-bit variadic argument from the CRT output argument cursor.
+0x004865f0,CRT formatted output,Reads a 16-bit variadic argument from the CRT output argument cursor.
+0x00416730,Dead target stub,Returns zero through a linker thunk; no live caller or independent ownership evidence.
+0x00421430,Dead target stub,Returns one through a linker thunk; no live caller or independent ownership evidence.
+0x0042bfc0,Dead target stub,Returns zero through a linker thunk; no live caller or independent ownership evidence.
+0x0042bfd0,Dead target stub,Returns zero through a linker thunk; no live caller or independent ownership evidence.
+0x0042c4c0,Dead target stub,Returns zero through a linker thunk; no live caller or independent ownership evidence.
+0x0042c580,Dead target stub,Returns zero through a linker thunk; no live caller or independent ownership evidence.
+0x0042d4c0,Dead target stub,Returns zero through a linker thunk; no live caller or independent ownership evidence.
+0x0042eed0,Dead target stub,Returns zero through a linker thunk; no live caller or independent ownership evidence.
+0x0043bcd0,Dead empty stub,Single RET body reached only by a linker thunk; no live caller or independent ownership evidence.
+0x0043ed10,Dead empty stub,Single RET body reached only by a linker thunk; no live caller or independent ownership evidence.
+0x00443350,Dead empty stub,Single RET target reached only by a linker thunk; no live caller or independent ownership evidence.
+0x0044b330,Dead empty stub,Single RET target reached only by a linker thunk; no live caller or independent ownership evidence.
+0x0044b360,Dead empty stub,Single RET body reached only by a linker thunk; no live caller or independent ownership evidence.
+0x0044ded0,Dead empty stub,Single RET body reached only by a linker thunk; no live caller or independent ownership evidence.
+0x0044fca0,Dead empty stub,Single RET body reached only by a linker thunk; no live caller or independent ownership evidence.
+0x004148c0,Compiler duplicate,Opcode-identical GetFirstDeadLemming copy of the mapped body at 0x00414890.
+0x0041af10,Compiler duplicate,Duplicate CBullet deleting destructor; canonical destructor is at 0x00418330.
+0x004395f0,Compiler duplicate,Duplicate CPrimitive deleting destructor; canonical body is at 0x00432350.
+0x00465a40,Compiler duplicate,Duplicate CPVWnd Resize body at 0x00466360 selected by renderer vtables.
+0x00469c00,Compiler duplicate,Adjusted TargetTextButton deleting destructor copy of canonical wrapper at 0x004699d0.
+0x00469c30,Compiler duplicate,Adjusted TargetTextButton deleting destructor copy of canonical wrapper at 0x004699d0.
+0x0046dc90,Adjustor thunk,Adjusts this and forwards to mapped CPVBackBuffSurface HasBackBuff at 0x004664e0.
+0x0046dca0,Adjustor thunk,Adjusts this and forwards to mapped CPVZBuffSurface HasZBuff at 0x00466990.
+0x0046dcb0,Adjustor thunk,Adjusts this and forwards to mapped CPVScrollableSurface SetWorldWidth at 0x004668d0.
+0x0046dcc0,Adjustor thunk,Adjusts this and forwards to mapped CPVScrollableSurface GetWorldWidth at 0x0046db30.
+0x0047bbd0,Adjustor thunk,Adjusts this and forwards to mapped CFileCommonSocket SocketError at 0x0047b8f0.
+0x00481230,CRT string helper,Bounded wide string length helper with wcsnlen behavior.
+0x004814a0,CRT string helper,Bounded narrow string length helper with strnlen behavior.
+0x0042eec0,Dead constant stub,Always returns false without reading its arguments and is reached only by the dead wrapper at 0x0042f590.
+0x0042f590,Dead stub wrapper,Calls the always-false predicate at 0x0042eec0 and has no live caller.
+0x004676f0,Dead empty stub,Returns immediately without reading its argument and has no live caller.
+0x00434f50,Dead guarded no-op,Checks CLemmingAnimsManager::m_loadAnim and calls empty function 0x0044b360; only referenced by an unreferenced linker thunk.

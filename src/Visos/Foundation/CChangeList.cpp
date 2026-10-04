@@ -6,6 +6,10 @@
 
 #include <string.h>
 
+enum {
+	CHANGE_LIST_ITEMS_NEED_REBUILD = -1
+};
+
 // FUNCTION: LEMBALL 0x004669a0
 CChangeList::CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize)
 {
@@ -86,8 +90,8 @@ void CChangeList::Reset()
 	m_currentArea.m_height = (short) zero;
 	m_currentArea.m_x = (short) zero;
 	m_currentArea.m_y = (short) zero;
-	m_itemCount = -1;
-	m_drawMarkCount = -1;
+	m_itemCount = CHANGE_LIST_ITEMS_NEED_REBUILD;
+	m_drawMarkCount = CHANGE_LIST_ITEMS_NEED_REBUILD;
 }
 
 // FUNCTION: LEMBALL 0x00466b90
@@ -296,7 +300,7 @@ int CChangeList::GetNumItems()
 	if (m_items == NULL) {
 		return 0;
 	}
-	if (m_itemCount == -1) {
+	if (m_itemCount == CHANGE_LIST_ITEMS_NEED_REBUILD) {
 		m_itemCount = 0;
 		m_scanY = 0;
 		m_scanX = 0;
@@ -328,7 +332,7 @@ int CChangeList::GetNumItems()
 // FUNCTION: LEMBALL 0x00467000
 ChangeListItem* CChangeList::GetNItem(int p_index)
 {
-	if (m_itemCount == -1) {
+	if (m_itemCount == CHANGE_LIST_ITEMS_NEED_REBUILD) {
 		GetNumItems();
 	}
 	return m_items + p_index;
@@ -340,7 +344,7 @@ int CChangeList::GetDrawMark()
 	if (m_map == NULL) {
 		return 0;
 	}
-	if (m_itemCount == -1) {
+	if (m_itemCount == CHANGE_LIST_ITEMS_NEED_REBUILD) {
 		GetNumItems();
 	}
 	return m_drawMarkCount;

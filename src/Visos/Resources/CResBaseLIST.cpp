@@ -1,11 +1,17 @@
 #include "CResBaseLIST.h"
 
+#include "ResourceChunkTypes.h"
+
 #include <string.h>
 
 #pragma intrinsic(memcpy)
 
 #include "../Foundation/CVSRange.h"
 #include "CMogRes.h"
+
+enum {
+	VRAM_ENTRIES_NOT_TRACKED = -1
+};
 
 #define RESOURCE_LIST_HEADER_UNSET 0xffffffff
 
@@ -16,7 +22,7 @@ void CResBaseLIST::SetHeader()
 	m_totalSize = header->m_totalSize;
 	m_headerSize = header->m_headerSize;
 	m_bodySize = header->m_bodySize;
-	m_vramEntryCount = -1;
+	m_vramEntryCount = VRAM_ENTRIES_NOT_TRACKED;
 }
 
 // FUNCTION: LEMBALL 0x0045d2b0
@@ -47,7 +53,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 			unsigned char* headerCursor = m_headerData;
 			m_vramEntryCount = GetnVramEntries() * count;
 			if (m_vramEntryCount == 0) {
-				m_vramEntryCount = -1;
+				m_vramEntryCount = VRAM_ENTRIES_NOT_TRACKED;
 			}
 			for (unsigned int i = 0; i < count; i++) {
 				if (DirectResources(i, headerCursor, dataCursor) != 0 || directed != 0) {
@@ -163,7 +169,7 @@ void CResBaseLIST::UnLoadVramData(unsigned int p_force)
 // FUNCTION: LEMBALL 0x0045e680
 void CResBaseLIST::SetType()
 {
-	m_chunkType = 0x4c495354;
+	m_chunkType = RESOURCE_CHUNK_LIST;
 	m_headerSkip = 0xc;
 }
 

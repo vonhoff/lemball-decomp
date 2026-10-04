@@ -22,8 +22,8 @@ set_source_files_properties("${LEMBALL_RESOURCE}" PROPERTIES
 
 add_executable(LEMBALL WIN32 ${LEMBALL_SOURCES} ${LEMBALL_RESOURCE})
 target_include_directories(LEMBALL PRIVATE src)
-target_compile_definitions(LEMBALL PRIVATE LEMBALL_1996_CXX=1)
-set_property(SOURCE src/Control/Game/CGame.cpp APPEND PROPERTY COMPILE_DEFINITIONS
+target_compile_definitions(LEMBALL PRIVATE
+    LEMBALL_1996_CXX=1
     LEMBALL_ENFORCE_STARTUP_CHECKS=$<BOOL:${LEMBALL_ENFORCE_STARTUP_CHECKS}>
 )
 set_property(TARGET LEMBALL PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")

@@ -1,4 +1,5 @@
 #include "../CResBITMAP.h"
+#include "../ResourceChunkTypes.h"
 
 #include "../CMogRes.h"
 
@@ -12,7 +13,7 @@ CResBITMAP* CResBITMAP::Load(unsigned int p_resourceId)
 		res = new CResBITMAP(p_resourceId);
 		return (CResBITMAP*) res->CheckError();
 	}
-	if (res->m_chunkType != 0x42544d50) {
+	if (res->m_chunkType != RESOURCE_CHUNK_BITMAP) {
 		res->UnLoad();
 		return NULL;
 	}

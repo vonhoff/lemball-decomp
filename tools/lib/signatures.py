@@ -9,16 +9,32 @@ from dataclasses import dataclass
 from . import TYPE_DEF, delimiter_ends
 
 METHOD_NAMES = {
-    "__ct": "<constructor>", "__dt": "<destructor>",
-    "__as": "operator=", "__ls": "operator<<", "__nw": "operatornew",
-    "__dl": "operatordelete", "__apl": "operator+=", "__pl": "operator+",
-    "__eq": "operator==", "__gt": "operator>", "__ml": "operator*",
-    "__mi": "operator-", "__dv": "operator/",
+    "__ct": "<constructor>",
+    "__dt": "<destructor>",
+    "__as": "operator=",
+    "__ls": "operator<<",
+    "__nw": "operatornew",
+    "__dl": "operatordelete",
+    "__apl": "operator+=",
+    "__pl": "operator+",
+    "__eq": "operator==",
+    "__gt": "operator>",
+    "__ml": "operator*",
+    "__mi": "operator-",
+    "__dv": "operator/",
 }
 SCALARS = {
-    "b": "bool", "c": "char", "s": "short", "i": "int", "l": "long",
-    "x": "long long", "f": "float", "d": "double", "w": "wchar_t",
-    "v": "void", "e": "...",
+    "b": "bool",
+    "c": "char",
+    "s": "short",
+    "i": "int",
+    "l": "long",
+    "x": "long long",
+    "f": "float",
+    "d": "double",
+    "w": "wchar_t",
+    "v": "void",
+    "e": "...",
 }
 
 
@@ -32,7 +48,9 @@ class Signature:
     def display(self):
         method = self.method
         if method in ("<constructor>", "<destructor>"):
-            method = ("~" if method == "<destructor>" else "") + self.owner.split("::")[-1]
+            method = ("~" if method == "<destructor>" else "") + self.owner.split("::")[
+                -1
+            ]
         name = f"{self.owner}::{method}" if self.owner else method
         args = "?" if self.parameters is None else ", ".join(self.parameters)
         return f"{name}({args})" + (" const" if self.const else "")
@@ -44,7 +62,7 @@ class Decoder:
         self.pos = 0
 
     def peek(self):
-        return self.text[self.pos:self.pos + 1]
+        return self.text[self.pos : self.pos + 1]
 
     def take(self):
         token = self.peek()
@@ -63,12 +81,12 @@ class Decoder:
             count = int(digit)
         names = []
         for _ in range(count):
-            match = re.match(r"[1-9][0-9]*", self.text[self.pos:])
+            match = re.match(r"[1-9][0-9]*", self.text[self.pos :])
             if not match:
                 raise ValueError("missing name length")
             self.pos += len(match[0])
             size = int(match[0])
-            name = self.text[self.pos:self.pos + size]
+            name = self.text[self.pos : self.pos + size]
             if len(name) != size:
                 raise ValueError("invalid name length")
             self.pos += size
@@ -92,7 +110,9 @@ class Decoder:
                 return f"{result} ({suffix})({', '.join(args)})"
             return self.type() + suffix
         if token in "CVUS":
-            qualifier = {"C": "const", "V": "volatile", "U": "unsigned", "S": "signed"}[token]
+            qualifier = {"C": "const", "V": "volatile", "U": "unsigned", "S": "signed"}[
+                token
+            ]
             nested = self.type()
             if token in "CV" and nested.endswith(("*", "&")):
                 return nested + " " + qualifier
@@ -146,7 +166,7 @@ def decode_signature(symbol):
     failure = None
     for split in re.finditer(r"__(?=\d|Q\d|F)", symbol):
         try:
-            return Decoder(symbol[split.end():]).signature(symbol[:split.start()])
+            return Decoder(symbol[split.end() :]).signature(symbol[: split.start()])
         except ValueError as error:
             failure = str(error)
     if failure is not None:
@@ -160,11 +180,25 @@ FUNCTION = re.compile(
     r"(?:(?P<owner>[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*)\s*::\s*)?"
     r"(?P<method>operator\s*(?:new\b|delete\b|[A-Za-z_]\w*|[^\w\s(]+)|~?[A-Za-z_]\w*)\s*\("
 )
-WORDS = {"void", "bool", "char", "short", "int", "long", "float", "double",
-         "signed", "unsigned", "const", "volatile", "wchar_t"}
+WORDS = {
+    "void",
+    "bool",
+    "char",
+    "short",
+    "int",
+    "long",
+    "float",
+    "double",
+    "signed",
+    "unsigned",
+    "const",
+    "volatile",
+    "wchar_t",
+}
 FUNCTION_PARAMETER = re.compile(
     r"(?P<result>.+?)\s*\(\s*(?P<indirection>[*&])\s*(?:[A-Za-z_]\w*)?\s*\)\s*"
-    r"\((?P<parameters>.*)\)", re.DOTALL
+    r"\((?P<parameters>.*)\)",
+    re.DOTALL,
 )
 
 
@@ -203,11 +237,17 @@ def canonical_type(text):
     """Normalize spelling, preserving pointee constness and integer distinctions."""
     text = re.sub(r"\b(?:class|struct|enum|register)\s+", "", text).strip()
     if match := FUNCTION_PARAMETER.fullmatch(text):
-        if re.search(r"\b__(?:cdecl|stdcall|fastcall|thiscall|vectorcall)\b", match["result"]):
+        if re.search(
+            r"\b__(?:cdecl|stdcall|fastcall|thiscall|vectorcall)\b", match["result"]
+        ):
             raise ValueError("callback calling convention needs review")
         result = canonical_type(match["result"])
         raw = match["parameters"].strip()
-        parameters = () if raw in ("", "void") else tuple(parameter_type(p) for p in split_parameters(raw))
+        parameters = (
+            ()
+            if raw in ("", "void")
+            else tuple(parameter_type(p) for p in split_parameters(raw))
+        )
         if "void" in parameters or "..." in parameters[:-1]:
             raise ValueError("invalid callback parameter sequence")
         return f"{result} ({match['indirection']})({', '.join(parameters)})"
@@ -239,13 +279,17 @@ def parameter_type(text):
         return canonical_type(text)
     array = re.search(r"\s*\[(?:\d+)?]\s*$", text)
     if array:
-        text = text[:array.start()]
+        text = text[: array.start()]
     tail = re.search(r"\b([A-Za-z_]\w*)\s*$", text)
     if tail and tail[1] not in WORDS:
-        prefix = text[:tail.start()].rstrip()
-        if prefix and not prefix.endswith("::") and any(
-            word not in {"const", "volatile", "struct", "class", "enum", "register"}
-            for word in re.findall(r"[A-Za-z_]\w*|[*&]", prefix)
+        prefix = text[: tail.start()].rstrip()
+        if (
+            prefix
+            and not prefix.endswith("::")
+            and any(
+                word not in {"const", "volatile", "struct", "class", "enum", "register"}
+                for word in re.findall(r"[A-Za-z_]\w*|[*&]", prefix)
+            )
         ):
             text = prefix
     if array:
@@ -255,8 +299,11 @@ def parameter_type(text):
 
 def class_ranges(code):
     ends = delimiter_ends(code, "{", "}")
-    return [(opening, ends[opening], match["name"]) for match in TYPE_DEF.finditer(code)
-            if (opening := match.end() - 1) in ends]
+    return [
+        (opening, ends[opening], match["name"])
+        for match in TYPE_DEF.finditer(code)
+        if (opening := match.end() - 1) in ends
+    ]
 
 
 def adjacent_signature(code, offset, ranges):
@@ -265,7 +312,7 @@ def adjacent_signature(code, offset, ranges):
     start = len(code) - len(declaration)
     end = re.search(r"[;{}#]", declaration)
     if end:
-        declaration = declaration[:end.start()]
+        declaration = declaration[: end.start()]
     match = FUNCTION.search(declaration)
     if not match:
         raise ValueError("no adjacent function declaration")
@@ -279,10 +326,14 @@ def adjacent_signature(code, offset, ranges):
     closing = delimiter_ends(declaration, "(", ")").get(match.end() - 1)
     if closing is None:
         raise ValueError("unclosed function parameters")
-    raw = declaration[match.end():closing].strip()
-    const = bool(re.match(r"\s*const\b", declaration[closing + 1:]))
+    raw = declaration[match.end() : closing].strip()
+    const = bool(re.match(r"\s*const\b", declaration[closing + 1 :]))
     try:
-        parameters = () if raw in ("", "void") else tuple(parameter_type(p) for p in split_parameters(raw))
+        parameters = (
+            ()
+            if raw in ("", "void")
+            else tuple(parameter_type(p) for p in split_parameters(raw))
+        )
     except ValueError:
         parameters = None
     return Signature(owner, method, parameters, const)

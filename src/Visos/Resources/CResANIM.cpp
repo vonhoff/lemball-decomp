@@ -1,4 +1,5 @@
 #include "CResANIM.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 #include "Visos/Resources/CResZRLE.h"
@@ -10,7 +11,7 @@ CResANIM* CResANIM::Load(unsigned long p_resourceId)
 	if (res == NULL) {
 		return (CResANIM*) (new CResANIM(p_resourceId))->CheckError();
 	}
-	if (res->m_chunkType != 0x4c495354) {
+	if (res->m_chunkType != RESOURCE_CHUNK_LIST) {
 		res->UnLoad();
 		return NULL;
 	}

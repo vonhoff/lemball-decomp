@@ -3,6 +3,7 @@
 #include "../Navigation/CAI.h"
 #include "../Objects/CSlinky.h"
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 
 #include <stddef.h>
 
@@ -70,6 +71,28 @@ void CSlinkyManager::Add(int p_id, int p_minX, int p_minY, int p_maxX, int p_max
 	}
 }
 
+// FUNCTION: LEMBALL 0x0040ba30
+void CSlinkyManager::RemoveSlinkyByObject(CGameObject* p_object)
+{
+	int index = 0;
+	if (0 < m_count) {
+		do {
+			if ((unsigned short) m_slinkies[index].GetId() == (unsigned short) p_object->GetId()) {
+				m_slinkies[index].SetId(INVALID_OBJECT_ID);
+				for (int next = index + 1; next < m_count; next++) {
+					m_slinkies[next - 1] = m_slinkies[next];
+				}
+				m_count--;
+				return;
+			}
+			index++;
+			if (m_count <= index) {
+				return;
+			}
+		} while (1);
+	}
+}
+
 // FUNCTION: LEMBALL 0x0040bdd0
 int CSlinkyManager::GetViewData(CViewData* p_viewData)
 {
@@ -110,7 +133,7 @@ void CSlinkyManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned c
 		int maxX;
 		int maxY;
 		do {
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *data++;
 			}
 			else {

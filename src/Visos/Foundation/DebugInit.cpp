@@ -1,5 +1,6 @@
 #include "Platform/Windows/Thread.h"
 #include "Visos/Foundation/CVSDebugStreambuf.h"
+#include "Visos/Foundation/ProcessExitCodes.h"
 #include "Visos/Foundation/VsFile.h"
 #include "Visos/Foundation/VsInit.h"
 
@@ -29,11 +30,11 @@ bool _DBG_Init()
 									  (unsigned int*) &g_nDebugThreadId);
 		if (g_pDebugThread == NULL) {
 			MessageBoxA(NULL, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
-			ExitProcess(0xbbbb);
+			ExitProcess(VISOS_THREAD_START_FAILURE_EXIT_CODE);
 		}
 
 		SetThreadPriority(g_pDebugThread, 1);
-		WaitForSingleObject(g_pDebugSyncEvent, 0xffffffff);
+		WaitForSingleObject(g_pDebugSyncEvent, THREAD_WAIT_INFINITE);
 	}
 
 	return true;
@@ -44,10 +45,10 @@ bool _DBG_Quit(unsigned int p_force)
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		if (p_force == 0) {
-			WaitForSingleObject(g_pDebugSyncEvent, 0xffffffff);
+			WaitForSingleObject(g_pDebugSyncEvent, THREAD_WAIT_INFINITE);
 		}
 		else {
-			TerminateThread(g_pDebugThread, 0xaaaa);
+			TerminateThread(g_pDebugThread, VISOS_FATAL_EXIT_CODE);
 		}
 		g_nAsyncDebugEnabled = 0;
 		return true;

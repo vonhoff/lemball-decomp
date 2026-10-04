@@ -5,6 +5,8 @@
 #include "CBaseNetwork.h"
 
 #define TCPIP_MESSAGE_FORCE_PROCESS 0x444
+#define TCPIP_TIMER_ID 0x12345678
+#define TCPIP_TIMER_INTERVAL_MS 10
 
 struct BasePacketHeader;
 

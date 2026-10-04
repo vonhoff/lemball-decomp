@@ -10,6 +10,7 @@
 #include "../Messaging/CReadPacket.h"
 #include "CNetworkAddress.h"
 #include "CTCPIPNetwork.h"
+#include "NetworkConstants.h"
 #include "Visos/Messaging/CBasePacketBuff.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 #include "Visos/Network/CBaseCommonSocket.h"
@@ -145,9 +146,9 @@ bool CReadSocket::ProcessPacket()
 
 	messageId = packetHeader->m_messageId;
 	switch (messageId) {
-	case 1:
+	case NETWORK_MESSAGE_PULSE:
 		return false;
-	case 2:
+	case NETWORK_MESSAGE_ACKNOWLEDGEMENT:
 		ReceiveAcknowledgement();
 		return false;
 	}
@@ -157,14 +158,14 @@ bool CReadSocket::ProcessPacket()
 		if (packetHeader->m_critical == 0) {
 			message = m_nonCriticalMultiBuffer->UpdateSubPacket();
 			if (message != NULL) {
-				PostRead(NETWORK_EVENT_9, message);
+				PostRead(NETWORK_EVENT_NONCRITICAL_MESSAGE_REASSEMBLED, message);
 				return true;
 			}
 		}
 		else {
 			message = m_criticalMultiBuffer->StoreSubPacket();
 			if (message != NULL) {
-				PostRead(NETWORK_EVENT_8, message);
+				PostRead(NETWORK_EVENT_CRITICAL_MESSAGE_REASSEMBLED, message);
 				return true;
 			}
 		}
@@ -172,7 +173,7 @@ bool CReadSocket::ProcessPacket()
 	else if (packetHeader->m_critical == 0) {
 		packet = m_nonCriticalBuffer->UpdatePacket();
 		if (packet != NULL) {
-			PostRead(NETWORK_EVENT_7, packet);
+			PostRead(NETWORK_EVENT_NONCRITICAL_PACKET_READY, packet);
 			return true;
 		}
 	}
@@ -199,7 +200,7 @@ bool CReadSocket::ProcessPacket()
 				unsigned short acknowledgementSubpacketSequence;
 				CAckMessage* acknowledgement;
 
-				PostRead(NETWORK_EVENT_5, packet);
+				PostRead(NETWORK_EVENT_CRITICAL_PACKET_READY, packet);
 				packetHeader = m_packetHeader;
 				acknowledgement = g_pAckMessage;
 				acknowledgementSubpacketSequence = packetHeader->m_subpacketSequence;
@@ -220,12 +221,12 @@ bool CReadSocket::ProcessPacket()
 void CReadSocket::Process()
 {
 	if (m_readReady != 0) {
-		if (m_closePending != 0 && timeGetTime() - m_lastReceiveTime > 10000) {
+		if (m_closePending != 0 && timeGetTime() - m_lastReceiveTime > NETWORK_RECEIVE_IDLE_TIMEOUT_MS) {
 			CloseSocket();
 			Closed(1);
 		}
 	}
-	else if (m_eventPending != 0 && timeGetTime() - m_lastReceiveTime > 10000) {
+	else if (m_eventPending != 0 && timeGetTime() - m_lastReceiveTime > NETWORK_RECEIVE_IDLE_TIMEOUT_MS) {
 		CloseSocket();
 		Closed(0);
 	}

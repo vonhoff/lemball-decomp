@@ -6,6 +6,12 @@
 #include "CBaseObjectManager.h"
 
 class CVSRect;
+enum {
+	BULLET_ACTIVE_LIST_CAPACITY = 40,
+	BULLET_OBJECT_POOL_PARTITION_CAPACITY = BULLET_ACTIVE_LIST_CAPACITY / 2,
+	BULLET_ACTIVE_LIST_SEARCH_COUNT = 20,
+	BULLET_ACTIVE_LIST_SEARCH_LAST_INDEX = BULLET_ACTIVE_LIST_SEARCH_COUNT - 1
+};
 // SIZE 0xe0
 // VTABLE: LEMBALL 0x00494008
 class CBulletManager : public CBaseObjectManager {
@@ -31,11 +37,11 @@ public:
 	CBullet* GetCurrentBullet();
 
 private:
-	CBullet* m_bullets;           // 0x30
-	CBullet* m_activeBullets[40]; // 0x34
-	int m_activeCount;            // 0xd4
-	int m_iterator;               // 0xd8
-	int m_poolStart;              // 0xdc
+	CBullet* m_bullets;                                    // 0x30
+	CBullet* m_activeBullets[BULLET_ACTIVE_LIST_CAPACITY]; // 0x34
+	int m_activeCount;                                     // 0xd4
+	int m_iterator;                                        // 0xd8
+	int m_poolStart;                                       // 0xdc
 };
 
 // SYNTHETIC: LEMBALL 0x00418300

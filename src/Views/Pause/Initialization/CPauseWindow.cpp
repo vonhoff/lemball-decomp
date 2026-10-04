@@ -25,7 +25,7 @@ void CPauseWindow::Initialise()
 	m_unavailableItems = 0;
 	m_menuLabels = g_apPauseMenuLabels + index - m_menuItemCount - 1;
 	switch (pauseMessage) {
-	case 0:
+	case PAUSE_MSG_PAUSED:
 		m_minimumSelection = 1;
 		if (!m_receiverState->GetPauser()) {
 			m_minimumSelection++;
@@ -33,19 +33,19 @@ void CPauseWindow::Initialise()
 		}
 		m_selection = m_minimumSelection;
 		break;
-	case 3:
+	case PAUSE_MSG_ARE_YOU_SURE:
 		m_minimumSelection = 1;
 		m_selection = 2;
 		break;
-	case 1:
+	case PAUSE_MSG_PLEASE_WAIT:
 		m_minimumSelection = 1;
 		m_selection = 1;
 		break;
-	case 2:
+	case PAUSE_MSG_LOADING:
 		m_minimumSelection = 1;
 		m_selection = 1;
 		break;
-	case 4:
+	case PAUSE_MSG_CONNECTION_LOST:
 		m_minimumSelection = 1;
 		m_selection = 1;
 		break;

@@ -15,6 +15,13 @@
 
 #pragma intrinsic(_outp)
 
+enum {
+	VGA_DAC_INDEX_PORT = 0x3c8,
+	VGA_DAC_DATA_PORT = 0x3c9,
+	VGA_DAC_COMPONENT_SHIFT = 2,
+	VGA_PALETTE_ENTRY_COUNT = 256
+};
+
 typedef int(__stdcall* DisplayDibProc)(void*, void*, unsigned short);
 
 // GLOBAL: LEMBALL 0x004a8290
@@ -46,8 +53,11 @@ CDisplayDibDriver::CDisplayDibDriver(const CVSSize& p_size)
 // FUNCTION: LEMBALL 0x00456e20
 CDisplayDibDriver::~CDisplayDibDriver()
 {
+	enum {
+		DISPLAYDIB_DEACTIVATE_COMMAND = 0x4000
+	};
 	if (m_displayDibEnd != NULL) {
-		g_pDisplayDib(NULL, NULL, 0x4000);
+		g_pDisplayDib(NULL, NULL, DISPLAYDIB_DEACTIVATE_COMMAND);
 		m_displayDibEnd();
 	}
 }
@@ -59,16 +69,16 @@ unsigned int CDisplayDibDriver::UpdateDibColourTable(CDrawingContext* p_context,
 													 void* p_colours)
 {
 	SetDIBColorTable((HDC) ((CGdiContext*) p_context)->m_hDC, p_start, p_count, (RGBQUAD*) p_colours);
-	_outp(0x3c8, p_start);
+	_outp(VGA_DAC_INDEX_PORT, p_start);
 	RGBQUAD* colour = (RGBQUAD*) p_colours;
 	do {
-		_outp(0x3c9, colour->rgbRed >> 2);
-		_outp(0x3c9, colour->rgbGreen >> 2);
-		_outp(0x3c9, colour->rgbBlue >> 2);
+		_outp(VGA_DAC_DATA_PORT, colour->rgbRed >> VGA_DAC_COMPONENT_SHIFT);
+		_outp(VGA_DAC_DATA_PORT, colour->rgbGreen >> VGA_DAC_COMPONENT_SHIFT);
+		_outp(VGA_DAC_DATA_PORT, colour->rgbBlue >> VGA_DAC_COMPONENT_SHIFT);
 		colour++;
 		p_count--;
 	} while (p_count != 0);
-	return 256;
+	return VGA_PALETTE_ENTRY_COUNT;
 }
 
 // FUNCTION: LEMBALL 0x00456eb0

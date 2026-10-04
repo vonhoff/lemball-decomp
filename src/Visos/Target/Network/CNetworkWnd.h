@@ -1,6 +1,8 @@
 #ifndef LEMBALL_VISOS_TARGET_NETWORK_CNETWORKWND_H
 #define LEMBALL_VISOS_TARGET_NETWORK_CNETWORKWND_H
 
+#include "Visos/Network/NetworkConstants.h"
+
 // SIZE 0x10
 // VTABLE: LEMBALL 0x0049ac30
 class CNetworkWnd {
@@ -9,7 +11,7 @@ public:
 	// FUNCTION: LEMBALL 0x004714f0
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam) // vtable+0x00
 	{
-		return -1;
+		return NETWORK_WINDOW_MESSAGE_UNHANDLED;
 	}
 	~CNetworkWnd();
 

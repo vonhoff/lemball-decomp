@@ -3,6 +3,11 @@
 
 #include "../Base/CBaseGlobalObject.h"
 
+enum eTrapDoorMode {
+	TRAPDOOR_MODE_LOCAL_AUTOMATIC = 0,
+	TRAPDOOR_MODE_NETWORK_START = 1
+};
+
 class AICOORD;
 // SIZE 0x150
 // VTABLE: LEMBALL 0x00493438

@@ -1,22 +1,23 @@
 #include "CBaseCommonSocket.h"
 
 #include "CTCPIPNetwork.h"
+#include "NetworkConstants.h"
 
 // FUNCTION: LEMBALL 0x0045f680
 CBaseCommonSocket::CBaseCommonSocket()
 {
 	CBaseCommonSocket* self;
 
-	m_socketHandle = -1;
+	m_socketHandle = NETWORK_SOCKET_HANDLE_INVALID;
 	self = this;
 	m_readReady = 0;
 	m_isOpen = 0;
-	self->m_port = -1;
+	self->m_port = NETWORK_PORT_UNASSIGNED;
 	m_writeReady = 0;
 	m_closePending = 0;
 	m_eventPending = 0;
 	m_socketFlags = 0;
-	m_lastError = (NetworkErrors) 0;
+	m_lastError = NETWORK_ERROR_NONE;
 	m_platformState = operator new(0x10);
 }
 
@@ -35,7 +36,7 @@ void CBaseCommonSocket::SocketError(NetworkErrors p_error)
 		SysCloseSocket();
 		m_readReady = 0;
 		m_isOpen = 0;
-		m_socketHandle = -1;
+		m_socketHandle = NETWORK_SOCKET_HANDLE_INVALID;
 		m_writeReady = 0;
 	}
 }
@@ -46,7 +47,7 @@ void CBaseCommonSocket::CloseSocket()
 	if (m_isOpen != 0) {
 		m_readReady = 0;
 		m_isOpen = 0;
-		if (SysCloseSocket() == -1) {
+		if (SysCloseSocket() == NETWORK_SOCKET_ERROR) {
 			SocketError();
 		}
 	}

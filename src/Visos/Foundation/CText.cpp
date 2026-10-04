@@ -76,22 +76,22 @@ void CText::NextPos()
 		stepX = m_glyph->m_width + 1;
 	}
 	unsigned int flags = m_flags;
-	if ((flags & 0x200) != 0) {
+	if ((flags & TEXT_ADVANCE_USE_CUSTOM_OFFSETS) != 0) {
 		stepX = stepX + m_offsetX;
 		stepY = stepY + m_offsetY;
 	}
-	if ((flags & 0x40) != 0) {
+	if ((flags & TEXT_ADVANCE_X_NEGATIVE) != 0) {
 		m_x = m_x - stepX;
 	}
-	else if ((flags & 0x20) != 0) {
+	else if ((flags & TEXT_ADVANCE_X_POSITIVE) != 0) {
 		m_x = m_x + stepX;
 	}
 	flags = m_flags;
-	if ((flags & 0x80) != 0) {
+	if ((flags & TEXT_ADVANCE_Y_NEGATIVE) != 0) {
 		m_y = m_y - stepY;
 		return;
 	}
-	if ((flags & 0x100) != 0) {
+	if ((flags & TEXT_ADVANCE_Y_POSITIVE) != 0) {
 		m_y = m_y + stepY;
 	}
 }
@@ -127,13 +127,13 @@ void CText::Render(CGDI* p_gdi)
 				NextPos();
 			}
 			else {
-				if ((m_flags & 0xc0) != 0) {
+				if ((m_flags & TEXT_ADVANCE_BEFORE_GLYPH_MASK) != 0) {
 					NextPos();
 				}
 				m_primitive.m_x = m_x;
 				m_primitive.m_y = m_y;
 				p_gdi->m_renderTarget->Blit(&m_primitive, m_glyph);
-				if ((m_flags & 0xc0) == 0) {
+				if ((m_flags & TEXT_ADVANCE_BEFORE_GLYPH_MASK) == 0) {
 					NextPos();
 				}
 			}

@@ -11,8 +11,17 @@
 #include "../../Visos/Sound/CSoundManager.h"
 #include "Views/Sound/CLoadUpdate.h"
 #include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/FixedPoint.h"
+#include "Visos/Foundation/RandomConstants.h"
 
 #include <stddef.h>
+
+enum {
+	SOUND_GAMEPLAY_MUSIC_TRACK_COUNT = RES_MUSIC_FRONTEND_MUSIC3 - RES_MUSIC_GAME_MUSIC,
+	SOUND_EFFECT_ATTENUATION_ARITHMETIC_SCALE = 40,
+	SOUND_EFFECT_FADE_RANGE_PIXELS = 3120,
+	SOUND_EFFECT_ATTENUATION_DENOMINATOR = SOUND_EFFECT_ATTENUATION_ARITHMETIC_SCALE * SOUND_EFFECT_FADE_RANGE_PIXELS
+};
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -20,51 +29,51 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 CSoundView* g_pSoundView = NULL;
 
 // GLOBAL: LEMBALL 0x0049eb88
-EffectSpec g_pEffectSpecs[44] = {
-	{1, RES_SFX_LETSGO, 9, 4},
-	{2, RES_SFX_YIPPEE, 9, 4},
-	{3, RES_SFX_MOUSE_CLICK, 0x63, 4},
-	{4, RES_SFX_SHEEP, 9, 4},
-	{5, RES_SFX_AIRLOCK, 9, 0},
-	{6, RES_SFX_AIRPIPE, 9, 0},
-	{7, RES_SFX_BIGGUN, 9, 7},
-	{8, RES_SFX_BIRDS, 9, 0},
-	{9, RES_SFX_CATAPULT, 9, 4},
-	{10, RES_SFX_CRATEEXP, 9, 4},
-	{11, RES_SFX_DOOROPEN, 9, 4},
-	{12, RES_SFX_DUPLICTR, 9, 4},
-	{13, RES_SFX_GUN, 9, 4},
-	{14, RES_SFX_GUNHIT, 0xf, 7},
-	{15, RES_SFX_LASER, 7, 4},
-	{16, RES_SFX_MINEEXP, 9, 4},
-	{17, RES_SFX_RELOAD, 9, 7},
-	{18, RES_SFX_ROCKET, 9, 4},
-	{19, RES_SFX_ROPESLID, 9, 7},
-	{20, RES_SFX_SNATCH, 9, 4},
-	{21, RES_SFX_SWITCH, 9, 4},
-	{22, RES_SFX_TIMBONUS, 9, 4},
-	{23, RES_SFX_TRMPLINE, 9, 4},
-	{24, RES_SFX_TRAPDOOR, 9, 4},
-	{26, RES_SFX_FIRE, 9, 4},
-	{27, RES_SFX_CHANGEOP, 9, 7},
-	{25, RES_SFX_CHINK, 9, 7},
-	{28, RES_SFX_AAAAH1, 0xf, 4},
-	{29, RES_SFX_AAAAH2, 0xf, 4},
-	{30, RES_SFX_EEEEH, 0xf, 4},
-	{31, RES_SFX_BALLOON, 9, 4},
-	{32, RES_SFX_DOORAPPR, 9, 4},
-	{33, RES_SFX_DOORGO, 9, 4},
-	{34, RES_SFX_ELECCY, 9, 7},
-	{35, RES_SFX_LEMSPLAT, 9, 4},
-	{37, RES_SFX_DRUM1, 9, 7},
-	{38, RES_SFX_DRUM2, 9, 4},
-	{39, RES_SFX_SUCCESS, 9, 3},
-	{40, RES_SFX_FAILURE, 9, 3},
-	{41, RES_SFX_KEYS, 9, 4},
-	{42, RES_SFX_COLLECT_BALLOON, 9, 4},
-	{43, RES_SFX_BALLOON_EXPLODE, 9, 4},
-	{44, RES_SFX_LIFT, 9, 4},
-	{45, RES_SFX_WHEEE, 9, 4},
+EffectSpec g_pEffectSpecs[SOUND_EFFECT_SPEC_COUNT] = {
+	{SFX_LETSGO, RES_SFX_LETSGO, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_YIPPEE, RES_SFX_YIPPEE, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_MOUSE_CLICK, RES_SFX_MOUSE_CLICK, 0x63, SOUND_STATE_GAMEPLAY},
+	{SFX_SHEEP, RES_SFX_SHEEP, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_AIRLOCK, RES_SFX_AIRLOCK, 9, SOUND_STATE_MASK_NONE},
+	{SFX_AIRPIPE, RES_SFX_AIRPIPE, 9, SOUND_STATE_MASK_NONE},
+	{SFX_BIGGUN, RES_SFX_BIGGUN, 9, SOUND_STATE_MASK_FRONTEND_AND_GAMEPLAY},
+	{SFX_BIRDS, RES_SFX_BIRDS, 9, SOUND_STATE_MASK_NONE},
+	{SFX_CATAPULT, RES_SFX_CATAPULT, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_CRATEEXP, RES_SFX_CRATEEXP, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_DOOROPEN, RES_SFX_DOOROPEN, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_DUPLICTR, RES_SFX_DUPLICTR, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_GUN, RES_SFX_GUN, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_GUNHIT, RES_SFX_GUNHIT, 0xf, SOUND_STATE_MASK_FRONTEND_AND_GAMEPLAY},
+	{SFX_LASER, RES_SFX_LASER, 7, SOUND_STATE_GAMEPLAY},
+	{SFX_MINEEXP, RES_SFX_MINEEXP, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_RELOAD, RES_SFX_RELOAD, 9, SOUND_STATE_MASK_FRONTEND_AND_GAMEPLAY},
+	{SFX_ROCKET, RES_SFX_ROCKET, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_ROPESLID, RES_SFX_ROPESLID, 9, SOUND_STATE_MASK_FRONTEND_AND_GAMEPLAY},
+	{SFX_SNATCH, RES_SFX_SNATCH, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_SWITCH, RES_SFX_SWITCH, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_TIMBONUS, RES_SFX_TIMBONUS, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_TRMPLINE, RES_SFX_TRMPLINE, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_TRAPDOOR, RES_SFX_TRAPDOOR, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_FIRE, RES_SFX_FIRE, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_CHANGEOP, RES_SFX_CHANGEOP, 9, SOUND_STATE_MASK_FRONTEND_AND_GAMEPLAY},
+	{SFX_CHINK, RES_SFX_CHINK, 9, SOUND_STATE_MASK_FRONTEND_AND_GAMEPLAY},
+	{SFX_AAAAH1, RES_SFX_AAAAH1, 0xf, SOUND_STATE_GAMEPLAY},
+	{SFX_AAAAH2, RES_SFX_AAAAH2, 0xf, SOUND_STATE_GAMEPLAY},
+	{SFX_EEEEH, RES_SFX_EEEEH, 0xf, SOUND_STATE_GAMEPLAY},
+	{SFX_BALLOON, RES_SFX_BALLOON, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_DOORAPPR, RES_SFX_DOORAPPR, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_DOORGO, RES_SFX_DOORGO, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_ELECCY, RES_SFX_ELECCY, 9, SOUND_STATE_MASK_FRONTEND_AND_GAMEPLAY},
+	{SFX_LEMSPLAT, RES_SFX_LEMSPLAT, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_DRUM1, RES_SFX_DRUM1, 9, SOUND_STATE_MASK_FRONTEND_AND_GAMEPLAY},
+	{SFX_DRUM2, RES_SFX_DRUM2, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_SUCCESS, RES_SFX_SUCCESS, 9, SOUND_STATE_FRONTEND},
+	{SFX_FAILURE, RES_SFX_FAILURE, 9, SOUND_STATE_FRONTEND},
+	{SFX_KEYS, RES_SFX_KEYS, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_COLLECT_BALLOON, RES_SFX_COLLECT_BALLOON, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_BALLOON_EXPLODE, RES_SFX_BALLOON_EXPLODE, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_LIFT, RES_SFX_LIFT, 9, SOUND_STATE_GAMEPLAY},
+	{SFX_WHEEE, RES_SFX_WHEEE, 9, SOUND_STATE_GAMEPLAY},
 };
 
 // GLOBAL: LEMBALL 0x0049ed98
@@ -82,7 +91,7 @@ CSoundView::CSoundView()
 	m_unk0x64 = 0;
 	m_initialGameTick = g_dwGameTick;
 	m_flags = 0;
-	m_currentState = 0;
+	m_currentState = SOUND_STATE_SILENT;
 	m_musicHandle = 0;
 	m_musicResourceId = 0;
 	m_randomMusicIndex = 0;
@@ -94,8 +103,8 @@ CSoundView::CSoundView()
 	SetEffectsOn(1);
 	{
 		i = 0;
-		while (i < 50) {
-			m_effectSlots[i].m_handle = 0xffffffff;
+		while (i < SOUND_EFFECT_SLOT_COUNT) {
+			m_effectSlots[i].m_handle = SOUND_EFFECT_HANDLE_UNPREPARED;
 			m_effectSlots[i].m_spec = NULL;
 			i = i + 1;
 		}
@@ -105,10 +114,10 @@ CSoundView::CSoundView()
 		do {
 			if (g_nEffectsAvailable != 0) {
 				m_effectSlots[spec->m_soundId].m_spec = spec;
-				m_effectSlots[spec->m_soundId].m_handle = 0xffffffff;
+				m_effectSlots[spec->m_soundId].m_handle = SOUND_EFFECT_HANDLE_UNPREPARED;
 			}
 			spec++;
-		} while (spec < g_pEffectSpecs + 44);
+		} while (spec < g_pEffectSpecs + SOUND_EFFECT_SPEC_COUNT);
 	}
 	m_pendingEffect = SFX_NONE;
 }
@@ -180,8 +189,8 @@ void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AICOORD& p_list
 			g_pSoundManager->PlayEffect(m_effectSlots[pendingEffect].m_handle);
 		}
 		now = timeGetTime();
-		x = p_listener.m_xFixed >> 12;
-		y = p_listener.m_yFixed >> 12;
+		x = p_listener.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		y = p_listener.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		volume = g_pSoundManager->GetEffectVolume();
 		if (p_count > 0) {
 			for (i = 0; i < p_count; i++) {
@@ -191,15 +200,16 @@ void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AICOORD& p_list
 					const int& effectY = (unsigned short) p_viewData[i].m_gameY;
 					dist = Distance(x, y, effectX, effectY);
 					attenuatedVol = volume;
-					dist -= 200;
+					dist -= SOUND_EFFECT_FULL_VOLUME_RADIUS_PIXELS;
 					if (dist > 0) {
 						dist *= volume;
-						attenuatedVol = volume + (dist * -40) / 124800;
+						attenuatedVol = volume + (dist * -SOUND_EFFECT_ATTENUATION_ARITHMETIC_SCALE) /
+													 SOUND_EFFECT_ATTENUATION_DENOMINATOR;
 						if (attenuatedVol > volume) {
 							attenuatedVol = volume;
 						}
 					}
-					if (now - m_effectSlots[effectId].m_lastPlayed > 100) {
+					if (now - m_effectSlots[effectId].m_lastPlayed > SOUND_EFFECT_COOLDOWN_MS) {
 						g_pSoundManager->PlayEffect(m_effectSlots[effectId].m_handle, attenuatedVol);
 						m_effectSlots[effectId].m_lastPlayed = now;
 					}
@@ -212,10 +222,10 @@ void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AICOORD& p_list
 // FUNCTION: LEMBALL 0x00439d60
 void CSoundView::UnprepareEffects()
 {
-	for (int i = 0; i < 50; i++) {
-		if (m_effectSlots[i].m_handle != 0xffffffff) {
+	for (int i = 0; i < SOUND_EFFECT_SLOT_COUNT; i++) {
+		if (m_effectSlots[i].m_handle != SOUND_EFFECT_HANDLE_UNPREPARED) {
 			g_pSoundManager->FreeEffect(m_effectSlots[i].m_handle);
-			m_effectSlots[i].m_handle = 0xffffffff;
+			m_effectSlots[i].m_handle = SOUND_EFFECT_HANDLE_UNPREPARED;
 		}
 	}
 }
@@ -229,8 +239,8 @@ void CSoundView::PrepareEffects(unsigned short p_stateMask)
 	EffectSlot* slot;
 
 	if (g_nEffectsAvailable != 0) {
-		timestamp = timeGetTime() - 100;
-		for (i = 0; i < 50; i++) {
+		timestamp = timeGetTime() - SOUND_EFFECT_COOLDOWN_MS;
+		for (i = 0; i < SOUND_EFFECT_SLOT_COUNT; i++) {
 			slot = &m_effectSlots[i];
 			spec = slot->m_spec;
 			if (spec != NULL && (spec->m_groupMask & p_stateMask) != 0) {
@@ -254,7 +264,7 @@ int CSoundView::GetnEffects(unsigned short p_stateMask)
 	count = 0;
 	if (g_nEffectsAvailable != 0) {
 		slot = m_effectSlots;
-		i = 50;
+		i = SOUND_EFFECT_SLOT_COUNT;
 		do {
 			if (slot->m_spec != NULL && (slot->m_spec->m_groupMask & p_stateMask) != 0) {
 				count++;
@@ -287,22 +297,22 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 		m_currentState = p_state;
 		musicId = 0;
 		switch (p_state) {
-		case 0:
-		case 1:
+		case SOUND_STATE_SILENT:
+		case SOUND_STATE_INTRO:
 			return;
-		case 2:
-			p_state = 3;
+		case SOUND_STATE_RESULTS:
+			p_state = SOUND_STATE_FRONTEND;
 			restartMusic = 0;
-		case 3:
+		case SOUND_STATE_FRONTEND:
 			musicId = RES_MUSIC_FRONTEND_MUSIC3;
 			g_pSoundManager->SetResId(RES_MUSIC_EFFECTS_BASEEFFECTS);
 			break;
-		case 4:
+		case SOUND_STATE_GAMEPLAY:
 			g_pSoundManager->SetResId(RES_MUSIC_EFFECTS_BASEEFFECTS);
 			musicId = m_randomMusicIndex + RES_MUSIC_GAME_MUSIC;
-			seed = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+			seed = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 			*g_pRandomSeed = seed;
-			m_randomMusicIndex = seed % 9;
+			m_randomMusicIndex = seed % SOUND_GAMEPLAY_MUSIC_TRACK_COUNT;
 			break;
 		}
 		m_loadUpdate = p_loadUpdate;
@@ -321,13 +331,13 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 // FUNCTION: LEMBALL 0x00439f50
 void CSoundView::SetEffectsVolume(unsigned char p_volume)
 {
-	g_pSoundManager->SetVolumes(p_volume, -1);
+	g_pSoundManager->SetVolumes(p_volume, SOUND_VOLUME_UNCHANGED);
 }
 
 // FUNCTION: LEMBALL 0x00439f70
 void CSoundView::SetMusicVolume(unsigned char p_volume)
 {
-	g_pSoundManager->SetVolumes(-1, p_volume);
+	g_pSoundManager->SetVolumes(SOUND_VOLUME_UNCHANGED, p_volume);
 }
 
 // FUNCTION: LEMBALL 0x00439f90

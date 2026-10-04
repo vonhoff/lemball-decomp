@@ -9,6 +9,7 @@
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectInteractionStates.h"
 #include "AI/Groups/CGenericGroup.h"
 
 // FUNCTION: LEMBALL 0x00414010
@@ -71,7 +72,7 @@ bool CPlayerLemmingGroup::Process()
 	int moving = 0;
 	AICOORD position;
 	AICOORD memberPosition;
-	CGenericGroup::CalculateBoundingBox(0x18);
+	CGenericGroup::CalculateBoundingBox(GROUP_BOUNDING_BOX_RADIUS_PIXELS);
 	CGameObject* member = CGenericGroup::GetFirstElementInGroup();
 	while (member != NULL) {
 		count++;
@@ -83,15 +84,15 @@ bool CPlayerLemmingGroup::Process()
 	}
 	if (count > 0 && moving == 0) {
 		switch (GetGroupState()) {
-		case 0: {
+		case GROUP_STATE_IDLE: {
 			CAiDestinationList* list = m_destinationList;
 			if (list->m_count > 0) {
 				CAiDestinationEntry entry = list->PopFirst();
 				switch (entry.m_type) {
-				case 1:
+				case DESTINATION_COORD:
 					SendNewWaypoint(entry.GetCoordinate());
 					break;
-				case 2: {
+				case DESTINATION_OBJECT: {
 					int id = entry.m_metadata;
 					CGameObject* object = g_pGroupObjectManager->FindObject(id);
 					if (object != NULL) {
@@ -149,7 +150,7 @@ bool CPlayerLemmingGroup::Process()
 			}
 			break;
 		}
-		case 1:
+		case GROUP_STATE_MOVING:
 			member = CGenericGroup::GetNthElementInGroup(m_currentUseElement);
 			if (member == NULL) {
 				SetGroupState(GROUP_STATE_IDLE);
@@ -158,7 +159,7 @@ bool CPlayerLemmingGroup::Process()
 			}
 			else {
 				switch (m_useObject->Usage()) {
-				case 1:
+				case GROUP_OBJECT_USAGE_GROUP:
 					m_currentUseElement++;
 					{
 						int y = member->m_position.m_yFixed;
@@ -183,7 +184,7 @@ bool CPlayerLemmingGroup::Process()
 					}
 					SetGroupState(GROUP_STATE_ATTACKING);
 					break;
-				case 2:
+				case GROUP_OBJECT_USAGE_SINGLE:
 					SetGroupState(GROUP_STATE_IDLE);
 					m_useObject->m_activationReserved = 0;
 					m_useObject = NULL;
@@ -191,7 +192,7 @@ bool CPlayerLemmingGroup::Process()
 				}
 			}
 			break;
-		case 2:
+		case GROUP_STATE_ATTACKING:
 			if (m_useObject->m_action == ACTION_READY && moving == 0) {
 				if (GetElementsInGroup() <= m_currentUseElement) {
 					SetGroupState(GROUP_STATE_IDLE);
@@ -205,9 +206,9 @@ bool CPlayerLemmingGroup::Process()
 				}
 			}
 			break;
-		case 3:
+		case GROUP_STATE_USING_OBJECT:
 			switch (m_useObject->UsableState()) {
-			case 1:
+			case GROUP_OBJECT_REQUEST_REJECTED:
 				m_useObject->m_activationReserved = 0;
 				if (m_useObject->m_objectActive != 0) {
 					const AICOORD& activation = m_useObject->ActivatePosition();
@@ -228,7 +229,7 @@ bool CPlayerLemmingGroup::Process()
 					SetGroupState(GROUP_STATE_IDLE);
 				}
 				break;
-			case 2:
+			case GROUP_OBJECT_REQUEST_ACCEPTED:
 				SetGroupState(GROUP_STATE_MOVING);
 				break;
 			}
@@ -391,6 +392,19 @@ void CPlayerLemmingGroup::ClearExistingWaypoints()
 		}
 		m_currentUseElement = GetElementsInGroup();
 	}
+}
+
+// FUNCTION: LEMBALL 0x00414960
+bool CPlayerLemmingGroup::CheckNetworkStateChanged()
+{
+	bool changed = false;
+	CPlayerLemming* lemming = (CPlayerLemming*) CGenericGroup::GetFirstElementInGroup();
+	while (lemming != 0) {
+		bool lemmingChanged = lemming->CheckNetworkStateChanged() != 0;
+		changed = lemmingChanged || changed;
+		lemming = (CPlayerLemming*) CGenericGroup::GetNextElementInGroup();
+	}
+	return changed;
 }
 
 // FUNCTION: LEMBALL 0x004149a0

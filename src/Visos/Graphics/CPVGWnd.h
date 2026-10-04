@@ -11,6 +11,10 @@ class CPVWnd;
 
 struct WinGDrawState;
 
+enum {
+	WINDOW_CLEAR_DEFAULT_COLOUR = -1
+};
+
 // SIZE 0x90
 // VTABLE: LEMBALL 0x00499260
 class CPVGWnd : public CWnd {

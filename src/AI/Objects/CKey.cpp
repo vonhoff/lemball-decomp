@@ -1,44 +1,47 @@
 #include "CKey.h"
 
 #include "../../Map/Base/CMap.h"
+#include "../Base/AIScoreConstants.h"
 #include "../Navigation/CAI.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectInteractionStates.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+enum {
+	KEY_ACTIVATION_POSITION_X_OFFSET_FIXED = -8 * FIXED_POINT_ONE
+};
+
 // FUNCTION: LEMBALL 0x0041c5f0
 int CKey::Usage()
 {
-	return 2;
+	return GROUP_OBJECT_USAGE_SINGLE;
 }
 
 // FUNCTION: LEMBALL 0x0041d480
 bool CKey::Process()
 {
 	enum {
-		POSITION_FRACTION_BITS = 12,
-		GROUND_CELL_SHIFT = 4,
-		GROUND_CELL_MASK = (1 << GROUND_CELL_SHIFT) - 1
 	};
 
-	int y = m_position.m_yFixed >> POSITION_FRACTION_BITS;
-	int x = m_position.m_xFixed >> POSITION_FRACTION_BITS;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
-	int blockX = x >> GROUND_CELL_SHIFT;
-	int blockY = y >> GROUND_CELL_SHIFT;
+	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		int localX = x & GROUND_CELL_MASK;
-		int localY = y & GROUND_CELL_MASK;
+		int localX = x & GROUND_BLOCK_PIXEL_MASK;
+		int localY = y & GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(localX, localY);
 	}
 	else {
 		z = 0;
 	}
-	m_position.m_zFixed = z << POSITION_FRACTION_BITS;
+	m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == ACTION_ACTIVATED) {
@@ -71,7 +74,7 @@ void CKey::DoActivate()
 {
 	m_activator->AddObject(m_objectType, this);
 	SetSndEffect(SFX_KEYS);
-	g_pAI->Score(10);
+	g_pAI->Score(AI_SCORE_KEY_PICKUP_POINTS);
 }
 
 // FUNCTION: LEMBALL 0x0041d5d0
@@ -79,6 +82,6 @@ AICOORD CKey::ActivatePosition()
 {
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	int x = m_position.m_xFixed - 0x8000;
+	int x = m_position.m_xFixed + KEY_ACTIVATION_POSITION_X_OFFSET_FIXED;
 	return AICOORD(x, y, z);
 }

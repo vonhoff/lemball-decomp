@@ -4,11 +4,18 @@
 #include "Visos/Foundation/CArena.h"
 #include "Visos/Foundation/CMBlock.h"
 
+namespace
+{
+enum {
+	RAM_ARENA_SIGNATURE = 0x5241524e
+};
+}
+
 // FUNCTION: LEMBALL 0x0045a3f0
 CRAMArena::CRAMArena(unsigned long p_arenaSize, char* p_description, CArena* p_parentArena, CArena* p_arenaLink)
 	: CArena(p_arenaSize, p_description, p_parentArena, p_arenaLink)
 {
-	m_signature = 0x5241524e;
+	m_signature = RAM_ARENA_SIGNATURE;
 	m_arenaSize = p_arenaSize - GetSizeOf();
 	m_freeSize = m_arenaSize - GetSizeOfBlock();
 	m_arenaBase = (unsigned char*) this + GetSizeOf();

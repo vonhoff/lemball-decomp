@@ -1,6 +1,7 @@
 #include "../CPaintGunManager.h"
 
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Navigation/CAI.h"
 
 // FUNCTION: LEMBALL 0x0042c610
@@ -17,7 +18,7 @@ void CPaintGunManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 		unsigned short z;
 		unsigned short direction;
 		do {
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *(unsigned short*) p_data;
 				p_data += 2;
 			}

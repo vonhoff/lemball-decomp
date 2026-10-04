@@ -3,6 +3,7 @@
 #include "Visos/Network/CRwSocket.h"
 #include "Visos/Network/CTCPIPReadSocket.h"
 #include "Visos/Network/CTCPIPWriteSocket.h"
+#include "Visos/Network/NetworkConstants.h"
 
 // FUNCTION: LEMBALL 0x00470220
 int CTCPIPRWSocket::Process(unsigned int p_message, unsigned int p_wParam, long p_lParam)
@@ -10,7 +11,7 @@ int CTCPIPRWSocket::Process(unsigned int p_message, unsigned int p_wParam, long 
 	int result;
 
 	result = CTCPIPWriteSocket::Process(p_message, p_wParam, p_lParam);
-	if (result == -1) {
+	if (result == NETWORK_WINDOW_MESSAGE_UNHANDLED) {
 		result = CTCPIPReadSocket::Process(p_message, p_wParam, p_lParam);
 	}
 	return result;

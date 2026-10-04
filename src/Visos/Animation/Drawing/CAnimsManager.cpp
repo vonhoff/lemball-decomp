@@ -1,4 +1,5 @@
 #include "../CAnimsManager.h"
+#include "../../Resources/ResourceChunkTypes.h"
 
 #include "../../Foundation/CVSPoint.h"
 #include "../../Graphics/CGDI.h"
@@ -37,7 +38,7 @@ CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 	}
 	m_previousGdi = m_gdi;
 	resource = m_resources[m_resourceSlots[p_resourceId]];
-	if (resource->m_chunkType == 0x5a524c45) {
+	if (resource->m_chunkType == RESOURCE_CHUNK_ZRLE) {
 		sizeSource = (CResZRLE*) resource;
 		if (m_doubleBuffered != 0) {
 			if (m_zrleCapacity == m_bufferedZrleCount) {

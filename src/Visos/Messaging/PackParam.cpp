@@ -3,5 +3,6 @@
 // FUNCTION: LEMBALL 0x00463000
 int PackParam(short p_low, short p_high)
 {
-	return ((unsigned int) (unsigned short) p_high) * 0x10000 + (unsigned int) (unsigned short) p_low;
+	return (((unsigned int) (unsigned short) p_high) << PACK_PARAM_HIGH_WORD_SHIFT) +
+		   (unsigned int) (unsigned short) p_low;
 }

@@ -2,13 +2,14 @@
 
 #include "../Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectInteractionStates.h"
 #include "AI/Messages/CGameObjectMess.h"
 #include "AI/Messages/GameMessageIds.h"
 
 // FUNCTION: LEMBALL 0x00416ac0
 CRequestReplyMess::CRequestReplyMess() : CGameObjectMess(MESSAGE_REQUEST_REPLY)
 {
-	m_payloadCapacity += 4;
+	m_payloadCapacity += sizeof(unsigned long);
 }
 
 // FUNCTION: LEMBALL 0x00416ae0
@@ -26,10 +27,10 @@ void CRequestReplyMess::GetData()
 		m_object->m_action = m_object->m_requestedAction;
 		m_object->DoActivate();
 		m_object->Action(m_object->m_requestedAction);
-		m_object->m_usableState = 2;
+		m_object->m_usableState = GROUP_OBJECT_REQUEST_ACCEPTED;
 	}
 	else {
-		m_object->m_usableState = 1;
+		m_object->m_usableState = GROUP_OBJECT_REQUEST_REJECTED;
 	}
 	m_object->m_requestedAction = ACTION_READY;
 }

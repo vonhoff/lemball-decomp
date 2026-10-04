@@ -1,4 +1,5 @@
 #include "CResBool.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 
@@ -11,7 +12,7 @@ CResBool* CResBool::Load(unsigned int p_resourceId)
 	if (res == NULL) {
 		return (CResBool*) (new CResBool(p_resourceId))->CheckError();
 	}
-	if (res->m_chunkType != 0x424f4f4c) {
+	if (res->m_chunkType != RESOURCE_CHUNK_BOOL) {
 		res->UnLoad();
 		return NULL;
 	}
@@ -21,7 +22,7 @@ CResBool* CResBool::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045e9b0
 void CResBool::SetType()
 {
-	m_chunkType = 0x424f4f4c;
+	m_chunkType = RESOURCE_CHUNK_BOOL;
 }
 
 // FUNCTION: LEMBALL 0x0045e9c0

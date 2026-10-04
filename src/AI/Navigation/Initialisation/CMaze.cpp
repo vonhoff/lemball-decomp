@@ -1,6 +1,7 @@
 #include "../CMaze.h"
 
 #include "../../../Map/Base/CMap.h"
+#include "../../../Map/Ground/CGround.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -28,23 +29,23 @@ void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, i
 				do {
 					unsigned short collision;
 					if (x < 0 || y < 0) {
-						collision = 3;
+						collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 					}
 					else {
 						map = m_map;
 						width = map->m_ground.m_width;
 						if (width <= x || map->m_ground.m_height <= y) {
-							collision = 3;
+							collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 						}
 						else {
 							collision = map->m_ground.m_ground[y * width + x].m_collision;
 						}
 					}
-					if ((collision & 1) != 0) {
-						m_distances[y][x] = 0xffff;
+					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
+						m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
 					}
 					else {
-						m_distances[y][x] = 0xff00;
+						m_distances[y][x] = MAZE_DISTANCE_UNREACHED;
 					}
 					x++;
 				} while (x < m_width);

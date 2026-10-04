@@ -1,4 +1,5 @@
 #include "CResEFFECT.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 
@@ -12,7 +13,7 @@ CResEFFECT* CResEFFECT::Load(unsigned int p_resourceId)
 		res = new CResEFFECT(p_resourceId);
 		return (CResEFFECT*) res->CheckError();
 	}
-	if (res->m_chunkType != 0x45464620) {
+	if (res->m_chunkType != RESOURCE_CHUNK_EFFECT) {
 		res->UnLoad();
 		return NULL;
 	}
@@ -22,5 +23,5 @@ CResEFFECT* CResEFFECT::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045eba0
 void CResEFFECT::SetType()
 {
-	m_chunkType = 0x45464620;
+	m_chunkType = RESOURCE_CHUNK_EFFECT;
 }

@@ -4,6 +4,13 @@
 #include "../../Visos/Messaging/CNetworkMessage.h"
 
 // SIZE 0x30
+enum eGameMessageId {
+	GAME_MESSAGE_GAME_INFO = 5,
+	GAME_MESSAGE_REJECT = 6,
+	GAME_MESSAGE_ACCEPT = 7,
+	GAME_MESSAGE_USER_ACTION = 8
+};
+
 // VTABLE: LEMBALL 0x00498598
 class CGameFlaggedMessage : public CNetworkMessage {
 public:

@@ -4,13 +4,13 @@
 #include "../Navigation/CAI.h"
 #include "../Objects/CIce.h"
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
-#define ICE_LAST_VERSION_WITH_GENERATED_IDS 1
-#define ICE_FIRST_VERSION_WITH_INITIAL_SWITCH_STATE 10
-
 // FUNCTION: LEMBALL 0x0042d7a0
-CIceManager::CIceManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x19, 0xe)
+CIceManager::CIceManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_ICE,
+						 OBJECT_MANAGER_TRANSPORT_ICE)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -49,6 +49,27 @@ void CIceManager::Initialise(int p_capacity)
 CIceManager::~CIceManager()
 {
 	delete[] m_ice;
+}
+
+// FUNCTION: LEMBALL 0x0042d900
+void CIceManager::ResetCount()
+{
+	m_count = 0;
+}
+
+// FUNCTION: LEMBALL 0x0042d910
+void CIceManager::RemoveIce(CIce* p_ice)
+{
+	for (int index = 0; index < m_count; index++) {
+		if (&m_ice[index] == p_ice) {
+			m_ice[index].SetId(INVALID_OBJECT_ID);
+			for (int next = index + 1; next < m_count; next++) {
+				m_ice[next - 1] = m_ice[next];
+			}
+			m_count--;
+			return;
+		}
+	}
 }
 
 // FUNCTION: LEMBALL 0x0042dd00
@@ -90,7 +111,7 @@ void CIceManager::Switch(int p_message, int p_id)
 				return;
 			}
 		} while (1);
-		if (p_message == 5) {
+		if (p_message == SW_ICE) {
 			m_ice[index].Switch();
 		}
 	}
@@ -132,7 +153,7 @@ void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 	if (count != 0) {
 		do {
 			unsigned short id;
-			if (m_ai->m_levelVersion > ICE_LAST_VERSION_WITH_GENERATED_IDS) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *data++;
 			}
 			else {
@@ -150,7 +171,7 @@ void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 			int velocityX = (short) *data++;
 			int velocityY = (short) *data++;
 			unsigned int initialSwitched = 1;
-			if (m_ai->m_levelVersion >= ICE_FIRST_VERSION_WITH_INITIAL_SWITCH_STATE) {
+			if (m_ai->m_levelVersion >= LEVEL_VERSION_WITH_INITIAL_ICE_SWITCH_STATE) {
 				initialSwitched = *data++;
 			}
 			Add(id, cornerA, cornerB, velocityX, velocityY, initialSwitched);

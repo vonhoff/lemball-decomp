@@ -1,6 +1,7 @@
 #include "AboutDialog.h"
 
 #include "../../Platform/Windows/Entry.h"
+#include "../../Visos/Foundation/VisosVersion.h"
 #include "../../Visos/Sound/CSoundManager.h"
 
 enum {
@@ -13,7 +14,7 @@ enum {
 };
 
 // GLOBAL: LEMBALL 0x004a05ec
-int g_nVisosBuildNumber = 201;
+int g_nVisosBuildNumber = VISOS_BUILD_NUMBER;
 
 // GLOBAL: LEMBALL 0x004a05f0
 char g_szWindowsNtBuild[28] = "WindowsNT %u.%u (Build: %u)";
@@ -81,8 +82,8 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 	parentWidth = parentRect.right - parentRect.left;
 	parentHeight = parentRect.bottom - parentRect.top;
 	dc = GetDC((HWND) p_window);
-	screenWidth = GetDeviceCaps(dc, 8);
-	screenHeight = GetDeviceCaps(dc, 10);
+	screenWidth = GetDeviceCaps(dc, HORZRES);
+	screenHeight = GetDeviceCaps(dc, VERTRES);
 	ReleaseDC((HWND) p_window, dc);
 	x = parentRect.left + (parentWidth - width) / 2;
 	if (x < 0) {
@@ -98,7 +99,7 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 	else if (screenHeight < height + y) {
 		y = screenHeight - height;
 	}
-	SetWindowPos((HWND) p_window, NULL, x, y, 0, 0, 5);
+	SetWindowPos((HWND) p_window, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
 #include <string.h>
@@ -108,10 +109,13 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 char* BuildAboutSystemInfo()
 {
 	unsigned long version = GetVersion();
+	enum {
+		GET_VERSION_NON_NT_PLATFORM_BIT = 0x80000000
+	};
 	unsigned short versionWord = (unsigned short) version;
 	char osText[256];
 
-	if (version < 0x80000000) {
+	if (version < GET_VERSION_NON_NT_PLATFORM_BIT) {
 		wsprintfA(osText,
 				  g_szWindowsNtBuild,
 				  (unsigned int) (unsigned char) versionWord,
@@ -183,7 +187,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 		CenterWindowOnParent(p_dlg, GetWindow((HWND) p_dlg, GW_OWNER));
 		systemInfo = BuildAboutSystemInfo();
 		SetDlgItemTextA((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO, systemInfo);
-		SendMessageA(GetDlgItem((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO), WM_SETFONT, (unsigned int) g_hAboutFont, 1);
+		SendMessageA(GetDlgItem((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO), WM_SETFONT, (unsigned int) g_hAboutFont, TRUE);
 		GetModuleFileNameA((HINSTANCE) g_pApplicationInstance, modulePath, sizeof(modulePath));
 		versionSize = GetFileVersionInfoSizeA(modulePath, &handle);
 		if (versionSize != 0) {
@@ -201,7 +205,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 				if (queryOk != 0 && queryLen != 0 && queryValue != NULL) {
 					lstrcpyA(itemText, queryValue);
 					SetDlgItemTextA((HWND) p_dlg, controlId, itemText);
-					SendMessageA(GetDlgItem((HWND) p_dlg, controlId), WM_SETFONT, (unsigned int) g_hAboutFont, 1);
+					SendMessageA(GetDlgItem((HWND) p_dlg, controlId), WM_SETFONT, (unsigned int) g_hAboutFont, TRUE);
 				}
 				controlId = controlId + 1;
 			} while (controlId <= IDC_ABOUT_LEGAL_TRADEMARKS);

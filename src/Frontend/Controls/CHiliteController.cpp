@@ -11,6 +11,8 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "../Windows/CHiliteWindow.h"
 #include "CHiliteButtons.h"
+#include "ControlMessageIds.h"
+#include "Frontend/Base/FrontendLayoutMode.h"
 #include "Frontend/Controls/HiliteControllerJunction.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
@@ -25,6 +27,11 @@
 #include <stddef.h>
 
 class CAnimFrameBASE;
+
+enum eHiliteNavigationMode {
+	HILITE_NAVIGATION_HORIZONTAL = 0,
+	HILITE_NAVIGATION_VERTICAL = 1
+};
 
 // FUNCTION: LEMBALL 0x0044f440
 CHiliteController::CHiliteController(CGWnd* p_window,
@@ -41,7 +48,7 @@ CHiliteController::CHiliteController(CGWnd* p_window,
 	m_window = p_window;
 	m_gdi = p_gdi;
 	m_active = 1;
-	m_nextControlMessage = 0xabcd0000;
+	m_nextControlMessage = FRONTEND_CONTROL_MESSAGE_ID_BASE;
 	index = 0;
 	while (index < 4) {
 		m_buttons[index] = NULL;
@@ -51,7 +58,7 @@ CHiliteController::CHiliteController(CGWnd* p_window,
 	m_buttonCount = 0;
 	m_currentButton = 0;
 	g_pMasterInputQueue->Attach(this, 0);
-	if (m_layoutMode == 1) {
+	if (m_layoutMode == FRONTEND_LAYOUT_COMPACT) {
 		m_animationSet = 1;
 		g_dwHiliteAnimationId = RES_NEWFRONT_ANIMS_LORES_HILITE;
 	}
@@ -107,46 +114,46 @@ int CHiliteController::ProcessMsg(Message* p_message)
 	default:
 		m_processedCount++;
 		return 0;
-	case 3:
-		if (p_message->m_code == INPUT_KEY_SPACE || p_message->m_code == 0x22 ||
+	case MESSAGE_KEY_UP:
+		if (p_message->m_code == INPUT_KEY_SPACE || p_message->m_code == INPUT_KEY_ACTIVATE ||
 			p_message->m_code == INPUT_KEY_RETURN) {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
 			button->OnButtonUp(CVSPoint(0, 0), 0);
 			return 0;
 		}
 		break;
-	case 4:
+	case MESSAGE_KEY_DOWN:
 		switch (p_message->m_code) {
 		case INPUT_KEY_UP:
-			if (m_horizontalMode == 0) {
+			if (m_horizontalMode == HILITE_NAVIGATION_HORIZONTAL) {
 				return 0;
 			}
 			MoveLeft();
 			g_pSoundView->PlayEffect(SFX_CHANGEOP);
 			return 1;
 		case INPUT_KEY_DOWN:
-			if (m_horizontalMode == 0) {
+			if (m_horizontalMode == HILITE_NAVIGATION_HORIZONTAL) {
 				return 0;
 			}
 			MoveRight();
 			g_pSoundView->PlayEffect(SFX_CHANGEOP);
 			return 1;
 		case INPUT_KEY_LEFT:
-			if (m_horizontalMode == 1) {
+			if (m_horizontalMode == HILITE_NAVIGATION_VERTICAL) {
 				return 0;
 			}
 			MoveLeft();
 			g_pSoundView->PlayEffect(SFX_CHANGEOP);
 			return 1;
 		case INPUT_KEY_RIGHT:
-			if (m_horizontalMode == 1) {
+			if (m_horizontalMode == HILITE_NAVIGATION_VERTICAL) {
 				return 0;
 			}
 			MoveRight();
 			g_pSoundView->PlayEffect(SFX_CHANGEOP);
 			return 1;
 		case INPUT_KEY_SPACE:
-		case 0x22:
+		case INPUT_KEY_ACTIVATE:
 		case INPUT_KEY_RETURN: {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
 			button->OnButtonDown(CVSPoint(0, 0), 0);
@@ -218,7 +225,7 @@ void CHiliteController::DrawButtons(int p_force)
 void CHiliteController::DrawHiliteWindow()
 {
 	if (m_active != 0) {
-		int offset = m_layoutMode == 1 ? -1 : -2;
+		int offset = m_layoutMode == FRONTEND_LAYOUT_COMPACT ? -1 : -2;
 		CGDI* hiliteGdi = (CGDI*) m_hiliteSurface;
 		CSurface* surface = hiliteGdi->m_renderTarget;
 		CVSSize dimensions(surface->m_windowRect);

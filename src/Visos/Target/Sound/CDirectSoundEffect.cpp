@@ -1,14 +1,25 @@
 #include "CDirectSoundEffect.h"
 
+enum {
+	SOUND_EFFECT_NO_BUFFER_INDEX = -1
+};
+
 #include "../../Foundation/CVSOStream.h"
 #include "../../Foundation/VsString.h"
 #include "DirectSound.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
+#include "PCMSampleFormat.h"
 #include "Platform/DirectX/DSBUFFERDESC.h"
 #include "Platform/DirectX/IDirectSound.h"
 
 #include <string.h>
+
+enum {
+	DIRECT_SOUND_EFFECT_CONTROL_VOLUME = 0x01,
+	DIRECT_SOUND_EFFECT_CONTROL_PAN = 0x02,
+	DIRECT_SOUND_EFFECT_CONTROL_FREQUENCY = 0x04
+};
 
 #define WIN32_LEAN_AND_MEAN
 // clang-format off
@@ -103,7 +114,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	patchHeader.m_waveCount = SwapBytes16(patchHeader.m_waveCount);
 	m_prepared = 0;
 	m_unknown04 = 0;
-	if (patchHeader.m_waveCount != 1) {
+	if (patchHeader.m_waveCount != EFFECT_PATCH_SUPPORTED_WAVE_COUNT) {
 		// STRING: LEMBALL 0x004a34dc
 		*g_pErrorOutput << "Warning! Effect Patch " << ((EffPatchHeader*) p_patch)->m_name << " has more than ";
 		// STRING: LEMBALL 0x004a3504
@@ -130,27 +141,29 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	memset(&description, 0, sizeof(description));
 	description.dwBufferBytes = length;
 	description.lpwfxFormat = &format;
-	description.dwFlags = 2;
+	description.dwFlags = DSBCAPS_STATIC;
 	description.dwSize = sizeof(description);
-	if ((m_controlFlags & 1) != 0) {
-		description.dwFlags |= 0x80;
+	if ((m_controlFlags & DIRECT_SOUND_EFFECT_CONTROL_VOLUME) != 0) {
+		description.dwFlags |= DSBCAPS_CTRLVOLUME;
 	}
-	if ((m_controlFlags & 2) != 0) {
-		description.dwFlags |= 0x40;
+	if ((m_controlFlags & DIRECT_SOUND_EFFECT_CONTROL_PAN) != 0) {
+		description.dwFlags |= DSBCAPS_CTRLPAN;
 	}
-	if ((m_controlFlags & 4) != 0) {
-		description.dwFlags |= 0x20;
+	if ((m_controlFlags & DIRECT_SOUND_EFFECT_CONTROL_FREQUENCY) != 0) {
+		description.dwFlags |= DSBCAPS_CTRLFREQUENCY;
 	}
 	result = g_directSound->CreateSoundBuffer(&description, m_buffers, NULL);
 	if (result != 0) {
 		// STRING: LEMBALL 0x004a3528
-		*g_pErrorOutput << "Effect Buffer Create failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pErrorOutput << "Effect Buffer Create failed: "
+						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		return;
 	}
 	result = m_buffers[0]->Lock(0, length, (void**) &audio[0], &audioBytes[0], (void**) &audio[1], &audioBytes[1], 0);
 	if (result != 0) {
 		// STRING: LEMBALL 0x004a354c
-		*g_pErrorOutput << "Effect Buffer Lock failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pErrorOutput << "Effect Buffer Lock failed: "
+						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		return;
 	}
 	source = wave + sizeof(EffWaveHeader);
@@ -163,7 +176,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 					do {
 						unsigned char high = *source++;
 						*dest++ = *source++;
-						*dest++ = (unsigned char) (high ^ 0x80);
+						*dest++ = (unsigned char) (high ^ PCM_8BIT_SIGN_BIT_MASK);
 					} while (--count != 0);
 				}
 			}
@@ -172,7 +185,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 				do {
 					unsigned char high = *source++;
 					*dest++ = *source++;
-					*dest++ = (unsigned char) (high ^ 0x80);
+					*dest++ = (unsigned char) (high ^ PCM_8BIT_SIGN_BIT_MASK);
 					source += 2;
 				} while (--count != 0);
 			}
@@ -181,15 +194,16 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	result = m_buffers[0]->Unlock(audio[0], audioBytes[0], audio[1], audioBytes[1]);
 	if (result != 0) {
 		// STRING: LEMBALL 0x004a356c
-		*g_pErrorOutput << "Effect Buffer Unlock failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pErrorOutput << "Effect Buffer Unlock failed: "
+						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		return;
 	}
 	for (index = 1; index < m_bufferCount; index++) {
 		result = g_directSound->DuplicateSoundBuffer(m_buffers[0], &m_buffers[index]);
 		if (result != 0) {
 			// STRING: LEMBALL 0x004a3590
-			*g_pErrorOutput << "Duplicate Effect Buffer Create failed: " << DescribeDirectSoundError(result & 0xfff)
-							<< "\n";
+			*g_pErrorOutput << "Duplicate Effect Buffer Create failed: "
+							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 			return;
 		}
 	}
@@ -215,15 +229,15 @@ int CDirectSoundEffect::FindIdleBuffer()
 	for (i = 0; i < m_bufferCount; i++) {
 		unsigned int result = m_buffers[i]->GetStatus(&status);
 		if (result != 0) {
-			*g_pErrorOutput << "Effect Buffer Status Request failed: " << DescribeDirectSoundError(result & 0xfff)
-							<< "\n";
-			return -1;
+			*g_pErrorOutput << "Effect Buffer Status Request failed: "
+							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
+			return SOUND_EFFECT_NO_BUFFER_INDEX;
 		}
-		if ((status & 1) == 0) {
+		if ((status & DIRECT_SOUND_BUFFER_STATUS_PLAYING) == 0) {
 			return i;
 		}
 	}
-	return -1;
+	return SOUND_EFFECT_NO_BUFFER_INDEX;
 }
 
 // FUNCTION: LEMBALL 0x0047d830
@@ -233,11 +247,11 @@ bool CDirectSoundEffect::IsPlaying()
 	for (int i = 0; i < m_bufferCount; i++) {
 		unsigned int result = m_buffers[i]->GetStatus(&status);
 		if (result != 0) {
-			*g_pErrorOutput << "Effect Buffer Status Request failed: " << DescribeDirectSoundError(result & 0xfff)
-							<< "\n";
+			*g_pErrorOutput << "Effect Buffer Status Request failed: "
+							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 			return false;
 		}
-		if (((unsigned char) status & 1) != 0) {
+		if (((unsigned char) status & DIRECT_SOUND_BUFFER_STATUS_PLAYING) != 0) {
 			return true;
 		}
 	}
@@ -249,12 +263,12 @@ int CDirectSoundEffect::Play(int p_loop)
 {
 	m_looping = p_loop;
 	int index = FindIdleBuffer();
-	if (index != -1) {
+	if (index != SOUND_EFFECT_NO_BUFFER_INDEX) {
 		unsigned int result = m_buffers[index]->SetCurrentPosition(0);
 		if (result != 0) {
-			*g_pErrorOutput << "Effect Set Current Position failed: " << DescribeDirectSoundError(result & 0xfff)
-							<< "\n";
-			return -1;
+			*g_pErrorOutput << "Effect Set Current Position failed: "
+							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
+			return SOUND_EFFECT_NO_BUFFER_INDEX;
 		}
 		PlayBuffer(index);
 	}
@@ -266,12 +280,12 @@ int CDirectSoundEffect::PlayWithVolume(int p_volume, int p_loop)
 {
 	m_looping = p_loop;
 	int index = FindIdleBuffer();
-	if (index != -1) {
+	if (index != SOUND_EFFECT_NO_BUFFER_INDEX) {
 		unsigned int result = m_buffers[index]->SetCurrentPosition(0);
 		if (result != 0) {
-			*g_pErrorOutput << "Effect Set Current Position failed: " << DescribeDirectSoundError(result & 0xfff)
-							<< "\n";
-			return -1;
+			*g_pErrorOutput << "Effect Set Current Position failed: "
+							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
+			return SOUND_EFFECT_NO_BUFFER_INDEX;
 		}
 		SetBufferVolume(index, p_volume);
 		PlayBuffer(index);
@@ -284,7 +298,8 @@ void CDirectSoundEffect::PlayBuffer(int p_index)
 {
 	unsigned int result = m_buffers[p_index]->Play(0, 0, m_looping != 0);
 	if (result != 0) {
-		*g_pErrorOutput << "Effect Play failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+		*g_pErrorOutput << "Effect Play failed: " << DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK)
+						<< "\n";
 	}
 }
 
@@ -296,7 +311,8 @@ void CDirectSoundEffect::Stop()
 		IDirectSoundBuffer** slot = &m_buffers[i];
 		unsigned int result = (*slot)->Stop();
 		if (result != 0) {
-			*g_pErrorOutput << "Effect Stop failed: " << DescribeDirectSoundError(result & 0xfff) << "\n";
+			*g_pErrorOutput << "Effect Stop failed: " << DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK)
+							<< "\n";
 			return;
 		}
 		++i;
@@ -309,8 +325,8 @@ bool CDirectSoundEffect::SetBufferVolume(int p_index, int p_volume)
 	IDirectSoundBuffer*& buffer = m_buffers[p_index];
 	unsigned int result = buffer->SetVolume(p_volume);
 	if (result != 0) {
-		*g_pErrorOutput << "Effect Buffer Set Volume Request failed: " << DescribeDirectSoundError(result & 0xfff)
-						<< "\n";
+		*g_pErrorOutput << "Effect Buffer Set Volume Request failed: "
+						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		return false;
 	}
 	return true;

@@ -7,6 +7,10 @@
 #include "../../Visos/Graphics/CDrawingMark.h"
 #include "../../Visos/Graphics/CGWnd.h"
 
+enum {
+	DISPLAY_COORDINATE_AUTO_CENTER = -1
+};
+
 class CGame;
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8 CGWnd

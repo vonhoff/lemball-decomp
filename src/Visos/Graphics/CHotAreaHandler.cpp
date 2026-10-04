@@ -139,42 +139,42 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, c
 
 	type = p_message->m_type;
 	switch (type) {
-	case 8:
-	case 9:
-		if ((g_pMasterInput->m_state & 1) != 0) {
+	case MESSAGE_CURSOR_BUTTON_DOWN:
+	case MESSAGE_CURSOR_BUTTON_UP:
+		if ((g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) != 0) {
 			return;
 		}
-	case 5:
-	case 6:
+	case MESSAGE_MOUSE_BUTTON_UP:
+	case MESSAGE_MOUSE_BUTTON_DOWN:
 		payload = (unsigned int) p_message->m_payload;
 		switch (payload) {
 		case INPUT_MOUSE_LEFT:
-			button = 0;
+			button = MOUSE_BUTTON_INDEX_LEFT;
 			break;
 		case INPUT_MOUSE_RIGHT:
-			button = 1;
+			button = MOUSE_BUTTON_INDEX_RIGHT;
 			break;
 		case INPUT_MOUSE_MIDDLE:
-			button = 2;
+			button = MOUSE_BUTTON_INDEX_MIDDLE;
 			break;
 		case INPUT_MOUSE_LEFT_DOUBLE_CLICK:
-			button = 3;
+			button = MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK;
 			break;
 		case INPUT_MOUSE_RIGHT_DOUBLE_CLICK:
-			button = 4;
+			button = MOUSE_BUTTON_INDEX_RIGHT_DOUBLE_CLICK;
 			break;
 		case INPUT_MOUSE_MIDDLE_DOUBLE_CLICK:
-			button = 5;
+			button = MOUSE_BUTTON_INDEX_MIDDLE_DOUBLE_CLICK;
 			break;
 		}
-		if (type == 6 || type == 8) {
+		if (type == MESSAGE_MOUSE_BUTTON_DOWN || type == MESSAGE_CURSOR_BUTTON_DOWN) {
 			m_buttonState[button] = 1;
 		}
 		else {
 			m_buttonState[button + 3] = 0;
 			m_buttonState[button] = 0;
 		}
-		if (p_message->m_type != 5 && p_message->m_type != 9) {
+		if (p_message->m_type != MESSAGE_MOUSE_BUTTON_UP && p_message->m_type != MESSAGE_CURSOR_BUTTON_UP) {
 			OnButtonDown(p_point, button);
 			return;
 		}
@@ -188,11 +188,11 @@ void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, c
 		}
 		OnExternalButtonUp(p_point, button);
 		return;
-	case 10:
-		if ((g_pMasterInput->m_state & 1) != 0) {
+	case MESSAGE_CURSOR_MOVED:
+		if ((g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) != 0) {
 			return;
 		}
-	case 7:
+	case MESSAGE_MOUSE_MOVED:
 		if (m_externalEnabled != 0) {
 			OnInside(p_point);
 		}

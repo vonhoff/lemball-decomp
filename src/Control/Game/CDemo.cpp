@@ -9,6 +9,13 @@
 
 #include <stddef.h>
 
+enum {
+	DEMO_PACKET_INDEX_BYTE_MASK = 0xff,
+	DEMO_MESSAGE_RECORDED_FLAG = 0x8000,
+	DEMO_MESSAGE_TYPE_MASK = 0x7fff,
+	DEMO_BUFFER_NEEDS_LOAD = -1
+};
+
 // FUNCTION: LEMBALL 0x004091b0
 CDemo::CDemo(int p_sourceId)
 {
@@ -25,7 +32,7 @@ CDemo::CDemo(int p_sourceId)
 	m_demoMode = 0;
 	m_state48 = 0;
 	m_gameOver = 0;
-	m_bytesRemaining = -1;
+	m_bytesRemaining = DEMO_BUFFER_NEEDS_LOAD;
 	m_state54 = 0;
 	g_pMasterInputQueue->Attach(this, -100);
 	Reset();
@@ -41,10 +48,10 @@ CDemo::~CDemo()
 // FUNCTION: LEMBALL 0x00409250
 bool CDemo::SendNextPacket(int p_packetIndex)
 {
-	if (m_bytesRemaining == -1 && !LoadBuffer()) {
+	if (m_bytesRemaining == DEMO_BUFFER_NEEDS_LOAD && !LoadBuffer()) {
 		return false;
 	}
-	if (*m_readCursor != (p_packetIndex & 0xff)) {
+	if (*m_readCursor != (p_packetIndex & DEMO_PACKET_INDEX_BYTE_MASK)) {
 		return false;
 	}
 	struct {
@@ -79,12 +86,13 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 		return false;
 	}
 	switch ((unsigned int) message.m_type) {
-	case 5:
-	case 6:
-	case 8:
-	case 9: {
+	case MESSAGE_MOUSE_BUTTON_UP:
+	case MESSAGE_MOUSE_BUTTON_DOWN:
+	case MESSAGE_CURSOR_BUTTON_DOWN:
+	case MESSAGE_CURSOR_BUTTON_UP: {
 		int zoom;
-		CVSPoint position((short) message.m_code, (short) ((unsigned int) message.m_code >> 16));
+		CVSPoint position((short) message.m_code,
+						  (short) ((unsigned int) message.m_code >> PACK_PARAM_HIGH_WORD_SHIFT));
 		CVSPoint& point = position;
 		zoom = m_window->m_zoom;
 		point.m_x = (short) (zoom * point.m_x);
@@ -102,7 +110,7 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 		break;
 	}
 	}
-	message.m_type |= 0x8000;
+	message.m_type |= DEMO_MESSAGE_RECORDED_FLAG;
 	g_pMasterInputQueue->Post((Message&) message);
 	return true;
 }
@@ -162,7 +170,7 @@ struct _Filet;
 // FUNCTION: LEMBALL 0x00409560
 void CDemo::GetUserPacket(unsigned char* p_data, unsigned long& p_size)
 {
-	if (m_bytesRemaining == -1) {
+	if (m_bytesRemaining == DEMO_BUFFER_NEEDS_LOAD) {
 		LoadBuffer();
 	}
 	p_size = m_readCursor[0];
@@ -178,7 +186,7 @@ void CDemo::GetUserPacket(unsigned char* p_data, unsigned long& p_size)
 // FUNCTION: LEMBALL 0x004095e0
 void CDemo::Reset()
 {
-	m_bytesRemaining = -1;
+	m_bytesRemaining = DEMO_BUFFER_NEEDS_LOAD;
 	m_packetIndex = 0;
 	m_gameOver = 0;
 	m_duration = 0;
@@ -240,18 +248,18 @@ int CDemo::ProcessMsg(Message* p_message)
 {
 	if (m_demoMode != 0) {
 		unsigned short type = p_message->m_type;
-		if ((type & 0x8000) != 0) {
-			p_message->m_type = type & 0x7fff;
+		if ((type & DEMO_MESSAGE_RECORDED_FLAG) != 0) {
+			p_message->m_type = type & DEMO_MESSAGE_TYPE_MASK;
 		}
 		else {
 			switch (type) {
-			case 1:
-			case 3:
-			case 5:
+			case MESSAGE_RAW_KEY_UP:
+			case MESSAGE_KEY_UP:
+			case MESSAGE_MOUSE_BUTTON_UP:
 				GameIsOver();
 				return 1;
-			case 7:
-			case 15:
+			case MESSAGE_MOUSE_MOVED:
+			case MESSAGE_WINDOW_COMMAND:
 				break;
 			default:
 				return 1;

@@ -1,6 +1,7 @@
 #include "AI/Managers/CLiftManager.h"
 
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Base/tCoord3d.h"
 #include "AI/Navigation/CAI.h"
 #include "AI/Objects/CLift.h"
@@ -17,7 +18,7 @@ void CLiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 	data = (unsigned short*) p_data;
 	count = *data++;
 	Initialise(count);
-	if (m_ai->m_levelVersion >= 3 && count != 0) {
+	if (m_ai->m_levelVersion >= LEVEL_VERSION_WITH_LIFTS && count != 0) {
 		unsigned int remaining = count;
 		do {
 			unsigned short id;
@@ -27,14 +28,14 @@ void CLiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 			int highHeight;
 			short direction;
 
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *data++;
 			}
 			else {
 				id = (unsigned short) CGameObject::NextId();
 			}
 
-			if (m_ai->m_levelVersion >= 5) {
+			if (m_ai->m_levelVersion >= LEVEL_VERSION_WITH_LIFT_ENDPOINTS) {
 
 				initialActive = *data++;
 				activateType = (eLiftActivateType) *data++;

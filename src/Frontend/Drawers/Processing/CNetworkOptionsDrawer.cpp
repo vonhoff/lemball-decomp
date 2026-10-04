@@ -14,6 +14,10 @@
 
 extern char* g_szBroadcastPeerName;
 
+enum {
+	NETWORK_OPTIONS_REDRAW_INTERVAL_MS = 500
+};
+
 // FUNCTION: LEMBALL 0x004548c0
 void CNetworkOptionsDrawer::Processing()
 {
@@ -34,15 +38,15 @@ void CNetworkOptionsDrawer::Processing()
 		StartBroadcast();
 		m_startPending = 0;
 	}
-	if (m_pendingStage != 0) {
+	if (m_pendingStage != NETWORK_OPTIONS_EDIT_NONE) {
 		StartEditing(m_pendingStage, 1);
-		m_pendingStage = 0;
+		m_pendingStage = NETWORK_OPTIONS_EDIT_NONE;
 	}
-	if (m_pendingEvent != 0) {
+	if (m_pendingEvent != NETWORK_OPTIONS_PENDING_EVENT_NONE) {
 		LastError();
 	}
 	now = CurrentMilliTimer();
-	if (now - m_lastDrawTime >= 500) {
+	if (now - m_lastDrawTime >= NETWORK_OPTIONS_REDRAW_INTERVAL_MS) {
 		m_redrawPending = m_redrawPending == 0;
 		now = CurrentMilliTimer();
 		m_lastDrawTime = now;
@@ -58,16 +62,16 @@ void CNetworkOptionsDrawer::Processing()
 			m_backBufferNeeded = 1;
 			m_localComputerName = peer;
 		}
-		if (m_networkState == 0) {
+		if (m_networkState == NETWORK_OPTIONS_HANDLERS_CURRENT) {
 			if (g_pNetworkManager->m_connectionsChanged != 0) {
 				g_pNetworkManager->m_connectionsChanged = 0;
-				m_networkState = 0;
+				m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
 				m_backBufferNeeded = 1;
 				InitialiseHandlers();
 			}
 		}
 		else {
-			m_networkState = 0;
+			m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
 			m_backBufferNeeded = 1;
 			InitialiseHandlers();
 		}
@@ -78,7 +82,7 @@ void CNetworkOptionsDrawer::Processing()
 			if (m_playerEntries[index].m_pressed != 0 && m_acceptedPlayer != index) {
 				g_pSoundView->PlayEffect(SFX_DRUM1);
 				acceptedPlayer = m_acceptedPlayer;
-				if (acceptedPlayer != -1) {
+				if (acceptedPlayer != NETWORK_OPTIONS_NO_PLAYER_INDEX) {
 					CConnect* connection = connections[acceptedPlayer];
 					if (connection != NULL) {
 						((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Reject(connection);
@@ -98,7 +102,7 @@ void CNetworkOptionsDrawer::Processing()
 			index = index + 1;
 		} while (index < 10);
 	}
-	if (m_message != 0) {
+	if (m_message != NETWORK_OPTIONS_MESSAGE_NONE) {
 		duration = m_messageDuration;
 		if (duration != 0) {
 			now = CurrentMilliTimer();

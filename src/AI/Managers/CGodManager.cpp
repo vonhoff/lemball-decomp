@@ -6,9 +6,15 @@
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGlobalGameObject.h"
 #include "../Messages/CGameStateMessage.h"
+#include "../Messages/GameMessageIds.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CViewData.h"
 #include "CBaseObjectManager.h"
+
+enum {
+	OBJECT_TRANSPORT_MAP_CAPACITY = OBJECT_MANAGER_TRANSPORT_PLAYER_LEMMING_GROUPS + 1,
+	TRANSPORT_MANAGER_INDEX_UNREGISTERED = -1
+};
 
 // FUNCTION: LEMBALL 0x0040b020
 CGodManager::CGodManager(int p_capacity)
@@ -16,15 +22,15 @@ CGodManager::CGodManager(int p_capacity)
 	m_capacity = p_capacity;
 	m_count = 0;
 	m_managers = new CBaseObjectManager*[p_capacity];
-	m_transportMap = new int[24];
-	for (int i = 0; i < 24; i++) {
-		m_transportMap[i] = -1;
+	m_transportMap = new int[OBJECT_TRANSPORT_MAP_CAPACITY];
+	for (int i = 0; i < OBJECT_TRANSPORT_MAP_CAPACITY; i++) {
+		m_transportMap[i] = TRANSPORT_MANAGER_INDEX_UNREGISTERED;
 	}
 	CGlobalGameObject::SetMessages();
 	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->AttachMessageQueue(this);
 	}
-	if (g_pActiveAI->m_networkMode != 0) {
+	if (g_pActiveAI->m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		m_gameStateMessage = new CGameStateMessage();
 	}
 	else {
@@ -92,7 +98,7 @@ void CGodManager::Unregister(CBaseObjectManager* p_manager)
 				*item = item[1];
 			} while (index < m_count - 1);
 		}
-		m_transportMap[p_manager->m_transportId] = -1;
+		m_transportMap[p_manager->m_transportId] = TRANSPORT_MANAGER_INDEX_UNREGISTERED;
 		m_managers[index] = NULL;
 		m_count--;
 	}
@@ -102,7 +108,7 @@ void CGodManager::Unregister(CBaseObjectManager* p_manager)
 CBaseObjectManager* CGodManager::GetManagerForTransport(int p_transportId)
 {
 	int index = m_transportMap[p_transportId];
-	if (index != -1) {
+	if (index != TRANSPORT_MANAGER_INDEX_UNREGISTERED) {
 		return m_managers[index];
 	}
 	return NULL;
@@ -113,7 +119,7 @@ int CGodManager::ProcessMsg(Message* p_message)
 {
 	int code = p_message->m_code;
 	switch (p_message->m_type) {
-	case 5: {
+	case NETWORK_EVENT_CRITICAL_PACKET_READY: {
 		CReadPacket* packet = (CReadPacket*) p_message->m_source;
 		if (code == 0) {
 			if (TransportReceive(packet)) {
@@ -122,7 +128,7 @@ int CGodManager::ProcessMsg(Message* p_message)
 
 			BasePacketHeader* header = (BasePacketHeader*) packet->m_data;
 			switch (header->m_messageId) {
-			case 10:
+			case MESSAGE_GAME_STATE:
 				m_gameStateMessage->Set(packet->m_data + sizeof(BasePacketHeader));
 				packet->m_used = 0;
 				g_pActiveAI->RemoteGameState(m_gameStateMessage);

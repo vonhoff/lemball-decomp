@@ -4,9 +4,11 @@
 #include "CTCPIPBroadcast.h"
 #include "CTCPIPConnect.h"
 #include "CTCPIPNetworkAddress.h"
+#include "NetworkConstants.h"
 #include "Platform/WinSock/WSAData.h"
 #include "Platform/WinSock/WinSock.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
+#include "Visos/Foundation/ThreadConstants.h"
 #include "Visos/Target/Network/CNetworkWnd.h"
 
 #include <new.h>
@@ -26,7 +28,10 @@ void CTCPIPNetwork::Initialise()
 	int wsaResult;
 	int maxDatagram;
 
-	wsaResult = WSAStartup(0x101, &wsaData);
+	enum {
+		WINSOCK_VERSION_1_1 = 0x0101
+	};
+	wsaResult = WSAStartup(WINSOCK_VERSION_1_1, &wsaData);
 	if (wsaResult != 0) {
 		g_lastNetworkError = WSAGetLastError();
 		return;
@@ -36,7 +41,7 @@ void CTCPIPNetwork::Initialise()
 	if ((int) g_networkPacketSize > maxDatagram) {
 		g_networkPacketSize = (unsigned int) maxDatagram;
 	}
-	m_timerId = SetTimer((HWND) m_windowHandle, 0x12345678, 10, NULL);
+	m_timerId = SetTimer((HWND) m_windowHandle, TCPIP_TIMER_ID, TCPIP_TIMER_INTERVAL_MS, NULL);
 }
 
 // FUNCTION: LEMBALL 0x00471460
@@ -54,7 +59,7 @@ int CTCPIPNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p
 
 	if (p_message != WM_TIMER) {
 		if (p_message != TCPIP_MESSAGE_FORCE_PROCESS) {
-			return -1;
+			return NETWORK_WINDOW_MESSAGE_UNHANDLED;
 		}
 		if (g_pNetworkStatusQueue != NULL && ((CBaseQueue*) g_pNetworkStatusQueue)->GetMessageCount() != 0) {
 			((CBaseQueue*) g_pNetworkStatusQueue)
@@ -99,7 +104,7 @@ void* CTCPIPNetwork::GetNewBroadcast()
 }
 
 // GLOBAL: LEMBALL 0x004a23b0
-unsigned long g_dwTCPIPNetworkThreadId = 0x12345678;
+unsigned long g_dwTCPIPNetworkThreadId = THREAD_ID_BEFORE_CREATE;
 
 // GLOBAL: LEMBALL 0x004a23b4
 void* g_hTCPIPNetworkThread = NULL;

@@ -14,31 +14,34 @@ bool _STRM_Init()
 {
 	void* storage;
 
-	storage = operator new(0x1c);
+	storage = operator new(sizeof(CVSDebugStreambuf));
 	if (storage != NULL) {
-		g_pDebugStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_DebugString);
+		g_pDebugStreambuf =
+			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_DebugString);
 	}
 	else {
 		g_pDebugStreambuf = NULL;
 	}
 
-	storage = operator new(0x1c);
+	storage = operator new(sizeof(CVSDebugStreambuf));
 	if (storage != NULL) {
-		g_pSysStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_SysString);
+		g_pSysStreambuf =
+			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_SysString);
 	}
 	else {
 		g_pSysStreambuf = NULL;
 	}
 
-	storage = operator new(0x1c);
+	storage = operator new(sizeof(CVSDebugStreambuf));
 	if (storage != NULL) {
-		g_pErrorStreambuf = new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, 0x400, _RAWOUT_ErrorString);
+		g_pErrorStreambuf =
+			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_ErrorString);
 	}
 	else {
 		g_pErrorStreambuf = NULL;
 	}
 
-	storage = operator new(0x14c);
+	storage = operator new(sizeof(CVSOStream));
 	if (storage != NULL) {
 		g_pDebugOutput = new (storage) CVSOStream(g_pDebugStreambuf);
 	}
@@ -46,7 +49,7 @@ bool _STRM_Init()
 		g_pDebugOutput = NULL;
 	}
 
-	storage = operator new(0x14c);
+	storage = operator new(sizeof(CVSOStream));
 	if (storage != NULL) {
 		g_pSysOutput = new (storage) CVSOStream(g_pSysStreambuf);
 	}
@@ -54,7 +57,7 @@ bool _STRM_Init()
 		g_pSysOutput = NULL;
 	}
 
-	storage = operator new(0x14c);
+	storage = operator new(sizeof(CVSOStream));
 	if (storage != NULL) {
 		g_pErrorOutput = new (storage) CVSOStream(g_pErrorStreambuf);
 	}

@@ -6,6 +6,11 @@
 
 #include <string.h>
 
+enum eResourceCheckDisposition {
+	RESOURCE_CHECK_DISCARD_INVALID_RESOURCE = 1,
+	RESOURCE_CHECK_PRESERVE_RESOURCE = 2
+};
+
 // FUNCTION: LEMBALL 0x0045cf20
 void CResBase::DoLoad(unsigned int p_resourceId)
 {
@@ -17,7 +22,7 @@ void CResBase::DoLoad(unsigned int p_resourceId)
 		m_referenceCount = m_referenceCount + 1;
 		return;
 	}
-	m_error = 1;
+	m_error = RESOURCE_CHECK_DISCARD_INVALID_RESOURCE;
 }
 
 // FUNCTION: LEMBALL 0x0045cf70
@@ -43,7 +48,7 @@ bool CResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCurs
 	m_externalList = p_list;
 	entry = (unsigned int*) p_headerCursor;
 	if (m_chunkType != entry[0]) {
-		m_error = 1;
+		m_error = RESOURCE_CHECK_DISCARD_INVALID_RESOURCE;
 		return true;
 	}
 	m_dataSize = entry[1];
@@ -178,11 +183,11 @@ void CResBase::UnLoadExtData(unsigned int p_force)
 CResBase* CResBase::CheckError()
 {
 	switch (m_error) {
-	case 1:
+	case RESOURCE_CHECK_DISCARD_INVALID_RESOURCE:
 		g_pActiveMogRes->Remove(this);
 		delete this;
 		return NULL;
-	case 2:
+	case RESOURCE_CHECK_PRESERVE_RESOURCE:
 		return NULL;
 	default:
 		return this;

@@ -7,6 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+enum {
+	DIB_COPY_WORD_BYTE_SHIFT = 2,
+	DIB_COPY_WORD_BYTE_MASK = (1 << DIB_COPY_WORD_BYTE_SHIFT) - 1
+};
+
 // FUNCTION: LEMBALL 0x00472290
 CPVGDIBitmap::CPVGDIBitmap() : m_height(0)
 {
@@ -166,12 +171,12 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 			do {
 				destPtr = (unsigned int*) ((unsigned char*) m_lines[srcY] + p_rect->m_x);
 				srcPtr = (unsigned int*) ((unsigned char*) m_lines[dstY] + p_destination->m_x);
-				for (count = width >> 2; count != 0; count = count - 1) {
+				for (count = width >> DIB_COPY_WORD_BYTE_SHIFT; count != 0; count = count - 1) {
 					*destPtr = *srcPtr;
 					destPtr = destPtr + 1;
 					srcPtr = srcPtr + 1;
 				}
-				for (count = width & 3; count != 0; count = count - 1) {
+				for (count = width & DIB_COPY_WORD_BYTE_MASK; count != 0; count = count - 1) {
 					*(unsigned char*) destPtr = *(unsigned char*) srcPtr;
 					destPtr = (unsigned int*) ((int) destPtr + 1);
 					srcPtr = (unsigned int*) ((int) srcPtr + 1);
@@ -189,12 +194,12 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 		do {
 			destPtr = (unsigned int*) ((unsigned char*) m_lines[srcY] + p_rect->m_x);
 			srcPtr = (unsigned int*) ((unsigned char*) m_lines[dstY] + p_destination->m_x);
-			for (count = width >> 2; count != 0; count = count - 1) {
+			for (count = width >> DIB_COPY_WORD_BYTE_SHIFT; count != 0; count = count - 1) {
 				*destPtr = *srcPtr;
 				destPtr = destPtr + 1;
 				srcPtr = srcPtr + 1;
 			}
-			for (count = width & 3; count != 0; count = count - 1) {
+			for (count = width & DIB_COPY_WORD_BYTE_MASK; count != 0; count = count - 1) {
 				*(unsigned char*) destPtr = *(unsigned char*) srcPtr;
 				destPtr = (unsigned int*) ((int) destPtr + 1);
 				srcPtr = (unsigned int*) ((int) srcPtr + 1);

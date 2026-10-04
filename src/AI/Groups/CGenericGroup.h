@@ -5,6 +5,10 @@
 #include "../Base/AICOORD.h"
 #include "../Base/CGameObject.h"
 
+enum {
+	GROUP_BOUNDING_BOX_RADIUS_PIXELS = 24
+};
+
 class CAI;
 class CFormationManager;
 class CObjectManager;
@@ -48,6 +52,7 @@ public:
 	virtual bool CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);              // vtable+0x15c
 	virtual void GetBoundingBox(CVSRect& p_rect);                                             // vtable+0x48
 	void SwapElements(CGameObject* p_first, CGameObject* p_second);
+	void SwapElementIndices(int p_firstIndex, int p_secondIndex);
 	CGenericGroup();
 
 protected:

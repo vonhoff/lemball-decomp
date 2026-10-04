@@ -6,9 +6,16 @@ from reccmp.compare.asm.instgen import InstructGen, SectionType
 
 
 REVERSED_BRANCH = {
-    "ja": "jb", "jb": "ja", "jae": "jbe", "jbe": "jae",
-    "jg": "jl", "jl": "jg", "jge": "jle", "jle": "jge",
-    "je": "je", "jne": "jne",
+    "ja": "jb",
+    "jb": "ja",
+    "jae": "jbe",
+    "jbe": "jae",
+    "jg": "jl",
+    "jl": "jg",
+    "jge": "jle",
+    "jle": "jge",
+    "je": "je",
+    "jne": "jne",
 }
 REGISTER = re.compile(r"e?(?:ax|bx|cx|dx|si|di|sp|bp)|[abcd][lh]")
 MEMORY = re.compile(r"(?:byte|word|dword) ptr \[[^\[\],]+]")
@@ -49,8 +56,12 @@ def _flags_overwritten(instructions, address, check_call=None):
 
 def control_flow_targets(sections, instructions):
     """Collect explicit entries that can bypass a preceding instruction."""
-    targets = {target for section in sections if section.type == SectionType.ADDR_TAB
-               for _, target in section.contents}
+    targets = {
+        target
+        for section in sections
+        if section.type == SectionType.ADDR_TAB
+        for _, target in section.contents
+    }
     for _, _, mnemonic, operands in instructions.values():
         if re.fullmatch(r"call|j\w+|loop\w*", mnemonic) and operands.startswith("0x"):
             targets.add(int(operands, 16))
@@ -62,7 +73,9 @@ def indirect_jumps_use_tables(instructions, tables):
     for _, _, mnemonic, operands in instructions:
         if mnemonic != "jmp" or operands.startswith("0x"):
             continue
-        table = re.fullmatch(r"dword ptr \[(?:e[a-z]{2}\*4 \+ )?(0x[0-9a-f]+)]", operands)
+        table = re.fullmatch(
+            r"dword ptr \[(?:e[a-z]{2}\*4 \+ )?(0x[0-9a-f]+)]", operands
+        )
         if table is None or tables.get(int(table[1], 16)) != SectionType.ADDR_TAB:
             return False
     return True
@@ -70,12 +83,18 @@ def indirect_jumps_use_tables(instructions, tables):
 
 def prefix_overwrites_flags(data, start):
     """Prove a callee's decoded prefix kills incoming flags without another call."""
-    instructions = {inst[0]: inst for section in InstructGen(data, start).sections
-                    if section.type == SectionType.CODE for inst in section.contents}
+    instructions = {
+        inst[0]: inst
+        for section in InstructGen(data, start).sections
+        if section.type == SectionType.CODE
+        for inst in section.contents
+    }
     return _flags_overwritten(instructions, start)
 
 
-def _guarded_pair(instruction, instructions, targets, check_call, lines) -> tuple[list[str], tuple] | None:
+def _guarded_pair(
+    instruction, instructions, targets, check_call, lines
+) -> tuple[list[str], tuple] | None:
     """Accept CMP/Jcc pairs with one entry and dead outgoing flags."""
     address, size, mnemonic, operands = instruction
     if mnemonic != "cmp":
@@ -86,23 +105,35 @@ def _guarded_pair(instruction, instructions, targets, check_call, lines) -> tupl
         return None
     if not any(REGISTER.fullmatch(operand) for operand in raw):
         return None
-    if not all(REGISTER.fullmatch(operand) or MEMORY.fullmatch(operand) for operand in raw):
+    if not all(
+        REGISTER.fullmatch(operand) or MEMORY.fullmatch(operand) for operand in raw
+    ):
         return None
     branch = instructions.get(address + size)
     if branch is None or branch[0] in targets or branch[2] not in REVERSED_BRANCH:
         return None
     successors = (branch[0] + branch[1], int(branch[3], 16))
-    if not all(_flags_overwritten(instructions, successor, check_call) for successor in successors):
+    if not all(
+        _flags_overwritten(instructions, successor, check_call)
+        for successor in successors
+    ):
         return None
     return compared, branch
 
 
 def normalize_compare_branches(asm, sections, check_call=None):
     """Normalize proven pairs only; preserve every instruction address and branch target."""
-    instructions = {inst[0]: inst for section in sections if section.type == SectionType.CODE
-                    for inst in section.contents}
-    tables = {section.contents[0][0]: section.type for section in sections
-              if section.type != SectionType.CODE and section.contents}
+    instructions = {
+        inst[0]: inst
+        for section in sections
+        if section.type == SectionType.CODE
+        for inst in section.contents
+    }
+    tables = {
+        section.contents[0][0]: section.type
+        for section in sections
+        if section.type != SectionType.CODE and section.contents
+    }
     if not indirect_jumps_use_tables(instructions.values(), tables):
         return asm
     targets = control_flow_targets(sections, instructions)

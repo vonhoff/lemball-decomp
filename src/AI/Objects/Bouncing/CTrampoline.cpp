@@ -13,19 +13,32 @@
 
 #include <stddef.h>
 
+enum {
+	TRAMPOLINE_HIT_BOUNDS_INSET_PIXELS = 12,
+	TRAMPOLINE_HIT_BOUNDS_SPAN_PIXELS = 24,
+	TRAMPOLINE_HIT_BOUNDS_BELOW_BASE_PIXELS = 4,
+	TRAMPOLINE_HIT_BOUNDS_ABOVE_BASE_PIXELS = 8,
+	TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED = 0x2000,
+	TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED = 0x4000,
+	TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED = 0x14000,
+	TRAMPOLINE_SURFACE_HEIGHT_FIXED = 0x8000,
+	TRAMPOLINE_ACTIVE_DURATION_TICKS = 16,
+	TRAMPOLINE_SCORE_BONUS_POINTS = 50
+};
+
 // FUNCTION: LEMBALL 0x0042ab90
 int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 {
-	int positionX = p_position.m_xFixed >> 12;
-	int positionY = p_position.m_yFixed >> 12;
-	int positionZ = p_position.m_zFixed >> 12;
-	int minimumX = (m_position.m_xFixed >> 12) - 0xc;
-	int maximumX = minimumX + 0x18;
-	int minimumY = (m_position.m_yFixed >> 12) - 0xc;
-	int maximumY = minimumY + 0x18;
-	int minimumZ = m_position.m_zFixed >> 12;
-	int maximumZ = minimumZ + 8;
-	minimumZ -= 4;
+	int positionX = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int positionY = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int positionZ = p_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+	int minimumX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - TRAMPOLINE_HIT_BOUNDS_INSET_PIXELS;
+	int maximumX = minimumX + TRAMPOLINE_HIT_BOUNDS_SPAN_PIXELS;
+	int minimumY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - TRAMPOLINE_HIT_BOUNDS_INSET_PIXELS;
+	int maximumY = minimumY + TRAMPOLINE_HIT_BOUNDS_SPAN_PIXELS;
+	int minimumZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+	int maximumZ = minimumZ + TRAMPOLINE_HIT_BOUNDS_ABOVE_BASE_PIXELS;
+	minimumZ -= TRAMPOLINE_HIT_BOUNDS_BELOW_BASE_PIXELS;
 
 	if (minimumX > positionX || maximumX < positionX || minimumY > positionY || maximumY < positionY ||
 		minimumZ > positionZ || maximumZ < positionZ) {
@@ -45,7 +58,9 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 
 	if (incomingVelocity[1].m_value != 0) {
 		if (incomingVelocity[1].m_value > 0) {
-			CFixed impulse[3] = {CFixed(0), CFixed(0x2000), CFixed(0x4000)};
+			CFixed impulse[3] = {CFixed(0),
+								 CFixed(TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
+								 CFixed(TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED)};
 			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
@@ -55,7 +70,9 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
 		}
 		else {
-			CFixed impulse[3] = {CFixed(0), CFixed(-0x2000), CFixed(0x4000)};
+			CFixed impulse[3] = {CFixed(0),
+								 CFixed(-TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
+								 CFixed(TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED)};
 			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
@@ -67,7 +84,9 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 	}
 	else {
 		if (incomingVelocity[0].m_value > 0) {
-			CFixed impulse[3] = {CFixed(0x2000), CFixed(0), CFixed(0x4000)};
+			CFixed impulse[3] = {CFixed(TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
+								 CFixed(0),
+								 CFixed(TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED)};
 			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
@@ -77,7 +96,9 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
 		}
 		else {
-			CFixed impulse[3] = {CFixed(-0x2000), CFixed(0), CFixed(0x4000)};
+			CFixed impulse[3] = {CFixed(-TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
+								 CFixed(0),
+								 CFixed(TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED)};
 			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
@@ -88,31 +109,31 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 		}
 	}
 
-	if (flightVelocity.m_xFixed > 0x14000) {
-		flightVelocity.m_xFixed = 0x14000;
+	if (flightVelocity.m_xFixed > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_xFixed = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
-	if (flightVelocity.m_xFixed < -0x14000) {
-		flightVelocity.m_xFixed = -0x14000;
+	if (flightVelocity.m_xFixed < -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_xFixed = -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
-	if (flightVelocity.m_yFixed > 0x14000) {
-		flightVelocity.m_yFixed = 0x14000;
+	if (flightVelocity.m_yFixed > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_yFixed = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
-	if (flightVelocity.m_yFixed < -0x14000) {
-		flightVelocity.m_yFixed = -0x14000;
+	if (flightVelocity.m_yFixed < -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_yFixed = -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
-	if (flightVelocity.m_zFixed > 0x14000) {
-		flightVelocity.m_zFixed = 0x14000;
+	if (flightVelocity.m_zFixed > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_zFixed = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
 
-	AICOORD position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + 0x8000);
+	AICOORD position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + TRAMPOLINE_SURFACE_HEIGHT_FIXED);
 	p_object->m_position = position;
 	p_object->StartFly(flightVelocity, NULL);
 	p_object->m_balloonPostId = 1;
 	p_object->ResetInstructions();
-	m_actionDeadline = g_dwGameTick + 0x10;
+	m_actionDeadline = g_dwGameTick + TRAMPOLINE_ACTIVE_DURATION_TICKS;
 	m_stateTimer = g_dwSimulationTimestamp;
 	Action(ACTION_RUNNING);
 	SetSndEffect(SFX_TRMPLINE);
-	g_pAI->Score(0x32);
+	g_pAI->Score(TRAMPOLINE_SCORE_BONUS_POINTS);
 	return 1;
 }

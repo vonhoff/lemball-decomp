@@ -4,6 +4,12 @@
 #include "GroundAnimEntry.h"
 
 struct tCoord3d;
+
+enum {
+	GROUND_ANIM_ENTRY_CAPACITY = 200,
+	GROUND_ANIM_PROCESS_INTERVAL_TICKS = 2
+};
+
 // SIZE 0x12cc
 class CGroundAnim {
 public:
@@ -17,12 +23,13 @@ public:
 	void Restart();
 	~CGroundAnim();
 	void RemoveAtCoordinate(const tCoord3d& p_coordinate);
+	void AddStaticGroundAnim(const tCoord3d& p_coordinate);
 
 private:
-	unsigned int m_nextProcessTick; // 0x0000
-	int m_count;                    // 0x0004
-	GroundAnimEntry m_entries[200]; // 0x0008
-	unsigned int m_needsValidation; // 0x12c8
+	unsigned int m_nextProcessTick;                        // 0x0000
+	int m_count;                                           // 0x0004
+	GroundAnimEntry m_entries[GROUND_ANIM_ENTRY_CAPACITY]; // 0x0008
+	unsigned int m_needsValidation;                        // 0x12c8
 };
 
 #endif

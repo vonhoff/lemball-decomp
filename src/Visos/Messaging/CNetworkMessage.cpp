@@ -6,6 +6,7 @@
 #include "../Network/CBaseNetwork.h"
 #include "BasePacketHeader.h"
 #include "Visos/Foundation/Message.h"
+#include "Visos/Network/NetworkConstants.h"
 
 #include <string.h>
 
@@ -53,7 +54,7 @@ CNetworkMessage::~CNetworkMessage()
 	if (m_pendingSendCount != 0) {
 		unsigned long start = CurrentMilliTimer();
 		while (m_pendingSendCount != 0) {
-			if (CurrentMilliTimer() - start >= 2000) {
+			if (CurrentMilliTimer() - start >= NETWORK_PENDING_SEND_TIMEOUT_MS) {
 				break;
 			}
 			if (g_pBaseNetwork != NULL) {

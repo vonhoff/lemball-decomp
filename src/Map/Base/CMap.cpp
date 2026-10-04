@@ -8,13 +8,14 @@
 
 #include <stddef.h>
 
-#define WALK_CELL_SHIFT 4
-#define WALK_CELL_SIZE (1 << WALK_CELL_SHIFT)
+#define WALK_CELL_SHIFT GROUND_BLOCK_PIXEL_SHIFT
+#define WALK_CELL_SIZE GROUND_BLOCK_PIXEL_SIZE
 #define WALK_CELL_HALF_SIZE (WALK_CELL_SIZE / 2)
-#define WALK_CELL_MASK (WALK_CELL_SIZE - 1)
+#define WALK_CELL_MASK GROUND_BLOCK_PIXEL_MASK
 #define WALK_MAX_HEIGHT_STEP 15
-#define WALK_OUT_OF_BOUNDS_COLLISION 3
-#define WALK_BLOCKING_COLLISION_MASK 0x25
+#define WALK_OUT_OF_BOUNDS_COLLISION GROUND_COLLISION_OUT_OF_BOUNDS
+#define WALK_BLOCKING_COLLISION_MASK                                                                                   \
+	(GROUND_COLLISION_BLOCKS_WALKING | GROUND_COLLISION_HAZARD | GROUND_COLLISION_SPECIAL_RENDER)
 #define WALK_IN_NORTH 0x01
 #define WALK_IN_SOUTH 0x02
 #define WALK_IN_EAST 0x04
@@ -46,7 +47,7 @@ CMap::CMap()
 // FUNCTION: LEMBALL 0x004303f0
 void CMap::Restart()
 {
-	m_orientation = 0;
+	m_orientation = MAP_ORIENTATION_ROTATION_0_DEGREES;
 	m_levelName[0] = '\0';
 	m_defaultBlox = TERRAIN_BLOX_4;
 	m_defaultBloxData = 0;
@@ -87,9 +88,9 @@ void CMap::ReSize(int p_width, int p_height)
 unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 {
 	if (p_mover != NULL) {
-		int blockX = p_x >> 4;
-		int blockY = p_y >> 4;
-		if ((m_ground.m_ground[blockY * m_ground.m_width + blockX].m_collision & 0x10) != 0) {
+		int blockX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
+		if ((m_ground.m_ground[blockY * m_ground.m_width + blockX].m_collision & GROUND_COLLISION_MOVER_PRESENT) != 0) {
 			int height;
 			CMover* mover = m_ai->FindMoverHeight(p_x, p_y, height);
 			if (mover != NULL) {
@@ -98,11 +99,11 @@ unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 			}
 		}
 	}
-	int blockX = p_x >> 4;
-	int blockY = p_y >> 4;
+	int blockX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
 	if (p_x >= 0 && p_y >= 0 && blockX < m_ground.m_width && blockY < m_ground.m_height) {
-		p_x &= 0xf;
-		p_y &= 0xf;
+		p_x &= GROUND_BLOCK_PIXEL_MASK;
+		p_y &= GROUND_BLOCK_PIXEL_MASK;
 		return m_ground.m_ground[blockY * m_ground.m_width + blockX].GetZ(p_x, p_y);
 	}
 	return 0;
@@ -356,21 +357,21 @@ void CMap::SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data)
 void CMap::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 {
 	switch (m_orientation) {
-	case 0:
-		p_gameX = p_screenX / 2 + p_screenY - 8;
-		p_gameY = p_screenY - p_screenX / 2 + 8;
+	case MAP_ORIENTATION_ROTATION_0_DEGREES:
+		p_gameX = p_screenX / 2 + p_screenY - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameY = p_screenY - p_screenX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
-	case 1:
-		p_gameX = p_screenY - p_screenX / 2 + 8;
-		p_gameY = 0x18 - p_screenX / 2 - p_screenY;
+	case MAP_ORIENTATION_ROTATION_90_DEGREES:
+		p_gameX = p_screenY - p_screenX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameY = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - p_screenX / 2 - p_screenY;
 		break;
-	case 2:
-		p_gameX = 0x18 - p_screenX / 2 - p_screenY;
-		p_gameY = p_screenX / 2 - p_screenY + 8;
+	case MAP_ORIENTATION_ROTATION_180_DEGREES:
+		p_gameX = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - p_screenX / 2 - p_screenY;
+		p_gameY = p_screenX / 2 - p_screenY + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
-	case 3:
-		p_gameX = p_screenX / 2 - p_screenY + 8;
-		p_gameY = p_screenX / 2 + p_screenY - 8;
+	case MAP_ORIENTATION_ROTATION_270_DEGREES:
+		p_gameX = p_screenX / 2 - p_screenY + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameY = p_screenX / 2 + p_screenY - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 	}
 }
 
@@ -380,21 +381,21 @@ void CMap::ScreenToGame(int& p_x, int& p_y)
 	int x = p_x;
 	int y = p_y;
 	switch (m_orientation) {
-	case 0:
-		p_x = x / 2 + y - 8;
-		p_y = y - x / 2 + 8;
+	case MAP_ORIENTATION_ROTATION_0_DEGREES:
+		p_x = x / 2 + y - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_y = y - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
-	case 1:
-		p_x = y - x / 2 + 8;
-		p_y = 0x18 - x / 2 - y;
+	case MAP_ORIENTATION_ROTATION_90_DEGREES:
+		p_x = y - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_y = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - x / 2 - y;
 		break;
-	case 2:
-		p_x = 0x18 - x / 2 - y;
-		p_y = x / 2 - y + 8;
+	case MAP_ORIENTATION_ROTATION_180_DEGREES:
+		p_x = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - x / 2 - y;
+		p_y = x / 2 - y + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
-	case 3:
-		p_x = x / 2 - y + 8;
-		p_y = x / 2 + y - 8;
+	case MAP_ORIENTATION_ROTATION_270_DEGREES:
+		p_x = x / 2 - y + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_y = x / 2 + y - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 	}
 }
 
@@ -402,21 +403,21 @@ void CMap::ScreenToGame(int& p_x, int& p_y)
 void CMap::GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY)
 {
 	switch (m_orientation) {
-	case 0:
-		p_screenX = p_gameX - p_gameY + 0x10;
+	case MAP_ORIENTATION_ROTATION_0_DEGREES:
+		p_screenX = p_gameX - p_gameY + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
 		p_screenY = p_gameY / 2 + p_gameX / 2;
 		break;
-	case 1:
-		p_screenX = 0x20 - p_gameY - p_gameX;
-		p_screenY = p_gameX / 2 - p_gameY / 2 + 8;
+	case MAP_ORIENTATION_ROTATION_90_DEGREES:
+		p_screenX = MAP_PROJECTION_DOUBLE_BLOCK_PIXEL_SIZE - p_gameY - p_gameX;
+		p_screenY = p_gameX / 2 - p_gameY / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
-	case 2:
-		p_screenX = p_gameY - p_gameX + 0x10;
-		p_screenY = 0x10 - p_gameY / 2 - p_gameX / 2;
+	case MAP_ORIENTATION_ROTATION_180_DEGREES:
+		p_screenX = p_gameY - p_gameX + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
+		p_screenY = MAP_PROJECTION_BLOCK_PIXEL_SIZE - p_gameY / 2 - p_gameX / 2;
 		break;
-	case 3:
+	case MAP_ORIENTATION_ROTATION_270_DEGREES:
 		p_screenX = p_gameX + p_gameY;
-		p_screenY = p_gameY / 2 - p_gameX / 2 + 8;
+		p_screenY = p_gameY / 2 - p_gameX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 	}
 }
 
@@ -500,8 +501,8 @@ bool ValidateDefaultBloxData(eObjectType p_type, unsigned short* p_data)
 			validatedData = 0;
 		}
 		break;
-	case TERRAIN_0x214:
-		if (g_wDefaultBloxLimit0214 <= *p_data) {
+	case TERRAIN_CLIFF_ONLY_GROUND:
+		if (g_wCliffOnlyGroundDataLimit <= *p_data) {
 			validatedData = 0;
 		}
 		break;
@@ -534,8 +535,8 @@ void CMap::SetLevelName(char* p_name)
 			break;
 		}
 		i++;
-	} while (i < 32);
-	m_levelName[32] = '\0';
+	} while (i < MAP_LEVEL_NAME_MAX_CHARACTERS);
+	m_levelName[MAP_LEVEL_NAME_MAX_CHARACTERS] = '\0';
 }
 
 // GLOBAL: LEMBALL 0x004a74b4
@@ -572,7 +573,7 @@ unsigned short g_shallowSwSlopeFrameLimit = 0;
 unsigned short g_shallowSeSlopeFrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e528
-unsigned short g_wDefaultBloxLimit0214 = 0;
+unsigned short g_wCliffOnlyGroundDataLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e534
 unsigned short g_groundAnimFrameLimit = 0;

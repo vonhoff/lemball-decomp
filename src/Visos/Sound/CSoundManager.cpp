@@ -376,16 +376,16 @@ void CSoundManager::FreeEffect(unsigned long p_effectId)
 // FUNCTION: LEMBALL 0x0045b510
 void CSoundManager::SetVolumes(int p_effectVolume, int p_musicVolume)
 {
-	if (p_effectVolume != -1) {
+	if (p_effectVolume != SOUND_VOLUME_UNCHANGED) {
 		if (m_effectOutput != NULL) {
 			m_effectOutput->SetEffectVolume((unsigned char) p_effectVolume);
 		}
 	}
-	if (p_musicVolume != -1 && m_useMusicCD != 0) {
+	if (p_musicVolume != SOUND_VOLUME_UNCHANGED && m_useMusicCD != 0) {
 		m_musicDevice->SetVolume((unsigned char) p_musicVolume);
 		return;
 	}
-	if (p_musicVolume != -1) {
+	if (p_musicVolume != SOUND_VOLUME_UNCHANGED) {
 		if (m_musicOutput != NULL) {
 			m_musicOutput->SetMusicVolume((unsigned char) p_musicVolume);
 		}

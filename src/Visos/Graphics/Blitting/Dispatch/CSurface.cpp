@@ -3,6 +3,7 @@
 #include "../../../Foundation/CVSOStream.h"
 #include "../../../Resources/CResZRLE.h"
 #include "../../CRemap.h"
+#include "../../CZRLE.h"
 
 #include <stddef.h>
 
@@ -51,7 +52,7 @@ void CSurface::BlitZRLE(int p_x,
 	dest->m_height = zHeight;
 	dest->m_x = (short) p_x;
 	dest->m_y = (short) p_y;
-	if ((flags & 0x400) == 0) {
+	if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
 		dest->m_x = (short) (dest->m_x + resource->m_x);
 		dest->m_y = (short) (dest->m_y + resource->m_y);
 	}
@@ -59,18 +60,18 @@ void CSurface::BlitZRLE(int p_x,
 	clipped->m_width = 0;
 	clipped->m_y = 0;
 	clipped->m_x = 0;
-	if (dest->m_width > 0xff || dest->m_height > 0xff) {
+	if (dest->m_width > ZRLE_CLIPPED_DIMENSION_MAX || dest->m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
 		CVSOStream& warning = *g_pDebugOutput << g_szWarningZrleIs;
 		frame.m_warningHeight = dest->m_height;
 		CVSOStream& heightOutput = warning << width << g_szClippingWideAnd;
 		heightOutput << (int) frame.m_warningHeight << g_szClippingHighNewline;
-		if (dest->m_width > 0xff) {
-			*g_pDebugOutput << g_szClippingWidthTo << 0xff << g_szClippingDotNewline;
-			dest->m_width = 0xff;
+		if (dest->m_width > ZRLE_CLIPPED_DIMENSION_MAX) {
+			*g_pDebugOutput << g_szClippingWidthTo << (int) ZRLE_CLIPPED_DIMENSION_MAX << g_szClippingDotNewline;
+			dest->m_width = ZRLE_CLIPPED_DIMENSION_MAX;
 		}
-		if (dest->m_height > 0xff) {
-			*g_pDebugOutput << g_szClippingHeightTo << 0xff << g_szClippingDotNewline;
-			dest->m_height = 0xff;
+		if (dest->m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+			*g_pDebugOutput << g_szClippingHeightTo << (int) ZRLE_CLIPPED_DIMENSION_MAX << g_szClippingDotNewline;
+			dest->m_height = ZRLE_CLIPPED_DIMENSION_MAX;
 		}
 	}
 	{
@@ -79,7 +80,7 @@ void CSurface::BlitZRLE(int p_x,
 		remap = p_remap;
 		if (ClipRect(*dest, clipped) == 0) {
 			AddToChangeList(*dest);
-			if ((flags & 0x40000) != 0) {
+			if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
 				if (remap == NULL) {
 					BlitZRLENoClipZBuff(*dest, resource, p_depth);
 					return;
@@ -87,7 +88,7 @@ void CSurface::BlitZRLE(int p_x,
 				BlitZRLENoClipZBuffRemap(*dest, resource, p_depth, remap->m_remap);
 				return;
 			}
-			if ((flags & 0x80000) != 0) {
+			if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
 				if (remap == NULL) {
 					BlitZRLENoClipQZBuff(*dest, resource, p_depth);
 					return;
@@ -96,25 +97,25 @@ void CSurface::BlitZRLE(int p_x,
 				return;
 			}
 			if (remap == NULL) {
-				if ((flags & 1) != 0) {
-					BlitZRLENoClipR(*dest, resource, (flags & 2) >> 1);
+				if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+					BlitZRLENoClipR(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 					return;
 				}
-				BlitZRLENoClip(*dest, resource, (flags & 2) >> 1);
+				BlitZRLENoClip(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 				return;
 			}
-			if ((flags & 1) != 0) {
-				BlitZRLENoClipRemapR(*dest, resource, (flags & 2) >> 1, remap->m_remap);
+			if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+				BlitZRLENoClipRemapR(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
 				return;
 			}
-			BlitZRLENoClipRemap(*dest, resource, (flags & 2) >> 1, remap->m_remap);
+			BlitZRLENoClipRemap(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
 			return;
 		}
 		if (clipped->m_width <= 0 || clipped->m_height <= 0) {
 			return;
 		}
 		AddToChangeList(*dest);
-		if ((flags & 0x40000) != 0) {
+		if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
 			if (remap == NULL) {
 				BlitZRLEClipZBuff(*dest, *clipped, resource, p_depth);
 				return;
@@ -122,7 +123,7 @@ void CSurface::BlitZRLE(int p_x,
 			BlitZRLEClipZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
 			return;
 		}
-		if ((flags & 0x80000) != 0) {
+		if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
 			if (remap == NULL) {
 				BlitZRLEClipQZBuff(*dest, *clipped, resource, p_depth);
 				return;
@@ -131,17 +132,21 @@ void CSurface::BlitZRLE(int p_x,
 			return;
 		}
 		if (remap == NULL) {
-			if ((flags & 1) != 0) {
-				BlitZRLEClipR(*dest, *clipped, resource, (flags & 2) >> 1);
+			if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+				BlitZRLEClipR(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 				return;
 			}
-			BlitZRLEClip(*dest, *clipped, resource, (flags & 2) >> 1);
+			BlitZRLEClip(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 			return;
 		}
-		if ((flags & 1) != 0) {
-			BlitZRLEClipRemapR(*dest, *clipped, resource, (flags & 2) >> 1, remap->m_remap);
+		if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+			BlitZRLEClipRemapR(*dest,
+							   *clipped,
+							   resource,
+							   ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+							   remap->m_remap);
 			return;
 		}
-		BlitZRLEClipRemap(*dest, *clipped, resource, (flags & 2) >> 1, remap->m_remap);
+		BlitZRLEClipRemap(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
 	}
 }

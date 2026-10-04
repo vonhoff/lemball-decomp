@@ -7,6 +7,13 @@
 
 #include <string.h>
 
+enum {
+	VSO_HEX8_DIGIT_WIDTH = 8,
+	VSO_NUMBER_FORMAT_BUFFER_OFFSET = 0x21,
+	CHAR4_BYTE_COUNT = 4,
+	CHAR4_BITS_PER_BYTE = 8
+};
+
 #pragma intrinsic(memset, memcpy, strlen)
 
 // FUNCTION: LEMBALL 0x00458450
@@ -30,17 +37,17 @@ void CVSOStream::_FormatNum()
 		int width = m_width;
 		char fill = m_fill;
 
-		memset(m_numberBuffer + 0x21, fill, width);
-		m_numberBuffer[0x21 + width] = '\0';
+		memset(m_numberBuffer + VSO_NUMBER_FORMAT_BUFFER_OFFSET, fill, width);
+		m_numberBuffer[VSO_NUMBER_FORMAT_BUFFER_OFFSET + width] = '\0';
 
 		if (isNeg) {
-			m_numberBuffer[0x21] = '-';
+			m_numberBuffer[VSO_NUMBER_FORMAT_BUFFER_OFFSET] = '-';
 		}
 
 		char* dst;
 		char* src;
-		if (m_flags & 2) {
-			dst = (char*) m_numberBuffer + 0x21 + signLen;
+		if (m_flags & VSO_STREAM_LEFT_ADJUST_FLAG) {
+			dst = (char*) m_numberBuffer + VSO_NUMBER_FORMAT_BUFFER_OFFSET + signLen;
 			src = (char*) m_numberBuffer + signLen;
 		}
 		else {
@@ -59,11 +66,11 @@ void CVSOStream::_FormatNum()
 				dstOffset = signLen - len + width;
 			}
 			src = (char*) m_numberBuffer + srcOffset;
-			dst = (char*) m_numberBuffer + 0x21 + dstOffset;
+			dst = (char*) m_numberBuffer + VSO_NUMBER_FORMAT_BUFFER_OFFSET + dstOffset;
 		}
 
 		memcpy(dst, src, width - signLen);
-		m_formattedText = (char*) (m_numberBuffer + 0x21);
+		m_formattedText = (char*) (m_numberBuffer + VSO_NUMBER_FORMAT_BUFFER_OFFSET);
 	}
 	else {
 		m_formattedText = (char*) m_numberBuffer;
@@ -106,7 +113,7 @@ CVSOStream& CVSOStream::operator<<(const void* p_pointer)
 	if (p_pointer == NULL) {
 		return *this << "(null)";
 	}
-	vsULtoa((unsigned long) p_pointer, (char*) m_numberBuffer, 16);
+	vsULtoa((unsigned long) p_pointer, (char*) m_numberBuffer, VSO_RADIX_HEXADECIMAL);
 	_FormatNum();
 	return *this << "0x" << m_formattedText;
 }
@@ -137,9 +144,9 @@ CVSOStream& CVSOStream::operator<<(unsigned int p_value)
 CVSOStream& CVSOStream::operator<<(Hex p_value)
 {
 	unsigned int oldFlags = m_flags;
-	m_flags = (oldFlags & ~0x8030) | 0x40;
+	m_flags = (oldFlags & ~VSO_STREAM_BASE_FIELD_MASK) | VSO_STREAM_HEXADECIMAL_BASE_FLAG;
 	unsigned int oldRadix = m_radix;
-	m_radix = 16;
+	m_radix = VSO_RADIX_HEXADECIMAL;
 	*this << (unsigned long) p_value.m_value;
 
 	m_radix = oldRadix;
@@ -153,11 +160,11 @@ CVSOStream& CVSOStream::operator<<(Hex8 p_value)
 	char oldFill = m_fill;
 	m_fill = '0';
 	unsigned int oldWidth = m_width;
-	m_width = 8;
+	m_width = VSO_HEX8_DIGIT_WIDTH;
 	unsigned int oldFlags = m_flags;
-	m_flags = (oldFlags & ~0x8030) | 0x40;
+	m_flags = (oldFlags & ~VSO_STREAM_BASE_FIELD_MASK) | VSO_STREAM_HEXADECIMAL_BASE_FLAG;
 	unsigned int oldRadix = m_radix;
-	m_radix = 16;
+	m_radix = VSO_RADIX_HEXADECIMAL;
 	*this << (unsigned long) p_value.m_value;
 
 	m_width = oldWidth;
@@ -171,8 +178,8 @@ CVSOStream& CVSOStream::operator<<(Hex8 p_value)
 CVSOStream& CVSOStream::operator<<(CHAR4 p_value)
 {
 	unsigned long value = p_value.m_value;
-	for (int i = 3; i >= 0; --i) {
-		m_streamBuffer->sputc((char) (value >> (char) (i * 8)));
+	for (int i = CHAR4_BYTE_COUNT - 1; i >= 0; --i) {
+		m_streamBuffer->sputc((char) (value >> (char) (i * CHAR4_BITS_PER_BYTE)));
 	}
 	return *this;
 }

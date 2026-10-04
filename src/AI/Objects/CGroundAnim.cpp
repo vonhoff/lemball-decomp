@@ -8,6 +8,11 @@
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
+enum eFrameDirection {
+	FRAME_DIRECTION_BACKWARD = -1,
+	FRAME_DIRECTION_FORWARD = 1
+};
+
 // FUNCTION: LEMBALL 0x0040cf00
 CGroundAnim::CGroundAnim()
 {
@@ -19,7 +24,7 @@ void CGroundAnim::Restart()
 	unsigned int currentTick = g_dwGameTick;
 	m_count = 0;
 	m_needsValidation = 1;
-	m_nextProcessTick = currentTick + 2;
+	m_nextProcessTick = currentTick + GROUND_ANIM_PROCESS_INTERVAL_TICKS;
 }
 
 // FUNCTION: LEMBALL 0x0040cf30
@@ -73,19 +78,19 @@ void CGroundAnim::Process()
 			m_needsValidation = 0;
 		}
 
-		m_nextProcessTick = g_dwGameTick + 2;
+		m_nextProcessTick = g_dwGameTick + GROUND_ANIM_PROCESS_INTERVAL_TICKS;
 		if (m_count > 0) {
 			int index = 0;
 			do {
 				if (m_entries[index].m_active != 0) {
 					switch (m_entries[index].m_direction) {
-					case -1:
+					case FRAME_DIRECTION_BACKWARD:
 						m_entries[index].m_currentFrame--;
 						if (m_entries[index].m_currentFrame < m_entries[index].m_endFrame) {
 							m_entries[index].m_currentFrame = m_entries[index].m_startFrame;
 						}
 						break;
-					case 1:
+					case FRAME_DIRECTION_FORWARD:
 						m_entries[index].m_currentFrame++;
 						if (m_entries[index].m_endFrame < m_entries[index].m_currentFrame) {
 							m_entries[index].m_currentFrame = m_entries[index].m_startFrame;
@@ -117,10 +122,28 @@ bool CGroundAnim::Check(const tCoord3d& p_coordinate)
 	return false;
 }
 
+// FUNCTION: LEMBALL 0x0040d0c0
+void CGroundAnim::AddStaticGroundAnim(const tCoord3d& p_coordinate)
+{
+	if (Check(p_coordinate) || m_count >= GROUND_ANIM_ENTRY_CAPACITY) {
+		return;
+	}
+
+	GroundAnimEntry& entry = m_entries[m_count];
+	entry.m_active = 0;
+	entry.m_direction = 0;
+	entry.m_coordinate = p_coordinate;
+	++m_count;
+
+	for (int index = 0; index < m_count; ++index) {
+		m_entries[index].m_currentFrame = m_entries[index].m_endFrame;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0040d130
 void CGroundAnim::Add(const tCoord3d& p_coordinate, unsigned short p_startFrame, unsigned short p_endFrame)
 {
-	if (Check(p_coordinate) != 0 || m_count >= 200) {
+	if (Check(p_coordinate) != 0 || m_count >= GROUND_ANIM_ENTRY_CAPACITY) {
 		return;
 	}
 
@@ -129,10 +152,10 @@ void CGroundAnim::Add(const tCoord3d& p_coordinate, unsigned short p_startFrame,
 	m_entries[m_count].m_currentFrame = p_startFrame;
 	m_entries[m_count].m_startFrame = p_startFrame;
 	m_entries[m_count].m_endFrame = p_endFrame;
-	m_entries[m_count].m_direction = p_endFrame < p_startFrame ? -1 : 1;
+	m_entries[m_count].m_direction = p_endFrame < p_startFrame ? FRAME_DIRECTION_BACKWARD : FRAME_DIRECTION_FORWARD;
 
-	int blockY = p_coordinate.m_y / 16;
-	int blockX = p_coordinate.m_x / 16;
+	int blockY = p_coordinate.m_y / GROUND_BLOCK_PIXEL_SIZE;
+	int blockX = p_coordinate.m_x / GROUND_BLOCK_PIXEL_SIZE;
 	m_entries[m_count].m_mapCell = &g_pCurrentMap->m_ground.m_ground[blockY * g_pCurrentMap->m_ground.m_width + blockX];
 
 	m_count++;

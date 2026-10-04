@@ -2,6 +2,7 @@
 #define LEMBALL_CONTROL_GAME_GAMETIME_H
 
 #define GAME_TICK_MILLISECONDS 50
+#define HAZARD_DEATH_DELAY_TICKS 26
 
 void ClockEditMode(unsigned int p_enabled);
 void ResetGameTimes();

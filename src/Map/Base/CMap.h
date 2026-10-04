@@ -6,6 +6,25 @@
 
 class CAI;
 class CMover;
+enum {
+	MAP_COORDINATE_MAX = 1024
+};
+enum {
+	MAP_LEVEL_NAME_MAX_CHARACTERS = 32,
+	MAP_LEVEL_NAME_BUFFER_SIZE = MAP_LEVEL_NAME_MAX_CHARACTERS + 1
+};
+enum eMapOrientation {
+	MAP_ORIENTATION_ROTATION_0_DEGREES = 0,
+	MAP_ORIENTATION_ROTATION_90_DEGREES = 1,
+	MAP_ORIENTATION_ROTATION_180_DEGREES = 2,
+	MAP_ORIENTATION_ROTATION_270_DEGREES = 3
+};
+enum {
+	MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE = GROUND_BLOCK_PIXEL_SIZE / 2,
+	MAP_PROJECTION_BLOCK_PIXEL_SIZE = GROUND_BLOCK_PIXEL_SIZE,
+	MAP_PROJECTION_DOUBLE_BLOCK_PIXEL_SIZE = GROUND_BLOCK_PIXEL_SIZE * 2,
+	MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE = MAP_PROJECTION_BLOCK_PIXEL_SIZE + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE
+};
 struct tagLoadGroundName;
 struct tagLoadGroundSurfaceData;
 struct tagLoadDefaultBlox;
@@ -75,14 +94,14 @@ public:
 	CGroundArray m_ground; // 0x08
 
 private:
-	CAI* m_ownerAI;            // 0x18
-	int m_walkWidth;           // 0x1c
-	int m_walkHeight;          // 0x20
-	char m_levelName[33];      // 0x24
-	unsigned char* m_walkBits; // 0x48
-	eObjectType m_defaultBlox; // 0x4c
-	int m_defaultBloxData;     // 0x50
-	CAI* m_ai;                 // 0x54
+	CAI* m_ownerAI;                               // 0x18
+	int m_walkWidth;                              // 0x1c
+	int m_walkHeight;                             // 0x20
+	char m_levelName[MAP_LEVEL_NAME_BUFFER_SIZE]; // 0x24
+	unsigned char* m_walkBits;                    // 0x48
+	eObjectType m_defaultBlox;                    // 0x4c
+	int m_defaultBloxData;                        // 0x50
+	CAI* m_ai;                                    // 0x54
 };
 
 extern CMap* g_pMap;
@@ -99,7 +118,7 @@ extern unsigned short g_blox7FrameLimit;
 extern unsigned short g_steepSeSlopeFrameLimit;
 extern unsigned short g_shallowSwSlopeFrameLimit;
 extern unsigned short g_shallowSeSlopeFrameLimit;
-extern unsigned short g_wDefaultBloxLimit0214;
+extern unsigned short g_wCliffOnlyGroundDataLimit;
 extern unsigned short g_groundAnimFrameLimit;
 extern unsigned short g_treeFrameLimit;
 extern unsigned short g_embersFrameLimit;

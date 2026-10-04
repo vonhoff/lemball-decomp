@@ -11,8 +11,10 @@
 #include "../Messages/CRequestCancelMess.h"
 #include "../Messages/CRequestReplyMess.h"
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/ObjectActions.h"
 #include "AI/Messages/CGameObjectMess.h"
 #include "AI/Messages/GameMessageIds.h"
+#include "ObjectInteractionStates.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
 #include <stddef.h>
@@ -38,7 +40,7 @@ void CGlobalGameObject::Restart()
 	m_requestActive = 0;
 	m_requestedAction = ACTION_READY;
 	m_pendingAction = ACTION_READY;
-	m_usableState = 0;
+	m_usableState = GROUP_OBJECT_REQUEST_NONE;
 	m_requestEnabled = 1;
 }
 
@@ -47,7 +49,7 @@ int CGlobalGameObject::UsableState()
 {
 	int state = m_usableState;
 	if (state != 0) {
-		m_usableState = 0;
+		m_usableState = GROUP_OBJECT_REQUEST_NONE;
 	}
 	return state;
 }
@@ -85,7 +87,7 @@ void CGlobalGameObject::RequestAction(eAction p_action)
 	}
 	m_action = p_action;
 	DoActivate();
-	m_usableState = 2;
+	m_usableState = GROUP_OBJECT_REQUEST_ACCEPTED;
 }
 
 // FUNCTION: LEMBALL 0x00416e70
@@ -215,4 +217,4 @@ CObjectHitMess* g_pObjectHitMessage;
 CObjectDiesMess* g_pObjectDiesMessage;
 
 // GLOBAL: LEMBALL 0x0049d134
-int g_dwSommersaultDirection = 0;
+int g_dwSommersaultDirection = SOMMERSAULT_DIRECTION_NORMAL;

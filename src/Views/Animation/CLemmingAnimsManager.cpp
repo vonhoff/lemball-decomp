@@ -22,6 +22,26 @@
 
 class CLoadUpdate;
 
+enum {
+	LEMMING_WALK_STAND_CYCLE_DURATION_MS = 1000,
+	LEMMING_LOOK_CYCLE_DURATION_MS = 1933,
+	LEMMING_TOSS_CYCLE_DURATION_MS = 1600,
+	LEMMING_JIG_CYCLE_DURATION_MS = 2700,
+	LEMMING_FIRE_CYCLE_DURATION_MS = 2000,
+	LEMMING_PROJECTILE_CYCLE_DURATION_MS = 500,
+	LEMMING_HIT_CYCLE_DURATION_MS = 3000,
+	CATAPULT_CYCLE_DURATION_MS = 3133,
+	CATAPULT_MOUNT_CYCLE_DURATION_MS = 2333,
+	PICKUP_CYCLE_DURATION_MS = 1000,
+	FLAG_BONUS_CYCLE_DURATION_MS = 1500,
+	EXTRA_PELLET_CYCLE_DURATION_MS = 400,
+	MINE_SWITCH_CYCLE_DURATION_MS = 900,
+	CRATE_EXPLOSION_CYCLE_DURATION_MS = 1500,
+	SHEEP_WALK_CYCLE_DURATION_MS = 1400,
+	SHEEP_MUNCH_CYCLE_DURATION_MS = 2400,
+	SPIN_ARROW_CYCLE_DURATION_MS = 560
+};
+
 // GLOBAL: LEMBALL 0x00496f78
 const unsigned int g_style0ObjectClip[4] = {31, 90, 64, 96};
 // GLOBAL: LEMBALL 0x00496f88
@@ -100,7 +120,7 @@ void CLemmingAnimsManager::SetupStyleSensitive()
 	g_anGroundStyleResourceIds[1] = 0;
 	g_anGroundStyleResourceIds[6] = 0;
 	switch (m_groundStyle) {
-	case 0:
+	case GROUND_STYLE_GRASS:
 		g_groundBlox1ResourceId = RES_GAME_BLOX_1;
 		g_groundBlox2ResourceId = RES_GAME_BLOX_2;
 		g_groundBlox3ResourceId = RES_GAME_BLOX_3;
@@ -121,7 +141,7 @@ void CLemmingAnimsManager::SetupStyleSensitive()
 		g_anGroundStyleResourceIds[6] = RES_GRASS_TOWER;
 		g_styleObjectClip = g_style0ObjectClip;
 		break;
-	case 1:
+	case GROUND_STYLE_LEGO:
 		g_groundBlox1ResourceId = RES_GAME_LEGO_1;
 		g_groundBlox2ResourceId = RES_GAME_LEGO_2;
 		g_groundBlox3ResourceId = RES_GAME_LEGO_3;
@@ -142,7 +162,7 @@ void CLemmingAnimsManager::SetupStyleSensitive()
 		g_anGroundStyleResourceIds[6] = RES_LEGO_HUT;
 		g_styleObjectClip = g_style1ObjectClip;
 		break;
-	case 2:
+	case GROUND_STYLE_SNOW:
 		g_groundBlox1ResourceId = RES_GAME_SNOW_1;
 		g_groundBlox2ResourceId = RES_GAME_SNOW_2;
 		g_groundBlox3ResourceId = RES_GAME_SNOW_3;
@@ -163,7 +183,7 @@ void CLemmingAnimsManager::SetupStyleSensitive()
 		g_anGroundStyleResourceIds[6] = RES_SNOW_HUT;
 		g_styleObjectClip = g_style2ObjectClip;
 		break;
-	case 3:
+	case GROUND_STYLE_SPACE:
 		g_groundBlox1ResourceId = RES_GAME_SPACE_1;
 		g_groundBlox2ResourceId = RES_GAME_SPACE_2;
 		g_groundBlox3ResourceId = RES_GAME_SPACE_3;
@@ -188,96 +208,96 @@ void CLemmingAnimsManager::SetupStyleSensitive()
 void CLemmingAnimsManager::LoadVrammed()
 {
 	if (g_groundBlox1ResourceId != 0) {
-		LoadAnimation(g_groundBlox1ResourceId, 2);
+		LoadAnimation(g_groundBlox1ResourceId, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_groundBlox2ResourceId != 0) {
-		LoadAnimation(g_groundBlox2ResourceId, 2);
+		LoadAnimation(g_groundBlox2ResourceId, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_groundBlox3ResourceId != 0) {
-		LoadAnimation(g_groundBlox3ResourceId, 2);
+		LoadAnimation(g_groundBlox3ResourceId, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_groundBlox4ResourceId != 0) {
-		LoadAnimation(g_groundBlox4ResourceId, 2);
+		LoadAnimation(g_groundBlox4ResourceId, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_groundBlox5ResourceId != 0) {
-		LoadAnimation(g_groundBlox5ResourceId, 2);
+		LoadAnimation(g_groundBlox5ResourceId, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_groundBlox6ResourceId != 0) {
-		LoadAnimation(g_groundBlox6ResourceId, 2);
+		LoadAnimation(g_groundBlox6ResourceId, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_groundBlox7ResourceId != 0) {
-		LoadAnimation(g_groundBlox7ResourceId, 2);
+		LoadAnimation(g_groundBlox7ResourceId, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_anGroundStyleResourceIds[0] != 0) {
-		LoadAnimation(g_anGroundStyleResourceIds[0], 2);
+		LoadAnimation(g_anGroundStyleResourceIds[0], ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_anGroundStyleResourceIds[4] != 0) {
-		LoadAnimation(g_anGroundStyleResourceIds[4], 2);
+		LoadAnimation(g_anGroundStyleResourceIds[4], ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_anGroundStyleResourceIds[5] != 0) {
-		LoadAnimation(g_anGroundStyleResourceIds[5], 2);
+		LoadAnimation(g_anGroundStyleResourceIds[5], ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_anGroundStyleResourceIds[3] != 0) {
-		LoadAnimation(g_anGroundStyleResourceIds[3], 2);
+		LoadAnimation(g_anGroundStyleResourceIds[3], ANIM_FRAME_SINGLE_FRAME);
 	}
-	LoadAnimation(RES_GAME_CONVEYOR, 2);
+	LoadAnimation(RES_GAME_CONVEYOR, ANIM_FRAME_SINGLE_FRAME);
 	if (m_ai->GetObjectRequired(OBJECT_CATAPULT)) {
-		LoadAnimation(g_anGroundStyleResourceIds[8], 0);
+		LoadAnimation(g_anGroundStyleResourceIds[8], ANIM_FRAME_STATIC);
 	}
-	LoadAnimation(RES_CURSORS_HAND, 0);
-	LoadAnimation(RES_GAME_LEMMINGSELECTED, 0);
-	LoadAnimation(RES_GAME_LEMMINGLEADER, 0);
-	LoadAnimation(RES_GAME_LEMMINGWALKN, RES_GAME_LEMMINGWALKNW, 1);
-	LoadAnimation(RES_GAME_LEMMINGSTANDN, RES_GAME_LEMMINGSTANDNW, 1);
-	LoadAnimation(RES_GAME_LEMMINGFIREN, RES_GAME_LEMMINGFIRENW, 1);
-	LoadAnimation(RES_GAME_LEMMINGPELLETN, RES_GAME_LEMMINGPELLETNW, 1);
-	LoadAnimation(RES_GAME_STARS, 0);
-	LoadAnimation(RES_GAME_FILLED_STARS, 0);
-	LoadAnimation(RES_GAME_CIRCLES, 0);
+	LoadAnimation(RES_CURSORS_HAND, ANIM_FRAME_STATIC);
+	LoadAnimation(RES_GAME_LEMMINGSELECTED, ANIM_FRAME_STATIC);
+	LoadAnimation(RES_GAME_LEMMINGLEADER, ANIM_FRAME_STATIC);
+	LoadAnimation(RES_GAME_LEMMINGWALKN, RES_GAME_LEMMINGWALKNW, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_LEMMINGSTANDN, RES_GAME_LEMMINGSTANDNW, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_LEMMINGFIREN, RES_GAME_LEMMINGFIRENW, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_LEMMINGPELLETN, RES_GAME_LEMMINGPELLETNW, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_STARS, ANIM_FRAME_STATIC);
+	LoadAnimation(RES_GAME_FILLED_STARS, ANIM_FRAME_STATIC);
+	LoadAnimation(RES_GAME_CIRCLES, ANIM_FRAME_STATIC);
 	if (m_ai->GetObjectRequired(OBJECT_BALLOON_0) || m_ai->GetObjectRequired(OBJECT_BALLOON_2) ||
 		m_ai->GetObjectRequired(OBJECT_BALLOON_4) || m_ai->GetObjectRequired(OBJECT_BALLOON_6)) {
-		LoadAnimation(RES_GAME_BALLOON, 0);
-		LoadAnimation(RES_GAME_BALLOON_POST, 0);
+		LoadAnimation(RES_GAME_BALLOON, ANIM_FRAME_STATIC);
+		LoadAnimation(RES_GAME_BALLOON_POST, ANIM_FRAME_STATIC);
 	}
-	LoadAnimation(RES_GAME_BALLOON_SHADOW, 0);
-	LoadAnimation(RES_GAME_JUMP_NE, 2);
-	LoadAnimation(RES_GAME_JUMP_NW, 2);
-	LoadAnimation(RES_GAME_JUMP_SE, 2);
-	LoadAnimation(RES_GAME_JUMP_SW, 2);
-	LoadAnimation(RES_GAME_LEMMING_SPIN, 2);
-	LoadAnimation(RES_GAME_YELLOW_AMMO, 1);
-	LoadAnimation(RES_GAME_EX_PELLET, 3);
-	LoadAnimation(RES_GAME_SPINARROW, 1);
-	LoadAnimation(RES_GAME_ONBALLOON, 2);
-	LoadAnimation(RES_GAME_ONFIRE, 2);
-	LoadAnimation(RES_GAME_FLAG_GREEN, 1);
-	LoadAnimation(RES_GAME_BONUS, 1);
+	LoadAnimation(RES_GAME_BALLOON_SHADOW, ANIM_FRAME_STATIC);
+	LoadAnimation(RES_GAME_JUMP_NE, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_JUMP_NW, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_JUMP_SE, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_JUMP_SW, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_LEMMING_SPIN, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_YELLOW_AMMO, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_EX_PELLET, ANIM_FRAME_PLAY_THROUGH);
+	LoadAnimation(RES_GAME_SPINARROW, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_ONBALLOON, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_ONFIRE, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_FLAG_GREEN, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_BONUS, ANIM_FRAME_REPEAT);
 	if (m_ai->GetObjectRequired(OBJECT_SWITCH)) {
-		LoadAnimation(RES_GAME_SWITCH, 0);
+		LoadAnimation(RES_GAME_SWITCH, ANIM_FRAME_STATIC);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_SHEEP)) {
-		LoadAnimation(RES_GAME_SHEEP_WALK_N, RES_GAME_SHEEP_WALK_NW, 1);
-		LoadAnimation(RES_GAME_SHEEP_MUNCH_NE, RES_GAME_SHEEP_MUNCH_NW, 1);
+		LoadAnimation(RES_GAME_SHEEP_WALK_N, RES_GAME_SHEEP_WALK_NW, ANIM_FRAME_REPEAT);
+		LoadAnimation(RES_GAME_SHEEP_MUNCH_NE, RES_GAME_SHEEP_MUNCH_NW, ANIM_FRAME_REPEAT);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_CRATE)) {
-		LoadAnimation(RES_GAME_CRATE, 0);
+		LoadAnimation(RES_GAME_CRATE, ANIM_FRAME_STATIC);
 	}
-	LoadAnimation(RES_GAME_FLAME, 2);
-	LoadAnimation(RES_GAME_ELECTRIC, 2);
-	LoadAnimation(RES_GAME_EMBERS, 2);
-	if (m_groundStyle != 3 && m_ai->GetObjectRequired(OBJECT_TOWER)) {
-		LoadAnimation(g_anGroundStyleResourceIds[6], 0);
+	LoadAnimation(RES_GAME_FLAME, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_ELECTRIC, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_EMBERS, ANIM_FRAME_SINGLE_FRAME);
+	if (m_groundStyle != GROUND_STYLE_SPACE && m_ai->GetObjectRequired(OBJECT_TOWER)) {
+		LoadAnimation(g_anGroundStyleResourceIds[6], ANIM_FRAME_STATIC);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_KEY_1) || m_ai->GetObjectRequired(OBJECT_KEY_2) ||
 		m_ai->GetObjectRequired(OBJECT_KEY_3)) {
-		LoadAnimation(RES_GAME_KEYS, 0);
+		LoadAnimation(RES_GAME_KEYS, ANIM_FRAME_STATIC);
 	}
-	LoadAnimation(RES_GAME_ANIM, 2);
-	LoadAnimation(RES_GAME_MINE_STILL, 0);
-	LoadAnimation(RES_GAME_BUTAMMO, 2);
-	LoadAnimation(RES_GAME_BUTLEMMING, 2);
-	LoadAnimation(RES_GAME_BUTBALLOON, 2);
-	LoadAnimation(RES_GAME_BUTPAWS, 2);
+	LoadAnimation(RES_GAME_ANIM, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_MINE_STILL, ANIM_FRAME_STATIC);
+	LoadAnimation(RES_GAME_BUTAMMO, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_BUTLEMMING, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_BUTBALLOON, ANIM_FRAME_SINGLE_FRAME);
+	LoadAnimation(RES_GAME_BUTPAWS, ANIM_FRAME_SINGLE_FRAME);
 	if (m_countingLoads == 0) {
 		CResFONT** fontResources = m_interfaceFonts;
 		fontResources[0] = NULL;
@@ -291,92 +311,92 @@ void CLemmingAnimsManager::LoadVrammed()
 		m_interfaceFonts[1] = CResFONT::Load(RES_BORDERS_HIRES_CUTFONT);
 		m_interfaceFonts[2] = CResFONT::Load(RES_NEWFRONT_FONTS_GAME_SCORETIME);
 	}
-	LoadAnimation(RES_GAME_HIT_NORTH, 1);
-	LoadAnimation(RES_GAME_HIT_NORTH_EAST, 1);
-	LoadAnimation(RES_GAME_HIT_EAST, 1);
-	LoadAnimation(RES_GAME_HIT_SOUTH_EAST, 1);
+	LoadAnimation(RES_GAME_HIT_NORTH, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_HIT_NORTH_EAST, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_HIT_EAST, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_HIT_SOUTH_EAST, ANIM_FRAME_REPEAT);
 	if (m_ai->GetObjectRequired(OBJECT_LASER_VERTICAL) || m_ai->GetObjectRequired(OBJECT_LASER_HORIZONTAL)) {
-		LoadAnimation(RES_GAME_LEM_LASER_N, 2);
-		LoadAnimation(RES_GAME_LEM_LASER_E, 2);
-		LoadAnimation(RES_GAME_LEM_LASER_S, 2);
-		LoadAnimation(RES_GAME_LEM_LASER_W, 2);
+		LoadAnimation(RES_GAME_LEM_LASER_N, ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_LEM_LASER_E, ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_LEM_LASER_S, ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_LEM_LASER_W, ANIM_FRAME_SINGLE_FRAME);
 	}
 }
 
 // FUNCTION: LEMBALL 0x004334f0
 void CLemmingAnimsManager::LoadMainRammed()
 {
-	LoadAnimation(RES_GAME_STAR, 2);
+	LoadAnimation(RES_GAME_STAR, ANIM_FRAME_SINGLE_FRAME);
 	if (g_anGroundStyleResourceIds[7] != 0) {
-		LoadAnimation(g_anGroundStyleResourceIds[7], 2);
+		LoadAnimation(g_anGroundStyleResourceIds[7], ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_dwGroundStyleResourceId != 0) {
-		LoadAnimation(g_dwGroundStyleResourceId, 2);
+		LoadAnimation(g_dwGroundStyleResourceId, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (g_anGroundStyleResourceIds[2] != 0 && m_ai->GetObjectRequired(OBJECT_HAND)) {
-		LoadAnimation(g_anGroundStyleResourceIds[2], 2);
+		LoadAnimation(g_anGroundStyleResourceIds[2], ANIM_FRAME_SINGLE_FRAME);
 	}
-	LoadAnimation(RES_GAME_MINE, 3);
+	LoadAnimation(RES_GAME_MINE, ANIM_FRAME_PLAY_THROUGH);
 	if (m_ai->GetObjectRequired(OBJECT_CRATE)) {
-		LoadAnimation(RES_GAME_CRATE_EXPLODE, 3);
+		LoadAnimation(RES_GAME_CRATE_EXPLODE, ANIM_FRAME_PLAY_THROUGH);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_SWITCH)) {
-		LoadAnimation(RES_GAME_SWITCH_ANIM, 3);
+		LoadAnimation(RES_GAME_SWITCH_ANIM, ANIM_FRAME_PLAY_THROUGH);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_CATAPULT)) {
-		LoadAnimation(g_anGroundStyleResourceIds[9], 3);
-		LoadAnimation(RES_GAME_CATMOUNT_SE, 3);
+		LoadAnimation(g_anGroundStyleResourceIds[9], ANIM_FRAME_PLAY_THROUGH);
+		LoadAnimation(RES_GAME_CATMOUNT_SE, ANIM_FRAME_PLAY_THROUGH);
 	}
-	LoadAnimation(RES_GAME_HIT_SOUTH, 1);
-	LoadAnimation(RES_GAME_HIT_SOUTH_WEST, 1);
-	LoadAnimation(RES_GAME_HIT_WEST, 1);
-	LoadAnimation(RES_GAME_HIT_NORTH_WEST, 1);
+	LoadAnimation(RES_GAME_HIT_SOUTH, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_HIT_SOUTH_WEST, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_HIT_WEST, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_HIT_NORTH_WEST, ANIM_FRAME_REPEAT);
 	if (m_ai->GetObjectRequired(OBJECT_ROCKET)) {
-		LoadAnimation(RES_GAME_ROCKET, 2);
+		LoadAnimation(RES_GAME_ROCKET, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_DUPLICATOR)) {
-		LoadAnimation(RES_GAME_DUPLICATOR, 2);
+		LoadAnimation(RES_GAME_DUPLICATOR, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_LASER_HORIZONTAL)) {
-		LoadAnimation(RES_GAME_LASER_EAST, 2);
-		LoadAnimation(RES_GAME_LASER_FIRE_EAST, 2);
+		LoadAnimation(RES_GAME_LASER_EAST, ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_LASER_FIRE_EAST, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_LASER_VERTICAL)) {
-		LoadAnimation(RES_GAME_LASER_NORTH, 2);
-		LoadAnimation(RES_GAME_LASER_FIRE_NORTH, 2);
+		LoadAnimation(RES_GAME_LASER_NORTH, ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_LASER_FIRE_NORTH, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_TRAMPOLINE)) {
-		LoadAnimation(RES_GAME_TRAMPOLINE, 2);
+		LoadAnimation(RES_GAME_TRAMPOLINE, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_PAINT_GUN)) {
-		LoadAnimation(g_anGroundStyleResourceIds[1], 2);
-		LoadAnimation(RES_GAME_PAINTGUNSHOT, 2);
+		LoadAnimation(g_anGroundStyleResourceIds[1], ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_PAINTGUNSHOT, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_SLINKY)) {
-		LoadAnimation(RES_GAME_SLINKY_SOUTH, 2);
-		LoadAnimation(RES_GAME_SLINKY_NORTH, 2);
-		LoadAnimation(RES_GAME_SLINKY_EAST, 2);
-		LoadAnimation(RES_GAME_SLINKY_WEST, 2);
+		LoadAnimation(RES_GAME_SLINKY_SOUTH, ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_SLINKY_NORTH, ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_SLINKY_EAST, ANIM_FRAME_SINGLE_FRAME);
+		LoadAnimation(RES_GAME_SLINKY_WEST, ANIM_FRAME_SINGLE_FRAME);
 	}
-	LoadAnimation(RES_GAME_WAIT_LOOK, 1);
-	LoadAnimation(RES_GAME_WAIT_TOSS, 1);
-	LoadAnimation(RES_GAME_WAIT_JIG, 1);
-	LoadAnimation(RES_GAME_SOMMERSAULT, 1);
-	LoadAnimation(RES_GAME_SOMMERSAULT_REV, 1);
+	LoadAnimation(RES_GAME_WAIT_LOOK, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_WAIT_TOSS, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_WAIT_JIG, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_SOMMERSAULT, ANIM_FRAME_REPEAT);
+	LoadAnimation(RES_GAME_SOMMERSAULT_REV, ANIM_FRAME_REPEAT);
 	if (m_ai->GetObjectRequired(OBJECT_DOOR_2)) {
-		LoadAnimation(RES_GAME_DOOR, 2);
+		LoadAnimation(RES_GAME_DOOR, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_DOOR_1)) {
-		LoadAnimation(RES_GAME_DOOR_2, 2);
+		LoadAnimation(RES_GAME_DOOR_2, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_BALL)) {
-		LoadAnimation(RES_GAME_BALL, 1);
-		LoadAnimation(RES_GAME_BALL_EXPLODE, 2);
+		LoadAnimation(RES_GAME_BALL, ANIM_FRAME_REPEAT);
+		LoadAnimation(RES_GAME_BALL_EXPLODE, ANIM_FRAME_SINGLE_FRAME);
 	}
 	if (m_ai->GetObjectRequired(OBJECT_TIME_BONUS)) {
-		LoadAnimation(RES_GAME_TIME_BONUS, 1);
+		LoadAnimation(RES_GAME_TIME_BONUS, ANIM_FRAME_REPEAT);
 	}
-	LoadAnimation(RES_GAME_SHADOW, 2);
+	LoadAnimation(RES_GAME_SHADOW, ANIM_FRAME_SINGLE_FRAME);
 }
 
 // FUNCTION: LEMBALL 0x004337f0
@@ -387,12 +407,12 @@ void CLemmingAnimsManager::Load(int p_groundStyle)
 		m_loadAnim->InitialiseScreen();
 	}
 	m_nonCacheState = 0;
-	m_loadProgress = g_pSoundView->GetnEffects(4);
+	m_loadProgress = g_pSoundView->GetnEffects(SOUND_STATE_GAMEPLAY);
 	m_countingLoads = 1;
 	LoadVrammed();
 	LoadMainRammed();
 	m_countingLoads = 0;
-	g_pSoundView->ChangeState(4, (CLoadUpdate*) this);
+	g_pSoundView->ChangeState(SOUND_STATE_GAMEPLAY, (CLoadUpdate*) this);
 	SetupStyleSensitive();
 	LoadVrammed();
 	LoadMainRammed();
@@ -485,7 +505,7 @@ void CLemmingAnimsManager::Unload()
 			UnLoadAnimation(RES_GAME_CRATE_EXPLODE);
 			UnLoadAnimation(RES_GAME_CRATE);
 		}
-		if (m_groundStyle != 3 && m_ai->GetObjectRequired(OBJECT_TOWER)) {
+		if (m_groundStyle != GROUND_STYLE_SPACE && m_ai->GetObjectRequired(OBJECT_TOWER)) {
 			UnLoadAnimation(g_anGroundStyleResourceIds[6]);
 		}
 		UnLoadAnimation(RES_GAME_FLAME);
@@ -710,7 +730,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(1000);
+		frame->SetAnimTime(LEMMING_WALK_STAND_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -718,7 +738,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(1933);
+		frame->SetAnimTime(LEMMING_LOOK_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -726,7 +746,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(1600);
+		frame->SetAnimTime(LEMMING_TOSS_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -734,7 +754,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(2700);
+		frame->SetAnimTime(LEMMING_JIG_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -749,7 +769,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(2000);
+		frame->SetAnimTime(LEMMING_FIRE_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -765,7 +785,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(500);
+		frame->SetAnimTime(LEMMING_PROJECTILE_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -780,7 +800,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(3000);
+		frame->SetAnimTime(LEMMING_HIT_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -790,7 +810,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(3133);
+		frame->SetAnimTime(CATAPULT_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -798,7 +818,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(2333);
+		frame->SetAnimTime(CATAPULT_MOUNT_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -807,7 +827,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(1000);
+		frame->SetAnimTime(PICKUP_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -816,7 +836,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(1500);
+		frame->SetAnimTime(FLAG_BONUS_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -824,7 +844,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(400);
+		frame->SetAnimTime(EXTRA_PELLET_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -833,7 +853,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(900);
+		frame->SetAnimTime(MINE_SWITCH_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -841,7 +861,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(1500);
+		frame->SetAnimTime(CRATE_EXPLOSION_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -856,7 +876,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(1400);
+		frame->SetAnimTime(SHEEP_WALK_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -867,7 +887,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(p_animIndex);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(2400);
+		frame->SetAnimTime(SHEEP_MUNCH_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -875,7 +895,7 @@ void CLemmingAnimsManager::DrawAnim(short p_x,
 		CTimedAnim* frame = (CTimedAnim*) m_animFrames[m_resourceSlots[p_resourceId]];
 		frame->SetStartTime(0);
 		frame->m_fixedTime = p_time;
-		frame->SetAnimTime(560);
+		frame->SetAnimTime(SPIN_ARROW_CYCLE_DURATION_MS);
 		CAnimsManager::DrawAnim(CVSPoint(p_x, p_y), p_resourceId, m_drawFlags, frame, p_remap);
 		break;
 	}
@@ -1039,17 +1059,17 @@ void CLemmingAnimsManager::LoadAnimation(unsigned long p_resourceId, int p_animT
 	LoadAnims(p_resourceId);
 	CAnimFrameBASE* frame;
 	switch (p_animType) {
-	case 0:
+	case ANIM_FRAME_STATIC:
 		frame = new CStaticAnim();
 		break;
-	case 1: {
+	case ANIM_FRAME_REPEAT: {
 		unsigned int count = GetnAnims(p_resourceId);
 		frame = new CRepeatAnim(count, 1);
 	} break;
-	case 2:
+	case ANIM_FRAME_SINGLE_FRAME:
 		frame = new CFrames(1);
 		break;
-	case 3: {
+	case ANIM_FRAME_PLAY_THROUGH: {
 		unsigned int count = GetnAnims(p_resourceId);
 		frame = new CPlayThruAnim(count, 1);
 	} break;
@@ -1081,17 +1101,17 @@ void CLemmingAnimsManager::LoadAnimation(unsigned long p_firstResourceId,
 	for (; (int) p_lastResourceId >= (int) p_firstResourceId; p_firstResourceId++) {
 		LoadAnims(p_firstResourceId);
 		switch (p_animType) {
-		case 0:
+		case ANIM_FRAME_STATIC:
 			frame = new CStaticAnim();
 			break;
-		case 1: {
+		case ANIM_FRAME_REPEAT: {
 			unsigned int count = GetnAnims(p_firstResourceId);
 			frame = new CRepeatAnim(count, 1);
 		} break;
-		case 2:
+		case ANIM_FRAME_SINGLE_FRAME:
 			frame = new CFrames(1);
 			break;
-		case 3: {
+		case ANIM_FRAME_PLAY_THROUGH: {
 			unsigned int count = GetnAnims(p_firstResourceId);
 			frame = new CPlayThruAnim(count, 1);
 		} break;

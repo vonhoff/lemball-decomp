@@ -29,6 +29,7 @@
 #include "../../Visos/Target/Graphics/CGraphicsState.h"
 #include "../../Visos/Target/System/CPlatformServices.h"
 #include "C2D.h"
+#include "DisplayQuitState.h"
 
 #include <new.h>
 #include <string.h>
@@ -50,8 +51,34 @@ class CMap;
 #pragma intrinsic(strcpy, strcat)
 
 extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int p_index);
+enum eDisplayStyleThreshold {
+	DISPLAY_STYLE_WIDTH_THRESHOLD_PX = 640,
+	DISPLAY_STYLE_HEIGHT_THRESHOLD_PX = 500
+};
+
+enum eMainDisplayWindowStyle {
+	MAIN_DISPLAY_STYLE_COMPACT_LAYOUT = 0x80001801,
+	MAIN_DISPLAY_STYLE_WIDE_LAYOUT = 0x80001b83,
+	MAIN_DISPLAY_STYLE_EDIT_LEVEL_MODE = 0x404
+};
+
+enum eDisplayResolution {
+	MAIN_DISPLAY_LOW_RESOLUTION_WIDTH_PX = 320,
+	MAIN_DISPLAY_LOW_RESOLUTION_HEIGHT_PX = 240,
+	MAIN_DISPLAY_HIGH_RESOLUTION_WIDTH_PX = 640,
+	MAIN_DISPLAY_HIGH_RESOLUTION_HEIGHT_PX = 480
+};
 
 extern MenuList* g_apMainDisplayMenus[4];
+
+enum eMainDisplayMenuAction {
+	MAIN_MENU_EXIT = 1,
+	MAIN_MENU_HELP_CONTENTS = 2,
+	MAIN_MENU_HELP_SEARCH = 3,
+	MAIN_MENU_ABOUT = 4,
+	MAIN_MENU_TOGGLE_FULLSCREEN = 5,
+	MAIN_MENU_HELP_ON_HELP = 6
+};
 
 // FUNCTION: LEMBALL 0x00431590
 CMain2DDisplay::CMain2DDisplay(CGame* p_game)
@@ -75,11 +102,11 @@ CMain2DDisplay::CMain2DDisplay(CGame* p_game)
 	m_gamePalette = CResPALETTE::Load(RES_GAME_GAMEPALETTE);
 	m_titlePalette = CResPALETTE::Load(RES_GAME_TITLEPALETTE);
 	CursorChangeType(CURSOR_DISPLAY_PAW, 0);
-	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), -0x19);
-	m_lowWidth = 0x140;
-	m_lowHeight = 0xf0;
-	m_highWidth = 0x280;
-	m_highHeight = 0x1e0;
+	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), MASTER_INPUT_QUEUE_PRIORITY);
+	m_lowWidth = MAIN_DISPLAY_LOW_RESOLUTION_WIDTH_PX;
+	m_lowHeight = MAIN_DISPLAY_LOW_RESOLUTION_HEIGHT_PX;
+	m_highWidth = MAIN_DISPLAY_HIGH_RESOLUTION_WIDTH_PX;
+	m_highHeight = MAIN_DISPLAY_HIGH_RESOLUTION_HEIGHT_PX;
 	m_resolutionMode = g_nCompactPrimaryContextLayout;
 }
 
@@ -94,18 +121,19 @@ CMain2DDisplay::~CMain2DDisplay()
 	resource->UnLoad();
 	resource = (CResBase*) m_cursorResource;
 	resource->UnLoad();
-	g_pMasterInputQueue->Detach(static_cast<CBaseQueueHandler*>(this), -0x19);
+	g_pMasterInputQueue->Detach(static_cast<CBaseQueueHandler*>(this), MASTER_INPUT_QUEUE_PRIORITY);
 }
 
 // FUNCTION: LEMBALL 0x00431730
 unsigned int CMain2DDisplay::GetStyle()
 {
-	unsigned int style = 0x80001801;
-	if (g_nCompactPrimaryContextLayout != 0 || (GetSystemMetrics(0x3d) > 0x280 && GetSystemMetrics(0x3e) > 0x1f4)) {
-		style = 0x80001b83;
+	unsigned int style = MAIN_DISPLAY_STYLE_COMPACT_LAYOUT;
+	if (g_nCompactPrimaryContextLayout != 0 || (GetSystemMetrics(SM_CXMAXIMIZED) > DISPLAY_STYLE_WIDTH_THRESHOLD_PX &&
+												GetSystemMetrics(SM_CYMAXIMIZED) > DISPLAY_STYLE_HEIGHT_THRESHOLD_PX)) {
+		style = MAIN_DISPLAY_STYLE_WIDE_LAYOUT;
 	}
 	if (g_nEditLevelMode != 0) {
-		style |= 0x404;
+		style |= MAIN_DISPLAY_STYLE_EDIT_LEVEL_MODE;
 	}
 	return style;
 }
@@ -360,11 +388,11 @@ void CMain2DDisplay::ToggleResolution()
 		((CDrawer*) m_drawer)->DestroyDrawer();
 	}
 	switch (g_pTargetGraphicsSystem->m_driverMode) {
-	case 1:
-		g_pTargetGraphicsSystem->ChangeDriver(3);
+	case GFX_MODE_GDI:
+		g_pTargetGraphicsSystem->ChangeDriver(GFX_MODE_VGA_320X240);
 		break;
-	case 3:
-		g_pTargetGraphicsSystem->ChangeDriver(1);
+	case GFX_MODE_VGA_320X240:
+		g_pTargetGraphicsSystem->ChangeDriver(GFX_MODE_GDI);
 		break;
 	}
 }
@@ -381,7 +409,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 	static const char quitHelpError[] = "Couldn't help ya!\n";
 
 	switch ((int) p_message->m_type) {
-	case 4:
+	case MESSAGE_KEY_DOWN:
 		if (p_message->m_code != INPUT_KEY_F4) {
 			break;
 		}
@@ -391,10 +419,10 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 		switch (p_message->m_code) {
 		default:
 			return 1;
-		case 1:
+		case MAIN_MENU_EXIT:
 			m_quitRequested = 1;
 			break;
-		case 2:
+		case MAIN_MENU_HELP_CONTENTS:
 			helpPath[0] = 0;
 			cdDir = g_pTargetPlatformServices->GetCDDir(g_szLemballHelpFile);
 			strcpy(helpPath, cdDir);
@@ -404,7 +432,7 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 				*g_pErrorOutput << g_szCouldntHelpYa;
 			}
 			break;
-		case 3:
+		case MAIN_MENU_HELP_SEARCH:
 			helpPath[0] = 0;
 			cdDir = g_pTargetPlatformServices->GetCDDir("lemball\\lemball.hlp");
 			strcpy(helpPath, cdDir);
@@ -414,13 +442,13 @@ int CMain2DDisplay::ProcessMsg(Message* p_message)
 				*g_pErrorOutput << searchHelpError;
 			}
 			break;
-		case 4:
+		case MAIN_MENU_ABOUT:
 			DialogBoxParamA(g_pApplicationInstance, g_szAboutBox, (HWND) m_nativeWindow, (DLGPROC) AboutDialogProc, 0);
 			break;
-		case 5:
+		case MAIN_MENU_TOGGLE_FULLSCREEN:
 			ToggleResolution();
 			break;
-		case 6:
+		case MAIN_MENU_HELP_ON_HELP:
 			helpOk = WinHelpA((HWND) m_nativeWindow, NULL, HELP_HELPONHELP, 0);
 			if (helpOk == 0) {
 				*g_pErrorOutput << quitHelpError;
@@ -451,12 +479,12 @@ void CMain2DDisplay::OnDriverChange()
 int CMain2DDisplay::QuitYet()
 {
 	if (m_quitRequested != 0) {
-		return 2;
+		return DISPLAY_QUIT_APPLICATION;
 	}
 	if (m_drawer != NULL) {
 		return m_drawer->QuitYet();
 	}
-	return 0;
+	return DISPLAY_QUIT_NONE;
 }
 
 // FUNCTION: LEMBALL 0x00431f10
@@ -479,7 +507,7 @@ CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 	int compact;
 	const CVSSize& screenSize = g_pTargetGraphicsDriver->m_screenSize;
 
-	compact = g_pTargetGraphicsSystem->m_driverMode == 3;
+	compact = g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240;
 	g_nCompactPrimaryContextLayout = compact;
 	if (compact != 0) {
 		width = m_lowWidth;
@@ -491,10 +519,10 @@ CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 	}
 	y = (short) (screenSize.m_height - height) / 2;
 	x = (short) (screenSize.m_width - width) / 2;
-	if (p_x != -1) {
+	if (p_x != DISPLAY_COORDINATE_AUTO_CENTER) {
 		x = (short) p_x;
 	}
-	if (p_y != -1) {
+	if (p_y != DISPLAY_COORDINATE_AUTO_CENTER) {
 		y = (short) p_y;
 	}
 	return result;
@@ -538,24 +566,24 @@ typedef void* MenuListStorage[6];
 // GLOBAL: LEMBALL 0x0049e5f8
 MenuListStorage g_aFileMenuItems[3] = {
 	{g_szMenuFile, NULL, NULL, (void*) 1, NULL, NULL},
-	{g_szMenuExit, (void*) 40001, (void*) 1, (void*) 1, NULL, NULL},
+	{g_szMenuExit, (void*) 40001, (void*) MAIN_MENU_EXIT, (void*) 1, NULL, NULL},
 	{NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
 // GLOBAL: LEMBALL 0x0049e640
 MenuListStorage g_aOptionsMenuItems[3] = {
 	{g_szMenuOptions, NULL, NULL, (void*) 1, NULL, NULL},
-	{g_szMenuFullScreen, (void*) 40012, (void*) 5, (void*) 1, NULL, NULL},
+	{g_szMenuFullScreen, (void*) 40012, (void*) MAIN_MENU_TOGGLE_FULLSCREEN, (void*) 1, NULL, NULL},
 	{NULL, NULL, NULL, NULL, NULL, NULL},
 };
 
 // GLOBAL: LEMBALL 0x0049e688
 MenuListStorage g_aHelpMenuItems[6] = {
 	{g_szMenuHelp, NULL, NULL, (void*) 1, NULL, NULL},
-	{g_szMenuContents, (void*) 40003, (void*) 2, (void*) 1, NULL, NULL},
-	{g_szMenuSearchTopic, (void*) 40016, (void*) 3, (void*) 1, NULL, NULL},
-	{g_szMenuHelpOnHelp, (void*) 40013, (void*) 6, (void*) 1, NULL, NULL},
-	{g_szMenuAbout, (void*) 40011, (void*) 4, (void*) 1, NULL, NULL},
+	{g_szMenuContents, (void*) 40003, (void*) MAIN_MENU_HELP_CONTENTS, (void*) 1, NULL, NULL},
+	{g_szMenuSearchTopic, (void*) 40016, (void*) MAIN_MENU_HELP_SEARCH, (void*) 1, NULL, NULL},
+	{g_szMenuHelpOnHelp, (void*) 40013, (void*) MAIN_MENU_HELP_ON_HELP, (void*) 1, NULL, NULL},
+	{g_szMenuAbout, (void*) 40011, (void*) MAIN_MENU_ABOUT, (void*) 1, NULL, NULL},
 	{NULL, NULL, NULL, NULL, NULL, NULL},
 };
 

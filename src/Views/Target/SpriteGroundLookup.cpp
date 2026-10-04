@@ -1,5 +1,6 @@
 #include "SpriteGroundLookup.h"
 
+#include "Map/Ground/CGround.h"
 #include "Visos/Foundation/CVSRect.h"
 
 #include <string.h>
@@ -9,10 +10,10 @@ void SpriteGroundLookup::MarkRect(const CVSRect& p_rect)
 {
 	short pixelX = p_rect.m_x;
 	const short& pixelY = p_rect.m_y;
-	int cellX = (short) (pixelX / 16);
-	int cellY = (short) (pixelY / 16);
-	int columns = (pixelX + p_rect.m_width - 1) / 16 - cellX + 1;
-	int rows = (pixelY + p_rect.m_height - 1) / 16 - cellY + 1;
+	int cellX = (short) (pixelX / GROUND_BLOCK_PIXEL_SIZE);
+	int cellY = (short) (pixelY / GROUND_BLOCK_PIXEL_SIZE);
+	int columns = (pixelX + p_rect.m_width - 1) / GROUND_BLOCK_PIXEL_SIZE - cellX + 1;
+	int rows = (pixelY + p_rect.m_height - 1) / GROUND_BLOCK_PIXEL_SIZE - cellY + 1;
 	short width = m_width;
 	short height;
 	if (cellX < width && ((height = m_height), cellY < height)) {

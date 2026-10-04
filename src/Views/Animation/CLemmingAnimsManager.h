@@ -22,6 +22,20 @@ extern unsigned int g_groundBlox6ResourceId;
 extern unsigned int g_groundBlox7ResourceId;
 
 // SIZE 0xb4
+enum eGroundStyle {
+	GROUND_STYLE_GRASS = 0,
+	GROUND_STYLE_LEGO = 1,
+	GROUND_STYLE_SNOW = 2,
+	GROUND_STYLE_SPACE = 3
+};
+
+enum eAnimFrameType {
+	ANIM_FRAME_STATIC = 0,
+	ANIM_FRAME_REPEAT = 1,
+	ANIM_FRAME_SINGLE_FRAME = 2,
+	ANIM_FRAME_PLAY_THROUGH = 3
+};
+
 // VTABLE: LEMBALL 0x00496cdc CLoadUpdate
 // VTABLE: LEMBALL 0x00496ce0 CAnimsManager
 class CLemmingAnimsManager : public CAnimsManager, public CLoadUpdate {

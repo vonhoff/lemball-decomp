@@ -10,7 +10,7 @@ DDSURFACEDESC* CDirectDrawSurface::RefreshDescription()
 	long result = m_surface->GetSurfaceDesc(&m_surfaceDescription);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Surface Get Description failed: "
-						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+						<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 		return NULL;
 	}
 	return &m_surfaceDescription;

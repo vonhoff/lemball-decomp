@@ -2,9 +2,20 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Map/Base/CMap.h"
+#include "../../Map/Ground/CGround.h"
 #include "../../Visos/Foundation/CVSMath.h"
 
 #include <stddef.h>
+
+enum {
+	ROCKET_ACTIVATION_RADIUS_PIXELS = 32,
+	ROCKET_ACTIVATION_POSITION_XY_OFFSET_FIXED = 4 * FIXED_POINT_ONE
+};
+
+enum {
+	ROCKET_LAUNCH_MOVEMENT_DELAY_TICKS = 48,
+	ROCKET_ACTIVATOR_DEATH_DELAY_TICKS = 60
+};
 
 // FUNCTION: LEMBALL 0x004267d0
 CRocket::CRocket() : CGlobalGameObject(OBJECT_ROCKET, 0, 0)
@@ -38,17 +49,17 @@ void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 	m_position = p_position;
 	m_active = 1;
 	m_action = ACTION_READY;
-	int x = p_position.m_xFixed >> 12;
-	int y = p_position.m_yFixed >> 12;
-	int blockX = x / 16;
+	int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int blockX = x / GROUND_BLOCK_PIXEL_SIZE;
 	if (blockX >= 0) {
-		int blockY = y / 16;
+		int blockY = y / GROUND_BLOCK_PIXEL_SIZE;
 		if (blockY < 0) {
 			return;
 		}
 		int width = g_pMap->m_ground.m_width;
 		if (blockX < width && g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= 0x8000;
+			g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_OBJECT_INTERACTION;
 		}
 	}
 }
@@ -68,15 +79,15 @@ bool CRocket::Process()
 	}
 	eAction action = m_action;
 	if (action == ACTION_FLYING) {
-		const unsigned long& height = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << 12;
+		const unsigned long& height = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << FIXED_POINT_FRACTION_BITS;
 		m_position.m_zFixed = height;
 	}
 
 	if (remoteObject != 0) {
 		if (m_pendingAction != action) {
 			if (action == ACTION_RUNNING) {
-				m_lastMovementTick = tick + 48;
-				m_launchBaseZ = m_position.m_zFixed >> 12;
+				m_lastMovementTick = tick + ROCKET_LAUNCH_MOVEMENT_DELAY_TICKS;
+				m_launchBaseZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 				SetSndEffect(SFX_ROCKET);
 			}
 			m_pendingAction = m_action;
@@ -86,7 +97,7 @@ bool CRocket::Process()
 
 	switch (action) {
 	case ACTION_FLYING:
-		if ((m_position.m_zFixed & -4096) > 0xc8000) {
+		if ((m_position.m_zFixed & FIXED_POINT_INTEGER_MASK) > 200 * FIXED_POINT_ONE) {
 			Action(ACTION_READY);
 			return true;
 		}
@@ -105,16 +116,16 @@ bool CRocket::Process()
 // FUNCTION: LEMBALL 0x004269d0
 int CRocket::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
-	if ((int) Distance(m_position.m_xFixed >> 12,
-					   m_position.m_yFixed >> 12,
-					   p_position.m_xFixed >> 12,
-					   p_position.m_yFixed >> 12) < 32) {
-		m_position.m_xFixed = p_position.m_xFixed + 0x4000;
-		m_position.m_yFixed = p_position.m_yFixed + 0x4000;
+	if ((int) Distance(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+					   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+					   p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+					   p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) < ROCKET_ACTIVATION_RADIUS_PIXELS) {
+		m_position.m_xFixed = p_position.m_xFixed + ROCKET_ACTIVATION_POSITION_XY_OFFSET_FIXED;
+		m_position.m_yFixed = p_position.m_yFixed + ROCKET_ACTIVATION_POSITION_XY_OFFSET_FIXED;
 		m_position.m_zFixed = p_position.m_zFixed;
-		m_launchBaseZ = m_position.m_zFixed >> 12;
+		m_launchBaseZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		m_activator = p_object;
-		m_lastMovementTick = 0x30;
+		m_lastMovementTick = ROCKET_LAUNCH_MOVEMENT_DELAY_TICKS;
 		RequestAction(ACTION_RUNNING);
 		return 1;
 	}
@@ -130,7 +141,7 @@ void CRocket::DoActivate()
 	m_lastMovementTick += g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_activator->Action(ACTION_WAITING_TO_DIE);
-	m_activator->m_actionDeadline = g_dwGameTick + 60;
+	m_activator->m_actionDeadline = g_dwGameTick + ROCKET_ACTIVATOR_DEATH_DELAY_TICKS;
 	SetSndEffect(SFX_ROCKET);
 	if (g_pActiveConnection != NULL) {
 		g_pObjectPosMessage->Send(this);
@@ -153,9 +164,9 @@ void CRocket::GetViewData(CViewData& p_viewData)
 	p_viewData.m_objectId = m_objectId;
 	p_viewData.m_objectType = m_objectType;
 	p_viewData.m_playerIndex = 0;
-	p_viewData.m_positionX = m_position.m_xFixed >> 12;
-	p_viewData.m_positionY = m_position.m_yFixed >> 12;
-	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
+	p_viewData.m_positionX = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_positionY = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_positionZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	p_viewData.m_facingDirection = m_facingDirection;
 	unsigned int argument = (unsigned short) m_actionArgument;
 	unsigned int timer = m_stateTimer;

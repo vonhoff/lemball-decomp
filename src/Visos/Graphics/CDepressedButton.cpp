@@ -3,11 +3,12 @@
 #include "../Foundation/CChangeList.h"
 #include "CGDI.h"
 #include "CSurface.h"
+#include "Visos/Foundation/Message.h"
 
 // FUNCTION: LEMBALL 0x0043a620 FOLDED
 void CDepressedButton::OnReleased(int p_flags)
 {
-	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
+	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 1;
 		return;
 	}
@@ -17,7 +18,7 @@ void CDepressedButton::OnReleased(int p_flags)
 // FUNCTION: LEMBALL 0x0043a660 FOLDED
 void CDepressedButton::OnPressed(int p_flags)
 {
-	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
+	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 1;
 		return;
 	}
@@ -27,7 +28,8 @@ void CDepressedButton::OnPressed(int p_flags)
 // FUNCTION: LEMBALL 0x0043a6a0 FOLDED
 void CDepressedButton::OnEnterButton()
 {
-	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
+	if (m_pressed != 0 &&
+		(m_buttonState[MOUSE_BUTTON_INDEX_LEFT] != 0 || m_buttonState[MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK] != 0)) {
 		m_enabled = 1;
 		return;
 	}
@@ -37,7 +39,8 @@ void CDepressedButton::OnEnterButton()
 // FUNCTION: LEMBALL 0x0043a6e0 FOLDED
 void CDepressedButton::OnExitButton()
 {
-	if (m_pressed != 0 && (m_buttonState[0] != 0 || m_buttonState[3] != 0)) {
+	if (m_pressed != 0 &&
+		(m_buttonState[MOUSE_BUTTON_INDEX_LEFT] != 0 || m_buttonState[MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK] != 0)) {
 		m_enabled = 1;
 		return;
 	}

@@ -12,6 +12,11 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+enum {
+	MINE_DETONATION_DURATION_TICKS = 20,
+	MINE_DEAD_STATE_DELAY_TICKS = 100
+};
+
 // GLOBAL: LEMBALL 0x004a7840
 short g_mineTerrainOffsets[4];
 
@@ -51,8 +56,8 @@ void CMine::Set(AICOORD p_position)
 	m_activated = 0;
 	m_enabled = 1;
 	m_terrainSet = 0;
-	int blockX = (p_position.m_xFixed >> 12) / 16;
-	int blockY = (p_position.m_yFixed >> 12) / 16;
+	int blockX = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
+	int blockY = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (blockX >= 0 && blockY >= 0) {
 		int width = g_pMap->m_ground.m_width;
 		if (blockX >= width) {
@@ -61,7 +66,7 @@ void CMine::Set(AICOORD p_position)
 		if (g_pMap->m_ground.m_height <= blockY) {
 			return;
 		}
-		g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= 0x8000;
+		g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_OBJECT_INTERACTION;
 	}
 }
 
@@ -87,14 +92,14 @@ void CMine::DoActivate()
 	}
 	SetTerrain();
 	m_stateTimer = g_dwSimulationTimestamp;
-	m_actionDeadline = g_dwGameTick + 20;
+	m_actionDeadline = g_dwGameTick + MINE_DETONATION_DURATION_TICKS;
 }
 
 // FUNCTION: LEMBALL 0x00423dd0
 void CMine::SetTerrain()
 {
-	int blockX = (m_position.m_xFixed >> 12) / 16;
-	int blockY = (m_position.m_yFixed >> 12) / 16;
+	int blockX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
+	int blockY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (m_terrainSet == 0) {
 		g_pMap->SetTerrain(blockX, blockY, TERRAIN_BLOX_5, (unsigned short) g_mineTerrainOffsets[g_pMap->m_mapType]);
 		m_transientFlags = 1;
@@ -102,7 +107,7 @@ void CMine::SetTerrain()
 			CMap* map = g_pMap;
 			int width = map->m_ground.m_width;
 			if (blockX < width && blockY < map->m_ground.m_height) {
-				map->m_ground.m_ground[width * blockY + blockX].m_collision |= 4;
+				map->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_HAZARD;
 			}
 		}
 	}
@@ -149,7 +154,7 @@ bool CMine::Process()
 		if (m_lastMovementTick < g_dwGameTick) {
 			SetTerrain();
 			m_stateTimer = g_dwSimulationTimestamp;
-			m_actionDeadline = g_dwGameTick + 20;
+			m_actionDeadline = g_dwGameTick + MINE_DETONATION_DURATION_TICKS;
 			Action(ACTION_RUNNING);
 			return false;
 		}
@@ -158,7 +163,7 @@ bool CMine::Process()
 		if (m_actionDeadline < g_dwGameTick) {
 			m_activated = 0;
 			m_enabled = 0;
-			m_lastMovementTick = g_dwGameTick + 100;
+			m_lastMovementTick = g_dwGameTick + MINE_DEAD_STATE_DELAY_TICKS;
 			Action(ACTION_DEAD);
 		}
 		break;
@@ -171,20 +176,20 @@ bool CMine::Process()
 // FUNCTION: LEMBALL 0x00423fa0
 void CMine::OnGround()
 {
-	int x = m_position.m_xFixed >> 12;
-	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	if (x < 0 || y < 0 || map->m_ground.m_width <= blockX || g_pMap->m_ground.m_height <= blockY) {
 		z = 0;
 	}
 	else {
-		int groundX = x & 0xf;
-		int groundY = y & 0xf;
+		int groundX = x & GROUND_BLOCK_PIXEL_MASK;
+		int groundY = y & GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
 	}
-	const unsigned int height = (unsigned int) z << 12;
+	const unsigned int height = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 	m_position.m_zFixed = height;
 }

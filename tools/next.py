@@ -19,23 +19,31 @@ def rank_functions(report, effective=()):
         if function["fuzzy_match_percent"] < 100
         and int(function["metadata"]["virtual_address"]) not in effective
     )
-    return sorted(functions, key=lambda function: (
-        -function["fuzzy_match_percent"],
-        int(function["size"]),
-        int(function["metadata"]["virtual_address"]),
-    ))
+    return sorted(
+        functions,
+        key=lambda function: (
+            -function["fuzzy_match_percent"],
+            int(function["size"]),
+            int(function["metadata"]["virtual_address"]),
+        ),
+    )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--limit", type=int, default=40, help="rows; 0 = unlimited")
-    parser.add_argument("--exact", action="store_true", help="Rank by raw comparison scores")
+    parser.add_argument(
+        "--exact", action="store_true", help="Rank by raw comparison scores"
+    )
     args = parser.parse_args()
     report = json.loads(REPORT_JSON.read_text(encoding="utf-8"))
     accepted = set()
     if not args.exact:
         comparisons = deserialize_reccmp_report(RECCMP_JSON.read_text(encoding="utf-8"))
-        additional = {int(address) for address in json.loads(EFFECTIVE_JSON.read_text(encoding="utf-8"))}
+        additional = {
+            int(address)
+            for address in json.loads(EFFECTIVE_JSON.read_text(encoding="utf-8"))
+        }
         accepted = effective_addresses(comparisons.entities, additional)
     functions = rank_functions(report, accepted)
     if args.limit > 0:

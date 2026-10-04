@@ -1,16 +1,20 @@
 #include "CCollectableManager.h"
 
+#include "../../Visos/Network/CConnect.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CBonus.h"
 #include "../Objects/CCollectable.h"
 #include "../Objects/CFlag.h"
 #include "../Objects/CTimeBonus.h"
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Base/ObjectTypes.h"
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x004223c0
-CCollectableManager::CCollectableManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x11, 6)
+CCollectableManager::CCollectableManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_COLLECTABLES,
+						 OBJECT_MANAGER_TRANSPORT_COLLECTABLES)
 {
 	m_ai = p_ai;
 	m_count = 0;
@@ -110,7 +114,7 @@ void CCollectableManager::RemoveCollectable(CGameObject* p_object)
 	for (int i = 0; i < m_count; i++) {
 		if (m_collectables[i] == p_object) {
 			p_object->Delete();
-			p_object->SetId(0xffff);
+			p_object->SetId(INVALID_OBJECT_ID);
 			delete p_object;
 			m_count--;
 			for (; i < m_count; i++) {
@@ -133,7 +137,7 @@ void CCollectableManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsig
 		unsigned int remaining = count;
 		do {
 			unsigned short id;
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *(unsigned short*) p_data;
 				p_data += 2;
 			}
@@ -155,11 +159,11 @@ void CCollectableManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsig
 				}
 				else {
 					ai = m_ai;
-					if (ai->m_networkMode != 1) {
+					if (ai->m_networkMode != NETWORK_MODE_MULTIPLAYER) {
 						Add(id, x, y, z, type);
 					}
 					else {
-						if (ai->m_isHost == 1) {
+						if (ai->m_isHost == NETWORK_ROLE_HOST) {
 							if (type != OBJECT_FLAG_2) {
 								Add(id, x, y, z, OBJECT_FLAG_1);
 							}

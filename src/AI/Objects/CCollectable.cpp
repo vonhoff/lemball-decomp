@@ -16,16 +16,16 @@
 
 inline static CFixed FixedGroundHeight(unsigned short p_height)
 {
-	CFixed height((int) p_height << 12);
+	CFixed height((int) p_height << FIXED_POINT_FRACTION_BITS);
 	return height;
 }
 
 // FUNCTION: LEMBALL 0x00422870
 CCollectable::CCollectable(int p_x, int p_y, int p_z, eObjectType p_objectType) : CGlobalGameObject(p_objectType, 0, 0)
 {
-	m_spawnPosition.m_xFixed = p_x << 12;
-	m_spawnPosition.m_yFixed = p_y << 12;
-	m_spawnPosition.m_zFixed = p_z << 12;
+	m_spawnPosition.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x004228b0
@@ -69,15 +69,15 @@ bool CCollectable::Process()
 		case ACTION_READY: {
 			if (g_pActiveConnection == NULL || m_requestedAction == ACTION_READY) {
 				if (m_onMover == 0) {
-					int y = m_position.m_yFixed >> 12;
-					int x = m_position.m_xFixed >> 12;
+					int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+					int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 					CMap* map = g_pMap;
-					int blockY = y >> 4;
-					int blockX = x >> 4;
+					int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
+					int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 					unsigned short z;
 					if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-						int cellX = x & 0xf;
-						int cellY = y & 0xf;
+						int cellX = x & GROUND_BLOCK_PIXEL_MASK;
+						int cellY = y & GROUND_BLOCK_PIXEL_MASK;
 						z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 					}
 					else {
@@ -86,9 +86,9 @@ bool CCollectable::Process()
 					m_position.m_zFixed = FixedGroundHeight(z).m_value;
 				}
 				CPt3 pt;
-				pt.m_x = m_position.m_xFixed >> 12;
-				pt.m_y = m_position.m_yFixed >> 12;
-				pt.m_z = m_position.m_zFixed >> 12;
+				pt.m_x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+				pt.m_y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+				pt.m_z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 				CAI* ai = g_pAI;
 				ai->m_collisionExclude = NULL;
 				ai->m_collisionPoint = pt;

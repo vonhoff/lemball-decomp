@@ -3,6 +3,7 @@
 #include "../Foundation/CBaseQueue.h"
 #include "../Foundation/VsTime.h"
 #include "CBaseNetwork.h"
+#include "NetworkConstants.h"
 #include "CBroadcast.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Foundation/Message.h"
@@ -50,7 +51,7 @@ bool CConnect::CheckConnectTime()
 
 	if (m_established == 0) {
 		now = timeGetTime();
-		if (4000 < now - m_connectTime) {
+		if (NETWORK_CONNECT_TIMEOUT_MS < now - m_connectTime) {
 			Kill();
 			return false;
 		}
@@ -83,7 +84,7 @@ void CConnect::FirstReceive()
 {
 	Message message;
 
-	message.m_type = 3;
+	message.m_type = CONNECT_QUEUE_FIRST_RECEIVE;
 	m_established = 1;
 	message.m_code = 0;
 	message.m_payload = this;
@@ -92,7 +93,7 @@ void CConnect::FirstReceive()
 	m_readReady = 1;
 	if (m_isHost != 0) {
 		m_closePending = 1;
-		CWriteSocket::m_lastSendTime = timeGetTime() - 1000;
+		CWriteSocket::m_lastSendTime = timeGetTime() - NETWORK_CLOSE_PENDING_PULSE_INTERVAL_MS;
 		CReadSocket::m_lastReceiveTime = timeGetTime();
 		if (g_pBaseNetwork->m_suspendBroadcastOnConnect != 0) {
 			g_pBaseNetwork->m_broadcast->Suspend();
@@ -117,7 +118,7 @@ bool CConnect::Send(CNetworkMessage& p_message)
 		}
 		sent = CWriteSocket::Send(p_message);
 		if (!sent) {
-			message.m_type = 1;
+			message.m_type = CONNECT_QUEUE_SEND_FAILED;
 			message.m_code = 0xc;
 			if (p_message.m_headerEnabled == 0) {
 				message.m_code = 0xb;
@@ -143,7 +144,7 @@ void CConnect::Closed(int p_notifyPeer)
 	m_killRequested = 1;
 	CRwSocket::Closed(p_notifyPeer);
 	if (p_notifyPeer != 0) {
-		message.m_type = 10;
+		message.m_type = CONNECT_QUEUE_CLOSED;
 		message.m_code = 0;
 		message.m_payload = this;
 		g_pNetworkStatusQueue->Post(message);
@@ -158,7 +159,7 @@ CNetworkMessage* CConnect::ReceiveAcknowledgement()
 
 	acknowledgement = CWriteSocket::ReceiveAcknowledgement();
 	if (acknowledgement != NULL) {
-		message.m_type = 6;
+		message.m_type = CONNECT_QUEUE_ACKNOWLEDGEMENT;
 		message.m_code = 0;
 		message.m_payload = this;
 		message.m_source = acknowledgement;

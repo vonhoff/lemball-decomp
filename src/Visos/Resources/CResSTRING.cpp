@@ -1,4 +1,5 @@
 #include "CResSTRING.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 
@@ -11,7 +12,7 @@ CResSTRING* CResSTRING::Load(unsigned int p_resourceId)
 	if (res == NULL) {
 		return (CResSTRING*) (new CResSTRING(p_resourceId))->CheckError();
 	}
-	if (res->m_chunkType != 0x53545247) {
+	if (res->m_chunkType != RESOURCE_CHUNK_STRING) {
 		res->UnLoad();
 		return NULL;
 	}
@@ -21,7 +22,7 @@ CResSTRING* CResSTRING::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045ea70
 void CResSTRING::SetType()
 {
-	m_chunkType = 0x53545247;
+	m_chunkType = RESOURCE_CHUNK_STRING;
 }
 
 // FUNCTION: LEMBALL 0x0045eaa0

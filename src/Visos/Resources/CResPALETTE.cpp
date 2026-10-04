@@ -1,4 +1,5 @@
 #include "CResPALETTE.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 
@@ -22,7 +23,7 @@ CResPALETTE* CResPALETTE::Load(unsigned int p_resourceId)
 		}
 		return (CResPALETTE*) res->CheckError();
 	}
-	if (res->m_chunkType != 0x50414c20) {
+	if (res->m_chunkType != RESOURCE_CHUNK_PALETTE) {
 		res->UnLoad();
 		return NULL;
 	}
@@ -32,7 +33,7 @@ CResPALETTE* CResPALETTE::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045ea30
 void CResPALETTE::SetType()
 {
-	m_chunkType = 0x50414c20;
+	m_chunkType = RESOURCE_CHUNK_PALETTE;
 	m_headerSkip = 4;
 }
 

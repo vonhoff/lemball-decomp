@@ -4,6 +4,13 @@
 #include "../../Visos/Foundation/VsSort.h"
 #include "AnimSpecialEntry.h"
 
+enum {
+	ANIM_SPECIAL_DIAGONAL_DEPTH_STEP = 64,
+	ANIM_SPECIAL_TREE_DEPTH_OFFSET = ANIM_SPECIAL_DIAGONAL_DEPTH_STEP / 2,
+	ANIM_SPECIAL_BLOX_1_DEPTH_OFFSET = ANIM_SPECIAL_DIAGONAL_DEPTH_STEP / 4,
+	ANIM_SPECIAL_BLOX_2_DEPTH_OFFSET = ANIM_SPECIAL_DIAGONAL_DEPTH_STEP / 8
+};
+
 // FUNCTION: LEMBALL 0x00409930
 void CAnimSpecial::Initialise(CMap* p_map)
 {
@@ -35,9 +42,9 @@ void CAnimSpecial::Initialise(CMap* p_map)
 					collision = ground->m_collision;
 				}
 				else {
-					collision = 3;
+					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 				}
-				if (collision & 0x20) {
+				if (collision & GROUND_COLLISION_SPECIAL_RENDER) {
 					entryCount++;
 					column++;
 					continue;
@@ -76,7 +83,8 @@ void CAnimSpecial::Initialise(CMap* p_map)
 			case TERRAIN_CONVEYOR_VARIANT_B:
 				m_entries[entryIndex].m_x = (short) entryColumn;
 				m_entries[entryIndex].m_y = (short) entryRow;
-				m_entries[entryIndex].m_sortKey = (unsigned short) ((entryRow + entryColumn) * 64);
+				m_entries[entryIndex].m_sortKey =
+					(unsigned short) ((entryRow + entryColumn) * ANIM_SPECIAL_DIAGONAL_DEPTH_STEP);
 				m_entries[entryIndex].m_groundEntry =
 					map->m_ground.m_ground + map->m_ground.m_width * entryRow + entryColumn;
 				entryIndex++;
@@ -88,25 +96,26 @@ void CAnimSpecial::Initialise(CMap* p_map)
 					collision = ground->m_collision;
 				}
 				else {
-					collision = 3;
+					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 				}
-				if (collision & 0x20) {
+				if (collision & GROUND_COLLISION_SPECIAL_RENDER) {
 					int sortOffset = 0;
 					switch (objectType) {
 					case TERRAIN_TREE:
-						sortOffset = 32;
+						sortOffset = ANIM_SPECIAL_TREE_DEPTH_OFFSET;
 						break;
 					case TERRAIN_BLOX_1:
-						sortOffset = 16;
+						sortOffset = ANIM_SPECIAL_BLOX_1_DEPTH_OFFSET;
 						break;
 					case TERRAIN_BLOX_2:
 					case TERRAIN_BLOX_5:
-						sortOffset = 8;
+						sortOffset = ANIM_SPECIAL_BLOX_2_DEPTH_OFFSET;
 						break;
 					}
 					m_entries[entryIndex].m_x = (short) entryColumn;
 					m_entries[entryIndex].m_y = (short) entryRow;
-					m_entries[entryIndex].m_sortKey = (unsigned short) ((entryRow + entryColumn) * 64 + sortOffset);
+					m_entries[entryIndex].m_sortKey =
+						(unsigned short) ((entryRow + entryColumn) * ANIM_SPECIAL_DIAGONAL_DEPTH_STEP + sortOffset);
 					m_entries[entryIndex].m_groundEntry =
 						map->m_ground.m_ground + map->m_ground.m_width * entryRow + entryColumn;
 					entryIndex++;

@@ -7,6 +7,10 @@
 
 #include <stddef.h>
 
+enum {
+	PACKET_SEQUENCE_NEXT_EXPECTED_DELTA = -1
+};
+
 // FUNCTION: LEMBALL 0x00461780
 CReadCBuff::CReadCBuff(int p_packetCount, unsigned short p_packetSize) : CReadPacketBuff(p_packetCount, p_packetSize)
 {
@@ -23,7 +27,7 @@ CReadPacket* CReadCBuff::StorePacket()
 
 	if (packet->m_used == 0 && packet->m_ready != 0) {
 		FillPacket(index);
-		if (m_nextSequence - *packetSequence == -1) {
+		if (m_nextSequence - *packetSequence == PACKET_SEQUENCE_NEXT_EXPECTED_DELTA) {
 			m_nextSequence++;
 			packet->m_ready = 1;
 			return packet;

@@ -1,6 +1,7 @@
 #include "CGenericGroup.h"
 
 #include "../../Visos/Foundation/CVSMath.h"
+#include "../../Visos/Foundation/VSTrig.h"
 #include "../Navigation/CAiDestinationList.h"
 #include "CFormationManager.h"
 
@@ -20,9 +21,17 @@ void CGenericGroup::SetGroupState(eGroupState p_state)
 	m_groupState = p_state;
 }
 
+enum {
+	GROUP_DESTINATION_CAPACITY = 20,
+	GROUP_INITIAL_BOUNDS_VALUE = 9999,
+	GROUP_MIN_BOUND_INITIAL_VALUE = 99999,
+	GROUP_MAX_BOUND_INITIAL_VALUE = -1,
+	GROUP_ELEMENT_INDEX_NOT_FOUND = -1
+};
+
 // FUNCTION: LEMBALL 0x0041dda0
 CGenericGroup::CGenericGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager)
-	: CGameObject(OBJECT_GROUP, 0, 0x14)
+	: CGameObject(OBJECT_GROUP, 0, GROUP_DESTINATION_CAPACITY)
 {
 	g_pGroupAI = p_ai;
 	g_pGroupFormationManager = p_formationManager;
@@ -31,10 +40,10 @@ CGenericGroup::CGenericGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormat
 	m_elementCount = 0;
 	m_groupState = GROUP_STATE_IDLE;
 	memset(m_elements, 0, sizeof(m_elements));
-	m_bounds.m_height = 9999;
-	m_bounds.m_width = 9999;
-	m_bounds.m_y = 9999;
-	m_bounds.m_x = 9999;
+	m_bounds.m_height = GROUP_INITIAL_BOUNDS_VALUE;
+	m_bounds.m_width = GROUP_INITIAL_BOUNDS_VALUE;
+	m_bounds.m_y = GROUP_INITIAL_BOUNDS_VALUE;
+	m_bounds.m_x = GROUP_INITIAL_BOUNDS_VALUE;
 }
 
 // FUNCTION: LEMBALL 0x0041de40
@@ -59,7 +68,7 @@ void CGenericGroup::Restart()
 // FUNCTION: LEMBALL 0x0041deb0
 bool CGenericGroup::Process()
 {
-	CalculateBoundingBox(24);
+	CalculateBoundingBox(GROUP_BOUNDING_BOX_RADIUS_PIXELS);
 	for (int i = 0; i < m_elementCount; i++) {
 		m_elements[i]->Process();
 	}
@@ -109,11 +118,19 @@ CGameObject* CGenericGroup::GetNthElementInGroup(int p_index)
 	return m_elements[p_index];
 }
 
+// FUNCTION: LEMBALL 0x0041df90
+void CGenericGroup::SwapElementIndices(int p_firstIndex, int p_secondIndex)
+{
+	CGameObject* element = m_elements[p_secondIndex];
+	m_elements[p_secondIndex] = m_elements[p_firstIndex];
+	m_elements[p_firstIndex] = element;
+}
+
 // FUNCTION: LEMBALL 0x0041dfc0
 void CGenericGroup::SwapElements(CGameObject* p_first, CGameObject* p_second)
 {
 	int firstIndex;
-	int secondIndex = -1;
+	int secondIndex = GROUP_ELEMENT_INDEX_NOT_FOUND;
 	int index = 0;
 
 	if (m_elementCount > index) {
@@ -211,10 +228,10 @@ void CGenericGroup::GetBoundingBox(CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x0041e1c0
 void CGenericGroup::CalculateBoundingBox(int p_radius)
 {
-	int minY = 99999;
-	int minX = 99999;
-	int maxY = -1;
-	int maxX = -1;
+	int minY = GROUP_MIN_BOUND_INITIAL_VALUE;
+	int minX = GROUP_MIN_BOUND_INITIAL_VALUE;
+	int maxY = GROUP_MAX_BOUND_INITIAL_VALUE;
+	int maxX = GROUP_MAX_BOUND_INITIAL_VALUE;
 	if (m_elementCount > 0) {
 		int radius = p_radius;
 		CGameObject** element = m_elements;
@@ -222,8 +239,8 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 		do {
 			CGameObject* object = *element;
 			if (object != NULL) {
-				int x = object->m_position.m_xFixed >> 12;
-				int y = object->m_position.m_yFixed >> 12;
+				int x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+				int y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 				int right = radius + x;
 				x -= radius;
 				int bottom = y + radius;
@@ -282,11 +299,11 @@ void CGenericGroup::SendNewWaypoint(AICOORD p_coordinate)
 	AICOORD destination;
 	CGameObject* object = GetFirstElementInGroup();
 	if (object != NULL) {
-		unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> 12,
-													   object->m_position.m_yFixed >> 12,
-													   p_coordinate.m_xFixed >> 12,
-													   p_coordinate.m_yFixed >> 12);
-		g_pGroupFormationManager->TransformFormation(m_formationIndex, (direction - 2) * 0x40);
+		unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+													   object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+													   p_coordinate.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+													   p_coordinate.m_yFixed >> FIXED_POINT_FRACTION_BITS);
+		g_pGroupFormationManager->TransformFormation(m_formationIndex, (direction - 2) * TRIG_ANGLE_EIGHTH_TURN);
 		int index = 0;
 		int count = GetElementsInGroup();
 		int height = p_coordinate.m_zFixed;
@@ -349,11 +366,12 @@ void CGenericGroup::ReformAlteredGroup(CFormationManager* p_formationManager)
 				destination.m_yFixed = returnedDestination.m_yFixed;
 				destination.m_zFixed = returnedDestination.m_zFixed;
 			}
-			unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> 12,
-														   object->m_position.m_yFixed >> 12,
-														   destination.m_xFixed >> 12,
-														   destination.m_yFixed >> 12);
-			p_formationManager->TransformFormation(m_formationIndex, (direction - 2) << 6);
+			unsigned int direction = ReturnFacingDirection(object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+														   object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+														   destination.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+														   destination.m_yFixed >> FIXED_POINT_FRACTION_BITS);
+			p_formationManager->TransformFormation(m_formationIndex,
+												   (direction - 2) * (TRIG_ANGLE_FULL_TURN / FACING_DIRECTION_COUNT));
 
 			int count = GetElementsInGroup();
 			for (int i = 0; i < count; i++) {
@@ -382,8 +400,8 @@ bool CGenericGroup::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinat
 	if (m_bounds.m_x < rectRight && rectX < groupRight && m_bounds.m_y < rectBottom && rectY < groupBottom) {
 		CGameObject* object = GetFirstElementInGroup();
 		while (object != NULL) {
-			int x = object->m_position.m_xFixed >> 12;
-			int y = object->m_position.m_yFixed >> 12;
+			int x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+			int y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 			if (x - 24 < rectRight && rectX < x + 24 && y - 24 < rectBottom && rectY < y + 24) {
 				p_coordinate->m_xFixed = object->m_position.m_xFixed;
 				p_coordinate->m_yFixed = object->m_position.m_yFixed;

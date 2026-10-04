@@ -6,18 +6,21 @@
 #include "AI/Base/AICOORD.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "Visos/Foundation/CVSRect.h"
+#include "Visos/Foundation/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x00417d80
-CBulletManager::CBulletManager() : CBaseObjectManager(0x21, 0x16)
+CBulletManager::CBulletManager()
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_BULLETS,
+						 OBJECT_MANAGER_TRANSPORT_BULLETS)
 {
-	m_bullets = new CBullet[40];
-	for (int i = 0; i < 40; i++) {
+	m_bullets = new CBullet[BULLET_ACTIVE_LIST_CAPACITY];
+	for (int i = 0; i < BULLET_ACTIVE_LIST_CAPACITY; i++) {
 		m_activeBullets[i] = NULL;
 		m_bullets[i].SetId(CGameObject::NextLoadingId());
 		m_bullets[i].m_manager = this;
 	}
 	if (g_pActiveConnection != NULL && g_pActiveConnection->m_isHost != 0) {
-		m_poolStart = 0x14;
+		m_poolStart = BULLET_OBJECT_POOL_PARTITION_CAPACITY;
 		return;
 	}
 	m_poolStart = 0;
@@ -48,7 +51,7 @@ CBullet* CBulletManager::NextFreeBullet()
 {
 	int i = 0;
 	while (1) {
-		if (i >= 0x14) {
+		if (i >= BULLET_OBJECT_POOL_PARTITION_CAPACITY) {
 			return NULL;
 		}
 		if (m_bullets[m_poolStart + i].m_active == 0) {
@@ -104,7 +107,7 @@ bool CBulletManager::RequestBullet(unsigned short p_id,
 								   AICOORD p_start,
 								   AICOORD p_target)
 {
-	if (m_activeCount < 0x28) {
+	if (m_activeCount < BULLET_ACTIVE_LIST_CAPACITY) {
 		m_activeBullets[m_activeCount] = NextFreeBullet();
 		if (m_activeBullets[m_activeCount] != NULL) {
 			m_activeBullets[m_activeCount]->Set(p_id, p_bulletType, p_owner, p_sourceObjectId, p_start, p_target);
@@ -131,12 +134,12 @@ void CBulletManager::Process()
 // FUNCTION: LEMBALL 0x00418080
 void CBulletManager::RemoveBullet(CBullet* p_bullet)
 {
-	for (int i = 0; i < 0x14; i++) {
+	for (int i = 0; i < BULLET_ACTIVE_LIST_SEARCH_COUNT; i++) {
 		if (p_bullet == m_activeBullets[i]) {
 			CBullet** slot = &m_activeBullets[i];
 			m_activeBullets[i]->Free();
-			if (i < 0x13) {
-				int count = 0x13 - i;
+			if (i < BULLET_ACTIVE_LIST_SEARCH_LAST_INDEX) {
+				int count = BULLET_ACTIVE_LIST_SEARCH_LAST_INDEX - i;
 				i += count;
 				do {
 					CBullet* next = *(slot + 1);
@@ -178,8 +181,8 @@ bool CBulletManager::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordina
 	int rectBottom = p_rect->m_height + rectTop;
 	CBullet* bullet = GetFirstBullet();
 	while (bullet != NULL) {
-		int left = bullet->m_position.m_xFixed >> 0xc;
-		int top = bullet->m_position.m_yFixed >> 0xc;
+		int left = bullet->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		int top = bullet->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		int right = left + 8;
 		int bottom = top + 8;
 		left -= 8;

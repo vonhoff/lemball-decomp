@@ -3,26 +3,32 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
+#include "../Base/AIScoreConstants.h"
 #include "../Navigation/CAI.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectInteractionStates.h"
 #include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/RandomConstants.h"
 
+enum {
+	BALLOON_ANIMATION_PHASE_RANDOMIZATION_RANGE_MS = 4096
+};
 // FUNCTION: LEMBALL 0x0041c630
 int CBalloon::Usage()
 {
-	return 2;
+	return GROUP_OBJECT_USAGE_SINGLE;
 }
 
 // FUNCTION: LEMBALL 0x0041d600
 void CBalloon::Restart()
 {
 	CBaseGlobalObject::Restart();
-	int randVal = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+	int randVal = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 	*g_pRandomSeed = randVal;
-	m_stateTimer = g_dwSimulationTimestamp - (randVal % 4096);
+	m_stateTimer = g_dwSimulationTimestamp - (randVal % BALLOON_ANIMATION_PHASE_RANDOMIZATION_RANGE_MS);
 }
 
 // FUNCTION: LEMBALL 0x0041d740
@@ -41,7 +47,7 @@ void CBalloon::DoActivate()
 {
 	m_activator->AddObject(m_objectType, this);
 	SetSndEffect(SFX_COLLECT_BALLOON);
-	g_pAI->Score(50);
+	g_pAI->Score(AI_SCORE_BALLOON_PICKUP_POINTS);
 }
 
 // FUNCTION: LEMBALL 0x0041d7b0

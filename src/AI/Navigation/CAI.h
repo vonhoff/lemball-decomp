@@ -4,6 +4,7 @@
 #include "../../Visos/Foundation/CBaseProcess.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"
 #include "../../Visos/Messaging/CNetworkMessage.h"
+#include "../../Visos/Network/NetworkMode.h"
 #include "../Base/AICOORD.h"
 #include "../Base/CPt3.h"
 #include "../Base/CRect3.h"
@@ -53,15 +54,26 @@ class CViewData;
 class CVSRect;
 struct tCoord3d;
 struct LiftEndpointRecord;
+enum eAIQueueMessage {
+	AI_MESSAGE_CURSOR_POSITION = 1,
+	AI_MESSAGE_MOVE_GROUP = 2,
+	AI_MESSAGE_CANCEL_MOVES = 3,
+	AI_MESSAGE_REQUEST_FIRE = 4,
+	AI_MESSAGE_FORM_GROUP = 5,
+	AI_MESSAGE_PREVIOUS_GROUP = 6,
+	AI_MESSAGE_NEXT_GROUP = 7,
+	AI_MESSAGE_USE_OBJECT = 8
+};
+
 enum eGameStatus {
-	GAME_STATUS_0 = 0,
+	GAME_STATUS_NOT_STARTED = 0,
 	GAME_STATUS_PAUSED = 1,
 	GAME_STATUS_RUNNING = 2,
 	GAME_STATUS_SUCCESS = 3,
-	GAME_STATUS_4 = 4,
+	GAME_STATUS_COMPLETING = 4,
 	GAME_STATUS_FAILURE = 5,
-	GAME_STATUS_6 = 6,
-	GAME_STATUS_7 = 7,
+	GAME_STATUS_GAME_OVER = 6,
+	GAME_STATUS_TIME_EXPIRED = 7,
 	GAME_STATUS_RESTART = 8
 };
 
@@ -84,16 +96,19 @@ public:
 	bool GetObjectRequired(eObjectType p_objectType);
 	bool IsLemmingPlayerControlled(CPlayerLemming* p_lemming);
 	bool LemmingsSFXChanged();
-	bool OpenDoor(const AICOORD& p_position, CGameObject* p_object, unsigned short p_mask);
+	bool OpenDoor(const AICOORD& p_position, CGameObject* p_object, unsigned short p_collisionFlags);
 	bool PlayerCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);
 	bool SheepCheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);
 	int GetData(CViewData* p_viewData);
 	int ExportGroundAnimRecords(tCoord3d* p_records);
 	int ExportLiftEndpointRecords(LiftEndpointRecord* p_records);
+	void CollectNetworkGroupData(int* p_output);
+	bool CheckNetworkStateChanged();
+	void ProcessLiftCliffs();
 	int nDead();
 	void RemoteGameState(CGameStateMessage* p_message);
 	void SetObjectRequired(eObjectType p_objectType, unsigned int p_required);
-	void StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned short p_mask);
+	void StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned short p_collisionFlags);
 	unsigned short DoorId(int p_index);
 	unsigned short LiftId(int p_index);
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08

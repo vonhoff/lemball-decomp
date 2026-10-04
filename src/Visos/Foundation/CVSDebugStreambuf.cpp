@@ -1,6 +1,7 @@
 #include "CVSDebugStreambuf.h"
 
 #include "Visos/Foundation/CVSStreambuf.h"
+#include "Visos/Foundation/ThreadConstants.h"
 
 #include <string.h>
 
@@ -122,7 +123,7 @@ void* g_pDebugThread = NULL;
 void* g_pDebugSyncEvent = NULL;
 
 // GLOBAL: LEMBALL 0x004a2a08
-int g_nDebugThreadId = 0x12345678;
+int g_nDebugThreadId = THREAD_ID_BEFORE_CREATE;
 
 // GLOBAL: LEMBALL 0x004a2a0c
 FILE* g_pDebugOutputFile = NULL;

@@ -8,6 +8,11 @@ struct Message;
 class CBaseQueueHandler;
 struct QueueHandlerNode;
 
+enum {
+	MASTER_INPUT_QUEUE_PRIORITY = -0x19,
+	NETWORK_QUEUE_PRIORITY = 0x19
+};
+
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00499248 CCritical
 // VTABLE: LEMBALL 0x00499250 CArenaBase

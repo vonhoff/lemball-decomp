@@ -5,6 +5,11 @@
 
 class CVSOStream;
 
+enum {
+	MEMORY_BLOCK_FLAG_FREE = 0x01,
+	MEMORY_BLOCK_SIGNATURE = 0x524d424c
+};
+
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00498940
 class CMBlock {

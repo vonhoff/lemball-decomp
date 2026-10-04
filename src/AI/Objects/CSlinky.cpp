@@ -11,9 +11,14 @@
 #include "AI/Base/ObjectTypes.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
+#include "Visos/Foundation/RandomConstants.h"
 
 #include <stddef.h>
 
+enum {
+	SLINKY_READY_INTERVAL_TICKS = 16,
+	SLINKY_MOVEMENT_INTERVAL_TICKS = 20
+};
 // FUNCTION: LEMBALL 0x0040b480
 CSlinky::CSlinky() : CGameObject(OBJECT_SLINKY, 0, 0), m_unk0x138(0, 0, 0)
 {
@@ -28,8 +33,8 @@ void CSlinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 	m_maxY = p_maxY;
 	unsigned short z;
 	CMap* map = g_pMap;
-	int bx = p_minX >> 4;
-	int by = p_minY >> 4;
+	int bx = p_minX >> GROUND_BLOCK_PIXEL_SHIFT;
+	int by = p_minY >> GROUND_BLOCK_PIXEL_SHIFT;
 	if (p_minX < 0 || p_minY < 0) {
 		z = 0;
 	}
@@ -45,9 +50,9 @@ void CSlinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 			z = map->m_ground.m_ground[width * by + bx].GetZ(p_minX, p_minY);
 		}
 	}
-	int positionZ = z << 12;
-	m_position.m_xFixed = m_minX << 12;
-	m_position.m_yFixed = m_minY << 12;
+	int positionZ = z << FIXED_POINT_FRACTION_BITS;
+	m_position.m_xFixed = m_minX << FIXED_POINT_FRACTION_BITS;
+	m_position.m_yFixed = m_minY << FIXED_POINT_FRACTION_BITS;
 	m_position.m_zFixed = positionZ;
 	m_actionDeadline = g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
@@ -72,9 +77,9 @@ bool CSlinky::ContainsIntegerPoint(const int* p_xy)
 // FUNCTION: LEMBALL 0x0040b630
 bool CSlinky::GoodEndPt(const AICOORD& p_coordinate)
 {
-	int x = p_coordinate.m_xFixed >> 12;
+	int x = p_coordinate.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	if (m_minX <= x) {
-		int y = p_coordinate.m_yFixed >> 12;
+		int y = p_coordinate.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		if (m_minY <= y && x <= m_maxX && y <= m_maxY) {
 			return true;
 		}
@@ -86,54 +91,46 @@ bool CSlinky::GoodEndPt(const AICOORD& p_coordinate)
 bool CSlinky::Move()
 {
 	enum {
-		DIRECTION_POSITIVE_X = 0,
-		DIRECTION_NEGATIVE_X = 1,
-		DIRECTION_POSITIVE_Y = 2,
-		DIRECTION_NEGATIVE_Y = 3,
-		DIRECTION_COUNT = 4,
 		STEP_PIXELS = 16,
-		MAX_ATTEMPTS = 8,
-		RANDOM_MULTIPLIER = 41,
-		RANDOM_INCREMENT = 31,
-		RANDOM_MASK = (1 << 23) - 1
+		MAX_ATTEMPTS = 8
 	};
 	int dx;
 	int count = 0;
 	int dy;
 	do {
-		int random = (*g_pRandomSeed * RANDOM_MULTIPLIER + RANDOM_INCREMENT) & RANDOM_MASK;
+		int random = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 		*g_pRandomSeed = random;
-		m_actionArgument = random % DIRECTION_COUNT;
+		m_actionArgument = random % SLINKY_DIRECTION_COUNT;
 		switch ((unsigned short) m_actionArgument) {
-		case DIRECTION_POSITIVE_X:
+		case SLINKY_DIRECTION_EAST:
 			dx = STEP_PIXELS;
 			dy = 0;
 			break;
-		case DIRECTION_NEGATIVE_X:
+		case SLINKY_DIRECTION_WEST:
 			dx = -STEP_PIXELS;
 			dy = 0;
 			break;
-		case DIRECTION_POSITIVE_Y:
+		case SLINKY_DIRECTION_SOUTH:
 			dx = 0;
 			dy = STEP_PIXELS;
 			break;
-		case DIRECTION_NEGATIVE_Y:
+		case SLINKY_DIRECTION_NORTH:
 			dx = 0;
 			dy = -STEP_PIXELS;
 			break;
 		}
 		{
-			const int x = m_position.m_xFixed >> 12;
+			const int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 			count++;
-			m_destination.m_xFixed = (x + dx) << 12;
+			m_destination.m_xFixed = (x + dx) << FIXED_POINT_FRACTION_BITS;
 		}
 		{
-			const int y = m_position.m_yFixed >> 12;
-			m_destination.m_yFixed = (y + dy) << 12;
+			const int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+			m_destination.m_yFixed = (y + dy) << FIXED_POINT_FRACTION_BITS;
 		}
 		{
-			const int z = m_position.m_zFixed >> 12;
-			m_destination.m_zFixed = z << 12;
+			const int z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+			m_destination.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 		}
 	} while (count < MAX_ATTEMPTS && !GoodEndPt(m_destination));
 	return true;
@@ -148,7 +145,7 @@ bool CSlinky::Process()
 			Move();
 			m_stateTimer = g_dwSimulationTimestamp;
 			Action(ACTION_RUNNING);
-			m_actionDeadline = g_dwGameTick + 0x10;
+			m_actionDeadline = g_dwGameTick + SLINKY_READY_INTERVAL_TICKS;
 		}
 		break;
 	case ACTION_RUNNING:
@@ -161,14 +158,14 @@ bool CSlinky::Process()
 			m_position.m_zFixed = z;
 			m_stateTimer = g_dwSimulationTimestamp;
 			Action(ACTION_READY);
-			m_actionDeadline = g_dwGameTick + 0x14;
+			m_actionDeadline = g_dwGameTick + SLINKY_MOVEMENT_INTERVAL_TICKS;
 		}
 		break;
 	}
 	CRect3 rect;
-	int z = (m_position.m_zFixed >> 12) - 4;
-	int y = (m_position.m_yFixed >> 12) - 4;
-	int x = (m_position.m_xFixed >> 12) - 4;
+	int z = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) - 4;
+	int y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 4;
+	int x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 4;
 	rect.m_x1 = x;
 	rect.m_y1 = y;
 	rect.m_z1 = z;

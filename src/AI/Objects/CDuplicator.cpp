@@ -3,6 +3,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
+#include "../Base/AIScoreConstants.h"
 #include "../Groups/CPlayerLemmingGroup.h"
 #include "../Navigation/CAI.h"
 #include "../Objects/CPlayerLemming.h"
@@ -10,12 +11,21 @@
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectInteractionStates.h"
 #include "AI/Base/ObjectTypes.h"
+#include "CViewData.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
 #include <stddef.h>
+
+enum {
+	DUPLICATOR_ACTIVATION_DELAY_TICKS = 82,
+	DUPLICATOR_DUPLICATE_SPAWN_Y_OFFSET_FIXED = -52 * FIXED_POINT_ONE,
+	DUPLICATOR_ACTIVATION_POSITION_Y_OFFSET_FIXED = 8 * FIXED_POINT_ONE,
+	DUPLICATOR_STAGING_POSITION_Y_OFFSET_FIXED = -60 * FIXED_POINT_ONE
+};
 
 // FUNCTION: LEMBALL 0x004275b0
 CDuplicator::CDuplicator(const AICOORD& p_position) : CGlobalGameObject(OBJECT_DUPLICATOR, 0, 0)
@@ -34,7 +44,7 @@ CDuplicator::~CDuplicator()
 void CDuplicator::Restart()
 {
 	CGlobalGameObject::Restart();
-	m_actionArgument = 0;
+	m_actionArgument = REMOTE_PALETTE_REMAP_DISABLED;
 	m_stateTimer = 0;
 	m_terrainCell1Set = 0;
 	m_terrainCell0Set = 0;
@@ -50,16 +60,17 @@ void CDuplicator::Set(const AICOORD& p_position)
 	m_position.m_zFixed = p_position.m_zFixed;
 	m_terrainCell0Set = 1;
 	m_terrainCell1Set = 1;
-	int blockX = (m_position.m_xFixed >> 12) / 16;
-	int blockY = (m_position.m_yFixed >> 12) / 16;
+	int blockX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
+	int blockY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (blockX >= 0) {
 		if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |= 1;
+			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |=
+				GROUND_COLLISION_BLOCKS_WALKING;
 		}
 		if (blockX >= 0 && --blockY >= 0) {
 			int width = g_pMap->m_ground.m_width;
 			if (blockX < width && g_pMap->m_ground.m_height > blockY) {
-				g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= 1;
+				g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_BLOCKS_WALKING;
 			}
 		}
 	}
@@ -68,21 +79,21 @@ void CDuplicator::Set(const AICOORD& p_position)
 // FUNCTION: LEMBALL 0x004276f0
 void CDuplicator::Delete()
 {
-	int blockX = (m_position.m_xFixed >> 12) / 16;
-	int blockY = (m_position.m_yFixed >> 12) / 16;
+	int blockX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
+	int blockY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (blockX >= 0) {
 		if (blockY >= 0) {
 			CMap* map = g_pMap;
 			int width = map->m_ground.m_width;
 			if (blockX < width && map->m_ground.m_height > blockY) {
-				map->m_ground.m_ground[blockY * width + blockX].m_collision &= ~1;
+				map->m_ground.m_ground[blockY * width + blockX].m_collision &= ~GROUND_COLLISION_BLOCKS_WALKING;
 			}
 		}
 		if (blockX >= 0 && --blockY >= 0) {
 			CMap* map = g_pMap;
 			int width = map->m_ground.m_width;
 			if (blockX < width && map->m_ground.m_height > blockY) {
-				map->m_ground.m_ground[blockY * width + blockX].m_collision &= ~1;
+				map->m_ground.m_ground[blockY * width + blockX].m_collision &= ~GROUND_COLLISION_BLOCKS_WALKING;
 			}
 		}
 	}
@@ -92,7 +103,7 @@ void CDuplicator::Delete()
 bool CDuplicator::Process()
 {
 	if (m_isRemoteObject != 0) {
-		m_actionArgument = 1;
+		m_actionArgument = REMOTE_PALETTE_REMAP_ENABLED;
 		if (m_pendingAction != m_action) {
 			if (m_action == ACTION_ACTIVATED) {
 				SetSndEffect(SFX_DUPLICTR);
@@ -101,7 +112,7 @@ bool CDuplicator::Process()
 		}
 		return true;
 	}
-	m_actionArgument = 0;
+	m_actionArgument = REMOTE_PALETTE_REMAP_DISABLED;
 	if (m_action == ACTION_ACTIVATED && m_actionDeadline < g_dwGameTick) {
 		CGameObject* duplicatedObject = m_duplicatedObject;
 		duplicatedObject->m_hidden = 0;
@@ -110,7 +121,9 @@ bool CDuplicator::Process()
 		m_duplicatedObject->ResetInstructions();
 		CPlayerLemming* dead = g_pAI->GetDead();
 		if (dead != NULL) {
-			AICOORD pos(m_position.m_xFixed, m_position.m_yFixed - 0x34000, m_position.m_zFixed);
+			AICOORD pos(m_position.m_xFixed,
+						m_position.m_yFixed + DUPLICATOR_DUPLICATE_SPAWN_Y_OFFSET_FIXED,
+						m_position.m_zFixed);
 			dead->Resurrect(pos);
 			CPlayerLemmingGroup* group = ((CPlayerLemming*) m_duplicatedObject)->GetGroup();
 			group->AddLemmingToGroup(dead);
@@ -123,7 +136,7 @@ bool CDuplicator::Process()
 // FUNCTION: LEMBALL 0x00427890
 AICOORD CDuplicator::ActivatePosition()
 {
-	int y = m_position.m_yFixed + 0x8000;
+	int y = m_position.m_yFixed + DUPLICATOR_ACTIVATION_POSITION_Y_OFFSET_FIXED;
 	int z = m_position.m_zFixed;
 	int x = m_position.m_xFixed;
 	return AICOORD(x, y, z);
@@ -136,7 +149,7 @@ bool CDuplicator::Activate(CGameObject* p_object)
 		return false;
 	}
 	if (p_object->m_objectType == OBJECT_PLAYER_2 && m_action == ACTION_READY) {
-		m_actionDeadline = 82;
+		m_actionDeadline = DUPLICATOR_ACTIVATION_DELAY_TICKS;
 		m_activator = p_object;
 		RequestAction(ACTION_ACTIVATED);
 		return true;
@@ -148,7 +161,7 @@ bool CDuplicator::Activate(CGameObject* p_object)
 void CDuplicator::DoActivate()
 {
 	m_stateTimer = g_dwSimulationTimestamp;
-	int y = m_position.m_yFixed - 0x3c000;
+	int y = m_position.m_yFixed + DUPLICATOR_STAGING_POSITION_Y_OFFSET_FIXED;
 	int z = m_position.m_zFixed;
 	CGameObject* activator = m_activator;
 	m_actionDeadline += g_dwGameTick;
@@ -161,11 +174,11 @@ void CDuplicator::DoActivate()
 	dup->m_position.m_yFixed = y;
 	dup->m_position.m_zFixed = z;
 	SetSndEffect(SFX_DUPLICTR);
-	g_pAI->Score(100);
+	g_pAI->Score(AI_SCORE_DUPLICATOR_ACTIVATION_POINTS);
 }
 
 // FUNCTION: LEMBALL 0x00427a90
 int CDuplicator::Usage()
 {
-	return 2;
+	return GROUP_OBJECT_USAGE_SINGLE;
 }

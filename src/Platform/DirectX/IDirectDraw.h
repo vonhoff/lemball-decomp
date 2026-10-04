@@ -4,6 +4,10 @@
 #include "IDirectDrawPalette.h"
 #include "IDirectDrawSurface.h"
 
+#define DDSCL_FULLSCREEN 0x00000001
+#define DDSCL_NORMAL 0x00000008
+#define DDSCL_EXCLUSIVE 0x00000010
+
 struct IDirectDraw {
 	virtual long __stdcall QueryInterface(const void*, void**) = 0;
 	virtual unsigned long __stdcall AddRef() = 0;

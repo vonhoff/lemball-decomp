@@ -6,6 +6,13 @@
 #include "../Support/CoordPair.h"
 #include "Frontend/Support/CUserActionMessage.h"
 
+#define PREVIEW_LEVEL_NAME_LINE_COUNT 3
+#define PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES 32
+#define PREVIEW_TEXT_MAX_CHARACTERS 32
+#define PREVIEW_TEXT_POSITION_COMPONENT_COUNT 2
+#define PREVIEW_TEXT_POSITION_X 0
+#define PREVIEW_TEXT_POSITION_Y 1
+
 class CBaseRemap;
 class CGDI;
 class CMain2DDisplay;
@@ -83,29 +90,29 @@ private:
 		CBigBitmap m_bitmap; // 0x00
 	};
 
-	tagPRIMS m_primitive[1];                // 0x398
-	CResBITMAP* m_backgroundBitmap;         // 0x3bc
-	CRepeatAnim* m_teamAnim;                // 0x3c0
-	CRepeatAnim* m_lemmingAnim;             // 0x3c4
-	CRepeatAnim* m_opponentAnim;            // 0x3c8
-	unsigned char* m_remapTable;            // 0x3cc
-	CBaseRemap* m_remap;                    // 0x3d0
-	PreviewLayout* m_layout;                // 0x3d4
-	unsigned long m_lemmingAnimId;          // 0x3d8
-	unsigned long m_teamAnimId;             // 0x3dc
-	unsigned long m_opponentAnimId;         // 0x3e0
-	unsigned long* m_nextButtonAnimIds;     // 0x3e4
-	unsigned long* m_previousButtonAnimIds; // 0x3e8
-	int m_opponentCount;                    // 0x3ec
-	int m_lemmingCount;                     // 0x3f0
-	int m_teamCount;                        // 0x3f4
-	int m_timeSeconds;                      // 0x3f8
-	char m_levelNameLines[3][32];           // 0x3fc
-	char m_timeText[5];                     // 0x45c
-	int m_textPositions[6];                 // 0x464
-	unsigned int m_buttonBinding;           // 0x47c
-	unsigned int m_nextDisabled;            // 0x480
-	unsigned int m_previousDisabled;        // 0x484
+	tagPRIMS m_primitive[1];                                                                         // 0x398
+	CResBITMAP* m_backgroundBitmap;                                                                  // 0x3bc
+	CRepeatAnim* m_teamAnim;                                                                         // 0x3c0
+	CRepeatAnim* m_lemmingAnim;                                                                      // 0x3c4
+	CRepeatAnim* m_opponentAnim;                                                                     // 0x3c8
+	unsigned char* m_remapTable;                                                                     // 0x3cc
+	CBaseRemap* m_remap;                                                                             // 0x3d0
+	PreviewLayout* m_layout;                                                                         // 0x3d4
+	unsigned long m_lemmingAnimId;                                                                   // 0x3d8
+	unsigned long m_teamAnimId;                                                                      // 0x3dc
+	unsigned long m_opponentAnimId;                                                                  // 0x3e0
+	unsigned long* m_nextButtonAnimIds;                                                              // 0x3e4
+	unsigned long* m_previousButtonAnimIds;                                                          // 0x3e8
+	int m_opponentCount;                                                                             // 0x3ec
+	int m_lemmingCount;                                                                              // 0x3f0
+	int m_teamCount;                                                                                 // 0x3f4
+	int m_timeSeconds;                                                                               // 0x3f8
+	char m_levelNameLines[PREVIEW_LEVEL_NAME_LINE_COUNT][PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES]; // 0x3fc
+	char m_timeText[5];                                                                              // 0x45c
+	int m_textPositions[PREVIEW_LEVEL_NAME_LINE_COUNT * PREVIEW_TEXT_POSITION_COMPONENT_COUNT];      // 0x464
+	unsigned int m_buttonBinding;                                                                    // 0x47c
+	unsigned int m_nextDisabled;                                                                     // 0x480
+	unsigned int m_previousDisabled;                                                                 // 0x484
 };
 
 // SYNTHETIC: LEMBALL 0x0044a940

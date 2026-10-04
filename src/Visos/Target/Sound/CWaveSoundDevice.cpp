@@ -407,7 +407,8 @@ int CWaveSoundDevice::FreeAllEffects()
 // FUNCTION: LEMBALL 0x0047d0f0
 unsigned char CWaveSoundDevice::GetMasterVolume()
 {
-	return 0xff;
+	enum { SOUND_VOLUME_MAX = 0xff };
+	return SOUND_VOLUME_MAX;
 }
 
 // FUNCTION: LEMBALL 0x0047d100
@@ -418,7 +419,8 @@ void CWaveSoundDevice::SetMasterVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047d110
 unsigned char CWaveSoundDevice::GetMusicVolume()
 {
-	return 0xff;
+	enum { SOUND_VOLUME_MAX = 0xff };
+	return SOUND_VOLUME_MAX;
 }
 
 // FUNCTION: LEMBALL 0x0047d120
@@ -429,7 +431,8 @@ void CWaveSoundDevice::SetMusicVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047d130
 unsigned char CWaveSoundDevice::GetEffectVolume()
 {
-	return 0xff;
+	enum { SOUND_VOLUME_MAX = 0xff };
+	return SOUND_VOLUME_MAX;
 }
 
 // FUNCTION: LEMBALL 0x0047d140

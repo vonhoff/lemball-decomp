@@ -6,7 +6,12 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from . import ROOT, TOKENS, collect_sources, mask_comments_and_strings
-from .signatures import adjacent_signature, canonical_type, class_ranges, decode_signature
+from .signatures import (
+    adjacent_signature,
+    canonical_type,
+    class_ranges,
+    decode_signature,
+)
 
 CATALOG = ROOT / "tools/data/mac-symbol-catalog.csv"
 WINDOWS_MARK = re.compile(
@@ -31,14 +36,20 @@ def read_catalog(path=CATALOG):
 
 
 WINDOWS_NAME_REVIEWS = {
-    (0x0043A500, "OnZoomBox__4CWndFUc", "CWnd::OnDriverChange()"):
-        "LEMBALL.EXE: CWnd vtable+0x5c at 0x0049942c points through "
-        "0x00401028 to the zero-argument RET at 0x0043a500; CPVWnd's same "
-        "slot points to OnDriverChange at 0x00466340.",
-    (0x0045EDA0, "GetCDDir__FPCc", "CPlatformServices::GetCDDir(const char*)"):
-        "LEMBALL.EXE: caller 0x00406e60 loads the platform object into ECX "
-        "before CALL 0x0045eda0; the callee returns with RET 4 at 0x0045ee61. "
-        "Windows uses a member function for the catalog's free function.",
+    (
+        0x0043A500,
+        "OnZoomBox__4CWndFUc",
+        "CWnd::OnDriverChange()",
+    ): "LEMBALL.EXE: CWnd vtable+0x5c at 0x0049942c points through "
+    "0x00401028 to the zero-argument RET at 0x0043a500; CPVWnd's same "
+    "slot points to OnDriverChange at 0x00466340.",
+    (
+        0x0045EDA0,
+        "GetCDDir__FPCc",
+        "CPlatformServices::GetCDDir(const char*)",
+    ): "LEMBALL.EXE: caller 0x00406e60 loads the platform object into ECX "
+    "before CALL 0x0045eda0; the callee returns with RET 4 at 0x0045ee61. "
+    "Windows uses a member function for the catalog's free function.",
 }
 
 
@@ -65,7 +76,9 @@ def compare_signature(expected, actual):
         signature_status = "unresolved"
     else:
         try:
-            wanted = tuple(canonical_type(parameter) for parameter in expected.parameters)
+            wanted = tuple(
+                canonical_type(parameter) for parameter in expected.parameters
+            )
             found = tuple(canonical_type(parameter) for parameter in actual.parameters)
             if wanted != found or expected.const != actual.const:
                 signature_status = "review"
@@ -88,8 +101,8 @@ def annotation_blocks(text, code):
             continue
         if block:
             start = block[-1].end()
-            has_code = code[start:token.start()].strip()
-            blank_line = re.search(r"\n[ \t\r]*\n", text[start:token.start()])
+            has_code = code[start : token.start()].strip()
+            blank_line = re.search(r"\n[ \t\r]*\n", text[start : token.start()])
             if has_code or blank_line:
                 yield block, token.start()
                 block = []
@@ -107,12 +120,20 @@ def compare_catalog_candidates(address, actual, symbols, candidates):
         comparison = compare_signature(decode_signature(symbol), actual)
         evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual_signature))
         if evidence and comparison["status"] != "match":
-            comparison.update(status="windows", signature_status="review", windows_evidence=evidence)
+            comparison.update(
+                status="windows", signature_status="review", windows_evidence=evidence
+            )
         comparisons.append(dict(comparison, address_68k=f"0x{mac:08x}", symbol=symbol))
     return comparisons
 
 
-CANDIDATE_PRIORITY = {"match": 0, "windows": 1, "case": 2, "mismatch": 3, "unresolved": 4}
+CANDIDATE_PRIORITY = {
+    "match": 0,
+    "windows": 1,
+    "case": 2,
+    "mismatch": 3,
+    "unresolved": 4,
+}
 
 
 def scan(path, symbols, by_windows):
@@ -126,38 +147,51 @@ def scan(path, symbols, by_windows):
             if marker is None:
                 continue
             address = int(marker[1], 16)
-            row = {"path": str(path), "line": text.count("\n", 0, token.start()) + 1,
-                   "windows_address": f"0x{address:08x}"}
+            row = {
+                "path": str(path),
+                "line": text.count("\n", 0, token.start()) + 1,
+                "windows_address": f"0x{address:08x}",
+            }
             candidates = by_windows.get(address)
             if not candidates:
                 yield dict(row, status="unmapped")
                 continue
             if "SYNTHETIC:" in token[0]:
-                yield dict(row, status="synthetic",
-                           reason="compiler-emitted function; no C++ signature")
+                yield dict(
+                    row,
+                    status="synthetic",
+                    reason="compiler-emitted function; no C++ signature",
+                )
                 continue
             try:
                 actual = adjacent_signature(code[:limit], block[-1].end(), ranges)
             except ValueError as error:
                 yield dict(row, status="unresolved", reason=str(error))
                 continue
-            comparisons = compare_catalog_candidates(address, actual, symbols, candidates)
-            best = min(comparisons, key=lambda candidate: (
-                CANDIDATE_PRIORITY[candidate["status"]],
-                candidate.get("signature_status") != "match",
-            ))
+            comparisons = compare_catalog_candidates(
+                address, actual, symbols, candidates
+            )
+            best = min(
+                comparisons,
+                key=lambda candidate: (
+                    CANDIDATE_PRIORITY[candidate["status"]],
+                    candidate.get("signature_status") != "match",
+                ),
+            )
             yield dict(row, **best, catalog_candidates=comparisons)
 
 
 def print_review(row):
     """Print one name/signature review and its original Windows evidence."""
     detail = row.get("reason") or (
-        f'{row["original_signature"]} -> {row["actual_signature"]}'
-        f' ({", ".join(row["differences"]) or row["signature_status"]})'
+        f"{row['original_signature']} -> {row['actual_signature']}"
+        f" ({', '.join(row['differences']) or row['signature_status']})"
     )
-    print(f'{row["path"]}:{row["line"]}: {row["status"]}: {detail} [{row["windows_address"]}]')
+    print(
+        f"{row['path']}:{row['line']}: {row['status']}: {detail} [{row['windows_address']}]"
+    )
     if row.get("windows_evidence"):
-        print(f'  Windows evidence: {row["windows_evidence"]}')
+        print(f"  Windows evidence: {row['windows_evidence']}")
 
 
 def check_names(paths: list[Path | str] | None = None, verbose=False):
@@ -166,19 +200,24 @@ def check_names(paths: list[Path | str] | None = None, verbose=False):
     files = collect_sources(paths)
     rows = [row for path in files for row in scan(path, symbols, mappings)]
     counts = dict(Counter(row["status"] for row in rows))
-    signatures = dict(Counter(row["signature_status"] for row in rows if "signature_status" in row))
+    signatures = dict(
+        Counter(row["signature_status"] for row in rows if "signature_status" in row)
+    )
     for row in rows:
         required = row["status"] in ("mismatch", "unresolved", "windows")
         requested = verbose and (
-            row["status"] == "case" or row.get("signature_status") in ("review", "unresolved")
+            row["status"] == "case"
+            or row.get("signature_status") in ("review", "unresolved")
         )
         if required or requested:
             print_review(row)
     print(f"names: {len(files)} files, {len(rows)} entries from CSV: {counts}")
     print(f"names: parameter/const comparisons: {signatures}")
     if signatures.get("review") or signatures.get("unresolved"):
-        print("names: signature review requires Windows evidence; "
-              "gate.py --names lists items.")
+        print(
+            "names: signature review requires Windows evidence; "
+            "gate.py --names lists items."
+        )
     if counts.get("unresolved"):
         return 2
     return int(bool(counts.get("mismatch")))

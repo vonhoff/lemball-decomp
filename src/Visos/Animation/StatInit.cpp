@@ -5,14 +5,18 @@
 #include <new.h>
 #include <stddef.h>
 
+enum {
+	STAT_MANAGER_INITIAL_CAPACITY = 32
+};
+
 // FUNCTION: LEMBALL 0x0045aa80
 bool _STAT_Init()
 {
 	void* storage;
 
-	storage = operator new(0x14);
+	storage = operator new(sizeof(CStatManager));
 	if (storage != NULL) {
-		storage = new (storage) CStatManager(0x20);
+		storage = new (storage) CStatManager(STAT_MANAGER_INITIAL_CAPACITY);
 	}
 	else {
 		storage = NULL;

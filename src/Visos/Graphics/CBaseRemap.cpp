@@ -63,6 +63,8 @@ void CBaseRemap::MapRemap(const unsigned char* p_mapping)
 
 #include <stdlib.h>
 
+#define REMAP_BEST_DISTANCE_INITIAL_VALUE 0x7fffffff
+
 // FUNCTION: LEMBALL 0x0046ab70
 void CBaseRemap::CalculateGreyScale()
 {
@@ -96,7 +98,7 @@ void CBaseRemap::CalculateGreyScale()
 						 (int) colour[2]) /
 						10);
 		unsigned int bestIndex = (unsigned int) -1;
-		int bestDistance = 0x7fffffff;
+		int bestDistance = REMAP_BEST_DISTANCE_INITIAL_VALUE;
 
 		greyIndex = 0;
 		for (;;) {
@@ -117,3 +119,5 @@ void CBaseRemap::CalculateGreyScale()
 	operator delete(greyIndices);
 	--m_paletteResource->m_directUseCount;
 }
+
+#undef REMAP_BEST_DISTANCE_INITIAL_VALUE

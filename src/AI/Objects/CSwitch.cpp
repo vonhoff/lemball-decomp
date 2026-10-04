@@ -3,11 +3,13 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
+#include "../Base/AIScoreConstants.h"
 #include "../Navigation/CAI.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectInteractionStates.h"
 #include "AI/Base/ObjectTypes.h"
 #include "AI/Objects/SwitchEntry.h"
 #include "CViewData.h"
@@ -17,6 +19,17 @@
 
 // GLOBAL: LEMBALL 0x0049e1b8
 unsigned short g_wNextSwitchIndex;
+
+enum eLegacySwitchType {
+	LEGACY_SWITCH_SINGLE_LIFT = 1,
+	LEGACY_SWITCH_LIFT_RANGE = 2,
+	LEGACY_SWITCH_DOOR = 3
+};
+
+enum {
+	SWITCH_ACTIVATION_ANIMATION_DURATION_TICKS = 20,
+	SWITCH_ACTIVATION_POSITION_X_OFFSET_FIXED = -8 * FIXED_POINT_ONE
+};
 
 // FUNCTION: LEMBALL 0x0041d040
 CSwitch::CSwitch(AICOORD& p_position, swMessage p_legacyType, int p_legacyFirst, int p_legacyLast, int p_legacyAux)
@@ -38,7 +51,7 @@ void CSwitch::Restart()
 	CBaseGlobalObject::Restart();
 	m_entryCount = 0;
 	m_scoreAwarded = 0;
-	m_actionArgument = 0;
+	m_actionArgument = SWITCH_STATE_INACTIVE;
 }
 
 // FUNCTION: LEMBALL 0x0041d120
@@ -65,11 +78,11 @@ void CSwitch::Throw()
 // FUNCTION: LEMBALL 0x0041d180
 bool CSwitch::Process()
 {
-	int y = m_position.m_yFixed >> 12;
-	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	if (x < 0 || y < 0 || blockX >= g_pMap->m_ground.m_width || blockY >= g_pMap->m_ground.m_height) {
 		z = 0;
@@ -79,7 +92,7 @@ bool CSwitch::Process()
 		y &= 15;
 		z = map->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x, y);
 	}
-	m_position.m_zFixed = ((int) z) << 12;
+	m_position.m_zFixed = ((int) z) << FIXED_POINT_FRACTION_BITS;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == ACTION_HIT) {
@@ -109,14 +122,14 @@ bool CSwitch::Process()
 bool CSwitch::Activate(CGameObject* p_object)
 {
 	switch ((unsigned short) m_actionArgument) {
-	case 0:
-		m_actionPhase2Deadline = 20;
-		m_actionArgument = 1;
+	case SWITCH_STATE_INACTIVE:
+		m_actionPhase2Deadline = SWITCH_ACTIVATION_ANIMATION_DURATION_TICKS;
+		m_actionArgument = SWITCH_STATE_ACTIVE;
 		RequestAction(ACTION_ACTIVATED);
 		return true;
-	case 1:
-		m_actionPhase2Deadline = 20;
-		m_actionArgument = 0;
+	case SWITCH_STATE_ACTIVE:
+		m_actionPhase2Deadline = SWITCH_ACTIVATION_ANIMATION_DURATION_TICKS;
+		m_actionArgument = SWITCH_STATE_INACTIVE;
 		RequestAction(ACTION_ACTIVATED);
 		return true;
 	default:
@@ -130,7 +143,7 @@ void CSwitch::DoActivate()
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_actionPhase2Deadline += g_dwGameTick;
 	if (m_scoreAwarded == 0) {
-		g_pAI->Score(25);
+		g_pAI->Score(AI_SCORE_SWITCH_ACTIVATION_POINTS);
 		m_scoreAwarded = 1;
 	}
 }
@@ -140,14 +153,14 @@ AICOORD CSwitch::ActivatePosition()
 {
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	int x = m_position.m_xFixed - 0x8000;
+	int x = m_position.m_xFixed + SWITCH_ACTIVATION_POSITION_X_OFFSET_FIXED;
 	return AICOORD(x, y, z);
 }
 
 // FUNCTION: LEMBALL 0x0041d350
 void CSwitch::AddEntry(swMessage p_message, unsigned short p_objectId)
 {
-	if (m_entryCount < 0x20) {
+	if (m_entryCount < SWITCH_ENTRY_CAPACITY) {
 		m_entries[m_entryCount].m_message = p_message;
 		m_entries[m_entryCount].m_objectId = p_objectId;
 		m_entryCount++;
@@ -158,21 +171,21 @@ void CSwitch::AddEntry(swMessage p_message, unsigned short p_objectId)
 void CSwitch::ConvertVer0ToVer1()
 {
 	switch (m_legacyType) {
-	case 1: {
+	case LEGACY_SWITCH_SINGLE_LIFT: {
 		unsigned int liftId = g_pAI->LiftId(m_legacyFirst);
 		AddEntry(SW_LIFT, liftId);
 		break;
 	}
-	case 2: {
+	case LEGACY_SWITCH_LIFT_RANGE: {
 		for (int i = m_legacyFirst; i < m_legacyLast; i++) {
 			unsigned int liftId = g_pAI->LiftId(i);
 			AddEntry(SW_LIFT, liftId);
 		}
 		break;
 	}
-	case 3: {
+	case LEGACY_SWITCH_DOOR: {
 		unsigned int doorId = g_pAI->DoorId(m_legacyFirst);
-		if (doorId != 0xffff) {
+		if (doorId != INVALID_OBJECT_ID) {
 			AddEntry(SW_DOOR, doorId);
 		}
 		break;
@@ -205,7 +218,7 @@ unsigned char* CSwitch::Load(unsigned char*& p_data)
 // FUNCTION: LEMBALL 0x0041dc40
 int CSwitch::Usage()
 {
-	return 2;
+	return GROUP_OBJECT_USAGE_SINGLE;
 }
 
 // FUNCTION: LEMBALL 0x0041dc50

@@ -9,6 +9,13 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Visos/Foundation/CFixed.h"
 
+enum {
+	BALLOON_POST_BALLOON_1_ACTIVE_MASK = 0x01,
+	BALLOON_POST_BALLOON_3_ACTIVE_MASK = 0x02,
+	BALLOON_POST_BALLOON_5_ACTIVE_MASK = 0x04,
+	BALLOON_POST_BALLOON_7_ACTIVE_MASK = 0x08
+};
+
 // FUNCTION: LEMBALL 0x00429f50
 CBalloonPost::CBalloonPost(CAI* p_ai, CMap* p_map)
 {
@@ -47,22 +54,22 @@ bool CBalloonPost::FindPost(eObjectType p_objectType, AICOORD& p_position)
 		p_position.m_xFixed = m_positions[0].m_xFixed;
 		p_position.m_yFixed = m_positions[0].m_yFixed;
 		p_position.m_zFixed = m_positions[0].m_zFixed;
-		return m_activeMask & 1;
+		return m_activeMask & BALLOON_POST_BALLOON_1_ACTIVE_MASK;
 	case OBJECT_BALLOON_3:
 		p_position.m_xFixed = m_positions[1].m_xFixed;
 		p_position.m_yFixed = m_positions[1].m_yFixed;
 		p_position.m_zFixed = m_positions[1].m_zFixed;
-		return m_activeMask & 2;
+		return m_activeMask & BALLOON_POST_BALLOON_3_ACTIVE_MASK;
 	case OBJECT_BALLOON_5:
 		p_position.m_xFixed = m_positions[2].m_xFixed;
 		p_position.m_yFixed = m_positions[2].m_yFixed;
 		p_position.m_zFixed = m_positions[2].m_zFixed;
-		return m_activeMask & 4;
+		return m_activeMask & BALLOON_POST_BALLOON_5_ACTIVE_MASK;
 	case OBJECT_BALLOON_7:
 		p_position.m_xFixed = m_positions[3].m_xFixed;
 		p_position.m_yFixed = m_positions[3].m_yFixed;
 		p_position.m_zFixed = m_positions[3].m_zFixed;
-		return m_activeMask & 8;
+		return m_activeMask & BALLOON_POST_BALLOON_7_ACTIVE_MASK;
 	default:
 		return false;
 	}
@@ -72,79 +79,79 @@ bool CBalloonPost::FindPost(eObjectType p_objectType, AICOORD& p_position)
 void CBalloonPost::Process()
 {
 	CFixed height(0);
-	if ((m_activeMask & 1) != 0) {
-		int y = m_positions[0].m_yFixed >> 12;
-		int x = m_positions[0].m_xFixed >> 12;
-		int blockX = x >> 4;
-		int blockY = y >> 4;
+	if ((m_activeMask & BALLOON_POST_BALLOON_1_ACTIVE_MASK) != 0) {
+		int y = m_positions[0].m_yFixed >> FIXED_POINT_FRACTION_BITS;
+		int x = m_positions[0].m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = m_map;
 		unsigned short z;
 		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-			x &= 0xf;
-			y &= 0xf;
+			x &= GROUND_BLOCK_PIXEL_MASK;
+			y &= GROUND_BLOCK_PIXEL_MASK;
 			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
 		}
-		height = CFixed(z << 12);
+		height = CFixed(z << FIXED_POINT_FRACTION_BITS);
 		m_positions[0].m_zFixed = height.m_value;
 		m_posts[0]->m_position.m_zFixed = height.m_value;
 	}
-	if ((m_activeMask & 2) != 0) {
-		int y = m_positions[1].m_yFixed >> 12;
-		int x = m_positions[1].m_xFixed >> 12;
-		int blockX = x >> 4;
-		int blockY = y >> 4;
+	if ((m_activeMask & BALLOON_POST_BALLOON_3_ACTIVE_MASK) != 0) {
+		int y = m_positions[1].m_yFixed >> FIXED_POINT_FRACTION_BITS;
+		int x = m_positions[1].m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = m_map;
 		unsigned short z;
 		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-			x &= 0xf;
-			y &= 0xf;
+			x &= GROUND_BLOCK_PIXEL_MASK;
+			y &= GROUND_BLOCK_PIXEL_MASK;
 			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
 		}
-		height = CFixed(z << 12);
+		height = CFixed(z << FIXED_POINT_FRACTION_BITS);
 		m_positions[1].m_zFixed = height.m_value;
 		m_posts[1]->m_position.m_zFixed = height.m_value;
 	}
-	if ((m_activeMask & 4) != 0) {
-		int y = m_positions[2].m_yFixed >> 12;
-		int x = m_positions[2].m_xFixed >> 12;
-		int blockX = x >> 4;
-		int blockY = y >> 4;
+	if ((m_activeMask & BALLOON_POST_BALLOON_5_ACTIVE_MASK) != 0) {
+		int y = m_positions[2].m_yFixed >> FIXED_POINT_FRACTION_BITS;
+		int x = m_positions[2].m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = m_map;
 		unsigned short z;
 		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-			x &= 0xf;
-			y &= 0xf;
+			x &= GROUND_BLOCK_PIXEL_MASK;
+			y &= GROUND_BLOCK_PIXEL_MASK;
 			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
 		}
-		height = CFixed(z << 12);
+		height = CFixed(z << FIXED_POINT_FRACTION_BITS);
 		m_positions[2].m_zFixed = height.m_value;
 		m_posts[2]->m_position.m_zFixed = height.m_value;
 	}
-	if ((m_activeMask & 8) != 0) {
-		int y = m_positions[3].m_yFixed >> 12;
-		int x = m_positions[3].m_xFixed >> 12;
-		int blockX = x >> 4;
-		int blockY = y >> 4;
+	if ((m_activeMask & BALLOON_POST_BALLOON_7_ACTIVE_MASK) != 0) {
+		int y = m_positions[3].m_yFixed >> FIXED_POINT_FRACTION_BITS;
+		int x = m_positions[3].m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = m_map;
 		unsigned short z;
 		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-			x &= 0xf;
-			y &= 0xf;
+			x &= GROUND_BLOCK_PIXEL_MASK;
+			y &= GROUND_BLOCK_PIXEL_MASK;
 			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
 		}
-		height = CFixed(z << 12);
+		height = CFixed(z << FIXED_POINT_FRACTION_BITS);
 		m_positions[3].m_zFixed = height.m_value;
 		m_posts[3]->m_position.m_zFixed = height.m_value;
 	}
@@ -154,19 +161,19 @@ void CBalloonPost::Process()
 int CBalloonPost::GetViewData(CViewData* p_viewData)
 {
 	int count = 0;
-	if ((m_activeMask & 1) != 0) {
+	if ((m_activeMask & BALLOON_POST_BALLOON_1_ACTIVE_MASK) != 0) {
 		m_posts[0]->GetViewData(p_viewData[count]);
 		count++;
 	}
-	if ((m_activeMask & 2) != 0) {
+	if ((m_activeMask & BALLOON_POST_BALLOON_3_ACTIVE_MASK) != 0) {
 		m_posts[1]->GetViewData(p_viewData[count]);
 		count++;
 	}
-	if ((m_activeMask & 4) != 0) {
+	if ((m_activeMask & BALLOON_POST_BALLOON_5_ACTIVE_MASK) != 0) {
 		m_posts[2]->GetViewData(p_viewData[count]);
 		count++;
 	}
-	if ((m_activeMask & 8) != 0) {
+	if ((m_activeMask & BALLOON_POST_BALLOON_7_ACTIVE_MASK) != 0) {
 		m_posts[3]->GetViewData(p_viewData[count]);
 		count++;
 	}
@@ -180,32 +187,32 @@ void CBalloonPost::ActivatePostAtPosition(int p_x, int p_y, int p_z, eObjectType
 	int index;
 	switch (p_type) {
 	case OBJECT_BALLOON_1:
-		mask = 1;
+		mask = BALLOON_POST_BALLOON_1_ACTIVE_MASK;
 		index = 0;
 		break;
 	case OBJECT_BALLOON_3:
-		mask = 2;
+		mask = BALLOON_POST_BALLOON_3_ACTIVE_MASK;
 		index = 1;
 		break;
 	case OBJECT_BALLOON_5:
-		mask = 4;
+		mask = BALLOON_POST_BALLOON_5_ACTIVE_MASK;
 		index = 2;
 		break;
 	case OBJECT_BALLOON_7:
-		mask = 8;
+		mask = BALLOON_POST_BALLOON_7_ACTIVE_MASK;
 		index = 3;
 		break;
 	default:
 		return;
 	}
 	m_activeMask |= mask;
-	m_positions[index].m_xFixed = p_x << 12;
-	m_positions[index].m_yFixed = p_y << 12;
-	m_positions[index].m_zFixed = p_z << 12;
+	m_positions[index].m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_positions[index].m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	m_positions[index].m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 	CTheBalloonPost* post = m_posts[index];
-	post->m_position.m_xFixed = p_x << 12;
-	post->m_position.m_yFixed = p_y << 12;
-	post->m_position.m_zFixed = p_z << 12;
+	post->m_position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	post->m_position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	post->m_position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 	m_posts[index]->m_active = 1;
 }
 
@@ -216,19 +223,19 @@ void CBalloonPost::DeactivatePost(CTheBalloonPost* p_post)
 	int index;
 	switch (p_post->m_objectType) {
 	case OBJECT_BALLOON_1:
-		mask = ~1;
+		mask = ~BALLOON_POST_BALLOON_1_ACTIVE_MASK;
 		index = 0;
 		break;
 	case OBJECT_BALLOON_3:
-		mask = ~2;
+		mask = ~BALLOON_POST_BALLOON_3_ACTIVE_MASK;
 		index = 1;
 		break;
 	case OBJECT_BALLOON_5:
-		mask = ~4;
+		mask = ~BALLOON_POST_BALLOON_5_ACTIVE_MASK;
 		index = 2;
 		break;
 	case OBJECT_BALLOON_7:
-		mask = ~8;
+		mask = ~BALLOON_POST_BALLOON_7_ACTIVE_MASK;
 		index = 3;
 		break;
 	default:
@@ -244,7 +251,7 @@ void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 	m_activeMask = *reinterpret_cast<unsigned short*>(p_data);
 	p_data += 2;
 
-	int count = 4;
+	int count = BALLOON_POST_COUNT;
 	AICOORD* position = m_positions;
 	CTheBalloonPost** post = m_posts;
 	unsigned short z;
@@ -258,13 +265,13 @@ void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 		z = *reinterpret_cast<unsigned short*>(p_data);
 		p_data += 2;
 
-		position->m_xFixed = (unsigned int) x << 12;
-		position->m_yFixed = (unsigned int) y << 12;
-		position->m_zFixed = (unsigned int) z << 12;
+		position->m_xFixed = (unsigned int) x << FIXED_POINT_FRACTION_BITS;
+		position->m_yFixed = (unsigned int) y << FIXED_POINT_FRACTION_BITS;
+		position->m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 		CTheBalloonPost* currentPost = *post;
-		currentPost->m_position.m_xFixed = (unsigned int) x << 12;
-		currentPost->m_position.m_yFixed = (unsigned int) y << 12;
-		currentPost->m_position.m_zFixed = (unsigned int) z << 12;
+		currentPost->m_position.m_xFixed = (unsigned int) x << FIXED_POINT_FRACTION_BITS;
+		currentPost->m_position.m_yFixed = (unsigned int) y << FIXED_POINT_FRACTION_BITS;
+		currentPost->m_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 		(*post)->m_active = 0;
 
 		position++;
@@ -272,16 +279,16 @@ void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 		count--;
 	} while (count != 0);
 
-	if ((m_activeMask & 1) != 0) {
+	if ((m_activeMask & BALLOON_POST_BALLOON_1_ACTIVE_MASK) != 0) {
 		m_posts[0]->m_active = 1;
 	}
-	if ((m_activeMask & 2) != 0) {
+	if ((m_activeMask & BALLOON_POST_BALLOON_3_ACTIVE_MASK) != 0) {
 		m_posts[1]->m_active = 1;
 	}
-	if ((m_activeMask & 4) != 0) {
+	if ((m_activeMask & BALLOON_POST_BALLOON_5_ACTIVE_MASK) != 0) {
 		m_posts[2]->m_active = 1;
 	}
-	if ((m_activeMask & 8) != 0) {
+	if ((m_activeMask & BALLOON_POST_BALLOON_7_ACTIVE_MASK) != 0) {
 		m_posts[3]->m_active = 1;
 	}
 }

@@ -3,8 +3,14 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../Navigation/CAI.h"
+#include "AI/Base/ObjectInteractionStates.h"
 
 #include <stddef.h>
+
+enum {
+	CRATE_ACTIVATION_FIRST_PHASE_TICKS = 16,
+	CRATE_ACTIVATION_SECOND_PHASE_TICKS = 30
+};
 
 // FUNCTION: LEMBALL 0x0041c470
 CCrate::CCrate(const AICOORD& p_position, CGlobalGameObject* p_contents, unsigned short p_contentsId)
@@ -23,7 +29,7 @@ CCrate::CCrate(const AICOORD& p_position, CGlobalGameObject* p_contents, unsigne
 // FUNCTION: LEMBALL 0x0041c530
 int CCrate::Usage()
 {
-	return 2;
+	return GROUP_OBJECT_USAGE_SINGLE;
 }
 
 inline CCrate::~CCrate()
@@ -58,7 +64,7 @@ void CCrate::TriggerContents()
 		m_position.m_xFixed = contents->m_position.m_xFixed;
 		m_position.m_yFixed = contents->m_position.m_yFixed;
 		m_position.m_zFixed = contents->m_position.m_zFixed;
-		g_pObjectManager->AddObject(0xffff, contents, 0);
+		g_pObjectManager->AddObject(INVALID_OBJECT_ID, contents, 0);
 		m_contentsType = OBJECT_INVALID;
 	}
 }
@@ -66,21 +72,21 @@ void CCrate::TriggerContents()
 // FUNCTION: LEMBALL 0x0041cd20
 bool CCrate::Process()
 {
-	int y = m_position.m_yFixed >> 12;
-	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		int cellX = x & 0xf;
-		int cellY = y & 0xf;
+		int cellX = x & GROUND_BLOCK_PIXEL_MASK;
+		int cellY = y & GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	else {
 		z = 0;
 	}
-	m_position.m_zFixed = (unsigned int) z << 12;
+	m_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			switch (m_action) {
@@ -118,8 +124,8 @@ bool CCrate::Process()
 bool CCrate::Activate(CGameObject* p_object)
 {
 	if (m_action == ACTION_READY) {
-		m_actionPhase1Deadline = 16;
-		m_actionPhase2Deadline = 30;
+		m_actionPhase1Deadline = CRATE_ACTIVATION_FIRST_PHASE_TICKS;
+		m_actionPhase2Deadline = CRATE_ACTIVATION_SECOND_PHASE_TICKS;
 		RequestAction(ACTION_ACTIVATING);
 		return true;
 	}
@@ -130,9 +136,9 @@ bool CCrate::Activate(CGameObject* p_object)
 void CCrate::DoActivate()
 {
 	enum {
-		CATAPULT_SCORE = 100,
-		KEY_SCORE = 50,
-		EMPTY_SCORE = 25
+		CRATE_CATAPULT_CONTENT_REWARD_POINTS = 100,
+		CRATE_KEY_CONTENT_REWARD_POINTS = 50,
+		CRATE_EMPTY_CONTENT_REWARD_POINTS = 25
 	};
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_actionPhase1Deadline += g_dwGameTick;
@@ -141,15 +147,15 @@ void CCrate::DoActivate()
 	int score;
 	switch (m_contentsType) {
 	case OBJECT_CATAPULT:
-		score = CATAPULT_SCORE;
+		score = CRATE_CATAPULT_CONTENT_REWARD_POINTS;
 		break;
 	case OBJECT_KEY_1:
 	case OBJECT_KEY_2:
 	case OBJECT_KEY_3:
-		score = KEY_SCORE;
+		score = CRATE_KEY_CONTENT_REWARD_POINTS;
 		break;
 	case OBJECT_INVALID:
-		score = EMPTY_SCORE;
+		score = CRATE_EMPTY_CONTENT_REWARD_POINTS;
 		break;
 	}
 	g_pAI->Score(score);
@@ -159,9 +165,9 @@ void CCrate::DoActivate()
 AICOORD CCrate::ActivatePosition()
 {
 	enum {
-		DEFAULT_X_OFFSET = 48 << 12,
-		DEFAULT_Y_OFFSET = 8 << 12,
-		CONTENTS_X_OFFSET = 8 << 12
+		DEFAULT_X_OFFSET = 48 << FIXED_POINT_FRACTION_BITS,
+		DEFAULT_Y_OFFSET = 8 << FIXED_POINT_FRACTION_BITS,
+		CONTENTS_X_OFFSET = 8 << FIXED_POINT_FRACTION_BITS
 	};
 	int x = m_position.m_xFixed;
 	int y = m_position.m_yFixed;

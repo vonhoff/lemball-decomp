@@ -10,6 +10,11 @@ class CObjectManager;
 class CViewData;
 class CVSRect;
 struct Rect;
+
+enum {
+	GENERIC_GROUP_CAPACITY = 40
+};
+
 // SIZE 0xb0
 // VTABLE: LEMBALL 0x00494d08
 class CGenericGroupManager {
@@ -38,14 +43,15 @@ public:
 	virtual int GetViewData(CViewData* p_viewData);                                     // vtable+0x4c
 	virtual bool CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);        // vtable+0x50
 	void Restart();
+	void ClearGroups();
 	~CGenericGroupManager();
 	CGenericGroupManager();
 
 protected:
-	CGenericGroup* m_groups[40]; // 0x04
-	int m_groupCount;            // 0xa4
-	int m_currentGroup;          // 0xa8
-	int m_state;                 // 0xac
+	CGenericGroup* m_groups[GENERIC_GROUP_CAPACITY]; // 0x04
+	int m_groupCount;                                // 0xa4
+	int m_currentGroup;                              // 0xa8
+	int m_deleteEmptyGroups;                         // 0xac
 };
 
 #endif

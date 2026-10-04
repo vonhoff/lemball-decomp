@@ -3,6 +3,12 @@
 
 #include "../../AI/Base/AICOORD.h"
 
+enum {
+	FACING_DIRECTION_COUNT = 8,
+	FACING_DIRECTION_MASK = FACING_DIRECTION_COUNT - 1,
+	FACING_DIRECTION_OPPOSITE_OFFSET = FACING_DIRECTION_COUNT / 2
+};
+
 class CVSMath {
 public:
 	unsigned int SqRoot(unsigned int p_value);
@@ -28,6 +34,6 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2);
 bool CloseTo(AICOORD p_first, AICOORD p_second);
 int sgn(int p_value);
 
-extern int g_anRotationDirections[8];
-extern unsigned int g_anFacingDirectionYFlip[8];
+extern int g_anRotationDirections[FACING_DIRECTION_COUNT];
+extern unsigned int g_anFacingDirectionYFlip[FACING_DIRECTION_COUNT];
 #endif

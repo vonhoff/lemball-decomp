@@ -10,7 +10,9 @@
 #include "../Navigation/CMaze.h"
 #include "../Navigation/CMover.h"
 #include "CPt3.h"
+#include "ObjectInteractionStates.h"
 #include "Solution.h"
+#include "Visos/Foundation/RandomConstants.h"
 
 #include <string.h>
 
@@ -36,7 +38,7 @@ bool CGameObject::IsFlying()
 // FUNCTION: LEMBALL 0x0040a820
 int CGameObject::Usage()
 {
-	return 0;
+	return GROUP_OBJECT_USAGE_NONE;
 }
 
 // FUNCTION: LEMBALL 0x0040a830 FOLDED
@@ -307,7 +309,7 @@ void CGameObject::SendCancel()
 // FUNCTION: LEMBALL 0x0040c1c0
 int CGameObject::UsableState()
 {
-	return 2;
+	return GROUP_OBJECT_REQUEST_ACCEPTED;
 }
 
 // FUNCTION: LEMBALL 0x00414f30
@@ -349,6 +351,8 @@ CGameObject::CGameObject(eObjectType p_objectType,
 	g_pObjects[m_objectId] = this;
 }
 
+#define PLAYER_ONE_RUNTIME_FLAGS 0x200
+#define PLAYER_TWO_RUNTIME_FLAGS 0x100
 // FUNCTION: LEMBALL 0x004150d0
 void CGameObject::Restart()
 {
@@ -360,8 +364,8 @@ void CGameObject::Restart()
 	m_auxiliaryPosition.m_zFixed = 0;
 	Initialise();
 	m_position.m_zFixed = 0;
-	m_invisibleSwitchId = (unsigned short) 0xffff;
-	m_liftId = 0xffff;
+	m_invisibleSwitchId = (unsigned short) INVALID_OBJECT_ID;
+	m_liftId = INVALID_OBJECT_ID;
 	m_position.m_yFixed = 0;
 	m_position.m_xFixed = 0;
 	if (m_destinationList != NULL) {
@@ -369,13 +373,15 @@ void CGameObject::Restart()
 	}
 	switch (m_objectType) {
 	case OBJECT_PLAYER_1:
-		m_runtimeFlags = 0x200;
+		m_runtimeFlags = PLAYER_ONE_RUNTIME_FLAGS;
 		break;
 	case OBJECT_PLAYER_2:
-		m_runtimeFlags = 0x100;
+		m_runtimeFlags = PLAYER_TWO_RUNTIME_FLAGS;
 		break;
 	}
 }
+#undef PLAYER_ONE_RUNTIME_FLAGS
+#undef PLAYER_TWO_RUNTIME_FLAGS
 
 // FUNCTION: LEMBALL 0x00415160
 CGameObject::~CGameObject()
@@ -452,12 +458,18 @@ void CGameObject::StartFly(C3DVector& p_velocity, C3DVector* p_origin)
 	m_flightVelocity.m_zFixed = p_velocity.m_zFixed;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_lastMovementTick = g_dwGameTick;
-	m_actionDeadline = g_dwGameTick + 10;
+	m_actionDeadline = g_dwGameTick + GAME_OBJECT_FLIGHT_START_DELAY_TICKS;
 }
 
 // FUNCTION: LEMBALL 0x00415300
 void CGameObject::Fly()
 {
+	enum {
+		GAME_OBJECT_FLIGHT_GRAVITY_FIXED_PER_TICK = 2 * FIXED_POINT_ONE,
+		GAME_OBJECT_FLIGHT_POSITION_ADJUSTMENT_FIXED = 4 * FIXED_POINT_ONE,
+		GAME_OBJECT_FLIGHT_TERMINAL_DOWNWARD_SPEED_FIXED = 10 * FIXED_POINT_ONE,
+		GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED = 3 * FIXED_POINT_ONE
+	};
 	int timeDelta = (int) (g_dwGameTick - m_lastMovementTick);
 	if (timeDelta > 0) {
 		m_lastMovementTick = g_dwGameTick;
@@ -468,39 +480,39 @@ void CGameObject::Fly()
 		y = m_flightVelocity.m_yFixed * 2 + m_flightOrigin.m_yFixed;
 		m_flightOrigin.m_xFixed = x;
 		m_flightOrigin.m_yFixed = y;
-		m_flightVelocity.m_zFixed -= 0x2000;
-		z = m_flightVelocity.m_zFixed * 2 + 0x4000 + m_flightOrigin.m_zFixed;
+		m_flightVelocity.m_zFixed -= GAME_OBJECT_FLIGHT_GRAVITY_FIXED_PER_TICK;
+		z = m_flightVelocity.m_zFixed * 2 + GAME_OBJECT_FLIGHT_POSITION_ADJUSTMENT_FIXED + m_flightOrigin.m_zFixed;
 		m_flightOrigin.m_zFixed = z;
-		if (m_flightVelocity.m_zFixed < -0xa000) {
-			m_flightVelocity.m_zFixed = -0xa000;
+		if (m_flightVelocity.m_zFixed < -GAME_OBJECT_FLIGHT_TERMINAL_DOWNWARD_SPEED_FIXED) {
+			m_flightVelocity.m_zFixed = -GAME_OBJECT_FLIGHT_TERMINAL_DOWNWARD_SPEED_FIXED;
 		}
 		CMover* mover = NULL;
-		int groundZ = g_pMap->GetZ(x >> 12, y >> 12, &mover);
-		int flightZ = z >> 12;
+		int groundZ = g_pMap->GetZ(x >> FIXED_POINT_FRACTION_BITS, y >> FIXED_POINT_FRACTION_BITS, &mover);
+		int flightZ = z >> FIXED_POINT_FRACTION_BITS;
 		if (flightZ <= groundZ) {
 			m_isFlying = 0;
 			m_balloonPostId = 0;
 			if (groundZ - 12 >= flightZ) {
 				m_actionDeadline = g_dwGameTick;
-				if ((m_collisionFlags & 4) != 0) {
+				if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
 					m_isFalling = 1;
-					m_flightVelocity.m_xFixed = 0x3000;
+					m_flightVelocity.m_xFixed = GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED;
 					m_flightVelocity.m_yFixed = 0;
-					int objectZ = m_position.m_zFixed >> 12;
-					m_flightVelocity.m_zFixed = ((objectZ - groundZ) / 8 + 1) << 12;
+					int objectZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+					m_flightVelocity.m_zFixed = ((objectZ - groundZ) / 8 + 1) << FIXED_POINT_FRACTION_BITS;
 					m_lastMovementTick = g_dwGameTick;
 					m_flightZ = objectZ;
 					m_groundPosition.m_yFixed = m_position.m_yFixed;
 					m_groundPosition.m_xFixed = m_position.m_xFixed;
 					m_actionArgument = 0;
-					m_groundPosition.m_zFixed = groundZ << 12;
+					m_groundPosition.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 				}
 			}
 			else {
 				m_position.m_xFixed = x;
 				m_position.m_yFixed = y;
 				m_position.m_zFixed = z;
-				m_position.m_zFixed = groundZ << 12;
+				m_position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 				if (g_pAI->HitTrampoline(m_position, this) == 0) {
 					m_flightVelocity.m_xFixed = 0;
 					m_flightVelocity.m_yFixed = 0;
@@ -530,9 +542,9 @@ void CGameObject::Fly()
 void CGameObject::RotateClockwise()
 {
 	m_facingDirection++;
-	if (m_facingDirection >= 8) {
-		unsigned short turns = (unsigned short) m_facingDirection / 8;
-		m_facingDirection -= turns * 8;
+	if (m_facingDirection >= FACING_DIRECTION_COUNT) {
+		unsigned short turns = (unsigned short) m_facingDirection / FACING_DIRECTION_COUNT;
+		m_facingDirection -= turns * FACING_DIRECTION_COUNT;
 	}
 }
 
@@ -541,18 +553,23 @@ void CGameObject::RotateAnticlockwise()
 {
 	m_facingDirection--;
 	if (m_facingDirection < 0) {
-		unsigned short turns = (unsigned short) (7 - m_facingDirection) / 8;
-		m_facingDirection += turns * 8;
+		unsigned short turns = (unsigned short) (FACING_DIRECTION_MASK - m_facingDirection) / FACING_DIRECTION_COUNT;
+		m_facingDirection += turns * FACING_DIRECTION_COUNT;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00415580
 void CGameObject::StartMoving()
 {
+	enum {
+		GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED = 3 * FIXED_POINT_ONE
+	};
 	if (m_destinationList != NULL) {
 		CMover* mover = NULL;
-		int groundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
-		int objectZ = m_position.m_zFixed >> 12;
+		int groundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+								   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+								   &mover);
+		int objectZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		if (m_onMover == 0 && mover != NULL) {
 			mover->GetOn(this);
 		}
@@ -561,12 +578,12 @@ void CGameObject::StartMoving()
 			m_destination.m_xFixed = destination.m_xFixed;
 			m_destination.m_yFixed = destination.m_yFixed;
 			m_destination.m_zFixed = destination.m_zFixed;
-			int distance = Distance(m_position.m_xFixed >> 12,
-									m_position.m_yFixed >> 12,
-									m_destination.m_xFixed >> 12,
-									m_destination.m_yFixed >> 12);
+			int distance = Distance(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+									m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									m_destination.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 			m_lastMovementTick = g_dwGameTick;
-			m_moveDurationTicks = (g_anTurnDelayCursor[m_objectType] * distance) / 50;
+			m_moveDurationTicks = (g_anTurnDelayCursor[m_objectType] * distance) / GAME_TICK_MILLISECONDS;
 			if (m_moveDurationTicks == 0) {
 				m_moveDurationTicks = 1;
 			}
@@ -579,22 +596,22 @@ void CGameObject::StartMoving()
 		}
 		else if (m_balloonPostActive == 0) {
 			m_actionDeadline = g_dwGameTick;
-			if ((m_collisionFlags & 4) != 0) {
+			if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
 				m_flightVelocity.m_yFixed = 0;
 				m_isFalling = 1;
-				m_flightVelocity.m_xFixed = 0x3000;
+				m_flightVelocity.m_xFixed = GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED;
 				const int& fallSteps = (objectZ - groundZ) / 8;
-				m_flightVelocity.m_zFixed = (fallSteps + 1) << 12;
+				m_flightVelocity.m_zFixed = (fallSteps + 1) << FIXED_POINT_FRACTION_BITS;
 				m_actionArgument = 0;
 				m_lastMovementTick = g_dwGameTick;
 				m_flightZ = objectZ;
 				m_groundPosition.m_xFixed = m_position.m_xFixed;
 				m_groundPosition.m_yFixed = m_position.m_yFixed;
-				m_groundPosition.m_zFixed = groundZ << 12;
+				m_groundPosition.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 			}
 		}
 		else {
-			m_position.m_zFixed = groundZ << 12;
+			m_position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 		}
 	}
 }
@@ -614,8 +631,8 @@ void CGameObject::StopMoving()
 // FUNCTION: LEMBALL 0x004157b0
 unsigned short CGameObject::MapCheck(int p_x, int p_y)
 {
-	int blockY = (p_y + ((p_y >> 31) & 0xf)) >> 4;
-	int blockX = (p_x + ((p_x >> 31) & 0xf)) >> 4;
+	int blockY = (p_y + ((p_y >> 31) & GROUND_BLOCK_PIXEL_MASK)) >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockX = (p_x + ((p_x >> 31) & GROUND_BLOCK_PIXEL_MASK)) >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short collision = 0;
 
 	for (int x = blockX; x <= blockX; x++) {
@@ -624,7 +641,7 @@ unsigned short CGameObject::MapCheck(int p_x, int p_y)
 				collision |= g_pMap->m_ground.m_ground[y * g_pMap->m_ground.m_width + x].m_collision;
 			}
 			else {
-				collision |= 3;
+				collision |= GROUND_COLLISION_OUT_OF_BOUNDS;
 			}
 		}
 	}
@@ -639,10 +656,10 @@ bool CGameObject::StartRoute()
 	*routeSearchBusy = 1;
 	if (m_routeSearchActive != 0) {
 		g_pMaze->BInitialise(0,
-							 (m_position.m_xFixed >> 12) / 16,
-							 (m_position.m_yFixed >> 12) / 16,
-							 (m_destination.m_xFixed >> 12) / 16,
-							 (m_destination.m_yFixed >> 12) / 16);
+							 (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE,
+							 (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE,
+							 (m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE,
+							 (m_destination.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE);
 	}
 	return false;
 }
@@ -650,26 +667,35 @@ bool CGameObject::StartRoute()
 // FUNCTION: LEMBALL 0x004158b0
 bool CGameObject::SearchRoute()
 {
+	enum {
+		GAME_OBJECT_ROUTE_SOLUTION_CAPACITY = 120,
+		GAME_OBJECT_ROUTE_MAX_ACCEPTED_SOLUTIONS = 80,
+		GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT = FIXED_POINT_FRACTION_BITS + GROUND_BLOCK_PIXEL_SHIFT
+	};
 	if (m_routeSearchActive != 0) {
 		int solutionCount;
 		int complete;
 		unsigned int reached;
 		unsigned int noChanges;
-		Solution solutions[120];
+		Solution solutions[GAME_OBJECT_ROUTE_SOLUTION_CAPACITY];
 
 		complete = g_pMaze->BIteration(reached, noChanges);
 		m_routeSearchFailed = complete == 0;
 		if (reached != 0) {
 			g_pMaze->BSolution(solutionCount, solutions);
 			m_destinationList->m_count = 0;
-			if (solutionCount < 80) {
+			if (solutionCount < GAME_OBJECT_ROUTE_MAX_ACCEPTED_SOLUTIONS) {
 				int index = solutionCount - 1;
 				if (index >= 0) {
 					Solution* solution = &solutions[index];
 					do {
 						AICOORD coordinate;
-						coordinate.m_xFixed = ((unsigned int) (unsigned short) solution->m_x << 16) + 0x8000;
-						coordinate.m_yFixed = ((unsigned int) (unsigned short) solution->m_y << 16) + 0x8000;
+						coordinate.m_xFixed = ((unsigned int) (unsigned short) solution->m_x
+											   << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
+											  (GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
+						coordinate.m_yFixed = ((unsigned int) (unsigned short) solution->m_y
+											   << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
+											  (GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
 						coordinate.m_zFixed = 0;
 						CAiDestinationList* list = m_destinationList;
 						unsigned short count = list->m_count;
@@ -697,10 +723,10 @@ bool CGameObject::SearchRoute()
 		*routeSearchBusy = 1;
 		if (m_routeSearchActive != 0) {
 			g_pMaze->BInitialise(0,
-								 (m_position.m_xFixed >> 12) / 16,
-								 (m_position.m_yFixed >> 12) / 16,
-								 (m_destination.m_xFixed >> 12) / 16,
-								 (m_destination.m_yFixed >> 12) / 16);
+								 (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE,
+								 (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE,
+								 (m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE,
+								 (m_destination.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE);
 		}
 	}
 	return false;
@@ -709,7 +735,7 @@ bool CGameObject::SearchRoute()
 // FUNCTION: LEMBALL 0x00415a20
 void CGameObject::Blocked()
 {
-	if ((m_collisionFlags & 1) != 0) {
+	if ((m_collisionFlags & GAME_OBJECT_COLLISION_AFFECT_ROUTE_ON_BLOCK) != 0) {
 		m_routeSearchFailed = 1;
 	}
 }
@@ -721,10 +747,11 @@ bool CGameObject::Move()
 	AICOORD position;
 	position.m_xFixed = m_movement.m_start.m_xFixed + (m_movement.m_delta.m_xFixed * elapsed) / m_moveDurationTicks;
 	position.m_yFixed = m_movement.m_start.m_yFixed + (m_movement.m_delta.m_yFixed * elapsed) / m_moveDurationTicks;
-	int x = position.m_xFixed >> 12;
-	int y = position.m_yFixed >> 12;
+	int x = position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int y = position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map;
-	if (x < 0 || (x >> 4) >= (map = g_pMap)->m_ground.m_width || y < 0 || (y >> 4) >= map->m_ground.m_height) {
+	if (x < 0 || (x >> GROUND_BLOCK_PIXEL_SHIFT) >= (map = g_pMap)->m_ground.m_width || y < 0 ||
+		(y >> GROUND_BLOCK_PIXEL_SHIFT) >= map->m_ground.m_height) {
 		m_actionDeadline = g_dwGameTick;
 		return false;
 	}
@@ -737,10 +764,10 @@ bool CGameObject::Move()
 		if (m_onMover == 0 && mover != NULL) {
 			mover->GetOn(this);
 		}
-		if ((MapCheck(x, y) & 1) != 0) {
-			position.m_xFixed = x << 12;
-			position.m_yFixed = y << 12;
-			position.m_zFixed = height << 12;
+		if ((MapCheck(x, y) & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
+			position.m_xFixed = x << FIXED_POINT_FRACTION_BITS;
+			position.m_yFixed = y << FIXED_POINT_FRACTION_BITS;
+			position.m_zFixed = height << FIXED_POINT_FRACTION_BITS;
 			if (g_pAI->OpenDoor(position, this, m_collisionFlags)) {
 				m_actionDeadline = g_dwGameTick;
 				return false;
@@ -750,7 +777,9 @@ bool CGameObject::Move()
 			return false;
 		}
 
-		currentGroundZ = g_pMap->GetZ(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, &mover);
+		currentGroundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									  m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+									  &mover);
 	}
 	const int& groundZ = height;
 	if ((int) currentGroundZ + 7 <= (int) groundZ) {
@@ -759,13 +788,13 @@ bool CGameObject::Move()
 			Blocked();
 			return false;
 		}
-		if ((m_collisionFlags & 2) != 0) {
+		if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_JUMP) != 0) {
 			m_isJumping = 1;
 			m_lastMovementTick = g_dwGameTick;
 			m_flightZ = currentGroundZ;
 			m_groundPosition.m_xFixed = position.m_xFixed;
 			m_groundPosition.m_yFixed = position.m_yFixed;
-			m_groundPosition.m_zFixed = (int) groundZ << 12;
+			m_groundPosition.m_zFixed = (int) groundZ << FIXED_POINT_FRACTION_BITS;
 			m_actionArgument = 0;
 			return false;
 		}
@@ -775,7 +804,7 @@ bool CGameObject::Move()
 
 	if ((int) groundZ <= (int) currentGroundZ - 7) {
 		m_actionDeadline = g_dwGameTick;
-		if ((m_collisionFlags & 4) != 0) {
+		if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
 			m_isFalling = 1;
 			unsigned int movementTick = g_dwGameTick;
 			int velocityY = 0;
@@ -783,8 +812,8 @@ bool CGameObject::Move()
 			m_lastMovementTick = movementTick;
 			m_flightZ = currentGroundZ;
 			int deltaZ = (int) currentGroundZ - groundZ;
-			int deltaX = x - (m_position.m_xFixed >> 12);
-			int deltaY = y - (m_position.m_yFixed >> 12);
+			int deltaX = x - (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
+			int deltaY = y - (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 			int velocityX;
 			int magnitudeX = deltaX < 0 ? -deltaX : deltaX;
 			int magnitudeY = deltaY < 0 ? -deltaY : deltaY;
@@ -799,12 +828,12 @@ bool CGameObject::Move()
 			m_position.m_yFixed = position.m_yFixed;
 			m_groundPosition.m_xFixed = position.m_xFixed;
 			m_groundPosition.m_yFixed = position.m_yFixed;
-			m_groundPosition.m_zFixed = (int) groundZ << 12;
+			m_groundPosition.m_zFixed = (int) groundZ << FIXED_POINT_FRACTION_BITS;
 			m_position.m_xFixed = position.m_xFixed;
 			m_position.m_yFixed = position.m_yFixed;
-			m_flightVelocity.m_xFixed = velocityX << 12;
-			m_flightVelocity.m_yFixed = velocityY << 12;
-			m_flightVelocity.m_zFixed = ((deltaZ / 8) + 1) * 0x1000;
+			m_flightVelocity.m_xFixed = velocityX << FIXED_POINT_FRACTION_BITS;
+			m_flightVelocity.m_yFixed = velocityY << FIXED_POINT_FRACTION_BITS;
+			m_flightVelocity.m_zFixed = ((deltaZ / 8) + 1) * FIXED_POINT_ONE;
 			return false;
 		}
 		Blocked();
@@ -813,7 +842,7 @@ bool CGameObject::Move()
 
 	m_position.m_xFixed = position.m_xFixed;
 	m_position.m_yFixed = position.m_yFixed;
-	m_position.m_zFixed = (int) groundZ << 12;
+	m_position.m_zFixed = (int) groundZ << FIXED_POINT_FRACTION_BITS;
 	g_pAI->StepOn(m_position, this, m_collisionFlags);
 	return true;
 }
@@ -822,29 +851,29 @@ bool CGameObject::Move()
 void CGameObject::TurnToFaceDestination()
 {
 	AICOORD destination = GetDestination();
-	int direction = (int) ReturnFacingDirection(m_position.m_xFixed >> 12,
-												m_position.m_yFixed >> 12,
-												destination.m_xFixed >> 12,
-												destination.m_yFixed >> 12);
+	int direction = (int) ReturnFacingDirection(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+												m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+												destination.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+												destination.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 	if (direction != m_facingDirection) {
-		if (g_anRotationDirections[(direction - (int) m_facingDirection) & 7] < 0) {
+		if (g_anRotationDirections[(direction - (int) m_facingDirection) & FACING_DIRECTION_MASK] < 0) {
 			RotateAnticlockwise();
 		}
 		else {
 			RotateClockwise();
 		}
 	}
-	m_actionDeadline = g_dwGameTick + g_anTurnDelayTarget[m_objectType] / 50;
+	m_actionDeadline = g_dwGameTick + g_anTurnDelayTarget[m_objectType] / GAME_TICK_MILLISECONDS;
 }
 
 // FUNCTION: LEMBALL 0x00415e20
 bool CGameObject::FacingDestination()
 {
 	AICOORD dest = GetDestination();
-	int dir = ReturnFacingDirection(m_position.m_xFixed >> 12,
-									m_position.m_yFixed >> 12,
-									dest.m_xFixed >> 12,
-									dest.m_yFixed >> 12);
+	int dir = ReturnFacingDirection(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+									dest.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									dest.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 	return (int) m_facingDirection == dir;
 }
 
@@ -931,6 +960,21 @@ AICOORD CGameObject::GetDestination()
 	return m_position;
 }
 
+// FUNCTION: LEMBALL 0x00416050
+AICOORD CGameObject::GetNextDestination()
+{
+	CAiDestinationList* list = m_destinationList;
+	if (list->m_count != 0) {
+		for (unsigned short index = 0; index + 1 < list->m_count; ++index) {
+			list->m_entries[index].m_type = list->m_entries[index + 1].m_type;
+			list->m_entries[index].m_coordinate = list->m_entries[index + 1].m_coordinate;
+			list->m_entries[index].m_metadata = list->m_entries[index + 1].m_metadata;
+		}
+		--list->m_count;
+	}
+	return GetDestination();
+}
+
 // FUNCTION: LEMBALL 0x004160c0
 bool CGameObject::DestinationExists()
 {
@@ -946,8 +990,8 @@ void CGameObject::EmptyDestinationList()
 // FUNCTION: LEMBALL 0x004160f0
 void CGameObject::GetBoundingBox(CVSRect& p_rect)
 {
-	p_rect.m_x = (short) (m_position.m_xFixed >> 12) - 24;
-	p_rect.m_y = (short) (m_position.m_yFixed >> 12) - 24;
+	p_rect.m_x = (short) (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 24;
+	p_rect.m_y = (short) (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 24;
 	p_rect.m_width = 48;
 	p_rect.m_height = 48;
 }
@@ -963,12 +1007,13 @@ void CGameObject::Jump()
 	}
 
 	int elapsed = g_dwGameTick - m_lastMovementTick;
-	unsigned int groundHeightValue =
-		g_pMap->GetZ(m_groundPosition.m_xFixed >> 12, m_groundPosition.m_yFixed >> 12, &mover);
+	unsigned int groundHeightValue = g_pMap->GetZ(m_groundPosition.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+												  m_groundPosition.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+												  &mover);
 	const unsigned int& groundHeight = groundHeightValue;
 	int& positionZ = m_position.m_zFixed;
-	positionZ = (elapsed * 3 + m_flightZ) << 12;
-	unsigned int groundZ = groundHeight << 12;
+	positionZ = (elapsed * 3 + m_flightZ) << FIXED_POINT_FRACTION_BITS;
+	unsigned int groundZ = groundHeight << FIXED_POINT_FRACTION_BITS;
 	if (m_position.m_zFixed >= (int) groundZ) {
 		AICOORD* position = &m_position;
 		m_position = m_groundPosition;
@@ -995,33 +1040,33 @@ bool CGameObject::Fall()
 	}
 	else {
 		AICOORD* position = &m_position;
-		int x = position->m_xFixed >> 12;
-		int y = position->m_yFixed >> 12;
-		m_position.m_zFixed = ((m_lastMovementTick - g_dwGameTick) * 3 + m_flightZ) << 12;
+		int x = position->m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		int y = position->m_yFixed >> FIXED_POINT_FRACTION_BITS;
+		m_position.m_zFixed = ((m_lastMovementTick - g_dwGameTick) * 3 + m_flightZ) << FIXED_POINT_FRACTION_BITS;
 
-		if ((x & 0xf) != 8) {
+		if ((x & GROUND_BLOCK_PIXEL_MASK) != GROUND_BLOCK_PIXEL_HALF_SIZE) {
 			int centreedX;
-			if ((x & 0xf) < 8) {
+			if ((x & GROUND_BLOCK_PIXEL_MASK) < GROUND_BLOCK_PIXEL_HALF_SIZE) {
 				centreedX = x + 1;
 			}
 			else {
 				centreedX = x - 1;
 			}
-			position->m_xFixed = centreedX << 12;
+			position->m_xFixed = centreedX << FIXED_POINT_FRACTION_BITS;
 		}
 
-		if ((y & 0xf) != 8) {
+		if ((y & GROUND_BLOCK_PIXEL_MASK) != GROUND_BLOCK_PIXEL_HALF_SIZE) {
 			int centreedY;
-			if ((y & 0xf) < 8) {
+			if ((y & GROUND_BLOCK_PIXEL_MASK) < GROUND_BLOCK_PIXEL_HALF_SIZE) {
 				centreedY = y + 1;
 			}
 			else {
 				centreedY = y - 1;
 			}
-			position->m_yFixed = centreedY << 12;
+			position->m_yFixed = centreedY << FIXED_POINT_FRACTION_BITS;
 		}
 
-		int groundZ = (int) g_pMap->GetZ(x, y, &mover) << 12;
+		int groundZ = (int) g_pMap->GetZ(x, y, &mover) << FIXED_POINT_FRACTION_BITS;
 		if (m_position.m_zFixed <= groundZ) {
 			m_position.m_zFixed = groundZ;
 			m_flightVelocity.m_xFixed = 0;
@@ -1060,28 +1105,28 @@ bool CGameObject::OnLift(tCoord3d& p_liftPosition)
 		return false;
 	}
 
-	int x = m_position.m_xFixed >> 12;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	int left = (int) p_liftPosition.m_x - 8;
 	int top = (int) p_liftPosition.m_y - 8;
 	int right = (int) p_liftPosition.m_x + 7;
 	int bottom = (int) p_liftPosition.m_y + 7;
-	int y = m_position.m_yFixed >> 12;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	if (left > x || right < x || y < top || y > bottom) {
 		return false;
 	}
 	CMap* map = g_pMap;
-	int blockX = left >> 4;
-	int blockY = top >> 4;
+	int blockX = left >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = top >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short groundZ;
 	if (left < 0 || top < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
 		groundZ = 0;
 	}
 	else {
-		int offsetX = left & 0xf;
-		int offsetY = top & 0xf;
+		int offsetX = left & GROUND_BLOCK_PIXEL_MASK;
+		int offsetY = top & GROUND_BLOCK_PIXEL_MASK;
 		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(offsetX, offsetY);
 	}
-	m_position.m_zFixed = (unsigned int) groundZ << 12;
+	m_position.m_zFixed = (unsigned int) groundZ << FIXED_POINT_FRACTION_BITS;
 	return true;
 }
 
@@ -1103,25 +1148,25 @@ bool CGameObject::OnLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax)
 	int top = (int) p_liftMin.m_y - 8;
 	int y;
 	int bottom = (int) p_liftMax.m_y + 7;
-	int x = m_position.m_xFixed >> 12;
-	y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	if (x < left || x > right || y < top || y > bottom) {
 		return false;
 	}
 	CMap* map = g_pMap;
-	int blockX = left >> 4;
-	int blockY = top >> 4;
+	int blockX = left >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = top >> GROUND_BLOCK_PIXEL_SHIFT;
 	int width;
 	unsigned short groundZ;
 	if (left < 0 || top < 0 || (width = map->m_ground.m_width) <= blockX || map->m_ground.m_height <= blockY) {
 		groundZ = 0;
 	}
 	else {
-		left &= 0xf;
-		top &= 0xf;
+		left &= GROUND_BLOCK_PIXEL_MASK;
+		top &= GROUND_BLOCK_PIXEL_MASK;
 		groundZ = map->m_ground.m_ground[width * blockY + blockX].GetZ(left, top);
 	}
-	m_position.m_zFixed = (unsigned int) groundZ << 12;
+	m_position.m_zFixed = (unsigned int) groundZ << FIXED_POINT_FRACTION_BITS;
 	return true;
 }
 
@@ -1134,11 +1179,17 @@ void CGameObject::OffLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax)
 // FUNCTION: LEMBALL 0x00416510
 void CGameObject::StartSommersault()
 {
-	int random = (*g_pRandomSeed * 0x29 + 0x1f) & 0x7fffff;
+	enum {
+		GAME_OBJECT_SOMERSAULT_MINIMUM_DURATION_MS = 50,
+		GAME_OBJECT_SOMERSAULT_RANDOM_DURATION_RANGE_MS = 500
+	};
+	int random = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 	*g_pRandomSeed = random;
-	m_actionDeadline = g_dwGameTick + (random % 500 + 50) / GAME_TICK_MILLISECONDS;
+	m_actionDeadline = g_dwGameTick + (random % GAME_OBJECT_SOMERSAULT_RANDOM_DURATION_RANGE_MS +
+									   GAME_OBJECT_SOMERSAULT_MINIMUM_DURATION_MS) /
+										  GAME_TICK_MILLISECONDS;
 	m_actionArgument = (short) g_dwSommersaultDirection;
-	g_dwSommersaultDirection ^= 1;
+	g_dwSommersaultDirection ^= SOMMERSAULT_DIRECTION_REVERSED;
 }
 
 // FUNCTION: LEMBALL 0x00416570
@@ -1195,7 +1246,8 @@ void CGameObject::SetId(unsigned short p_id)
 void CGameObject::ReSetId()
 {
 	if (m_linkedObjectId != INVALID_OBJECT_ID) {
-		g_abObjectIdBitmap[m_linkedObjectId >> 3] &= ~g_abBitMasks[m_linkedObjectId & 7];
+		g_abObjectIdBitmap[m_linkedObjectId >> OBJECT_ID_BITMAP_BYTE_INDEX_SHIFT] &=
+			~g_abBitMasks[m_linkedObjectId & OBJECT_ID_BITMAP_BIT_INDEX_MASK];
 	}
 }
 
@@ -1205,30 +1257,30 @@ short CGameObject::NextId()
 	int i = 0;
 	int j;
 	do {
-		if (g_abObjectIdBitmap[i] != 0xff) {
+		if (g_abObjectIdBitmap[i] != OBJECT_ID_BITMAP_BYTE_FULL_MASK) {
 			j = 0;
 			do {
 				if ((g_abObjectIdBitmap[i] & g_abBitMasks[j]) == 0) {
-					return j + i * 8;
+					return j + i * OBJECT_ID_BITMAP_BITS_PER_BYTE;
 				}
 				j++;
-			} while (j < 8);
+			} while (j < OBJECT_ID_BITMAP_BITS_PER_BYTE);
 		}
 		i++;
-	} while (i < 0x100);
+	} while (i < OBJECT_ID_BITMAP_BYTE_CAPACITY);
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x004166a0
 short CGameObject::NextLoadingId()
 {
-	int i = 0xff;
+	int i = OBJECT_ID_BITMAP_BYTE_CAPACITY - 1;
 	do {
-		if (g_abObjectIdBitmap[i] != 0xff) {
-			int j = 7;
+		if (g_abObjectIdBitmap[i] != OBJECT_ID_BITMAP_BYTE_FULL_MASK) {
+			int j = OBJECT_ID_BITMAP_BIT_INDEX_MASK;
 			do {
 				if ((g_abObjectIdBitmap[i] & g_abBitMasks[j]) == 0) {
-					return j + i * 8;
+					return j + i * OBJECT_ID_BITMAP_BITS_PER_BYTE;
 				}
 				j--;
 			} while (j > 0);
@@ -1243,8 +1295,8 @@ void CGameObject::RegisterId()
 {
 	unsigned short id = m_linkedObjectId;
 	if (id != INVALID_OBJECT_ID) {
-		unsigned short byteIndex = id >> 3;
-		unsigned short bitIndex = id & 7;
+		unsigned short byteIndex = id >> OBJECT_ID_BITMAP_BYTE_INDEX_SHIFT;
+		unsigned short bitIndex = id & OBJECT_ID_BITMAP_BIT_INDEX_MASK;
 		unsigned char mask = g_abBitMasks[bitIndex];
 		unsigned char* bitmapBytePtr = &g_abObjectIdBitmap[byteIndex];
 		unsigned char bitmapByte = *bitmapBytePtr;
@@ -1268,23 +1320,23 @@ void CGameObject::UpdateCollision()
 	int x;
 	int y;
 	int z;
-	x = (m_position.m_xFixed >> 12) - 8;
-	y = (m_position.m_yFixed >> 12) - 8;
-	z = m_position.m_zFixed >> 12;
+	x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+	y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+	z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	int collision[6];
 	collision[0] = x;
 	collision[1] = y;
 	collision[2] = z;
-	collision[3] = x + 15;
-	collision[4] = y + 15;
-	collision[5] = z + 15;
+	collision[3] = x + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	collision[4] = y + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	collision[5] = z + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
 	memcpy(&m_collisionBounds, collision, sizeof(collision));
 }
 
 // FUNCTION: LEMBALL 0x00416820
 void CGameObject::StartLand()
 {
-	m_actionDeadline = g_dwGameTick + 8;
+	m_actionDeadline = g_dwGameTick + GAME_OBJECT_LANDING_TRANSITION_DELAY_TICKS;
 	g_pAI->StepOn(m_position, this, m_collisionFlags);
 }
 
@@ -1307,13 +1359,13 @@ int g_anTurnDelayCursor[16] = {0, 30, 20, 12, 0, 0, 0, 15, 32, 0, 0, 0, 0, 0, 0,
 int g_anTurnDelayTarget[16] = {0, 87, 75, 0, 0, 0, 0, 75, 75, 0, 0, 0, 0, 0, 0, 0};
 
 // GLOBAL: LEMBALL 0x0049d108
-unsigned char g_abBitMasks[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+unsigned char g_abBitMasks[OBJECT_ID_BITMAP_BITS_PER_BYTE] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
 // GLOBAL: LEMBALL 0x004a640c
 int g_wLemmingCount;
 
 // GLOBAL: LEMBALL 0x004a6410
-unsigned char g_abObjectIdBitmap[256];
+unsigned char g_abObjectIdBitmap[OBJECT_ID_BITMAP_BYTE_CAPACITY];
 
 // GLOBAL: LEMBALL 0x004a6510
 CGameObject* g_pObjects[OBJECT_REGISTRY_CAPACITY];

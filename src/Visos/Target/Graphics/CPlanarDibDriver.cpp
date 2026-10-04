@@ -13,12 +13,20 @@
 #include <conio.h>
 #include <windows.h>
 
+enum {
+	PLANAR_DIB_PLANE_INDEX_MASK = 3,
+	VGA_SEQUENCER_INDEX_PORT = 0x3c4,
+	VGA_REGISTER_INDEX_SHIFT = 8,
+	VGA_SEQUENCER_MAP_MASK_REGISTER_INDEX = 2
+};
+
 #pragma intrinsic(_outpw)
 
 // FUNCTION: LEMBALL 0x00457070
 void CPlanarDibDriver::SetPlaneWriteMask(unsigned char p_mask)
 {
-	_outpw(0x3c4, ((unsigned short) p_mask << 8) | 2);
+	_outpw(VGA_SEQUENCER_INDEX_PORT,
+		   ((unsigned short) p_mask << VGA_REGISTER_INDEX_SHIFT) | VGA_SEQUENCER_MAP_MASK_REGISTER_INDEX);
 }
 
 // FUNCTION: LEMBALL 0x00457080
@@ -105,7 +113,7 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 			int offset = sourceX + plane;
 			if (offset <= sourceEnd) {
 				int count = (sourceEnd - offset) / 4 + 1;
-				SetPlaneWriteMask((unsigned char) (1 << (x & 3)));
+				SetPlaneWriteMask((unsigned char) (1 << (x & PLANAR_DIB_PLANE_INDEX_MASK)));
 				ExtractPlaneBytes(destination + x / 4, source + offset, count);
 			}
 			plane++;

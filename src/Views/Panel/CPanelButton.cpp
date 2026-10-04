@@ -30,6 +30,11 @@ class CResANIM;
 
 extern char g_szButton[];
 
+enum {
+	PANEL_AMMO_AVAILABLE_COLOUR_INDEX = 0x76,
+	PANEL_AMMO_UNAVAILABLE_COLOUR_INDEX = 0x45,
+};
+
 // FUNCTION: LEMBALL 0x004425e0
 CPanelButton::~CPanelButton()
 {
@@ -56,7 +61,7 @@ void CPanelButton::DrawButton()
 	else {
 		playerRemap = NULL;
 	}
-	if (lemming->m_balloonType != -1) {
+	if (lemming->m_balloonType != OBJECT_BALLOON_NONE) {
 		if ((int) lemming->m_balloonType < 4) {
 			balloonRemap = lemming->m_panel->m_game->m_remaps[lemming->m_balloonType];
 		}
@@ -82,7 +87,7 @@ void CPanelButton::DrawButton()
 	m_statusAnim[0].m_remap = (CRemap*) playerRemap;
 	m_statusAnim[0].Draw(m_gdi);
 	lemming = m_lemming;
-	if (lemming->m_balloonType != -1 && m_unavailable == 0) {
+	if (lemming->m_balloonType != OBJECT_BALLOON_NONE && m_unavailable == 0) {
 		CResANIM* resource;
 		const CVSPoint* position = (const CVSPoint*) &m_inventoryRect;
 		resource = lemming->m_panel->m_resources[3];
@@ -116,12 +121,12 @@ void CPanelButton::DrawButton()
 	CVSRect inventoryRect(7, 4, 6, 4);
 	CVSSize& inventorySize = inventoryRect;
 	CVSPoint& inventoryPosition = inventoryRect;
-	ammoSize.m_width = (short) (ammo * ammoSize.m_width / 50);
+	ammoSize.m_width = (short) (ammo * ammoSize.m_width / PLAYER_MAX_AMMO);
 	if (m_enabled != 0 && m_unavailable == 0) {
-		colour = 0x76;
+		colour = PANEL_AMMO_AVAILABLE_COLOUR_INDEX;
 	}
 	else {
-		colour = 0x45;
+		colour = PANEL_AMMO_UNAVAILABLE_COLOUR_INDEX;
 		ammoPosition.m_x++;
 		ammoPosition.m_y++;
 		inventoryPosition.m_x++;
@@ -227,9 +232,9 @@ void CPanelButton::OnPressed(int p_flags)
 	}
 
 	switch (p_flags) {
-	case 0:
+	case MOUSE_BUTTON_INDEX_LEFT:
 		goto normal;
-	case 1:
+	case MOUSE_BUTTON_INDEX_RIGHT:
 		goto alternate;
 	default:
 		goto pressed;

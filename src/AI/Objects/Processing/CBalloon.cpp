@@ -12,21 +12,21 @@
 // FUNCTION: LEMBALL 0x0041d650
 bool CBalloon::Process()
 {
-	int y = m_position.m_yFixed >> 12;
-	int x = m_position.m_xFixed >> 12;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	if (x >= 0 && y >= 0 && map->m_ground.m_width > blockX && g_pMap->m_ground.m_height > blockY) {
-		int cellX = x & 0xf;
-		int cellY = y & 0xf;
+		int cellX = x & GROUND_BLOCK_PIXEL_MASK;
+		int cellY = y & GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	else {
 		z = 0;
 	}
-	m_position.m_zFixed = z << 12;
+	m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == ACTION_ACTIVATED) {

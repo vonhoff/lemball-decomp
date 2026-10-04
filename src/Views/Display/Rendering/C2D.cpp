@@ -11,6 +11,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+enum eScrollOffsetDirection {
+	SCROLL_OFFSET_NONE = 0,
+	SCROLL_OFFSET_X = 1,
+	SCROLL_OFFSET_Y = 2,
+	SCROLL_OFFSET_XY = 3
+};
+
 // GLOBAL: LEMBALL 0x00497044
 static const short g_baseOffset[] = {40, 60};
 
@@ -20,6 +27,9 @@ static const short g_animOffset[] = {40, 60};
 // FUNCTION: LEMBALL 0x0043d130
 void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 {
+	enum {
+		CATAPULT_ACTIVE_ANIMATION_TIME_OFFSET = 0x640
+	};
 	int x;
 	int y;
 	CBaseRemap* remap;
@@ -33,7 +43,7 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 	y = p_viewData.m_positionY;
 	remap = NULL;
 
-	if (p_viewData.m_actionArgument != 0) {
+	if (p_viewData.m_actionArgument != REMOTE_PALETTE_REMAP_DISABLED) {
 		remap = m_paletteRemap;
 	}
 
@@ -64,7 +74,7 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0],
 									   y - g_animOffset[1],
 									   g_anGroundStyleResourceIds[9],
-									   stateTimer + 0x640,
+									   stateTimer + CATAPULT_ACTIVE_ANIMATION_TIME_OFFSET,
 									   p_viewData.m_animationTime,
 									   NULL);
 		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0] - 8,
@@ -81,7 +91,7 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 		owner.m_lemmingAnims->DrawAnim(x - g_animOffset[0],
 									   y - g_animOffset[1],
 									   g_anGroundStyleResourceIds[9],
-									   stateTimer + 0x640,
+									   stateTimer + CATAPULT_ACTIVE_ANIMATION_TIME_OFFSET,
 									   p_viewData.m_animationTime,
 									   NULL);
 		break;
@@ -114,23 +124,27 @@ void C2D::TransformAndSortViewData()
 // FUNCTION: LEMBALL 0x0043f620
 void C2D::DrawObjects()
 {
+	enum {
+		ZRLE_DRAW_FLAG_Z_BUFFER = 0x40000
+	};
 	C2D& owner = *this;
 	SetOrigin();
 	owner.m_backBufferCopyCount = 0;
-	owner.m_lemmingAnims->m_drawFlags = 0x40000;
+	owner.m_lemmingAnims->m_drawFlags = ZRLE_DRAW_FLAG_Z_BUFFER;
 	int scrollX = abs((int) owner.m_scrollDeltaX);
 	int scrollY = abs((int) owner.m_scrollDeltaY);
 	CVSRect borders[4];
 
 	if (owner.m_scrollPending != 0 && owner.m_redrawPending == 0 && scrollX < owner.m_clipSize.m_x &&
 		scrollY < owner.m_clipSize.m_y) {
-		unsigned char direction = (unsigned char) ((owner.m_scrollDeltaX < 0) | (owner.m_scrollDeltaY < 0 ? 2 : 0));
+		unsigned char direction = (unsigned char) ((owner.m_scrollDeltaX < 0 ? SCROLL_OFFSET_X : 0) |
+												   (owner.m_scrollDeltaY < 0 ? SCROLL_OFFSET_Y : 0));
 		CVSRect exposed[2];
 		short destinationX = 0;
 		short destinationY = 0;
 		CVSRect retained;
 		switch ((unsigned int) direction) {
-		case 0:
+		case SCROLL_OFFSET_NONE:
 			retained = CVSRect((short) scrollX,
 							   (short) scrollY,
 							   owner.m_clipSize.m_x - (short) scrollX,
@@ -142,7 +156,7 @@ void C2D::DrawObjects()
 				exposed[1] = CVSRect(0, (short) scrollY, (short) scrollX, owner.m_clipSize.m_y - (short) scrollY);
 			}
 			break;
-		case 1:
+		case SCROLL_OFFSET_X:
 			destinationX = (short) scrollX;
 			destinationY = 0;
 			retained = CVSRect(0,
@@ -169,7 +183,7 @@ void C2D::DrawObjects()
 									 (short) scrollY);
 			}
 			break;
-		case 2:
+		case SCROLL_OFFSET_Y:
 			destinationY = (short) scrollY;
 			destinationX = 0;
 			retained = CVSRect((short) scrollX,
@@ -183,7 +197,7 @@ void C2D::DrawObjects()
 				exposed[1] = CVSRect(0, 0, (short) scrollX, owner.m_clipSize.m_y - (short) scrollY);
 			}
 			break;
-		case 3:
+		case SCROLL_OFFSET_XY:
 			destinationX = (short) scrollX;
 			destinationY = (short) scrollY;
 			retained = CVSRect(0, 0, owner.m_clipSize.m_x - (short) scrollX, owner.m_clipSize.m_y - (short) scrollY);

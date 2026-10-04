@@ -41,6 +41,8 @@ extern "C" __declspec(dllimport) int __stdcall UnlockFile(void* p_handle,
 extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
 extern "C" int __stdcall WSAGetLastError();
 
+enum eSetFilePointerResult { SET_FILE_POINTER_FAILURE = 0xffffffffUL };
+
 // FUNCTION: LEMBALL 0x0047b8d0
 int CNetworkFile::GetLastError()
 {
@@ -136,6 +138,10 @@ bool CNetworkFile::Write(const unsigned char* p_data, int p_size)
 	return true;
 }
 
+enum eNetworkFileError {
+	NETWORK_FILE_ERROR_LOCK_VIOLATION = 0x21
+};
+
 // FUNCTION: LEMBALL 0x0047f780
 bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 {
@@ -146,7 +152,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 	success = ReadFile(m_handle, p_data, (unsigned int) p_size, &got, NULL);
 	if (success == 0) {
 		error = GetLastError();
-		if (error != 0x21) {
+		if (error != NETWORK_FILE_ERROR_LOCK_VIOLATION) {
 			*g_pErrorOutput << "Read error: " << (int) error << "\n";
 		}
 		return false;
@@ -166,7 +172,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 bool CNetworkFile::Seek(int p_position)
 {
 	m_position = (unsigned int) p_position;
-	return SetFilePointer(m_handle, p_position, NULL, 0) != 0xffffffff;
+	return SetFilePointer(m_handle, p_position, NULL, 0) != SET_FILE_POINTER_FAILURE;
 }
 
 // FUNCTION: LEMBALL 0x0047f8b0

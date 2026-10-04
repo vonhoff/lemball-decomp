@@ -4,6 +4,10 @@
 
 #include <stddef.h>
 
+enum {
+	HEADER_SEQUENCE_ITERATION_EXHAUSTED = -1
+};
+
 // FUNCTION: LEMBALL 0x00479620
 CHeaders::CHeaders(int p_headerCount)
 {
@@ -35,7 +39,7 @@ CHeaderMessage* CHeaders::GetNextHeaderBySequence()
 		}
 	}
 	if (index == count) {
-		m_currentIndex = -1;
+		m_currentIndex = HEADER_SEQUENCE_ITERATION_EXHAUSTED;
 		return NULL;
 	}
 	m_currentIndex = index;

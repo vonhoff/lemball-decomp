@@ -7,7 +7,9 @@
 #include "AI/Managers/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0042bfe0
-CPaintGunManager::CPaintGunManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x1f, 0x14)
+CPaintGunManager::CPaintGunManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_PAINT_GUNS,
+						 OBJECT_MANAGER_TRANSPORT_PAINT_GUNS)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -54,6 +56,25 @@ void CPaintGunManager::ResetCount()
 	m_count = 0;
 }
 
+// FUNCTION: LEMBALL 0x0042c150
+void CPaintGunManager::RemovePaintGun(CPaintGun* p_paintGun)
+{
+	int index = 0;
+	if (0 < m_count) {
+		while (p_paintGun != &m_paintGuns[index]) {
+			index++;
+			if (m_count <= index) {
+				return;
+			}
+		}
+		m_paintGuns[index].SetId(INVALID_OBJECT_ID);
+		for (int next = index + 1; next < m_count; next++) {
+			m_paintGuns[next - 1] = m_paintGuns[next];
+		}
+		m_count--;
+	}
+}
+
 // FUNCTION: LEMBALL 0x0042c4d0
 void CPaintGunManager::Process()
 {
@@ -91,9 +112,9 @@ void CPaintGunManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, int p
 {
 	if (m_count < m_capacity) {
 		AICOORD position;
-		position.m_xFixed = p_x << 12;
-		position.m_yFixed = p_y << 12;
-		position.m_zFixed = p_z << 12;
+		position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+		position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+		position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 		m_paintGuns[m_count].Set(p_id, position, 0);
 		m_paintGuns[m_count].m_direction = p_direction;
 		m_count++;

@@ -6,6 +6,7 @@
 #include "CFileNetwork.h"
 #include "CNetworkAddress.h"
 #include "CTCPIPNetwork.h"
+#include "NetworkConstants.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 #include "Visos/Network/CBaseNetwork.h"
 #include "Visos/Network/CFileBaseSocket.h"
@@ -16,7 +17,7 @@
 // FUNCTION: LEMBALL 0x00479930
 CFileReadSocket::CFileReadSocket() : CFileBaseSocket(), CReadSocket(), CFileCommonSocket()
 {
-	m_pendingReadSlot = 0xffffffffUL;
+	m_pendingReadSlot = FILE_READ_SOCKET_NO_PENDING_SLOT;
 }
 
 // FUNCTION: LEMBALL 0x00479a40
@@ -32,7 +33,7 @@ bool CFileReadSocket::Read(CNetworkMessage& p_message, int p_remove, int p_wait)
 			if (locked) {
 				break;
 			}
-		} while (CurrentMilliTimer() - started < 100);
+		} while (CurrentMilliTimer() - started < NETWORK_FILE_LOCK_RETRY_TIMEOUT_MS);
 		if (!locked) {
 			return false;
 		}
@@ -77,7 +78,7 @@ void CFileReadSocket::Process()
 			static_cast<CFileNetwork*>(g_pBaseNetwork)->ResetTimer(0x32);
 			return;
 		}
-		if (m_pendingReadSlot != -1) {
+		if (m_pendingReadSlot != FILE_READ_SOCKET_NO_PENDING_SLOT) {
 			Seek(m_file->m_headers->m_payloadCapacity * m_pendingReadSlot + m_headersOffset);
 			CNetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, m_file->m_payloadCapacity);
 			if (CNetworkFile::UnLock(m_headersOffset, m_file->m_payloadCapacity)) {
@@ -95,7 +96,7 @@ void CFileReadSocket::Process()
 					}
 				}
 				if (index == CFileCommonSocket::m_headerSlotCount) {
-					m_pendingReadSlot = 0xffffffffUL;
+					m_pendingReadSlot = FILE_READ_SOCKET_NO_PENDING_SLOT;
 				}
 			}
 		}

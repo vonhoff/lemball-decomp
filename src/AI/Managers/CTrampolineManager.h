@@ -20,6 +20,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
+	void RemoveTrampoline(CTrampoline* p_trampoline);
 	void ResetCount();
 	int TryEnableNear(const AICOORD& p_position, CGameObject* p_object);
 

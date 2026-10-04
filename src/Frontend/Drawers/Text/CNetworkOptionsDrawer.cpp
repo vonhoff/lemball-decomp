@@ -58,20 +58,23 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 			len = 0x14;
 			do {
 				trimmedPeerName[len] = 0;
-				short measuredWidth = font->GetSize(trimmedPeerName, 0x20).m_width;
+				short measuredWidth = font->GetSize(trimmedPeerName, TEXT_ADVANCE_X_POSITIVE).m_width;
 				len--;
 				if (m_layoutTable->m_peerNameWidth >= (int) measuredWidth) {
 					break;
 				}
 			} while (1);
 
-			posName.m_x -= font->GetSize(gameName, 0x20).m_width / 2;
-			posAddress.m_x -= font->GetSize(addressStr, 0x20).m_width / 2;
-			posPeer.m_x -= font->GetSize(peerName, 0x20).m_width / 2;
+			posName.m_x -= font->GetSize(gameName, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+			posAddress.m_x -= font->GetSize(addressStr, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+			posPeer.m_x -= font->GetSize(peerName, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
 
-			m_textManager->DrawString(m_gdi, posName, CVSSize(), m_chalkFontId, gameName, 0x20, remap);
-			m_textManager->DrawString(m_gdi, posAddress, CVSSize(), m_chalkFontId, addressStr, 0x20, remap);
-			m_textManager->DrawString(m_gdi, posPeer, CVSSize(), m_chalkFontId, peerName, 0x20, remap);
+			m_textManager
+				->DrawString(m_gdi, posName, CVSSize(), m_chalkFontId, gameName, TEXT_ADVANCE_X_POSITIVE, remap);
+			m_textManager
+				->DrawString(m_gdi, posAddress, CVSSize(), m_chalkFontId, addressStr, TEXT_ADVANCE_X_POSITIVE, remap);
+			m_textManager
+				->DrawString(m_gdi, posPeer, CVSSize(), m_chalkFontId, peerName, TEXT_ADVANCE_X_POSITIVE, remap);
 			p_value++;
 		}
 	}

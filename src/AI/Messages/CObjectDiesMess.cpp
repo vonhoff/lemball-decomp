@@ -3,10 +3,12 @@
 #include "AI/Messages/CGameObjectMess.h"
 #include "AI/Messages/GameMessageIds.h"
 
+#define OBJECT_DIES_MESSAGE_EXTRA_CAPACITY_BYTES 4
+
 // FUNCTION: LEMBALL 0x00416ce0
 CObjectDiesMess::CObjectDiesMess() : CGameObjectMess(MESSAGE_OBJECT_DIES)
 {
-	m_payloadCapacity += 4;
+	m_payloadCapacity += OBJECT_DIES_MESSAGE_EXTRA_CAPACITY_BYTES;
 }
 
 // FUNCTION: LEMBALL 0x00416d00 FOLDED

@@ -20,8 +20,8 @@ CSmallMemory::CSmallMemory()
 	int limit = g_preInitActive.m_capabilityCount;
 	limit += g_preInitActive.m_startBucket;
 	m_bucketLimit = limit;
-	if (7 < limit) {
-		m_bucketLimit = 7;
+	if (SMALL_MEMORY_BUCKET_COUNT < limit) {
+		m_bucketLimit = SMALL_MEMORY_BUCKET_COUNT;
 	}
 	memset(m_buckets, 0, sizeof(m_buckets));
 	for (int j = g_preInitActive.m_startBucket; j < m_bucketLimit; j++) {

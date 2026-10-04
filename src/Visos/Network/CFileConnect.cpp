@@ -4,6 +4,7 @@
 #include "../Messaging/CHeaders.h"
 #include "CFileNetwork.h"
 #include "CTCPIPNetwork.h"
+#include "NetworkConstants.h"
 #include "Visos/Network/CConnect.h"
 #include "Visos/Network/CFileCommonSocket.h"
 #include "Visos/Network/CFileOpenManagement.h"
@@ -77,7 +78,7 @@ void CFileConnect::Listen(CNetworkAddress* p_address)
 	m_closePending = 1;
 	m_eventPending = 1;
 	m_isHost = 0;
-	CWriteSocket::m_lastSendTime = CurrentMilliTimer() - 1000;
+	CWriteSocket::m_lastSendTime = CurrentMilliTimer() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 	ConnectSetup();
 }
@@ -125,7 +126,7 @@ void CFileConnect::ConnectSetup()
 	bool locked;
 	do {
 		locked = CNetworkFile::Lock(0, m_message.m_payloadCapacity);
-	} while (!locked && CurrentMilliTimer() - started < 100);
+	} while (!locked && CurrentMilliTimer() - started < NETWORK_FILE_LOCK_RETRY_TIMEOUT_MS);
 
 	if (!locked) {
 		goto setupComplete;

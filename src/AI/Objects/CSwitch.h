@@ -5,6 +5,15 @@
 #include "../Base/CBaseGlobalObject.h"
 #include "SwitchEntry.h"
 
+enum {
+	SWITCH_ENTRY_CAPACITY = 32
+};
+
+enum eSwitchState {
+	SWITCH_STATE_INACTIVE = 0,
+	SWITCH_STATE_ACTIVE = 1
+};
+
 // MINIMUM SIZE 0x260
 // VTABLE: LEMBALL 0x00494a18
 class CSwitch : public CBaseGlobalObject {
@@ -24,14 +33,14 @@ public:
 	void Throw();
 
 private:
-	unsigned int m_scoreAwarded; // 0x144
-	unsigned short m_switchId;   // 0x148
-	unsigned int m_legacyType;   // 0x14c
-	int m_legacyFirst;           // 0x150
-	int m_legacyLast;            // 0x154
-	int m_legacyAux;             // 0x158
-	unsigned short m_entryCount; // 0x15c
-	SwitchEntry m_entries[32];   // 0x160
+	unsigned int m_scoreAwarded;                  // 0x144
+	unsigned short m_switchId;                    // 0x148
+	unsigned int m_legacyType;                    // 0x14c
+	int m_legacyFirst;                            // 0x150
+	int m_legacyLast;                             // 0x154
+	int m_legacyAux;                              // 0x158
+	unsigned short m_entryCount;                  // 0x15c
+	SwitchEntry m_entries[SWITCH_ENTRY_CAPACITY]; // 0x160
 };
 
 // SYNTHETIC: LEMBALL 0x0041dd70

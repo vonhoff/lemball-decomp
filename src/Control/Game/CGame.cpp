@@ -12,6 +12,7 @@
 #include "../../Network/Game/CNetworkManager.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../../Views/Display/CMain2DDisplay.h"
+#include "../../Views/Display/DisplayQuitState.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Animation/CIntroAnim.h"
 #include "../../Visos/Animation/CStatManager.h"
@@ -25,6 +26,7 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Graphics/CDrawer.h"
 #include "../../Visos/Network/CBaseNetwork.h"
+#include "../../Visos/Network/NetworkConstants.h"
 #include "../../Visos/Resources/CMogRes.h"
 #include "../../Visos/Resources/CMogloadArena.h"
 #include "../../Visos/Resources/CResSTRING.h"
@@ -40,11 +42,22 @@
 #include <new.h>
 #include <string.h>
 
+enum {
+	GAME_FLOW_TIMING_WARMUP_TICKS = 50,
+	GAME_RESOURCE_ARENA_SIZE_BYTES = 0x177000,
+	GAME_SOUND_CHANNEL_COUNT = 50
+};
+
 #ifndef LEMBALL_ENFORCE_STARTUP_CHECKS
 #define LEMBALL_ENFORCE_STARTUP_CHECKS 1
 #endif
 
 #pragma intrinsic(strcpy, strcat, strcmp)
+
+enum eEventPumpResult {
+	EVENT_PUMP_CONTINUE = 0,
+	EVENT_PUMP_QUIT = 1
+};
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_hWnd,
@@ -126,30 +139,28 @@ CGame::CGame(char* p_runtimeFileName)
 	m_quit = 1;
 	m_process = NULL;
 
+#if LEMBALL_ENFORCE_STARTUP_CHECKS
+	enum {
+		CD_PROMPT_BUTTONS_OK_CANCEL = 1,
+		CD_PROMPT_RESULT_OK = 1,
+		CD_PROMPT_RESULT_CANCEL = 2
+	};
+
 	if (g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintball, 1) == 0) {
-#if !LEMBALL_ENFORCE_STARTUP_CHECKS
-		if (0) {
-#endif
-			MessageBoxA(NULL, g_szInstallPrompt, g_szPaintballNotInstalled, 0);
-			return;
-#if !LEMBALL_ENFORCE_STARTUP_CHECKS
-		}
-#endif
+		MessageBoxA(NULL, g_szInstallPrompt, g_szPaintballNotInstalled, 0);
+		return;
 	}
 
-#if LEMBALL_ENFORCE_STARTUP_CHECKS
 	int cdResponse = 0;
 	while (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) == NULL) {
-		cdResponse = MessageBoxA(NULL, g_szInsertCdPrompt, g_szUnableToFindCd, 1);
-		if (cdResponse != 1) {
+		cdResponse = MessageBoxA(NULL, g_szInsertCdPrompt, g_szUnableToFindCd, CD_PROMPT_BUTTONS_OK_CANCEL);
+		if (cdResponse != CD_PROMPT_RESULT_OK) {
 			break;
 		}
 	}
-	if (cdResponse == 2) {
+	if (cdResponse == CD_PROMPT_RESULT_CANCEL) {
 		return;
 	}
-#else
-	g_pTargetPlatformServices->GetCDDir(g_szVsMemDll);
 #endif
 
 	g_pGameStatus = new CGameStatus();
@@ -162,9 +173,9 @@ CGame::CGame(char* p_runtimeFileName)
 	g_pStatManager->Register(processingStat);
 	g_pStatManager->Register(refreshingStat);
 
-	storage = CMogloadArena::operator new(0x28);
+	storage = CMogloadArena::operator new(sizeof(CMogRes));
 	if (storage != NULL) {
-		g_pMogRes = new (storage) CMogRes(g_szPbaimogVsr, 0x177000);
+		g_pMogRes = new (storage) CMogRes(g_szPbaimogVsr, GAME_RESOURCE_ARENA_SIZE_BYTES);
 	}
 	else {
 		g_pMogRes = NULL;
@@ -179,9 +190,11 @@ CGame::CGame(char* p_runtimeFileName)
 	CDebugOStream stream(titleBuf, 80);
 	stream << g_szLemmingsPaintballTitle;
 
-	m_mainDisplay->Create(m_mainDisplay->GetUseRect(-1, -1), NULL, titleBuf);
+	m_mainDisplay->Create(m_mainDisplay->GetUseRect(DISPLAY_COORDINATE_AUTO_CENTER, DISPLAY_COORDINATE_AUTO_CENTER),
+						  NULL,
+						  titleBuf);
 
-	InitSound(g_nMusicVolume, g_nEffectsVolume, 0x32, m_mainDisplay, 0);
+	InitSound(g_nMusicVolume, g_nEffectsVolume, GAME_SOUND_CHANNEL_COUNT, m_mainDisplay, 0);
 	if (g_nMusicVolume != 0) {
 		g_pSoundManager->UseMusicCD(1);
 		g_pSoundManager->SetMusicCdPath(g_szMusicCdPath);
@@ -225,7 +238,7 @@ CGame::~CGame()
 		started = CurrentMilliTimer();
 		do {
 			now = CurrentMilliTimer();
-			if (now - started >= 2000) {
+			if (now - started >= NETWORK_QUEUE_TRANSITION_TIMEOUT_MS) {
 				break;
 			}
 		} while (g_pBaseNetwork->m_queueTransitionPending != 0);
@@ -304,7 +317,7 @@ void CGame::LoadFrontendResources(int p_mode)
 	void* storage;
 
 	if (m_frontendResources == NULL) {
-		storage = operator new(0x58);
+		storage = operator new(sizeof(CFrontendResourceLoader));
 		if (storage != NULL) {
 			m_frontendResources = new (storage) CFrontendResourceLoader(m_mainDisplay, p_mode);
 		}
@@ -353,7 +366,7 @@ void CGame::NextProcess(eFlowProcesses p_flow)
 	case FLOW_MAIN_OPTIONS_1:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		LoadFrontendResources(3);
+		LoadFrontendResources(SOUND_STATE_FRONTEND);
 		if (g_nDemoMode != 0) {
 			g_nDemoMode = g_nStoredLevelDemoModeEnabled;
 		}
@@ -396,14 +409,14 @@ void CGame::NextProcess(eFlowProcesses p_flow)
 	case FLOW_SUCCESS:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		LoadFrontendResources(2);
+		LoadFrontendResources(SOUND_STATE_RESULTS);
 		m_process = new CSuccFail(this, 1);
 		m_flowTicks = 0;
 		goto done;
 	case FLOW_FAILURE:
 		m_currentFlow = p_flow;
 		m_mainDisplay->KillDrawer(p_flow);
-		LoadFrontendResources(2);
+		LoadFrontendResources(SOUND_STATE_RESULTS);
 		m_process = new CSuccFail(this, 0);
 		m_flowTicks = 0;
 		goto done;
@@ -438,7 +451,8 @@ void CGame::Process()
 	m_mainDisplay->Process();
 	if (m_process != NULL) {
 		timing = 0;
-		if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) && 0x32 < (int) m_flowTicks) {
+		if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) &&
+			GAME_FLOW_TIMING_WARMUP_TICKS < (int) m_flowTicks) {
 			timing = 1;
 			stat = m_processingStat;
 			stat->m_timingStart = timeGetTime();
@@ -457,10 +471,12 @@ void CGame::Process()
 			g_pNetworkManager->GameProcess();
 		}
 		switch (m_process->m_processState) {
-		case 1:
+		case PROCESS_RESULT_CONTINUE:
+			break;
+		case PROCESS_RESULT_CHANGE_FLOW:
 			NextProcess((eFlowProcesses) m_process->m_returnState);
 			break;
-		case 2:
+		case PROCESS_RESULT_QUIT:
 			m_quit = 1;
 			break;
 		}
@@ -468,10 +484,12 @@ void CGame::Process()
 
 	quitState = m_mainDisplay->QuitYet();
 	switch (quitState) {
-	case 1:
+	case DISPLAY_QUIT_NONE:
+		break;
+	case DISPLAY_QUIT_CHANGE_FLOW:
 		NextProcess((eFlowProcesses) m_mainDisplay->GetReturnState());
 		break;
-	case 2:
+	case DISPLAY_QUIT_APPLICATION:
 		m_quit = 1;
 		break;
 	}
@@ -496,7 +514,8 @@ void CGame::RefreshViews()
 	unsigned long now;
 
 	timing = 0;
-	if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) && 0x32 < (int) m_flowTicks) {
+	if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) &&
+		GAME_FLOW_TIMING_WARMUP_TICKS < (int) m_flowTicks) {
 		timing = 1;
 		stat = m_refreshingStat;
 		now = timeGetTime();
@@ -532,14 +551,14 @@ void CGame::Run()
 			g_pDemo->Process();
 		}
 		switch (PumpEvents()) {
-		case 0:
+		case EVENT_PUMP_CONTINUE:
 			Process();
 			if (m_quit != 0) {
 				return;
 			}
 			RefreshViews();
 			break;
-		case 1:
+		case EVENT_PUMP_QUIT:
 			m_quit = 1;
 			break;
 		}

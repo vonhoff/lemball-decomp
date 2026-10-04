@@ -24,13 +24,13 @@ void CTimedAnim::SetAnimDirection(int p_direction)
 unsigned int CTimedAnim::GetFrameNo()
 {
 	unsigned long time = m_fixedTime;
-	if (time == 0xffffffff) {
+	if (time == ANIMATION_TIME_REALTIME) {
 		time = timeGetTime();
 	}
 	time -= m_frameState;
 	unsigned long remainder = time % m_animTime;
 	unsigned long frame = (remainder * m_frames) / m_animTime;
-	if (m_direction != 1) {
+	if (m_direction != ANIMATION_DIRECTION_FORWARD) {
 		frame = m_frames - frame - 1;
 	}
 	return frame;

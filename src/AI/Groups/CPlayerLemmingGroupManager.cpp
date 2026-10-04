@@ -1,6 +1,11 @@
 #include "CPlayerLemmingGroupManager.h"
 
+enum {
+	LEMMING_COUNTS_USE_DEFAULTS = -1
+};
+
 #include "../../Map/Base/CMap.h"
+#include "../../Map/Ground/CGround.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Managers/CObjectManager.h"
 #include "../Navigation/CAI.h"
@@ -9,6 +14,15 @@
 #include "CFormationManager.h"
 #include "CPlayerLemmingGroup.h"
 
+enum {
+	DEFAULT_PLAYER_START_X_MAP_COORDINATE = 0x112,
+	DEFAULT_PLAYER_START_Y_MAP_COORDINATE = 0x34a,
+	PREALLOCATED_PLAYER_GROUP_COUNT = 5,
+	PLAYER_GROUP_FIRST_LEMMING_DELAY_MS = 3900,
+	PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS = 800,
+	PLAYER_GROUP_TRAP_DOOR_FINAL_DELAY_MS = 4100
+};
+
 // GLOBAL: LEMBALL 0x0049d138
 int g_anDefaultPlayerLemmingCounts[5][4] = {{0, 0, 0, 0}, {4, 0, 0, 0}, {3, 1, 0, 0}, {2, 1, 1, 0}, {1, 1, 1, 1}};
 
@@ -16,21 +30,23 @@ int g_anDefaultPlayerLemmingCounts[5][4] = {{0, 0, 0, 0}, {4, 0, 0, 0}, {3, 1, 0
 CPlayerLemmingGroupManager::CPlayerLemmingGroupManager(CAI* p_ai,
 													   CObjectManager* p_objectManager,
 													   CFormationManager* p_formationManager)
-	: CGenericGroupManager(p_ai, p_objectManager, p_formationManager), CBaseObjectManager(0x22, 0x17)
+	: CGenericGroupManager(p_ai, p_objectManager, p_formationManager),
+	  CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_PLAYER_LEMMING_GROUPS,
+						 OBJECT_MANAGER_TRANSPORT_PLAYER_LEMMING_GROUPS)
 {
 	m_deadCount = 0;
-	m_startX[0] = 0x112;
+	m_startX[0] = DEFAULT_PLAYER_START_X_MAP_COORDINATE;
 	m_startZ[0] = 0;
 	m_lemmingCounts[3] = 0;
 	m_lemmingCounts[2] = 0;
 	m_lemmingCounts[1] = 0;
-	m_state = 0;
+	m_deleteEmptyGroups = false;
 	m_networkInitialised = 0;
-	m_startY[0] = 0x34a;
+	m_startY[0] = DEFAULT_PLAYER_START_Y_MAP_COORDINATE;
 	m_startPositionCount = 1;
 	m_lemmingCounts[0] = 4;
 
-	int remaining = 5;
+	int remaining = PREALLOCATED_PLAYER_GROUP_COUNT;
 	do {
 		CPlayerLemmingGroup* group =
 			new CPlayerLemmingGroup(g_pGenericGroupAI, g_pGenericGroupObjectManager, g_pGenericGroupFormationManager);
@@ -140,6 +156,16 @@ void CPlayerLemmingGroupManager::CreateNewGroup(unsigned short p_count, unsigned
 	}
 }
 
+// FUNCTION: LEMBALL 0x004187f0
+bool CPlayerLemmingGroupManager::RemovePlayerLemmingFromGroup(CGameObject* p_object, CGenericGroup* p_group)
+{
+	bool removed = CGenericGroupManager::RemoveElementFromGroup(p_object, p_group);
+	if (!removed) {
+		MakePreviousGroupPlayerControlled();
+	}
+	return removed;
+}
+
 // FUNCTION: LEMBALL 0x00418820
 void CPlayerLemmingGroupManager::AddPlayerLemmingToGroup(CPlayerLemming* p_lemming, CPlayerLemmingGroup* p_group)
 {
@@ -243,7 +269,7 @@ CPlayerLemmingGroup* CPlayerLemmingGroupManager::GetPlayerControlledGroup()
 		CGenericGroup** groups = m_groups;
 		do {
 			CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) *groups;
-			if (group != NULL && group->CheckPlayerControlled() == 1) {
+			if (group != NULL && group->CheckPlayerControlled() == true) {
 				return (CPlayerLemmingGroup*) m_groups[i];
 			}
 			groups++;
@@ -256,7 +282,7 @@ CPlayerLemmingGroup* CPlayerLemmingGroupManager::GetPlayerControlledGroup()
 // FUNCTION: LEMBALL 0x00418a30
 void CPlayerLemmingGroupManager::AddNewWaypointToCurrentGroup(int p_x, int p_y)
 {
-	AICOORD coordinate(p_x << 12, p_y << 12, 0);
+	AICOORD coordinate(p_x << FIXED_POINT_FRACTION_BITS, p_y << FIXED_POINT_FRACTION_BITS, 0);
 	CPlayerLemmingGroup* group = GetPlayerControlledGroup();
 	if (group != NULL) {
 		group->AddNewWaypoint(coordinate, g_pGenericGroupFormationManager);
@@ -280,7 +306,7 @@ void CPlayerLemmingGroupManager::UseObject(int p_objectId)
 		return;
 	}
 	CGameObject* object = g_pObjects[(unsigned short) p_objectId];
-	if (object->m_objectType != 2) {
+	if (object->m_objectType != OBJECT_PLAYER_2) {
 		controlledGroup->AddUseObject(p_objectId);
 		return;
 	}
@@ -322,9 +348,9 @@ void CPlayerLemmingGroupManager::PlayerGroupRequestFire(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x00418ba0
 void CPlayerLemmingGroupManager::GetPlayerStartPosition(AICOORD& p_position, int p_index)
 {
-	p_position.m_xFixed = m_startX[p_index] << 12;
-	p_position.m_yFixed = m_startY[p_index] << 12;
-	p_position.m_zFixed = m_startZ[p_index] << 12;
+	p_position.m_xFixed = m_startX[p_index] << FIXED_POINT_FRACTION_BITS;
+	p_position.m_yFixed = m_startY[p_index] << FIXED_POINT_FRACTION_BITS;
+	p_position.m_zFixed = m_startZ[p_index] << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x00418be0
@@ -335,7 +361,7 @@ void CPlayerLemmingGroupManager::SetLemmingCounts(int p_playerCount,
 												  int p_count3)
 {
 	m_startPositionCount = p_playerCount;
-	if (p_count0 == -1) {
+	if (p_count0 == LEMMING_COUNTS_USE_DEFAULTS) {
 		m_lemmingCounts[0] = g_anDefaultPlayerLemmingCounts[p_playerCount][0];
 		m_lemmingCounts[1] = g_anDefaultPlayerLemmingCounts[p_playerCount][1];
 		m_lemmingCounts[2] = g_anDefaultPlayerLemmingCounts[p_playerCount][2];
@@ -348,11 +374,11 @@ void CPlayerLemmingGroupManager::SetLemmingCounts(int p_playerCount,
 		m_lemmingCounts[3] = p_count3;
 	}
 	for (int i = 0; i < p_playerCount; i++) {
-		if (m_startX[i] > 1024 || m_startX[i] < 0) {
-			m_startX[i] = i * 16;
+		if (m_startX[i] > MAP_COORDINATE_MAX || m_startX[i] < 0) {
+			m_startX[i] = i * GROUND_BLOCK_PIXEL_SIZE;
 		}
-		if (m_startY[i] > 1024 || m_startY[i] < 0) {
-			m_startY[i] = i * 16;
+		if (m_startY[i] > MAP_COORDINATE_MAX || m_startY[i] < 0) {
+			m_startY[i] = i * GROUND_BLOCK_PIXEL_SIZE;
 		}
 	}
 }
@@ -396,14 +422,14 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 	CMap* map = g_pMap;
 	int blockY;
 	int blockX;
-	blockX = x >> 4;
-	blockY = y >> 4;
+	blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	if (x >= 0 && y >= 0) {
 		int width = map->m_ground.m_width;
 		if (blockX < width && map->m_ground.m_height > blockY) {
-			x &= 0xf;
-			y &= 0xf;
+			x &= GROUND_BLOCK_PIXEL_MASK;
+			y &= GROUND_BLOCK_PIXEL_MASK;
 			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
 		}
 		else {
@@ -461,7 +487,8 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 	}
 	CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) CGenericGroupManager::GetFirstGroup();
 	for (i = 0; i < count; i++) {
-		int delay = (3900 + i * 800) / 50;
+		int delay =
+			(PLAYER_GROUP_FIRST_LEMMING_DELAY_MS + i * PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS) / GAME_TICK_MILLISECONDS;
 		CPlayerLemming* lemming;
 		if (reuse == NULL) {
 			lemming = new CPlayerLemming(m_startX[i], m_startY[i], m_startZ[i], 0, 0, delay);
@@ -474,7 +501,8 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 		lemming->m_manager = manager;
 		AddPlayerLemmingToGroup(lemming, group);
 	}
-	unsigned int doorTime = (count * 800 + 3900) / 50;
+	unsigned int doorTime =
+		(count * PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS + PLAYER_GROUP_FIRST_LEMMING_DELAY_MS) / GAME_TICK_MILLISECONDS;
 	if (g_pGenericGroupAI->m_gameplayStartDelay < doorTime) {
 		g_pGenericGroupAI->m_gameplayStartDelay = doorTime;
 	}
@@ -506,13 +534,14 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 		int x;
 		x = m_startX[i];
 		y = m_startY[i];
-		int blockX = x >> 4;
-		int blockY = y >> 4;
+		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		unsigned short z;
 		if (x >= 0 && y >= 0) {
 			int width = map->m_ground.m_width;
 			if (blockX < width && map->m_ground.m_height > blockY) {
-				z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x & 0xf, y & 0xf);
+				z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
+																		 y & GROUND_BLOCK_PIXEL_MASK);
 			}
 			else {
 				z = 0;
@@ -561,7 +590,8 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 	}
 	for (i = 0; i < m_startPositionCount; i++) {
 		for (int j = 0; j < m_lemmingCounts[i]; j++) {
-			int delay = (3900 + j * 800) / 50;
+			int delay = (PLAYER_GROUP_FIRST_LEMMING_DELAY_MS + j * PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS) /
+						GAME_TICK_MILLISECONDS;
 			CPlayerLemming* lemming;
 			if (reuse == NULL) {
 				lemming = new CPlayerLemming(m_startX[i], m_startY[i], m_startZ[i], 0, 0, delay);
@@ -575,16 +605,32 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 			CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) CGenericGroupManager::GetNthGroup(i);
 			AddPlayerLemmingToGroup(lemming, group);
 		}
-		unsigned int doorTime = (m_lemmingCounts[i] * 800 + 3900) / 50;
+		unsigned int doorTime =
+			(m_lemmingCounts[i] * PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS + PLAYER_GROUP_FIRST_LEMMING_DELAY_MS) /
+			GAME_TICK_MILLISECONDS;
 		if (g_pGenericGroupAI->m_gameplayStartDelay < doorTime) {
 			g_pGenericGroupAI->m_gameplayStartDelay = doorTime;
 		}
-		doorTime = (m_lemmingCounts[i] * 800 + 4100) / 50;
+		doorTime =
+			(m_lemmingCounts[i] * PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS + PLAYER_GROUP_TRAP_DOOR_FINAL_DELAY_MS) /
+			GAME_TICK_MILLISECONDS;
 		if (p_skip == 0) {
 			g_pGenericGroupAI->AddNewTrapDoor(m_startX[i], m_startY[i], m_startZ[i], doorTime);
 		}
 	}
 	MakeParticularGroupPlayerControlled((CPlayerLemmingGroup*) CGenericGroupManager::GetFirstGroup());
+}
+
+// FUNCTION: LEMBALL 0x004193f0
+bool CPlayerLemmingGroupManager::CheckNetworkStateChanged()
+{
+	bool changed = false;
+	for (int index = 0; index < m_groupCount; ++index) {
+		CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) m_groups[index];
+		bool groupChanged = group->CheckNetworkStateChanged();
+		changed = groupChanged || changed;
+	}
+	return changed;
 }
 
 // FUNCTION: LEMBALL 0x00419440

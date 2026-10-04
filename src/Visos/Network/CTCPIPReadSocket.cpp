@@ -3,6 +3,7 @@
 #include "../Foundation/CVSOStream.h"
 #include "CTCPIPNetwork.h"
 #include "CTCPIPNetworkAddress.h"
+#include "NetworkConstants.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 #include "Visos/Network/CNetworkAddress.h"
 
@@ -72,7 +73,7 @@ int CTCPIPReadSocket::Process(unsigned int p_message, unsigned int p_wParam, lon
 	(void) p_wParam;
 	if (p_message == TCPIP_MESSAGE_SOCKET_EVENT) {
 		event = (unsigned short) p_lParam;
-		if (m_socketHandle == -1) {
+		if (m_socketHandle == NETWORK_SOCKET_HANDLE_INVALID) {
 			return 0;
 		}
 		error = (unsigned short) ((unsigned long) p_lParam >> 16);
@@ -86,7 +87,7 @@ int CTCPIPReadSocket::Process(unsigned int p_message, unsigned int p_wParam, lon
 			return 0;
 		}
 	}
-	return -1;
+	return NETWORK_WINDOW_MESSAGE_UNHANDLED;
 }
 
 // FUNCTION: LEMBALL 0x00471e40

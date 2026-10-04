@@ -18,6 +18,7 @@ public:
 	virtual void Process();                         // vtable+0x1c
 	virtual ~CIceManager();                         // vtable+0x14
 	void Restart();
+	void RemoveIce(CIce* p_ice);
 	void Add(unsigned short p_id,
 			 const tCoord3d& p_cornerA,
 			 const tCoord3d& p_cornerB,
@@ -28,6 +29,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Switch(int p_message, int p_id);
 	int ExportIceRecords(tCoord3d p_records[][2]);
+	void ResetCount();
 
 private:
 	int m_capacity; // 0x30

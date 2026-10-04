@@ -22,12 +22,20 @@
 #include "Visos/Foundation/VsDebug.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
+enum {
+	BULLET_TRAVEL_DURATION_TICKS = 10
+};
+
+enum {
+	BULLET_NETWORK_STATE_PAYLOAD_SIZE_BYTES = 40
+};
+
 // FUNCTION: LEMBALL 0x0041a510
 CBullet::CBullet()
-	: CGlobalGameObject(OBJECT_BULLET, 0x100, 0), m_unk0x174(DEBUG_SENTINEL), m_unk0x178(DEBUG_SENTINEL),
-	  m_unk0x17c(DEBUG_SENTINEL), m_unk0x180(DEBUG_SENTINEL)
+	: CGlobalGameObject(OBJECT_BULLET, GAME_OBJECT_COLLISION_STEP_ON_INVISIBLE_SWITCHES, 0), m_unk0x174(DEBUG_SENTINEL),
+	  m_unk0x178(DEBUG_SENTINEL), m_unk0x17c(DEBUG_SENTINEL), m_unk0x180(DEBUG_SENTINEL)
 {
-	m_payloadCapacity += 0x28;
+	m_payloadCapacity += BULLET_NETWORK_STATE_PAYLOAD_SIZE_BYTES;
 }
 
 // FUNCTION: LEMBALL 0x0041a5a0
@@ -54,24 +62,25 @@ void CBullet::Set(unsigned short p_id,
 	m_destination.m_xFixed = p_target.m_xFixed;
 	m_destination.m_yFixed = p_target.m_yFixed;
 	m_active = 1;
-	int targetX = p_target.m_xFixed >> 12;
-	int targetY = p_target.m_yFixed >> 12;
-	int blockX = targetX >> 4;
-	int blockY = targetY >> 4;
+	int targetX = p_target.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int targetY = p_target.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int blockX = targetX >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = targetY >> GROUND_BLOCK_PIXEL_SHIFT;
 	int width = g_pMap->m_ground.m_width;
 	unsigned short z;
 	if (targetX < 0 || targetY < 0 || width <= blockX || g_pMap->m_ground.m_height <= blockY) {
 		z = 0;
 	}
 	else {
-		z = g_pMap->m_ground.m_ground[blockY * width + blockX].GetZ(targetX & 0xf, targetY & 0xf);
+		z = g_pMap->m_ground.m_ground[blockY * width + blockX].GetZ(targetX & GROUND_BLOCK_PIXEL_MASK,
+																	targetY & GROUND_BLOCK_PIXEL_MASK);
 	}
 	m_sourceObjectId = p_id;
-	m_destination.m_zFixed = (z + 12) << 12;
-	m_facingDirection = (short) ReturnFacingDirection(m_position.m_xFixed >> 12,
-													  m_position.m_yFixed >> 12,
-													  m_destination.m_xFixed >> 12,
-													  m_destination.m_yFixed >> 12);
+	m_destination.m_zFixed = (z + 12) << FIXED_POINT_FRACTION_BITS;
+	m_facingDirection = (short) ReturnFacingDirection(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+													  m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+													  m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+													  m_destination.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 }
 
 // FUNCTION: LEMBALL 0x0041a6d0
@@ -79,15 +88,15 @@ void CBullet::TriggerBullet()
 {
 	CPt3 start;
 	CPt3 end;
-	start.m_x = m_position.m_xFixed >> 12;
-	start.m_y = m_position.m_yFixed >> 12;
-	start.m_z = m_position.m_zFixed >> 12;
-	end.m_x = m_destination.m_xFixed >> 12;
-	end.m_y = m_destination.m_yFixed >> 12;
-	end.m_z = m_destination.m_zFixed >> 12;
+	start.m_x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	start.m_y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	start.m_z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+	end.m_x = m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	end.m_y = m_destination.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	end.m_z = m_destination.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	m_movement.Set(start, end, m_lastMovementTick, 12);
 	m_action = ACTION_RUNNING;
-	m_actionDeadline = m_lastMovementTick + 10;
+	m_actionDeadline = m_lastMovementTick + BULLET_TRAVEL_DURATION_TICKS;
 }
 
 // FUNCTION: LEMBALL 0x0041a760
@@ -126,44 +135,45 @@ bool CBullet::Process()
 					return false;
 				}
 				m_movement.Position(pos, tick);
-				if (pos.m_x < 0 || pos.m_x > 0x3ff || pos.m_y < 0 || pos.m_y > 0x3ff) {
+				if (pos.m_x < 0 || pos.m_x > MAP_COORDINATE_MAX - 1 || pos.m_y < 0 ||
+					pos.m_y > MAP_COORDINATE_MAX - 1) {
 					return false;
 				}
-				int tileX = pos.m_x / 16;
+				int tileX = pos.m_x / GROUND_BLOCK_PIXEL_SIZE;
 				int tileY;
 				int width;
 				CMap* collisionMap;
 				unsigned short collision;
-				if (tileX < 0 || (tileY = pos.m_y / 16) < 0 ||
+				if (tileX < 0 || (tileY = pos.m_y / GROUND_BLOCK_PIXEL_SIZE) < 0 ||
 					(width = (collisionMap = g_pMap)->m_ground.m_width) <= tileX ||
 					g_pMap->m_ground.m_height <= tileY) {
-					collision = 3;
+					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 				}
 				else {
 					collision = g_pMap->m_ground.m_ground[width * tileY + tileX].m_collision;
 				}
-				if ((collision & 2) != 0) {
+				if ((collision & GROUND_COLLISION_BLOCKS_BULLETS) != 0) {
 					return false;
 				}
 				if (m_isRemoteObject == 0) {
 					unsigned short groundZ;
 					map = g_pMap;
 					int groundWidth;
-					int blockX = pos.m_x >> 4;
-					int blockY = pos.m_y >> 4;
+					int blockX = pos.m_x >> GROUND_BLOCK_PIXEL_SHIFT;
+					int blockY = pos.m_y >> GROUND_BLOCK_PIXEL_SHIFT;
 					if (pos.m_x < 0 || pos.m_y < 0 || (groundWidth = map->m_ground.m_width) <= blockX ||
 						map->m_ground.m_height <= blockY) {
 						groundZ = 0;
 					}
 					else {
-						int x = pos.m_x & 15;
-						int y = pos.m_y & 15;
+						int x = pos.m_x & GROUND_BLOCK_PIXEL_MASK;
+						int y = pos.m_y & GROUND_BLOCK_PIXEL_MASK;
 						groundZ = map->m_ground.m_ground[groundWidth * blockY + blockX].GetZ(x, y);
 					}
 					if (pos.m_z <= (int) groundZ) {
-						m_position.m_xFixed = pos.m_x << 12;
-						m_position.m_yFixed = pos.m_y << 12;
-						m_position.m_zFixed = pos.m_z << 12;
+						m_position.m_xFixed = pos.m_x << FIXED_POINT_FRACTION_BITS;
+						m_position.m_yFixed = pos.m_y << FIXED_POINT_FRACTION_BITS;
+						m_position.m_zFixed = pos.m_z << FIXED_POINT_FRACTION_BITS;
 						g_pAI->StepOn(m_position, this, m_collisionFlags);
 						return false;
 					}
@@ -185,7 +195,7 @@ bool CBullet::Process()
 			hitFound:
 				CGameObject* hitObject = candidate;
 				if (hitObject != NULL && (unsigned short) hitObject->GetId() != m_sourceObjectId) {
-					if (m_owner != OWNER_REMOTE_PLAYER || hitObject->m_objectType == 2) {
+					if (m_owner != OWNER_REMOTE_PLAYER || hitObject->m_objectType == OBJECT_PLAYER_2) {
 						hitObject->HitBullet(this);
 					}
 					return false;
@@ -193,9 +203,9 @@ bool CBullet::Process()
 				tick++;
 			} while ((int) currentTick >= (int) tick);
 		}
-		m_position.m_xFixed = pos.m_x << 12;
-		m_position.m_yFixed = pos.m_y << 12;
-		m_position.m_zFixed = pos.m_z << 12;
+		m_position.m_xFixed = pos.m_x << FIXED_POINT_FRACTION_BITS;
+		m_position.m_yFixed = pos.m_y << FIXED_POINT_FRACTION_BITS;
+		m_position.m_zFixed = pos.m_z << FIXED_POINT_FRACTION_BITS;
 		m_lastMovementTick = currentTick;
 		return true;
 	}
@@ -210,12 +220,12 @@ void CBullet::AddData()
 	Add((unsigned short) MESSAGE_BULLET_STATE);
 	Add(m_linkedObjectId);
 	Add(g_dwSimulationTimestamp);
-	Add((unsigned short) (m_position.m_xFixed >> 12));
-	Add((unsigned short) (m_position.m_yFixed >> 12));
-	Add((unsigned short) (m_position.m_zFixed >> 12));
-	Add((unsigned short) (m_destination.m_xFixed >> 12));
-	Add((unsigned short) (m_destination.m_yFixed >> 12));
-	Add((unsigned short) (m_destination.m_zFixed >> 12));
+	Add((unsigned short) (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((unsigned short) (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((unsigned short) (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((unsigned short) (m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((unsigned short) (m_destination.m_yFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((unsigned short) (m_destination.m_zFixed >> FIXED_POINT_FRACTION_BITS));
 	Add((unsigned short) m_facingDirection);
 	Add((unsigned long) m_soundEffect);
 	Add((unsigned long) m_lastMovementTick);
@@ -228,17 +238,17 @@ void CBullet::AddData()
 void CBullet::GetData()
 {
 	SetRemoteGameTimeReal(GetDWORD());
-	const int x = (int) (short) GetWORD() << 12;
+	const int x = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
 	m_position.m_xFixed = x;
-	const int y = (int) (short) GetWORD() << 12;
+	const int y = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
 	m_position.m_yFixed = y;
-	const int z = (int) (short) GetWORD() << 12;
+	const int z = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
 	m_position.m_zFixed = z;
-	const int destinationX = (int) (short) GetWORD() << 12;
+	const int destinationX = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
 	m_destination.m_xFixed = destinationX;
-	const int destinationY = (int) (short) GetWORD() << 12;
+	const int destinationY = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
 	m_destination.m_yFixed = destinationY;
-	const int destinationZ = (int) (short) GetWORD() << 12;
+	const int destinationZ = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
 	m_destination.m_zFixed = destinationZ;
 	m_facingDirection = (short) GetWORD();
 	m_soundEffect = (eSoundEffect) GetDWORD();

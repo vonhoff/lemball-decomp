@@ -29,7 +29,7 @@ void CMap::CalculateCliff()
 					}
 					height -= lowerHeight;
 				}
-				ground->m_cliff = (unsigned short) ((height + 15) / 16);
+				ground->m_cliff = (unsigned short) ((height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE);
 				x++;
 			}
 			y++;

@@ -1,3 +1,5 @@
+#include "AnimationConstants.h"
+
 class CFixedTimeAnim {
 public:
 	unsigned int GetFrameNo();
@@ -28,7 +30,7 @@ unsigned int CFixedTimeAnim::GetFrameNo()
 		return frame;
 	}
 	unsigned int frame = ((elapsed % m_duration) * m_frames) / m_duration;
-	if (m_direction != 1) {
+	if (m_direction != ANIMATION_DIRECTION_FORWARD) {
 		frame = (m_frames - frame) - 1;
 	}
 	return frame;

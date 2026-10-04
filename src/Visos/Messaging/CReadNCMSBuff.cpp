@@ -2,6 +2,7 @@
 
 #include "../Network/CTCPIPNetwork.h"
 #include "BasePacketHeader.h"
+#include "CNetworkMessage.h"
 #include "Visos/Messaging/CReadMSBuff.h"
 
 #include <stddef.h>
@@ -51,7 +52,8 @@ CReadMSBuff* CReadNCMSBuff::UpdateSubPacket()
 	BasePacketHeader* header = (BasePacketHeader*) message->m_data;
 	unsigned short packetSequence;
 
-	if (messageId >= 3 && (int) g_pNetworkPacketScratch->m_packetSequence - (int) header->m_packetSequence < 0) {
+	if (messageId >= NETWORK_MESSAGE_SEQUENCE_TRACKING_START_ID &&
+		(int) g_pNetworkPacketScratch->m_packetSequence - (int) header->m_packetSequence < 0) {
 		return NULL;
 	}
 

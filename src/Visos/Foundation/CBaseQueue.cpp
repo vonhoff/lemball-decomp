@@ -139,7 +139,7 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 	unsigned int count;
 
 	EnterCritical();
-	node = (QueueHandlerNode*) operator new(0xc);
+	node = (QueueHandlerNode*) operator new(sizeof(QueueHandlerNode));
 	current = m_handlerList;
 	node->m_handler = p_handler;
 	node->m_priority = p_priority;

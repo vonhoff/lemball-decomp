@@ -14,6 +14,14 @@
 #include "Visos/Graphics/CPrimitive.h"
 #include "Visos/Resources/CResZRLE.h"
 
+enum {
+	GRAPHIC_BUTTON_ALIGN_HORIZONTAL_CENTER = 0x04,
+	GRAPHIC_BUTTON_ALIGN_VERTICAL_CENTER = 0x08,
+	GRAPHIC_BUTTON_ALIGN_RIGHT = 0x10,
+	GRAPHIC_BUTTON_ALIGN_BOTTOM = 0x20,
+	GRAPHIC_BUTTON_OFFSET_ON_PRESS = 0x40
+};
+
 class CRemap;
 
 // GLOBAL: LEMBALL 0x0049f02c
@@ -100,17 +108,17 @@ void CGraphicButton::Initialise()
 		CHotAreaHandler::SetActive(1);
 	}
 	short& offsetX = m_graphicOffsetX;
-	if ((m_alignmentFlags & 4) != 0) {
+	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_HORIZONTAL_CENTER) != 0) {
 		offsetX = (short) (((int) CHotAreaHandler::m_bounds.m_width - (int) (short) m_graphicWidth) / 2);
 	}
-	else if ((m_alignmentFlags & 0x10) != 0) {
+	else if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_RIGHT) != 0) {
 		offsetX = (short) (CHotAreaHandler::m_bounds.m_width - (short) m_graphicWidth);
 	}
-	if ((m_alignmentFlags & 8) != 0) {
+	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_VERTICAL_CENTER) != 0) {
 		m_graphicOffsetY = (short) (((int) CHotAreaHandler::m_bounds.m_height - (int) (short) m_graphicHeight) / 2);
 		return;
 	}
-	if ((m_alignmentFlags & 0x20) != 0) {
+	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_BOTTOM) != 0) {
 		m_graphicOffsetY = (short) (CHotAreaHandler::m_bounds.m_height - (short) m_graphicHeight);
 	}
 }
@@ -154,7 +162,7 @@ void CGraphicButton::DrawButton()
 	if (m_enabled == 0 || (pressed = 1, CHotAreaHandler::m_active == 0)) {
 		pressed = 0;
 	}
-	if ((m_alignmentFlags & 0x40) != 0 && pressed != 0) {
+	if ((m_alignmentFlags & GRAPHIC_BUTTON_OFFSET_ON_PRESS) != 0 && pressed != 0) {
 		x++;
 		y++;
 	}

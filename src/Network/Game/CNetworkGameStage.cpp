@@ -3,9 +3,9 @@
 #include "Visos/Messaging/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x004523b0
-CNetworkGameStage::CNetworkGameStage() : CNetworkMessage(4)
+CNetworkGameStage::CNetworkGameStage() : CNetworkMessage(NETWORK_MESSAGE_GAME_STAGE)
 {
-	m_payloadCapacity += 4;
+	m_payloadCapacity += sizeof(m_stage);
 }
 
 // FUNCTION: LEMBALL 0x00452e40

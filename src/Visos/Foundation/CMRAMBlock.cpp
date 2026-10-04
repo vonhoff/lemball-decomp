@@ -8,5 +8,5 @@ CMRAMBlock::CMRAMBlock(CArena* p_arena, CMBlock* p_previous, char* p_description
 {
 	m_size = p_totalSize - sizeof(CMRAMBlock);
 	m_data = (unsigned char*) (this + 1);
-	m_signature = 0x524d424c;
+	m_signature = MEMORY_BLOCK_SIGNATURE;
 }

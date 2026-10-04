@@ -28,7 +28,7 @@ void CPVGWnd::SetDontUpdateRect(const CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x004453a0
 unsigned int CPVGWnd::GetStyle()
 {
-	return 2147483648;
+	return WINDOW_STYLE_DIRECT_SCROLL;
 }
 
 #include "CDrawingMark.h"
@@ -43,7 +43,7 @@ void CPVGWnd::Clear(int p_colour)
 	if (g_dwWindowQuitRequested != 0 || m_lifecycleRefs != 1 || m_gdi == NULL) {
 		return;
 	}
-	if (p_colour == -1) {
+	if (p_colour == WINDOW_CLEAR_DEFAULT_COLOUR) {
 		p_colour = 0;
 	}
 

@@ -1,13 +1,12 @@
 #include "CGameStateMessage.h"
 
+#include "GameMessageIds.h"
 #include "Visos/Messaging/CNetworkMessage.h"
-
-#define MESSAGE_GAME_STATE 10
 
 // FUNCTION: LEMBALL 0x00410b80
 CGameStateMessage::CGameStateMessage() : CNetworkMessage(MESSAGE_GAME_STATE)
 {
-	m_payloadCapacity += 16;
+	m_payloadCapacity += sizeof(m_state) + sizeof(m_stage) + sizeof(m_levelTime) + sizeof(m_score);
 	m_headerEnabled = 1;
 }
 

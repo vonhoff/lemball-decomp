@@ -1,4 +1,5 @@
 #include "CMainOptions2Drawer.h"
+#include "Frontend/Base/FrontendLayoutMode.h"
 
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Frontend/Controls/CGunController.h"
@@ -22,6 +23,7 @@
 #define MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE 0xacef0006
 #define MAIN_OPTIONS2_ANIMATIONS_TOGGLE_MESSAGE 0xacef0007
 #define MAIN_OPTIONS2_RETURN_MESSAGE 0xacef0008
+#define MAIN_OPTIONS2_KEYBOARD_SETTINGS_MESSAGE 0xacef0009
 #define MAIN_OPTIONS2_MAX_VOLUME 255
 
 #define MAIN_OPTIONS2_EFFECTS_VOLUME_CHANGED_MESSAGE 0xacff0000
@@ -96,7 +98,7 @@ void CMainOptions2Drawer::Load()
 	int i;
 	void* storage;
 
-	if (m_mode != 0) {
+	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
 		m_buttonLayout = g_anMainOptions2CompactButtonLayout;
 		zoomAnim = &g_dwMainOptions2CompactAnimIds[0];
 		effectsAnim = &g_dwMainOptions2CompactAnimIds[2];
@@ -135,7 +137,7 @@ void CMainOptions2Drawer::Load()
 	}
 
 	int disableZoom = 0;
-	if (m_mode != 0) {
+	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
 		disableZoom = 1;
 		m_disableZoom = 1;
 	}
@@ -144,7 +146,7 @@ void CMainOptions2Drawer::Load()
 		->AddButton(m_buttonLayout[0],
 					m_buttonLayout[1],
 					zoomAnim,
-					0,
+					GUN_BUTTON_CYCLE_VALUE,
 					disableZoom,
 					1,
 					0,
@@ -154,7 +156,7 @@ void CMainOptions2Drawer::Load()
 		->AddButton(m_buttonLayout[2],
 					m_buttonLayout[3],
 					animationsAnim,
-					0,
+					GUN_BUTTON_CYCLE_VALUE,
 					0,
 					1,
 					0,
@@ -164,7 +166,7 @@ void CMainOptions2Drawer::Load()
 		->AddButton(m_buttonLayout[4],
 					m_buttonLayout[5],
 					effectsAnim,
-					0,
+					GUN_BUTTON_CYCLE_VALUE,
 					0,
 					1,
 					0,
@@ -174,7 +176,7 @@ void CMainOptions2Drawer::Load()
 		->AddButton(m_buttonLayout[6],
 					m_buttonLayout[7],
 					musicAnim,
-					0,
+					GUN_BUTTON_CYCLE_VALUE,
 					0,
 					1,
 					0,
@@ -184,7 +186,7 @@ void CMainOptions2Drawer::Load()
 		->AddButton(m_buttonLayout[10],
 					m_buttonLayout[11],
 					navigationAnim,
-					1,
+					GUN_BUTTON_POST_ACTION_MESSAGE,
 					0,
 					0,
 					0,
@@ -205,7 +207,7 @@ void CMainOptions2Drawer::UnLoad()
 // FUNCTION: LEMBALL 0x00448de0
 CMainOptions2Drawer::~CMainOptions2Drawer()
 {
-	if (m_mode == 0) {
+	if (m_mode == FRONTEND_LAYOUT_STANDARD) {
 		g_nZoomEnabled = (int) (m_disableZoom == 0);
 	}
 	g_nAnimationsDisabled = m_disableAnimations;
@@ -249,11 +251,11 @@ bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
 		return true;
 	case MAIN_OPTIONS2_RETURN_MESSAGE:
 		m_quitYet = 1;
-		m_returnState = 2;
+		m_returnState = FLOW_MAIN_OPTIONS_1;
 		return true;
-	case 0xacef0009:
+	case MAIN_OPTIONS2_KEYBOARD_SETTINGS_MESSAGE:
 		m_quitYet = 1;
-		m_returnState = 0x11;
+		m_returnState = FLOW_KEYBOARD_SETTINGS;
 		return true;
 	case MAIN_OPTIONS2_EFFECTS_VOLUME_CHANGED_MESSAGE:
 		g_nPendingEffectsVolume = (int) p_message->m_payload;

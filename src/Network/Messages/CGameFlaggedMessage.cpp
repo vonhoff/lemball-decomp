@@ -5,7 +5,7 @@
 // FUNCTION: LEMBALL 0x004524b0
 CGameFlaggedMessage::CGameFlaggedMessage(unsigned long p_messageId) : CNetworkMessage(p_messageId)
 {
-	m_payloadCapacity += 4;
+	m_payloadCapacity += sizeof(m_flag);
 	m_headerEnabled = 1;
 	m_flag = 0;
 }

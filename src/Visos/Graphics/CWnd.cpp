@@ -22,10 +22,26 @@
 #include <string.h>
 #include <windows.h>
 
+#define DISPLAYDIB_DEACTIVATE_COMMAND 0x4000
+
 #pragma intrinsic(_outpw)
 
 extern unsigned int g_windowDispatchDisabled;
 extern int(__stdcall* g_pDisplayDib)(void*, void*, unsigned short);
+
+enum {
+	WINDOW_STYLE_DISTINGUISH_DOUBLE_CLICK = 0x1000
+};
+
+enum eDisplayDibFlag {
+	DISPLAYDIB_FLAG_NO_PALETTE = 0x0010,
+	DISPLAYDIB_FLAG_DONT_LOCK_TASK = 0x0200,
+	DISPLAYDIB_FLAG_BEGIN = 0x8000,
+	DISPLAYDIB_VGA_RESUME_FLAGS = DISPLAYDIB_FLAG_BEGIN | DISPLAYDIB_FLAG_DONT_LOCK_TASK | DISPLAYDIB_FLAG_NO_PALETTE,
+	DISPLAYDIB_MODE_INCREMENT = 1,
+	DISPLAYDIB_MODE_320X200_8BIT_INITIAL = 0,
+	DISPLAYDIB_MODE_320X240_8BIT_INITIAL = 4
+};
 
 // GLOBAL: LEMBALL 0x004a1f64
 void* g_hFocusWindow = NULL;
@@ -289,7 +305,8 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		goto defaultWindowMessage;
 	}
 	case WM_KILLFOCUS: {
-		if (g_pTargetGraphicsSystem->m_driverMode < 4 || 5 < g_pTargetGraphicsSystem->m_driverMode) {
+		if (g_pTargetGraphicsSystem->m_driverMode < GFX_MODE_DD_FS_640X480 ||
+			g_pTargetGraphicsSystem->m_driverMode > GFX_MODE_DD_FS_320X200) {
 			if (g_hFocusWindow != NULL) {
 				g_pFocusWindow->Dummy94();
 				g_pFocusWindow->OnFocusLost();
@@ -302,20 +319,22 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		int wasDisplayDibActive = g_nDisplayDibActive;
 		int mode = g_pTargetGraphicsSystem->m_driverMode;
 		switch (mode) {
-		case 1:
+		case GFX_MODE_GDI:
 			g_dwFullScreenGdi = 1;
 			g_nDisplayDibActive = 0;
 			InvalidateRect((HWND) p_hwnd, NULL, 0);
 			break;
-		case 2:
-		case 3:
+		case GFX_MODE_VGA_320X200:
+		case GFX_MODE_VGA_320X240:
 			if (p_wParam != 0) {
 				if (window->GetSizeStatus() == 0) {
 					SendMessageA((HWND) p_hwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
 				}
-				unsigned short flags = g_pTargetGraphicsSystem->m_driverMode == 3 ? 4 : 0;
+				unsigned short flags = g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240
+										   ? DISPLAYDIB_MODE_320X240_8BIT_INITIAL
+										   : DISPLAYDIB_MODE_320X200_8BIT_INITIAL;
 				flags++;
-				flags |= 0x8210;
+				flags |= DISPLAYDIB_VGA_RESUME_FLAGS;
 				g_pDisplayDib(NULL, NULL, flags);
 				g_dwFullScreenGdi = 0;
 				g_nDisplayDibActive = 1;
@@ -324,7 +343,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				InvalidateRect((HWND) p_hwnd, NULL, 0);
 			}
 			else {
-				g_pDisplayDib(NULL, NULL, 0x4000);
+				g_pDisplayDib(NULL, NULL, DISPLAYDIB_DEACTIVATE_COMMAND);
 				g_nDisplayDibActive = 0;
 				g_dwFullScreenGdi = 1;
 				SendMessageA((HWND) p_hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
@@ -374,7 +393,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_KEYDOWN:
 	case WM_KEYUP: {
-		posted.m_type = (p_message == WM_KEYDOWN) ? 2 : 1;
+		posted.m_type = (p_message == WM_KEYDOWN) ? MESSAGE_RAW_KEY_DOWN : MESSAGE_RAW_KEY_UP;
 		posted.m_code = (int) p_wParam;
 		g_pMasterInputQueue->Post(posted);
 		return 0;
@@ -385,9 +404,9 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	case WM_RBUTTONDBLCLK:
 	case WM_MBUTTONDOWN:
 	case WM_MBUTTONDBLCLK: {
-		posted.m_type = 6;
+		posted.m_type = MESSAGE_MOUSE_BUTTON_DOWN;
 		style = window->GetStyle();
-		if ((style & 0x1000) != 0) {
+		if ((style & WINDOW_STYLE_DISTINGUISH_DOUBLE_CLICK) != 0) {
 			switch (p_message) {
 			case WM_LBUTTONDOWN:
 				posted.m_payload = (void*) INPUT_MOUSE_LEFT;
@@ -439,7 +458,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 	case WM_MBUTTONUP: {
-		posted.m_type = 5;
+		posted.m_type = MESSAGE_MOUSE_BUTTON_UP;
 		switch (p_message) {
 		case WM_LBUTTONUP:
 			posted.m_payload = (void*) INPUT_MOUSE_LEFT;
@@ -528,7 +547,7 @@ void CWnd::Move(const CVSPoint& p_point)
 	_OnMove();
 	OnMove();
 	if (m_nativeWindow != NULL) {
-		SetWindowPos((HWND) m_nativeWindow, NULL, p_point.m_x, p_point.m_y, 0, 0, 5);
+		SetWindowPos((HWND) m_nativeWindow, NULL, p_point.m_x, p_point.m_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 }
 
@@ -546,7 +565,7 @@ void CWnd::ProcessMouseMoves()
 			g_nLastCursorX += g_pFocusWindow->m_rect.m_x;
 			g_nLastCursorY += g_pFocusWindow->m_rect.m_y;
 		}
-		posted.m_type = 7;
+		posted.m_type = MESSAGE_MOUSE_MOVED;
 		posted.m_time = CurrentQueueTimer();
 		posted.m_code = PackParam((short) g_nLastCursorX, (short) g_nLastCursorY);
 		posted.m_payload = NULL;
@@ -613,7 +632,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 
 	if (p_parent != NULL) {
 		styleFlags = GetStyle();
-		if ((styleFlags & 0x40000000) == 0) {
+		if ((styleFlags & WS_CHILD) == 0) {
 			POINT screenPoint;
 			m_parent->AddChild(this);
 			const CVSRect& parentRect = m_parent->m_rect;
@@ -645,10 +664,10 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		int menuResourceId;
 		MenuList** menuLists;
 		styleFlags = GetStyle();
-		if ((styleFlags & 0x40000000) != 0 && p_parent != NULL) {
+		if ((styleFlags & WS_CHILD) != 0 && p_parent != NULL) {
 			m_parent = NULL;
-			style &= 0x7fffffff;
-			style |= 0x40000000;
+			style &= ~WS_POPUP;
+			style |= WS_CHILD;
 		}
 
 		windowRect.top = p_rect.m_y;
@@ -670,7 +689,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		AdjustWindowRect(&windowRect, style, hasMenu);
 		windowRect.bottom -= windowRect.top;
 		windowRect.right -= windowRect.left;
-		if ((style & 0x40000000) == 0 || p_parent == NULL) {
+		if ((style & WS_CHILD) == 0 || p_parent == NULL) {
 			parentWindow = NULL;
 		}
 		else {
@@ -696,16 +715,16 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 			FatalWin32Error(g_szUnableToCreateWindow);
 		}
 		styleFlags = GetStyle();
-		if ((styleFlags & 1) != 0) {
+		if ((styleFlags & WINDOW_STYLE_SHOW_ON_CREATE) != 0) {
 			UpdateWindow((HWND) m_nativeWindow);
-			ShowWindow((HWND) m_nativeWindow, 5);
+			ShowWindow((HWND) m_nativeWindow, SW_SHOW);
 			SetForegroundWindow((HWND) m_nativeWindow);
 			return;
 		}
 		break;
 	}
-	case 4:
-	case 5: {
+	case GFX_MODE_DD_FS_640X480:
+	case GFX_MODE_DD_FS_320X200: {
 		m_parent = NULL;
 		m_rect.m_width = p_rect.m_width;
 		m_rect.m_height = p_rect.m_height;
@@ -729,25 +748,44 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 }
 
 #pragma warning(disable : 4146)
+#define WINDOW_STYLE_INPUT_OVERLAPPED_FRAME 8
+#define WINDOW_STYLE_INPUT_CAPTION 2
+#define WINDOW_STYLE_INPUT_THICK_FRAME 0x400
+#define WINDOW_STYLE_INPUT_TAB_STOP 0x40
+#define WINDOW_STYLE_INPUT_HORIZONTAL_SCROLL 0x20
+#define WINDOW_STYLE_INPUT_VERTICAL_SCROLL 0x10
+#define WINDOW_STYLE_INPUT_GROUP 0x80
+#define WINDOW_STYLE_INPUT_SYSTEM_MENU 0x100
+#define WINDOW_STYLE_OVERLAPPED_FRAME (WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME)
+
+enum {
+	WINDOW_STYLE_THICK_FRAME_SHIFT = 8,
+	WINDOW_STYLE_TAB_STOP_SHIFT = 10,
+	WINDOW_STYLE_HORIZONTAL_SCROLL_SHIFT = 15,
+	WINDOW_STYLE_VERTICAL_SCROLL_SHIFT = 17,
+	WINDOW_STYLE_GROUP_SHIFT = 10,
+	WINDOW_STYLE_SYSTEM_MENU_SHIFT = 11
+};
+
 // FUNCTION: LEMBALL 0x004654f0
 unsigned int ConvertWindowStyleFlags(unsigned int p_style)
 {
 	unsigned int style = 0;
-	if (p_style & 8) {
-		style = 0xcb0000;
+	if (p_style & WINDOW_STYLE_INPUT_OVERLAPPED_FRAME) {
+		style = WINDOW_STYLE_OVERLAPPED_FRAME;
 	}
-	if (p_style & 2) {
-		style |= 0xc00000;
+	if (p_style & WINDOW_STYLE_INPUT_CAPTION) {
+		style |= WS_CAPTION;
 	}
 	else {
-		style |= 0x80000000;
+		style |= WS_POPUP;
 	}
-	style |= (p_style & 0x400) << 8;
-	style |= (p_style & 0x40) << 10;
-	style |= (p_style & 0x20) << 15;
-	style |= (p_style & 0x10) << 17;
-	style |= (p_style & 0x80) << 10;
-	style |= (p_style & 0x100) << 11;
+	style |= (p_style & WINDOW_STYLE_INPUT_THICK_FRAME) << WINDOW_STYLE_THICK_FRAME_SHIFT;
+	style |= (p_style & WINDOW_STYLE_INPUT_TAB_STOP) << WINDOW_STYLE_TAB_STOP_SHIFT;
+	style |= (p_style & WINDOW_STYLE_INPUT_HORIZONTAL_SCROLL) << WINDOW_STYLE_HORIZONTAL_SCROLL_SHIFT;
+	style |= (p_style & WINDOW_STYLE_INPUT_VERTICAL_SCROLL) << WINDOW_STYLE_VERTICAL_SCROLL_SHIFT;
+	style |= (p_style & WINDOW_STYLE_INPUT_GROUP) << WINDOW_STYLE_GROUP_SHIFT;
+	style |= (p_style & WINDOW_STYLE_INPUT_SYSTEM_MENU) << WINDOW_STYLE_SYSTEM_MENU_SHIFT;
 	return style;
 }
 #pragma warning(default : 4146)
@@ -778,7 +816,8 @@ void CWnd::Destroy()
 		}
 		OnDestroy();
 		_OnDestroy();
-		if ((g_pTargetGraphicsSystem->m_driverMode < 4 || g_pTargetGraphicsSystem->m_driverMode > 5) &&
+		if ((g_pTargetGraphicsSystem->m_driverMode < GFX_MODE_DD_FS_640X480 ||
+			 g_pTargetGraphicsSystem->m_driverMode > GFX_MODE_DD_FS_320X200) &&
 			m_nativeWindow != NULL) {
 			DestroyWindow((HWND) m_nativeWindow);
 		}
@@ -899,7 +938,7 @@ void CWnd::_OnZoom(int p_oldZoom)
 		windowRect.bottom -= clientRect.bottom;
 		windowRect.right += clientRect.right;
 		windowRect.bottom += clientRect.bottom;
-		SetWindowPos((HWND) m_nativeWindow, NULL, 0, 0, windowRect.right, windowRect.bottom, 6);
+		SetWindowPos((HWND) m_nativeWindow, NULL, 0, 0, windowRect.right, windowRect.bottom, SWP_NOMOVE | SWP_NOZORDER);
 	}
 }
 
@@ -932,7 +971,13 @@ void CWnd::_SetRect(const CVSRect& p_rect)
 		AdjustWindowRect(&adjusted, style, m_menuLists != NULL);
 		adjusted.right -= adjusted.left;
 		adjusted.bottom -= adjusted.top;
-		SetWindowPos((HWND) m_nativeWindow, NULL, window.left, window.top, adjusted.right, adjusted.bottom, 4);
+		SetWindowPos((HWND) m_nativeWindow,
+					 NULL,
+					 window.left,
+					 window.top,
+					 adjusted.right,
+					 adjusted.bottom,
+					 SWP_NOZORDER);
 		return;
 	}
 	const CVSRect* parentRect = &m_parent->m_rect;

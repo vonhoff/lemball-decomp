@@ -17,6 +17,7 @@ public:
 	bool AddLemmingToGroup(CPlayerLemming* p_lemming);
 	bool CheckPlayerControlled();
 	bool HasSFXChanged();
+	bool CheckNetworkStateChanged();
 	bool RemoveLemmingFromGroup(CPlayerLemming* p_lemming);
 	virtual bool Process();                         // vtable+0x14
 	virtual void ClearExistingWaypoints();          // vtable+0x150

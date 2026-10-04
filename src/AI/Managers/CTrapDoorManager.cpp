@@ -9,11 +9,10 @@
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
-#define TRAP_DOOR_NETWORK_MESSAGE_ID 0x1e
-#define TRAP_DOOR_TRANSPORT_ID 0x13
-
 // FUNCTION: LEMBALL 0x0040c750
-CTrapDoorManager::CTrapDoorManager() : CBaseObjectManager(TRAP_DOOR_NETWORK_MESSAGE_ID, TRAP_DOOR_TRANSPORT_ID)
+CTrapDoorManager::CTrapDoorManager()
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_TRAP_DOORS,
+						 OBJECT_MANAGER_TRANSPORT_TRAP_DOORS)
 {
 	m_count = 0;
 	for (int i = 0; i < TRAP_DOOR_CAPACITY; i++) {
@@ -107,21 +106,21 @@ int CTrapDoorManager::GetTrapDoorPosition(AICOORD& p_position, int p_index)
 	p_position = m_doors[p_index]->m_position;
 	int y;
 	int x;
-	x = p_position.m_xFixed >> 12;
-	y = p_position.m_yFixed >> 12;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	CMap* map = g_pMap;
 	unsigned short z;
 	if (x < 0 || y < 0 || blockX >= map->m_ground.m_width || g_pMap->m_ground.m_height <= blockY) {
 		z = 0;
 	}
 	else {
-		x &= 0xf;
-		y &= 0xf;
+		x &= GROUND_BLOCK_PIXEL_MASK;
+		y &= GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 	}
-	p_position.m_zFixed = (unsigned int) z << 12;
+	p_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 	return 1;
 }
 
@@ -150,31 +149,34 @@ void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 				id = CGameObject::NextLoadingId();
 			}
 			AICOORD position;
-			position.m_xFixed = *data++ << 12;
-			position.m_yFixed = *data++ << 12;
+			position.m_xFixed = *data++ << FIXED_POINT_FRACTION_BITS;
+			position.m_yFixed = *data++ << FIXED_POINT_FRACTION_BITS;
 			data++;
 			int y;
 			int x;
-			y = position.m_yFixed >> 12;
-			x = position.m_xFixed >> 12;
-			int blockX = x >> 4;
-			int blockY = y >> 4;
+			y = position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+			x = position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+			int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+			int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 			CMap* map = g_pMap;
 			unsigned short z;
 			if (x < 0 || y < 0 || blockX >= map->m_ground.m_width || g_pMap->m_ground.m_height <= blockY) {
 				z = 0;
 			}
 			else {
-				x &= 0xf;
-				y &= 0xf;
+				x &= GROUND_BLOCK_PIXEL_MASK;
+				y &= GROUND_BLOCK_PIXEL_MASK;
 				z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 			}
-			position.m_zFixed = (unsigned int) z << 12;
+			position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 			selections[i] = *data++;
 			if (p_skip == 0) {
-				AddNewDoor(id, position, 1, 0);
+				AddNewDoor(id, position, TRAPDOOR_MODE_NETWORK_START, 0);
 			}
-			g_pAI->AddANetworkStart(position.m_xFixed >> 12, position.m_yFixed >> 12, position.m_zFixed >> 12, i);
+			g_pAI->AddANetworkStart(position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+									position.m_zFixed >> FIXED_POINT_FRACTION_BITS,
+									i);
 			i++;
 		} while (i < count);
 	}

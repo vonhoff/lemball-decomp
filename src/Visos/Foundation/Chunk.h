@@ -3,6 +3,10 @@
 
 struct ChunkInfo;
 
+enum {
+	CHUNK_INDEX_BEFORE_FIRST_ENTRY = -1
+};
+
 // SIZE 0x08
 struct Chunk {
 	int m_index;       // 0x00

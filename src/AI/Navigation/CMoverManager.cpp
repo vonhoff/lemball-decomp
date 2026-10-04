@@ -1,12 +1,20 @@
 #include "CMoverManager.h"
 
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "CAI.h"
 #include "CMover.h"
 
+enum {
+	MOVER_PATH_WAIT_FOR_SWITCH_FLAG = 0x8000,
+	MOVER_PATH_ID_MASK = 0x7fff
+};
+
 // FUNCTION: LEMBALL 0x0042f190
-CMoverManager::CMoverManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x1a, 0xf)
+CMoverManager::CMoverManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_MOVERS,
+						 OBJECT_MANAGER_TRANSPORT_MOVERS)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -47,6 +55,12 @@ CMoverManager::~CMoverManager()
 	delete[] m_movers;
 }
 
+// FUNCTION: LEMBALL 0x0042f2e0
+void CMoverManager::ResetCount()
+{
+	m_count = 0;
+}
+
 // FUNCTION: LEMBALL 0x0042f2f0
 CMover* CMoverManager::Find(int p_x, int p_y, int& p_height)
 {
@@ -71,7 +85,7 @@ void CMoverManager::RemoveMover(CMover* p_mover)
 				return;
 			}
 		}
-		m_movers[index].SetId(0xffff);
+		m_movers[index].SetId(INVALID_OBJECT_ID);
 		for (index++; index < m_count; index++) {
 			CMover* destination;
 			CMover* source;
@@ -129,7 +143,7 @@ void CMoverManager::Switch(int p_message, int p_id)
 	int index = 0;
 	while (index < self->m_count) {
 		if ((unsigned short) self->m_movers[index].GetId() == p_id) {
-			if (p_message == 4) {
+			if (p_message == SW_MOVER) {
 				self->m_movers[index].Switch();
 			}
 			return;
@@ -147,7 +161,7 @@ void CMoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned ch
 	m_count = 0;
 	for (int i = 0; i < count; i++) {
 		unsigned short id;
-		if (m_ai->m_levelVersion > 1) {
+		if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 			id = *(unsigned short*) p_data;
 			p_data += 2;
 		}
@@ -157,12 +171,12 @@ void CMoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned ch
 
 		int pathId = 0;
 		int movementMode = 0;
-		if (m_ai->m_levelVersion > 5) {
+		if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_MOVER_PATHS) {
 			pathId = *(unsigned short*) p_data;
 			p_data += 2;
-			if ((pathId & 0x8000) != 0) {
+			if ((pathId & MOVER_PATH_WAIT_FOR_SWITCH_FLAG) != 0) {
 				movementMode = 1;
-				pathId &= 0x7fff;
+				pathId &= MOVER_PATH_ID_MASK;
 			}
 		}
 

@@ -1,4 +1,5 @@
 #include "CResImage.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 
@@ -23,7 +24,7 @@ CResImage* CResImage::Load(unsigned int p_resourceId)
 	if (res == NULL) {
 		return (CResImage*) (new CResImage(id))->CheckError();
 	}
-	if (res->m_chunkType != 0x494d4147) {
+	if (res->m_chunkType != RESOURCE_CHUNK_IMAGE) {
 		res->UnLoad();
 		return NULL;
 	}
@@ -46,6 +47,6 @@ void CResImage::SetHeader()
 // FUNCTION: LEMBALL 0x0045eb40
 void CResImage::SetType()
 {
-	m_chunkType = 0x494d4147;
+	m_chunkType = RESOURCE_CHUNK_IMAGE;
 	m_headerSkip = 0x10;
 }

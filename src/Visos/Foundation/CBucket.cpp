@@ -7,10 +7,16 @@
 
 #include <string.h>
 
+enum {
+	BUCKET_FLAG_OWNS_ALLOCATION_MAP = 0x01,
+	BUCKET_FLAG_OWNS_MEMORY = 0x02,
+	BUCKET_FLAG_FULL = 0x04
+};
+
 #pragma intrinsic(memset)
 
 // GLOBAL: LEMBALL 0x004a2a68
-static unsigned int g_bitMasks[32] = {
+static unsigned int g_bitMasks[SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD] = {
 	0x00000001, 0x00000002, 0x00000004, 0x00000008, 0x00000010, 0x00000020, 0x00000040, 0x00000080,
 	0x00000100, 0x00000200, 0x00000400, 0x00000800, 0x00001000, 0x00002000, 0x00004000, 0x00008000,
 	0x00010000, 0x00020000, 0x00040000, 0x00080000, 0x00100000, 0x00200000, 0x00400000, 0x00800000,
@@ -29,7 +35,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 	m_totalBytes = m_blockSize * m_blockCount;
 	m_freeBytes = m_totalBytes;
 	m_peakAllocations = 0;
-	m_mapWordCount = (p_blockCount + 31) / 32;
+	m_mapWordCount = (p_blockCount + SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD - 1) / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
 	unsigned char* memory = p_memory;
 
 	if (memory == NULL) {
@@ -37,7 +43,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 		g_nSmallMemoryEnabled = 0;
 		memory = (unsigned char*) operator new(m_totalBytes);
 		g_nSmallMemoryEnabled = smallMemEnabled;
-		m_flags |= 2;
+		m_flags |= BUCKET_FLAG_OWNS_MEMORY;
 	}
 
 	if (p_map == NULL) {
@@ -45,7 +51,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 		g_nSmallMemoryEnabled = 0;
 		p_map = (unsigned long*) operator new(m_mapWordCount * sizeof(unsigned long));
 		g_nSmallMemoryEnabled = smallMemEnabled;
-		m_flags |= 1;
+		m_flags |= BUCKET_FLAG_OWNS_ALLOCATION_MAP;
 	}
 
 	m_map = (unsigned int*) p_map;
@@ -63,13 +69,13 @@ CBucket::~CBucket()
 	if (m_child != NULL) {
 		RemoveChild();
 	}
-	if ((m_flags & 2) != 0) {
+	if ((m_flags & BUCKET_FLAG_OWNS_MEMORY) != 0) {
 		if (m_memory != NULL) {
 			operator delete(m_memory);
 			m_memory = NULL;
 		}
 	}
-	if ((m_flags & 1) != 0) {
+	if ((m_flags & BUCKET_FLAG_OWNS_ALLOCATION_MAP) != 0) {
 		if (m_map != NULL) {
 			operator delete(m_map);
 			m_map = NULL;
@@ -84,7 +90,7 @@ bool CBucket::Allocate(unsigned char** p_result)
 	CBucket* current = this;
 	while (true) {
 		current->EnterCritical();
-		if ((current->m_flags & 4) == 0) {
+		if ((current->m_flags & BUCKET_FLAG_FULL) == 0) {
 			break;
 		}
 		if (current->m_child == NULL) {
@@ -98,10 +104,11 @@ bool CBucket::Allocate(unsigned char** p_result)
 	current->m_map[offset.m_wWord] |= g_bitMasks[offset.m_wBit];
 	current->m_freeBytes -= current->m_blockSize;
 	if ((int) current->m_freeBytes <= 0) {
-		current->m_flags |= 4;
+		current->m_flags |= BUCKET_FLAG_FULL;
 	}
 	current->m_freeOffset = current->FindFreeOffset(offset);
-	*p_result = current->m_memory + (offset.m_wWord * 32 + offset.m_wBit) * current->m_blockSize;
+	*p_result = current->m_memory +
+				(offset.m_wWord * SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD + offset.m_wBit) * current->m_blockSize;
 	current->m_totalAllocations++;
 	current->m_activeAllocations++;
 	if ((int) current->m_peakAllocations < (int) current->m_activeAllocations) {
@@ -128,14 +135,14 @@ bool CBucket::Free(unsigned char* p_memory)
 	}
 	int index = (p_memory - current->m_memory) / (int) current->m_blockSize;
 	Boffset offset;
-	offset.m_wWord = (short) (index / 32);
-	offset.m_wBit = (short) (index % 32);
+	offset.m_wWord = (short) (index / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD);
+	offset.m_wBit = (short) (index % SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD);
 	unsigned short oldFlags = current->m_flags;
 	current->m_map[offset.m_wWord] &= ~g_bitMasks[offset.m_wBit];
 	current->m_freeBytes += current->m_blockSize;
-	current->m_flags &= ~4;
+	current->m_flags &= ~BUCKET_FLAG_FULL;
 	current->m_activeAllocations--;
-	if ((oldFlags & 4) != 0 ||
+	if ((oldFlags & BUCKET_FLAG_FULL) != 0 ||
 		(current->m_freeOffset.m_wWord > offset.m_wWord && current->m_freeOffset.m_wBit > offset.m_wBit)) {
 		current->m_freeOffset = offset;
 	}
@@ -149,7 +156,7 @@ bool CBucket::Free(unsigned char* p_memory)
 // FUNCTION: LEMBALL 0x00472fd0
 Boffset CBucket::FindFreeOffset(Boffset p_offset)
 {
-	if ((m_flags & 4) != 0) {
+	if ((m_flags & BUCKET_FLAG_FULL) != 0) {
 		return p_offset;
 	}
 	unsigned short word = p_offset.m_wWord;
@@ -171,7 +178,7 @@ Boffset CBucket::FindFreeOffset(Boffset p_offset)
 		}
 		p_offset.m_wBit++;
 		mask++;
-	} while (mask < g_bitMasks + 32);
+	} while (mask < g_bitMasks + SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD);
 	p_offset.m_wWord = word;
 	return p_offset;
 }

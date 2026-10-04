@@ -6,6 +6,7 @@
 #include "CFileConnect.h"
 #include "CFileNetworkAddress.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
+#include "Visos/Foundation/ThreadConstants.h"
 #include "Visos/Network/CBaseNetwork.h"
 #include "Visos/Target/Network/CNetworkWnd.h"
 
@@ -70,7 +71,7 @@ int CFileNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p_
 
 	if (p_message != WM_TIMER) {
 		if (p_message != FILE_NETWORK_MESSAGE_FORCE_PROCESS) {
-			return -1;
+			return NETWORK_WINDOW_MESSAGE_UNHANDLED;
 		}
 		if (m_alternateTimer != 0) {
 			ResetTimer(FILE_NETWORK_TIMER_INTERVAL_MS);
@@ -130,7 +131,7 @@ void* CFileNetwork::GetNewBroadcast()
 }
 
 // GLOBAL: LEMBALL 0x004a2260
-unsigned long g_dwFileNetworkThreadId = 0x12345678;
+unsigned long g_dwFileNetworkThreadId = THREAD_ID_BEFORE_CREATE;
 
 // GLOBAL: LEMBALL 0x004a2264
 void* g_hFileNetworkThread = NULL;

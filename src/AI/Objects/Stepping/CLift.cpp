@@ -24,20 +24,20 @@ int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 	const AICOORD* position = &p_position;
 	int y;
 	int x;
-	x = position->m_xFixed >> 12;
-	y = position->m_yFixed >> 12;
+	x = position->m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	y = position->m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	if (x >= startX && x <= endX && y >= startY && y <= endY) {
-		int z = position->m_zFixed >> 12;
+		int z = position->m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		CMap* map = g_pActiveMap;
-		int blockX = startX >> 4;
-		int blockY = startY >> 4;
+		int blockX = startX >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = startY >> GROUND_BLOCK_PIXEL_SHIFT;
 		unsigned short groundZ;
 		if (startX < 0 || startY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
 			groundZ = 0;
 		}
 		else {
-			startX &= 0xf;
-			startY &= 0xf;
+			startX &= GROUND_BLOCK_PIXEL_MASK;
+			startY &= GROUND_BLOCK_PIXEL_MASK;
 			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(startX, startY);
 		}
 		int minZ = groundZ - 2;
@@ -53,7 +53,7 @@ int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 						Activate();
 						return 1;
 					}
-					if (m_activateType == LIFT_ACTIVATE_STEP_ONCE && m_activationLatched != 1) {
+					if (m_activateType == LIFT_ACTIVATE_STEP_ONCE && m_activationLatched != LIFT_ACTIVATION_LATCHED) {
 						Activate();
 					}
 					return 1;
@@ -64,7 +64,7 @@ int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 		}
 	}
 	if (m_liftId == p_object->m_liftId) {
-		p_object->m_liftId = 0xffff;
+		p_object->m_liftId = INVALID_OBJECT_ID;
 	}
 	return 0;
 }

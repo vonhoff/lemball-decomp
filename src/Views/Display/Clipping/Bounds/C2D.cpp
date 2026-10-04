@@ -29,10 +29,10 @@ void C2D::MarkGroundAnimAndLiftBounds()
 			short pixelY = (short) screenY - 24;
 			short rectHeight = (short) groundHeight + 48;
 			SpriteGroundLookup* lookup = m_spriteGroundLookup;
-			int cellX = (short) (pixelX / 16);
-			int cellY = (short) (pixelY / 16);
-			int columns = (pixelX + 32 - 1) / 16 - cellX + 1;
-			int rows = (pixelY + rectHeight - 1) / 16 - cellY + 1;
+			int cellX = (short) (pixelX / GROUND_BLOCK_PIXEL_SIZE);
+			int cellY = (short) (pixelY / GROUND_BLOCK_PIXEL_SIZE);
+			int columns = (pixelX + 32 - 1) / GROUND_BLOCK_PIXEL_SIZE - cellX + 1;
+			int rows = (pixelY + rectHeight - 1) / GROUND_BLOCK_PIXEL_SIZE - cellY + 1;
 			int width = lookup->m_width;
 			int height;
 			if (width > cellX && ((height = lookup->m_height), height > cellY)) {
@@ -105,10 +105,10 @@ void C2D::MarkGroundAnimAndLiftBounds()
 			short rectWidth = (short) rightX - (short) leftX + 32;
 			short rectHeight = (short) groundHeight - (short) startY + (short) endY + 32;
 			SpriteGroundLookup* lookup = m_spriteGroundLookup;
-			int cellX = (short) (pixelX / 16);
-			int cellY = (short) (pixelY / 16);
-			int columns = (pixelX + rectWidth - 1) / 16 - cellX + 1;
-			int rows = (pixelY + rectHeight - 1) / 16 - cellY + 1;
+			int cellX = (short) (pixelX / GROUND_BLOCK_PIXEL_SIZE);
+			int cellY = (short) (pixelY / GROUND_BLOCK_PIXEL_SIZE);
+			int columns = (pixelX + rectWidth - 1) / GROUND_BLOCK_PIXEL_SIZE - cellX + 1;
+			int rows = (pixelY + rectHeight - 1) / GROUND_BLOCK_PIXEL_SIZE - cellY + 1;
 			int width = lookup->m_width;
 			int height;
 			if (width > cellX && ((height = lookup->m_height), height > cellY)) {

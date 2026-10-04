@@ -2,6 +2,7 @@
 
 #include "../../Control/Game/CGameStatus.h"
 #include "../../Control/Game/GameMain.h"
+#include "../../Control/Level/CLevelLoader.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Visos/Animation/CPlayThruAnim.h"
 #include "../../Visos/Foundation/CBaseQueue.h"
@@ -14,6 +15,8 @@
 #include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CConnect.h"
+#include "../../Visos/Network/NetworkConstants.h"
+#include "../../Visos/Network/NetworkMode.h"
 #include "../../Visos/Resources/CMogRes.h"
 #include "../../Visos/Resources/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
@@ -21,7 +24,8 @@
 #include "../Controls/CGunButtons.h"
 #include "../Controls/CGunController.h"
 #include "../Controls/CHiliteController.h"
-
+#include "Visos/Animation/AnimationConstants.h"
+#include "Visos/Foundation/RandomConstants.h"
 extern "C" unsigned long __stdcall timeGetTime(void);
 #include "../../Network/Game/CNetworkManager.h"
 #include "../../Views/Sound/CSoundView.h"
@@ -49,6 +53,10 @@ extern char g_szUnknownUserActionReceived[];
 
 #include <new.h>
 #include <stddef.h>
+
+enum {
+	BASE_FRONTEND_AMBIENT_ANIMATION_DURATION_MS = 500
+};
 
 class CAnimFrameBASE;
 
@@ -79,16 +87,16 @@ CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 	m_loaded = 0;
 	m_desiredPalette = RES_PALETTES_TITLEPALETTE;
 	g_pMasterInputQueue->Attach(this, 0);
-	m_returnState = 0;
+	m_returnState = FLOW_NONE;
 	m_quitYet = 0;
 	m_backBufferReady = 0;
 	m_drawingBackBuffer = 0;
 	m_ready = 1;
-	if (g_pGameStatus->m_skill == 4 && g_pActiveConnection != NULL) {
-		m_networkMode = 1;
+	if (g_pGameStatus->m_skill == SKILL_NETWORK && g_pActiveConnection != NULL) {
+		m_networkMode = NETWORK_MODE_MULTIPLAYER;
 	}
 	else {
-		m_networkMode = 0;
+		m_networkMode = NETWORK_MODE_SINGLE_PLAYER;
 	}
 	m_startupPending = 1;
 	m_actionPending = 0;
@@ -132,8 +140,8 @@ void CBaseFrontendDrawer::Setup()
 		else {
 			m_ambientAnim = new (storage) CPlayThruAnim(CAnimsManager::GetnAnims(m_ambientAnimId), 1);
 		}
-		m_ambientAnim->m_fixedTime = 0xffffffff;
-		m_ambientAnim->SetAnimTime(500);
+		m_ambientAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
+		m_ambientAnim->SetAnimTime(BASE_FRONTEND_AMBIENT_ANIMATION_DURATION_MS);
 		unsigned long now = CurrentMilliTimer();
 		m_ambientDelay = 0;
 		m_ambientUpdatedAt = now;
@@ -141,7 +149,7 @@ void CBaseFrontendDrawer::Setup()
 
 	g_pBaseFrontendDrawer = this;
 
-	if (m_networkMode != 0) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		CNetworkManager* network;
 		int desiredState;
 		m_startupPending = 0;
@@ -174,13 +182,14 @@ void CBaseFrontendDrawer::Setup()
 CBaseFrontendDrawer::~CBaseFrontendDrawer()
 {
 	g_pBaseFrontendDrawer = NULL;
-	if (m_networkMode != 0 && m_returnState == 2) {
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER && m_returnState == FLOW_MAIN_OPTIONS_1) {
 		if (g_pNetworkManager != NULL) {
 			g_pNetworkManager->Stop();
 		}
 		if (g_pBaseNetwork != NULL) {
 			unsigned long start = CurrentMilliTimer();
-			while (CurrentMilliTimer() - start < 2000 && g_pBaseNetwork->m_queueTransitionPending != 0) {
+			while (CurrentMilliTimer() - start < NETWORK_QUEUE_TRANSITION_TIMEOUT_MS &&
+				   g_pBaseNetwork->m_queueTransitionPending != 0) {
 			}
 		}
 		if (g_pNetworkManager != NULL) {
@@ -311,6 +320,10 @@ void CBaseFrontendDrawer::_DrawBackGround()
 		tiles.m_height = m_size.m_height;
 		CVSSize& count = tiles;
 		CVSPoint& start = tiles;
+		enum eBackgroundRowParity {
+			BACKGROUND_ROW_PARITY_EVEN = 0,
+			BACKGROUND_ROW_PARITY_TOGGLE_MASK = 1
+		};
 		short height = (short) (tiles.m_height + tileSize.m_height - 1) / tileSize.m_height;
 		tiles.m_width = (short) (tiles.m_width + tileSize.m_width - 1) / tileSize.m_width;
 		tiles.m_height = height;
@@ -318,10 +331,10 @@ void CBaseFrontendDrawer::_DrawBackGround()
 		tiles.m_x /= tileSize.m_width;
 		tiles.m_height -= tiles.m_y;
 		tiles.m_width -= tiles.m_x;
-		unsigned int oddRow = 0;
+		unsigned int oddRow = BACKGROUND_ROW_PARITY_EVEN;
 		int recordIndex = 0;
 		for (int row = start.m_y; (short) (count.m_height + start.m_y) > row; row++) {
-			oddRow ^= 1;
+			oddRow ^= BACKGROUND_ROW_PARITY_TOGGLE_MASK;
 			for (int col = start.m_x; (int) ((short) (start.m_x + count.m_width) + oddRow) > col; col++) {
 				CResBITMAP* bitmap = m_tileBitmap;
 				rec = &m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
@@ -373,7 +386,7 @@ void CBaseFrontendDrawer::Restart()
 void CBaseFrontendDrawer::_Load()
 {
 	m_loaded = 1;
-	if (m_mode != 0) {
+	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
 		m_tileBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_PAINTBALL_TILE);
 		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_TITLE_BMP);
 		m_sideFrameAnimId = RES_NEWFRONT_ANIMS_LORES_FRAME_2;
@@ -459,7 +472,7 @@ void CBaseFrontendDrawer::Process()
 {
 	unsigned long now;
 	int seed;
-	if (m_networkMode != 0 && m_startupPending == 0 &&
+	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER && m_startupPending == 0 &&
 		g_pNetworkManager->m_observedGameState == g_pNetworkManager->m_desiredGameState) {
 		m_actionPending = 0;
 		m_startupPending = 1;
@@ -474,7 +487,7 @@ void CBaseFrontendDrawer::Process()
 			now = CurrentMilliTimer();
 			m_ambientUpdatedAt = now;
 			m_ambientAnim->SetStartTime(now);
-			seed = *g_pRandomSeed * 0x29 + 0x1f & 0x7fffff;
+			seed = *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
 			*g_pRandomSeed = seed;
 			m_ambientDelay = seed % 6000;
 		}
@@ -492,7 +505,7 @@ void CBaseFrontendDrawer::Process()
 void CBaseFrontendDrawer::LostConnection()
 {
 	m_quitYet = 1;
-	m_returnState = 2;
+	m_returnState = FLOW_MAIN_OPTIONS_1;
 }
 
 // FUNCTION: LEMBALL 0x004465e0
@@ -539,7 +552,7 @@ void CBaseFrontendDrawer::OnDriverChange()
 {
 	if (m_display->GetSizeStatus() != 0) {
 		CMain2DDisplay* display = m_display;
-		display->SetRect(display->GetUseRect(-1, -1));
+		display->SetRect(display->GetUseRect(DISPLAY_COORDINATE_AUTO_CENTER, DISPLAY_COORDINATE_AUTO_CENTER));
 	}
 }
 

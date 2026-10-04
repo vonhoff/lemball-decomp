@@ -21,6 +21,8 @@ public:
 	CPlayerLemmingGroupManager(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	bool GetLeaderPos(AICOORD& p_position);
 	bool HasSFXChanged();
+	bool CheckNetworkStateChanged();
+	bool RemovePlayerLemmingFromGroup(CGameObject* p_object, CGenericGroup* p_group);
 	bool IsLemmingPlayerControlled(CPlayerLemming* p_lemming);
 	bool MakeNextGroupPlayerControlled();
 	bool MakeNoGroupsPlayerControlled();

@@ -65,7 +65,7 @@ char CFontTable::GetChar(CResZRLE* p_glyph)
 		glyphs++;
 		i++;
 	} while (i < FONT_GLYPH_COUNT);
-	return -1;
+	return FONT_CHARACTER_NOT_FOUND;
 }
 
 // FUNCTION: LEMBALL 0x00473730

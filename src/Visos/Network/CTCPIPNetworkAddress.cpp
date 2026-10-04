@@ -15,7 +15,7 @@ void CTCPIPNetworkAddress::operator=(eBroadcastTypes p_type)
 		((unsigned char*) &m_ipv4Address)[3] = 0xff;
 		break;
 	case BROADCAST_WAN:
-		m_ipv4Address = 0xffffffff;
+		m_ipv4Address = INADDR_NONE;
 		break;
 	}
 }

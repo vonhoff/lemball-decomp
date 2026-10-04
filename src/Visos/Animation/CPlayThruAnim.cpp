@@ -6,7 +6,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 void CPlayThruAnim::StartAnim(unsigned long p_animTime)
 {
 	m_animTime = p_animTime;
-	if (m_fixedTime == 0xffffffff) {
+	if (m_fixedTime == ANIMATION_TIME_REALTIME) {
 		m_frameState = timeGetTime();
 		return;
 	}
@@ -20,7 +20,7 @@ unsigned int CPlayThruAnim::GetFrameNo()
 	unsigned int elapsed;
 	unsigned int frame;
 
-	if (m_fixedTime == 0xffffffff) {
+	if (m_fixedTime == ANIMATION_TIME_REALTIME) {
 		elapsed = timeGetTime() - m_frameState;
 	}
 	else {
@@ -33,7 +33,7 @@ unsigned int CPlayThruAnim::GetFrameNo()
 	else {
 		frame = m_frames - 1;
 	}
-	if (m_direction != 1) {
+	if (m_direction != ANIMATION_DIRECTION_FORWARD) {
 		frame = (m_frames - frame) - 1;
 	}
 	return frame;

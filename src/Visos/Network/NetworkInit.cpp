@@ -1,10 +1,12 @@
 #include "Visos/Foundation/CBaseQueue.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Foundation/CVSOStream.h"
+#include "Visos/Foundation/ProcessExitCodes.h"
 #include "Visos/Foundation/VsInit.h"
 #include "Visos/Network/CBaseNetwork.h"
 #include "Visos/Network/CFileNetwork.h"
 #include "Visos/Network/CTCPIPNetwork.h"
+#include "Visos/Network/NetworkConstants.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -64,13 +66,13 @@ bool VSFNET_Init()
 		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) FileNetworkMessageThread, NULL, 0, &g_dwFileNetworkThreadId);
 	if (g_hFileNetworkThread == NULL) {
 		MessageBoxA(NULL, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
-		ExitProcess(0xbbbb);
+		ExitProcess(VISOS_THREAD_START_FAILURE_EXIT_CODE);
 	}
 
 	SetThreadPriority(g_hFileNetworkThread, 2);
 
 	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == NULL) {
+	while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork == NULL) {
 	}
 	if (g_pBaseNetwork == NULL) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
@@ -78,7 +80,7 @@ bool VSFNET_Init()
 	}
 
 	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == NULL) {
+	while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pNetworkStatusQueue == NULL) {
 	}
 	if (g_pNetworkStatusQueue == NULL) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
@@ -97,7 +99,7 @@ bool VSFNET_Quit()
 		g_pBaseNetwork->m_shutdownRequested = 1;
 		g_pBaseNetwork->ForceProcess();
 		startTime = timeGetTime();
-		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != NULL) {
+		while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork != NULL) {
 		}
 		if (g_pBaseNetwork != NULL) {
 			*g_pErrorOutput << "Network quit timed out\n";
@@ -161,13 +163,13 @@ bool VSNET_Init()
 		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) TcpIpNetworkMessageThread, NULL, 0, &g_dwTCPIPNetworkThreadId);
 	if (g_hTCPIPNetworkThread == NULL) {
 		MessageBoxA(NULL, "Unable to start 'VSNET Message loop' thread\n", "ERROR", 0);
-		ExitProcess(0xbbbb);
+		ExitProcess(VISOS_THREAD_START_FAILURE_EXIT_CODE);
 	}
 
 	SetThreadPriority(g_hTCPIPNetworkThread, 2);
 
 	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pBaseNetwork == NULL) {
+	while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork == NULL) {
 	}
 	if (g_pBaseNetwork == NULL) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
@@ -175,7 +177,7 @@ bool VSNET_Init()
 	}
 
 	startTime = timeGetTime();
-	while (timeGetTime() - startTime < 10000 && g_pNetworkStatusQueue == NULL) {
+	while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pNetworkStatusQueue == NULL) {
 	}
 	if (g_pNetworkStatusQueue == NULL) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
@@ -194,7 +196,7 @@ bool VSNET_Quit()
 		g_pBaseNetwork->m_shutdownRequested = 1;
 		g_pBaseNetwork->ForceProcess();
 		startTime = timeGetTime();
-		while (timeGetTime() - startTime < 10000 && g_pBaseNetwork != NULL) {
+		while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork != NULL) {
 		}
 		if (g_pBaseNetwork != NULL) {
 			*g_pErrorOutput << "Network quit timed out\n";

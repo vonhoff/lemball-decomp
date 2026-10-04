@@ -6,6 +6,10 @@ class CVSOStream;
 class CBaseSoundDevice;
 class CPVMusicDevice;
 
+enum {
+	SOUND_VOLUME_UNCHANGED = -1
+};
+
 // SIZE 0xc90
 // VTABLE: LEMBALL 0x00498978
 class CSoundManager {

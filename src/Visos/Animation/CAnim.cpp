@@ -31,7 +31,7 @@ void CAnim::Render(CGDI* p_gdi)
 {
 	CResZRLE* entry;
 
-	entry = (CResZRLE*) ((char*) m_animResource->m_animationEntries + m_animIndex * 0x54);
+	entry = m_animResource->m_animationEntries + m_animIndex;
 	p_gdi->m_renderTarget->Blit(this, entry);
 	m_animResource->m_directUseCount = m_animResource->m_directUseCount - 1;
 }

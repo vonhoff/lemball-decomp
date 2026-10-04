@@ -13,6 +13,14 @@
 #include "ObjectTypes.h"
 #include "Views/Sound/SoundEffects.h"
 
+enum {
+	GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS = 4000,
+	GAME_OBJECT_BOREDOM_RANDOM_DELAY_RANGE_MS = 5000,
+	GAME_OBJECT_FIRE_WINDUP_TICKS = 10,
+	GAME_OBJECT_FLIGHT_START_DELAY_TICKS = 10,
+	GAME_OBJECT_LANDING_TRANSITION_DELAY_TICKS = 8
+};
+
 class CAI;
 class CAiDestinationList;
 class CBaseObjectManager;
@@ -22,12 +30,26 @@ class Info;
 struct tCoord3d;
 struct CPt3;
 struct StateEntry;
-// SIZE 0x124
+#define GAME_OBJECT_COLLISION_AFFECT_ROUTE_ON_BLOCK 0x01
+#define GAME_OBJECT_COLLISION_ALLOW_JUMP 0x02
+#define GAME_OBJECT_COLLISION_ALLOW_FALL 0x04
+#define GAME_OBJECT_COLLISION_STEP_ON_MINE 0x08
+#define GAME_OBJECT_COLLISION_STEP_ON_SPECIAL_OBJECTS 0x10
+#define GAME_OBJECT_COLLISION_OPEN_DOORS 0x20
+#define GAME_OBJECT_COLLISION_TRIGGER_HAZARDS 0x40
+#define GAME_OBJECT_COLLISION_STEP_ON_INVISIBLE_SWITCHES 0x100
+#define GAME_OBJECT_COLLISION_ENEMY 0x118
+#define GAME_OBJECT_COLLISION_SHEEP 0x108
+#define GAME_OBJECT_COLLISION_PLAYER_LEMMING 0x17f // SIZE 0x124
+#define GAME_OBJECT_COLLISION_XY_MIN_INSET 8
+#define GAME_OBJECT_COLLISION_XY_MAX_OFFSET 7
+#define GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET 15
 // VTABLE: LEMBALL 0x00493c40
 class CGameObject {
 public:
 	AICOORD Position();
 	AICOORD GetDestination();
+	AICOORD GetNextDestination();
 	CGameObject(eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity);
 	bool DestinationExists();
 	bool FacingDestination();
@@ -174,6 +196,7 @@ public:
 	friend class CPlayerLemmingGroupManager;
 	friend class CTrampoline;
 	friend class CIce;
+	friend void ReindexAllObjects();
 
 protected:
 	unsigned short m_runtimeFlags;         // 0x04
@@ -231,12 +254,12 @@ protected:
 	unsigned short m_invisibleSwitchId;    // 0x120
 };
 
-extern unsigned char g_abObjectIdBitmap[256];
+extern unsigned char g_abObjectIdBitmap[OBJECT_ID_BITMAP_BYTE_CAPACITY];
 extern CGameObject* g_pObjects[OBJECT_REGISTRY_CAPACITY];
 extern unsigned short g_wObjectCount;
 extern int g_anTurnDelayCursor[16];
 extern int g_anTurnDelayTarget[16];
-extern unsigned char g_abBitMasks[8];
+extern unsigned char g_abBitMasks[OBJECT_ID_BITMAP_BITS_PER_BYTE];
 extern unsigned short g_wNetworkLemmingIndex;
 extern unsigned short g_wLocalLemmingIndex;
 extern int g_wLemmingCount;
@@ -248,9 +271,9 @@ inline void CGameObject::GetViewData(CViewData& p_viewData)
 	p_viewData.m_objectId = m_objectId;
 	p_viewData.m_objectType = m_objectType;
 	p_viewData.m_playerIndex = 0;
-	p_viewData.m_positionX = m_position.m_xFixed >> 12;
-	p_viewData.m_positionY = m_position.m_yFixed >> 12;
-	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
+	p_viewData.m_positionX = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_positionY = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_positionZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	p_viewData.m_facingDirection = m_facingDirection;
 	unsigned int argument = (unsigned short) m_actionArgument;
 	unsigned int timer = m_stateTimer;

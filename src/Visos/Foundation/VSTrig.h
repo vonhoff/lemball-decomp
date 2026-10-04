@@ -4,6 +4,14 @@
 #include "CFixed.h"
 #include "CVector.h"
 
+enum {
+	TRIG_ANGLE_FULL_TURN = 512,
+	TRIG_ANGLE_HALF_TURN = TRIG_ANGLE_FULL_TURN / 2,
+	TRIG_ANGLE_QUARTER_TURN = TRIG_ANGLE_FULL_TURN / 4,
+	TRIG_ANGLE_EIGHTH_TURN = TRIG_ANGLE_FULL_TURN / 8,
+	TRIG_TABLE_SIZE = TRIG_ANGLE_FULL_TURN
+};
+
 // SIZE 0x800
 class VSTrig {
 public:
@@ -16,16 +24,16 @@ public:
 private:
 	friend class CSheepGroup;
 	friend class CFormationManager;
-	CFixed m_sine[512]; // 0x00
+	CFixed m_sine[TRIG_TABLE_SIZE]; // 0x00
 };
 
 extern VSTrig* g_pVSTrig;
-extern int g_nVSTrigSource[512];
+extern int g_nVSTrigSource[TRIG_TABLE_SIZE];
 extern unsigned int g_dwVSTrigInitialised;
 inline CVector VSTrig::Rotate(CVector& p_vector, int p_angle)
 {
 	CFixed sine = Sin(p_angle);
-	CFixed cosine = Sin(p_angle + 0x80);
+	CFixed cosine = Sin(p_angle + TRIG_ANGLE_QUARTER_TURN);
 	return Rotate(p_vector, sine, cosine);
 }
 

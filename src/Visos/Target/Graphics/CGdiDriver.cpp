@@ -19,8 +19,8 @@
 CGdiDriver::CGdiDriver()
 {
 	m_ready = 1;
-	m_screenSize.m_width = (short) GetSystemMetrics(0);
-	m_screenSize.m_height = (short) GetSystemMetrics(1);
+	m_screenSize.m_width = (short) GetSystemMetrics(SM_CXSCREEN);
+	m_screenSize.m_height = (short) GetSystemMetrics(SM_CYSCREEN);
 }
 
 // FUNCTION: LEMBALL 0x00456ae0
@@ -29,10 +29,13 @@ CDrawingContext* CGdiDriver::CreateDrawingContext()
 	HDC hdc;
 	void* storage;
 	CDrawingContext* context;
+	enum {
+		GDI_CONTEXT_STORAGE_SIZE = sizeof(CGdiContext)
+	};
 
 	hdc = CreateCompatibleDC(NULL);
 	if (hdc != NULL) {
-		storage = operator new(0xc);
+		storage = operator new(GDI_CONTEXT_STORAGE_SIZE);
 		if (storage != NULL) {
 			context = new (storage) CGdiContext(hdc);
 			return context;
@@ -68,7 +71,7 @@ bool CGdiDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 	info->bmiHeader.biXPelsPerMeter = 0;
 	info->bmiHeader.biYPelsPerMeter = 0;
 	info->bmiHeader.biClrUsed = 0;
-	info->bmiHeader.biHeight = -1;
+	info->bmiHeader.biHeight = DIB_INITIAL_TOP_DOWN_HEIGHT;
 	info->bmiHeader.biBitCount = 8;
 	info->bmiHeader.biClrImportant = 0;
 	return true;
@@ -133,7 +136,7 @@ int CGdiDriver::BitBltContexts(CDrawingContext* p_destination,
 				  (HDC) ((CGdiContext*) p_source)->m_hDC,
 				  (int) p_sourcePosition->m_x,
 				  (int) p_sourcePosition->m_y,
-				  0xcc0020);
+				  SRCCOPY);
 }
 
 // FUNCTION: LEMBALL 0x00456cc0
@@ -152,7 +155,7 @@ int CGdiDriver::StretchBltContexts(CDrawingContext* p_destination,
 					  (int) p_sourceRect->m_y,
 					  (int) p_sourceRect->m_width,
 					  (int) p_sourceRect->m_height,
-					  0xcc0020);
+					  SRCCOPY);
 }
 
 // FUNCTION: LEMBALL 0x00456d10

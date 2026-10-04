@@ -6,6 +6,11 @@
 
 class AICOORD;
 class CGameObject;
+
+enum eMoverMovementMode {
+	MOVER_MODE_AUTOMATIC = 0,
+	MOVER_MODE_WAIT_FOR_SWITCH = 1
+};
 // SIZE 0x1a0
 // VTABLE: LEMBALL 0x00496a30
 class CMover : public CGlobalGameObject {
@@ -21,6 +26,7 @@ public:
 	virtual ~CMover();         // vtable+0x00
 	void Initialise();
 	void MoveObjects(int p_deltaX, int p_deltaY, int p_deltaZ);
+	void MoveOccupantsToDestination();
 	void Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode, int p_startNode, int p_nodeCount);
 	void SetPos();
 	void SetUpNextNode(unsigned int p_time);

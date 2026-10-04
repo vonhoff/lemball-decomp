@@ -6,7 +6,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 void CRepeatAnim::StartAnim(unsigned long p_animTime)
 {
 	m_animTime = p_animTime;
-	if (m_fixedTime == 0xffffffff) {
+	if (m_fixedTime == ANIMATION_TIME_REALTIME) {
 		m_frameState = timeGetTime();
 		return;
 	}

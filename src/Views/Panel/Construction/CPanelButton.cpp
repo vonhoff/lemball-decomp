@@ -25,6 +25,8 @@ class CResANIM;
 
 extern char g_szButton[];
 
+enum eAmmoCountCacheState { AMMO_COUNT_CACHE_UNSET = 0xffffffff };
+
 // FUNCTION: LEMBALL 0x00442390
 CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVGWnd* p_parent)
 	: CDepressedButton(p_rect, p_parent)
@@ -41,7 +43,7 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVG
 	}
 	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == ACTION_DEAD);
 	m_alternatePlayer = m_lemming->m_lemming->HasObject(OBJECT_FLAG_2);
-	m_lastAmmo = 0xffffffff;
+	m_lastAmmo = AMMO_COUNT_CACHE_UNSET;
 	m_lastBalloon = OBJECT_BALLOON_NONE;
 	m_inventoryCount = 0;
 	{

@@ -5,6 +5,18 @@
 #include "Visos/Network/CBaseCommonSocket.h"
 
 class CNetworkAddress;
+enum eNetworkRole {
+	NETWORK_ROLE_CLIENT = 0,
+	NETWORK_ROLE_HOST = 1
+};
+
+enum eConnectQueueMessage {
+	CONNECT_QUEUE_SEND_FAILED = 1,
+	CONNECT_QUEUE_FIRST_RECEIVE = 3,
+	CONNECT_QUEUE_ACKNOWLEDGEMENT = 6,
+	CONNECT_QUEUE_CLOSED = 10
+};
+
 class CNetworkMessage;
 
 // SIZE 0x15c

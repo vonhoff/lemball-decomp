@@ -2,6 +2,7 @@
 
 #include "../../Views/Sound/CSoundView.h"
 #include "Views/Sound/SoundEffects.h"
+#include "Visos/Foundation/Message.h"
 
 // FUNCTION: LEMBALL 0x0044c1e0
 int sgn(int p_value)
@@ -19,7 +20,7 @@ int sgn(int p_value)
 // FUNCTION: LEMBALL 0x0044c200
 void CGunButton::OnReleased(int p_flags)
 {
-	if (m_pressed != 0 && (p_flags == 0 || p_flags == 3)) {
+	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 1;
 		return;
 	}
@@ -29,13 +30,13 @@ void CGunButton::OnReleased(int p_flags)
 // FUNCTION: LEMBALL 0x0044c230
 void CGunButton::OnPressed(int p_flags)
 {
-	if (m_pressed == 0 || (p_flags != 0 && p_flags != 3)) {
+	if (m_pressed == 0 || (p_flags != MOUSE_BUTTON_INDEX_LEFT && p_flags != MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 0;
 	}
 	else {
 		m_enabled = 1;
 	}
-	if (p_flags == 0) {
+	if (p_flags == MOUSE_BUTTON_INDEX_LEFT) {
 		g_pSoundView->PlayEffect(SFX_DRUM1);
 	}
 }

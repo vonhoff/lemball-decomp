@@ -34,8 +34,8 @@ int CPadToButton::ProcessMsg(Message* p_message)
 	int index = 0;
 	unsigned short type = p_message->m_type;
 	switch ((int) type) {
-	case 3:
-	case 4: {
+	case MESSAGE_KEY_UP:
+	case MESSAGE_KEY_DOWN: {
 		int count = m_entryCount;
 		if (count > 0) {
 			PadToButtonEntry* entries = m_entries;
@@ -49,7 +49,7 @@ int CPadToButton::ProcessMsg(Message* p_message)
 				}
 			}
 			CPVButton* button = entries[index].m_button;
-			if (type == 4) {
+			if (type == MESSAGE_KEY_DOWN) {
 				CVSPoint point(0, 0);
 				button->OnButtonDown(point, 0);
 			}

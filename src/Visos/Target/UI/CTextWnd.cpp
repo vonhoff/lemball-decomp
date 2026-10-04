@@ -14,6 +14,12 @@
 #define TEXT_WINDOW_APPEND_MESSAGE (WM_USER + 32)
 #define TEXT_WINDOW_COPY_COMMAND 0x421
 
+enum {
+	DEBUG_TEXT_WINDOW_LINE_CAPACITY = 0x2800,
+	TEXT_WINDOW_NO_SELECTION_ENDPOINT = -1,
+	TEXT_WINDOW_POINT_ABOVE_FIRST_ROW_OFFSET = -1
+};
+
 extern void* g_pDebugAcceleratorTable;
 extern void* g_pDebugSyncEvent;
 
@@ -21,7 +27,7 @@ extern void* g_pDebugSyncEvent;
 unsigned int __cdecl DebugMessageThreadMain()
 {
 	// STRING: LEMBALL 0x004a2a20
-	g_pDebugWindow = new CTextWnd("Debug Window", 0x2800);
+	g_pDebugWindow = new CTextWnd("Debug Window", DEBUG_TEXT_WINDOW_LINE_CAPACITY);
 	SetEvent(g_pDebugSyncEvent);
 	MSG message;
 	while (GetMessageA(&message, NULL, 0, 0) != 0) {
@@ -47,6 +53,10 @@ static char g_unableToInvalidateTextLines[] = "RedrawLines : InvalidateRect==FAL
 // GLOBAL: LEMBALL 0x004a2b70
 static char g_textWindowClassName[] = "CTextWindow";
 
+enum eTextWindowExtraData {
+	TEXT_WINDOW_EXTRA_DATA_OFFSET = 0
+};
+
 // FUNCTION: LEMBALL 0x00473a60
 CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 {
@@ -57,10 +67,10 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 	}
 	if (g_nTargetTextWindowClassRegistered == 0) {
 		WNDCLASSA windowClass;
-		windowClass.style = 3;
+		windowClass.style = CS_HREDRAW | CS_VREDRAW;
 		windowClass.lpfnWndProc = (WNDPROC) WindowProc;
 		windowClass.cbClsExtra = 0;
-		windowClass.cbWndExtra = 4;
+		windowClass.cbWndExtra = sizeof(LONG);
 		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
 		windowClass.hIcon = LoadIconA(NULL, IDI_APPLICATION);
 		windowClass.hCursor = LoadCursorA(NULL, IDC_ARROW);
@@ -78,11 +88,11 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 	m_windowHandle = CreateWindowExA(0,
 									 g_textWindowClassName,
 									 p_title,
-									 0xcf0000,
+									 WS_OVERLAPPEDWINDOW,
 									 CW_USEDEFAULT,
 									 CW_USEDEFAULT,
-									 GetSystemMetrics(0) / 2,
-									 GetSystemMetrics(1) / 2,
+									 GetSystemMetrics(SM_CXSCREEN) / 2,
+									 GetSystemMetrics(SM_CYSCREEN) / 2,
 									 NULL,
 									 NULL,
 									 (HINSTANCE) g_pApplicationInstance,
@@ -92,7 +102,7 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 		FatalWin32Error("Unable to create text window");
 	}
 	// STRING: LEMBALL 0x004a2c20
-	m_fontHandle = CreateFontA(8, 6, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0x30, "Courier");
+	m_fontHandle = CreateFontA(8, 6, 0, 0, FW_THIN, 0, 0, 0, 0, 0, 0, 0, FF_MODERN, "Courier");
 	if (m_fontHandle == NULL) {
 		// STRING: LEMBALL 0x004a2c28
 		FatalWin32Error("Unable to create font");
@@ -107,11 +117,11 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 	UpdateVisibleRows();
 	m_lineCapacity = p_lineCapacity;
 	m_lineCount = m_lineBuffer->m_count;
-	m_selectionStart = -1;
-	m_selectionEnd = -1;
+	m_selectionStart = TEXT_WINDOW_NO_SELECTION_ENDPOINT;
+	m_selectionEnd = TEXT_WINDOW_NO_SELECTION_ENDPOINT;
 	m_topLine = 0;
-	SetScrollPos((HWND) m_windowHandle, 1, 0, 1);
-	ShowWindow((HWND) m_windowHandle, 5);
+	SetScrollPos((HWND) m_windowHandle, SB_VERT, 0, TRUE);
+	ShowWindow((HWND) m_windowHandle, SW_SHOW);
 	UpdateWindow((HWND) m_windowHandle);
 }
 
@@ -159,8 +169,8 @@ void CTextWnd::AppendPostedText(char* p_text, unsigned int p_colour)
 	else {
 		RedrawLines(first, count - first);
 	}
-	SetScrollRange((HWND) m_windowHandle, 1, 0, count - 1, 1);
-	if (m_selectionStart == -1 || m_selectionEnd == -1) {
+	SetScrollRange((HWND) m_windowHandle, SB_VERT, 0, count - 1, TRUE);
+	if (m_selectionStart == TEXT_WINDOW_NO_SELECTION_ENDPOINT || m_selectionEnd == TEXT_WINDOW_NO_SELECTION_ENDPOINT) {
 		EnsureLineVisible(first);
 	}
 	free(p_text);
@@ -190,7 +200,7 @@ int CTextWnd::PointToLine(int p_x, int p_y)
 	int height = rect.bottom - rect.top;
 	int row = p_y - rect.top;
 	if (row < 0) {
-		row = -1;
+		row = TEXT_WINDOW_POINT_ABOVE_FIRST_ROW_OFFSET;
 	}
 	else if (height < row) {
 		row = m_visibleRowsCeiling + 1;
@@ -223,7 +233,7 @@ void CTextWnd::RedrawLines(int p_firstLine, int p_lineCount)
 		rect.top = row * m_lineHeight;
 		rect.bottom = m_lineHeight * p_lineCount + rect.top;
 		if (InvalidateRect((HWND) m_windowHandle, &rect, 0) == 0) {
-			MessageBoxA(NULL, g_unableToInvalidateTextLines, g_textWindowInfo, 0);
+			MessageBoxA(NULL, g_unableToInvalidateTextLines, g_textWindowInfo, MB_OK);
 		}
 	}
 	LeaveCritical();
@@ -268,10 +278,16 @@ void CTextWnd::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned
 		p_clientHeight += lineHeight;
 		rect.left = 0;
 		rect.top = 0;
-		rect.right = GetSystemMetrics(2) + p_clientWidth;
+		rect.right = GetSystemMetrics(SM_CXVSCROLL) + p_clientWidth;
 		rect.bottom = p_clientHeight;
-		AdjustWindowRect(&rect, GetWindowLongA((HWND) m_windowHandle, -16), 0);
-		SetWindowPos((HWND) m_windowHandle, NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top, 6);
+		AdjustWindowRect(&rect, GetWindowLongA((HWND) m_windowHandle, GWL_STYLE), 0);
+		SetWindowPos((HWND) m_windowHandle,
+					 NULL,
+					 0,
+					 0,
+					 rect.right - rect.left,
+					 rect.bottom - rect.top,
+					 SWP_NOMOVE | SWP_NOZORDER);
 	}
 	else {
 		UpdateVisibleRows();
@@ -279,6 +295,10 @@ void CTextWnd::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned
 	}
 	LeaveCritical();
 }
+
+enum eTextWindowColor {
+	TEXT_WINDOW_COLOR_WHITE = 0x00ffffff
+};
 
 // FUNCTION: LEMBALL 0x00474130
 void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
@@ -297,7 +317,7 @@ void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
 	int first = m_topLine + paintRect.top / lineHeight;
 	for (int line = first; line < first + count; line++) {
 		unsigned int foreground = 0;
-		unsigned int background = 0xffffff;
+		unsigned int background = TEXT_WINDOW_COLOR_WHITE;
 		const char* text;
 		if (line < m_lineCount) {
 			CTextLine* entry = &m_lineBuffer->m_lines[line];
@@ -305,7 +325,7 @@ void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
 			foreground = entry->m_textColour;
 			if (entry->m_selected != 0) {
 				background = 0;
-				foreground = 0xffffff;
+				foreground = TEXT_WINDOW_COLOR_WHITE;
 			}
 		}
 		else {
@@ -319,7 +339,7 @@ void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
 		row.bottom = row.top + m_lineHeight;
 		SetTextColor((HDC) p_dc, foreground);
 		SetBkColor((HDC) p_dc, background);
-		ExtTextOutA((HDC) p_dc, row.left, row.top, 2, &row, text, strlen(text), NULL);
+		ExtTextOutA((HDC) p_dc, row.left, row.top, ETO_OPAQUE, &row, text, strlen(text), NULL);
 	}
 	LeaveCritical();
 }
@@ -329,26 +349,26 @@ void CTextWnd::Scroll(int p_scrollCode, int p_thumbPos)
 {
 	EnterCritical();
 	switch (p_scrollCode) {
-	case 0:
+	case SB_LINEUP:
 		m_topLine--;
 		break;
-	case 1:
+	case SB_LINEDOWN:
 		m_topLine++;
 		break;
-	case 2:
+	case SB_PAGEUP:
 		m_topLine -= m_visibleRowsCeiling;
 		break;
-	case 3:
+	case SB_PAGEDOWN:
 		m_topLine += m_visibleRowsCeiling;
 		break;
-	case 4:
-	case 5:
+	case SB_THUMBPOSITION:
+	case SB_THUMBTRACK:
 		m_topLine = p_thumbPos;
 		break;
-	case 6:
+	case SB_TOP:
 		m_topLine = 0;
 		break;
-	case 7:
+	case SB_BOTTOM:
 		m_topLine = m_lineCount;
 		break;
 	}
@@ -358,7 +378,7 @@ void CTextWnd::Scroll(int p_scrollCode, int p_thumbPos)
 	if (m_topLine < 0) {
 		m_topLine = 0;
 	}
-	SetScrollPos((HWND) m_windowHandle, 1, m_topLine, 1);
+	SetScrollPos((HWND) m_windowHandle, SB_VERT, m_topLine, TRUE);
 	RedrawAll();
 	LeaveCritical();
 }
@@ -410,14 +430,14 @@ void CTextWnd::EnsureLineVisible(int p_line)
 	EnterCritical();
 	if (p_line < m_topLine) {
 		m_topLine = p_line;
-		SetScrollPos((HWND) m_windowHandle, 1, p_line, 1);
+		SetScrollPos((HWND) m_windowHandle, SB_VERT, p_line, TRUE);
 		RedrawAll();
 		LeaveCritical();
 		return;
 	}
 	if (p_line >= m_topLine + m_visibleRows) {
 		m_topLine = p_line - m_visibleRows + 1;
-		SetScrollPos((HWND) m_windowHandle, 1, m_topLine, 1);
+		SetScrollPos((HWND) m_windowHandle, SB_VERT, m_topLine, TRUE);
 		RedrawAll();
 	}
 	LeaveCritical();
@@ -491,15 +511,15 @@ char* CTextWnd::GetSelectionText()
 void CTextWnd::CopySelection()
 {
 	EnterCritical();
-	if (m_selectionStart == -1 || m_selectionEnd == -1) {
+	if (m_selectionStart == TEXT_WINDOW_NO_SELECTION_ENDPOINT || m_selectionEnd == TEXT_WINDOW_NO_SELECTION_ENDPOINT) {
 		LeaveCritical();
 		return;
 	}
 	char* text = GetSelectionText();
-	HGLOBAL memory = GlobalAlloc(0x2002, strlen(text) + 1);
+	HGLOBAL memory = GlobalAlloc(GMEM_DDESHARE | GMEM_MOVEABLE, strlen(text) + 1);
 	if (memory == NULL) {
 		free(text);
-		MessageBoxA(NULL, g_unableToAllocateCopyBuffer, g_copyBufferInfo, 0);
+		MessageBoxA(NULL, g_unableToAllocateCopyBuffer, g_copyBufferInfo, MB_OK);
 		LeaveCritical();
 		return;
 	}
@@ -509,16 +529,16 @@ void CTextWnd::CopySelection()
 	free(text);
 	if (OpenClipboard((HWND) m_windowHandle) != 0) {
 		EmptyClipboard();
-		SetClipboardData(1, memory);
+		SetClipboardData(CF_TEXT, memory);
 		CloseClipboard();
 	}
 	else {
-		MessageBoxA(NULL, g_unableToAllocateClipboard, g_clipboardInfo, 0);
+		MessageBoxA(NULL, g_unableToAllocateClipboard, g_clipboardInfo, MB_OK);
 		GlobalFree(memory);
 	}
 	SetSelectionHighlight(0);
-	m_selectionEnd = -1;
-	m_selectionStart = -1;
+	m_selectionEnd = TEXT_WINDOW_NO_SELECTION_ENDPOINT;
+	m_selectionStart = TEXT_WINDOW_NO_SELECTION_ENDPOINT;
 	LeaveCritical();
 }
 
@@ -537,10 +557,10 @@ long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsi
 	if (p_message == WM_CREATE) {
 		window = (CTextWnd*) ((CREATESTRUCTA*) p_lParam)->lpCreateParams;
 		g_nTargetTextWindowCreated = 1;
-		SetWindowLongA((HWND) p_window, 0, (LONG) window);
+		SetWindowLongA((HWND) p_window, TEXT_WINDOW_EXTRA_DATA_OFFSET, (LONG) window);
 	}
 	else if (g_nTargetTextWindowCreated != 0) {
-		window = (CTextWnd*) GetWindowLongA((HWND) p_window, 0);
+		window = (CTextWnd*) GetWindowLongA((HWND) p_window, TEXT_WINDOW_EXTRA_DATA_OFFSET);
 	}
 	switch (p_message) {
 	case WM_DESTROY:
@@ -571,7 +591,7 @@ long __stdcall CTextWnd::WindowProc(void* p_window, unsigned int p_message, unsi
 		break;
 	}
 	case WM_COMMAND:
-		switch (p_wParam & 0xffff) {
+		switch (LOWORD(p_wParam)) {
 		case TEXT_WINDOW_COPY_COMMAND:
 			window->CopySelection();
 			break;

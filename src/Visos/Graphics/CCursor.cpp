@@ -49,7 +49,7 @@ void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 		cursor->m_hotspot.m_y = 3;
 		break;
 	case CURSOR_DISPLAY_PAW:
-	case 3:
+	case CURSOR_DISPLAY_HIDDEN:
 		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType]);
 		if (g_cursorDisplayInited == 0) {
 			g_pCursor->m_mouseInput = 1;

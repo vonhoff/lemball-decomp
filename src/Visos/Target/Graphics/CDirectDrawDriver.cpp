@@ -19,6 +19,10 @@
 #include "Visos/Target/Graphics/CDibContext.h"
 #include "Visos/Target/Graphics/CDrawingContext.h"
 
+enum {
+	DIRECTDRAW_DISPLAY_COLOR_DEPTH_BITS = 8
+};
+
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x00457410
@@ -70,7 +74,7 @@ CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
 			*g_pErrorOutput << "Unable to register DD base window class\n";
 			return;
 		}
-		m_window = CreateWindowExA(8,
+		m_window = CreateWindowExA(WS_EX_TOPMOST,
 								   "DirectDrawClass",
 								   "DirectDraw",
 								   WS_POPUP,
@@ -88,33 +92,34 @@ CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
 		ShowWindow((HWND) m_window, SW_SHOW);
 		UpdateWindow((HWND) m_window);
 		SetForegroundWindow((HWND) m_window);
-		cooperativeFlags = 0x11;
+		cooperativeFlags = DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE;
 	}
 	else {
-		cooperativeFlags = 8;
+		cooperativeFlags = DDSCL_NORMAL;
 	}
 	result = (*directDraw)->SetCooperativeLevel(m_window, cooperativeFlags);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Set Coorperative Level (DD object) failed : "
-						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+						<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 		return;
 	}
-	if ((cooperativeFlags & 1) != 0) {
-		result = (*directDraw)->SetDisplayMode(m_screenSize.m_width, m_screenSize.m_height, 8);
+	if ((cooperativeFlags & DDSCL_FULLSCREEN) != 0) {
+		result = (*directDraw)
+					 ->SetDisplayMode(m_screenSize.m_width, m_screenSize.m_height, DIRECTDRAW_DISPLAY_COLOR_DEPTH_BITS);
 		if (result != 0) {
-			*g_pErrorOutput << "Direct Draw Set Display Mode failed : " << FormatUnknownDirectDrawError(result & 0xfff)
-							<< "\n";
+			*g_pErrorOutput << "Direct Draw Set Display Mode failed : "
+							<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 			return;
 		}
 	}
 	IDirectDraw* interface = *directDraw;
 	description.dwSize = sizeof(DDSURFACEDESC);
 	description.dwFlags = 0;
-	description.ddsCaps = 0x200;
+	description.ddsCaps = DDSCAPS_PRIMARYSURFACE;
 	result = interface->CreateSurface(&description, &m_primarySurface, NULL);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Create Primary Surface failed : "
-						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+						<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 		return;
 	}
 	m_ready = 1;
@@ -174,7 +179,7 @@ bool CDirectDrawDriver::InitializeBitmapInfo(void* p_bitmapInfo)
 	header->biXPelsPerMeter = 0;
 	header->biYPelsPerMeter = 0;
 	header->biClrUsed = 0;
-	header->biHeight = -1;
+	header->biHeight = DIB_INITIAL_TOP_DOWN_HEIGHT;
 	header->biBitCount = 8;
 	header->biClrImportant = 0;
 	return true;
@@ -216,14 +221,16 @@ int CDirectDrawDriver::DestroyDibContext(CDibContext* p_dibContext)
 	return 1;
 }
 
+#define DIRECTDRAW_PALETTE_ENTRY_COUNT 256
 // FUNCTION: LEMBALL 0x004578c0
 unsigned int CDirectDrawDriver::UpdateDibColourTable(CDrawingContext* p_drawingContext,
 													 unsigned int p_startIndex,
 													 unsigned int p_entryCount,
 													 void* p_colours)
 {
-	return 256;
+	return DIRECTDRAW_PALETTE_ENTRY_COUNT;
 }
+#undef DIRECTDRAW_PALETTE_ENTRY_COUNT
 
 // FUNCTION: LEMBALL 0x004578d0
 int CDirectDrawDriver::BitBltContexts(CDrawingContext* p_destination,
@@ -282,7 +289,8 @@ int CDirectDrawDriver::BitBltContexts(CDrawingContext* p_destination,
 		0);
 	if (result != 0) {
 		*g_pErrorOutput << "Blit failed: " << source.left << ", " << source.top << ", " << source.right << ", "
-						<< source.bottom << " - " << FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+						<< source.bottom << " - " << FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK)
+						<< "\n";
 	}
 	return 1;
 }
@@ -346,7 +354,8 @@ int CDirectDrawDriver::StretchBltContexts(CDrawingContext* p_destination,
 		NULL);
 	if (result != 0) {
 		*g_pErrorOutput << "Blit failed: " << destination.left << ", " << destination.top << ", " << destination.right
-						<< ", " << destination.bottom << " - " << FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+						<< ", " << destination.bottom << " - "
+						<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 	}
 	return 1;
 }
@@ -368,38 +377,41 @@ CDibContext* CDirectDrawDriver::RestoreDibContext(CDrawingContext* p_drawingCont
 // FUNCTION: LEMBALL 0x00457c80
 bool CDirectDrawDriver::CreatePalette(void* p_paletteDescription)
 {
+	enum {
+		DDBLT_COLORFILL = 0x400
+	};
 	DDBLTFX effects;
 	long result;
 	LOGPALETTE* palette = (LOGPALETTE*) p_paletteDescription;
 	effects.dwSize = sizeof(DDBLTFX);
 	effects.dwFillColor = 0;
 	IDirectDrawSurface* primary = (IDirectDrawSurface*) m_primarySurface;
-	result = primary->Blt(NULL, NULL, NULL, 0x400, &effects);
+	result = primary->Blt(NULL, NULL, NULL, DDBLT_COLORFILL, &effects);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Initial rectangle blit failed : "
-						<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+						<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 		return false;
 	}
 	if (m_paletteInterface != NULL) {
 		result = m_paletteInterface->SetEntries(0, 0, palette->palNumEntries, palette->palPalEntry);
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Draw Set Palette Entries failed: "
-							<< FormatUnknownDirectDrawError(result & 0xfff) << "\n";
+							<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 			return false;
 		}
 	}
 	else {
 		result = m_directDraw->CreatePalette(0xc, palette->palPalEntry, &m_paletteInterface, NULL);
 		if (result != 0) {
-			*g_pErrorOutput << "Direct Draw Create Palette failed: " << FormatUnknownDirectDrawError(result & 0xfff)
-							<< "\n";
+			*g_pErrorOutput << "Direct Draw Create Palette failed: "
+							<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 			return false;
 		}
 		primary = (IDirectDrawSurface*) m_primarySurface;
 		result = primary->SetPalette(m_paletteInterface);
 		if (result != 0) {
-			*g_pErrorOutput << "Direct Draw Set Palette failed: " << FormatUnknownDirectDrawError(result & 0xfff)
-							<< "\n";
+			*g_pErrorOutput << "Direct Draw Set Palette failed: "
+							<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 			return false;
 		}
 	}

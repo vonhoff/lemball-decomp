@@ -20,6 +20,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void StepOn(const AICOORD& p_position, CGameObject* p_object);
 	void AddSwitch(unsigned short p_id, const tCoord3d& p_min, const tCoord3d& p_max);
+	void AddPointSwitch(unsigned short p_id, short p_x, short p_y, short p_z);
 
 private:
 	int m_capacity;               // 0x30

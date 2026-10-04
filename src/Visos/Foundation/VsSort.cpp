@@ -28,6 +28,9 @@ int ViewDataCmp(const void* p_left, const void* p_right)
 // FUNCTION: LEMBALL 0x00463960
 void VSQSort(void* p_base, unsigned int p_count, unsigned int p_width, int (*p_compare)(const void*, const void*))
 {
+	enum {
+		VSQSORT_SHORTSORT_MAX_ELEMENT_COUNT = 8
+	};
 	unsigned char* low;
 	unsigned char* high;
 	unsigned char* first;
@@ -45,7 +48,7 @@ void VSQSort(void* p_base, unsigned int p_count, unsigned int p_width, int (*p_c
 	high = low + (p_count - 1) * p_width;
 nextPartition:
 	size = (unsigned int) (high - low) / p_width + 1;
-	if (size <= 8) {
+	if (size <= VSQSORT_SHORTSORT_MAX_ELEMENT_COUNT) {
 		shortsort(low, high, p_width, p_compare);
 	}
 	else {

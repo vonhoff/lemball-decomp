@@ -18,14 +18,14 @@ void CGunController::MoveUp()
 	int bestY;
 	int foundY;
 
-	bestY = -1;
-	foundY = -1;
+	bestY = GUN_CONTROLLER_ABOVE_TOP_BOUNDARY_Y;
+	foundY = GUN_JUNCTION_COORDINATE_UNASSIGNED;
 	directionField = &m_junctions[0].m_direction;
 	remaining = 8;
 	do {
 		direction = *directionField;
-		if (direction != 3 && (y = directionField[-2]) < m_targetY && bestY < y) {
-			if (direction != 2) {
+		if (direction != GUN_JUNCTION_UNASSIGNED && (y = directionField[-2]) < m_targetY && bestY < y) {
+			if (direction != GUN_JUNCTION_BOTH) {
 				m_targetSide = direction;
 			}
 			foundY = directionField[-2];
@@ -34,7 +34,7 @@ void CGunController::MoveUp()
 		}
 		directionField += 8;
 	} while (--remaining != 0);
-	if (foundY != -1) {
+	if (foundY != GUN_JUNCTION_COORDINATE_UNASSIGNED) {
 		m_targetY = foundY;
 	}
 	m_moveStartTime = CurrentMilliTimer();

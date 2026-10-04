@@ -7,6 +7,8 @@
 
 class CNetworkMessage;
 
+enum eFileReadSocketSlot { FILE_READ_SOCKET_NO_PENDING_SLOT = 0xffffffffUL };
+
 // SIZE 0xbc
 // VTABLE: LEMBALL 0x0049a56c CFileCommonSocket
 // VTABLE: LEMBALL 0x0049a570 CNetworkFile

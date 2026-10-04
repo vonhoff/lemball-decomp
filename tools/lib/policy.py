@@ -11,26 +11,38 @@ FUNCTION_POINTER = r"[\w:\s]+\(\s*(?:__\w+\s*)?\*\s*\)\s*\([^;{}]*?\)"
 POINTER = rf"(?:[\w:\s]+\*+\s*|{FUNCTION_POINTER})"
 LITERAL = r"(?:0[xX][0-9a-fA-F]+|[0-9]+)(?:[uUlL]+)?\b"
 RULES = (
-    (r"\b(?:__asm__|__asm|_asm|asm|_emit|__emit)\b",
-     "assembly: express the operation in C++"),
-    (rf"(?:\(\s*(?:{BYTE}|(?:unsigned\s+)?(?:int|long))\s*\)\s*this"
-     rf"|reinterpret_cast\s*<\s*{BYTE}\s*>\s*\(\s*this\s*\))\s*[+-]\s*{LITERAL}",
-     "this adjustment: use an evidenced base conversion or typed member"),
-    (rf"\*\s*(?:\(\s*)?\(\s*{POINTER}\)\s*\(\s*\(\s*{BYTE}\s*\)"
-     rf"\s*[\w.>\-]+\s*[+-]\s*{LITERAL}"
-     rf"|\*\s*reinterpret_cast\s*<[^;{{}}>]*\*>\s*\(\s*reinterpret_cast\s*<\s*{BYTE}\s*>"
-     rf"\s*\(\s*[\w.>\-]+\s*\)\s*[+-]\s*{LITERAL}",
-     "raw object access: use a typed member or serialized field"),
-    (r"\b(?:__vfptr|__vbptr|__vftable|__vbtable)\b"
-     r"|\*\s*\(\s*(?:unsigned\s+)?(?:void|char|short|int|long)\s*\*+\s*\)\s*\(*\s*this\b(?!\s*\)*\s*->)",
-     "raw dispatch: use a declared method or evidenced base conversion"),
-    (rf"\*\s*\(*\s*\(\s*{POINTER}\)\s*\(*\s*{LITERAL}"
-     rf"|\*\s*reinterpret_cast\s*<[^;{{}}>]*\*>\s*\(\s*{LITERAL}"
-     rf"|\(\s*{FUNCTION_POINTER}\)\s*\(*\s*{LITERAL}"
-     rf"|reinterpret_cast\s*<\s*{FUNCTION_POINTER}\s*>\s*\(\s*{LITERAL}",
-     "literal pointer: declare the referenced data or function"),
+    (
+        r"\b(?:__asm__|__asm|_asm|asm|_emit|__emit)\b",
+        "assembly: express the operation in C++",
+    ),
+    (
+        rf"(?:\(\s*(?:{BYTE}|(?:unsigned\s+)?(?:int|long))\s*\)\s*this"
+        rf"|reinterpret_cast\s*<\s*{BYTE}\s*>\s*\(\s*this\s*\))\s*[+-]\s*{LITERAL}",
+        "this adjustment: use an evidenced base conversion or typed member",
+    ),
+    (
+        rf"\*\s*(?:\(\s*)?\(\s*{POINTER}\)\s*\(\s*\(\s*{BYTE}\s*\)"
+        rf"\s*[\w.>\-]+\s*[+-]\s*{LITERAL}"
+        rf"|\*\s*reinterpret_cast\s*<[^;{{}}>]*\*>\s*\(\s*reinterpret_cast\s*<\s*{BYTE}\s*>"
+        rf"\s*\(\s*[\w.>\-]+\s*\)\s*[+-]\s*{LITERAL}",
+        "raw object access: use a typed member or serialized field",
+    ),
+    (
+        r"\b(?:__vfptr|__vbptr|__vftable|__vbtable)\b"
+        r"|\*\s*\(\s*(?:unsigned\s+)?(?:void|char|short|int|long)\s*\*+\s*\)\s*\(*\s*this\b(?!\s*\)*\s*->)",
+        "raw dispatch: use a declared method or evidenced base conversion",
+    ),
+    (
+        rf"\*\s*\(*\s*\(\s*{POINTER}\)\s*\(*\s*{LITERAL}"
+        rf"|\*\s*reinterpret_cast\s*<[^;{{}}>]*\*>\s*\(\s*{LITERAL}"
+        rf"|\(\s*{FUNCTION_POINTER}\)\s*\(*\s*{LITERAL}"
+        rf"|reinterpret_cast\s*<\s*{FUNCTION_POINTER}\s*>\s*\(\s*{LITERAL}",
+        "literal pointer: declare the referenced data or function",
+    ),
 )
-FUNCTIONAL = re.compile(r"// (?:clang-format (?:off|on)|(?:MINIMUM )?SIZE 0x[0-9a-fA-F]+|(?:vtable\+)?0x[0-9a-fA-F]+)")
+FUNCTIONAL = re.compile(
+    r"// (?:clang-format (?:off|on)|(?:MINIMUM )?SIZE 0x[0-9a-fA-F]+|(?:vtable\+)?0x[0-9a-fA-F]+)"
+)
 
 
 def violations(text):
@@ -44,26 +56,53 @@ def violations(text):
         if not value.startswith(("//", "/*")):
             continue
         line = text.count("\n", 0, token.start()) + 1
-        standalone = not text[text.rfind("\n", 0, token.start()) + 1:token.start()].strip()
+        standalone = not text[
+            text.rfind("\n", 0, token.start()) + 1 : token.start()
+        ].strip()
         marker = match_marker(value) if standalone and is_marker_exact(value) else None
-        annotation = marker if marker and marker.type != MarkerType.UNKNOWN and (
-            marker.extra in (None, "FOLDED", "SYMBOL") or marker.type == MarkerType.VTABLE
-            and re.fullmatch(r"[A-Za-z_]\w*(?:'s `[A-Za-z_]\w*)?", marker.extra or "")) else None
-        symbol = (standalone and by_name and line == previous_line + 1
-                  and re.fullmatch(r"// (?:\S+|\S+::.+|\"(?:\\.|[^\"\\])*\")", value))
-        functional = FUNCTIONAL.fullmatch(value) and (standalone or "clang-format" not in value)
+        annotation = (
+            marker
+            if marker
+            and marker.type != MarkerType.UNKNOWN
+            and (
+                marker.extra in (None, "FOLDED", "SYMBOL")
+                or marker.type == MarkerType.VTABLE
+                and re.fullmatch(
+                    r"[A-Za-z_]\w*(?:'s `[A-Za-z_]\w*)?", marker.extra or ""
+                )
+            )
+            else None
+        )
+        symbol = (
+            standalone
+            and by_name
+            and line == previous_line + 1
+            and re.fullmatch(r"// (?:\S+|\S+::.+|\"(?:\\.|[^\"\\])*\")", value)
+        )
+        functional = FUNCTIONAL.fullmatch(value) and (
+            standalone or "clang-format" not in value
+        )
         if not (annotation or symbol or functional):
-            yield line, "comment: use a reccmp annotation, symbol, layout note, or format control"
+            yield (
+                line,
+                "comment: use a reccmp annotation, symbol, layout note, or format control",
+            )
         previous_line = line
-        by_name = annotation and annotation.type not in (MarkerType.VTABLE, MarkerType.LINE)
+        by_name = annotation and annotation.type not in (
+            MarkerType.VTABLE,
+            MarkerType.LINE,
+        )
 
 
 def check_policy(paths=None):
     files = set(collect_sources(paths))
     for path in paths or [SRC]:
         path = ROOT / path
-        files.update(p for p in (path.rglob("*") if path.is_dir() else [path])
-                     if p.is_file() and p.suffix.lower() in (".inl", ".rc"))
+        files.update(
+            p
+            for p in (path.rglob("*") if path.is_dir() else [path])
+            if p.is_file() and p.suffix.lower() in (".inl", ".rc")
+        )
     failures = 0
     for path in sorted(files):
         text = path.read_text(encoding="utf-8")

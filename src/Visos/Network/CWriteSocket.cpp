@@ -8,6 +8,7 @@
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
 #include "CTCPIPNetwork.h"
+#include "NetworkConstants.h"
 #include "Visos/Messaging/BasePacketHeader.h"
 #include "Visos/Messaging/CBasePacketBuff.h"
 #include "Visos/Messaging/CNetworkMessage.h"
@@ -23,7 +24,7 @@ CWriteSocket::CWriteSocket()
 {
 	BasePacketHeader* header;
 
-	m_lastSendTime = timeGetTime() - 1000;
+	m_lastSendTime = timeGetTime() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 	header = (BasePacketHeader*) operator new(sizeof(BasePacketHeader));
 	m_packetHeader = header;
 	header->m_magic = BASE_PACKET_MAGIC;
@@ -31,7 +32,7 @@ CWriteSocket::CWriteSocket()
 	m_criticalBuffer = NULL;
 	m_secondaryCriticalBuffer = NULL;
 	m_segmentedMessage = NULL;
-	m_segmentIndex = -1;
+	m_segmentIndex = NETWORK_SEGMENT_INDEX_INACTIVE;
 	m_destinationAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
 }
 
@@ -128,7 +129,7 @@ bool CWriteSocket::SendCritical(CNetworkMessage& p_message)
 		packet->m_retryCount++;
 	}
 	else {
-		packet->m_lastSendTime = timeGetTime() - 1000;
+		packet->m_lastSendTime = timeGetTime() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 		packet->m_available = 0;
 	}
 	return true;
@@ -167,7 +168,7 @@ bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 	int segmentCount;
 	int sendCount;
 
-	if (m_segmentIndex == -1) {
+	if (m_segmentIndex == NETWORK_SEGMENT_INDEX_INACTIVE) {
 		m_segmentIndex = 0;
 		m_segmentSequence = (short) ++m_multiMessageSequence;
 		m_segmentedMessage = &p_message;
@@ -216,7 +217,7 @@ bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 	if (m_segmentIndex != segmentCount) {
 		return false;
 	}
-	m_segmentIndex = -1;
+	m_segmentIndex = NETWORK_SEGMENT_INDEX_INACTIVE;
 	return true;
 }
 
@@ -236,7 +237,7 @@ bool CWriteSocket::Send(CNetworkMessage& p_message)
 	data = p_message.m_buffer;
 	m_packetHeader->m_messageId = (unsigned short) p_message.m_messageId;
 	if (g_networkPacketSize < m_packetHeader->m_packetSize) {
-		if (m_segmentIndex != -1) {
+		if (m_segmentIndex != NETWORK_SEGMENT_INDEX_INACTIVE) {
 			p_message.m_pendingSendCount = 0;
 			sent = false;
 		}
@@ -297,8 +298,8 @@ CNetworkMessage* CWriteSocket::ReceiveAcknowledgement()
 void CWriteSocket::Closed(int p_notifyPeer)
 {
 	(void) p_notifyPeer;
-	if (m_segmentIndex != -1) {
-		m_segmentIndex = -1;
+	if (m_segmentIndex != NETWORK_SEGMENT_INDEX_INACTIVE) {
+		m_segmentIndex = NETWORK_SEGMENT_INDEX_INACTIVE;
 		m_segmentedMessage->m_pendingSendCount = 0;
 	}
 }
@@ -311,7 +312,7 @@ void CWriteSocket::Process()
 	if (m_socketFlags == 0 || m_isOpen == 0) {
 		return;
 	}
-	if (m_segmentIndex != -1 && SendNCMS(*m_segmentedMessage) != 0) {
+	if (m_segmentIndex != NETWORK_SEGMENT_INDEX_INACTIVE && SendNCMS(*m_segmentedMessage) != 0) {
 		m_segmentedMessage->m_pendingSendCount = 0;
 	}
 	index = 0;
@@ -324,7 +325,8 @@ void CWriteSocket::Process()
 			break;
 		}
 		packet = (CWritePacket*) buffer->m_packets[index % buffer->m_packetCount];
-		if (packet->m_available == 0 && 1000 < timeGetTime() - packet->m_lastSendTime) {
+		if (packet->m_available == 0 &&
+			NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS < timeGetTime() - packet->m_lastSendTime) {
 			if (g_pBaseNetwork->m_criticalRetryLimit == 0 ||
 				packet->m_retryCount != g_pBaseNetwork->m_criticalRetryLimit) {
 				ResendCritical(packet);
@@ -338,7 +340,7 @@ void CWriteSocket::Process()
 		}
 		index++;
 	}
-	if (m_closePending != 0 && 1000 < timeGetTime() - m_lastSendTime) {
+	if (m_closePending != 0 && NETWORK_CLOSE_PENDING_PULSE_INTERVAL_MS < timeGetTime() - m_lastSendTime) {
 		Send(*g_pPulseMessage);
 	}
 }

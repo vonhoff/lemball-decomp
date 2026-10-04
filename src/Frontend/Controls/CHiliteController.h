@@ -12,6 +12,11 @@ class CGWnd;
 class CGDI;
 class CHiliteButtons;
 class CHiliteWindow;
+
+enum eHiliteButtonMode {
+	HILITE_BUTTON_MODE_VALUE = 0,
+	HILITE_BUTTON_MODE_ACTION_MESSAGE = 1
+};
 // SIZE 0x14c
 // VTABLE: LEMBALL 0x00498240 CBaseQueueHandler
 // VTABLE: LEMBALL 0x0049823c CAnimsManager

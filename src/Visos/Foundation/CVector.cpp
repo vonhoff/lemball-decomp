@@ -1,5 +1,6 @@
 #include "CVector.h"
 
+#include "Visos/Foundation/FixedPoint.h"
 #include "VsDebug.h"
 
 // FUNCTION: LEMBALL 0x0040c290
@@ -26,8 +27,8 @@ CVector operator*(const CVector& p_vector, int p_scale)
 // FUNCTION: LEMBALL 0x0044b640
 CVector::CVector(long p_x, long p_y)
 {
-	m_xFixed = p_x << 12;
-	m_yFixed = p_y << 12;
+	m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x0044b660

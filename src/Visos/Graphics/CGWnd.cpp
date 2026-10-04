@@ -108,9 +108,9 @@ void CGWnd::_OnCreate()
 	surface.m_relOriginX = originX;
 	surface.m_relOriginY = originY;
 	style = GetStyle();
-	if ((style & 0x40000000) != 0 && m_nativeWindow != NULL) {
-		style = GetWindowLongA((HWND) m_nativeWindow, -16);
-		if ((style & 0x40000000) != 0) {
+	if ((style & WS_CHILD) != 0 && m_nativeWindow != NULL) {
+		style = GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE);
+		if ((style & WS_CHILD) != 0) {
 			CVSPoint* createOrigin = &m_createRect->m_relativeTopLeft;
 			localRect.m_x = (short) (localRect.m_x - createOrigin->m_x);
 			localRect.m_y = (short) (localRect.m_y - createOrigin->m_y);
@@ -121,7 +121,7 @@ void CGWnd::_OnCreate()
 		}
 	}
 	unsigned int directScroll = 1;
-	if (g_pTargetGraphicsSystem->m_driverMode == 3) {
+	if (g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240) {
 		directScroll = 0;
 	}
 	target->m_directScroll = directScroll;
@@ -140,8 +140,8 @@ void CGWnd::_OnDestroy()
 		m_gdi = NULL;
 	}
 	style = GetStyle();
-	if ((style & 0x40000000) != 0 && m_nativeWindow != NULL) {
-		if ((GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE) & 0x40000000) != 0) {
+	if ((style & WS_CHILD) != 0 && m_nativeWindow != NULL) {
+		if ((GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE) & WS_CHILD) != 0) {
 			CVSRect emptyRect(0, 0, 0, 0);
 			m_createRect->SetDontUpdateRect(emptyRect);
 		}
@@ -210,8 +210,8 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 	switch (p_message) {
 	case WM_PAINT:
 		switch (g_pTargetGraphicsSystem->m_driverMode) {
-		case 4:
-		case 5:
+		case GFX_MODE_DD_FS_640X480:
+		case GFX_MODE_DD_FS_320X200:
 			return DefWindowProcA((HWND) g_pTargetGraphicsDriver->m_window, p_message, p_wParam, p_lParam);
 		default: {
 			HDC(WINAPI * beginPaint)(HWND, LPPAINTSTRUCT) = BeginPaint;

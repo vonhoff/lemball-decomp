@@ -2,9 +2,12 @@
 
 #include "../Objects/CLaser.h"
 #include "../Objects/CViewData.h"
+#include "AI/Base/LevelVersions.h"
 
 // FUNCTION: LEMBALL 0x00429320
-CLaserManager::CLaserManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x15, 0xa)
+CLaserManager::CLaserManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_LASERS,
+						 OBJECT_MANAGER_TRANSPORT_LASERS)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -50,7 +53,7 @@ void CLaserManager::RemoveLaser(CLaser* p_laser)
 	int count = m_count;
 	for (int index = 0; index < count; index++) {
 		if (p_laser == &m_lasers[index]) {
-			m_lasers[index++].SetId(0xffff);
+			m_lasers[index++].SetId(INVALID_OBJECT_ID);
 			for (int next = index; next < m_count; next++) {
 				m_lasers[next - 1] = m_lasers[next];
 			}
@@ -58,6 +61,12 @@ void CLaserManager::RemoveLaser(CLaser* p_laser)
 			return;
 		}
 	}
+}
+
+// FUNCTION: LEMBALL 0x004297e0
+void CLaserManager::ResetCount()
+{
+	m_count = 0;
 }
 
 // FUNCTION: LEMBALL 0x004297f0
@@ -105,9 +114,9 @@ void CLaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectT
 {
 	if (m_count < m_capacity) {
 		AICOORD position;
-		position.m_xFixed = p_x << 12;
-		position.m_yFixed = p_y << 12;
-		position.m_zFixed = p_z << 12;
+		position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+		position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+		position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 		m_lasers[m_count].Set(p_id, position, p_orientation);
 		m_count++;
 	}
@@ -134,7 +143,7 @@ void CLaserManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned ch
 		unsigned short y;
 		unsigned short z;
 		do {
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *data++;
 			}
 			else {

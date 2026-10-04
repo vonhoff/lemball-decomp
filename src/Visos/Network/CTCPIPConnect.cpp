@@ -3,6 +3,7 @@
 #include "../Foundation/CVSOStream.h"
 #include "CTCPIPNetwork.h"
 #include "CTCPIPNetworkAddress.h"
+#include "NetworkConstants.h"
 #include "Visos/Network/CConnect.h"
 #include "Visos/Network/CNetworkAddress.h"
 #include "Visos/Network/CTCPIPRWSocket.h"
@@ -101,16 +102,19 @@ void CTCPIPConnect::HandleServiceLookupResult(bool p_failed)
 // FUNCTION: LEMBALL 0x00471090
 void CTCPIPConnect::InitSocket()
 {
+	enum {
+		SOCKET_IOCTL_SET_NONBLOCKING = 0x8004667e
+	};
 	unsigned long nonBlocking;
 
 	m_socketHandle = socket(AF_INET, SOCK_DGRAM, 0);
-	if (m_socketHandle == -1) {
+	if (m_socketHandle == NETWORK_SOCKET_HANDLE_INVALID) {
 		SocketError();
 		return;
 	}
 	m_isOpen = 1;
 	nonBlocking = 1;
-	if (ioctlsocket(m_socketHandle, 0x8004667e, &nonBlocking) == -1) {
+	if (ioctlsocket(m_socketHandle, SOCKET_IOCTL_SET_NONBLOCKING, &nonBlocking) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 	}
 }
@@ -125,18 +129,19 @@ void CTCPIPConnect::Listen(CNetworkAddress* p_address)
 	address.m_family = AF_INET;
 	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
 	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
-	if (bind(m_socketHandle, &address, sizeof(address)) == -1) {
+	if (bind(m_socketHandle, &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return;
 	}
-	if (WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) == -1) {
+	if (WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) ==
+		NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return;
 	}
 	m_closePending = 1;
 	m_eventPending = 1;
 	m_isHost = 0;
-	CWriteSocket::m_lastSendTime = timeGetTime() - 1000;
+	CWriteSocket::m_lastSendTime = timeGetTime() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 	CReadSocket::m_lastReceiveTime = timeGetTime();
 }
 
@@ -149,11 +154,12 @@ void CTCPIPConnect::Connect()
 	address.m_family = AF_INET;
 	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
 	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
-	if (bind(m_socketHandle, &address, sizeof(address)) == -1) {
+	if (bind(m_socketHandle, &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return;
 	}
-	if (WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) == -1) {
+	if (WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) ==
+		NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return;
 	}
@@ -185,7 +191,7 @@ int CTCPIPConnect::Process(unsigned int p_message, unsigned int p_wParam, long p
 			return CTCPIPRWSocket::Process(p_message, p_wParam, p_lParam);
 		}
 	}
-	return -1;
+	return NETWORK_WINDOW_MESSAGE_UNHANDLED;
 }
 
 // FUNCTION: LEMBALL 0x00471b80

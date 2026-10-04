@@ -2,6 +2,7 @@
 
 #include "CTCPIPNetwork.h"
 #include "CTCPIPNetworkAddress.h"
+#include "NetworkConstants.h"
 #include "Platform/WinSock/WinSock.h"
 #include "Visos/Network/CBaseCommonSocket.h"
 #include "Visos/Network/CWriteSocket.h"
@@ -31,7 +32,7 @@ bool CTCPIPWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 	}
 	sent = sendto(m_socketHandle, (const char*) p_data, p_size, 0, &m_destination, sizeof(m_destination));
 	m_lastSendTime = timeGetTime();
-	if (sent == -1) {
+	if (sent == NETWORK_SOCKET_ERROR) {
 		if (WSAGetLastError() == WSAEWOULDBLOCK) {
 			return false;
 		}
@@ -49,8 +50,8 @@ int CTCPIPWriteSocket::Process(unsigned int p_message, unsigned int p_wParam, lo
 
 	(void) p_wParam;
 	if (p_message == TCPIP_MESSAGE_SOCKET_EVENT) {
-		if (m_socketHandle == -1) {
-			return -1;
+		if (m_socketHandle == NETWORK_SOCKET_HANDLE_INVALID) {
+			return NETWORK_WINDOW_MESSAGE_UNHANDLED;
 		}
 		event = (unsigned short) p_lParam;
 		error = (unsigned short) ((unsigned long) p_lParam >> 16);
@@ -63,7 +64,7 @@ int CTCPIPWriteSocket::Process(unsigned int p_message, unsigned int p_wParam, lo
 			return 0;
 		}
 	}
-	return -1;
+	return NETWORK_WINDOW_MESSAGE_UNHANDLED;
 }
 
 // FUNCTION: LEMBALL 0x00471c20

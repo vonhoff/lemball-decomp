@@ -15,7 +15,9 @@ from lib.policy import check_policy
 
 def check_vtable():
     _, engine = load_engine()
-    tables = list(engine.compare_all(lambda entity: entity.entity_type == EntityType.VTABLE))
+    tables = list(
+        engine.compare_all(lambda entity: entity.entity_type == EntityType.VTABLE)
+    )
     exact = sum(table.accuracy == 1 for table in tables)
     print(f"vtables: {exact}/{len(tables)} exact")
     return int(not tables or exact != len(tables))
@@ -24,7 +26,11 @@ def check_vtable():
 def check_annotations(paths=None):
     files = tuple(collect_sources(paths))
     target = DecomplintTarget(files, "LEMBALL", "utf-8")
-    alerts = [alert for alert in lint_all_targets((target,)) if alert.target in (None, "LEMBALL")]
+    alerts = [
+        alert
+        for alert in lint_all_targets((target,))
+        if alert.target in (None, "LEMBALL")
+    ]
     alerts.sort(key=lambda alert: str(alert.path).lower())
     for path, errors in groupby(alerts, key=lambda alert: alert.path):
         display_errors(errors, path)
@@ -37,7 +43,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--path", action="append", dest="paths")
     checks = parser.add_mutually_exclusive_group()
-    checks.add_argument("--names", action="store_true", help="show catalog review details only")
+    checks.add_argument(
+        "--names", action="store_true", help="show catalog review details only"
+    )
     checks.add_argument("--vtable", action="store_true", help="compare vtables only")
     args = parser.parse_args()
     if args.vtable and args.paths:

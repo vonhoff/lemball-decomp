@@ -8,7 +8,7 @@
 // FUNCTION: LEMBALL 0x00416a10
 CRequestActionMess::CRequestActionMess() : CGameObjectMess(MESSAGE_REQUEST_ACTION)
 {
-	m_payloadCapacity += 4;
+	m_payloadCapacity += sizeof(unsigned long);
 }
 
 // FUNCTION: LEMBALL 0x00416a30

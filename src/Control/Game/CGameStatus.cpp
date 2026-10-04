@@ -2,6 +2,7 @@
 
 #include "../../Visos/Foundation/CVSOStream.h"
 #include "../../Visos/Foundation/VsString.h"
+#include "../Level/CLevelLoader.h"
 
 #include <string.h>
 
@@ -21,7 +22,7 @@ CGameStatus::CGameStatus()
 	m_levelState = zero;
 	m_skill = zero;
 	m_skillState = zero;
-	p = (int*) &m_status0;
+	p = (int*) &m_bulletHitHandlingDisabled;
 	p[0] = zero;
 	p[1] = zero;
 	p = m_maxLevels;
@@ -41,14 +42,14 @@ CGameStatus::CGameStatus()
 // FUNCTION: LEMBALL 0x00406ad0
 unsigned int CGameStatus::JiggleLevelData()
 {
-	unsigned int chunks[8];
-	unsigned int mixed[8];
+	unsigned int chunks[PASSWORD_LEVEL_DATA_CHUNK_COUNT];
+	unsigned int mixed[PASSWORD_LEVEL_DATA_CHUNK_COUNT];
 	unsigned int result = 0;
 	int* levels = m_maxLevels;
 	unsigned int* dest = chunks;
 
 	while (1) {
-		unsigned int* end = chunks + 8;
+		unsigned int* end = chunks + PASSWORD_LEVEL_DATA_CHUNK_COUNT;
 		unsigned int value;
 		unsigned int high;
 
@@ -58,19 +59,19 @@ unsigned int CGameStatus::JiggleLevelData()
 		value = *levels;
 		dest = dest + 2;
 		high = value;
-		high = high & 0x38;
+		high = high & PASSWORD_LEVEL_DATA_HIGH_CHUNK_MASK;
 		levels = levels + 1;
-		value = value & 7;
-		high = high >> 3;
+		value = value & PASSWORD_LEVEL_DATA_CHUNK_MASK;
+		high = high >> PASSWORD_LEVEL_DATA_CHUNK_BITS;
 		dest[-2] = high;
 		dest[-1] = value;
 	}
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < PASSWORD_LEVEL_DATA_CHUNK_COUNT; i++) {
 		unsigned int value;
 		unsigned int perm;
 
-		result = result << 3;
+		result = result << PASSWORD_LEVEL_DATA_CHUNK_BITS;
 		perm = (unsigned int) g_anPasswordPermutation[i];
 		value = chunks[perm] ^ perm;
 		result = result | value;
@@ -82,34 +83,36 @@ unsigned int CGameStatus::JiggleLevelData()
 // FUNCTION: LEMBALL 0x00406b30
 void CGameStatus::UnJiggleLevelData(unsigned int p_value)
 {
-	unsigned int mixed[8];
-	unsigned int chunks[8];
+	unsigned int mixed[PASSWORD_LEVEL_DATA_CHUNK_COUNT];
+	unsigned int chunks[PASSWORD_LEVEL_DATA_CHUNK_COUNT];
 	int i;
 
 	unsigned int value;
-	int remaining = 8;
+	int remaining = PASSWORD_LEVEL_DATA_CHUNK_COUNT;
 	unsigned int* dest = &mixed[7];
 	do {
 		value = p_value;
-		*dest-- = value & 7;
-		p_value >>= 3;
+		*dest-- = value & PASSWORD_LEVEL_DATA_CHUNK_MASK;
+		p_value >>= PASSWORD_LEVEL_DATA_CHUNK_BITS;
 		remaining--;
 	} while (remaining != 0);
 
-	for (i = 0; i < 8; i++) {
+	for (i = 0; i < PASSWORD_LEVEL_DATA_CHUNK_COUNT; i++) {
 		unsigned int perm = g_anPasswordPermutation[i];
 		chunks[perm] = mixed[i] ^ perm;
 	}
 
-	for (i = 0; i < 4; i++) {
-		SetMaxLevel(i, (chunks[i * 2] << 3) | chunks[i * 2 + 1]);
+	for (i = 0; i < PASSWORD_ENCODED_SKILL_COUNT; i++) {
+		SetMaxLevel(i,
+					(chunks[i * PASSWORD_LEVEL_CHUNKS_PER_SKILL] << PASSWORD_LEVEL_DATA_CHUNK_BITS) |
+						chunks[i * PASSWORD_LEVEL_CHUNKS_PER_SKILL + 1]);
 	}
 }
 
 // FUNCTION: LEMBALL 0x00406ba0
 unsigned int CGameStatus::CalcCheckSum(unsigned int p_value)
 {
-	return ((p_value >> 16) + (p_value >> 8) + p_value) & 0x1f;
+	return ((p_value >> 16) + (p_value >> 8) + p_value) & PASSWORD_CHECKSUM_MASK;
 }
 
 // FUNCTION: LEMBALL 0x00406c00
@@ -118,9 +121,9 @@ char* CGameStatus::EncodePassword()
 	char buffer[12];
 	unsigned int levelData = JiggleLevelData();
 	unsigned int checksum = CalcCheckSum(levelData);
-	vsLtoa((checksum << 24) | levelData, buffer, 10);
+	vsLtoa((checksum << PASSWORD_CHECKSUM_SHIFT) | levelData, buffer, 10);
 	strcpy(m_password, g_szPasswordZeroes);
-	strcpy(m_password + 10 - strlen(buffer), buffer);
+	strcpy(m_password + PASSWORD_CODE_DIGIT_COUNT - strlen(buffer), buffer);
 	return m_password;
 }
 
@@ -132,9 +135,9 @@ bool CGameStatus::DecodePassword(char* p_password)
 		*g_pDebugOutput << g_szPasswordCheatMessage;
 		int i = 0;
 		do {
-			g_pGameStatus->SetMaxLevel(i, 0x40);
+			g_pGameStatus->SetMaxLevel(i, PASSWORD_UNLOCKED_LEVEL_LIMIT);
 			i++;
-		} while (i < 4);
+		} while (i < PASSWORD_ENCODED_SKILL_COUNT);
 		return true;
 	}
 
@@ -143,10 +146,10 @@ bool CGameStatus::DecodePassword(char* p_password)
 		return false;
 	}
 	unsigned int checksum = CalcCheckSum(value);
-	if (((value & 0x1f000000) >> 24) != checksum) {
+	if (((value & PASSWORD_CHECKSUM_FIELD_MASK) >> PASSWORD_CHECKSUM_SHIFT) != checksum) {
 		return false;
 	}
-	value &= 0xffffff;
+	value &= PASSWORD_LEVEL_DATA_PAYLOAD_MASK;
 	UnJiggleLevelData(value);
 	return true;
 }
@@ -181,26 +184,26 @@ void CGameStatus::IncLevel()
 	int maxLevel;
 
 	switch (skill) {
-	case 0:
-		maxLevel = 0x18;
+	case SKILL_FUN:
+		maxLevel = SKILL_LEVEL_COUNT_FUN;
 		break;
-	case 1:
-		maxLevel = 0x19;
+	case SKILL_TRICKY:
+		maxLevel = SKILL_LEVEL_COUNT_TRICKY;
 		break;
-	case 2:
-		maxLevel = 0x1c;
+	case SKILL_TAXING:
+		maxLevel = SKILL_LEVEL_COUNT_TAXING;
 		break;
-	case 3:
-		maxLevel = 0x15;
+	case SKILL_MAYHEM:
+		maxLevel = SKILL_LEVEL_COUNT_MAYHEM;
 		break;
-	case 4:
-		maxLevel = 0xb;
+	case SKILL_NETWORK:
+		maxLevel = SKILL_LEVEL_COUNT_NETWORK;
 		break;
 	}
 	if (m_level < maxLevel) {
 		m_level = m_level + 1;
 	}
-	if (skill != 4) {
+	if (skill != SKILL_NETWORK) {
 		if (m_maxLevels[skill] < m_level) {
 			m_maxLevels[skill] = m_level;
 		}
@@ -223,18 +226,18 @@ bool CGameStatus::DecLevel()
 void CGameStatus::IncSkill(unsigned int p_wrap)
 {
 	switch (m_skill) {
-	case 0:
-		m_skill = 1;
+	case SKILL_FUN:
+		m_skill = SKILL_TRICKY;
 		break;
-	case 1:
-		m_skill = 2;
+	case SKILL_TRICKY:
+		m_skill = SKILL_TAXING;
 		break;
-	case 2:
-		m_skill = 3;
+	case SKILL_TAXING:
+		m_skill = SKILL_MAYHEM;
 		break;
-	case 3:
+	case SKILL_MAYHEM:
 		if (p_wrap != 0) {
-			m_skill = 0;
+			m_skill = SKILL_FUN;
 		}
 		break;
 	}
@@ -246,23 +249,23 @@ void CGameStatus::IncSkill(unsigned int p_wrap)
 void CGameStatus::DecSkill(unsigned int p_wrap)
 {
 	switch (m_skill) {
-	case 0:
+	case SKILL_FUN:
 		if (p_wrap != 0) {
-			m_skill = 3;
+			m_skill = SKILL_MAYHEM;
 			m_level = 0;
 			return;
 		}
 		break;
-	case 1:
-		m_skill = 0;
+	case SKILL_TRICKY:
+		m_skill = SKILL_FUN;
 		m_level = 0;
 		return;
-	case 2:
-		m_skill = 1;
+	case SKILL_TAXING:
+		m_skill = SKILL_TRICKY;
 		m_level = 0;
 		return;
-	case 3:
-		m_skill = 2;
+	case SKILL_MAYHEM:
+		m_skill = SKILL_TAXING;
 		break;
 	}
 	m_level = 0;
@@ -274,20 +277,20 @@ int CGameStatus::NoOfLevelsInSkill(int p_skill)
 	int count;
 
 	switch (p_skill) {
-	case 0:
-		count = 0x18;
+	case SKILL_FUN:
+		count = SKILL_LEVEL_COUNT_FUN;
 		break;
-	case 1:
-		count = 0x19;
+	case SKILL_TRICKY:
+		count = SKILL_LEVEL_COUNT_TRICKY;
 		break;
-	case 2:
-		count = 0x1c;
+	case SKILL_TAXING:
+		count = SKILL_LEVEL_COUNT_TAXING;
 		break;
-	case 3:
-		count = 0x15;
+	case SKILL_MAYHEM:
+		count = SKILL_LEVEL_COUNT_MAYHEM;
 		break;
-	case 4:
-		count = 0xb;
+	case SKILL_NETWORK:
+		count = SKILL_LEVEL_COUNT_NETWORK;
 		break;
 	}
 	return count;
@@ -296,8 +299,8 @@ int CGameStatus::NoOfLevelsInSkill(int p_skill)
 // FUNCTION: LEMBALL 0x00408fa0
 bool CGameStatus::NextLevelAvailable()
 {
-	if (m_skill == 4) {
-		if (m_level < 11) {
+	if (m_skill == SKILL_NETWORK) {
+		if (m_level < SKILL_LEVEL_COUNT_NETWORK) {
 			return true;
 		}
 		return false;
@@ -317,20 +320,20 @@ void CGameStatus::SetMaxLevel(int p_skill, int p_level)
 	int maxLevel;
 
 	switch (p_skill) {
-	case 0:
-		maxLevel = 0x18;
+	case SKILL_FUN:
+		maxLevel = SKILL_LEVEL_COUNT_FUN;
 		break;
-	case 1:
-		maxLevel = 0x19;
+	case SKILL_TRICKY:
+		maxLevel = SKILL_LEVEL_COUNT_TRICKY;
 		break;
-	case 2:
-		maxLevel = 0x1c;
+	case SKILL_TAXING:
+		maxLevel = SKILL_LEVEL_COUNT_TAXING;
 		break;
-	case 3:
-		maxLevel = 0x15;
+	case SKILL_MAYHEM:
+		maxLevel = SKILL_LEVEL_COUNT_MAYHEM;
 		break;
-	case 4:
-		maxLevel = 0xb;
+	case SKILL_NETWORK:
+		maxLevel = SKILL_LEVEL_COUNT_NETWORK;
 		break;
 	}
 	if (m_skill == p_skill) {
@@ -363,7 +366,7 @@ int CGameStatus::Level()
 CGameStatus* g_pGameStatus = NULL;
 
 // GLOBAL: LEMBALL 0x0049cb70
-int g_anPasswordPermutation[8] = {2, 0, 7, 4, 6, 1, 5, 3};
+int g_anPasswordPermutation[PASSWORD_LEVEL_DATA_CHUNK_COUNT] = {2, 0, 7, 4, 6, 1, 5, 3};
 
 // GLOBAL: LEMBALL 0x0049cb90
 char g_szPasswordZeroes[9] = "00000000";

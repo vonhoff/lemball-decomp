@@ -1,6 +1,7 @@
 #include "StateMachine.h"
 
 #include "../../Control/Game/CGame.h"
+#include "../../Control/Game/GameTime.h"
 #include "../Navigation/CAI.h"
 #include "AI/Base/ObjectActions.h"
 #include "CGameObject.h"
@@ -278,7 +279,7 @@ void StateMachine(StateEntry** p_stateTables, CAI* p_ai, CGameObject* p_object)
 	}
 	p_object->UpdateCollision();
 	if (nextAction != ACTION_KEEP_CURRENT && action != nextAction && p_object->m_action == action) {
-		p_object->m_stateTimer = g_dwGameTick * 0x32;
+		p_object->m_stateTimer = g_dwGameTick * GAME_TICK_MILLISECONDS;
 		p_object->Action(nextAction);
 	}
 }
@@ -370,7 +371,7 @@ bool EnemyWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
 // FUNCTION: LEMBALL 0x00419bc0
 bool GameOver(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
-	if (g_nGameOver != 0 && p_ai->m_gameStatus == 4) {
+	if (g_nGameOver != 0 && p_ai->m_gameStatus == GAME_STATUS_COMPLETING) {
 		return true;
 	}
 	return false;
@@ -465,6 +466,12 @@ void PlayerFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
 	p_object->Fire();
 }
 
+// FUNCTION: LEMBALL 0x00419d40
+void PlayerStartFiring(CAI*, CGameObject* p_object, Info*)
+{
+	p_object->StartFiring();
+}
+
 // FUNCTION: LEMBALL 0x00419d50
 void PlayerEndFiring(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
@@ -482,7 +489,7 @@ void StartStanding(CAI* p_ai, CGameObject* p_object, Info* p_info)
 void PlayerRandomAction(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	p_object->RandomAction();
-	p_object->SetBored(0xfa0);
+	p_object->SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 	StartStanding(p_ai, p_object, p_info);
 }
 
@@ -490,7 +497,7 @@ void PlayerRandomAction(CAI* p_ai, CGameObject* p_object, Info* p_info)
 void PlayerStopWalking(CAI* p_ai, CGameObject* p_object, Info* p_info)
 {
 	p_object->StopMoving();
-	p_object->SetBored(0xfa0);
+	p_object->SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 	p_object->StartStanding();
 }
 

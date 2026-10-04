@@ -25,6 +25,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
+	void RemoveDoorByObject(CDoor* p_door);
 	void Switch(swMessage p_message, int p_id);
 
 	friend class CAI;

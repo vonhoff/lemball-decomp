@@ -9,6 +9,7 @@
 #include "CFileNetwork.h"
 #include "CNetworkAddress.h"
 #include "CTCPIPNetwork.h"
+#include "NetworkConstants.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Network/CBroadcast.h"
@@ -124,7 +125,7 @@ bool CFileBroadcast::Start(const char* p_name)
 		m_readReady = 1;
 		m_writeReady = 0;
 		m_socketFlags = 1;
-		m_lastBroadcastTime = timeGetTime() - 1000;
+		m_lastBroadcastTime = timeGetTime() - NETWORK_BROADCAST_INTERVAL_MS;
 
 		Message message;
 		message.m_type = 2;
@@ -173,26 +174,26 @@ short CFileBroadcast::FindPort(const unsigned char* p_data)
 {
 	(void) p_data;
 	if (!ReadPortInfo()) {
-		return -1;
+		return NETWORK_PORT_NOT_FOUND;
 	}
 	g_pFileBroadcast->Set((unsigned char*) g_pNetworkPacketScratch);
 	int port = 0;
 	unsigned int length = g_pFileBroadcast->m_payloadCapacity;
 	unsigned char* counts = g_pFileBroadcast->m_useCounts;
-	while (port < 0x200 && counts[(unsigned short) port] != 0) {
+	while (port < NETWORK_PORT_COUNT && counts[(unsigned short) port] != 0) {
 		port++;
 	}
-	if (port != 0x200) {
+	if (port != NETWORK_PORT_COUNT) {
 		counts[(unsigned short) port]++;
 		int written = WritePortInfo();
-		int result = -1;
+		int result = NETWORK_PORT_NOT_FOUND;
 		if (written) {
 			result = port;
 		}
 		return result;
 	}
 	CNetworkFile::UnLock(m_message.m_payloadCapacity, length);
-	return -1;
+	return NETWORK_PORT_NOT_FOUND;
 }
 
 // FUNCTION: LEMBALL 0x0047ae00

@@ -206,7 +206,7 @@ bool CArena::Free(unsigned char* p_memory)
 	}
 	EnterCritical();
 	CMBlock* block = (CMBlock*) (p_memory - GetSizeOfBlock());
-	block->m_flags |= 1;
+	block->m_flags |= MEMORY_BLOCK_FLAG_FREE;
 	AddToFreeList(block);
 	m_freeSize += block->m_size;
 	CMBlock* prev = block->m_previousBlock;
@@ -270,13 +270,13 @@ bool CArena::CheckValidPointer(void* p_pointer)
 // FUNCTION: LEMBALL 0x0045a1e0
 bool CArena::CheckMemoryBlock(CMBlock* p_block)
 {
-	return p_block->m_signature == 0x524d424c;
+	return p_block->m_signature == MEMORY_BLOCK_SIGNATURE;
 }
 
 // FUNCTION: LEMBALL 0x0045a230
 bool CArena::CheckFreeMemoryBlock(CMBlock* p_block)
 {
-	if (CheckMemoryBlock(p_block) && (p_block->m_flags & 1) != 0) {
+	if (CheckMemoryBlock(p_block) && (p_block->m_flags & MEMORY_BLOCK_FLAG_FREE) != 0) {
 		return true;
 	}
 	return false;

@@ -10,6 +10,7 @@
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
 #include "CTCPIPNetwork.h"
+#include "NetworkConstants.h"
 #include "Visos/Foundation/CBaseQueueHandler.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Network/CRwSocket.h"
@@ -37,8 +38,8 @@ CBroadcast::CBroadcast()
 	m_addressMode = 0;
 	m_specificAddress = NULL;
 	g_pBroadcastAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
-	m_connectionData = new unsigned char[0x200];
-	for (index = 0; index < 0x200; index++) {
+	m_connectionData = new unsigned char[NETWORK_PORT_COUNT];
+	for (index = 0; index < NETWORK_PORT_COUNT; index++) {
 		m_connectionData[index] = 0;
 	}
 }
@@ -75,9 +76,9 @@ short CBroadcast::FindPort(const unsigned char* p_peerPortUsage)
 	short result;
 	int index;
 
-	result = -1;
+	result = NETWORK_PORT_NOT_FOUND;
 	index = 0;
-	while (index < 0x200) {
+	while (index < NETWORK_PORT_COUNT) {
 		if (p_peerPortUsage[index] == 0 && m_connectionData[index] == 0) {
 			result = (short) index;
 			m_connectionData[result] = 1;
@@ -151,7 +152,7 @@ void CBroadcast::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 									  p_packet->m_data + sizeof(BasePacketHeader) + length + 1);
 		}
 	}
-	if (p_event == 7) {
+	if (p_event == NETWORK_EVENT_NONCRITICAL_PACKET_READY) {
 		((CReadPacket*) p_packet)->m_used = 0;
 	}
 }
@@ -171,7 +172,7 @@ void CBroadcast::Process()
 			unsigned long time;
 
 			time = timeGetTime();
-			if (1000 < time - m_lastBroadcastTime) {
+			if (NETWORK_BROADCAST_INTERVAL_MS < time - m_lastBroadcastTime) {
 				bool send;
 				CNetworkAddress* address;
 
@@ -216,7 +217,7 @@ void CBroadcast::Run()
 {
 	unsigned long time = timeGetTime();
 	m_runEnabled = 1;
-	m_lastBroadcastTime = time - 1000;
+	m_lastBroadcastTime = time - NETWORK_BROADCAST_INTERVAL_MS;
 }
 
 // FUNCTION: LEMBALL 0x00460a40

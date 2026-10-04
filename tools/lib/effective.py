@@ -7,12 +7,17 @@ from dataclasses import dataclass, replace
 from reccmp.compare.asm.instgen import InstructGen, SectionType
 from reccmp.compare.asm.parse import ParseAsm
 from reccmp.compare.functions import FunctionComparator
-from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtualReadError
+from reccmp.formats.exceptions import (
+    InvalidVirtualAddressError,
+    InvalidVirtualReadError,
+)
 from reccmp.types import EntityType
 
 from . import BUILD
 from .compare_flags import (
-    control_flow_targets, indirect_jumps_use_tables, normalize_compare_branches,
+    control_flow_targets,
+    indirect_jumps_use_tables,
+    normalize_compare_branches,
     prefix_overwrites_flags,
 )
 
@@ -27,13 +32,21 @@ class AssemblySignature:
 
     def matches(self, other):
         """Keep strict identity independent of optional comparison proofs."""
-        return other is not None and self.size == other.size and (
-            self.instructions == other.instructions or self.guarded_comparisons == other.guarded_comparisons
+        return (
+            other is not None
+            and self.size == other.size
+            and (
+                self.instructions == other.instructions
+                or self.guarded_comparisons == other.guarded_comparisons
+            )
         )
 
 
 def _relative_instructions(asm, start):
-    return [(address - start if address is not None else None, line) for address, line in asm]
+    return [
+        (address - start if address is not None else None, line)
+        for address, line in asm
+    ]
 
 
 def _instruction_ends(sections, start, size):
@@ -87,17 +100,30 @@ def _table_padding(sections, tables):
 
 def _valid_control_flow(sections, ends, start, size):
     """Keep internal transfers on code boundaries and out of table padding."""
-    instructions = [inst for section in sections if section.type == SectionType.CODE
-                    for inst in section.contents]
-    table_targets = {target for section in sections if section.type == SectionType.ADDR_TAB
-                     for _, target in section.contents}
+    instructions = [
+        inst
+        for section in sections
+        if section.type == SectionType.CODE
+        for inst in section.contents
+    ]
+    table_targets = {
+        target
+        for section in sections
+        if section.type == SectionType.ADDR_TAB
+        for _, target in section.contents
+    }
     if not table_targets <= ends.keys():
         return False
-    targets = control_flow_targets(sections, {inst[0]: inst for inst in instructions}) | {start}
+    targets = control_flow_targets(
+        sections, {inst[0]: inst for inst in instructions}
+    ) | {start}
     if any(start <= target < start + size and target not in ends for target in targets):
         return False
-    tables = {section.contents[0][0]: section.type for section in sections
-              if section.type != SectionType.CODE and section.contents}
+    tables = {
+        section.contents[0][0]: section.type
+        for section in sections
+        if section.type != SectionType.CODE and section.contents
+    }
     padding = _table_padding(sections, tables)
     if padding is None or padding & targets:
         return False
@@ -116,7 +142,9 @@ def _comparison_signature(asm, sections, start, size, check_call):
         if jump and ends[address] + int(jump[1], 16) not in ends:
             return None
     guarded = normalize_compare_branches(asm, sections, check_call)
-    return AssemblySignature(size, _relative_instructions(asm, start), _relative_instructions(guarded, start))
+    return AssemblySignature(
+        size, _relative_instructions(asm, start), _relative_instructions(guarded, start)
+    )
 
 
 class ThunkParseAsm(ParseAsm):
@@ -138,7 +166,7 @@ class ThunkParseAsm(ParseAsm):
             raw = self.image.read(address, 5)
         except (InvalidVirtualAddressError, InvalidVirtualReadError):
             return None
-        if len(raw) != 5 or raw[0] != 0xe9:
+        if len(raw) != 5 or raw[0] != 0xE9:
             return None
         target = address + 5 + struct.unpack_from("<i", raw, 1)[0]
         return target if target in self.targets else None
@@ -170,12 +198,16 @@ class ThunkParseAsm(ParseAsm):
         data = bytes(data)
         sections = InstructGen(data, start_addr).sections
         self.local_tables = {
-            section.contents[0][0]: f"{section.type.name} at +0x{section.contents[0][0] - start_addr:x}"
+            section.contents[0][
+                0
+            ]: f"{section.type.name} at +0x{section.contents[0][0] - start_addr:x}"
             for section in sections
             if section.type != SectionType.CODE and section.contents
         }
         asm = super().parse_asm(data, start_addr)
-        self.signature = _comparison_signature(asm, sections, start_addr, len(data), self._call_overwrites_flags)
+        self.signature = _comparison_signature(
+            asm, sections, start_addr, len(data), self._call_overwrites_flags
+        )
         return asm
 
 
@@ -184,31 +216,51 @@ def additional_effective_matches(engine, comparisons):
     comparator = replace(upstream)
     functions = list(upstream.db.get_matches_by_type(EntityType.FUNCTION))
     original = ThunkParseAsm(
-        upstream.orig_bin, {entity.orig_addr for entity in functions}, comparator.orig_sanitize,
+        upstream.orig_bin,
+        {entity.orig_addr for entity in functions},
+        comparator.orig_sanitize,
     )
     rebuilt = ThunkParseAsm(
-        upstream.recomp_bin, {entity.recomp_addr for entity in functions}, comparator.recomp_sanitize,
+        upstream.recomp_bin,
+        {entity.recomp_addr for entity in functions},
+        comparator.recomp_sanitize,
     )
     comparator.orig_sanitize, comparator.recomp_sanitize = original, rebuilt
     matches = {}
     for match in engine.get_functions():
         comparison = comparisons.get(match.orig_addr)
-        if (comparison is None or comparison.is_stub
-                or comparison.accuracy == 1 or comparison.is_effective_match):
+        if (
+            comparison is None
+            or comparison.is_stub
+            or comparison.accuracy == 1
+            or comparison.is_effective_match
+        ):
             continue
         comparator.compare_function(match)
-        if (original.signature is not None and original.signature.matches(rebuilt.signature)
-                and (original.used_thunk or rebuilt.used_thunk)):
+        if (
+            original.signature is not None
+            and original.signature.matches(rebuilt.signature)
+            and (original.used_thunk or rebuilt.used_thunk)
+        ):
             matches[match.orig_addr] = ("verified jump thunk target",)
             if original.signature.instructions != rebuilt.signature.instructions:
-                matches[match.orig_addr] += ("verified comparison operands and flag lifetimes",)
+                matches[match.orig_addr] += (
+                    "verified comparison operands and flag lifetimes",
+                )
     return matches
 
 
 def effective_addresses(comparisons, additional=()):
     """Function addresses counted by the Effective metric."""
     return {
-        address for address, comparison in comparisons.items()
-        if comparison.is_function() and comparison.is_matched() and not comparison.is_stub
-        and (comparison.accuracy == 1 or comparison.is_effective_match or address in additional)
+        address
+        for address, comparison in comparisons.items()
+        if comparison.is_function()
+        and comparison.is_matched()
+        and not comparison.is_stub
+        and (
+            comparison.accuracy == 1
+            or comparison.is_effective_match
+            or address in additional
+        )
     }

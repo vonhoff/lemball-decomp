@@ -2,9 +2,20 @@
 
 #include "CFontTable.h"
 #include "CMogRes.h"
+#include "ResourceChunkTypes.h"
 #include "ResourceTypeList.h"
 
 #include <stddef.h>
+
+// FUNCTION: LEMBALL 0x0045d760
+CResFONT::CResFONT() : CResBaseLIST((ResListHeader*) g_pResourceTypes)
+{
+	m_animationEntries = NULL;
+	m_fontEntries = NULL;
+	m_fontTable = NULL;
+	Initialise();
+	m_initialised = 1;
+}
 
 // FUNCTION: LEMBALL 0x0045d7b0
 CResFONT::CResFONT(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g_pResourceTypes)
@@ -37,7 +48,7 @@ CResFONT* CResFONT::Load(unsigned int p_resourceId)
 	if (res == NULL) {
 		return (CResFONT*) (new CResFONT(p_resourceId))->CheckError();
 	}
-	if (res->m_chunkType != 0x4c495354) {
+	if (res->m_chunkType != RESOURCE_CHUNK_LIST) {
 		res->UnLoad();
 		return NULL;
 	}

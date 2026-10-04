@@ -1,4 +1,5 @@
 #include "CResBIN.h"
+#include "ResourceChunkTypes.h"
 
 #include "CMogRes.h"
 
@@ -20,7 +21,7 @@ CResBIN* CResBIN::Load(unsigned int p_resourceId)
 		}
 		return (CResBIN*) res->CheckError();
 	}
-	if (res->m_chunkType != 0x42494e20) {
+	if (res->m_chunkType != RESOURCE_CHUNK_BIN) {
 		res->UnLoad();
 		return NULL;
 	}
@@ -30,5 +31,5 @@ CResBIN* CResBIN::Load(unsigned int p_resourceId)
 // FUNCTION: LEMBALL 0x0045ec60
 void CResBIN::SetType()
 {
-	m_chunkType = 0x42494e20;
+	m_chunkType = RESOURCE_CHUNK_BIN;
 }

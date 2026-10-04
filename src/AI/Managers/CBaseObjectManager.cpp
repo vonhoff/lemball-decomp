@@ -6,8 +6,10 @@
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGameObject.h"
 #include "../Base/CGlobalGameObject.h"
+#include "../Messages/GameMessageIds.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 #include "Visos/Network/CWriteSocket.h"
+#include "Visos/Network/NetworkConstants.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -39,7 +41,7 @@ void CBaseObjectManager::Add(CNetworkMessage* p_message)
 		if (m_pendingSendCount != 0) {
 			unsigned long start = timeGetTime();
 			while (m_pendingSendCount != 0) {
-				if (timeGetTime() - start >= 2000) {
+				if (timeGetTime() - start >= NETWORK_PENDING_SEND_TIMEOUT_MS) {
 					break;
 				}
 				g_pBaseNetwork->WaitProcess();
@@ -73,25 +75,26 @@ void CBaseObjectManager::ProcessNetwork()
 	if ((int) m_openDepth <= 0 || m_pendingSendCount != 0 || g_pActiveConnection == NULL) {
 		return;
 	}
-	CNetworkMessage::Add((unsigned short) 0x2f);
+	CNetworkMessage::Add((unsigned short) MESSAGE_GAME_STREAM_END);
 	CConnect* connection = g_pActiveConnection;
-	if (connection->m_segmentIndex != -1 ||
+	if (connection->m_segmentIndex != NETWORK_SEGMENT_INDEX_INACTIVE ||
 		!connection->CWriteSocket::m_criticalBuffer->IsPacketAvailable(connection->CWriteSocket::m_criticalSequence)) {
 		unsigned long start = timeGetTime();
 		while (1) {
 			connection = g_pActiveConnection;
-			if (connection->m_segmentIndex == -1 && connection->CWriteSocket::m_criticalBuffer->IsPacketAvailable(
-														connection->CWriteSocket::m_criticalSequence)) {
+			if (connection->m_segmentIndex == NETWORK_SEGMENT_INDEX_INACTIVE &&
+				connection->CWriteSocket::m_criticalBuffer->IsPacketAvailable(
+					connection->CWriteSocket::m_criticalSequence)) {
 				break;
 			}
-			if (timeGetTime() - start >= 4000) {
+			if (timeGetTime() - start >= NETWORK_CRITICAL_PACKET_WAIT_TIMEOUT_MS) {
 				break;
 			}
 			g_pBaseNetwork->WaitProcess();
 		}
 	}
 	connection = g_pActiveConnection;
-	if (connection->m_segmentIndex == -1 &&
+	if (connection->m_segmentIndex == NETWORK_SEGMENT_INDEX_INACTIVE &&
 		connection->CWriteSocket::m_criticalBuffer->IsPacketAvailable(connection->CWriteSocket::m_criticalSequence)) {
 		Send(g_pActiveConnection);
 		CloseDataStream();
@@ -105,7 +108,7 @@ void CBaseObjectManager::ProcessNetwork()
 void CBaseObjectManager::GetData()
 {
 	unsigned short type = GetWORD();
-	while (type != 0x2f) {
+	while (type != MESSAGE_GAME_STREAM_END) {
 		unsigned short id = GetWORD();
 		CGlobalGameObject* found = NULL;
 		for (unsigned int i = 0; (int) i < (int) (unsigned int) g_wObjectCount; i++) {

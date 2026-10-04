@@ -1,6 +1,8 @@
 #ifndef LEMBALL_FRONTEND_BASE_CBASEFRONTENDDRAWER_H
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDDRAWER_H
 
+#include "FrontendLayoutMode.h"
+
 #include "../../Visos/Animation/CAnimsManager.h"
 #include "../../Visos/Animation/CStaticAnim.h"
 #include "../../Visos/Foundation/CBaseQueueHandler.h"

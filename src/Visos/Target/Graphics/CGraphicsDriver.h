@@ -13,6 +13,10 @@ class CPVGDIBitmap;
 class CResPALETTE;
 struct CGraphicsState;
 
+enum {
+	DIB_INITIAL_TOP_DOWN_HEIGHT = -1
+};
+
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00498700
 class CGraphicsDriver {

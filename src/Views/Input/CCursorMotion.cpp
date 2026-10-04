@@ -8,10 +8,21 @@
 #include "../../Visos/Foundation/VsTime.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Animation/CLemmingAnimsManager.h"
+#include "Visos/Foundation/FixedPoint.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Foundation/VsDebug.h"
 
 #include <string.h>
+
+namespace
+{
+enum {
+	CURSOR_INITIAL_X_FIXED = 160 * FIXED_POINT_ONE,
+	CURSOR_INITIAL_Y_FIXED = 100 * FIXED_POINT_ONE,
+	CURSOR_MAX_VELOCITY_FIXED = 5 * FIXED_POINT_ONE,
+	CURSOR_VELOCITY_ACCELERATION_PER_20_MS_FIXED = 0xcc,
+};
+}
 
 // FUNCTION: LEMBALL 0x00432590
 CCursorMotion::CCursorMotion(CLemmingAnimsManager* p_anims, CAI* p_ai, CMap* p_map)
@@ -28,8 +39,8 @@ CCursorMotion::CCursorMotion(CLemmingAnimsManager* p_anims, CAI* p_ai, CMap* p_m
 	m_accelerationY = 0;
 	m_horizontalActive = 0;
 	m_verticalActive = 0;
-	m_fixedX = 0xa0000;
-	m_fixedY = 0x64000;
+	m_fixedX = CURSOR_INITIAL_X_FIXED;
+	m_fixedY = CURSOR_INITIAL_Y_FIXED;
 	PostPosition();
 }
 
@@ -44,10 +55,10 @@ void CCursorMotion::PostPosition()
 	int x;
 	int y;
 	Message message;
-	message.m_type = 1;
+	message.m_type = AI_MESSAGE_CURSOR_POSITION;
 	memset(&message.m_time, 0, 16);
-	int screenX = m_fixedX >> 12;
-	int screenY = m_fixedY >> 12;
+	int screenX = m_fixedX >> FIXED_POINT_FRACTION_BITS;
+	int screenY = m_fixedY >> FIXED_POINT_FRACTION_BITS;
 	m_map->ScreenToGame(screenX, screenY, x, y);
 	message.m_code = x;
 	message.m_payload = (void*) y;
@@ -62,22 +73,22 @@ void CCursorMotion::Process()
 		int elapsed = now - m_lastTickX;
 		m_lastTickX = now;
 		m_velocityX += m_accelerationX * elapsed / 20;
-		if (m_velocityX > 0x5000) {
-			m_velocityX = 0x5000;
+		if (m_velocityX > CURSOR_MAX_VELOCITY_FIXED) {
+			m_velocityX = CURSOR_MAX_VELOCITY_FIXED;
 		}
-		if (m_velocityX < -0x5000) {
-			m_velocityX = -0x5000;
+		if (m_velocityX < -CURSOR_MAX_VELOCITY_FIXED) {
+			m_velocityX = -CURSOR_MAX_VELOCITY_FIXED;
 		}
 	}
 	if (m_verticalActive) {
 		int elapsed = now - m_lastTickY;
 		m_lastTickY = now;
 		m_velocityY += m_accelerationY * elapsed / 20;
-		if (m_velocityY > 0x5000) {
-			m_velocityY = 0x5000;
+		if (m_velocityY > CURSOR_MAX_VELOCITY_FIXED) {
+			m_velocityY = CURSOR_MAX_VELOCITY_FIXED;
 		}
-		if (m_velocityY < -0x5000) {
-			m_velocityY = -0x5000;
+		if (m_velocityY < -CURSOR_MAX_VELOCITY_FIXED) {
+			m_velocityY = -CURSOR_MAX_VELOCITY_FIXED;
 		}
 	}
 	if (m_horizontalActive || m_verticalActive || m_positionDirty) {
@@ -93,8 +104,8 @@ void CCursorMotion::Process()
 // FUNCTION: LEMBALL 0x004327b0
 void CCursorMotion::Draw(unsigned int p_unused)
 {
-	int x = (m_fixedX >> 12) - m_drawOffsetX;
-	int y = (m_fixedY >> 12) - m_drawOffsetY;
+	int x = (m_fixedX >> FIXED_POINT_FRACTION_BITS) - m_drawOffsetX;
+	int y = (m_fixedY >> FIXED_POINT_FRACTION_BITS) - m_drawOffsetY;
 	m_anims->DrawAnim((short) x, (short) y, RES_CURSORS_HAND, 0, 0, NULL);
 }
 
@@ -110,14 +121,14 @@ void CCursorMotion::SetPosition(const CVSPoint& p_position)
 	m_positionDirty = 1;
 	m_horizontalActive = 0;
 	m_verticalActive = 0;
-	m_fixedY = p_position.m_y << 12;
-	m_fixedX = p_position.m_x << 12;
+	m_fixedY = p_position.m_y << FIXED_POINT_FRACTION_BITS;
+	m_fixedX = p_position.m_x << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x00432840
 CVSPoint CCursorMotion::GetPosition()
 {
-	return CVSPoint((short) (m_fixedX >> 12), (short) (m_fixedY >> 12));
+	return CVSPoint((short) (m_fixedX >> FIXED_POINT_FRACTION_BITS), (short) (m_fixedY >> FIXED_POINT_FRACTION_BITS));
 }
 
 // FUNCTION: LEMBALL 0x00432860
@@ -141,7 +152,9 @@ void CCursorMotion::StartHorizontal(unsigned int p_positive)
 {
 	if (!m_horizontalActive) {
 		unsigned int now = CurrentMilliTimer();
-		m_accelerationX = (p_positive ? CFixed(0xcc) : CFixed(-0xcc)).m_value;
+		m_accelerationX = (p_positive ? CFixed(CURSOR_VELOCITY_ACCELERATION_PER_20_MS_FIXED)
+									  : CFixed(-CURSOR_VELOCITY_ACCELERATION_PER_20_MS_FIXED))
+							  .m_value;
 		m_lastTickX = now;
 		m_horizontalActive = 1;
 	}
@@ -152,7 +165,9 @@ void CCursorMotion::StartVertical(unsigned int p_positive)
 {
 	if (!m_verticalActive) {
 		unsigned int now = CurrentMilliTimer();
-		m_accelerationY = (p_positive ? CFixed(0xcc) : CFixed(-0xcc)).m_value;
+		m_accelerationY = (p_positive ? CFixed(CURSOR_VELOCITY_ACCELERATION_PER_20_MS_FIXED)
+									  : CFixed(-CURSOR_VELOCITY_ACCELERATION_PER_20_MS_FIXED))
+							  .m_value;
 		m_lastTickY = now;
 		m_verticalActive = 1;
 	}

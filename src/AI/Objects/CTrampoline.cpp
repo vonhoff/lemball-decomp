@@ -14,6 +14,11 @@
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+enum {
+	TRAMPOLINE_ACTIVATION_RADIUS_PIXELS = 32,
+	TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED = 4 * FIXED_POINT_ONE
+};
+
 // FUNCTION: LEMBALL 0x0042a990
 CTrampoline::CTrampoline() : CGlobalGameObject(OBJECT_TRAMPOLINE, 0, 0)
 {
@@ -44,14 +49,14 @@ void CTrampoline::Set(unsigned short p_id, const AICOORD& p_position)
 	m_active = 1;
 	m_enabled = 1;
 
-	int blockX = (p_position.m_xFixed >> 12) / 16;
+	int blockX = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (blockX >= 0) {
-		int blockY = (p_position.m_yFixed >> 12) / 16;
+		int blockY = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 		if (blockY >= 0) {
 			CMap* map = g_pMap;
 			int width = map->m_ground.m_width;
 			if (width > blockX && map->m_ground.m_height > blockY) {
-				g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= 0x8000;
+				g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_OBJECT_INTERACTION;
 			}
 		}
 	}
@@ -81,18 +86,18 @@ bool CTrampoline::Process()
 // FUNCTION: LEMBALL 0x0042aaf0
 int CTrampoline::TryEnableNearPosition(const AICOORD& p_position, CGameObject* p_object)
 {
-	if ((int) Distance(m_position.m_xFixed >> 12,
-					   m_position.m_yFixed >> 12,
-					   p_position.m_xFixed >> 12,
-					   p_position.m_yFixed >> 12) < 0x20) {
+	if ((int) Distance(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+					   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+					   p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+					   p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) < TRAMPOLINE_ACTIVATION_RADIUS_PIXELS) {
 		m_enabled = 1;
 		m_lastMovementTick = g_dwGameTick;
 		m_stateTimer = g_dwSimulationTimestamp;
-		m_position.m_xFixed = p_position.m_xFixed + 0x4000;
-		m_position.m_yFixed = p_position.m_yFixed + 0x4000;
+		m_position.m_xFixed = p_position.m_xFixed + TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED;
+		m_position.m_yFixed = p_position.m_yFixed + TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED;
 		int z = p_position.m_zFixed;
 		m_position.m_zFixed = z;
-		m_relocationZ = z >> 12;
+		m_relocationZ = z >> FIXED_POINT_FRACTION_BITS;
 		p_object->m_deathRequested = 1;
 		return 1;
 	}

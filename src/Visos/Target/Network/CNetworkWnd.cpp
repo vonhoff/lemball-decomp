@@ -74,7 +74,7 @@ static LRESULT CALLBACK NetworkWndProc(HWND p_window, UINT p_message, WPARAM p_w
 		if (window != NULL && (window->m_lastMessage == 0 ||
 							   (window->m_firstMessage <= p_message && p_message <= window->m_lastMessage))) {
 			result = window->Process(p_message, p_wParam, p_lParam);
-			if (result != -1) {
+			if (result != NETWORK_WINDOW_MESSAGE_UNHANDLED) {
 				return result;
 			}
 		}

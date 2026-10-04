@@ -6,6 +6,10 @@
 #include "CSurface.h"
 #include "Visos/Foundation/CVSOStream.h"
 
+enum {
+	GDI_SURFACE_SLOT_NOT_FOUND = -1
+};
+
 // GLOBAL: LEMBALL 0x004a2008
 CGDIDevice* g_pGdiDevice = NULL;
 
@@ -63,7 +67,7 @@ int CGDIDevice::FindFreeSurface()
 			return i;
 		}
 	}
-	return -1;
+	return GDI_SURFACE_SLOT_NOT_FOUND;
 }
 
 // FUNCTION: LEMBALL 0x0046bd10
@@ -72,7 +76,7 @@ CSurface* CGDIDevice::AllocateSurface(const CVSRect& p_rect, CSurface* p_parentS
 	int i;
 
 	i = FindFreeSurface();
-	if (i == -1) {
+	if (i == GDI_SURFACE_SLOT_NOT_FOUND) {
 		return NULL;
 	}
 
@@ -130,7 +134,7 @@ int CGDIDevice::FindSurface(CSurface* p_surface)
 			return i;
 		}
 	}
-	return -1;
+	return GDI_SURFACE_SLOT_NOT_FOUND;
 }
 
 // FUNCTION: LEMBALL 0x0046bfd0

@@ -41,5 +41,6 @@ def collect_sources(paths=None):
 def load_engine():
     from reccmp.compare import Compare
     from reccmp.project.detect import RecCmpProject
+
     target = RecCmpProject.from_directory(BUILD).get("LEMBALL")
     return target, Compare.from_target(target)

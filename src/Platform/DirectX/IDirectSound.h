@@ -4,6 +4,8 @@
 class IDirectSoundBuffer;
 struct DSBUFFERDESC;
 
+#define DSSCL_PRIORITY 0x00000002
+
 class IDirectSound {
 public:
 	virtual long __stdcall QueryInterface(const void* p_interfaceId, void** p_object) = 0;

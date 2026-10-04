@@ -1,15 +1,20 @@
 #include "CNode.h"
 
+#include "AI/Base/AICOORD.h"
 #include "AI/Base/CPt3.h"
 #include "NodeNeighbour.h"
 
 #include <stddef.h>
 
+enum {
+	NODE_UNINITIALIZED_FIXED_COORDINATE = 0xaa55aa55
+};
+
 // FUNCTION: LEMBALL 0x004212e0
 CNode::CNode()
 {
-	m_xFixed = 0xaa55aa55;
-	m_yFixed = 0xaa55aa55;
+	m_xFixed = NODE_UNINITIALIZED_FIXED_COORDINATE;
+	m_yFixed = NODE_UNINITIALIZED_FIXED_COORDINATE;
 	m_neighbours = NULL;
 }
 
@@ -34,8 +39,8 @@ void CNode::Initialise(int p_x, int p_y, int p_neighbourCapacity)
 		m_neighbours = (NodeNeighbour*) operator new(p_neighbourCapacity * sizeof(NodeNeighbour));
 	}
 	m_neighbourCapacity = p_neighbourCapacity;
-	m_xFixed = p_x << 12;
-	m_yFixed = p_y << 12;
+	m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x00421370
@@ -48,8 +53,8 @@ void CNode::SetFixedCoordinates(int p_x, int p_y, unsigned int p_unused)
 // FUNCTION: LEMBALL 0x00421380
 void CNode::SetIntegerCoordinates(int p_x, int p_y)
 {
-	m_xFixed = p_x << 12;
-	m_yFixed = p_y << 12;
+	m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x004213a0
@@ -63,14 +68,14 @@ void CNode::AddANeighbour(int p_node, int p_cost)
 // FUNCTION: LEMBALL 0x004213d0
 CPt3 CNode::Position()
 {
-	return CPt3(m_xFixed, m_yFixed, 0xaa55aa55);
+	return CPt3(m_xFixed, m_yFixed, NODE_UNINITIALIZED_FIXED_COORDINATE);
 }
 
 // FUNCTION: LEMBALL 0x004213f0
 void CNode::ExtractIntegerPosition(int* p_x, int* p_y)
 {
-	*p_x = m_xFixed >> 12;
-	*p_y = m_yFixed >> 12;
+	*p_x = m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	*p_y = m_yFixed >> FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x00421410

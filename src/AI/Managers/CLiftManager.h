@@ -25,6 +25,8 @@ public:
 	void AddLiftFromXyz(unsigned short p_id, int p_x, int p_y, int p_z);
 	void AddLiftFromEndpoints(unsigned short p_id, tCoord3d& p_start, tCoord3d& p_end);
 	int ExportEndpoints(LiftEndpointRecord* p_records);
+	int ExportLiftStartCoordinates(tCoord3d* p_records);
+	void CalculateAllLiftCliffs();
 	void RemoveLift(CLift* p_lift);
 	void StepOn(const AICOORD& p_position, CGameObject* p_object);
 	void Switch(swMessage p_message, int p_id, int p_legacyA, int p_legacyB);

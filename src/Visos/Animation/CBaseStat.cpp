@@ -3,11 +3,13 @@
 #include "../Foundation/CVSOStream.h"
 #include "Visos/Foundation/CString.h"
 
+enum eStatInitialBound { STAT_MINIMUM_INITIAL_UPPER_BOUND = 0xffffffffUL };
+
 // FUNCTION: LEMBALL 0x0045ac10
 CBaseStat::CBaseStat(char* p_description)
 {
 	m_description = p_description;
-	m_minimum = 0xffffffff;
+	m_minimum = STAT_MINIMUM_INITIAL_UPPER_BOUND;
 	m_maximum = 0;
 	m_total = 0;
 	m_sampleCount = 0;

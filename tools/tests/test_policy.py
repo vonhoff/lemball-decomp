@@ -62,7 +62,7 @@ class PolicyTests(unittest.TestCase):
             "// FUNCTION: LEMBALL 0x00401000\n// __isctype\n"
             "// FUNCTION: LEMBALL 0x00401010 SYMBOL\n// ??0CVSRect@@QAE@FFFF@Z\n"
             "// SYNTHETIC: LEMBALL 0x00401020\n// CThing::`scalar deleting destructor'\n"
-            "// STRING: LEMBALL 0x00401030\n// \"some text\"\n"
+            '// STRING: LEMBALL 0x00401030\n// "some text"\n'
             "// VTABLE: LEMBALL 0x00401040 CBase\n"
             "// VTABLE: LEMBALL 0x00401050 CDerived's `CBase\n"
             "// STUB: LEMBALL 0x00401060\nvoid Stub() {}\n"

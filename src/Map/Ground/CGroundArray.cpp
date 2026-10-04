@@ -33,7 +33,7 @@ void CGroundArray::Clear()
 				ground = m_ground + y * m_width + x;
 				ground->m_objectType = TERRAIN_BLOX_4;
 				ground->m_objectData = 0;
-				ground->m_collision = 0;
+				ground->m_collision = GROUND_COLLISION_NONE;
 				ground->m_height = 0;
 				ground->m_cliff = 0;
 				x++;
@@ -46,10 +46,10 @@ void CGroundArray::Clear()
 // FUNCTION: LEMBALL 0x00431520
 unsigned short CGroundArray::GetZ(int p_x, int p_y)
 {
-	int blockX = p_x >> 4;
-	int blockY = p_y >> 4;
+	int blockX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
 	if (p_x >= 0 && p_y >= 0 && blockX < m_width && m_height > blockY) {
-		return m_ground[blockY * m_width + blockX].GetZ(p_x & 0xf, p_y & 0xf);
+		return m_ground[blockY * m_width + blockX].GetZ(p_x & GROUND_BLOCK_PIXEL_MASK, p_y & GROUND_BLOCK_PIXEL_MASK);
 	}
 	return 0;
 }

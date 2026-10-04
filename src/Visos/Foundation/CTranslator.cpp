@@ -21,15 +21,15 @@ int CTranslator::ProcessMsg(Message* p_message)
 	translated.m_time = message->m_time;
 	unsigned short type = message->m_type;
 	switch ((int) type) {
-	case 1:
-	case 2:
+	case MESSAGE_RAW_KEY_UP:
+	case MESSAGE_RAW_KEY_DOWN:
 		index = 0;
 		entry = g_dwInputTranslationPairs;
 		do {
 			if (entry->m_platformCode == (unsigned int) message->m_code) {
-				translated.m_type = 3;
-				if (type != 1) {
-					translated.m_type = 4;
+				translated.m_type = MESSAGE_KEY_UP;
+				if (type != MESSAGE_RAW_KEY_UP) {
+					translated.m_type = MESSAGE_KEY_DOWN;
 				}
 				translated.m_code = (int) g_dwInputTranslationPairs[index].m_inputCode;
 				if (translated.m_code == INPUT_KEY_SHIFT) {

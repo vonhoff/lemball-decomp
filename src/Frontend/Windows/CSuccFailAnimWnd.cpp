@@ -4,7 +4,9 @@
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Resources/Manifest.h"
+#include "Visos/Foundation/RandomConstants.h"
 #include "Visos/Graphics/CAnimWnd.h"
+#include "Visos/Graphics/CWnd.h"
 
 // FUNCTION: LEMBALL 0x00450c40
 void CSuccFailAnimWnd::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_display, int p_success)
@@ -19,14 +21,14 @@ void CSuccFailAnimWnd::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_di
 	if (p_success != 0) {
 		m_lowResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1;
 		m_highResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_SUCCESS_SUCCESS1;
-		sample = *g_pRandomSeed * 0x29 + 0x1f & 0x7fffff;
+		sample = *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
 		*g_pRandomSeed = sample;
 		m_variantIndex = sample % 3;
 		return;
 	}
 	m_lowResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1;
 	m_highResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_FAIL_FAIL1;
-	sample = *g_pRandomSeed * 0x29 + 0x1f & 0x7fffff;
+	sample = *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
 	*g_pRandomSeed = sample;
 	m_variantIndex = sample % 3;
 }
@@ -60,5 +62,5 @@ void CSuccFailAnimWnd::OnStop()
 // FUNCTION: LEMBALL 0x004510d0
 unsigned int CSuccFailAnimWnd::GetStyle()
 {
-	return 0x40000001;
+	return WINDOW_STYLE_CHILD | WINDOW_STYLE_SHOW_ON_CREATE;
 }

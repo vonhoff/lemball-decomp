@@ -20,6 +20,7 @@ public:
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
 	void Process();
 	void Restart();
+	void RemoveRocket(CRocket* p_rocket);
 	void ResetCount();
 
 	friend class CAI;

@@ -8,6 +8,10 @@ class CAI;
 class CMap;
 class CTheBalloonPost;
 class CViewData;
+
+enum {
+	BALLOON_POST_COUNT = 4
+};
 // SIZE 0x4c
 class CBalloonPost {
 public:
@@ -22,11 +26,11 @@ public:
 	void DeactivatePost(CTheBalloonPost* p_post);
 
 private:
-	unsigned short m_activeMask; // 0x00
-	AICOORD m_positions[4];      // 0x04
-	CTheBalloonPost* m_posts[4]; // 0x34
-	CAI* m_ai;                   // 0x44
-	CMap* m_map;                 // 0x48
+	unsigned short m_activeMask;                  // 0x00
+	AICOORD m_positions[BALLOON_POST_COUNT];      // 0x04
+	CTheBalloonPost* m_posts[BALLOON_POST_COUNT]; // 0x34
+	CAI* m_ai;                                    // 0x44
+	CMap* m_map;                                  // 0x48
 };
 
 #endif

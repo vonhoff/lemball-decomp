@@ -1,17 +1,19 @@
 #include "CPortsMessage.h"
 
+#include "Visos/Network/NetworkConstants.h"
+
 // FUNCTION: LEMBALL 0x00479810
 CPortsMessage::CPortsMessage()
 {
 	int i;
 
-	m_useCounts = (unsigned char*) operator new(0x200);
-	m_payloadCapacity += 0x200;
+	m_useCounts = (unsigned char*) operator new(NETWORK_PORT_COUNT);
+	m_payloadCapacity += NETWORK_PORT_COUNT;
 	i = 0;
 	do {
 		m_useCounts[i] = 0;
 		i++;
-	} while (i < 0x200);
+	} while (i < NETWORK_PORT_COUNT);
 }
 
 // FUNCTION: LEMBALL 0x00479860
@@ -25,18 +27,18 @@ bool CPortsMessage::AnyUsed()
 			return true;
 		}
 		i++;
-	} while (i < 0x200);
+	} while (i < NETWORK_PORT_COUNT);
 	return false;
 }
 
 // FUNCTION: LEMBALL 0x0047b870
 void CPortsMessage::AddData()
 {
-	Add(m_useCounts, 0x200);
+	Add(m_useCounts, NETWORK_PORT_COUNT);
 }
 
 // FUNCTION: LEMBALL 0x0047b880
 void CPortsMessage::GetData()
 {
-	GetCopy(m_useCounts, 0x200);
+	GetCopy(m_useCounts, NETWORK_PORT_COUNT);
 }

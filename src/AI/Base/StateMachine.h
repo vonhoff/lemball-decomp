@@ -33,6 +33,7 @@ bool QOnBalloon(CAI* p_ai, CGameObject* p_object, Info* p_info);
 void PlayerTurnToFaceCursor(CAI* p_ai, CGameObject* p_object, Info* p_info);
 void PlayerTurnToFaceTarget(CAI* p_ai, CGameObject* p_object, Info* p_info);
 void PlayerFire(CAI* p_ai, CGameObject* p_object, Info* p_info);
+void PlayerStartFiring(CAI* p_ai, CGameObject* p_object, Info* p_info);
 void PlayerEndFiring(CAI* p_ai, CGameObject* p_object, Info* p_info);
 void StartStanding(CAI* p_ai, CGameObject* p_object, Info* p_info);
 void PlayerRandomAction(CAI* p_ai, CGameObject* p_object, Info* p_info);

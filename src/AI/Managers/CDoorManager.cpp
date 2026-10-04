@@ -4,6 +4,7 @@
 #include "../Navigation/CAI.h"
 #include "../Objects/CDoor.h"
 #include "../Objects/CViewData.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Base/ObjectIds.h"
 #include "AI/Base/ObjectTypes.h"
 #include "AI/Managers/CBaseObjectManager.h"
@@ -15,7 +16,9 @@ class AICOORD;
 unsigned short g_wNextDoorIndex = 0;
 
 // FUNCTION: LEMBALL 0x0040df30
-CDoorManager::CDoorManager(CAI* p_ai, int p_capacity) : CBaseObjectManager(0x13, 0x8)
+CDoorManager::CDoorManager(CAI* p_ai, int p_capacity)
+	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_DOORS,
+						 OBJECT_MANAGER_TRANSPORT_DOORS)
 {
 	m_ai = p_ai;
 	m_capacity = p_capacity;
@@ -88,6 +91,23 @@ int CDoorManager::Add(unsigned short p_id,
 	return INVALID_DOOR_INDEX;
 }
 
+// FUNCTION: LEMBALL 0x0040e140
+void CDoorManager::RemoveDoorByObject(CDoor* p_door)
+{
+	unsigned short objectId = (unsigned short) p_door->GetId();
+	for (int index = 0; index < m_count; index++) {
+		if ((unsigned short) m_doors[index].GetId() == objectId) {
+			m_doors[index].Delete();
+			m_doors[index].SetId(INVALID_OBJECT_ID);
+			for (int next = index + 1; next < m_count; next++) {
+				m_doors[next - 1] = m_doors[next];
+			}
+			m_count--;
+			return;
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0040e500
 int CDoorManager::Open(const AICOORD& p_position, CGameObject* p_object)
 {
@@ -131,7 +151,7 @@ void CDoorManager::Switch(swMessage p_message, int p_id)
 				return;
 			}
 		}
-		if (p_message == 3) {
+		if (p_message == SW_DOOR) {
 			m_doors[i].Unlock();
 		}
 	}
@@ -165,14 +185,14 @@ void CDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 		int y;
 		int z;
 		do {
-			if (m_ai->m_levelVersion > 1) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 				id = *data++;
 			}
 			else {
 				id = (unsigned short) CGameObject::NextId();
 			}
 			objectType = (eObjectType) *data++;
-			if (m_ai->m_levelVersion > 2) {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_DOOR_TYPES) {
 				doorType = *data++;
 			}
 			else {

@@ -26,6 +26,16 @@ enum ePauseWindowMessages {
 	PAUSE_MSG_NONE = 5
 };
 
+enum ePauseOptionSelection {
+	PAUSE_OPTION_RESUME = 2,
+	PAUSE_OPTION_RESTART = 3,
+	PAUSE_OPTION_QUIT = 4
+};
+
+enum ePauseConfirmationSelection {
+	PAUSE_CONFIRM_YES = 2
+};
+
 // SIZE 0x20c
 // VTABLE: LEMBALL 0x00497798 CGWnd
 // VTABLE: LEMBALL 0x00497788 CBaseQueueHandler

@@ -5,6 +5,10 @@
 #include "Visos/Foundation/CVSOStream.h"
 #include "Visos/Foundation/VsInit.h"
 
+enum {
+	GLOBAL_ALLOC_FLAG_MOVEABLE = 0x0002
+};
+
 extern "C" __declspec(dllimport) void* __stdcall GlobalAlloc(unsigned int p_flags, unsigned int p_bytes);
 extern "C" __declspec(dllimport) void* __stdcall GlobalLock(void* p_mem);
 extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(void* p_mem);
@@ -39,7 +43,7 @@ bool _MEM_Init()
 	int smallEnabled;
 	CSmallMemory* smallMemory;
 
-	g_pMasterArenaMemory = GlobalAlloc(2, g_preInitActive.m_memoryBudget);
+	g_pMasterArenaMemory = GlobalAlloc(GLOBAL_ALLOC_FLAG_MOVEABLE, g_preInitActive.m_memoryBudget);
 	if (g_pMasterArenaMemory == NULL) {
 		return false;
 	}

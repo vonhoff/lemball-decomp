@@ -18,6 +18,7 @@
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/CBaseFrontendProcess.h"
 #include "Frontend/Base/FlowProcesses.h"
+#include "Frontend/Base/FrontendLayoutMode.h"
 #include "Frontend/Support/CEntryHandler.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Foundation/CVSPoint.h"
@@ -35,6 +36,8 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 extern char* g_szBroadcastPeerName;
 
+#define NETWORK_OPTIONS_MODE_LAN 0
+#define NETWORK_OPTIONS_MODE_SPECIFIC_HOST 1
 #define NETWORK_OPTIONS_BUTTON_MESSAGE_LAN 0xacef000c
 #define NETWORK_OPTIONS_BUTTON_MESSAGE_SPECIFIC_HOST 0xacef000d
 #define NETWORK_OPTIONS_BUTTON_MESSAGE_RETURN 0xacef000e
@@ -178,7 +181,7 @@ char g_szNetworkOptionsDividerLocal[] = "__________________________________";
 char g_szNetworkOptionsCursor[] = "_";
 
 // GLOBAL: LEMBALL 0x004a0320
-char* g_apNetworkOptionsMessages[10] = {
+char* g_apNetworkOptionsMessages[NETWORK_OPTIONS_MESSAGE_COUNT] = {
 	g_szNetworkOptionsMsg1,
 	g_szNetworkOptionsMsg2,
 	g_szNetworkOptionsMsg3,
@@ -192,10 +195,16 @@ char* g_apNetworkOptionsMessages[10] = {
 };
 
 // GLOBAL: LEMBALL 0x004a0348
-int g_anNetworkOptionsEditMessages[3] = {2, 3, 0};
+int g_anNetworkOptionsEditMessages[3] = {NETWORK_OPTIONS_MESSAGE_ENTER_NAME,
+										 NETWORK_OPTIONS_MESSAGE_ENTER_IP_ADDRESS,
+										 NETWORK_OPTIONS_MESSAGE_NONE};
 
 // GLOBAL: LEMBALL 0x004a0358
 int g_anNetworkOptionsEditMaxLength[3] = {8, NETWORK_OPTIONS_ADDRESS_MAX_LENGTH, 0};
+
+enum {
+	NETWORK_OPTIONS_EDIT_BUFFER_CAPACITY = 0x28
+};
 
 // GLOBAL: LEMBALL 0x004a0368
 char g_szNetworkGameName[16];
@@ -211,35 +220,43 @@ int g_nNetworkOptionsCapsOrShift = 0;
 
 // FUNCTION: LEMBALL 0x00453280
 CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
-	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_NETWORK_OPTIONS, 0x32, 200, 0, 100, 0x28)
+	: CBaseFrontendDrawer(p_display,
+						  p_gdi,
+						  p_rect,
+						  FLOW_NETWORK_OPTIONS,
+						  0x32,
+						  200,
+						  0,
+						  100,
+						  NETWORK_OPTIONS_EDIT_BUFFER_CAPACITY)
 {
 	int playerEntryIndex;
 
 	m_editingActive = 0;
-	m_message = 1;
-	m_drawnMessage = 1;
+	m_message = NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT;
+	m_drawnMessage = NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT;
 	m_messageDuration = 0;
-	m_pendingEvent = 0;
+	m_pendingEvent = NETWORK_OPTIONS_PENDING_EVENT_NONE;
 	m_broadcasting = 0;
-	m_networkState = 0;
+	m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
 	m_redrawPending = 0;
 	m_lastDrawTime = CurrentMilliTimer();
 	m_localAddressText = NULL;
 	m_localComputerName = NULL;
 	m_locked = 0;
 	m_startPending = 0;
-	m_pendingStage = 0;
+	m_pendingStage = NETWORK_OPTIONS_EDIT_NONE;
 	m_visibleEntryCount = 0;
-	m_editor = new CEditString(0x28);
-	m_playerEntries = new CEntryHandler[10];
-	m_acceptedPlayer = -1;
-	m_highlightedPlayer = -1;
+	m_editor = new CEditString(NETWORK_OPTIONS_EDIT_BUFFER_CAPACITY);
+	m_playerEntries = new CEntryHandler[NETWORK_OPTIONS_PLAYER_ENTRY_COUNT];
+	m_acceptedPlayer = NETWORK_OPTIONS_NO_PLAYER_INDEX;
+	m_highlightedPlayer = NETWORK_OPTIONS_NO_PLAYER_INDEX;
 	RegisterRemaps();
 	playerEntryIndex = 0;
 	do {
 		((CGWnd*) m_display)->m_hotAreaList->AddToList(&m_playerEntries[playerEntryIndex]);
 		playerEntryIndex = playerEntryIndex + 1;
-	} while (playerEntryIndex < 10);
+	} while (playerEntryIndex < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
 	m_drawBackground = 1;
 	m_drawFrame = 1;
 	m_drawSolid = 0;
@@ -253,7 +270,7 @@ void CNetworkOptionsDrawer::Load()
 	unsigned long* animIds0;
 	unsigned long* animIds2;
 
-	if (m_mode == 1) {
+	if (m_mode == FRONTEND_LAYOUT_COMPACT) {
 		animIds2 = &g_anNetworkOptionsAnimIds[5];
 		animIds1 = &g_anNetworkOptionsAnimIds[4];
 		animIds0 = &g_anNetworkOptionsAnimIds[3];
@@ -270,7 +287,7 @@ void CNetworkOptionsDrawer::Load()
 	m_hiliteController->AddButton(m_layoutTable->m_framePos[0].m_x,
 								  m_layoutTable->m_framePos[0].m_y,
 								  animIds0,
-								  1,
+								  HILITE_BUTTON_MODE_ACTION_MESSAGE,
 								  0,
 								  0,
 								  0,
@@ -279,7 +296,7 @@ void CNetworkOptionsDrawer::Load()
 	m_hiliteController->AddButton(m_layoutTable->m_framePos[1].m_x,
 								  m_layoutTable->m_framePos[1].m_y,
 								  animIds1,
-								  1,
+								  HILITE_BUTTON_MODE_ACTION_MESSAGE,
 								  0,
 								  0,
 								  0,
@@ -288,7 +305,7 @@ void CNetworkOptionsDrawer::Load()
 	m_hiliteController->AddButton(m_layoutTable->m_framePos[2].m_x,
 								  m_layoutTable->m_framePos[2].m_y,
 								  animIds2,
-								  1,
+								  HILITE_BUTTON_MODE_ACTION_MESSAGE,
 								  0,
 								  0,
 								  0,
@@ -313,7 +330,7 @@ CNetworkOptionsDrawer::~CNetworkOptionsDrawer()
 	int index;
 	CEditString* editor;
 
-	if (m_returnState == 0) {
+	if (m_returnState == FLOW_NONE) {
 		if (g_pCurrentFrontendProcess != NULL) {
 			Stop();
 		}
@@ -327,7 +344,7 @@ CNetworkOptionsDrawer::~CNetworkOptionsDrawer()
 	do {
 		((CGWnd*) m_display)->m_hotAreaList->RemoveFromList(&m_playerEntries[index]);
 		index = index + 1;
-	} while (index < 10);
+	} while (index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
 	delete[] m_playerEntries;
 	editor = m_editor;
 	if (editor != NULL) {
@@ -359,7 +376,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 	}
 
 	switch ((int) p_message->m_type) {
-	case 4: {
+	case MESSAGE_KEY_DOWN: {
 
 		code = p_message->m_code;
 		if (code == INPUT_KEY_SHIFT) {
@@ -413,8 +430,8 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 				case INPUT_KEY_ESCAPE:
 					m_broadcasting = 0;
 					m_editingActive = 0;
-					m_pendingEvent = 0;
-					SetMessage(1);
+					m_pendingEvent = NETWORK_OPTIONS_PENDING_EVENT_NONE;
+					SetMessage(NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT);
 					goto input_accepted;
 				case INPUT_KEY_RETURN:
 					StopEditing();
@@ -463,9 +480,9 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			}
 			break;
 		case INPUT_KEY_SPACE:
-		case 0x22:
+		case INPUT_KEY_ACTIVATE:
 		case INPUT_KEY_RETURN:
-			if (m_highlightedPlayer != -1) {
+			if (m_highlightedPlayer != NETWORK_OPTIONS_NO_PLAYER_INDEX) {
 				CVSPoint pt;
 				m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, 0);
 				return true;
@@ -473,7 +490,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 			break;
 		}
 	}
-	case 3:
+	case MESSAGE_KEY_UP:
 		code = p_message->m_code;
 		if (code == INPUT_KEY_SHIFT) {
 			g_nNetworkOptionsCapsOrShift &= ~1;
@@ -498,18 +515,18 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		switch ((unsigned int) p_message->m_code) {
 		case NETWORK_OPTIONS_BUTTON_MESSAGE_LAN:
 			if (m_locked == 0) {
-				Start(0);
+				Start(NETWORK_OPTIONS_MODE_LAN);
 			}
 			break;
 		case NETWORK_OPTIONS_BUTTON_MESSAGE_SPECIFIC_HOST:
 			if (m_locked == 0) {
-				Start(1);
+				Start(NETWORK_OPTIONS_MODE_SPECIFIC_HOST);
 			}
 			break;
 		case NETWORK_OPTIONS_BUTTON_MESSAGE_RETURN:
 			Stop();
 			m_quitYet = 1;
-			m_returnState = 2;
+			m_returnState = FLOW_MAIN_OPTIONS_1;
 			return true;
 		}
 		return false;
@@ -526,12 +543,12 @@ void CNetworkOptionsDrawer::Start(unsigned int p_mode)
 
 	if (m_editingActive != 0) {
 		mode = m_networkMode;
-		if (mode != 0) {
-			if (p_mode != 0) {
+		if (mode != NETWORK_OPTIONS_MODE_LAN) {
+			if (p_mode != NETWORK_OPTIONS_MODE_LAN) {
 				goto stop_editing;
 			}
 		}
-		if (mode == 0 && p_mode == 0) {
+		if (mode == NETWORK_OPTIONS_MODE_LAN && p_mode == NETWORK_OPTIONS_MODE_LAN) {
 		stop_editing:
 			StopEditing();
 			return;
@@ -540,14 +557,14 @@ void CNetworkOptionsDrawer::Start(unsigned int p_mode)
 	m_networkMode = p_mode;
 	m_broadcasting = 0;
 	m_editingActive = 0;
-	m_pendingEvent = 0;
+	m_pendingEvent = NETWORK_OPTIONS_PENDING_EVENT_NONE;
 	((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->StopBroadcast();
 	if (g_szNetworkGameName[0] != 0) {
 		*m_editor = g_szNetworkGameName;
-		StartEditing(1, 0);
+		StartEditing(NETWORK_OPTIONS_EDIT_GAME_NAME, 0);
 		return;
 	}
-	StartEditing(1, 1);
+	StartEditing(NETWORK_OPTIONS_EDIT_GAME_NAME, 1);
 }
 
 // FUNCTION: LEMBALL 0x004545c0
@@ -558,10 +575,10 @@ void CNetworkOptionsDrawer::StartBroadcast()
 	if (((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started != 0 &&
 		((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed == 0) {
 		g_pNetworkManager->StartBroadcast(g_szNetworkBroadcastAddress);
-		SetMessage(4);
+		SetMessage(NETWORK_OPTIONS_MESSAGE_SEARCHING_FOR_HOST);
 		return;
 	}
-	StartMessageTimeout(9, 6000);
+	StartMessageTimeout(NETWORK_OPTIONS_MESSAGE_NETWORK_UNAVAILABLE, 6000);
 }
 
 // FUNCTION: LEMBALL 0x00454620
@@ -571,7 +588,7 @@ void CNetworkOptionsDrawer::Stop()
 		((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed == 0) {
 		((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Stop();
 	}
-	SetMessage(0);
+	SetMessage(NETWORK_OPTIONS_MESSAGE_NONE);
 	m_editingActive = 0;
 }
 
@@ -596,7 +613,7 @@ void CNetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
 
 	stage = p_stage;
 	m_editingActive = 0;
-	if (stage != 3) {
+	if (stage != NETWORK_OPTIONS_EDIT_KEEP_CURRENT) {
 		m_editingStage = stage;
 	}
 	if (p_clear != 0) {
@@ -604,11 +621,11 @@ void CNetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
 		editor->m_length = 0;
 		editor->m_text[0] = 0;
 	}
-	if (m_editingStage == 2) {
+	if (m_editingStage == NETWORK_OPTIONS_EDIT_BROADCAST_ADDRESS) {
 		((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Start();
 		if (((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started == 0 ||
 			((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed != 0) {
-			StartMessageTimeout(9, 6000);
+			StartMessageTimeout(NETWORK_OPTIONS_MESSAGE_NETWORK_UNAVAILABLE, 6000);
 			return;
 		}
 	}
@@ -626,15 +643,15 @@ void CNetworkOptionsDrawer::StopEditing()
 	stage = m_editingStage;
 	m_editingActive = 0;
 	switch (stage) {
-	case 1:
+	case NETWORK_OPTIONS_EDIT_GAME_NAME:
 		text = m_editor->m_text;
 		if (*text == 0) {
-			StartMessageTimeout(8, 6000);
+			StartMessageTimeout(NETWORK_OPTIONS_MESSAGE_NAME_REQUIRED, 6000);
 			return;
 		}
 		strcpy(g_szNetworkGameName, text);
-		if (m_networkMode != 0) {
-			m_pendingStage = 2;
+		if (m_networkMode != NETWORK_OPTIONS_MODE_LAN) {
+			m_pendingStage = NETWORK_OPTIONS_EDIT_BROADCAST_ADDRESS;
 		}
 		else {
 			g_szNetworkBroadcastAddress[0] = 0;
@@ -642,11 +659,11 @@ void CNetworkOptionsDrawer::StopEditing()
 		}
 		if (((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started == 0 ||
 			((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed != 0) {
-			SetMessage(6);
+			SetMessage(NETWORK_OPTIONS_MESSAGE_INITIALISING_NETWORK);
 			return;
 		}
 		break;
-	case 2:
+	case NETWORK_OPTIONS_EDIT_BROADCAST_ADDRESS:
 		strcpy(g_szNetworkBroadcastAddress, m_editor->m_text);
 		m_startPending = 1;
 		break;
@@ -663,7 +680,7 @@ void CNetworkOptionsDrawer::LastError()
 		}
 	}
 	StartMessageTimeout(m_pendingEvent, 6000);
-	m_pendingEvent = 0;
+	m_pendingEvent = NETWORK_OPTIONS_PENDING_EVENT_NONE;
 }
 
 // FUNCTION: LEMBALL 0x00454870
@@ -699,7 +716,7 @@ void CNetworkOptionsDrawer::UnRegisterRemaps()
 // FUNCTION: LEMBALL 0x00454b40
 void CNetworkOptionsDrawer::GameReady(int p_index)
 {
-	if (p_index != -1 && p_index < 10) {
+	if (p_index != NETWORK_OPTIONS_NO_PLAYER_INDEX && p_index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT) {
 		m_playerEntries[p_index].m_activationState = 1;
 	}
 }
@@ -707,7 +724,7 @@ void CNetworkOptionsDrawer::GameReady(int p_index)
 // FUNCTION: LEMBALL 0x00454b70
 void CNetworkOptionsDrawer::GameNotReady(int p_index)
 {
-	if (p_index != -1 && p_index < 10 &&
+	if (p_index != NETWORK_OPTIONS_NO_PLAYER_INDEX && p_index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT &&
 		(m_playerEntries[p_index].m_activationState = 0, m_acceptedPlayer == p_index)) {
 		UnLock();
 	}
@@ -716,7 +733,7 @@ void CNetworkOptionsDrawer::GameNotReady(int p_index)
 // FUNCTION: LEMBALL 0x00454bb0
 void CNetworkOptionsDrawer::UpdateHighlightedEntry()
 {
-	if (m_highlightedPlayer != -1) {
+	if (m_highlightedPlayer != NETWORK_OPTIONS_NO_PLAYER_INDEX) {
 		if (m_playerEntries[m_highlightedPlayer].m_active == 0) {
 			if (HighlightPreviousEntry() == 0) {
 				HighlightNextEntry();
@@ -739,9 +756,9 @@ bool CNetworkOptionsDrawer::HighlightPreviousEntry()
 		return false;
 	}
 
-	if (m_highlightedPlayer == -1) {
+	if (m_highlightedPlayer == NETWORK_OPTIONS_NO_PLAYER_INDEX) {
 		m_hiliteController->m_active = 0;
-		m_highlightedPlayer = 10;
+		m_highlightedPlayer = NETWORK_OPTIONS_PLAYER_ENTRY_COUNT;
 	}
 
 	selected = m_highlightedPlayer - 1;
@@ -764,7 +781,7 @@ bool CNetworkOptionsDrawer::HighlightPreviousEntry()
 		m_playerEntries[i].m_entered = 0;
 		m_playerEntries[i].OnExit();
 		++i;
-	} while (i < 10);
+	} while (i < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
 
 	m_playerEntries[m_highlightedPlayer].m_entered = 1;
 	m_playerEntries[m_highlightedPlayer].OnEnter();
@@ -778,25 +795,25 @@ bool CNetworkOptionsDrawer::HighlightNextEntry()
 	int i;
 
 	if (m_visibleEntryCount == 0) {
-		if (m_highlightedPlayer == -1) {
+		if (m_highlightedPlayer == NETWORK_OPTIONS_NO_PLAYER_INDEX) {
 			return false;
 		}
 		m_hiliteController->m_active = 1;
-		m_highlightedPlayer = -1;
+		m_highlightedPlayer = NETWORK_OPTIONS_NO_PLAYER_INDEX;
 	}
 
-	if (m_highlightedPlayer == -1) {
+	if (m_highlightedPlayer == NETWORK_OPTIONS_NO_PLAYER_INDEX) {
 		return false;
 	}
 
 	selected = m_highlightedPlayer + 1;
-	if (selected < 10) {
+	if (selected < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT) {
 		do {
 			if (m_playerEntries[selected].m_active != 0) {
 				break;
 			}
 			++selected;
-		} while (selected < 10);
+		} while (selected < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
 	}
 
 	m_highlightedPlayer = selected;
@@ -805,11 +822,11 @@ bool CNetworkOptionsDrawer::HighlightNextEntry()
 		m_playerEntries[i].m_entered = 0;
 		m_playerEntries[i].OnExit();
 		++i;
-	} while (i < 10);
+	} while (i < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
 
-	if (m_highlightedPlayer == 10) {
+	if (m_highlightedPlayer == NETWORK_OPTIONS_PLAYER_ENTRY_COUNT) {
 		m_hiliteController->m_active = 1;
-		m_highlightedPlayer = -1;
+		m_highlightedPlayer = NETWORK_OPTIONS_NO_PLAYER_INDEX;
 		return true;
 	}
 
@@ -855,7 +872,7 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 			entry->SetActive(0);
 		}
 		index++;
-	} while (index < 10);
+	} while (index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
 	UpdateHighlightedEntry();
 }
 
@@ -874,13 +891,13 @@ void CNetworkOptionsDrawer::ResetHandlers()
 			if (*connections == NULL || *valid == 0) {
 				m_playerEntries[index].Reset();
 				if (m_acceptedPlayer == index) {
-					m_acceptedPlayer = -1;
+					m_acceptedPlayer = NETWORK_OPTIONS_NO_PLAYER_INDEX;
 				}
 			}
 			valid = (unsigned int*) ((char*) valid + sizeof(CNetworkGameMessage));
 			connections++;
 			index++;
-		} while (index < 10);
+		} while (index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
 	}
 	InitialiseHandlers();
 }
@@ -895,7 +912,7 @@ void CNetworkOptionsDrawer::Lock()
 	do {
 		m_playerEntries[i].SetActive(0);
 		++i;
-	} while (i < 10);
+	} while (i < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
 }
 
 // FUNCTION: LEMBALL 0x00454fb0
@@ -916,7 +933,7 @@ bool CNetworkOptionsDrawer::AcceptingLock()
 	unlocked = m_locked == 0;
 	if (g_pNetworkManager != NULL) {
 		connections = g_pNetworkManager->m_connections;
-		if (m_acceptedPlayer != -1 && connections[m_acceptedPlayer] != NULL) {
+		if (m_acceptedPlayer != NETWORK_OPTIONS_NO_PLAYER_INDEX && connections[m_acceptedPlayer] != NULL) {
 			Lock();
 			g_pActiveConnection = connections[m_acceptedPlayer];
 			skill = 4;

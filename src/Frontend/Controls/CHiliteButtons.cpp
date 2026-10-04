@@ -9,6 +9,8 @@
 #include "../../Visos/Graphics/CGraphicButton.h"
 #include "../../Visos/Graphics/CSurface.h"
 #include "../../Visos/Resources/CResANIM.h"
+#include "CHiliteController.h"
+#include "Frontend/Controls/ButtonActionMessages.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Foundation/Message.h"
 #include "Visos/Graphics/CGWnd.h"
@@ -56,7 +58,7 @@ CHiliteButtons::CHiliteButtons(CGWnd* p_window,
 	else {
 		m_value = 0;
 	}
-	if (p_actionMessage != 0xffffffff) {
+	if (p_actionMessage != BUTTON_ACTION_MESSAGE_UNASSIGNED) {
 		m_actionMessage = p_actionMessage;
 	}
 	m_binding = binding;
@@ -93,7 +95,7 @@ int CHiliteButtons::ProcessMsg(Message* p_message)
 		g_pSoundView->PlayEffect(SFX_DRUM1);
 		return 0;
 	case MESSAGE_BUTTON_RELEASED:
-		if (m_mode == 1) {
+		if (m_mode == HILITE_BUTTON_MODE_ACTION_MESSAGE) {
 			posted.m_code = (int) m_actionMessage;
 			g_pMasterInputQueue->Post(posted);
 			return 0;
@@ -146,7 +148,7 @@ void CHiliteButtons::LoadFaces(unsigned long* p_animIds)
 	int index;
 
 	m_animIds = p_animIds;
-	m_resources = (CResANIM**) operator new(m_valueCount << 2);
+	m_resources = (CResANIM**) operator new(m_valueCount * sizeof(*m_resources));
 	index = 0;
 	while (index < m_valueCount) {
 		m_resources[index] = CResANIM::Load(m_animIds[index]);

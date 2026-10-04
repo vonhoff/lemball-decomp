@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_RESOURCES_CRESFONT_H
 
 #include "../Foundation/CVSSize.h"
+#include "../Foundation/TextAdvanceFlags.h"
 #include "CResBaseLIST.h"
 #include "CResINT.h"
 #include "CResZRLE.h"
@@ -10,6 +11,7 @@
 // VTABLE: LEMBALL 0x00498af0
 class CResFONT : public CResBaseLIST {
 public:
+	CResFONT();
 	CResFONT(unsigned long p_resourceId);
 	CResZRLE* ASCIItoZRLE(unsigned int p_ascii);
 	CVSSize GetSize(const char* p_text, unsigned int p_flags);

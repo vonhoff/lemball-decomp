@@ -4,6 +4,7 @@
 #include "../Messaging/CHeaders.h"
 #include "CNetworkAddress.h"
 #include "CTCPIPNetwork.h"
+#include "NetworkConstants.h"
 #include "Visos/Messaging/BasePacketHeader.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 #include "Visos/Network/CFileBaseSocket.h"
@@ -41,7 +42,7 @@ int CFileWriteSocket::Write(CNetworkMessage& p_message, int p_keepLock, int p_wa
 		bool locked;
 		do {
 			locked = CNetworkFile::Lock(offset, length);
-		} while (!locked && timeGetTime() - started < 100);
+		} while (!locked && timeGetTime() - started < NETWORK_FILE_LOCK_RETRY_TIMEOUT_MS);
 		if (!locked) {
 			length = 0;
 		}

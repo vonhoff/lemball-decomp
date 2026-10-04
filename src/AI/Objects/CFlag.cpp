@@ -1,5 +1,6 @@
 #include "CFlag.h"
 
+#include "../Base/AIScoreConstants.h"
 #include "../Navigation/CAI.h"
 
 // FUNCTION: LEMBALL 0x00422b30
@@ -22,24 +23,24 @@ bool CFlag::Process()
 {
 	if (m_isRemoteObject == 0 && m_objectType == OBJECT_FLAG_1) {
 		if (m_action == ACTION_READY && m_onMover == 0) {
-			int y = m_position.m_yFixed >> 12;
-			int x = m_position.m_xFixed >> 12;
+			int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+			int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 			unsigned short z;
 			int blockX;
 			int blockY;
 			CMap* map = g_pMap;
-			blockX = x >> 4;
-			blockY = y >> 4;
+			blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+			blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 
 			if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-				int cellX = x & 0xf;
-				int cellY = y & 0xf;
+				int cellX = x & GROUND_BLOCK_PIXEL_MASK;
+				int cellY = y & GROUND_BLOCK_PIXEL_MASK;
 				z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 			}
 			else {
 				z = 0;
 			}
-			const int height = (int) z << 12;
+			const int height = (int) z << FIXED_POINT_FRACTION_BITS;
 			m_position.m_zFixed = height;
 		}
 		return true;
@@ -51,7 +52,7 @@ bool CFlag::Process()
 int CFlag::Collected()
 {
 	m_activator->AddObject(m_objectType, this);
-	g_pAI->Score(2500);
+	g_pAI->Score(AI_SCORE_FLAG_PICKUP_POINTS);
 	g_pAI->m_flagCounts[0]--;
 	return 1;
 }

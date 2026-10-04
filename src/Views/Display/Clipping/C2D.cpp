@@ -7,6 +7,7 @@
 #include "Map/Base/CMap.h"
 #include "Visos/Foundation/CFixed.h"
 #include "Visos/Foundation/CObjSq.h"
+#include "Visos/Foundation/FixedPoint.h"
 
 #include <string.h>
 
@@ -33,9 +34,9 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 	if (p_adjustForGround != 0) {
 		CMap* map = m_map;
 		p_groundHeight += 4;
-		int blockX = p_x >> 4;
-		int nextY = p_y + 0x10;
-		int nextBlockY = nextY >> 4;
+		int blockX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int nextY = p_y + GROUND_BLOCK_PIXEL_SIZE;
+		int nextBlockY = nextY >> GROUND_BLOCK_PIXEL_SHIFT;
 		int yHeight;
 		int xHeight;
 		int diagonalHeight;
@@ -44,38 +45,40 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 			sampledHeight = 0;
 		}
 		else {
-			int localX = p_x & 0xf;
-			int localY = p_y & 0xf;
+			int localX = p_x & GROUND_BLOCK_PIXEL_MASK;
+			int localY = p_y & GROUND_BLOCK_PIXEL_MASK;
 			sampledHeight = map->m_ground.GetGroundCell(blockX, nextBlockY)->GetZ(localX, localY);
 		}
 		yHeight = sampledHeight;
 
 		map = m_map;
-		int blockY = p_y >> 4;
-		int nextBlockX = (p_x + 0x10) >> 4;
-		if (p_x + 0x10 < 0 || p_y < 0 || map->m_ground.m_width <= nextBlockX || map->m_ground.m_height <= blockY) {
+		int blockY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
+		int nextBlockX = (p_x + GROUND_BLOCK_PIXEL_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
+		if (p_x + GROUND_BLOCK_PIXEL_SIZE < 0 || p_y < 0 || map->m_ground.m_width <= nextBlockX ||
+			map->m_ground.m_height <= blockY) {
 			sampledHeight = 0;
 		}
 		else {
-			int localY = p_y & 0xf;
-			int localX = p_x & 0xf;
+			int localY = p_y & GROUND_BLOCK_PIXEL_MASK;
+			int localX = p_x & GROUND_BLOCK_PIXEL_MASK;
 			sampledHeight = map->m_ground.GetGroundCell(nextBlockX, blockY)->GetZ(localX, localY);
 		}
 		xHeight = sampledHeight;
 
 		map = m_map;
-		if (p_x + 0x10 < 0 || nextY < 0 || map->m_ground.m_width <= nextBlockX ||
+		if (p_x + GROUND_BLOCK_PIXEL_SIZE < 0 || nextY < 0 || map->m_ground.m_width <= nextBlockX ||
 			map->m_ground.m_height <= nextBlockY) {
 			sampledHeight = 0;
 		}
 		else {
-			sampledHeight =
-				map->m_ground.m_ground[map->m_ground.m_width * nextBlockY + nextBlockX].GetZ(p_x & 0xf, p_y & 0xf);
+			sampledHeight = map->m_ground.m_ground[map->m_ground.m_width * nextBlockY + nextBlockX].GetZ(
+				p_x & GROUND_BLOCK_PIXEL_MASK,
+				p_y & GROUND_BLOCK_PIXEL_MASK);
 		}
 		diagonalHeight = sampledHeight;
 
-		blockX = p_x / 16;
-		blockY = p_y / 16;
+		blockX = p_x / GROUND_BLOCK_PIXEL_SIZE;
+		blockY = p_y / GROUND_BLOCK_PIXEL_SIZE;
 		unsigned short yCollision;
 		unsigned short xCollision;
 		unsigned short diagonalCollision;
@@ -110,7 +113,7 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 		int shiftDiagonal = diagonalHeight <= p_groundHeight && diagonalCollision == 0;
 		if (shiftDiagonal && shiftX) {
 			if (shiftY) {
-				p_x += 0x10;
+				p_x += GROUND_BLOCK_PIXEL_SIZE;
 				p_y = nextY;
 			}
 		}
@@ -219,10 +222,10 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				int rectangleWidth = markedRect.m_width;
 				short pixelX = markedRect.m_x;
 				short pixelY = markedRect.m_y;
-				int cellX = (short) (pixelX / 16);
-				int cellY = (short) (pixelY / 16);
-				int columns = (rectangleWidth + pixelX - 1) / 16 - cellX + 1;
-				int rows = (pixelY + markedRect.m_height - 1) / 16 - cellY + 1;
+				int cellX = (short) (pixelX / GROUND_BLOCK_PIXEL_SIZE);
+				int cellY = (short) (pixelY / GROUND_BLOCK_PIXEL_SIZE);
+				int columns = (rectangleWidth + pixelX - 1) / GROUND_BLOCK_PIXEL_SIZE - cellX + 1;
+				int rows = (pixelY + markedRect.m_height - 1) / GROUND_BLOCK_PIXEL_SIZE - cellY + 1;
 				short width = lookup->m_width;
 				short height;
 				if (cellX < width && ((height = lookup->m_height), cellY < height)) {
@@ -257,26 +260,26 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				int gameX = (unsigned short) p_viewData.m_gameX;
 				int gameY = (unsigned short) p_viewData.m_gameY;
 				CMap* map = m_map;
-				int blockX = gameX >> 4;
-				int blockY = gameY >> 4;
+				int blockX = gameX >> GROUND_BLOCK_PIXEL_SHIFT;
+				int blockY = gameY >> GROUND_BLOCK_PIXEL_SHIFT;
 				unsigned short groundHeight;
 				if (gameX < 0 || gameY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
 					groundHeight = 0;
 				}
 				else {
-					int localX = gameX & 15;
-					int localY = gameY & 15;
+					int localX = gameX & GROUND_BLOCK_PIXEL_MASK;
+					int localY = gameY & GROUND_BLOCK_PIXEL_MASK;
 					groundHeight = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(localX, localY);
 				}
-				gameX = (gameX << 12) >> 12;
-				gameY = (gameY << 12) >> 12;
+				gameX = (gameX << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
+				gameY = (gameY << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
 				m_map->GameToScreen(gameX, gameY);
-				CFixed heightFixed((unsigned int) groundHeight << 12);
-				const int& projectedY = gameY - (heightFixed.m_value >> 12);
-				CFixed topFixed((projectedY - m_viewOriginY) << 12);
-				CFixed leftFixed((gameX - m_viewOriginX) << 12);
-				int left = leftFixed.m_value >> 12;
-				int top = topFixed.m_value >> 12;
+				CFixed heightFixed((unsigned int) groundHeight << FIXED_POINT_FRACTION_BITS);
+				const int& projectedY = gameY - (heightFixed.m_value >> FIXED_POINT_FRACTION_BITS);
+				CFixed topFixed((projectedY - m_viewOriginY) << FIXED_POINT_FRACTION_BITS);
+				CFixed leftFixed((gameX - m_viewOriginX) << FIXED_POINT_FRACTION_BITS);
+				int left = leftFixed.m_value >> FIXED_POINT_FRACTION_BITS;
+				int top = topFixed.m_value >> FIXED_POINT_FRACTION_BITS;
 				bounds.m_x = (short) left - 10;
 				bounds.m_y = (short) top - 5;
 				bounds.m_width = 20;
@@ -485,10 +488,10 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 		int rectangleWidth = markedRect.m_width;
 		short pixelX = markedRect.m_x;
 		short pixelY = markedRect.m_y;
-		int cellX = (short) (pixelX / 16);
-		int cellY = (short) (pixelY / 16);
-		int columns = (rectangleWidth + pixelX - 1) / 16 - cellX + 1;
-		int rows = (pixelY + markedRect.m_height - 1) / 16 - cellY + 1;
+		int cellX = (short) (pixelX / GROUND_BLOCK_PIXEL_SIZE);
+		int cellY = (short) (pixelY / GROUND_BLOCK_PIXEL_SIZE);
+		int columns = (rectangleWidth + pixelX - 1) / GROUND_BLOCK_PIXEL_SIZE - cellX + 1;
+		int rows = (pixelY + markedRect.m_height - 1) / GROUND_BLOCK_PIXEL_SIZE - cellY + 1;
 		short width = lookup->m_width;
 		short height;
 		if (cellX < width && ((height = lookup->m_height), cellY < height)) {
@@ -533,10 +536,11 @@ void C2D::UpdateSpriteGroundLookupRegions()
 	m_spriteGroundTranslatedPointRect.m_y = translatedY;
 
 	short pixelX = m_spriteGroundLookupRectA.m_x;
-	int cellX = (short) (pixelX / 16);
-	int cellY = (short) (m_spriteGroundLookupRectA.m_y / 16);
-	int columns = (pixelX + m_spriteGroundLookupRectA.m_width - 1) / 16 - cellX + 1;
-	int rows = (m_spriteGroundLookupRectA.m_y + m_spriteGroundLookupRectA.m_height - 1) / 16 - cellY + 1;
+	int cellX = (short) (pixelX / GROUND_BLOCK_PIXEL_SIZE);
+	int cellY = (short) (m_spriteGroundLookupRectA.m_y / GROUND_BLOCK_PIXEL_SIZE);
+	int columns = (pixelX + m_spriteGroundLookupRectA.m_width - 1) / GROUND_BLOCK_PIXEL_SIZE - cellX + 1;
+	int rows =
+		(m_spriteGroundLookupRectA.m_y + m_spriteGroundLookupRectA.m_height - 1) / GROUND_BLOCK_PIXEL_SIZE - cellY + 1;
 	short width = lookup->m_width;
 	short height;
 	if (cellX < width && ((height = lookup->m_height), cellY < height)) {

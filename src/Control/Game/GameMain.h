@@ -1,6 +1,10 @@
 #ifndef LEMBALL_CONTROL_GAME_GAMEMAIN_H
 #define LEMBALL_CONTROL_GAME_GAMEMAIN_H
 
+#ifndef LEMBALL_ENFORCE_STARTUP_CHECKS
+#define LEMBALL_ENFORCE_STARTUP_CHECKS 1
+#endif
+
 struct PreInit;
 PreInit* VSPreInit(PreInit* p_preInit);
 void SetGameDefaults();

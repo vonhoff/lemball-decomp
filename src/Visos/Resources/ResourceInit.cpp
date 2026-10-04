@@ -1,9 +1,17 @@
+#include "ResourceChunkTypes.h"
 #include "Visos/Foundation/VsInit.h"
 #include "Visos/Graphics/CBasePalManager.h"
 #include "Visos/Graphics/CPaletteManager.h"
 #include "Visos/Resources/ResourceTypeList.h"
 
 #include <stddef.h>
+
+namespace
+{
+enum {
+	BASE_PALETTE_MANAGER_CAPACITY = 32
+};
+}
 
 // FUNCTION: LEMBALL 0x0045b900
 bool _RES_Init()
@@ -20,9 +28,9 @@ bool _RES_Init()
 	else {
 		list = NULL;
 	}
-	list->m_typeCodes[list->m_count] = 0x494e5420;
+	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_INT;
 	list->m_count = list->m_count + 1;
-	list->m_typeCodes[list->m_count] = 0x5a524c45;
+	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_ZRLE;
 	list->m_count = list->m_count + 1;
 	g_pResourceTypes = list;
 
@@ -36,7 +44,7 @@ bool _RES_Init()
 	else {
 		list = NULL;
 	}
-	list->m_typeCodes[list->m_count] = 0x5a524c45;
+	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_ZRLE;
 	list->m_count = list->m_count + 1;
 	g_pCompressedResourceTypes = list;
 
@@ -50,13 +58,13 @@ bool _RES_Init()
 	else {
 		list = NULL;
 	}
-	list->m_typeCodes[list->m_count] = 0x53545247;
+	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_STRING;
 	list->m_count = list->m_count + 1;
-	list->m_typeCodes[list->m_count] = 0x494e5420;
+	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_INT;
 	list->m_count = list->m_count + 1;
 	g_pPreloadedResourceTypes = list;
 
-	g_pBasePalManager = new CPaletteManager(0x20);
+	g_pBasePalManager = new CPaletteManager(BASE_PALETTE_MANAGER_CAPACITY);
 	return true;
 }
 

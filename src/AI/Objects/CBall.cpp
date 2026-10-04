@@ -11,12 +11,26 @@
 #include "../Navigation/CAI.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 
 #include <stddef.h>
+
+enum {
+	BALL_EXPLOSION_DURATION_TICKS = 22
+};
+
+enum eBallMovementPhase {
+	BALL_PHASE_SPAWNED = 0,
+	BALL_PHASE_WAITING_TO_TRAVEL = 1,
+	BALL_PHASE_TRAVELING_TO_DESTINATION = 2,
+	BALL_PHASE_AT_DESTINATION = 3,
+	BALL_PHASE_WAITING_TO_RETURN = 4,
+	BALL_PHASE_RETURNING_TO_SPAWN = 5
+};
 
 // FUNCTION: LEMBALL 0x00421660
 CBall::CBall() : CGameObject(OBJECT_BALL, 0, 0)
@@ -43,7 +57,7 @@ void CBall::Set(AICOORD p_start, AICOORD p_destination, int p_speed)
 	m_spawnPosition = p_start;
 	m_destination = p_destination;
 	m_action = ACTION_BALL_MOVING;
-	m_actionArgument = 0;
+	m_actionArgument = BALL_PHASE_SPAWNED;
 	if (g_pAI->m_levelVersion < FIRST_VERSION_USING_BALL_SPEED) {
 		m_speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
 	}
@@ -72,9 +86,12 @@ void CBall::StartMovement(unsigned int p_direction)
 		targetY = m_spawnPosition.m_yFixed;
 	}
 
-	int distance = Distance(m_position.m_xFixed >> 12, m_position.m_yFixed >> 12, targetX >> 12, targetY >> 12);
+	int distance = Distance(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+							m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+							targetX >> FIXED_POINT_FRACTION_BITS,
+							targetY >> FIXED_POINT_FRACTION_BITS);
 	m_lastMovementTick = g_dwGameTick;
-	m_moveDurationTicks = (m_speed * distance) / 50;
+	m_moveDurationTicks = (m_speed * distance) / GAME_TICK_MILLISECONDS;
 	if (m_moveDurationTicks == 0) {
 		m_moveDurationTicks = 1;
 	}
@@ -107,19 +124,19 @@ bool CBall::Move()
 		CVector movement = m_movement.m_delta * elapsed;
 		movement.m_xFixed /= duration;
 		movement.m_yFixed /= duration;
-		x = (m_movement.m_start.m_xFixed + movement.m_xFixed) >> 12;
-		y = (m_movement.m_start.m_yFixed + movement.m_yFixed) >> 12;
+		x = (m_movement.m_start.m_xFixed + movement.m_xFixed) >> FIXED_POINT_FRACTION_BITS;
+		y = (m_movement.m_start.m_yFixed + movement.m_yFixed) >> FIXED_POINT_FRACTION_BITS;
 	}
 
 	map = g_pMap;
-	blockX = x >> 4;
-	blockY = y >> 4;
+	blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	if (x < 0 || y < 0 || map->m_ground.m_width <= blockX || map->m_ground.m_height <= blockY) {
 		groundZ = 0;
 	}
 	else {
-		groundX = x & 0xf;
-		groundY = y & 0xf;
+		groundX = x & GROUND_BLOCK_PIXEL_MASK;
+		groundY = y & GROUND_BLOCK_PIXEL_MASK;
 		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
 	}
 	z = groundZ;
@@ -149,27 +166,27 @@ found:
 		hit->HitBall();
 		m_action = ACTION_BALL_EXPLODING;
 		m_stateTimer = g_dwSimulationTimestamp;
-		m_actionDeadline = g_dwGameTick + 0x16;
+		m_actionDeadline = g_dwGameTick + BALL_EXPLOSION_DURATION_TICKS;
 		return true;
 	}
 
-	if ((m_position.m_zFixed >> 12) + 12 < (int) z) {
+	if ((m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) + 12 < (int) z) {
 		switch ((unsigned short) m_actionArgument) {
-		case 2:
-			m_actionArgument = 5;
+		case BALL_PHASE_TRAVELING_TO_DESTINATION:
+			m_actionArgument = BALL_PHASE_RETURNING_TO_SPAWN;
 			StartMovement(0);
 			return true;
-		case 5:
-			m_actionArgument = 2;
+		case BALL_PHASE_RETURNING_TO_SPAWN:
+			m_actionArgument = BALL_PHASE_TRAVELING_TO_DESTINATION;
 			StartMovement(1);
 			return true;
 		}
 		return true;
 	}
 
-	m_position.m_zFixed = z << 12;
-	m_position.m_xFixed = x << 12;
-	m_position.m_yFixed = y << 12;
+	m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+	m_position.m_xFixed = x << FIXED_POINT_FRACTION_BITS;
+	m_position.m_yFixed = y << FIXED_POINT_FRACTION_BITS;
 	return true;
 }
 
@@ -197,27 +214,27 @@ void CBall::Delete()
 		}
 	}
 	g_pBallManager->Delete(this);
-	SetId(0xffff);
+	SetId(INVALID_OBJECT_ID);
 }
 
 // FUNCTION: LEMBALL 0x00421b40
 void CBall::SetHeightCorrect()
 {
-	int x = m_position.m_xFixed >> 12;
-	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-		int cellX = x & 0xf;
-		int cellY = y & 0xf;
+		int cellX = x & GROUND_BLOCK_PIXEL_MASK;
+		int cellY = y & GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	else {
 		z = 0;
 	}
-	m_position.m_zFixed = (unsigned int) z << 12;
+	m_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x00421bc0
@@ -226,53 +243,53 @@ bool CBall::Process()
 	switch (m_action) {
 	case ACTION_BALL_MOVING:
 		switch ((unsigned short) m_actionArgument) {
-		case 0:
+		case BALL_PHASE_SPAWNED:
 			m_actionDeadline = g_dwGameTick;
 			m_position.m_xFixed = m_spawnPosition.m_xFixed;
 			m_position.m_yFixed = m_spawnPosition.m_yFixed;
 			m_position.m_zFixed = m_spawnPosition.m_zFixed;
 			SetHeightCorrect();
-			m_actionArgument = 1;
+			m_actionArgument = BALL_PHASE_WAITING_TO_TRAVEL;
 			break;
-		case 1:
+		case BALL_PHASE_WAITING_TO_TRAVEL:
 			if (m_actionDeadline < g_dwGameTick) {
-				m_actionArgument = 2;
+				m_actionArgument = BALL_PHASE_TRAVELING_TO_DESTINATION;
 				StartMovement(1);
 			}
 			break;
-		case 2:
+		case BALL_PHASE_TRAVELING_TO_DESTINATION:
 			if (m_actionDeadline < g_dwGameTick) {
 				m_position.m_xFixed = m_destination.m_xFixed;
 				m_position.m_yFixed = m_destination.m_yFixed;
 				m_position.m_zFixed = m_destination.m_zFixed;
 				SetHeightCorrect();
-				m_actionArgument = 3;
+				m_actionArgument = BALL_PHASE_AT_DESTINATION;
 			}
 			else {
 				Move();
 			}
 			break;
-		case 3:
+		case BALL_PHASE_AT_DESTINATION:
 			m_actionDeadline = g_dwGameTick;
 			m_position.m_xFixed = m_destination.m_xFixed;
 			m_position.m_yFixed = m_destination.m_yFixed;
 			m_position.m_zFixed = m_destination.m_zFixed;
 			SetHeightCorrect();
-			m_actionArgument = 4;
+			m_actionArgument = BALL_PHASE_WAITING_TO_RETURN;
 			break;
-		case 4:
+		case BALL_PHASE_WAITING_TO_RETURN:
 			if (m_actionDeadline < g_dwGameTick) {
-				m_actionArgument = 5;
+				m_actionArgument = BALL_PHASE_RETURNING_TO_SPAWN;
 				StartMovement(0);
 			}
 			break;
-		case 5:
+		case BALL_PHASE_RETURNING_TO_SPAWN:
 			if (m_actionDeadline < g_dwGameTick) {
 				m_position.m_xFixed = m_spawnPosition.m_xFixed;
 				m_position.m_yFixed = m_spawnPosition.m_yFixed;
 				m_position.m_zFixed = m_spawnPosition.m_zFixed;
 				SetHeightCorrect();
-				m_actionArgument = 0;
+				m_actionArgument = BALL_PHASE_SPAWNED;
 			}
 			else {
 				Move();
@@ -295,37 +312,35 @@ bool CBall::Process()
 void CBall::LoadLevel(unsigned char*& p_data)
 {
 	enum {
-		FIRST_VERSION_WITH_OBJECT_ID = 2,
-		LEVEL_WORD_BYTES = 2,
-		POSITION_FRACTION_BITS = 12
+		LEVEL_WORD_BYTES = 2
 	};
 
 	AICOORD start;
 	AICOORD destination;
 
-	if (g_pAI->m_levelVersion >= FIRST_VERSION_WITH_OBJECT_ID) {
+	if (g_pAI->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
 		unsigned short id = *(unsigned short*) p_data;
 		p_data += LEVEL_WORD_BYTES;
 		SetId(id);
 	}
 
-	const int startX = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
+	const int startX = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
 	start.m_xFixed = startX;
 	p_data += LEVEL_WORD_BYTES;
-	const int startY = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
+	const int startY = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
 	start.m_yFixed = startY;
 	p_data += LEVEL_WORD_BYTES;
-	const int startZ = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
+	const int startZ = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
 	start.m_zFixed = startZ;
 	p_data += LEVEL_WORD_BYTES;
 
-	const int destinationX = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
+	const int destinationX = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
 	destination.m_xFixed = destinationX;
 	p_data += LEVEL_WORD_BYTES;
-	const int destinationY = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
+	const int destinationY = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
 	destination.m_yFixed = destinationY;
 	p_data += LEVEL_WORD_BYTES;
-	const int destinationZ = *(unsigned short*) p_data << POSITION_FRACTION_BITS;
+	const int destinationZ = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
 	destination.m_zFixed = destinationZ;
 	p_data += LEVEL_WORD_BYTES;
 

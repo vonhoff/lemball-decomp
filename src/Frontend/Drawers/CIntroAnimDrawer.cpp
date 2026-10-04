@@ -11,6 +11,10 @@
 
 #include <stddef.h>
 
+enum {
+	INTRO_ANIMATION_COUNTDOWN_COMPLETE = -1
+};
+
 // GLOBAL: LEMBALL 0x0049f19c
 char g_szPaintBallIntroSequence[] = "PaintBall Intro Sequence";
 
@@ -85,10 +89,10 @@ void CIntroAnimDrawer::EndPhase()
 bool CIntroAnimDrawer::ProcessMessages(Message* p_message)
 {
 	switch ((unsigned int) p_message->m_type) {
-	case 4:
+	case MESSAGE_KEY_DOWN:
 		switch (p_message->m_code) {
 		case INPUT_KEY_SPACE:
-		case 0x22:
+		case INPUT_KEY_ACTIVATE:
 		case INPUT_KEY_ESCAPE:
 		case INPUT_KEY_RETURN:
 			EndPhase();
@@ -96,7 +100,7 @@ bool CIntroAnimDrawer::ProcessMessages(Message* p_message)
 		default:
 			return false;
 		}
-	case 6:
+	case MESSAGE_MOUSE_BUTTON_DOWN:
 		EndPhase();
 		return true;
 	default:
@@ -124,12 +128,12 @@ void CIntroAnimDrawer::Processing()
 		introRect.m_height = 240;
 		introRect.m_y = (short) (height - 240) / 2;
 		if (m_started == 0) {
-			g_pSoundView->ChangeState(1, NULL);
+			g_pSoundView->ChangeState(SOUND_STATE_INTRO, NULL);
 			m_animWindow.Create(introRect, m_display, g_szPaintBallIntroSequence);
 			m_animWindow.Play();
 			m_started = 1;
 		}
 		m_animWindow.Resume();
-		m_startCountdown = -1;
+		m_startCountdown = INTRO_ANIMATION_COUNTDOWN_COMPLETE;
 	}
 }

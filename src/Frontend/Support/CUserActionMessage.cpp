@@ -1,11 +1,12 @@
 #include "CUserActionMessage.h"
 
+#include "../../Network/Messages/CGameFlaggedMessage.h"
 #include "Visos/Messaging/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x004453b0
-CUserActionMessage::CUserActionMessage() : CNetworkMessage(8)
+CUserActionMessage::CUserActionMessage() : CNetworkMessage(GAME_MESSAGE_USER_ACTION)
 {
-	m_payloadCapacity += 8;
+	m_payloadCapacity += sizeof(m_action) + sizeof(m_stage);
 	m_headerEnabled = 1;
 }
 

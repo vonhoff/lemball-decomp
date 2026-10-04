@@ -30,6 +30,11 @@
 #include "Visos/Resources/CResZRLE.h"
 #include "Visos/Resources/ResourceLimits.h"
 
+enum ePauseSelectionKey {
+	PAUSE_KEY_SELECT_OPTION = 0x2a,
+	PAUSE_PLATFORM_DELETE_KEY = 0x2e
+};
+
 extern unsigned char* g_apPauseRemaps[4];
 extern char* g_apPauseMenuLabels[15];
 
@@ -82,7 +87,7 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 	CVSSize size;
 	CVSRect borderRect;
 
-	if (m_pauseMessage != 3) {
+	if (m_pauseMessage != PAUSE_MSG_ARE_YOU_SURE) {
 		if (m_menuItemCount > 0) {
 			int item = 0;
 			CVSPoint* textSize = m_menuItemRects;
@@ -180,11 +185,11 @@ CVSRect CPauseWindow::CalculateWindow()
 	maxTextSize.m_height = 0;
 	maxTextSize.m_width = 0;
 	itemCount = m_menuItemCount;
-	if (m_pauseMessage == 3) {
+	if (m_pauseMessage == PAUSE_MSG_ARE_YOU_SURE) {
 		itemCount--;
 	}
 	for (i = 0; i < m_menuItemCount; i++) {
-		const CVSSize& measuredTextSize = m_font->GetSize(m_menuLabels[i], 0x20);
+		const CVSSize& measuredTextSize = m_font->GetSize(m_menuLabels[i], TEXT_ADVANCE_X_POSITIVE);
 		CVSPoint* storedTextSize = m_menuItemRects + i * 2;
 		storedTextSize->m_x = measuredTextSize.m_width;
 		storedTextSize->m_y = measuredTextSize.m_height;
@@ -360,7 +365,7 @@ CPauseWindow::CPauseWindow(CReceiveWindowState* p_receiverState,
 	m_receiverState = p_receiverState;
 	m_pauseMessage = p_pauseMessage;
 	m_parentWindow = p_parentWindow;
-	m_cursorState = 0;
+	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
 	m_borderAnimCount = 0;
 	Initialise();
 	Restart();
@@ -429,7 +434,13 @@ void CPauseWindow::OnPaint(const CVSRect& p_rect)
 		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		CTextManager::DrawString(m_gdi, *position, advance, m_fontId, m_menuLabels[i], 0x20, (class CRemap*) Remap(i));
+		CTextManager::DrawString(m_gdi,
+								 *position,
+								 advance,
+								 m_fontId,
+								 m_menuLabels[i],
+								 TEXT_ADVANCE_X_POSITIVE,
+								 (class CRemap*) Remap(i));
 	}
 	CTextManager::ResetPrimitives();
 }
@@ -438,7 +449,7 @@ void CPauseWindow::OnPaint(const CVSRect& p_rect)
 void CPauseWindow::OnInside(const CVSPoint& p_point)
 {
 	int selection = m_minimumSelection;
-	m_cursorState = 0;
+	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
 	if (selection < m_menuItemCount) {
 		short relX = p_point.m_x - m_relativeTopLeft.m_x;
 		short relY = p_point.m_y - m_relativeTopLeft.m_y;
@@ -452,7 +463,7 @@ void CPauseWindow::OnInside(const CVSPoint& p_point)
 					if (textY <= relY) {
 						short boundY = textSizes[-1].m_y + textY;
 						if (boundY > relY) {
-							m_cursorState = 4;
+							m_cursorState = CURSOR_HAND_FRAME_HOVER;
 							m_selection = selection;
 							break;
 						}
@@ -485,8 +496,8 @@ void CPauseWindow::OnButtonDown(const CVSPoint& p_point, int p_flags)
 						if (boundY > relY) {
 							m_receiverState->SetOptionSelection(m_selection + 1);
 							m_selection = selection;
-							m_cursorState = 1;
-							CursorChangeType(CURSOR_DISPLAY_HAND, 1);
+							m_cursorState = CURSOR_HAND_FRAME_PRESSED;
+							CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_PRESSED);
 							g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 							return;
 						}
@@ -502,15 +513,15 @@ void CPauseWindow::OnButtonDown(const CVSPoint& p_point, int p_flags)
 // FUNCTION: LEMBALL 0x00444bd0
 void CPauseWindow::OnButtonUp(const CVSPoint& p_point, int p_flags)
 {
-	m_cursorState = 0;
-	CursorChangeType(CURSOR_DISPLAY_HAND, 0);
+	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);
 }
 
 // FUNCTION: LEMBALL 0x00444bf0
 void CPauseWindow::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 {
-	m_cursorState = 0;
-	CursorChangeType(CURSOR_DISPLAY_HAND, 0);
+	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);
 }
 
 // FUNCTION: LEMBALL 0x00444c10
@@ -518,9 +529,9 @@ int CPauseWindow::ProcessMsg(Message* p_message)
 {
 	int pauseMessage = m_pauseMessage;
 
-	if (pauseMessage == 0 || pauseMessage == 3) {
+	if (pauseMessage == PAUSE_MSG_PAUSED || pauseMessage == PAUSE_MSG_ARE_YOU_SURE) {
 		switch (p_message->m_type) {
-		case 4:
+		case MESSAGE_KEY_DOWN:
 			switch (p_message->m_code) {
 			case INPUT_KEY_UP:
 			case INPUT_KEY_LEFT:
@@ -538,12 +549,12 @@ int CPauseWindow::ProcessMsg(Message* p_message)
 					return 1;
 				}
 				break;
-			case 0x22:
-			case 0x2a:
-			case 0x2e:
+			case INPUT_KEY_ACTIVATE:
+			case PAUSE_KEY_SELECT_OPTION:
+			case PAUSE_PLATFORM_DELETE_KEY:
 			case INPUT_KEY_RETURN:
-			case 0x57:
-			case 0x58:
+			case 'W':
+			case 'X':
 				m_receiverState->SetOptionSelection(m_selection + 1);
 				g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 				return 1;

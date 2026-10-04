@@ -1,6 +1,7 @@
 #include "../CBaseFrontendProcess.h"
 
 #include "../../../Control/Game/CGameStatus.h"
+#include "../../../Control/Level/CLevelLoader.h"
 #include "../../../Frontend/Support/CUserActionMessage.h"
 #include "../../../Visos/Network/CBaseNetwork.h"
 #include "../../../Visos/Network/CConnect.h"
@@ -12,7 +13,7 @@ CBaseFrontendProcess::CBaseFrontendProcess(CGame* p_game)
 {
 	m_game = p_game;
 	m_userActionMessage = new CUserActionMessage();
-	if (g_pGameStatus->m_skill == 4 && g_pActiveConnection != NULL) {
+	if (g_pGameStatus->m_skill == SKILL_NETWORK && g_pActiveConnection != NULL) {
 		m_networkWasActive = 1;
 	}
 	else {

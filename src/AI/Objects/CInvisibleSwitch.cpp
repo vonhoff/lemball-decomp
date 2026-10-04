@@ -1,10 +1,12 @@
 #include "CInvisibleSwitch.h"
 
 #include "../../Map/Base/CMap.h"
+#include "../Base/AIScoreConstants.h"
 #include "../Navigation/CAI.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Base/CGlobalGameObject.h"
+#include "AI/Base/LevelVersions.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
 #include "AI/Base/tCoord3d.h"
@@ -79,15 +81,15 @@ void CInvisibleSwitch::Set(const tCoord3d& p_cornerA, const tCoord3d& p_cornerB)
 		m_maxCorner.m_y = minY;
 	}
 	m_repeatable = 0;
-	m_position.m_xFixed = ((int) m_minCorner.m_x) << 12;
-	m_position.m_yFixed = ((int) m_minCorner.m_y) << 12;
+	m_position.m_xFixed = ((int) m_minCorner.m_x) << FIXED_POINT_FRACTION_BITS;
+	m_position.m_yFixed = ((int) m_minCorner.m_y) << FIXED_POINT_FRACTION_BITS;
 	m_triggered = 0;
-	m_position.m_zFixed = ((int) m_minCorner.m_z) << 12;
-	for (int y = m_minCorner.m_y; y <= m_maxCorner.m_y; y += 0x10) {
-		for (int x = m_minCorner.m_x; x <= m_maxCorner.m_x; x += 0x10) {
-			int blockX = x / 0x10;
+	m_position.m_zFixed = ((int) m_minCorner.m_z) << FIXED_POINT_FRACTION_BITS;
+	for (int y = m_minCorner.m_y; y <= m_maxCorner.m_y; y += GROUND_BLOCK_PIXEL_SIZE) {
+		for (int x = m_minCorner.m_x; x <= m_maxCorner.m_x; x += GROUND_BLOCK_PIXEL_SIZE) {
+			int blockX = x / GROUND_BLOCK_PIXEL_SIZE;
 			if (blockX >= 0) {
-				int blockY = y / 0x10;
+				int blockY = y / GROUND_BLOCK_PIXEL_SIZE;
 				if (blockY >= 0) {
 					int width = g_pMap->m_ground.m_width;
 					if (width <= blockX) {
@@ -97,7 +99,7 @@ void CInvisibleSwitch::Set(const tCoord3d& p_cornerA, const tCoord3d& p_cornerB)
 						continue;
 					}
 					CGround* ground = g_pMap->m_ground.m_ground + width * blockY + blockX;
-					((unsigned char*) &ground->m_collision)[1] |= 0x80;
+					((unsigned char*) &ground->m_collision)[1] |= GROUND_COLLISION_OBJECT_INTERACTION >> 8;
 				}
 			}
 		}
@@ -111,13 +113,13 @@ void CInvisibleSwitch::VerifyObjects()
 	unsigned short invalidObjectId;
 	int i;
 
-	invalidObjectId = 0xffff;
+	invalidObjectId = INVALID_OBJECT_ID;
 	i = 0;
 	if (m_objectCount > 0) {
 		do {
 			CGameObject* object = m_objects[i];
-			int x = object->m_position.m_xFixed >> 12;
-			int y = object->m_position.m_yFixed >> 12;
+			int x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+			int y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 			if (x < m_minCorner.m_x - 8 || x > m_maxCorner.m_x + 7 || y < m_minCorner.m_y - 8 ||
 				y > m_maxCorner.m_y + 7) {
 				object->m_invisibleSwitchId = invalidObjectId;
@@ -139,7 +141,7 @@ void CInvisibleSwitch::VerifyObjects()
 // FUNCTION: LEMBALL 0x00409f70
 void CInvisibleSwitch::AddObject(CGameObject* p_object)
 {
-	if (m_objectCount < 24) {
+	if (m_objectCount < INVISIBLE_SWITCH_OBJECT_CAPACITY) {
 		m_objects[m_objectCount] = p_object;
 		m_objectCount++;
 		p_object->m_invisibleSwitchId = GetId();
@@ -150,8 +152,8 @@ void CInvisibleSwitch::AddObject(CGameObject* p_object)
 void CInvisibleSwitch::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	if (m_triggered == 0 && m_requestedAction == ACTION_READY && GetId() != (short) p_object->m_invisibleSwitchId) {
-		int x = p_position.m_xFixed >> 12;
-		int y = p_position.m_yFixed >> 12;
+		int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		int y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		if (x >= m_minCorner.m_x - 8 && x <= m_maxCorner.m_x + 7 && y >= m_minCorner.m_y - 8 &&
 			y <= m_maxCorner.m_y + 7) {
 			m_activator = p_object;
@@ -164,7 +166,7 @@ void CInvisibleSwitch::StepOn(const AICOORD& p_position, CGameObject* p_object)
 void CInvisibleSwitch::DoActivate()
 {
 	if (m_scoreAwarded == 0) {
-		g_pAI->Score(50);
+		g_pAI->Score(AI_SCORE_INVISIBLE_SWITCH_ACTIVATION_POINTS);
 		m_scoreAwarded = 1;
 	}
 }
@@ -228,7 +230,7 @@ void CInvisibleSwitch::Load(unsigned char*& p_data)
 
 	Set(cornerA, cornerB);
 
-	if (g_pAI->m_levelVersion >= 9) {
+	if (g_pAI->m_levelVersion >= LEVEL_VERSION_WITH_REPEATABLE_INVISIBLE_SWITCHES) {
 		unsigned int repeatable = *(unsigned short*) p_data;
 		p_data += 2;
 		m_repeatable = repeatable;

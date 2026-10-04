@@ -6,6 +6,7 @@
 
 #define NETWORK_QUEUE_SEND_ONE 0x0b
 #define NETWORK_QUEUE_SEND_ALL 0x0c
+#define NETWORK_QUEUE_SEND_REQUESTED 1
 
 class CBroadcast;
 class CNetworkAddress;

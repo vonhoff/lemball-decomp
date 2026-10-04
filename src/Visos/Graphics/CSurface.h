@@ -13,6 +13,10 @@ class CResZRLE;
 class CRemap;
 struct CVSPoint;
 
+enum {
+	SURFACE_STEP_BACKWARD = -1
+};
+
 #pragma warning(disable : 4250)
 
 struct SurfaceListNode {

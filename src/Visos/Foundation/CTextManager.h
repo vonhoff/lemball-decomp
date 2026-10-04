@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_FOUNDATION_CTEXTMANAGER_H
 
 #include "CString.h"
+#include "TextAdvanceFlags.h"
 
 class CGDI;
 class CRemap;

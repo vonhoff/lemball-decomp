@@ -21,12 +21,12 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 
 	type = p_message->m_type;
 	switch (type) {
-	case 3:
-	case 4:
-		m_idleDeadline = timeGetTime() + 20000;
+	case MESSAGE_KEY_UP:
+	case MESSAGE_KEY_DOWN:
+		m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 		break;
 	case MESSAGE_BUTTON_RELEASED:
-		m_idleDeadline = timeGetTime() + 20000;
+		m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 		switch ((unsigned int) p_message->m_code) {
 		case MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS:
 			m_returnState = FLOW_MAIN_OPTIONS_2;

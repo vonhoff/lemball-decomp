@@ -21,12 +21,12 @@ void CSurface::BlitZRLENoClipQZBuffRemap(const CVSRect& p_rect,
 			unsigned char run;
 			do {
 				run = *src++;
-				if (run < 0x80) {
+				if (run < ZRLE_ROW_END_MARKER) {
 					dst += run;
 					zlines += run;
 				}
-				else if (run > 0x80) {
-					run &= 0x7f;
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
 					unsigned short* copyZ = zlines;
 					int i = run;
 					unsigned char* copySrc = src;
@@ -43,7 +43,7 @@ void CSurface::BlitZRLENoClipQZBuffRemap(const CVSRect& p_rect,
 					zlines += run;
 					src += run;
 				}
-			} while (run != 0x80);
+			} while (run != ZRLE_ROW_END_MARKER);
 			row++;
 			y++;
 		} while (row < p_rect.m_height);

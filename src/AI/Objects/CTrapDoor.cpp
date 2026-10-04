@@ -7,17 +7,30 @@
 #include "AI/Base/CBaseGlobalObject.h"
 #include "AI/Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"
+#include "AI/Base/ObjectInteractionStates.h"
 #include "AI/Base/ObjectTypes.h"
 #include "CViewData.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
 
+enum eTrapDoorSoundState {
+	TRAPDOOR_SOUND_NOT_TRIGGERED = 0,
+	TRAPDOOR_SOUND_TRIGGERED = 1
+};
+
+enum {
+	TRAP_DOOR_ARRIVAL_DELAY_TICKS = 54,
+	TRAP_DOOR_OPENING_DURATION_TICKS = 20,
+	TRAP_DOOR_OPEN_DURATION_TICKS = 80,
+	TRAP_DOOR_HEIGHT_ABOVE_GROUND_PIXELS = 78
+};
+
 // GLOBAL: LEMBALL 0x0049cf3c
-unsigned int g_dwTrapDoorLocalSfxState = 0;
+unsigned int g_dwTrapDoorLocalSfxState = TRAPDOOR_SOUND_NOT_TRIGGERED;
 
 // GLOBAL: LEMBALL 0x0049cf40
-unsigned int g_dwTrapDoorRemoteSfxState = 0;
+unsigned int g_dwTrapDoorRemoteSfxState = TRAPDOOR_SOUND_NOT_TRIGGERED;
 
 // FUNCTION: LEMBALL 0x0040c2d0
 CTrapDoor::CTrapDoor(AICOORD& p_position, unsigned int p_mode) : CBaseGlobalObject(p_position, OBJECT_TRAP_DOOR)
@@ -45,29 +58,29 @@ void CTrapDoor::Restart()
 // FUNCTION: LEMBALL 0x0040c3b0
 void CTrapDoor::GetViewData(CViewData& p_viewData)
 {
-	int x = m_position.m_xFixed >> 12;
-	int y = m_position.m_yFixed >> 12;
+	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
-	int blockX = x >> 4;
-	int blockY = y >> 4;
+	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short z;
 	int width;
 	if (x < 0 || y < 0 || (width = map->m_ground.m_width) <= blockX || map->m_ground.m_height <= blockY) {
 		z = 0;
 	}
 	else {
-		int groundX = x & 0xf;
-		int groundY = y & 0xf;
+		int groundX = x & GROUND_BLOCK_PIXEL_MASK;
+		int groundY = y & GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(groundX, groundY);
 	}
-	m_position.m_zFixed = (z + 0x4e) << 12;
+	m_position.m_zFixed = (z + TRAP_DOOR_HEIGHT_ABOVE_GROUND_PIXELS) << FIXED_POINT_FRACTION_BITS;
 
 	p_viewData.m_objectId = m_objectId;
 	p_viewData.m_objectType = m_objectType;
 	p_viewData.m_playerIndex = 0;
-	p_viewData.m_positionX = m_position.m_xFixed >> 12;
-	p_viewData.m_positionY = m_position.m_yFixed >> 12;
-	p_viewData.m_positionZ = m_position.m_zFixed >> 12;
+	p_viewData.m_positionX = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_positionY = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_positionZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	p_viewData.m_facingDirection = m_facingDirection;
 	unsigned int actionArgument = (unsigned short) m_actionArgument;
 	unsigned int stateTimer = m_stateTimer;
@@ -105,14 +118,14 @@ bool CTrapDoor::Process()
 				finished = true;
 				break;
 			case ACTION_DOOR_OPENING:
-				if (g_dwTrapDoorRemoteSfxState == 0) {
-					g_dwTrapDoorRemoteSfxState = 1;
+				if (g_dwTrapDoorRemoteSfxState == TRAPDOOR_SOUND_NOT_TRIGGERED) {
+					g_dwTrapDoorRemoteSfxState = TRAPDOOR_SOUND_TRIGGERED;
 					SetSndEffect(SFX_TRAPDOOR);
 				}
 				break;
 			case ACTION_DOOR_CLOSING:
-				if (g_dwTrapDoorRemoteSfxState == 1) {
-					g_dwTrapDoorRemoteSfxState = 0;
+				if (g_dwTrapDoorRemoteSfxState == TRAPDOOR_SOUND_TRIGGERED) {
+					g_dwTrapDoorRemoteSfxState = TRAPDOOR_SOUND_NOT_TRIGGERED;
 					SetSndEffect(SFX_TRAPDOOR);
 				}
 				break;
@@ -121,49 +134,49 @@ bool CTrapDoor::Process()
 		}
 		return !finished;
 	}
-	if (m_mode != 0) {
+	if (m_mode != TRAPDOOR_MODE_LOCAL_AUTOMATIC) {
 		return true;
 	}
 	if (m_actionDeadline <= g_dwGameTick) {
 		m_stateTimer = g_dwSimulationTimestamp;
 		switch (m_action) {
 		case ACTION_READY:
-			if (g_dwTrapDoorLocalSfxState == 0) {
+			if (g_dwTrapDoorLocalSfxState == TRAPDOOR_SOUND_NOT_TRIGGERED) {
 				SetSndEffect(SFX_DOORAPPR);
-				g_dwTrapDoorLocalSfxState = 1;
+				g_dwTrapDoorLocalSfxState = TRAPDOOR_SOUND_TRIGGERED;
 			}
-			m_actionDeadline = g_dwGameTick + 0x36;
+			m_actionDeadline = g_dwGameTick + TRAP_DOOR_ARRIVAL_DELAY_TICKS;
 			Action(ACTION_ARRIVING);
 			break;
 		case ACTION_ARRIVING:
-			if (g_dwTrapDoorLocalSfxState == 1) {
-				g_dwTrapDoorLocalSfxState = 0;
+			if (g_dwTrapDoorLocalSfxState == TRAPDOOR_SOUND_TRIGGERED) {
+				g_dwTrapDoorLocalSfxState = TRAPDOOR_SOUND_NOT_TRIGGERED;
 				SetSndEffect(SFX_TRAPDOOR);
 			}
-			m_actionDeadline = g_dwGameTick + 0x14;
+			m_actionDeadline = g_dwGameTick + TRAP_DOOR_OPENING_DURATION_TICKS;
 			Action(ACTION_DOOR_OPENING);
 			return true;
 		case ACTION_DOOR_OPENING:
-			if (g_dwTrapDoorLocalSfxState == 0) {
-				g_dwTrapDoorLocalSfxState = 1;
+			if (g_dwTrapDoorLocalSfxState == TRAPDOOR_SOUND_NOT_TRIGGERED) {
+				g_dwTrapDoorLocalSfxState = TRAPDOOR_SOUND_TRIGGERED;
 				SetSndEffect(SFX_LETSGO);
 			}
-			m_actionDeadline = g_dwGameTick + 0x50;
+			m_actionDeadline = g_dwGameTick + TRAP_DOOR_OPEN_DURATION_TICKS;
 			Action(ACTION_DOOR_OPEN);
 			return true;
 		case ACTION_DOOR_OPEN:
-			if (g_dwTrapDoorLocalSfxState == 1) {
-				g_dwTrapDoorLocalSfxState = 0;
+			if (g_dwTrapDoorLocalSfxState == TRAPDOOR_SOUND_TRIGGERED) {
+				g_dwTrapDoorLocalSfxState = TRAPDOOR_SOUND_NOT_TRIGGERED;
 				SetSndEffect(SFX_TRAPDOOR);
 			}
-			m_actionDeadline = g_dwGameTick + 0x14;
+			m_actionDeadline = g_dwGameTick + TRAP_DOOR_OPENING_DURATION_TICKS;
 			Action(ACTION_DOOR_CLOSING);
 			return true;
 		case ACTION_DOOR_CLOSING:
-			if (g_dwTrapDoorLocalSfxState == 0) {
+			if (g_dwTrapDoorLocalSfxState == TRAPDOOR_SOUND_NOT_TRIGGERED) {
 				SetSndEffect(SFX_DOORGO);
 			}
-			m_actionDeadline = g_dwGameTick + 0x36;
+			m_actionDeadline = g_dwGameTick + TRAP_DOOR_ARRIVAL_DELAY_TICKS;
 			Action(ACTION_LEAVING);
 			return true;
 		case ACTION_LEAVING:
@@ -177,15 +190,15 @@ bool CTrapDoor::Process()
 // FUNCTION: LEMBALL 0x0040c720
 void CTrapDoor::SetPositionFromIntegers(int p_x, int p_y, int p_z)
 {
-	m_position.m_xFixed = p_x << 12;
-	m_position.m_yFixed = p_y << 12;
-	m_position.m_zFixed = p_z << 12;
+	m_position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x0040ce80
 int CTrapDoor::Usage()
 {
-	return 2;
+	return GROUP_OBJECT_USAGE_SINGLE;
 }
 
 // FUNCTION: LEMBALL 0x0040ce90
