@@ -9,7 +9,13 @@ public:
 	// FUNCTION: LEMBALL 0x00417b30
 	inline CVector(const CVector& p_other) : m_xFixed(p_other.m_xFixed), m_yFixed(p_other.m_yFixed) {}
 	CVector(long p_x, long p_y);
-	CVector& operator=(const CVector& p_other);
+	// FUNCTION: LEMBALL 0x0040c290
+	CVector& operator=(const CVector& p_other)
+	{
+		m_xFixed = p_other.m_xFixed;
+		m_yFixed = p_other.m_yFixed;
+		return *this;
+	}
 
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04

@@ -12,10 +12,8 @@ public:
 	// FUNCTION: LEMBALL 0x004267a0
 	CMovementInterpolation& operator=(const CMovementInterpolation& p_other)
 	{
-		m_start.m_xFixed = p_other.m_start.m_xFixed;
-		m_start.m_yFixed = p_other.m_start.m_yFixed;
-		m_delta.m_xFixed = p_other.m_delta.m_xFixed;
-		m_delta.m_yFixed = p_other.m_delta.m_yFixed;
+		m_start = p_other.m_start;
+		m_delta = p_other.m_delta;
 		return *this;
 	}
 
