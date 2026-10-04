@@ -615,18 +615,15 @@ void CGameObject::StartMoving()
 	};
 	if (m_destinationList != NULL) {
 		CMover* mover = NULL;
-		int groundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
-								   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
-								   &mover);
+		const int& groundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+										  m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+										  &mover);
 		int objectZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		if (m_onMover == 0 && mover != NULL) {
 			mover->GetOn(this);
 		}
 		if (objectZ == groundZ) {
-			AICOORD destination = GetDestination();
-			m_destination.m_xFixed = destination.m_xFixed;
-			m_destination.m_yFixed = destination.m_yFixed;
-			m_destination.m_zFixed = destination.m_zFixed;
+			m_destination = GetDestination();
 			int distance = Distance(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 									m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
 									m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS,
@@ -638,9 +635,7 @@ void CGameObject::StartMoving()
 			}
 			m_actionDeadline = m_moveDurationTicks + g_dwGameTick;
 			CVector start(m_position.m_xFixed, m_position.m_yFixed);
-			CVector end(start);
-			end.m_xFixed = m_destination.m_xFixed;
-			end.m_yFixed = m_destination.m_yFixed;
+			CVector end(m_destination.m_xFixed, m_destination.m_yFixed);
 			m_movement.SetEndpoints(start, end);
 		}
 		else if (m_balloonPostActive == 0) {
