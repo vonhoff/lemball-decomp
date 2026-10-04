@@ -5,7 +5,7 @@
 #include "Visos/Sound/CBaseSoundDevice.h"
 
 #include <new.h>
-
+#define WAVE_SOUND_TRACKED_CHANNEL_COUNT 8
 #define WAVE_LOW_SAMPLE_RATE 11025
 #define WAVE_HIGH_SAMPLE_RATE 22050
 #define WAVE_DEVICE_RETRY_LIMIT 500
@@ -30,7 +30,7 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	m_unk0x18 = 0;
 	m_deviceId = WAVE_MAPPER;
 	m_sampleRate = 0;
-	for (unsigned int i = 0; i < 8; i++) {
+	for (unsigned int i = 0; i < WAVE_SOUND_TRACKED_CHANNEL_COUNT; i++) {
 		m_channelState[i] = 0xffffffff;
 		m_pad0x40[i] = 0;
 		m_effectPlaying[i] = 0;
@@ -239,7 +239,7 @@ int CWaveSoundDevice::IsAnyEffectPlaying()
 
 	playing = 0;
 	i = 0;
-	while (i < 8) {
+	while (i < WAVE_SOUND_TRACKED_CHANNEL_COUNT) {
 		if (m_effectPlaying[i] == 1) {
 			playing = 1;
 		}
