@@ -145,9 +145,9 @@ class ReportTests(unittest.TestCase):
 
         engine, modules = Mock(), Mock()
         engine.get_all.return_value = entities
-        modules.get_module.side_effect = lambda address: (
+        modules.get_module.side_effect = lambda module_address: (
             "",
-            modules_by_address[address],
+            modules_by_address[module_address],
         )
         with (
             patch("report.csv_parse", return_value=catalog.items()),
@@ -217,9 +217,9 @@ class ReportTests(unittest.TestCase):
         )
         engine, modules = Mock(), Mock()
         engine.get_all.return_value = list(reversed(entities))
-        modules.get_module.side_effect = lambda address: (
+        modules.get_module.side_effect = lambda module_address: (
             "",
-            "Exact" if address == 0x501000 else "Mixed",
+            "Exact" if module_address == 0x501000 else "Mixed",
         )
         with (
             patch("report.csv_parse", return_value=catalog.items()),

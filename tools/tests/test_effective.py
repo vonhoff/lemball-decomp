@@ -28,8 +28,12 @@ def fixture(original="c3", rebuilt=None, thunk=THUNK, opcode="e8"):
     for start, body in zip((0x1000, 0x2000), bodies, strict=True):
         images.append(
             SimpleNamespace(
-                read=lambda address, size, start=start, body=body: (
-                    body if address == start else thunk if address == 0x4000 else b""
+                read=lambda read_address, size, image_start=start, image_body=body: (
+                    image_body
+                    if read_address == image_start
+                    else thunk
+                    if read_address == 0x4000
+                    else b""
                 )[:size],
                 imagebase=0,
                 is_relocated_addr=lambda _address: False,
@@ -117,8 +121,8 @@ def switch_fixture(
         (0x1000, comparator.orig_bin),
         (0x2000, comparator.recomp_bin),
     ):
-        image.is_relocated_addr = lambda address, start=start: (
-            start <= address < start + 100
+        image.is_relocated_addr = lambda address, image_start=start: (
+            image_start <= address < image_start + 100
         )
     return comparator, match
 
@@ -148,8 +152,12 @@ def callee_fixture(original_prefix, rebuilt_prefix=None):
         ),
     ):
         read = image.read
-        image.read = lambda address, size, read=read, target=target, prefix=prefix: (
-            bytes.fromhex(prefix)[:size] if address == target else read(address, size)
+        image.read = (
+            lambda address, size, prior_read=read, callee_address=target, callee_prefix=prefix: (
+                bytes.fromhex(callee_prefix)[:size]
+                if address == callee_address
+                else prior_read(address, size)
+            )
         )
     return comparator, match
 

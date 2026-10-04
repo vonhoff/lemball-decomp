@@ -3,6 +3,7 @@
 import contextlib
 import copy
 import io
+import runpy
 import unittest
 from unittest.mock import Mock, patch
 
@@ -12,6 +13,18 @@ import match as matching
 
 
 class MatchTests(unittest.TestCase):
+    def test_cli_help_supports_redirected_text_streams(self):
+        output = io.StringIO()
+        with (
+            patch("sys.argv", ["match.py", "--help"]),
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(io.StringIO()),
+            self.assertRaises(SystemExit) as exit_status,
+        ):
+            runpy.run_path(matching.__file__, run_name="__main__")
+        self.assertEqual(exit_status.exception.code, 0)
+        self.assertIn("--summary", output.getvalue())
+
     def test_summary_is_compact_and_missing_addresses_fail(self):
         engine = Mock()
         engine.compare_address.side_effect = [

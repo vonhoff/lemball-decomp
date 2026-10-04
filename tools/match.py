@@ -4,6 +4,7 @@
 import argparse
 import sys
 from dataclasses import replace
+from io import TextIOWrapper
 
 from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
@@ -73,6 +74,7 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.stdout.reconfigure(errors="backslashreplace")
-    sys.stderr.reconfigure(errors="backslashreplace")
+    for output in (sys.stdout, sys.stderr):
+        if isinstance(output, TextIOWrapper):
+            output.reconfigure(errors="backslashreplace")
     raise SystemExit(main())
