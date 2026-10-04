@@ -1,6 +1,6 @@
 #include "../CNetworkOptionsDrawer.h"
 
-#include "../../../Network/Game/CNetworkManager.h"
+#include "Network/CNetworkManager.h"
 #include "../../../Network/Messages/CNetworkGameMessage.h"
 #include "Visos/Text/CTextManager.h"
 #include "../../../Visos/Network/CConnect.h"

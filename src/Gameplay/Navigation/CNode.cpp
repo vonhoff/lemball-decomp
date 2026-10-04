@@ -1,0 +1,86 @@
+#include "CNode.h"
+
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/CPt3.h"
+#include "NodeNeighbour.h"
+
+#include <stddef.h>
+
+enum {
+	NODE_UNINITIALIZED_FIXED_COORDINATE = 0xaa55aa55
+};
+
+// FUNCTION: LEMBALL 0x004212e0
+CNode::CNode()
+{
+	m_xFixed = NODE_UNINITIALIZED_FIXED_COORDINATE;
+	m_yFixed = NODE_UNINITIALIZED_FIXED_COORDINATE;
+	m_neighbours = NULL;
+}
+
+// FUNCTION: LEMBALL 0x00421300
+void CNode::Restart()
+{
+	m_neighbourCount = 0;
+}
+
+// FUNCTION: LEMBALL 0x00421310
+CNode::~CNode()
+{
+	if (m_neighbours != NULL) {
+		delete[] m_neighbours;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00421330
+void CNode::Initialise(int p_x, int p_y, int p_neighbourCapacity)
+{
+	if (p_neighbourCapacity != 0 && m_neighbours != NULL) {
+		m_neighbours = (NodeNeighbour*) operator new(p_neighbourCapacity * sizeof(NodeNeighbour));
+	}
+	m_neighbourCapacity = p_neighbourCapacity;
+	m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+}
+
+// FUNCTION: LEMBALL 0x00421370
+void CNode::SetFixedCoordinates(int p_x, int p_y, unsigned int p_unused)
+{
+	m_xFixed = p_x;
+	m_yFixed = p_y;
+}
+
+// FUNCTION: LEMBALL 0x00421380
+void CNode::SetIntegerCoordinates(int p_x, int p_y)
+{
+	m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+}
+
+// FUNCTION: LEMBALL 0x004213a0
+void CNode::AddANeighbour(int p_node, int p_cost)
+{
+	m_neighbours[m_neighbourCount].m_node = p_node;
+	m_neighbours[m_neighbourCount].m_cost = p_cost;
+	m_neighbourCount++;
+}
+
+// FUNCTION: LEMBALL 0x004213d0
+CPt3 CNode::Position()
+{
+	return CPt3(m_xFixed, m_yFixed, NODE_UNINITIALIZED_FIXED_COORDINATE);
+}
+
+// FUNCTION: LEMBALL 0x004213f0
+void CNode::ExtractIntegerPosition(int* p_x, int* p_y)
+{
+	*p_x = m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	*p_y = m_yFixed >> FIXED_POINT_FRACTION_BITS;
+}
+
+// FUNCTION: LEMBALL 0x00421410
+void CNode::GetFixedPosition(int* p_coordinates)
+{
+	p_coordinates[0] = m_xFixed;
+	p_coordinates[1] = m_yFixed;
+}

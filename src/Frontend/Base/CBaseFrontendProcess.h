@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 
-#include "../../Visos/Foundation/CBaseProcess.h"
+#include "Game/CBaseProcess.h"
 #include "Visos/Queues/CBaseQueueHandler.h"
 #include "../Support/CUserActionMessage.h"
 class CConnect;

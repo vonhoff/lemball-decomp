@@ -1,6 +1,6 @@
 #include "CCursor.h"
 
-#include "Control/Game/CDemo.h"
+#include "Game/CDemo.h"
 #include "Visos/Resources/Manifest.h"
 #include "Visos/Math/CVSPoint.h"
 #include "Visos/Input/CBaseCursor.h"

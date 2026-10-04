@@ -1,6 +1,6 @@
 #include "VsInit.h"
 
-#include "Control/Game/GameMain.h"
+#include "Game/GameMain.h"
 #include "PreInit.h"
 #include "Visos/Statistics/CMogloadStat.h"
 #include "Visos/Statistics/CStatManager.h"

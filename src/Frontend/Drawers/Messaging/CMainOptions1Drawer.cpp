@@ -1,6 +1,6 @@
 #include "../CMainOptions1Drawer.h"
 
-#include "../../../Control/Game/CGameStatus.h"
+#include "Game/CGameStatus.h"
 #include "../../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../../Views/Display/CMain2DDisplay.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"

@@ -1,6 +1,6 @@
 #include "CLemmingAnimsManager.h"
 
-#include "../../AI/Navigation/CAI.h"
+#include "Gameplay/Simulation/CAI.h"
 #include "../../Frontend/Resources/CCDLoadAnim.h"
 #include "../../Frontend/Resources/CFrontendResourceLoader.h"
 #include "../../Visos/Animation/CPlayThruAnim.h"
@@ -11,7 +11,7 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "../Display/CMain2DDisplay.h"
 #include "../Sound/CSoundView.h"
-#include "AI/Base/ObjectTypes.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CFrames.h"
 #include "Visos/Animation/CTimedAnim.h"

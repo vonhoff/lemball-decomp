@@ -1,8 +1,8 @@
 #include "CBaseFrontendDrawer.h"
 
-#include "../../Control/Game/CGameStatus.h"
-#include "../../Control/Game/GameMain.h"
-#include "../../Control/Level/CLevelLoader.h"
+#include "Game/CGameStatus.h"
+#include "Game/GameMain.h"
+#include "Level/CLevelLoader.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Visos/Animation/CPlayThruAnim.h"
 #include "Visos/Queues/CBaseQueue.h"
@@ -27,7 +27,7 @@
 #include "Visos/Animation/AnimationConstants.h"
 #include "Visos/Math/RandomConstants.h"
 extern "C" unsigned long __stdcall timeGetTime(void);
-#include "../../Network/Game/CNetworkManager.h"
+#include "Network/CNetworkManager.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "Visos/Streams/CVSOStream.h"
 

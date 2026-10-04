@@ -1,6 +1,6 @@
 #include "CPanel.h"
 
-#include "../../AI/Navigation/CAI.h"
+#include "Gameplay/Simulation/CAI.h"
 #include "Visos/Queues/CBaseQueue.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Visos/Resources/Types/CResANIM.h"

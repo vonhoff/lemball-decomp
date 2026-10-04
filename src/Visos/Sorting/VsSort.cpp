@@ -1,7 +1,7 @@
 #include "VsSort.h"
 
-#include "AI/Objects/AnimSpecialEntry.h"
-#include "AI/Objects/CViewData.h"
+#include "Gameplay/Animation/AnimSpecialEntry.h"
+#include "Gameplay/Objects/CViewData.h"
 
 // FUNCTION: LEMBALL 0x00409910
 int AnimSpCmp(const void* p_left, const void* p_right)

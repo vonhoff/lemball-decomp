@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_PANEL_CPANELLEMMING_H
 #define LEMBALL_VIEWS_PANEL_CPANELLEMMING_H
 
-#include "../../AI/Base/ObjectTypes.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 class CPanel;
 class CPanelButton;

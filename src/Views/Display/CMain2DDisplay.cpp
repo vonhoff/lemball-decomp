@@ -1,9 +1,9 @@
 #include "CMain2DDisplay.h"
 
-#include "../../AI/Navigation/CAI.h"
-#include "../../Control/Game/CGame.h"
-#include "../../Control/Game/GameMain.h"
-#include "../../Control/Level/CLevelLoader.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Game/CGame.h"
+#include "Game/GameMain.h"
+#include "Level/CLevelLoader.h"
 #include "../../Frontend/Base/CBaseFrontendDrawer.h"
 #include "../../Frontend/Drawers/CIntroAnimDrawer.h"
 #include "../../Frontend/Drawers/CMainOptions1Drawer.h"

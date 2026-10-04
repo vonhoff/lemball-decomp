@@ -1,6 +1,6 @@
 #include "CSuccFailAnimWnd.h"
 
-#include "../../Control/Game/CGame.h"
+#include "Game/CGame.h"
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Resources/Manifest.h"

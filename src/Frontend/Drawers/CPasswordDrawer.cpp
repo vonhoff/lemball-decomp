@@ -1,6 +1,6 @@
 #include "CPasswordDrawer.h"
 
-#include "../../Control/Game/CGameStatus.h"
+#include "Game/CGameStatus.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "Visos/Queues/CBaseQueue.h"
 #include "Visos/Text/CTextManager.h"

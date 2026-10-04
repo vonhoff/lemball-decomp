@@ -1,8 +1,8 @@
 #include "CPreviewDrawer.h"
 
-#include "../../Control/Game/CGameStatus.h"
-#include "../../Control/Level/CLevelLoader.h"
-#include "../../Control/Support/tPreviewData.h"
+#include "Game/CGameStatus.h"
+#include "Level/CLevelLoader.h"
+#include "Level/tPreviewData.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Visos/Animation/CAnimsManager.h"
 #include "../../Visos/Animation/CRepeatAnim.h"

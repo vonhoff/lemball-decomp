@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_C2D_H
 #define LEMBALL_VIEWS_DISPLAY_C2D_H
 
-#include "../../AI/Base/AICOORD.h"
-#include "../../AI/Objects/CViewData.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Objects/CViewData.h"
 #include "Visos/Queues/CBaseQueueHandler.h"
 #include "Visos/Math/CVSPoint.h"
 #include "Visos/Math/CVSRect.h"
@@ -14,13 +14,13 @@
 #include "Visos/Controls/CHotAreaHandler.h"
 #include "Visos/Graphics/Primitives/CPopActive.h"
 #include "Visos/Graphics/Primitives/CPushActive.h"
-#include "../../Visos/Graphics/CReceiveWindowState.h"
+#include "Views/Pause/CReceiveWindowState.h"
 #include "Visos/Graphics/Primitives/CScreenScroll.h"
 #include "Visos/Graphics/Primitives/CSolidRect.h"
 #include "Visos/Graphics/Primitives/CZBuffClear.h"
 #include "Visos/Graphics/Primitives/CZBuffScroll.h"
 #include "../Pause/CPauseWindow.h"
-#include "AI/Base/ObjectTypes.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 class CAI;
 class CBaseQueue;

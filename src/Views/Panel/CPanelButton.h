@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_PANEL_CPANELBUTTON_H
 #define LEMBALL_VIEWS_PANEL_CPANELBUTTON_H
 
-#include "../../AI/Base/ObjectTypes.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 #include "../../Visos/Animation/CAnim.h"
 #include "Visos/Math/CVSRect.h"
 #include "Visos/Controls/CDepressedButton.h"

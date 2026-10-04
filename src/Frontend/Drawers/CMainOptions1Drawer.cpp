@@ -1,7 +1,7 @@
 #include "CMainOptions1Drawer.h"
 
-#include "../../Control/Game/CGameStatus.h"
-#include "../../Control/Level/CLevelLoader.h"
+#include "Game/CGameStatus.h"
+#include "Level/CLevelLoader.h"
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Frontend/Controls/CGunController.h"
 #include "../../Views/Display/CMain2DDisplay.h"

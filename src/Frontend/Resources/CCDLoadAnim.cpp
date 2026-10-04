@@ -1,6 +1,6 @@
 #include "CCDLoadAnim.h"
 
-#include "../../Control/Game/GameMain.h"
+#include "Game/GameMain.h"
 #include "../../Platform/Windows/Entry.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "Visos/Graphics/Surfaces/CChangeList.h"

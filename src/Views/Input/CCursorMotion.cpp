@@ -1,7 +1,7 @@
 #include "CCursorMotion.h"
 
-#include "../../AI/Navigation/CAI.h"
-#include "../../Map/Base/CMap.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Map/CMap.h"
 #include "Visos/Queues/CBaseQueue.h"
 #include "Visos/Math/CFixed.h"
 #include "Visos/Math/CVSPoint.h"

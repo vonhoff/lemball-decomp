@@ -1,6 +1,6 @@
 #include "CBaseNetwork.h"
 
-#include "../../Network/Game/CNetworkManager.h"
+#include "Network/CNetworkManager.h"
 #include "Visos/Queues/CBaseQueue.h"
 #include "Visos/Queues/CBaseQueueHandler.h"
 #include "Visos/Network/Protocol/CAckMessage.h"

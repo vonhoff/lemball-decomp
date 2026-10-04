@@ -1,7 +1,7 @@
 #include "CNetworkOptionsDrawer.h"
 
-#include "../../Control/Game/CGameStatus.h"
-#include "../../Network/Game/CNetworkManager.h"
+#include "Game/CGameStatus.h"
+#include "Network/CNetworkManager.h"
 #include "../../Network/Messages/CNetworkGameMessage.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"

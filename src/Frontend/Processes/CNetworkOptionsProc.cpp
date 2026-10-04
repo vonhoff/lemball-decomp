@@ -1,7 +1,7 @@
 #include "CNetworkOptionsProc.h"
 
-#include "../../Control/Game/CGame.h"
-#include "../../Network/Game/CNetworkManager.h"
+#include "Game/CGame.h"
+#include "Network/CNetworkManager.h"
 #include "../../Network/Messages/CGameAcceptMessage.h"
 #include "../../Network/Messages/CGameRejectMessage.h"
 #include "Visos/Network/Packets/BasePacketHeader.h"

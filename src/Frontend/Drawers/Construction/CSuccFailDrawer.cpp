@@ -1,6 +1,6 @@
 #include "Frontend/Drawers/CSuccFailDrawer.h"
 
-#include "Control/Game/CGameStatus.h"
+#include "Game/CGameStatus.h"
 #include "Frontend/Base/CBaseFrontendProcess.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
 #include "Visos/Time/VsTime.h"

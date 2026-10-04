@@ -1,12 +1,12 @@
 #include "../CSuccFailDrawer.h"
 
-#include "../../../Control/Game/CGameStatus.h"
+#include "Game/CGameStatus.h"
 #include "Visos/Text/CTextManager.h"
 #include "../../../Visos/Network/NetworkMode.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-#include "../../../Network/Game/CNetworkManager.h"
+#include "Network/CNetworkManager.h"
 #include "../../../Network/Messages/CNetworkGameMessage.h"
 #include "../../../Visos/Network/CConnect.h"
 #include "Visos/Resources/Types/CResFONT.h"

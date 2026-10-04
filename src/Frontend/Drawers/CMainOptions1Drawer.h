@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS1DRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS1DRAWER_H
 
-#include "../../Visos/Foundation/CBaseProcess.h"
+#include "Game/CBaseProcess.h"
 #include "Visos/Queues/CBaseQueueHandler.h"
 #include "Visos/Time/VsTime.h"
 #include "../Base/CBaseFrontendDrawer.h"

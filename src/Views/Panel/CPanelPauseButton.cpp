@@ -1,6 +1,6 @@
 #include "CPanelPauseButton.h"
 
-#include "../../AI/Navigation/CAI.h"
+#include "Gameplay/Simulation/CAI.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Visos/Controls/CDepressedButton.h"
 #include "../Display/C2D.h"

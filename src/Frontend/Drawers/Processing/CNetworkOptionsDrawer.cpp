@@ -3,7 +3,7 @@
 #include "Frontend/Base/CBaseFrontendProcess.h"
 #include "Frontend/Processes/CNetworkOptionsProc.h"
 #include "Frontend/Support/CEntryHandler.h"
-#include "Network/Game/CNetworkManager.h"
+#include "Network/CNetworkManager.h"
 #include "Views/Sound/CSoundView.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Time/VsTime.h"

@@ -1,7 +1,7 @@
 #include "../CBaseFrontendProcess.h"
 
-#include "../../../Control/Game/CGameStatus.h"
-#include "../../../Control/Level/CLevelLoader.h"
+#include "Game/CGameStatus.h"
+#include "Level/CLevelLoader.h"
 #include "../../../Frontend/Support/CUserActionMessage.h"
 #include "../../../Visos/Network/CBaseNetwork.h"
 #include "../../../Visos/Network/CConnect.h"

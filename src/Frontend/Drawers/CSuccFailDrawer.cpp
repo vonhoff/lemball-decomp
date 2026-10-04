@@ -1,8 +1,8 @@
 #include "CSuccFailDrawer.h"
 
-#include "../../Control/Game/CGameStatus.h"
-#include "../../Control/Game/GameMain.h"
-#include "../../Control/Level/CLevelLoader.h"
+#include "Game/CGameStatus.h"
+#include "Game/GameMain.h"
+#include "Level/CLevelLoader.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "Visos/Statistics/CStatManager.h"

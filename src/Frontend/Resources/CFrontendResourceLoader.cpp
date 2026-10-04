@@ -1,6 +1,6 @@
 #include "CFrontendResourceLoader.h"
 
-#include "../../Control/Game/GameMain.h"
+#include "Game/GameMain.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "Visos/Resources/Archive/CMogRes.h"
