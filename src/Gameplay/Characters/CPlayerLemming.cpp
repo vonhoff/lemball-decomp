@@ -7,7 +7,7 @@
 #include "Map/CMap.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Visos/Network/CConnect.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"

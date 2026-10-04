@@ -64,4 +64,6 @@ private:
 	unsigned int m_sortZKey;       // 0x48
 };
 
+int ViewDataCmp(const void* p_left, const void* p_right);
+
 #endif

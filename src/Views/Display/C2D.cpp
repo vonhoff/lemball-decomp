@@ -20,7 +20,7 @@
 #include "Visos/Queues/CBaseQueue.h"
 #include "CObjSq.h"
 #include "Visos/Text/CTextManager.h"
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Visos/Sorting/VsSort.h"
 #include "Visos/Time/VsTime.h"
 #include "Visos/Graphics/Palettes/CBasePalManager.h"

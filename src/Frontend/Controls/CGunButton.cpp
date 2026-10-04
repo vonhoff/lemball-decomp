@@ -4,19 +4,6 @@
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Queues/Message.h"
 
-// FUNCTION: LEMBALL 0x0044c1e0
-int sgn(int p_value)
-{
-	int res = p_value;
-	if (res == 0) {
-		return res;
-	}
-	if (res < 0) {
-		return -1;
-	}
-	return 1;
-}
-
 // FUNCTION: LEMBALL 0x0044c200
 void CGunButton::OnReleased(int p_flags)
 {

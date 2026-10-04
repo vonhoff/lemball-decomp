@@ -1,7 +1,7 @@
 #include "CSheepGroup.h"
 
 #include "Game/CGame.h"
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Visos/Math/CVSRect.h"
 #include "Visos/Math/VSTrig.h"
 #include "Gameplay/Simulation/CAI.h"

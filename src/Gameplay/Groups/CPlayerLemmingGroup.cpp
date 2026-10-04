@@ -1,6 +1,6 @@
 #include "CPlayerLemmingGroup.h"
 
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Visos/Network/CConnect.h"
 #include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Navigation/CAiDestinationEntry.h"

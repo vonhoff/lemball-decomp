@@ -7,4 +7,10 @@ struct InputTranslationEntry {
 	unsigned int m_inputCode;    // 0x04
 };
 
+bool InitInput();
+bool QuitInput();
+
+extern unsigned int g_dwInputQuitRequested;
+extern InputTranslationEntry g_dwInputTranslationPairs[61];
+
 #endif

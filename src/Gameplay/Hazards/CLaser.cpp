@@ -3,7 +3,7 @@
 #include "Game/CGame.h"
 #include "Game/GameTime.h"
 #include "Map/CMap.h"
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Visos/Network/CConnect.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"

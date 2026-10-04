@@ -3,7 +3,7 @@
 #include "Game/CGame.h"
 #include "Game/GameTime.h"
 #include "Map/CMap.h"
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Navigation/CAiDestinationEntry.h"
 #include "Gameplay/Navigation/CAiDestinationList.h"

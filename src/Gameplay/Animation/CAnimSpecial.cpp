@@ -11,6 +11,17 @@ enum {
 	ANIM_SPECIAL_BLOX_2_DEPTH_OFFSET = ANIM_SPECIAL_DIAGONAL_DEPTH_STEP / 8
 };
 
+// FUNCTION: LEMBALL 0x00409910
+int AnimSpCmp(const void* p_left, const void* p_right)
+{
+	const AnimSpecialEntry* left;
+	const AnimSpecialEntry* right;
+
+	left = (const AnimSpecialEntry*) p_left;
+	right = (const AnimSpecialEntry*) p_right;
+	return left->m_sortKey - right->m_sortKey;
+}
+
 // FUNCTION: LEMBALL 0x00409930
 void CAnimSpecial::Initialise(CMap* p_map)
 {

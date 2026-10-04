@@ -1,7 +1,7 @@
 #include "CMove3d.h"
 
 #include "Game/CGame.h"
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Visos/Math/CVSMath.h"
 #include "Gameplay/Geometry/CPt3.h"
 
 #define MOVE3D_MAX_NORMALIZED_COMPONENT 100

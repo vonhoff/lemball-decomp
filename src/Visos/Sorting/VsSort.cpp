@@ -1,30 +1,5 @@
 #include "VsSort.h"
 
-#include "Gameplay/Animation/AnimSpecialEntry.h"
-#include "Gameplay/Objects/CViewData.h"
-
-// FUNCTION: LEMBALL 0x00409910
-int AnimSpCmp(const void* p_left, const void* p_right)
-{
-	const AnimSpecialEntry* left;
-	const AnimSpecialEntry* right;
-
-	left = (const AnimSpecialEntry*) p_left;
-	right = (const AnimSpecialEntry*) p_right;
-	return left->m_sortKey - right->m_sortKey;
-}
-
-// FUNCTION: LEMBALL 0x0043ff60
-int ViewDataCmp(const void* p_left, const void* p_right)
-{
-	const CViewData* left;
-	const CViewData* right;
-
-	left = (const CViewData*) p_left;
-	right = (const CViewData*) p_right;
-	return (int) left->m_sortZKey - (int) right->m_sortZKey;
-}
-
 // FUNCTION: LEMBALL 0x00463960
 void VSQSort(void* p_base, unsigned int p_count, unsigned int p_width, int (*p_compare)(const void*, const void*))
 {

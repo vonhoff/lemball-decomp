@@ -30,7 +30,7 @@
 
 class CAnimFrameBASE;
 
-int sgn(int p_value);
+#include "Visos/Math/CVSMath.h"
 
 enum {
 	GUN_CONTROLLER_CURSOR_ANIMATION_DURATION_MS = 250,

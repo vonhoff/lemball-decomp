@@ -4,7 +4,7 @@
 #include "Game/GameTime.h"
 #include "Map/CMap.h"
 #include "Map/CGround.h"
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Visos/Network/CConnect.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "CBulletManager.h"

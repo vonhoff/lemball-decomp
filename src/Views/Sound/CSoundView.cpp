@@ -6,7 +6,7 @@
 #include "Game/CGame.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CBaseFrontendProcess.h"
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Sound/CSoundManager.h"
 #include "Frontend/Loading/CLoadUpdate.h"

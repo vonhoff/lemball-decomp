@@ -1,6 +1,6 @@
 #include "CGenericGroup.h"
 
-#include "Gameplay/Geometry/CVSMath.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Visos/Math/VSTrig.h"
 #include "Gameplay/Navigation/CAiDestinationList.h"
 #include "CFormationManager.h"

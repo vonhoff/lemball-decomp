@@ -12,14 +12,10 @@ public:
 	bool WriteRegistryFlag(const char* p_subkey, int p_enabled);
 };
 
-bool InitInput();
-bool QuitInput();
 bool InitPlatformServices();
 bool QuitPlatformServices();
 
 extern CPlatformServices* g_pTargetPlatformServices;
-extern unsigned int g_dwInputQuitRequested;
-extern InputTranslationEntry g_dwInputTranslationPairs[61];
 extern unsigned int g_dwWindowQuitRequested;
 extern char g_szCDRootPath[4];
 extern char g_szRegistrySoftwarePrefix[28];
