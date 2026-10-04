@@ -473,9 +473,10 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, un
 			p_data += 2;
 			eObjectType objectType = (eObjectType) * (unsigned short*) p_data;
 			p_data += 4;
-			AICOORD position(x << FIXED_POINT_FRACTION_BITS,
-							 y << FIXED_POINT_FRACTION_BITS,
-							 z << FIXED_POINT_FRACTION_BITS);
+			int fixedX = x << FIXED_POINT_FRACTION_BITS;
+			int fixedY = y << FIXED_POINT_FRACTION_BITS;
+			int fixedZ = z << FIXED_POINT_FRACTION_BITS;
+			AICOORD position(fixedX, fixedY, fixedZ);
 			switch (objectType) {
 			case OBJECT_CATAPULT:
 			case OBJECT_TOWER:
