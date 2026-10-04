@@ -38,4 +38,9 @@ inline CVSRect::CVSRect(const CVSRect& p_source) : CVSSize(p_source), CVSPoint(p
 {
 }
 
+// FUNCTION: LEMBALL 0x00478b80
+inline CVSRect::CVSRect(short p_x, short p_y, CVSSize* p_size) : CVSSize(*p_size), CVSPoint(p_x, p_y)
+{
+}
+
 #endif

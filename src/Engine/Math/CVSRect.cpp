@@ -57,8 +57,3 @@ CVSRect* CVSRect::ExpandToInclude(const CVSRect& p_rect)
 	}
 	return this;
 }
-
-// FUNCTION: LEMBALL 0x00478b80
-CVSRect::CVSRect(short p_x, short p_y, CVSSize* p_size) : CVSSize(*p_size), CVSPoint(p_x, p_y)
-{
-}
