@@ -17,7 +17,7 @@
 #include "Platform/Windows/Entry.h"
 #include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/Display/DisplayQuitState.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Frontend/Intro/CIntroAnim.h"
 #include "Engine/Statistics/CStatManager.h"
 #include "Engine/Statistics/CTimeStat.h"

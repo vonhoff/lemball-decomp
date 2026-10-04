@@ -1,7 +1,7 @@
 #include "CPasswordDrawer.h"
 
 #include "Application/CGameStatus.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Strings/VsString.h"
@@ -12,7 +12,7 @@
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Manifest.h"
 #include "CPasswordHiliteWindow.h"
-#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/tagPRIMS.h"
 #include "Application/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Application/SoundEffects.h"
@@ -22,7 +22,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"
-#include "Frontend/tagPRIMS.h"
+
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"

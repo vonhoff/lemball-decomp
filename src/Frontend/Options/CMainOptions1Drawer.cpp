@@ -9,12 +9,12 @@
 #include "GameView/Display/CMain2DDisplay.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Manifest.h"
-#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/tagPRIMS.h"
 #include "Application/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
-#include "Frontend/Controls/ButtonActionMessages.h"
+#include "Frontend/Controls/ControlMessages.h"
 #include "Engine/Math/CVSRect.h"
-#include "Frontend/tagPRIMS.h"
+
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 
 #include <stddef.h>

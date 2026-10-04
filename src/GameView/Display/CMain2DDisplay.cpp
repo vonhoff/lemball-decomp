@@ -36,7 +36,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include "Application/FlowProcesses.h"
-#include "GameView/CCdLoadAnimDraw.h"
+#include "GameView/Loading/LoadAnimCallbacks.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"

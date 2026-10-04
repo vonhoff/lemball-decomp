@@ -4,7 +4,7 @@
 #include "Application/GameMain.h"
 #include "Level/CLevelLoader.h"
 #include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Engine/Statistics/CStatManager.h"
 #include "Engine/Memory/CArena.h"
 #include "Engine/Text/CTextManager.h"

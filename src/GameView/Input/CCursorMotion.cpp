@@ -7,7 +7,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Time/VsTime.h"
 #include "../../Engine/Resources/Manifest.h"
-#include "GameView/CLemmingAnimsManager.h"
+#include "GameView/Animation/CLemmingAnimsManager.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Queues/Message.h"
 #include "Engine/Diagnostics/VsDebug.h"

@@ -4,7 +4,7 @@
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CPrimitive.h"
-#include "GameView/CLoadUpdate.h"
+#include "GameView/Loading/CLoadUpdate.h"
 
 class CAI;
 class CCDLoadAnim;

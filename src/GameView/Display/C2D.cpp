@@ -20,11 +20,22 @@
 #include "Multiplayer/Transport/NetworkMode.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/ResourceLimits.h"
-#include "GameView/CLemmingAnimsManager.h"
+#include "GameView/Animation/CLemmingAnimsManager.h"
 #include "GameView/Input/CPadToButton.h"
 #include "GameView/Panel/CPanel.h"
 #include "GameView/Pause/CPauseWindow.h"
-#include "ObjectClipGrid.h"
+class CObjSq;
+// SIZE 0x1a4
+struct ObjectClipGrid {
+	unsigned int m_cellCount;    // 0x00
+	short m_width;               // 0x04
+	short m_height;              // 0x06
+	short m_cellWidth;           // 0x08
+	short m_cellHeight;          // 0x0a
+	CObjSq* m_cells;             // 0x0c
+	unsigned int m_touchedCount; // 0x10
+	CObjSq* m_touchedCells[100]; // 0x14
+};
 #include "SpriteGroundLookup.h"
 #include "CMain2DDisplay.h"
 #include "CPBButton.h"
@@ -47,7 +58,7 @@
 #include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Mechanisms/LiftEndpointRecord.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Queues/Message.h"
@@ -55,8 +66,8 @@
 #include "Gameplay/Hazards/CSlinky.h"
 #include "Gameplay/Mechanisms/CSwitch.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Gameplay/Animation/AnimSpecialEntry.h"
-#include "Gameplay/Animation/CAnimSpecial.h"
+#include "GameView/Animation/AnimSpecialEntry.h"
+#include "GameView/Animation/CAnimSpecial.h"
 #include "Engine/Sorting/VsSort.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Platform/Windows/Graphics/CChangeList.h"

@@ -10,7 +10,12 @@
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
-#include "CPauseVramHandler.h"
+// SIZE 0x04
+// VTABLE: LEMBALL 0x00497750
+class CPauseVramHandler {
+public:
+	virtual void FreeVram() = 0; // vtable+0x00
+};
 
 class CBaseRemap;
 class CPVGWnd;

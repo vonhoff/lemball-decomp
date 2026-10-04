@@ -1,6 +1,6 @@
 #include "CGunController.h"
 
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "../../Engine/Animation/CPlayThruAnim.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Math/CVSPoint.h"
@@ -13,9 +13,9 @@
 #include "CTrackWindow.h"
 #include "CGunButtons.h"
 #include "CTrackerButton.h"
-#include "ControlMessageIds.h"
+#include "Frontend/Controls/ControlMessages.h"
 #include "Frontend/FrontendLayoutMode.h"
-#include "Frontend/Controls/GunControllerJunction.h"
+#include "Frontend/Controls/CGunController.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Animation/CStaticAnim.h"
@@ -62,9 +62,6 @@ unsigned long g_gunSplatLeftResourceId = 0;
 int g_anGunSpriteOffset[18] = {0, 12, -8, -2, 52, -2, -13, 28, 116, 0, 0, -13, 19, 28, -16, 0, -24, -2};
 // GLOBAL: LEMBALL 0x0049fab8
 int g_anGunSpriteOffsetCompact[20] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0, 10, 14, -8, 0, -12, -2, 0, 0};
-
-#include "GameView/CSoundView.h"
-#include "GunControllerJunction.h"
 
 // FUNCTION: LEMBALL 0x0044c870
 CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigned int p_mode)

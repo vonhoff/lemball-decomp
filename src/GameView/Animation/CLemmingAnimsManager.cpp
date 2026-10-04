@@ -1,7 +1,7 @@
-#include "GameView/CLemmingAnimsManager.h"
+#include "GameView/Animation/CLemmingAnimsManager.h"
 
 #include "Gameplay/Simulation/CAI.h"
-#include "GameView/CCDLoadAnim.h"
+#include "GameView/Loading/CCDLoadAnim.h"
 #include "Engine/Animation/CPlayThruAnim.h"
 #include "Engine/Animation/CRepeatAnim.h"
 #include "Engine/Animation/CStaticAnim.h"
@@ -9,7 +9,7 @@
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Manifest.h"
 #include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Animation/CFrames.h"

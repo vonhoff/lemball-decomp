@@ -40,7 +40,7 @@
 #include "Gameplay/Mechanisms/CTrampolineManager.h"
 #include "Gameplay/Mechanisms/CTrapDoorManager.h"
 #include "Gameplay/Messages/CGameStateMessage.h"
-#include "Gameplay/Animation/CAnimSpecial.h"
+#include "GameView/Animation/CAnimSpecial.h"
 #include "Gameplay/Projectiles/CBall.h"
 #include "Gameplay/Mechanisms/CBalloonPost.h"
 #include "Gameplay/Animation/CGroundAnim.h"

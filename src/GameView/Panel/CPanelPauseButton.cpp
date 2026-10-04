@@ -4,7 +4,7 @@
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CDepressedButton.h"
 #include "../Display/C2D.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "CPanel.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Queues/Message.h"

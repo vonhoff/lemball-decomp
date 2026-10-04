@@ -2,7 +2,7 @@
 
 #include "Application/GameMain.h"
 #include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
@@ -11,7 +11,7 @@
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/Types/CResSTRING.h"
 #include "Engine/Resources/Manifest.h"
-#include "GameView/CCDLoadAnim.h"
+#include "GameView/Loading/CCDLoadAnim.h"
 
 #include <new.h>
 class CCdLoadAnimDraw;

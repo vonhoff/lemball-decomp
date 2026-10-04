@@ -6,7 +6,13 @@
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/Message.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
-#include "HiliteControllerJunction.h"
+// SIZE 0x10
+struct HiliteControllerJunction {
+	unsigned int m_present;        // 0x00
+	int m_x;                       // 0x04
+	int m_y;                       // 0x08
+	unsigned int m_controlMessage; // 0x0c
+};
 
 class CGWnd;
 class CGDI;

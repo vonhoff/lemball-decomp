@@ -9,8 +9,7 @@
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CLine.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
-#include "CCdLoadAnimDraw.h"
-#include "CCdLoadAnimProgress.h"
+#include "GameView/Loading/LoadAnimCallbacks.h"
 
 class CGDI;
 class CMain2DDisplay;

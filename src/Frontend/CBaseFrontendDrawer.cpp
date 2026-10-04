@@ -28,7 +28,7 @@
 #include "Engine/Math/RandomConstants.h"
 extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Multiplayer/CNetworkManager.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Engine/Streams/CVSOStream.h"
 
 extern char g_szUnknownUserActionSpecified[];

@@ -1,6 +1,6 @@
 #include "CHiliteButtons.h"
 
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Input/CMasterInput.h"
 #include "Engine/Math/CVSPoint.h"
@@ -10,7 +10,7 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "CHiliteController.h"
-#include "Frontend/Controls/ButtonActionMessages.h"
+#include "Frontend/Controls/ControlMessages.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Queues/Message.h"
 #include "Platform/Windows/Windowing/CGWnd.h"

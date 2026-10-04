@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_RESOURCES_CFRONTENDRESOURCELOADER_H
 #define LEMBALL_FRONTEND_RESOURCES_CFRONTENDRESOURCELOADER_H
 
-#include "GameView/CLoadUpdate.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Loading/CLoadUpdate.h"
+#include "GameView/Sound/CSoundView.h"
 
 class CCDLoadAnim;
 class CMain2DDisplay;

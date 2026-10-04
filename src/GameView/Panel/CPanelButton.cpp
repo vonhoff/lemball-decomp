@@ -10,7 +10,7 @@
 #include "Engine/Input/CHotAreaList.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "../Display/C2D.h"
-#include "GameView/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "CPanel.h"

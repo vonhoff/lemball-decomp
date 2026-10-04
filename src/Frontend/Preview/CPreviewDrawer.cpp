@@ -16,7 +16,7 @@
 #include "Engine/Resources/Manifest.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CHiliteController.h"
-#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/tagPRIMS.h"
 #include "Application/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/CoordPair.h"
@@ -24,7 +24,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"
-#include "Frontend/tagPRIMS.h"
+
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 
 #include <string.h>

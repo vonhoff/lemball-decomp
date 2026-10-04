@@ -1,6 +1,6 @@
 #include "CGunButtons.h"
 #include "CGunController.h"
-#include "Frontend/Controls/ButtonActionMessages.h"
+#include "Frontend/Controls/ControlMessages.h"
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Time/VsTime.h"
