@@ -5,7 +5,7 @@ option(LEMBALL_ENFORCE_STARTUP_CHECKS "Enforce the reconstructed CD and installa
 
 file(GLOB_RECURSE LEMBALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-set(LEMBALL_RC "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Windows/Resources/LEMBALL.RC")
+set(LEMBALL_RC "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Windows/LEMBALL.RC")
 set(LEMBALL_RESOURCE "${CMAKE_BINARY_DIR}/LEMBALL.RES")
 get_filename_component(_lemball_cl_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
 get_filename_component(_lemball_msvc_root "${_lemball_cl_dir}" DIRECTORY)

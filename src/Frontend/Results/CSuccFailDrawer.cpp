@@ -4,7 +4,7 @@
 #include "Application/GameMain.h"
 #include "Level/CLevelLoader.h"
 #include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Engine/Statistics/CStatManager.h"
 #include "Engine/Memory/CArena.h"
 #include "Engine/Text/CTextManager.h"
@@ -174,14 +174,14 @@ unsigned long g_dwSuccFailSuccessBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SU
 // GLOBAL: LEMBALL 0x0049fe18
 char g_szPaintballSequence[] = "Paintball Sequence";
 
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 
 extern char g_szSuccFailMoviePrefix[];
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "Multiplayer/CNetworkManager.h"
-#include "Multiplayer/Messages/CNetworkGameMessage.h"
+#include "Multiplayer/CNetworkGameMessage.h"
 #include "Engine/Network/CConnect.h"
 #include "Engine/Resources/Types/CResFONT.h"
 

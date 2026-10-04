@@ -5,7 +5,7 @@
 #include "Engine/Graphics/Surfaces/CChangeList.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Strings/VsString.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Controls/CHotAreaHandler.h"

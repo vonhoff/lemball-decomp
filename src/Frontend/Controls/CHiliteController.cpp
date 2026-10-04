@@ -1,10 +1,10 @@
 #include "CHiliteController.h"
 
-#include "../../GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Controls/CGraphicButton.h"
 #include "Engine/Graphics/Surfaces/CSurface.h"

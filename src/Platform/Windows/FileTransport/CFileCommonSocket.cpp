@@ -1,6 +1,6 @@
 #include "CFileCommonSocket.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Engine/Network/NetworkConstants.h"
 #include "Engine/Network/CBaseCommonSocket.h"
 

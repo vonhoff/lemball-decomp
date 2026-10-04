@@ -26,7 +26,7 @@
 #include "Gameplay/Animation/CGroundAnim.h"
 #include "Map/CMap.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/File/VsFile.h"
+#include "Engine/VsFile.h"
 #include "Engine/Network/CConnect.h"
 #include "Engine/Resources/Types/CResBIN.h"
 #include "Engine/Resources/Manifest.h"

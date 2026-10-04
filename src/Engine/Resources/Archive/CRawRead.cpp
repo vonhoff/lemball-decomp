@@ -1,6 +1,6 @@
 #include "CRawRead.h"
 
-#include "Engine/File/VsFile.h"
+#include "Engine/VsFile.h"
 
 #include <ctype.h>
 #include <stddef.h>

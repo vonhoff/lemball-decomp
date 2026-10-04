@@ -1,7 +1,7 @@
 #include "Platform/Windows/Thread.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Startup/ProcessExitCodes.h"
-#include "Engine/File/VsFile.h"
+#include "Engine/VsFile.h"
 #include "Engine/Startup/VsInit.h"
 
 #include <stddef.h>

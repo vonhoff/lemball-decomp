@@ -1,4 +1,4 @@
-#include "CNetworkGameStage.h"
+#include "Multiplayer/CNetworkGameStage.h"
 
 #include "Engine/Network/Protocol/CNetworkMessage.h"
 

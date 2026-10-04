@@ -6,7 +6,7 @@
 #include "Engine/Diagnostics/CVSDebugStreambuf.h"
 #include "Engine/Startup/ProcessExitCodes.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/File/VsFile.h"
+#include "Engine/VsFile.h"
 #include "Engine/Startup/VsInit.h"
 #include "Engine/Strings/VsString.h"
 

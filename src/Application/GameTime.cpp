@@ -1,6 +1,6 @@
 #include "GameTime.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "CDemo.h"
 
 #include <stddef.h>

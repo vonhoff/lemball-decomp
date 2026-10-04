@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_ANIMATION_CLEMMINGANIMSMANAGER_H
 #define LEMBALL_VIEWS_ANIMATION_CLEMMINGANIMSMANAGER_H
 
-#include "../../Engine/Animation/CAnimsManager.h"
+#include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CPrimitive.h"
 #include "GameView/CLoadUpdate.h"

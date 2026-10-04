@@ -1,4 +1,4 @@
-#include "CSoundView.h"
+#include "GameView/CSoundView.h"
 
 #include "Application/GameTime.h"
 
@@ -10,8 +10,8 @@
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "../../Engine/Resources/Manifest.h"
-#include "../../Engine/Sound/CSoundManager.h"
+#include "Engine/Resources/Manifest.h"
+#include "Engine/Sound/CSoundManager.h"
 #include "GameView/CLoadUpdate.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"

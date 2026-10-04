@@ -6,7 +6,7 @@
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CGunController.h"
 #include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Manifest.h"

@@ -2,7 +2,7 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Engine/Network/CBaseNetwork.h"
 #include "Engine/Network/Packets/BasePacketHeader.h"
 #include "Engine/Queues/Message.h"

@@ -18,7 +18,7 @@
 #include "Gameplay/Groups/CPlayerLemmingGroupManager.h"
 #include "Gameplay/Messages/CObjectHitMess.h"
 #include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Input/CAICursor.h"
+#include "Gameplay/Simulation/CAICursor.h"
 #include "Gameplay/Navigation/CAiDestinationList.h"
 #include "Gameplay/Mechanisms/CMover.h"
 #include "Gameplay/Mechanisms/CBalloonPost.h"

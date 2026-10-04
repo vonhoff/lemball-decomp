@@ -1,6 +1,6 @@
 #include "CGunButton.h"
 
-#include "../../GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Queues/Message.h"
 

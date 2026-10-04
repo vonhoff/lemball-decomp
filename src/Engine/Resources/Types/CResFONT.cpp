@@ -1,6 +1,6 @@
 #include "CResFONT.h"
 
-#include "Engine/Resources/Fonts/CFontTable.h"
+#include "Engine/Resources/CFontTable.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
 #include "Engine/Resources/ResourceTypeList.h"

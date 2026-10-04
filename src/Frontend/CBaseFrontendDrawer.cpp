@@ -8,7 +8,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Graphics/Surfaces/CChangeList.h"
 #include "Engine/Text/CTextManager.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
@@ -28,7 +28,7 @@
 #include "Engine/Math/RandomConstants.h"
 extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Multiplayer/CNetworkManager.h"
-#include "GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Engine/Streams/CVSOStream.h"
 
 extern char g_szUnknownUserActionSpecified[];

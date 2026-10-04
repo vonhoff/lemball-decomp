@@ -15,7 +15,7 @@ enum {
 #include "CVSRange.h"
 #include "Chunk.h"
 #include "ChunkInfo.h"
-#include "Engine/File/VsFile.h"
+#include "Engine/VsFile.h"
 #include "CMogDir.h"
 #include "CMogloadArena.h"
 #include "CRawRead.h"

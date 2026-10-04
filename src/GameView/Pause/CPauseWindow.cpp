@@ -12,7 +12,7 @@
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "../../Engine/Resources/Manifest.h"
-#include "../Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "GameView/Pause/CPauseVramHandler.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Animation/CAnim.h"

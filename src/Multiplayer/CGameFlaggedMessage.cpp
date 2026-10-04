@@ -1,4 +1,4 @@
-#include "CGameFlaggedMessage.h"
+#include "Multiplayer/CGameFlaggedMessage.h"
 
 #include "Engine/Network/Protocol/CNetworkMessage.h"
 

@@ -1,4 +1,4 @@
-#include "CAICursor.h"
+#include "Gameplay/Simulation/CAICursor.h"
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Gameplay/Simulation/CAI.h"

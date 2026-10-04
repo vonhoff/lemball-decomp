@@ -1,4 +1,4 @@
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 
 extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
 

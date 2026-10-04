@@ -3,7 +3,7 @@
 #include "Engine/Input/CMasterInput.h"
 #include "Engine/Streams/CVSIOs.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/File/VsFile.h"
+#include "Engine/VsFile.h"
 #include "Platform/Windows/Input/InputTranslationEntry.h"
 
 #include <new.h>

@@ -1,7 +1,7 @@
 #include "CIntroAnimDrawer.h"
 
 #include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Engine/Strings/CString.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Application/FlowProcesses.h"

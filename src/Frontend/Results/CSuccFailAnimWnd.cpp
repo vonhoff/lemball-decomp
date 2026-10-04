@@ -3,7 +3,7 @@
 #include "Application/GameMain.h"
 
 #include "Frontend/CBaseFrontendProcess.h"
-#include "GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Platform/Windows/Windowing/CAnimWnd.h"

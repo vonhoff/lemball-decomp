@@ -7,7 +7,7 @@
 #include "Engine/Network/NetworkConstants.h"
 #include "Engine/Network/Packets/CReadPacket.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 
 #include <stddef.h>
 
@@ -19,7 +19,7 @@ int g_nFrontendAutoFlowToggle = 1;
 
 #include "Application/CGameStatus.h"
 #include "Level/CLevelLoader.h"
-#include "Multiplayer/Messages/CGameFlaggedMessage.h"
+#include "Multiplayer/CGameFlaggedMessage.h"
 #include "Engine/Network/Packets/BasePacketHeader.h"
 
 // FUNCTION: LEMBALL 0x00407f20

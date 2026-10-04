@@ -1,7 +1,7 @@
 #include "CTrackWindow.h"
 
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Controls/CHotAreaList.h"
 #include "Engine/Graphics/Surfaces/CSurface.h"

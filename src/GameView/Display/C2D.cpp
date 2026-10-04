@@ -20,7 +20,7 @@
 #include "Engine/Network/NetworkMode.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/ResourceLimits.h"
-#include "GameView/Animation/CLemmingAnimsManager.h"
+#include "GameView/CLemmingAnimsManager.h"
 #include "GameView/Input/CPadToButton.h"
 #include "GameView/Panel/CPanel.h"
 #include "GameView/Pause/CPauseWindow.h"

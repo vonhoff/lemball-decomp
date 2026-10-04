@@ -5,7 +5,7 @@
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "../Display/C2D.h"
-#include "../Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "CPanelLemming.h"
 #include "CPanelPauseButton.h"
 #include "Application/SoundEffects.h"

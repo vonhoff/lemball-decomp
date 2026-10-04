@@ -10,7 +10,7 @@
 #include "Engine/Controls/CHotAreaList.h"
 #include "Engine/Graphics/Surfaces/CSurface.h"
 #include "../Display/C2D.h"
-#include "../Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "CPanel.h"

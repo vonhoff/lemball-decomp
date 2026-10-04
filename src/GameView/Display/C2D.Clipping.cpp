@@ -10,7 +10,7 @@
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Graphics/Surfaces/CSurface.h"
 #include "Engine/Resources/Types/CResFONT.h"
-#include "GameView/Animation/CLemmingAnimsManager.h"
+#include "GameView/CLemmingAnimsManager.h"
 #include "ObjectClipGrid.h"
 #include "SpriteGroundLookup.h"
 #include "Engine/Math/FixedPoint.h"

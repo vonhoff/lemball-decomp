@@ -9,7 +9,7 @@
 #include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "GameView/Animation/CLemmingAnimsManager.h"
+#include "GameView/CLemmingAnimsManager.h"
 #include "Engine/Math/FixedPoint.h"
 
 #include "Map/CGround.h"

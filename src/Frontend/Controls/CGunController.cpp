@@ -1,10 +1,10 @@
 #include "CGunController.h"
 
-#include "../../GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "../../Engine/Animation/CPlayThruAnim.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Math/CVSPoint.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Controls/CGraphicButton.h"
 #include "Engine/Graphics/Surfaces/CSurface.h"
@@ -63,7 +63,7 @@ int g_anGunSpriteOffset[18] = {0, 12, -8, -2, 52, -2, -13, 28, 116, 0, 0, -13, 1
 // GLOBAL: LEMBALL 0x0049fab8
 int g_anGunSpriteOffsetCompact[20] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0, 10, 14, -8, 0, -12, -2, 0, 0};
 
-#include "GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "GunControllerJunction.h"
 
 // FUNCTION: LEMBALL 0x0044c870

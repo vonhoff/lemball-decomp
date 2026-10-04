@@ -10,7 +10,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "GameView/Panel/CPanel.h"
-#include "GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "CMain2DDisplay.h"
 
 #include <string.h>

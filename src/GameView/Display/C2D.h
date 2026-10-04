@@ -21,7 +21,7 @@
 #include "Engine/Graphics/Primitives/CZBuffScroll.h"
 #include "../Pause/CPauseWindow.h"
 #include "Gameplay/Objects/ObjectTypes.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 
 enum {
 	VIEW_DATA_INDEX_NOT_FOUND = -1,

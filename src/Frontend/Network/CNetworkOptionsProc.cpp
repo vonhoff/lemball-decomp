@@ -2,8 +2,8 @@
 
 #include "Application/CGame.h"
 #include "Multiplayer/CNetworkManager.h"
-#include "Multiplayer/Messages/CGameAcceptMessage.h"
-#include "Multiplayer/Messages/CGameRejectMessage.h"
+#include "Multiplayer/CGameAcceptMessage.h"
+#include "Multiplayer/CGameRejectMessage.h"
 #include "Engine/Network/Packets/BasePacketHeader.h"
 #include "Engine/Network/Packets/CReadPacket.h"
 #include "Engine/Network/CBaseNetwork.h"

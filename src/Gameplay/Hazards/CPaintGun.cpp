@@ -2,7 +2,7 @@
 
 #include "Application/GameTime.h"
 #include "Map/CMap.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Engine/Network/CConnect.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"

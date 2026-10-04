@@ -1,6 +1,6 @@
 #include "CFileConnect.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Engine/VsTime.h"
 #include "Engine/Network/Protocol/CHeaders.h"
 #include "CFileNetwork.h"
 #include "Platform/Windows/TcpIp/CTCPIPNetwork.h"

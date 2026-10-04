@@ -1,7 +1,7 @@
 #include "CPasswordDrawer.h"
 
 #include "Application/CGameStatus.h"
-#include "GameView/Sound/CSoundView.h"
+#include "GameView/CSoundView.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Strings/VsString.h"
