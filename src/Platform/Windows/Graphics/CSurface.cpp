@@ -25,11 +25,8 @@
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Graphics/Primitives/CZBuffClear.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
-
 #include <stdlib.h>
 #include <string.h>
-
-#define WIN32_LEAN_AND_MEAN
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "ChangeListItem.h"
@@ -37,8 +34,9 @@
 #include "CPVGDIBitmap.h"
 #include "CPVScrollableSurface.h"
 #include "CPVZBuffSurface.h"
-
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include "Engine/Graphics/Primitives/CCopyColourToBackBuff.h"
 
 extern "C" __declspec(dllimport) int __stdcall GdiFlush();
 
@@ -83,7 +81,55 @@ static const unsigned char g_anFallbackSystemColours[20][3] = {
 // GLOBAL: LEMBALL 0x004a2058
 static const unsigned char g_anReservedOutputColours[2][3] = {{0xff, 0xff, 0xff}, {0x00, 0x00, 0x00}};
 
-#include "Engine/Graphics/Primitives/CCopyColourToBackBuff.h"
+// GLOBAL: LEMBALL 0x004a2d50
+char g_szClippingHeightTo[] = "Clipping height to ";
+
+// GLOBAL: LEMBALL 0x004a2d64
+char g_szClippingDotNewline[] = ".\r\n";
+
+// GLOBAL: LEMBALL 0x004a2d68
+char g_szClippingWidthTo[] = "Clipping width to ";
+
+// GLOBAL: LEMBALL 0x004a2d7c
+char g_szClippingHighNewline[] = " high.\r\n";
+
+// GLOBAL: LEMBALL 0x004a2d84
+char g_szClippingWideAnd[] = " wide and ";
+
+// GLOBAL: LEMBALL 0x004a2d90
+char g_szWarningZrleIs[] = "Warning: ZRLE is ";
+
+enum eCircleClipResult {
+	CIRCLE_OUTSIDE_CLIP = 1,
+	CIRCLE_FULLY_INSIDE_CLIP = 2,
+	CIRCLE_PARTIALLY_CLIPPED = 3
+};
+
+enum eLineClipRegionFlag {
+	LINE_CLIP_REGION_INSIDE = 0,
+	LINE_CLIP_REGION_LEFT = 0x01,
+	LINE_CLIP_REGION_RIGHT = 0x02,
+	LINE_CLIP_REGION_TOP = 0x04,
+	LINE_CLIP_REGION_BOTTOM = 0x08
+};
+
+inline unsigned int CSurface::ClipCode(int p_x, int p_y)
+{
+	unsigned int code = 0;
+	if (p_x < m_clipRect.m_x) {
+		code |= 1;
+	}
+	else if (p_x > m_clipRect.m_x + m_clipRect.m_width - 1) {
+		code |= 2;
+	}
+	if (p_y < m_clipRect.m_y) {
+		code |= 4;
+	}
+	else if (p_y > m_clipRect.m_y + m_clipRect.m_height - 1) {
+		code |= 8;
+	}
+	return code;
+}
 
 // FUNCTION: LEMBALL 0x0046c050
 CSurface::CSurface(const CVSRect& p_rect, class CSurface* p_parentSurface)
@@ -568,6 +614,92 @@ CChangeList* CSurface::GetChangeList()
 	return m_changeList;
 }
 
+// FUNCTION: LEMBALL 0x0046cbe0
+void CSurface::Blit(class CClipRect* p_clipRect)
+{
+	CVSRect* clip = &m_clipRect;
+	short clipRight;
+
+	if ((p_clipRect->m_flags & CClipRect::CLIP_EXPAND_BOUNDS) == 0) {
+		const short* coords;
+
+		clip->m_width = p_clipRect->m_bounds.m_width;
+		clip->m_height = p_clipRect->m_bounds.m_height;
+		if (&p_clipRect->m_bounds.m_width != NULL) {
+			coords = &p_clipRect->m_bounds.m_x;
+		}
+		else {
+			coords = NULL;
+		}
+		clip->m_x = *coords;
+		clip->m_y = coords[1];
+	}
+	else if ((int) p_clipRect->m_bounds.m_width * (int) p_clipRect->m_bounds.m_height != 0) {
+		clipRight = clip->m_x;
+		if (p_clipRect->m_bounds.m_x < clipRight) {
+			clip->m_width = (short) (clip->m_width + (clipRight - p_clipRect->m_bounds.m_x));
+			clip->m_x = p_clipRect->m_bounds.m_x;
+		}
+		short clipX;
+		short primitiveWidth = p_clipRect->m_bounds.m_width;
+		clipX = clip->m_x;
+		short right = clip->m_width;
+		right += clipX;
+		short primitiveRight = p_clipRect->m_bounds.m_x;
+		primitiveRight += primitiveWidth;
+		if (right < primitiveRight) {
+			primitiveWidth -= clipX;
+			primitiveWidth += p_clipRect->m_bounds.m_x;
+			clip->m_width = primitiveWidth;
+		}
+		if (p_clipRect->m_bounds.m_y < clip->m_y) {
+			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bounds.m_y));
+			clip->m_y = p_clipRect->m_bounds.m_y;
+		}
+		short primitiveY;
+		short primitiveHeight = p_clipRect->m_bounds.m_height;
+		primitiveY = p_clipRect->m_bounds.m_y;
+		short clipBottom = (short) (clip->m_height + clip->m_y);
+		short primitiveBottom = (short) (primitiveY + primitiveHeight);
+		if (clipBottom < primitiveBottom) {
+			clip->m_height = (short) ((primitiveHeight - clip->m_y) + primitiveY);
+		}
+	}
+	CSurface* parent = m_parentSurface;
+	if ((CSurface*) g_pGdiHelperTarget != parent && (p_clipRect->m_flags & CClipRect::CLIP_IGNORE_PARENT) == 0) {
+		CVSRect* parentClip = &parent->m_clipRect;
+		short parentX = parentClip->m_x;
+		CVSRect* childClip = &m_clipRect;
+		clipRight = childClip->m_x;
+		if (clipRight < parentX) {
+			childClip->m_width = (short) (childClip->m_width + (clipRight - parentX));
+			childClip->m_x = parentClip->m_x;
+		}
+		short parentWidth;
+		short childX = childClip->m_x;
+		parentX = parentClip->m_x;
+		parentWidth = parentClip->m_width;
+		if ((short) (parentWidth + parentX) < (short) (childClip->m_width + childX)) {
+			parentX -= childX;
+			parentX += parentWidth;
+			childClip->m_width = parentX;
+		}
+		if (childClip->m_y < parentClip->m_y) {
+			childClip->m_height = (short) (childClip->m_height + (childClip->m_y - parentClip->m_y));
+			childClip->m_y = parentClip->m_y;
+		}
+		if ((short) (parentClip->m_y + parentClip->m_height) < (short) (childClip->m_height + childClip->m_y)) {
+			childClip->m_height = (short) ((parentClip->m_height - childClip->m_y) + parentClip->m_y);
+		}
+		if (childClip->m_width <= 0 || childClip->m_height <= 0) {
+			childClip->m_height = 0;
+			childClip->m_width = 0;
+			childClip->m_y = 0;
+			childClip->m_x = 0;
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x0046cda0
 void CSurface::ToScreen(class CSurface* p_destinationSurface)
 {
@@ -1027,6 +1159,12 @@ void CSurface::EndRender()
 	}
 }
 
+// FUNCTION: LEMBALL 0x0046dbc0
+void CSurface::Blit(CBigBitmap* p_primitive, CResBITMAP* p_bitmap)
+{
+	Blit(static_cast<CBitmap*>(p_primitive), p_bitmap);
+}
+
 // FUNCTION: LEMBALL 0x0046dc50
 void CSurface::Flush()
 {
@@ -1179,3 +1317,2457 @@ void CSurface::CopyBackBuffToScreen(const CVSRect& p_rect)
 #undef SURFACE_PALETTE_HIGH_RESERVED_BLUE_OFFSET_BYTES
 #undef SURFACE_PALETTE_HIGH_RESERVED_FLAGS_OFFSET_BYTES
 #undef SURFACE_PALETTE_BUFFER_BYTES
+
+// FUNCTION: LEMBALL 0x00474fd0
+void CSurface::Blit(CPoint* p_point)
+{
+	const short& x = p_point->m_x;
+	int colour = p_point->m_colour;
+	if (m_clipRect.m_x <= x && x < (short) (m_clipRect.m_width + m_clipRect.m_x)) {
+		if (m_clipRect.m_y <= p_point->m_y && p_point->m_y < (short) (m_clipRect.m_height + m_clipRect.m_y)) {
+			*((unsigned char*) m_lines[p_point->m_y] + x) = (unsigned char) colour;
+			CVSRect rect(p_point->m_x, p_point->m_y, 1, 1);
+			AddToChangeList(rect);
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00475080
+void CSurface::Blit(CSolidRect* p_rect)
+{
+	BlitRect(*p_rect->GetBounds(), p_rect->m_colour);
+}
+
+// FUNCTION: LEMBALL 0x004750c0
+void CSurface::Blit(CLine* p_line)
+{
+	int y2 = p_line->m_end.m_y;
+	int x2 = p_line->m_end.m_x;
+	int colourValue = p_line->m_colour;
+	const int& colour = colourValue;
+	int y1 = p_line->m_start.m_y;
+	int x1 = p_line->m_start.m_x;
+	if (x2 < x1) {
+		int x = x1;
+		x1 = x2;
+		x2 = x;
+		int y = y1;
+		y1 = y2;
+		y2 = y;
+	}
+	CSurface* surface = this;
+	if (surface->LineClip(x1, y1, x2, y2) != 0) {
+		return;
+	}
+	int endY = y2;
+	int y = y1;
+	int x = x1;
+	int dx = x2 - x;
+	int remaining = endY - y;
+	int stepY = 1;
+	int absDy;
+	if (remaining < 0) {
+		stepY = SURFACE_STEP_BACKWARD;
+		absDy = -remaining;
+	}
+	else {
+		absDy = remaining;
+	}
+	if (absDy < dx) {
+		int doubleDx = dx * 2;
+		int doubleDy = absDy * 2;
+		remaining = dx;
+		int err = 0;
+		if (0 < dx) {
+			do {
+				remaining = remaining - 1;
+				x = x + 1;
+				err = err + doubleDy;
+				*((unsigned char*) m_lines[y] + (x - 1)) = (unsigned char) colour;
+				if (dx < err) {
+					y = y + stepY;
+					err = err - doubleDx;
+				}
+			} while (remaining != 0);
+		}
+	}
+	else {
+		int doubleDy = absDy * 2;
+		int doubleDx = dx * 2;
+		int err = 0;
+		if (stepY != 1) {
+			remaining = y - endY;
+		}
+		if (0 < remaining) {
+			do {
+				remaining = remaining - 1;
+				err = err + doubleDx;
+				*((unsigned char*) m_lines[y] + x) = (unsigned char) colour;
+				y = y + stepY;
+				if (absDy < err) {
+					x = x + 1;
+					err = err - doubleDy;
+				}
+			} while (remaining != 0);
+		}
+	}
+	surface->AddToChangeList(
+		CVSRect((short) x1, (short) min(y1, y2), (short) (x2 - x1 + 1), (short) (abs(y2 - y1) + 1)));
+}
+
+// FUNCTION: LEMBALL 0x00475290
+void CSurface::Blit(CCircle* p_circle)
+{
+	int colour = p_circle->m_colour;
+	int centreY = p_circle->m_y;
+	int centreX = p_circle->m_x;
+	int radius = abs((int) p_circle->m_radius);
+	int clipResult = ClipCircle(centreX, centreY, radius);
+	if (clipResult != CIRCLE_OUTSIDE_CLIP) {
+		switch (clipResult) {
+		case CIRCLE_FULLY_INSIDE_CLIP: {
+			int curX = 0;
+			int curY = radius;
+			int err = 0;
+			int step = 1;
+			int errLimit = radius * 2 - 1;
+			*((unsigned char*) m_lines[centreY + radius] + centreX) = (unsigned char) colour;
+			*((unsigned char*) m_lines[centreY - radius] + centreX) = (unsigned char) colour;
+			unsigned char* centrePixel = (unsigned char*) m_lines[centreY] + centreX;
+			centrePixel[radius] = (unsigned char) colour;
+			*((unsigned char*) m_lines[centreY] - radius + centreX) = (unsigned char) colour;
+			while (curX < curY) {
+				curX++;
+				err += step;
+				step += 2;
+				if (err * 2 > errLimit) {
+					curY--;
+					err -= errLimit;
+					errLimit -= 2;
+				}
+				if (curX <= curY) {
+					DrawCircleSymmetricPoints(centreX, centreY, curX, curY, colour);
+					if (curX < curY) {
+						DrawCircleSymmetricPoints(centreX, centreY, curY, curX, colour);
+					}
+				}
+			}
+			break;
+		}
+		case CIRCLE_PARTIALLY_CLIPPED:
+			DrawClippedCircleOutline(centreX, centreY, radius, colour);
+			break;
+		}
+		centreX -= radius;
+		int boundY = centreY - radius;
+		int boundW = radius * 2 + 1;
+		int boundH = boundW;
+		if (centreX < (int) m_clipRect.m_x) {
+			boundW += centreX - m_clipRect.m_x;
+			centreX = m_clipRect.m_x;
+		}
+		if ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1 < centreX + boundW) {
+			boundW = (m_clipRect.m_x + m_clipRect.m_width) - centreX;
+		}
+		if (boundY < (int) m_clipRect.m_y) {
+			boundH += boundY - m_clipRect.m_y;
+			boundY = m_clipRect.m_y;
+		}
+		if ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1 < boundY + boundH) {
+			boundH = (m_clipRect.m_y + m_clipRect.m_height) - boundY;
+		}
+		AddToChangeList(CVSRect((short) centreX, (short) boundY, (short) boundW, (short) boundH));
+	}
+}
+
+// FUNCTION: LEMBALL 0x00475490
+void CSurface::Blit(CFilledCircle* p_circle)
+{
+	int colour = p_circle->m_colour;
+	int y = p_circle->m_y;
+	int x = p_circle->m_x;
+	int radius = abs((int) p_circle->m_radius);
+	int clipResult = ClipCircle(x, y, radius);
+	if (clipResult != CIRCLE_OUTSIDE_CLIP) {
+		switch (clipResult) {
+		case CIRCLE_FULLY_INSIDE_CLIP: {
+			int curRadius;
+			int curX = 0;
+			curRadius = radius;
+			int err = 0;
+			int step = 1;
+			int errLimit = radius * 2 - 1;
+			*((unsigned char*) m_lines[y + radius] + x) = (unsigned char) colour;
+			*((unsigned char*) m_lines[y - radius] + x) = (unsigned char) colour;
+			memset((unsigned char*) m_lines[y] - radius + x, colour, radius * 2 + 1);
+			if (radius > 1) {
+				while (curX < curRadius) {
+					int changed = 0;
+					curX++;
+					err += step;
+					step += 2;
+					if (err * 2 > errLimit) {
+						changed = 1;
+						curRadius--;
+						err -= errLimit;
+						errLimit -= 2;
+					}
+					if (curX <= curRadius) {
+						if (changed) {
+							DrawCircleSpans(x, y, curX, curRadius, colour);
+						}
+						if (curX < curRadius) {
+							DrawCircleSpans(x, y, curRadius, curX, colour);
+						}
+					}
+				}
+			}
+			break;
+		}
+		case CIRCLE_PARTIALLY_CLIPPED:
+			DrawClippedFilledCircle(x, y, radius, colour);
+			break;
+		}
+		int minX = x - radius;
+		int minY = y - radius;
+		int width = radius * 2 + 1;
+		int height = width;
+		if (minX < (int) m_clipRect.m_x) {
+			width += minX - m_clipRect.m_x;
+			minX = m_clipRect.m_x;
+		}
+		if (m_clipRect.m_x + m_clipRect.m_width - 1 < minX + width) {
+			width = m_clipRect.m_x + m_clipRect.m_width - minX;
+		}
+		if (minY < (int) m_clipRect.m_y) {
+			height += minY - m_clipRect.m_y;
+			minY = m_clipRect.m_y;
+		}
+		if (m_clipRect.m_y + m_clipRect.m_height - 1 < minY + height) {
+			height = m_clipRect.m_y + m_clipRect.m_height - minY;
+		}
+		AddToChangeList(CVSRect((short) minX, (short) minY, (short) width, (short) height));
+	}
+}
+
+// FUNCTION: LEMBALL 0x004756e0
+void CSurface::BlitRect(CVSRect p_rect, int p_colour)
+{
+	short storage[4];
+	CVSRect& clipped = *(CVSRect*) storage;
+	clipped.m_width = clipped.m_height = 0;
+	clipped.m_x = clipped.m_y = 0;
+	if (ClipRect(p_rect, &clipped)) {
+		if (clipped.m_width <= 0 || clipped.m_height <= 0) {
+			return;
+		}
+		p_rect.m_width = clipped.m_width;
+		p_rect.m_height = clipped.m_height;
+	}
+	for (int y = 0; y < p_rect.m_height; y++) {
+		memset((unsigned char*) m_lines[p_rect.m_y + y] + p_rect.m_x, p_colour, p_rect.m_width);
+	}
+	AddToChangeList(p_rect);
+}
+
+// FUNCTION: LEMBALL 0x004757a0
+int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
+{
+	unsigned int code1;
+	unsigned int code2;
+	int coordinate;
+	int dx;
+	int dy;
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+
+	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
+		return 1;
+	}
+	code1 = LINE_CLIP_REGION_INSIDE;
+	coordinate = p_x1;
+	if (coordinate < m_clipRect.m_x) {
+		code1 = LINE_CLIP_REGION_LEFT;
+	}
+	else if (m_clipRect.m_width + m_clipRect.m_x - 1 < coordinate) {
+		code1 = LINE_CLIP_REGION_RIGHT;
+	}
+	coordinate = p_y1;
+	if (coordinate < m_clipRect.m_y) {
+		code1 |= LINE_CLIP_REGION_TOP;
+	}
+	else if (m_clipRect.m_height + m_clipRect.m_y - 1 < coordinate) {
+		code1 |= LINE_CLIP_REGION_BOTTOM;
+	}
+	code2 = LINE_CLIP_REGION_INSIDE;
+	coordinate = p_x2;
+	if (coordinate < m_clipRect.m_x) {
+		code2 = LINE_CLIP_REGION_LEFT;
+	}
+	else if (m_clipRect.m_width + m_clipRect.m_x - 1 < coordinate) {
+		code2 = LINE_CLIP_REGION_RIGHT;
+	}
+	coordinate = p_y2;
+	if (coordinate < m_clipRect.m_y) {
+		code2 |= LINE_CLIP_REGION_TOP;
+	}
+	else if (m_clipRect.m_height + m_clipRect.m_y - 1 < coordinate) {
+		code2 |= LINE_CLIP_REGION_BOTTOM;
+	}
+	if ((code1 | code2) != LINE_CLIP_REGION_INSIDE) {
+		do {
+			if ((code1 & code2) != 0) {
+				return 1;
+			}
+			x2 = p_x2;
+			x1 = p_x1;
+			dx = x2 - x1;
+			y2 = p_y2;
+			y1 = p_y1;
+			dy = y2 - y1;
+			if (code1 != LINE_CLIP_REGION_INSIDE) {
+				if ((code1 & LINE_CLIP_REGION_LEFT) == 0) {
+					if ((code1 & LINE_CLIP_REGION_RIGHT) != 0) {
+						p_y1 = y1 + ((m_clipRect.m_x + m_clipRect.m_width - 1 - x1) * dy) / dx;
+						p_x1 = m_clipRect.m_x + m_clipRect.m_width - 1;
+					}
+					else {
+						if ((code1 & LINE_CLIP_REGION_TOP) == 0) {
+							if ((code1 & LINE_CLIP_REGION_BOTTOM) != 0) {
+								p_x1 = x1 + ((m_clipRect.m_y + m_clipRect.m_height - 1 - y1) * dx) / dy;
+								p_y1 = m_clipRect.m_y + m_clipRect.m_height - 1;
+							}
+						}
+						else {
+							p_x1 = x1 + ((m_clipRect.m_y - y1) * dx) / dy;
+							p_y1 = m_clipRect.m_y;
+						}
+					}
+				}
+				else {
+					p_y1 = y1 + ((m_clipRect.m_x - x1) * dy) / dx;
+					p_x1 = m_clipRect.m_x;
+				}
+				code1 = LINE_CLIP_REGION_INSIDE;
+				if (p_x1 < m_clipRect.m_x) {
+					code1 = LINE_CLIP_REGION_LEFT;
+				}
+				else if (m_clipRect.m_width + m_clipRect.m_x - 1 < p_x1) {
+					code1 = LINE_CLIP_REGION_RIGHT;
+				}
+				if (p_y1 < m_clipRect.m_y) {
+					code1 |= LINE_CLIP_REGION_TOP;
+				}
+				else if (m_clipRect.m_height + m_clipRect.m_y - 1 < p_y1) {
+					code1 |= LINE_CLIP_REGION_BOTTOM;
+				}
+			}
+			else {
+				if ((code2 & LINE_CLIP_REGION_LEFT) == 0) {
+					if ((code2 & LINE_CLIP_REGION_RIGHT) != 0) {
+						p_y2 = y2 + ((m_clipRect.m_x + m_clipRect.m_width - 1 - x2) * dy) / dx;
+						p_x2 = m_clipRect.m_x + m_clipRect.m_width - 1;
+					}
+					else {
+						if ((code2 & LINE_CLIP_REGION_TOP) == 0) {
+							if ((code2 & LINE_CLIP_REGION_BOTTOM) != 0) {
+								p_x2 = x2 + ((m_clipRect.m_y + m_clipRect.m_height - 1 - y2) * dx) / dy;
+								p_y2 = m_clipRect.m_y + m_clipRect.m_height - 1;
+							}
+						}
+						else {
+							p_x2 = x2 + ((m_clipRect.m_y - y2) * dx) / dy;
+							p_y2 = m_clipRect.m_y;
+						}
+					}
+				}
+				else {
+					p_y2 = y2 + ((m_clipRect.m_x - x2) * dy) / dx;
+					p_x2 = m_clipRect.m_x;
+				}
+				code2 = LINE_CLIP_REGION_INSIDE;
+				if (p_x2 < m_clipRect.m_x) {
+					code2 = LINE_CLIP_REGION_LEFT;
+				}
+				else if (m_clipRect.m_width + m_clipRect.m_x - 1 < p_x2) {
+					code2 = LINE_CLIP_REGION_RIGHT;
+				}
+				if (p_y2 < m_clipRect.m_y) {
+					code2 |= LINE_CLIP_REGION_TOP;
+				}
+				else if (m_clipRect.m_height + m_clipRect.m_y - 1 < p_y2) {
+					code2 |= LINE_CLIP_REGION_BOTTOM;
+				}
+			}
+		} while ((code1 | code2) != LINE_CLIP_REGION_INSIDE);
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00475bc0
+int CSurface::ClipCircle(int p_centreX, int p_centreY, int p_radius)
+{
+	int left = p_centreX - p_radius;
+	int top = p_centreY - p_radius;
+	int right = p_centreX + p_radius;
+	int bottom = p_centreY + p_radius;
+
+	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
+		return CIRCLE_OUTSIDE_CLIP;
+	}
+	if (right >= m_clipRect.m_x && left <= ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1) &&
+		bottom >= m_clipRect.m_y && top <= ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1)) {
+		if (left >= m_clipRect.m_x && right <= ((int) m_clipRect.m_x + (int) m_clipRect.m_width - 1) &&
+			top >= m_clipRect.m_y && bottom <= ((int) m_clipRect.m_y + (int) m_clipRect.m_height - 1)) {
+			return CIRCLE_FULLY_INSIDE_CLIP;
+		}
+		return CIRCLE_PARTIALLY_CLIPPED;
+	}
+	return CIRCLE_OUTSIDE_CLIP;
+}
+
+// FUNCTION: LEMBALL 0x00475ce0
+void CSurface::DrawClippedCircleOutline(int p_centreX, int p_centreY, int p_radius, unsigned char p_colour)
+{
+	int x = 0;
+	int y = p_radius;
+	int err = 0;
+	int step = 1;
+	int errLimit = y * 2 - 1;
+
+	if (m_clipRect.m_x <= p_centreX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX) {
+		if (m_clipRect.m_y <= p_centreY + p_radius &&
+			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centreY + p_radius) {
+			*((unsigned char*) m_lines[p_centreY + p_radius] + p_centreX) = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= p_centreX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX) {
+		if (m_clipRect.m_y <= p_centreY - p_radius &&
+			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centreY - p_radius) {
+			*((unsigned char*) m_lines[p_centreY - p_radius] + p_centreX) = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= p_centreX + p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX + p_radius) {
+		int clipY = m_clipRect.m_y;
+		if (clipY <= p_centreY && clipY + m_clipRect.m_height - 1 >= p_centreY) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centreY] + p_centreX;
+			destination[p_radius] = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= p_centreX - p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX - p_radius) {
+		int clipY = m_clipRect.m_y;
+		if (clipY <= p_centreY && clipY + m_clipRect.m_height - 1 >= p_centreY) {
+			*((unsigned char*) m_lines[p_centreY] + p_centreX - p_radius) = p_colour;
+		}
+	}
+	if (p_radius <= 0) {
+		return;
+	}
+	do {
+		x = x + 1;
+		err = err + step;
+		step = step + 2;
+		if (errLimit < err * 2) {
+			y = y - 1;
+			err = err - errLimit;
+			errLimit = errLimit - 2;
+		}
+		if (y < x) {
+			continue;
+		}
+		if (ClipCirclePoint(p_centreX + x, p_centreY + y) != 0) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centreY + y] + p_centreX;
+			destination[x] = p_colour;
+		}
+		if (ClipCirclePoint(p_centreX - x, p_centreY + y) != 0) {
+			*((unsigned char*) m_lines[p_centreY + y] + p_centreX - x) = p_colour;
+		}
+		if (ClipCirclePoint(p_centreX + x, p_centreY - y) != 0) {
+			unsigned char* destination = (unsigned char*) m_lines[p_centreY - y] + p_centreX;
+			destination[x] = p_colour;
+		}
+		if (ClipCirclePoint(p_centreX - x, p_centreY - y) != 0) {
+			*((unsigned char*) m_lines[p_centreY - y] + p_centreX - x) = p_colour;
+		}
+		if (y > x) {
+			DrawClippedCirclePoint(p_centreX, p_centreY, y, x, p_colour);
+		}
+	} while (y > x);
+}
+
+// FUNCTION: LEMBALL 0x00475f60
+int CSurface::ClipCirclePoint(int p_x, int p_y)
+{
+	int clipX;
+	int clipRight;
+	int clipY;
+	int clipBottom;
+
+	clipX = CPVScrollableSurface::m_clipRect.m_x;
+	if (clipX <= p_x) {
+		clipRight = CPVScrollableSurface::m_clipRect.m_width + clipX - 1;
+		if (p_x <= clipRight) {
+			clipY = CPVScrollableSurface::m_clipRect.m_y;
+			if (clipY <= p_y) {
+				clipBottom = CPVScrollableSurface::m_clipRect.m_height + clipY - 1;
+				if (p_y <= clipBottom) {
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00475fb0
+void CSurface::DrawClippedCirclePoint(int p_centreX,
+									  int p_centreY,
+									  int p_xOffset,
+									  int p_yOffset,
+									  unsigned char p_colour)
+{
+	if (m_clipRect.m_x <= (p_centreX + p_xOffset) &&
+		(p_centreX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centreY + p_yOffset) &&
+			(p_centreY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centreY + p_yOffset)] + (p_centreX + p_xOffset)) = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= (p_centreX - p_xOffset) &&
+		(p_centreX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centreY + p_yOffset) &&
+			(p_centreY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centreY + p_yOffset)] + (p_centreX - p_xOffset)) = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= (p_centreX + p_xOffset) &&
+		(p_centreX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centreY - p_yOffset) &&
+			(p_centreY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centreY - p_yOffset)] + (p_centreX + p_xOffset)) = p_colour;
+		}
+	}
+	if (m_clipRect.m_x <= (p_centreX - p_xOffset) &&
+		(p_centreX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
+		if (m_clipRect.m_y <= (p_centreY - p_yOffset) &&
+			(p_centreY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
+			*((unsigned char*) m_lines[(p_centreY - p_yOffset)] + (p_centreX - p_xOffset)) = p_colour;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00476100
+void CSurface::DrawCircleSpans(int p_centreX, int p_centreY, int p_halfWidth, int p_yOffset, int p_colour)
+{
+	int spanWidth = p_halfWidth * 2 + 1;
+	unsigned char* negativeSpan = (unsigned char*) m_lines[p_centreY - p_yOffset] + p_centreX - p_halfWidth;
+	memset((unsigned char*) m_lines[p_centreY + p_yOffset] + p_centreX - p_halfWidth, p_colour, spanWidth);
+	memset(negativeSpan, p_colour, spanWidth);
+}
+
+// FUNCTION: LEMBALL 0x00476190
+void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radius, int p_colour)
+{
+	int x;
+	int err;
+	int step;
+	int errLimit;
+	int poleY;
+	int x1;
+	int x2;
+	int changed;
+	int doubleErr;
+	int yTop;
+	int yBottom;
+	int clipY;
+	int xLeft;
+	int xRight;
+	int clipX;
+	x = 0;
+	err = 0;
+	step = 1;
+	errLimit = p_radius * 2 - 1;
+
+	if (p_centreX >= m_clipRect.m_x && p_centreX <= (m_clipRect.m_width + m_clipRect.m_x - 1)) {
+		clipY = m_clipRect.m_y;
+		poleY = p_centreY + p_radius;
+		if (poleY >= clipY && poleY <= (m_clipRect.m_height + clipY - 1)) {
+			*((unsigned char*) m_lines[poleY] + p_centreX) = (unsigned char) p_colour;
+		}
+	}
+	if (p_centreX >= m_clipRect.m_x && p_centreX <= (m_clipRect.m_width + m_clipRect.m_x - 1)) {
+		if ((p_centreY - p_radius) >= m_clipRect.m_y &&
+			(p_centreY - p_radius) <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+			*((unsigned char*) m_lines[(p_centreY - p_radius)] + p_centreX) = (unsigned char) p_colour;
+		}
+	}
+	if (p_centreY >= m_clipRect.m_y && p_centreY <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+		x1 = p_centreX - p_radius;
+		x2 = p_centreX + p_radius;
+		if (x1 < m_clipRect.m_x) {
+			x1 = m_clipRect.m_x;
+		}
+		if ((m_clipRect.m_width + m_clipRect.m_x - 1) < x2) {
+			x2 = m_clipRect.m_width + m_clipRect.m_x - 1;
+		}
+		memset((unsigned char*) m_lines[p_centreY] + x1, p_colour, x2 - x1 + 1);
+	}
+
+	if (p_radius > 1) {
+		while (x < p_radius) {
+			changed = 0;
+			x++;
+			err += step;
+			step += 2;
+			doubleErr = err * 2;
+			if (errLimit < doubleErr) {
+				p_radius--;
+				changed = 1;
+				err -= errLimit;
+				errLimit -= 2;
+			}
+			if (x <= p_radius) {
+				if (changed != 0) {
+					yTop = p_centreY - p_radius;
+					yBottom = p_centreY + p_radius;
+					clipY = m_clipRect.m_y;
+					if (yTop <= (m_clipRect.m_height + clipY - 1) && yBottom >= clipY) {
+						xLeft = p_centreX - x;
+						xRight = p_centreX + x;
+						clipX = m_clipRect.m_x;
+						if (clipX <= xRight && (m_clipRect.m_width + clipX - 1) >= xLeft) {
+							if (xRight > (m_clipRect.m_width + clipX - 1)) {
+								xRight = m_clipRect.m_width + clipX - 1;
+							}
+							if (xLeft < clipX) {
+								xLeft = clipX;
+							}
+							if (yTop >= clipY) {
+								memset((unsigned char*) m_lines[yTop] + xLeft, p_colour, xRight - xLeft + 1);
+							}
+							if (yBottom <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+								memset((unsigned char*) m_lines[yBottom] + xLeft, p_colour, xRight - xLeft + 1);
+							}
+						}
+					}
+				}
+				if (x < p_radius) {
+					FilledCircleClipPoints(p_centreX, p_centreY, p_radius, x, p_colour);
+				}
+			}
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00476470
+void CSurface::FilledCircleClipPoints(int p_centreX, int p_centreY, int p_xOffset, int p_yOffset, int p_colour)
+{
+	int y1 = p_centreY - p_yOffset;
+	int y2 = p_centreY + p_yOffset;
+	if (y1 <= (m_clipRect.m_height + m_clipRect.m_y - 1) && m_clipRect.m_y <= y2) {
+		int x1 = p_centreX - p_xOffset;
+		int x2 = p_centreX + p_xOffset;
+		int clipX = m_clipRect.m_x;
+		if (clipX <= x2 && x1 <= (m_clipRect.m_width + clipX - 1)) {
+			if ((m_clipRect.m_width + clipX - 1) < x2) {
+				x2 = m_clipRect.m_width + clipX - 1;
+			}
+			if (x1 < clipX) {
+				x1 = clipX;
+			}
+			if (m_clipRect.m_y <= y1) {
+				memset((unsigned char*) m_lines[y1] + x1, p_colour, x2 - x1 + 1);
+			}
+			if (y2 <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
+				memset((unsigned char*) m_lines[y2] + x1, p_colour, x2 - x1 + 1);
+			}
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00476580
+bool CSurface::ClipRect(CVSRect& p_rect, CVSRect* p_clipped)
+{
+	bool clipped = false;
+	short clipX = m_clipRect.m_x;
+	short rectX = p_rect.m_x;
+
+	if ((short) (m_clipRect.m_width + clipX) < rectX || (short) (m_clipRect.m_height + m_clipRect.m_y) < p_rect.m_y ||
+		(short) (p_rect.m_width + rectX) < clipX || (short) (p_rect.m_height + p_rect.m_y) < m_clipRect.m_y) {
+		return true;
+	}
+
+	if (m_clipRect.m_x > p_rect.m_x) {
+		p_clipped->m_x = m_clipRect.m_x - p_rect.m_x;
+		short clippedX = m_clipRect.m_x;
+		p_rect.m_x = clippedX;
+		clipped = true;
+		p_rect.m_width -= p_clipped->m_x;
+	}
+
+	if (m_clipRect.m_y > p_rect.m_y) {
+		p_clipped->m_y = m_clipRect.m_y - p_rect.m_y;
+		short clippedY = m_clipRect.m_y;
+		p_rect.m_y = clippedY;
+		clipped = true;
+		p_rect.m_height -= p_clipped->m_y;
+	}
+
+	if ((short) (p_rect.m_x + p_rect.m_width) > (short) (m_clipRect.m_x + m_clipRect.m_width)) {
+		p_clipped->m_width = (m_clipRect.m_x + m_clipRect.m_width) - p_rect.m_x;
+		p_rect.m_width = (m_clipRect.m_x - p_rect.m_x) + m_clipRect.m_width;
+		clipped = true;
+	}
+	else {
+		p_clipped->m_width = p_rect.m_width;
+	}
+
+	if ((short) (p_rect.m_y + p_rect.m_height) > (short) (m_clipRect.m_y + m_clipRect.m_height)) {
+		p_clipped->m_height = (m_clipRect.m_y + m_clipRect.m_height) - p_rect.m_y;
+		p_rect.m_height = (m_clipRect.m_y - p_rect.m_y) + m_clipRect.m_height;
+		return true;
+	}
+
+	p_clipped->m_height = p_rect.m_height;
+	return clipped;
+}
+
+// FUNCTION: LEMBALL 0x004766f0
+void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
+{
+	int x = p_rect.m_x;
+	int step = 1;
+	int y = p_rect.m_y;
+	unsigned char* src = p_zrle->GetData();
+	if (p_reverse != 0) {
+		step = SURFACE_STEP_BACKWARD;
+		y += p_rect.m_height - 1;
+		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
+		if (skipRows > 0) {
+			do {
+				unsigned char run;
+				do {
+					run = *src++;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+				skipRows--;
+			} while (skipRows != 0);
+		}
+	}
+	else {
+		if (p_clip.m_y > 0) {
+			int skipRows = p_clip.m_y;
+			do {
+				unsigned char run;
+				do {
+					run = *src++;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+				skipRows--;
+			} while (skipRows != 0);
+		}
+	}
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			int width = p_rect.m_width;
+			int clipX = p_clip.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					clipX -= run;
+					if (clipX < 0) {
+						width += clipX;
+						dst -= clipX;
+					}
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					clipX -= run;
+					if (clipX < 0) {
+						int copyLen = -clipX;
+						if (copyLen < width) {
+							memcpy(dst, src + run + clipX, copyLen);
+						}
+						else {
+							memcpy(dst, src + run + clipX, width);
+						}
+						dst += copyLen;
+						width -= copyLen;
+					}
+					src += run;
+				}
+				if (run == ZRLE_ROW_END_MARKER) {
+					break;
+				}
+			} while (clipX > 0);
+			if (run != ZRLE_ROW_END_MARKER) {
+				do {
+					if (width <= 0) {
+						break;
+					}
+					run = *src++;
+					if (width > 0) {
+						if (run < ZRLE_ROW_END_MARKER) {
+							dst += run;
+							width -= run;
+						}
+						else if (run > ZRLE_ROW_END_MARKER) {
+							run &= ZRLE_RUN_LENGTH_MASK;
+							if (run < width) {
+								memcpy(dst, src, run);
+								width -= run;
+								dst += run;
+							}
+							else {
+								memcpy(dst, src, width);
+								dst += width;
+								width = 0;
+							}
+							src += run;
+						}
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+			}
+			while (run != ZRLE_ROW_END_MARKER) {
+				run = *src++;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			}
+			y += step;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00476910
+void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth)
+{
+	unsigned char* src = p_zrle->GetData();
+	if (p_clip.m_y > 0) {
+		int skipRows = p_clip.m_y;
+		do {
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			skipRows--;
+		} while (skipRows != 0);
+	}
+	int row = 0;
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	if (p_rect.m_height > 0) {
+		do {
+			int width = p_rect.m_width;
+			int clipX = p_clip.m_x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					clipX -= run;
+					if (clipX < 0) {
+						dst -= clipX;
+						zlines -= clipX;
+						width += clipX;
+					}
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					clipX -= run;
+					if (clipX < 0) {
+						int copyLen = -clipX;
+						if (copyLen < width) {
+							memcpy(dst, clipX + src + run, copyLen);
+							for (unsigned int i = 0; i < (unsigned int) copyLen; i++) {
+								zlines[i] = p_depth;
+							}
+						}
+						else {
+							memcpy(dst, clipX + src + run, width);
+							for (int i = 0; i < width; i++) {
+								zlines[i] = p_depth;
+							}
+						}
+						dst += copyLen;
+						width -= copyLen;
+						zlines += copyLen;
+					}
+					src += run;
+				}
+				if (run == ZRLE_ROW_END_MARKER) {
+					break;
+				}
+			} while (clipX > 0);
+			if (run != ZRLE_ROW_END_MARKER) {
+				do {
+					if (width <= 0) {
+						break;
+					}
+					run = *src++;
+					if (width > 0) {
+						if (run < ZRLE_ROW_END_MARKER) {
+							dst += run;
+							zlines += run;
+							width -= run;
+						}
+						else if (run > ZRLE_ROW_END_MARKER) {
+							run &= ZRLE_RUN_LENGTH_MASK;
+							if (run < width) {
+								memcpy(dst, src, run);
+								for (unsigned int i = 0; i < (unsigned int) run; i++) {
+									zlines[i] = p_depth;
+								}
+								dst += run;
+								width -= run;
+								zlines += run;
+							}
+							else {
+								memcpy(dst, src, width);
+								for (int i = 0; i < width; i++) {
+									zlines[i] = p_depth;
+								}
+								dst += width;
+								zlines += width;
+								width = 0;
+							}
+							src += run;
+						}
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+			}
+			while (run != ZRLE_ROW_END_MARKER) {
+				run = *src++;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			}
+			y++;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00476bf0
+void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
+								  const CVSRect& p_clip,
+								  CResZRLE* p_zrle,
+								  unsigned short p_depth)
+{
+	unsigned char* src = p_zrle->GetData();
+	if (p_clip.m_y > 0) {
+		int skipRows = p_clip.m_y;
+		do {
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			skipRows--;
+		} while (skipRows != 0);
+	}
+	int row = 0;
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned short* zlines;
+			int runCount;
+			int width = p_rect.m_width;
+			int clipX = p_clip.m_x;
+			zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					clipX -= run;
+					if (clipX < 0) {
+						dst -= clipX;
+						zlines -= clipX;
+						width += clipX;
+					}
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					runCount = run;
+					clipX -= runCount;
+					if (clipX < 0) {
+						int copyLen = -clipX;
+						if (copyLen < width) {
+							unsigned char count = (unsigned char) copyLen;
+							unsigned short* copyZ = zlines;
+							unsigned char* copySrc = src + runCount + clipX;
+							unsigned char* copyDst = dst;
+							while (count != 0) {
+								count--;
+								if (*copyZ <= p_depth) {
+									*copyDst = *copySrc;
+								}
+								copyDst++;
+								copyZ++;
+								copySrc++;
+							}
+						}
+						else {
+							unsigned char count = (unsigned char) width;
+							unsigned short* copyZ = zlines;
+							unsigned char* copySrc = src + runCount + clipX;
+							unsigned char* copyDst = dst;
+							while (count != 0) {
+								count--;
+								if (*copyZ <= p_depth) {
+									*copyDst = *copySrc;
+								}
+								copyDst++;
+								copyZ++;
+								copySrc++;
+							}
+						}
+						dst += copyLen;
+						width -= copyLen;
+						zlines += copyLen;
+					}
+					src += runCount;
+				}
+				if (run == ZRLE_ROW_END_MARKER) {
+					break;
+				}
+			} while (clipX > 0);
+			if (run != ZRLE_ROW_END_MARKER) {
+				do {
+					if (width <= 0) {
+						break;
+					}
+					run = *src++;
+					if (width > 0) {
+						if (run < ZRLE_ROW_END_MARKER) {
+							dst += run;
+							width -= run;
+							zlines += run;
+						}
+						else if (run > ZRLE_ROW_END_MARKER) {
+							run &= ZRLE_RUN_LENGTH_MASK;
+							runCount = run;
+							if (runCount < width) {
+								unsigned char count = (unsigned char) runCount;
+								unsigned short* copyZ = zlines;
+								unsigned char* copySrc = src;
+								unsigned char* copyDst = dst;
+								while (count != 0) {
+									count--;
+									if (*copyZ <= p_depth) {
+										*copyDst = *copySrc;
+									}
+									copyDst++;
+									copyZ++;
+									copySrc++;
+								}
+								dst += runCount;
+								width -= runCount;
+								zlines += runCount;
+							}
+							else {
+								unsigned char count = (unsigned char) width;
+								unsigned short* copyZ = zlines;
+								unsigned char* copySrc = src;
+								unsigned char* copyDst = dst;
+								while (count != 0) {
+									count--;
+									if (*copyZ <= p_depth) {
+										*copyDst = *copySrc;
+									}
+									copyDst++;
+									copyZ++;
+									copySrc++;
+								}
+								dst += width;
+								zlines += width;
+								width = 0;
+							}
+							src += runCount;
+						}
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+			}
+			while (run != ZRLE_ROW_END_MARKER) {
+				run = *src++;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			}
+			y++;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00476ee0
+void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
+{
+	unsigned char* src = p_zrle->GetData();
+	short sourceWidth = p_zrle->m_width;
+	short sourceHeight = p_zrle->m_height;
+	int x = p_rect.m_x;
+	int step = 1;
+	int y = p_rect.m_y;
+	if (p_reverse != 0) {
+		step = SURFACE_STEP_BACKWARD;
+		y += p_rect.m_height - 1;
+		int skipRows = sourceHeight - p_clip.m_y - p_rect.m_height;
+		if (skipRows > 0) {
+			do {
+				unsigned char run;
+				do {
+					run = *src++;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+				skipRows--;
+			} while (skipRows != 0);
+		}
+	}
+	else if (p_clip.m_y > 0) {
+		int skipRows = p_clip.m_y;
+		do {
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			skipRows--;
+		} while (skipRows != 0);
+	}
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			int width = p_rect.m_width;
+			int skipX = sourceWidth - p_clip.m_x - width;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (skipX > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						skipX -= run;
+						if (skipX < 0) {
+							dst += skipX;
+							width += skipX;
+						}
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						int count = run;
+						skipX -= count;
+						if (skipX < 0) {
+							int copyLength = -skipX;
+							if (copyLength < width) {
+								int remaining = copyLength;
+								unsigned char* copySrc = src + count + skipX;
+								unsigned char* copyDst = dst;
+								while (remaining > 0) {
+									*copyDst-- = *copySrc++;
+									remaining--;
+								}
+							}
+							else {
+								int remaining = width;
+								unsigned char* copySrc = src + count + skipX;
+								unsigned char* copyDst = dst;
+								while (remaining > 0) {
+									*copyDst-- = *copySrc++;
+									remaining--;
+								}
+							}
+							dst -= copyLength;
+							width -= copyLength;
+						}
+						src += count;
+					}
+				}
+				else if (width > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						width -= run;
+						dst -= run;
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						int count = run;
+						if (count < width) {
+							unsigned char* copySrc;
+							unsigned char* copyDst;
+							int remaining = count;
+							copySrc = src;
+							copyDst = dst;
+							while (remaining > 0) {
+								*copyDst-- = *copySrc++;
+								remaining--;
+							}
+							src += count;
+							dst -= count;
+							width -= count;
+						}
+						else {
+							int remaining = 0;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							while (remaining < width) {
+								*copyDst-- = *copySrc++;
+								remaining++;
+							}
+							src += count;
+							dst -= width;
+							width = 0;
+						}
+					}
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			y += step;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477130
+void CSurface::BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
+{
+	int x = p_rect.m_x;
+	int step = 1;
+	int y = p_rect.m_y;
+	if (p_reverse != 0) {
+		step = SURFACE_STEP_BACKWARD;
+		y += p_rect.m_height - 1;
+	}
+	unsigned char* src = p_zrle->GetData();
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					dst += run;
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					memcpy(dst, src, run);
+					dst += run;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			y += step;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477200
+void CSurface::BlitZRLENoClipZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
+{
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	unsigned char* src = p_zrle->GetData();
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					dst += run;
+					zlines += run;
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					memcpy(dst, src, run);
+					for (unsigned int i = 0; i < run; i++) {
+						zlines[i] = p_depth;
+					}
+					zlines += run;
+					dst += run;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			row++;
+			y++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477310
+void CSurface::BlitZRLENoClipZBuffRemap(const CVSRect& p_rect,
+										CResZRLE* p_zrle,
+										unsigned short p_depth,
+										unsigned char* p_remap)
+{
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	unsigned char* src = p_zrle->GetData();
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					dst += run;
+					zlines += run;
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					int count = run;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (; count > 0; count--) {
+						*copyDst++ = p_remap[*copySrc];
+						copySrc++;
+					}
+					for (unsigned int i = 0; i < run; i++) {
+						zlines[i] = p_depth;
+					}
+					dst += run;
+					zlines += run;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			row++;
+			y++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477440
+void CSurface::BlitZRLENoClipQZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth)
+{
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	unsigned char* src = p_zrle->GetData();
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					dst += run;
+					zlines += run;
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					unsigned short* copyZ = zlines;
+					unsigned char count = run;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					while (count > 0) {
+						count--;
+						if (*copyZ <= p_depth) {
+							*copyDst = *copySrc;
+						}
+						copyDst++;
+						copyZ++;
+						copySrc++;
+					}
+					src += run;
+					dst += run;
+					zlines += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			row++;
+			y++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477540
+void CSurface::BlitZRLENoClipQZBuffRemap(const CVSRect& p_rect,
+										 CResZRLE* p_zrle,
+										 unsigned short p_depth,
+										 unsigned char* p_remap)
+{
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	unsigned char* src = p_zrle->GetData();
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					dst += run;
+					zlines += run;
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					unsigned short* copyZ = zlines;
+					int i = run;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (; i > 0; i--) {
+						if (*copyZ <= p_depth) {
+							*copyDst = p_remap[*copySrc];
+						}
+						copyZ++;
+						copyDst++;
+						copySrc++;
+					}
+					dst += run;
+					zlines += run;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			row++;
+			y++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477660
+void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
+{
+	int startX = p_rect.m_x + p_rect.m_width - 1;
+	int y = p_rect.m_y;
+	int step = 1;
+	if (p_reverse != 0) {
+		step = SURFACE_STEP_BACKWARD;
+		y += p_rect.m_height - 1;
+	}
+	unsigned char* src = p_zrle->GetData();
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					dst -= run;
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					int i = run;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (; i > 0; i--) {
+						*copyDst-- = *copySrc++;
+					}
+					dst -= run;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			y += step;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477740
+void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
+								 const CVSRect& p_clip,
+								 CResZRLE* p_zrle,
+								 unsigned int p_reverse,
+								 unsigned char* p_remap)
+{
+	unsigned char* src = p_zrle->GetData();
+	int step = 1;
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	if (p_reverse != 0) {
+		step = SURFACE_STEP_BACKWARD;
+		y += p_rect.m_height - 1;
+		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
+		if (skipRows > 0) {
+			do {
+				unsigned char run;
+				do {
+					run = *src++;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+				skipRows--;
+			} while (skipRows != 0);
+		}
+	}
+	else {
+		if (p_clip.m_y > 0) {
+			int skipRows = p_clip.m_y;
+			do {
+				unsigned char run;
+				do {
+					run = *src++;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+				skipRows--;
+			} while (skipRows != 0);
+		}
+	}
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			int width = p_rect.m_width;
+			int clipX = p_clip.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (clipX > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						clipX -= run;
+						if (clipX < 0) {
+							dst -= clipX;
+							width += clipX;
+						}
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						int count = run;
+						clipX -= count;
+						if (clipX < 0) {
+							int copyLen = -clipX;
+							if (width > copyLen) {
+								int i = copyLen;
+								unsigned char* copySrc = src + count + clipX;
+								unsigned char* copyDst = dst;
+								for (; i > 0; i--) {
+									*copyDst++ = p_remap[*copySrc++];
+								}
+							}
+							else {
+								int i = copyLen;
+								unsigned char* copySrc = src + count + clipX;
+								unsigned char* copyDst = dst;
+								for (; i > 0; i--) {
+									*copyDst++ = p_remap[*copySrc++];
+								}
+							}
+							dst += copyLen;
+							width -= copyLen;
+						}
+						src += count;
+					}
+				}
+				else if (width > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						dst += run;
+						width -= run;
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						int count = run;
+						if (width > count) {
+							int i = count;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							for (; i > 0; i--) {
+								*copyDst++ = p_remap[*copySrc++];
+							}
+							src += count;
+							dst += count;
+							width -= count;
+						}
+						else {
+							int i = width;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							for (; i > 0; i--) {
+								*copyDst++ = p_remap[*copySrc++];
+							}
+							dst += width;
+							src += count;
+							width = 0;
+						}
+					}
+				}
+				else {
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			y += step;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x004779d0
+void CSurface::BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
+									  const CVSRect& p_clip,
+									  CResZRLE* p_zrle,
+									  unsigned short p_depth,
+									  unsigned char* p_remap)
+{
+	unsigned char* src = p_zrle->GetData();
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	if (p_clip.m_y > 0) {
+		int skipRows = p_clip.m_y;
+		do {
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			skipRows--;
+		} while (skipRows != 0);
+	}
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
+			int width = p_rect.m_width;
+			int clipX = p_clip.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (clipX > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						clipX -= run;
+						if (clipX < 0) {
+							dst -= clipX;
+							zlines -= clipX;
+							width += clipX;
+						}
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						int count = run;
+						clipX -= count;
+						if (clipX < 0) {
+							int copyLen = -clipX;
+							if (copyLen < width) {
+								int i = copyLen;
+								unsigned char* copySrc = src + count + clipX;
+								unsigned char* copyDst = dst;
+								for (; i > 0; i--) {
+									*copyDst++ = p_remap[*copySrc];
+									copySrc++;
+								}
+							}
+							else {
+								int i = copyLen;
+								unsigned char* copySrc = src + count + clipX;
+								unsigned char* copyDst = dst;
+								for (; i > 0; i--) {
+									*copyDst++ = p_remap[*copySrc];
+									copySrc++;
+								}
+							}
+							dst += copyLen;
+							width -= copyLen;
+							zlines += copyLen;
+						}
+						src += count;
+					}
+				}
+				else if (width > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						dst += run;
+						width -= run;
+						zlines += run;
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						int count = run;
+						if (count < width) {
+							int i = count;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							for (; i > 0; i--) {
+								*copyDst++ = p_remap[*copySrc];
+								copySrc++;
+							}
+							dst += count;
+							zlines += count;
+							src += count;
+							width -= count;
+						}
+						else {
+							int i = width;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							for (; i > 0; i--) {
+								*copyDst++ = p_remap[*copySrc];
+								copySrc++;
+							}
+							dst += width;
+							zlines += width;
+							src += count;
+							width = 0;
+						}
+					}
+				}
+				else {
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			y++;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477c60
+void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
+									   const CVSRect& p_clip,
+									   CResZRLE* p_zrle,
+									   unsigned short p_depth,
+									   unsigned char* p_remap)
+{
+	unsigned char* src = p_zrle->GetData();
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	unsigned char run;
+	if (p_clip.m_y > 0) {
+		int skipRows = p_clip.m_y;
+		do {
+			do {
+				run = *src++;
+				if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					src += run;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			skipRows--;
+		} while (skipRows != 0);
+	}
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		int lineIndex = y;
+		do {
+			int count;
+			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[lineIndex] + x;
+			int copyLen;
+			int width = p_rect.m_width;
+			int clipX = p_clip.m_x;
+			unsigned char* dst = (unsigned char*) m_lines[lineIndex] + x;
+			do {
+				run = *src++;
+				if (clipX > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						clipX -= run;
+						if (clipX < 0) {
+							dst -= clipX;
+							zlines -= clipX;
+							width += clipX;
+						}
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						count = run;
+						clipX -= count;
+						if (clipX < 0) {
+							copyLen = -clipX;
+							if (copyLen < width) {
+								int i;
+								unsigned char* copySrc;
+								unsigned char* copyDst;
+								unsigned short* copyZ;
+								copyZ = zlines;
+								copyDst = dst;
+								i = copyLen;
+								copySrc = src + count + clipX;
+								for (; i > 0; i--) {
+									if (*copyZ <= p_depth) {
+										*copyDst = p_remap[*copySrc];
+									}
+									copyZ++;
+									copyDst++;
+									copySrc++;
+								}
+							}
+							else {
+								unsigned short* copyZ = zlines;
+								int i = copyLen;
+								unsigned char* copySrc = src + count + clipX;
+								unsigned char* copyDst = dst;
+								for (; i > 0; i--) {
+									if (*copyZ <= p_depth) {
+										*copyDst = p_remap[*copySrc];
+									}
+									copyZ++;
+									copyDst++;
+									copySrc++;
+								}
+							}
+							dst += copyLen;
+							width -= copyLen;
+							zlines += copyLen;
+						}
+						src += count;
+					}
+				}
+				else if (width > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						dst += run;
+						width -= run;
+						zlines += run;
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						count = run;
+						if (width > count) {
+							unsigned short* copyZ = zlines;
+							int i = count;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							for (; i > 0; i--) {
+								if (*copyZ <= p_depth) {
+									*copyDst = p_remap[*copySrc];
+								}
+								copyZ++;
+								copyDst++;
+								copySrc++;
+							}
+							dst += count;
+							zlines += count;
+							src += count;
+							width -= count;
+						}
+						else {
+							unsigned short* copyZ = zlines;
+							int i = width;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							for (; i > 0; i--) {
+								if (*copyZ <= p_depth) {
+									*copyDst = p_remap[*copySrc];
+								}
+								copyZ++;
+								copyDst++;
+								copySrc++;
+							}
+							dst += width;
+							zlines += width;
+							src += count;
+							width = 0;
+						}
+					}
+				}
+				else {
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			lineIndex++;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00477f50
+void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
+								  const CVSRect& p_clip,
+								  CResZRLE* p_zrle,
+								  unsigned int p_reverse,
+								  unsigned char* p_remap)
+{
+	int startX = p_rect.m_x + p_rect.m_width - 1;
+	int y = p_rect.m_y;
+	int step = 1;
+	unsigned char* src = p_zrle->GetData();
+	short zrleWidth = p_zrle->m_width;
+	short zrleHeight = p_zrle->m_height;
+	if (p_reverse != 0) {
+		step = SURFACE_STEP_BACKWARD;
+		y += p_rect.m_height - 1;
+		int skipRows = (zrleHeight - p_clip.m_y) - p_rect.m_height;
+		if (skipRows > 0) {
+			do {
+				unsigned char run;
+				do {
+					run = *src++;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+				skipRows--;
+			} while (skipRows != 0);
+		}
+	}
+	else {
+		if (p_clip.m_y > 0) {
+			int skipRows = p_clip.m_y;
+			do {
+				unsigned char run;
+				do {
+					run = *src++;
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				} while (run != ZRLE_ROW_END_MARKER);
+				skipRows--;
+			} while (skipRows != 0);
+		}
+	}
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		int lineOffset = y * 4;
+		int stepOffset = step * 4;
+		do {
+			int width = p_rect.m_width;
+			int skipX = (zrleWidth - p_clip.m_x) - width;
+			unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + startX;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (skipX > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						skipX -= run;
+						if (skipX < 0) {
+							int overshoot = skipX;
+							dst += overshoot;
+							width += overshoot;
+						}
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						int count = run;
+						skipX -= count;
+						if (skipX < 0) {
+							int copyLen = -skipX;
+							if (copyLen < width) {
+								int i = copyLen;
+								unsigned char* copySrc = src + count + skipX;
+								unsigned char* copyDst = dst;
+								for (; i > 0; i--) {
+									*copyDst-- = p_remap[*copySrc++];
+								}
+							}
+							else {
+								int i = width;
+								unsigned char* copySrc = src + count + skipX;
+								unsigned char* copyDst = dst;
+								for (; i > 0; i--) {
+									*copyDst-- = p_remap[*copySrc++];
+								}
+							}
+							dst -= copyLen;
+							width -= copyLen;
+						}
+						src += count;
+					}
+				}
+				else if (width > 0) {
+					if (run < ZRLE_ROW_END_MARKER) {
+						width -= run;
+						dst -= run;
+					}
+					else if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						int count = run;
+						if (count < width) {
+							int i = count;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							for (; i > 0; i--) {
+								*copyDst-- = p_remap[*copySrc++];
+							}
+							src += count;
+							dst -= count;
+							width -= count;
+						}
+						else {
+							int i = width;
+							unsigned char* copySrc = src;
+							unsigned char* copyDst = dst;
+							for (; i > 0; i--) {
+								*copyDst-- = p_remap[*copySrc++];
+							}
+							src += count;
+							dst -= width;
+							width = 0;
+						}
+					}
+				}
+				else {
+					if (run > ZRLE_ROW_END_MARKER) {
+						run &= ZRLE_RUN_LENGTH_MASK;
+						src += run;
+					}
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			lineOffset += stepOffset;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x004781e0
+void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect,
+								   CResZRLE* p_zrle,
+								   unsigned int p_reverse,
+								   unsigned char* p_remap)
+{
+	int x = p_rect.m_x;
+	int y = p_rect.m_y;
+	int step = 1;
+	if (p_reverse != 0) {
+		step = SURFACE_STEP_BACKWARD;
+		y += p_rect.m_height - 1;
+	}
+	unsigned char* src = p_zrle->GetData();
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					dst += run;
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					int count = (int) run;
+					int i = count;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (; i > 0; i--) {
+						*copyDst++ = p_remap[*copySrc++];
+					}
+					dst += count;
+					src += count;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			y += step;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+// FUNCTION: LEMBALL 0x004782d0
+void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect,
+									CResZRLE* p_zrle,
+									unsigned int p_reverse,
+									unsigned char* p_remap)
+{
+	int startX = p_rect.m_x + p_rect.m_width - 1;
+	int y = p_rect.m_y;
+	int step = 1;
+	if (p_reverse != 0) {
+		step = SURFACE_STEP_BACKWARD;
+		y += p_rect.m_height - 1;
+	}
+	unsigned char* src = p_zrle->GetData();
+	int row = 0;
+	if (p_rect.m_height > 0) {
+		do {
+			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
+			unsigned char run;
+			do {
+				run = *src++;
+				if (run < ZRLE_ROW_END_MARKER) {
+					dst -= run;
+				}
+				else if (run > ZRLE_ROW_END_MARKER) {
+					run &= ZRLE_RUN_LENGTH_MASK;
+					int count = (int) run;
+					int i = count;
+					unsigned char* copySrc = src;
+					unsigned char* copyDst = dst;
+					for (; i > 0; i--) {
+						*copyDst-- = p_remap[*copySrc++];
+					}
+					dst -= count;
+					src += count;
+				}
+			} while (run != ZRLE_ROW_END_MARKER);
+			y += step;
+			row++;
+		} while (row < p_rect.m_height);
+	}
+}
+
+#pragma inline_depth(0)
+// FUNCTION: LEMBALL 0x004783c0
+void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
+{
+	unsigned int flags = p_primitive->m_flags;
+	if ((flags & (ZRLE_DRAW_FLAG_Z_BUFFER | ZRLE_DRAW_FLAG_QUICK_Z_BUFFER)) == 0) {
+		BlitZRLE((int) p_primitive->m_x, (int) p_primitive->m_y, p_zrle, flags, p_primitive->m_remap, 0);
+		return;
+	}
+	{
+		unsigned short stateDepth = (unsigned short) p_primitive->m_state;
+		CRemap* remap = p_primitive->m_remap;
+		int primitiveY = (int) p_primitive->m_y;
+		int primitiveX = (int) p_primitive->m_x;
+
+		if ((int) p_zrle->m_height * (int) p_zrle->m_width == 0) {
+			return;
+		}
+		{
+			CVSRect dest((short) primitiveX, (short) primitiveY, (CVSSize*) &p_zrle->m_width);
+			if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
+				((CVSPoint*) &dest.m_x)->AddInPlace((CVSPoint*) &p_zrle->m_x);
+			}
+			{
+				CVSRect clipped;
+
+				if (dest.m_width > ZRLE_CLIPPED_DIMENSION_MAX || dest.m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+					short warningWidth = dest.m_width;
+					CVSOStream& warningStream = *g_pDebugOutput << g_szWarningZrleIs;
+					short warningHeight = dest.m_height;
+					CVSOStream& widthStream = warningStream << (int) warningWidth << g_szClippingWideAnd;
+					widthStream << (int) warningHeight << g_szClippingHighNewline;
+					if (dest.m_width > ZRLE_CLIPPED_DIMENSION_MAX) {
+						*g_pDebugOutput << g_szClippingWidthTo << (int) ZRLE_CLIPPED_DIMENSION_MAX
+										<< g_szClippingDotNewline;
+						dest.m_width = ZRLE_CLIPPED_DIMENSION_MAX;
+					}
+					if (dest.m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+						*g_pDebugOutput << g_szClippingHeightTo << (int) ZRLE_CLIPPED_DIMENSION_MAX
+										<< g_szClippingDotNewline;
+						dest.m_height = ZRLE_CLIPPED_DIMENSION_MAX;
+					}
+				}
+				if (ClipRect(dest, &clipped) == 0) {
+					AddToChangeList(dest);
+					if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
+						if (remap == NULL) {
+							BlitZRLENoClipZBuff(dest, p_zrle, stateDepth);
+							return;
+						}
+						BlitZRLENoClipZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
+						return;
+					}
+					if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
+						if (remap == NULL) {
+							BlitZRLENoClipQZBuff(dest, p_zrle, stateDepth);
+							return;
+						}
+						BlitZRLENoClipQZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
+						return;
+					}
+					if (remap == NULL) {
+						if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+							BlitZRLENoClipR(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+							return;
+						}
+						BlitZRLENoClip(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+						return;
+					}
+					if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+						BlitZRLENoClipRemapR(dest,
+											 p_zrle,
+											 ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+											 remap->m_remap);
+						return;
+					}
+					BlitZRLENoClipRemap(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
+					return;
+				}
+				if (clipped.m_width <= 0 || clipped.m_height <= 0) {
+					return;
+				}
+				AddToChangeList(dest);
+				if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
+					if (remap == NULL) {
+						BlitZRLEClipZBuff(dest, clipped, p_zrle, stateDepth);
+						return;
+					}
+					BlitZRLEClipZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
+					return;
+				}
+				if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
+					if (remap == NULL) {
+						BlitZRLEClipQZBuff(dest, clipped, p_zrle, stateDepth);
+						return;
+					}
+					BlitZRLEClipQZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
+					return;
+				}
+				if (remap == NULL) {
+					if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+						BlitZRLEClipR(dest, clipped, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+						return;
+					}
+					BlitZRLEClip(dest, clipped, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+					return;
+				}
+				if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+					BlitZRLEClipRemapR(dest,
+									   clipped,
+									   p_zrle,
+									   ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+									   remap->m_remap);
+					return;
+				}
+				BlitZRLEClipRemap(dest,
+								  clipped,
+								  p_zrle,
+								  ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+								  remap->m_remap);
+			}
+		}
+	}
+}
+
+#pragma inline_depth(255)
+
+// FUNCTION: LEMBALL 0x004787f0
+void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
+{
+	short x = p_primitive->m_x;
+	short y = p_primitive->m_y;
+	CVSRect sourceRect(p_primitive->m_sourceRect);
+	if (sourceRect.m_height == 0 && sourceRect.m_width == 0) {
+		sourceRect.m_width = p_bitmap->m_x;
+		sourceRect.m_height = p_bitmap->m_y;
+	}
+	unsigned int flags = p_primitive->m_flags;
+	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x != 0) {
+		CVSRect dest(sourceRect);
+		dest.m_x = x;
+		dest.m_y = y;
+		CVSRect clip;
+		if (ClipRect(dest, &clip) != 0) {
+			if (clip.m_width <= 0 || clip.m_height <= 0) {
+				return;
+			}
+			CVSSize clippedSize;
+			clippedSize = clip;
+			(CVSSize&) dest = clippedSize;
+		}
+		AddToChangeList(dest);
+		int destX = dest.m_x;
+		int destY = dest.m_y;
+		int yStep = 1;
+		if ((flags & CBitmap::BITMAP_REVERSE_ROWS) != 0) {
+			yStep = SURFACE_STEP_BACKWARD;
+			destY += dest.m_height - 1;
+		}
+		int bitmapWidth = (int) p_bitmap->m_x;
+		unsigned char* source = p_bitmap->GetData() + ((int) sourceRect.m_y + (int) clip.m_y) * bitmapWidth +
+								(int) sourceRect.m_x + (int) clip.m_x;
+		if ((flags & CBitmap::BITMAP_TRANSPARENT_ZERO) != 0) {
+			int sourceSkip = bitmapWidth - dest.m_width;
+			int i = 0;
+			if (dest.m_height > 0) {
+				do {
+					unsigned char* dst = (unsigned char*) m_lines[destY] + destX;
+					int j = 0;
+					if (dest.m_width > 0) {
+						do {
+							unsigned char pixel = *source;
+							if (pixel != 0) {
+								*dst = pixel;
+							}
+							j++;
+							dst++;
+							source++;
+						} while (j < dest.m_width);
+					}
+					destY += yStep;
+					source += sourceSkip;
+					i++;
+				} while (i < dest.m_height);
+			}
+		}
+		else {
+			int i = 0;
+			if (dest.m_height > 0) {
+				do {
+					memcpy((unsigned char*) m_lines[destY] + destX, source, dest.m_width);
+					destY += yStep;
+					source += bitmapWidth;
+					i++;
+				} while (i < dest.m_height);
+			}
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00478bb0
+void CSurface::BlitZRLE(int p_x,
+						int p_y,
+						CResZRLE* p_zrle,
+						unsigned int p_flags,
+						CRemap* p_remap,
+						unsigned short p_depth)
+{
+	struct {
+		short m_unused;
+		short m_warningHeight;
+		short m_destination[4];
+		short m_clip[4];
+	} frame;
+	CResZRLE* resource;
+	short zHeight;
+	short zWidth;
+	unsigned int flags;
+	CVSRect* dest;
+	CVSRect* clipped;
+	int width;
+
+	resource = p_zrle;
+	dest = (CVSRect*) frame.m_destination;
+	clipped = (CVSRect*) frame.m_clip;
+	zWidth = resource->m_width;
+	zHeight = resource->m_height;
+	width = (int) zWidth;
+	if ((int) zHeight * width == 0) {
+		return;
+	}
+	dest->m_width = zWidth;
+	flags = p_flags;
+	dest->m_height = zHeight;
+	dest->m_x = (short) p_x;
+	dest->m_y = (short) p_y;
+	if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
+		dest->m_x = (short) (dest->m_x + resource->m_x);
+		dest->m_y = (short) (dest->m_y + resource->m_y);
+	}
+	clipped->m_height = 0;
+	clipped->m_width = 0;
+	clipped->m_y = 0;
+	clipped->m_x = 0;
+	if (dest->m_width > ZRLE_CLIPPED_DIMENSION_MAX || dest->m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+		CVSOStream& warning = *g_pDebugOutput << g_szWarningZrleIs;
+		frame.m_warningHeight = dest->m_height;
+		CVSOStream& heightOutput = warning << width << g_szClippingWideAnd;
+		heightOutput << (int) frame.m_warningHeight << g_szClippingHighNewline;
+		if (dest->m_width > ZRLE_CLIPPED_DIMENSION_MAX) {
+			*g_pDebugOutput << g_szClippingWidthTo << (int) ZRLE_CLIPPED_DIMENSION_MAX << g_szClippingDotNewline;
+			dest->m_width = ZRLE_CLIPPED_DIMENSION_MAX;
+		}
+		if (dest->m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+			*g_pDebugOutput << g_szClippingHeightTo << (int) ZRLE_CLIPPED_DIMENSION_MAX << g_szClippingDotNewline;
+			dest->m_height = ZRLE_CLIPPED_DIMENSION_MAX;
+		}
+	}
+	{
+		CRemap* remap;
+
+		remap = p_remap;
+		if (ClipRect(*dest, clipped) == 0) {
+			AddToChangeList(*dest);
+			if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
+				if (remap == NULL) {
+					BlitZRLENoClipZBuff(*dest, resource, p_depth);
+					return;
+				}
+				BlitZRLENoClipZBuffRemap(*dest, resource, p_depth, remap->m_remap);
+				return;
+			}
+			if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
+				if (remap == NULL) {
+					BlitZRLENoClipQZBuff(*dest, resource, p_depth);
+					return;
+				}
+				BlitZRLENoClipQZBuffRemap(*dest, resource, p_depth, remap->m_remap);
+				return;
+			}
+			if (remap == NULL) {
+				if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+					BlitZRLENoClipR(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+					return;
+				}
+				BlitZRLENoClip(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+				return;
+			}
+			if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+				BlitZRLENoClipRemapR(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
+				return;
+			}
+			BlitZRLENoClipRemap(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
+			return;
+		}
+		if (clipped->m_width <= 0 || clipped->m_height <= 0) {
+			return;
+		}
+		AddToChangeList(*dest);
+		if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
+			if (remap == NULL) {
+				BlitZRLEClipZBuff(*dest, *clipped, resource, p_depth);
+				return;
+			}
+			BlitZRLEClipZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
+			return;
+		}
+		if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
+			if (remap == NULL) {
+				BlitZRLEClipQZBuff(*dest, *clipped, resource, p_depth);
+				return;
+			}
+			BlitZRLEClipQZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
+			return;
+		}
+		if (remap == NULL) {
+			if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+				BlitZRLEClipR(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+				return;
+			}
+			BlitZRLEClip(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+			return;
+		}
+		if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+			BlitZRLEClipRemapR(*dest,
+							   *clipped,
+							   resource,
+							   ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+							   remap->m_remap);
+			return;
+		}
+		BlitZRLEClipRemap(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
+	}
+}
