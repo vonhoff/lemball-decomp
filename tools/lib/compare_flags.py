@@ -110,6 +110,10 @@ def _guarded_pair(
     ):
         return None
     branch = instructions.get(address + size)
+    while branch is not None and branch[2] in FLAG_PRESERVERS:
+        if branch[0] in targets:
+            return None
+        branch = instructions.get(branch[0] + branch[1])
     if branch is None or branch[0] in targets or branch[2] not in REVERSED_BRANCH:
         return None
     successors = (branch[0] + branch[1], int(branch[3], 16))

@@ -289,6 +289,60 @@ class ThunkTests(unittest.TestCase):
                     compare(*fixture("3bc7 7200 " + path, "3bf8 7700 " + path)), {}
                 )
 
+    def test_comparison_can_span_flag_preserving_instructions(self):
+        for middle in (
+            "89c1 50 5a 8d09 90",
+            "0fbe01 0fb701",
+            "8b0ca8 8a44242c 88442413 8d3451",  # BIteration row setup.
+        ):
+            with self.subTest(middle=middle):
+                self.assertTrue(
+                    compare(
+                        *fixture(
+                            "3954241c " + middle + " 7c03 39c0c3 39c0c3",
+                            "3b54241c " + middle + " 7f03 39c0c3 39c0c3",
+                        )
+                    )
+                )
+
+    def test_intervening_flag_uses_and_writes_prevent_comparison_proof(self):
+        for middle in ("9f", "9c", "40", "39c0", "85c0", "d3e0", "0f92c0", "eb00"):
+            with self.subTest(middle=middle):
+                self.assertEqual(
+                    compare(
+                        *fixture(
+                            "3bc7 " + middle + " 7203 39c0c3 39c0c3",
+                            "3bf8 " + middle + " 7703 39c0c3 39c0c3",
+                        )
+                    ),
+                    {},
+                )
+
+    def test_entry_to_intervening_instruction_cannot_bypass_comparison(self):
+        for displacement in (2, 4, 6):
+            with self.subTest(displacement=displacement):
+                entry = f"eb{displacement:02x} "
+                self.assertEqual(
+                    compare(
+                        *fixture(
+                            entry + "3bc7 89c1 8d09 7203 39c0c3 39c0c3",
+                            entry + "3bf8 89c1 8d09 7703 39c0c3 39c0c3",
+                        )
+                    ),
+                    {},
+                )
+
+    def test_intervening_instruction_changes_are_not_hidden(self):
+        self.assertEqual(
+            compare(
+                *fixture(
+                    "3bc7 89c1 7203 39c0c3 39c0c3",
+                    "3bf8 89c2 7703 39c0c3 39c0c3",
+                )
+            ),
+            {},
+        )
+
     def test_memory_comparison_keeps_the_same_address_and_width(self):
         for original, rebuilt in (
             ("39442420", "3b442420"),
