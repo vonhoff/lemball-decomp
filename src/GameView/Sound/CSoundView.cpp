@@ -1,17 +1,18 @@
 #include "CSoundView.h"
 
+#include "Application/GameTime.h"
+
 #include "Application/GameMain.h"
 
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Application/CDemo.h"
-#include "Application/CGame.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "../../Engine/Resources/Manifest.h"
 #include "../../Engine/Sound/CSoundManager.h"
-#include "Frontend/Loading/CLoadUpdate.h"
+#include "GameView/CLoadUpdate.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/RandomConstants.h"

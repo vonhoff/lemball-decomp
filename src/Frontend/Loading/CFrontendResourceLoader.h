@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_RESOURCES_CFRONTENDRESOURCELOADER_H
 #define LEMBALL_FRONTEND_RESOURCES_CFRONTENDRESOURCELOADER_H
 
-#include "CLoadUpdate.h"
+#include "GameView/CLoadUpdate.h"
 #include "GameView/Sound/CSoundView.h"
 
 class CCDLoadAnim;
@@ -63,6 +63,4 @@ extern unsigned int g_dwFrontendCompactBitmapIds[3];
 extern unsigned int g_dwFrontendBitmapIds[3];
 extern unsigned int g_dwFrontendPaletteIds[2];
 extern unsigned int g_dwFrontendStringIds[1];
-extern unsigned int g_dwGroundStyleResourceId;
-extern unsigned int g_anGroundStyleResourceIds[10];
 #endif

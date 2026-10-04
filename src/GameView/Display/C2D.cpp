@@ -2,7 +2,6 @@
 
 #include "Gameplay/Simulation/CAI.h"
 #include "Application/CDemo.h"
-#include "Application/CGame.h"
 #include "Application/GameMain.h"
 #include "Application/GameTime.h"
 #include "Level/CLevelLoader.h"
@@ -29,7 +28,7 @@
 #include "SpriteGroundLookup.h"
 #include "CMain2DDisplay.h"
 #include "CPBButton.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "Engine/Math/FixedPoint.h"
 
 #include <new.h>

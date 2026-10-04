@@ -13,7 +13,7 @@
 #include "Engine/Resources/Manifest.h"
 #include "CPasswordHiliteWindow.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Animation/CAnimsManager.h"

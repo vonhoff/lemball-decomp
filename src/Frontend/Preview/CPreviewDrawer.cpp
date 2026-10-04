@@ -17,7 +17,7 @@
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CHiliteController.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/CoordPair.h"
 #include "Engine/Animation/AnimationConstants.h"

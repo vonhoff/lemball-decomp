@@ -11,7 +11,7 @@
 #include "Engine/Windows/CDrawer.h"
 #include "CUserActionMessage.h"
 #include "CoordPair.h"
-#include "FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 
 class CGDI;
 class CGunController;

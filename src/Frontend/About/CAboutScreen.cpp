@@ -15,7 +15,7 @@
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResSTRING.h"
 #include "Engine/Resources/Manifest.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"

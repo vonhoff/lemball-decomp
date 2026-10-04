@@ -1,6 +1,5 @@
 #include "CDuplicator.h"
 
-#include "Application/CGame.h"
 #include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"

@@ -55,6 +55,9 @@ int g_nZoomAvailable = 0;
 // GLOBAL: LEMBALL 0x004a6300
 int g_nDisplayMode = 0;
 
+// GLOBAL: LEMBALL 0x004a1bcc
+int* g_pRandomSeed = NULL;
+
 // FUNCTION: LEMBALL 0x00406160
 PreInit* VSPreInit(PreInit* p_preInit)
 {

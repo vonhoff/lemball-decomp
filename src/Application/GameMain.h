@@ -51,4 +51,6 @@ extern char g_szSwitchPlayPrefix1[8];
 extern char g_szSwitchPlayPrefix2[8];
 extern char g_szSwitchPlayPrefix3[8];
 extern char g_szSwitchGraphics[16];
+extern int* g_pRandomSeed;
+
 #endif

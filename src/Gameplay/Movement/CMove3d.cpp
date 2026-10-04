@@ -1,6 +1,7 @@
 #include "CMove3d.h"
 
-#include "Application/CGame.h"
+#include "Application/GameMain.h"
+
 #include "Engine/Math/CVSMath.h"
 #include "Gameplay/Geometry/CPt3.h"
 

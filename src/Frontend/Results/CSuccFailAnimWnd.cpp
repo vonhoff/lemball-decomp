@@ -2,7 +2,6 @@
 
 #include "Application/GameMain.h"
 
-#include "Application/CGame.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Engine/Resources/Manifest.h"

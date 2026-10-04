@@ -7,7 +7,6 @@
 #include "Gameplay/Mechanisms/CSwitch.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Application/GameTime.h"
-#include "Frontend/Loading/CFrontendResourceLoader.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "GameView/Animation/CLemmingAnimsManager.h"

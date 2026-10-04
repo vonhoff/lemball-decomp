@@ -31,11 +31,10 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "GameView/Sound/CSoundView.h"
 #include "Engine/Streams/CVSOStream.h"
 
-extern int* g_pRandomSeed;
 extern char g_szUnknownUserActionSpecified[];
 extern char g_szUnknownUserActionReceived[];
 
-#include "FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "CUserActionMessage.h"
 #include "CoordPair.h"
 #include "Application/SoundEffects.h"

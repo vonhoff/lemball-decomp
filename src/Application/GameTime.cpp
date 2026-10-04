@@ -2,9 +2,11 @@
 
 #include "Engine/Time/VsTime.h"
 #include "CDemo.h"
-#include "CGame.h"
 
 #include <stddef.h>
+
+// GLOBAL: LEMBALL 0x0049ce04
+unsigned int g_dwGameTick = 0;
 
 // FUNCTION: LEMBALL 0x00408080
 void ClockEditMode(unsigned int p_enabled)

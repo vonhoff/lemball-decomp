@@ -4,7 +4,7 @@
 #include "GameView/Sound/CSoundView.h"
 #include "Engine/Strings/CString.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "CIntroAnimAnimWindow.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/Message.h"

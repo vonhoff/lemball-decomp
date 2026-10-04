@@ -1,6 +1,7 @@
 #include "CSheepGroup.h"
 
-#include "Application/CGame.h"
+#include "Application/GameMain.h"
+
 #include "Gameplay/Geometry/Facing.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/VSTrig.h"

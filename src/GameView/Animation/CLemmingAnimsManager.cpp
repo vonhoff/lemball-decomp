@@ -1,8 +1,7 @@
 #include "CLemmingAnimsManager.h"
 
 #include "Gameplay/Simulation/CAI.h"
-#include "Frontend/Loading/CCDLoadAnim.h"
-#include "Frontend/Loading/CFrontendResourceLoader.h"
+#include "GameView/CCDLoadAnim.h"
 #include "../../Engine/Animation/CPlayThruAnim.h"
 #include "../../Engine/Animation/CRepeatAnim.h"
 #include "../../Engine/Animation/CStaticAnim.h"
@@ -65,6 +64,12 @@ unsigned int g_groundBlox5ResourceId;
 unsigned int g_groundBlox6ResourceId;
 // GLOBAL: LEMBALL 0x004a7868
 unsigned int g_groundBlox7ResourceId;
+
+// GLOBAL: LEMBALL 0x004a784c
+unsigned int g_dwGroundStyleResourceId;
+
+// GLOBAL: LEMBALL 0x004a786c
+unsigned int g_anGroundStyleResourceIds[10];
 
 // FUNCTION: LEMBALL 0x00432b50
 CLemmingAnimsManager::CLemmingAnimsManager(CGDI* p_gdi, CMain2DDisplay* p_display, CAI* p_ai)

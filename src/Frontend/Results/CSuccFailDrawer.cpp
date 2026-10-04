@@ -21,7 +21,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "Frontend/CoordPair.h"
 #include "CSuccFailAnimWnd.h"
 #include "Application/SoundEffects.h"

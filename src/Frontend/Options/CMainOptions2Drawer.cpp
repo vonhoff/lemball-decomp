@@ -11,7 +11,7 @@
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Manifest.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/Message.h"
 #include "Frontend/tagPRIMS.h"

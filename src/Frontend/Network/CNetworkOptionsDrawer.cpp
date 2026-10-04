@@ -17,7 +17,7 @@
 #include "CEditString.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CBaseFrontendProcess.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "CEntryHandler.h"
 #include "Application/SoundEffects.h"

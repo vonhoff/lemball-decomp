@@ -1,6 +1,7 @@
 #include "CBalloon.h"
 
-#include "Application/CGame.h"
+#include "Application/GameMain.h"
+
 #include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"

@@ -11,7 +11,7 @@
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/Types/CResSTRING.h"
 #include "Engine/Resources/Manifest.h"
-#include "CCDLoadAnim.h"
+#include "GameView/CCDLoadAnim.h"
 
 #include <new.h>
 class CCdLoadAnimDraw;
@@ -177,12 +177,6 @@ unsigned int g_dwFrontendPaletteIds[2] = {RES_PALETTES_TITLEPALETTE, RES_REGISTR
 
 // GLOBAL: LEMBALL 0x0049f410
 unsigned int g_dwFrontendStringIds[1] = {RES_REGISTRATION_FINGERPRINT};
-
-// GLOBAL: LEMBALL 0x004a784c
-unsigned int g_dwGroundStyleResourceId;
-
-// GLOBAL: LEMBALL 0x004a786c
-unsigned int g_anGroundStyleResourceIds[10];
 
 #include <stddef.h>
 

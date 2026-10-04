@@ -1,5 +1,7 @@
 #include "CAI.h"
 
+#include "Application/GameMain.h"
+
 #include "Application/CDemo.h"
 #include "Application/CGame.h"
 #include "Application/CGameStatus.h"

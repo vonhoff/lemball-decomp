@@ -1,6 +1,7 @@
 #include "CCatapult.h"
 
-#include "Application/CGame.h"
+#include "Application/GameMain.h"
+
 #include "Application/GameTime.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"

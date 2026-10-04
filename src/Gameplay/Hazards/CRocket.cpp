@@ -1,6 +1,5 @@
 #include "CRocket.h"
 
-#include "Application/CGame.h"
 #include "Map/CMap.h"
 #include "Map/CGround.h"
 #include "Gameplay/Geometry/Facing.h"

@@ -1,7 +1,8 @@
 #include "CPlayerLemming.h"
 
+#include "Application/GameMain.h"
+
 #include "Application/CDemo.h"
-#include "Application/CGame.h"
 #include "Application/CGameStatus.h"
 #include "Application/GameTime.h"
 #include "Map/CMap.h"

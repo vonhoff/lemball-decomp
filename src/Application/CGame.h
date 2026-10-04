@@ -1,7 +1,7 @@
 #ifndef LEMBALL_CONTROL_GAME_CGAME_H
 #define LEMBALL_CONTROL_GAME_CGAME_H
 
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 
 class CBaseProcess;
 class CMain2DDisplay;
@@ -35,6 +35,4 @@ private:
 	void* m_frontendResources;     // 0x6c
 };
 
-extern int* g_pRandomSeed;
-extern unsigned int g_dwGameTick;
 #endif

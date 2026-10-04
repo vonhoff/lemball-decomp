@@ -21,4 +21,6 @@ extern unsigned long g_dwCurrentMilli;
 extern unsigned long g_dwPausedMilli;
 extern unsigned int g_dwClockEditMode;
 
+extern unsigned int g_dwGameTick;
+
 #endif

@@ -1,5 +1,7 @@
 #include "CGame.h"
 
+#include "Application/GameTime.h"
+
 #include "Application/GameMain.h"
 
 #include "Gameplay/Simulation/CAI.h"
@@ -38,7 +40,7 @@
 #include "Level/CLevelLoader.h"
 #include "CDemo.h"
 #include "CGameStatus.h"
-#include "Frontend/FlowProcesses.h"
+#include "Application/FlowProcesses.h"
 #include "GameMain.h"
 
 #include <new.h>
@@ -573,9 +575,3 @@ void CGame::StreamRuntimeStats()
 	m_processingStat->StreamOut(*g_pDebugOutput) << '\n';
 	m_refreshingStat->StreamOut(*g_pDebugOutput) << '\n';
 }
-
-// GLOBAL: LEMBALL 0x004a1bcc
-int* g_pRandomSeed = NULL;
-
-// GLOBAL: LEMBALL 0x0049ce04
-unsigned int g_dwGameTick = 0;

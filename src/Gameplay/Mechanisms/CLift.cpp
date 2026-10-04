@@ -1,6 +1,5 @@
 #include "CLift.h"
 
-#include "Application/CGame.h"
 #include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Engine/Network/CConnect.h"

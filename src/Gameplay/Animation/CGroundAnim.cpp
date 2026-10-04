@@ -1,6 +1,7 @@
 #include "CGroundAnim.h"
 
-#include "Application/CGame.h"
+#include "Application/GameTime.h"
+
 #include "Map/CMap.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Geometry/tCoord3d.h"
