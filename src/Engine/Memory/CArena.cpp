@@ -95,10 +95,9 @@ bool CArena::AddToFreeList(CMBlock* p_block)
 // FUNCTION: LEMBALL 0x00459c00
 bool CArena::AddToBlockList(CMBlock* p_block, CMBlock* p_previous)
 {
-	CMBlock* next;
+	CMBlock* next = NULL;
 	if (p_previous == NULL) {
 		m_firstBlock = p_block;
-		next = NULL;
 	}
 	else {
 		next = p_previous->m_nextBlock;
