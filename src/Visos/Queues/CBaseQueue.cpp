@@ -1,0 +1,405 @@
+#include "CBaseQueue.h"
+
+#include "CBaseQueueHandler.h"
+#include "Message.h"
+
+#include <stddef.h>
+
+struct QueueHandlerNode {
+	CBaseQueueHandler* m_handler;
+	int m_priority;
+	QueueHandlerNode* m_next;
+};
+
+// FUNCTION: LEMBALL 0x00463020
+CBaseQueue::CBaseQueue(unsigned int p_capacity)
+{
+	unsigned char* buffer;
+
+	buffer = (unsigned char*) operator new(p_capacity * sizeof(Message));
+	m_messageBuffer = buffer;
+	m_capacity = p_capacity;
+	m_messageBufferEnd = buffer + p_capacity * sizeof(Message);
+	m_writeCursor = buffer;
+	m_readCursor = buffer;
+	m_messageCount = 0;
+	m_handlerCount = 0;
+	m_overflowCount = 0;
+	m_postCount = 0;
+	m_sendCount = 0;
+	m_unhandledCount = 0;
+	m_nextSequence = 0;
+	m_handlerList = NULL;
+}
+
+// FUNCTION: LEMBALL 0x004630a0
+CBaseQueue::CBaseQueue(unsigned int p_capacity, char* p_name)
+{
+	unsigned char* buffer;
+
+	(void) p_name;
+	buffer = (unsigned char*) operator new(p_capacity * sizeof(Message));
+	m_messageBuffer = buffer;
+	m_capacity = p_capacity;
+	m_messageBufferEnd = buffer + p_capacity * sizeof(Message);
+	m_writeCursor = buffer;
+	m_readCursor = buffer;
+	m_messageCount = 0;
+	m_handlerCount = 0;
+	m_overflowCount = 0;
+	m_postCount = 0;
+	m_sendCount = 0;
+	m_unhandledCount = 0;
+	m_nextSequence = 0;
+	m_handlerList = NULL;
+}
+
+// FUNCTION: LEMBALL 0x00463120
+CBaseQueue::~CBaseQueue()
+{
+	QueueHandlerNode* node;
+	QueueHandlerNode* next;
+	unsigned int index;
+
+	node = m_handlerList;
+	if (ProcessNMsgs(m_messageCount) == 1) {
+		operator delete(m_messageBuffer);
+	}
+	index = 0;
+	if (index < m_handlerCount) {
+		do {
+			next = node->m_next;
+			operator delete(node);
+			node = next;
+			index = index + 1;
+		} while (index < m_handlerCount);
+	}
+}
+
+// FUNCTION: LEMBALL 0x004631a0
+bool CBaseQueue::Post(Message& p_message)
+{
+	unsigned char* write;
+	bool result;
+
+	EnterCritical();
+	m_postCount = m_postCount + 1;
+	p_message.m_time = m_nextSequence;
+	m_nextSequence = m_nextSequence + 1;
+	if (m_capacity == m_messageCount) {
+		m_overflowCount = m_overflowCount + 1;
+		ProcessNMsgs(1);
+		result = Post(p_message);
+		LeaveCritical();
+		return result;
+	}
+	m_messageCount = m_messageCount + 1;
+	write = m_writeCursor;
+	*(Message*) write = p_message;
+	write = m_writeCursor;
+	m_writeCursor = write + sizeof(Message);
+	if (m_messageBufferEnd <= write + sizeof(Message)) {
+		m_writeCursor = m_messageBuffer;
+	}
+	LeaveCritical();
+	return true;
+}
+
+// FUNCTION: LEMBALL 0x00463230
+bool CBaseQueue::Send(Message& p_message)
+{
+	bool result;
+
+	EnterCritical();
+	m_sendCount = m_sendCount + 1;
+	p_message.m_time = m_nextSequence;
+	m_nextSequence = m_nextSequence + 1;
+	result = Process(&p_message);
+	if (result != 0) {
+		LeaveCritical();
+		return true;
+	}
+	LeaveCritical();
+	return false;
+}
+
+// FUNCTION: LEMBALL 0x00463280
+CVSOStream& CBaseQueue::StreamOut(CVSOStream& p_stream)
+{
+	return p_stream;
+}
+
+// FUNCTION: LEMBALL 0x004632a0
+bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
+{
+	QueueHandlerNode* node;
+	QueueHandlerNode* current;
+	QueueHandlerNode* previous;
+	unsigned int index;
+	unsigned int count;
+
+	EnterCritical();
+	node = (QueueHandlerNode*) operator new(sizeof(QueueHandlerNode));
+	current = m_handlerList;
+	node->m_handler = p_handler;
+	node->m_priority = p_priority;
+	if (m_handlerList == NULL) {
+		m_handlerList = node;
+		node->m_next = NULL;
+		m_handlerCount = 1;
+		LeaveCritical();
+		return true;
+	}
+	previous = current;
+	count = m_handlerCount;
+	if (count == 0) {
+		m_handlerList = node;
+		m_handlerCount = count + 1;
+		LeaveCritical();
+		return true;
+	}
+	index = 0;
+	if (count != 0) {
+		do {
+			if (p_priority < current->m_priority) {
+				if (index == 0) {
+					node->m_next = m_handlerList;
+					m_handlerList = node;
+				}
+				else {
+					node->m_next = previous->m_next;
+					previous->m_next = node;
+				}
+				m_handlerCount = m_handlerCount + 1;
+				LeaveCritical();
+				return true;
+			}
+			previous = current;
+			current = current->m_next;
+			if (current == NULL) {
+				node->m_next = NULL;
+				previous->m_next = node;
+				m_handlerCount = m_handlerCount + 1;
+				LeaveCritical();
+				return true;
+			}
+			index = index + 1;
+		} while (index < count);
+	}
+	LeaveCritical();
+	return false;
+}
+
+// FUNCTION: LEMBALL 0x004633b0
+bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
+{
+	QueueHandlerNode* current;
+	QueueHandlerNode* previous;
+	unsigned int index;
+
+	EnterCritical();
+	current = m_handlerList;
+	index = 0;
+	previous = current;
+	if (m_handlerCount != 0) {
+		do {
+			if (current->m_priority == p_priority && current->m_handler == p_handler) {
+				if (index == 0) {
+					m_handlerList = current->m_next;
+					operator delete(current);
+					m_handlerCount = m_handlerCount - 1;
+					LeaveCritical();
+					return true;
+				}
+				previous->m_next = current->m_next;
+				operator delete(current);
+				m_handlerCount = m_handlerCount - 1;
+				LeaveCritical();
+				return true;
+			}
+			previous = current;
+			index = index + 1;
+			current = current->m_next;
+		} while (index < m_handlerCount);
+	}
+	LeaveCritical();
+	return false;
+}
+
+// FUNCTION: LEMBALL 0x00463570
+bool CBaseQueue::GetNth(Message* p_message, unsigned int p_index)
+{
+	EnterCritical();
+	PeekNth(p_message, p_index);
+	DeleteNth(p_index);
+	LeaveCritical();
+	return true;
+}
+
+// FUNCTION: LEMBALL 0x004635b0
+bool CBaseQueue::PeekNth(Message* p_message, unsigned int p_index)
+{
+	Message* slot;
+
+	EnterCritical();
+	slot = (Message*) m_readCursor + p_index;
+	if ((Message*) m_messageBufferEnd <= slot) {
+		slot = (Message*) m_messageBuffer + (slot - (Message*) m_messageBufferEnd);
+	}
+	*p_message = *slot;
+	LeaveCritical();
+	return true;
+}
+
+// FUNCTION: LEMBALL 0x00463610
+bool CBaseQueue::PutNth(Message* p_message, unsigned int p_index)
+{
+	unsigned char* slot;
+	Message* dest;
+	Message* src;
+	unsigned int shifted;
+
+	EnterCritical();
+	slot = m_readCursor + p_index * sizeof(Message);
+	if (m_messageBufferEnd <= slot) {
+		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / (int) sizeof(Message)) * sizeof(Message);
+	}
+	if (m_messageCount > p_index) {
+		dest = (Message*) m_writeCursor;
+		src = dest - 1;
+		for (shifted = 0; shifted < m_messageCount - p_index; shifted++) {
+			if (src < (Message*) m_messageBuffer) {
+				src = (Message*) m_messageBufferEnd - 1;
+			}
+			if (dest < (Message*) m_messageBuffer) {
+				dest = (Message*) m_messageBufferEnd - 1;
+			}
+			*dest = *src;
+			src--;
+			dest--;
+		}
+	}
+	*(Message*) slot = *p_message;
+	slot = m_writeCursor;
+	m_writeCursor = slot + sizeof(Message);
+	if (m_messageBufferEnd <= slot + sizeof(Message)) {
+		m_writeCursor = m_messageBuffer;
+	}
+	m_messageCount = m_messageCount + 1;
+	LeaveCritical();
+	return true;
+}
+
+// FUNCTION: LEMBALL 0x004636e0
+bool CBaseQueue::DeleteNth(unsigned int p_index)
+{
+	unsigned char* slot;
+	unsigned char* src;
+	unsigned char* read;
+	unsigned int count;
+	unsigned char* end;
+
+	EnterCritical();
+	read = m_readCursor;
+	end = m_messageBufferEnd;
+	slot = read + p_index * sizeof(Message);
+	if (end <= slot) {
+		slot = m_messageBuffer + (((int) slot - (int) end) / (int) sizeof(Message)) * sizeof(Message);
+	}
+	count = m_messageCount;
+	if (count == 1) {
+		m_messageCount = 0;
+		m_readCursor = m_writeCursor;
+		LeaveCritical();
+		return true;
+	}
+	if (slot == read) {
+		m_readCursor = read + sizeof(Message);
+		if (end <= read + sizeof(Message)) {
+			m_readCursor = m_messageBuffer;
+		}
+		m_messageCount = count - 1;
+		LeaveCritical();
+		return true;
+	}
+	src = slot;
+	slot += sizeof(Message);
+	if (end <= slot) {
+		slot = m_messageBuffer;
+	}
+	if (p_index < count) {
+		do {
+			if (m_messageBufferEnd <= slot) {
+				slot = m_messageBuffer;
+			}
+			if (m_messageBufferEnd <= src) {
+				src = m_messageBuffer;
+			}
+			*(Message*) slot = *(Message*) src;
+			src = src + sizeof(Message);
+			slot = slot + sizeof(Message);
+			p_index = p_index + 1;
+		} while (p_index < m_messageCount);
+	}
+	slot = m_writeCursor;
+	m_writeCursor = slot - sizeof(Message);
+	if (m_writeCursor <= m_messageBuffer) {
+		m_writeCursor = m_messageBufferEnd - sizeof(Message);
+	}
+	m_messageCount = m_messageCount - 1;
+	LeaveCritical();
+	return true;
+}
+
+// FUNCTION: LEMBALL 0x00463810
+bool CBaseQueue::ProcessNMsgs(unsigned int p_count)
+{
+	Message message;
+	unsigned int available;
+	unsigned int index;
+
+	index = 0;
+	EnterCritical();
+	available = m_messageCount;
+	if (p_count != 0) {
+		do {
+			if (available <= index) {
+				break;
+			}
+			if (GetNth(&message, 0) == 0) {
+				LeaveCritical();
+				return false;
+			}
+			if (Process(&message) == 0) {
+				LeaveCritical();
+				return false;
+			}
+			index = index + 1;
+		} while (index < p_count);
+	}
+	LeaveCritical();
+	return true;
+}
+
+// FUNCTION: LEMBALL 0x004638a0
+bool CBaseQueue::Process(Message* p_message)
+{
+	unsigned int index;
+	QueueHandlerNode* node;
+
+	EnterCritical();
+	node = m_handlerList;
+	for (index = 0; index < m_handlerCount; index++) {
+		if (node->m_handler->ProcessMsg(p_message) == 1) {
+			LeaveCritical();
+			return true;
+		}
+		node = node->m_next;
+	}
+	m_unhandledCount = m_unhandledCount + 1;
+	LeaveCritical();
+	return true;
+}
+
+// GLOBAL: LEMBALL 0x004a9360
+CBaseQueue* g_pMasterInputQueue;

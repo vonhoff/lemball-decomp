@@ -2,12 +2,12 @@
 
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"
-#include "../../Visos/Foundation/CString.h"
+#include "Visos/Strings/CString.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Windows/CIntroAnimAnimWindow.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Queues/Message.h"
 
 #include <stddef.h>
 

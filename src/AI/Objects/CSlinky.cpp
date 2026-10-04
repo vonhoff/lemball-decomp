@@ -11,7 +11,7 @@
 #include "AI/Base/ObjectTypes.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
-#include "Visos/Foundation/RandomConstants.h"
+#include "Visos/Math/RandomConstants.h"
 
 #include <stddef.h>
 

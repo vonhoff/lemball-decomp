@@ -1,17 +1,17 @@
 #include "CPanelPauseButton.h"
 
 #include "../../AI/Navigation/CAI.h"
-#include "../../Visos/Graphics/CCursor.h"
-#include "../../Visos/Graphics/CDepressedButton.h"
+#include "Platform/Windows/Graphics/CCursor.h"
+#include "Visos/Controls/CDepressedButton.h"
 #include "../Display/C2D.h"
 #include "../Sound/CSoundView.h"
 #include "CPanel.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Graphics/CBaseCursor.h"
-#include "Visos/Graphics/CGraphicButton.h"
-#include "Visos/Graphics/CPVButton.h"
-#include "Visos/Graphics/CToggleButton.h"
+#include "Visos/Queues/Message.h"
+#include "Visos/Input/CBaseCursor.h"
+#include "Visos/Controls/CGraphicButton.h"
+#include "Visos/Controls/CPVButton.h"
+#include "Visos/Controls/CToggleButton.h"
 
 // FUNCTION: LEMBALL 0x004421d0
 CPanelPauseButton::CPanelPauseButton(CPanel* p_panel,

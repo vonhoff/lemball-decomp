@@ -1,6 +1,6 @@
 #include "Views/Pause/CPauseWindow.h"
 
-#include "Visos/Foundation/CBaseQueue.h"
+#include "Visos/Queues/CBaseQueue.h"
 #include "Visos/Graphics/CReceiveWindowState.h"
 
 #include <stddef.h>

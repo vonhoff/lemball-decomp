@@ -2,7 +2,7 @@
 #define LEMBALL_FRONTEND_DRAWERS_CPASSWORDDRAWER_H
 
 #include "../../Visos/Animation/CStaticAnim.h"
-#include "../../Visos/Graphics/CClipRect.h"
+#include "Visos/Graphics/Primitives/CClipRect.h"
 #include "../Base/CBaseFrontendDrawer.h"
 
 class CGDI;

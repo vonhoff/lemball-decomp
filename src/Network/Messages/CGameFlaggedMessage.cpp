@@ -1,6 +1,6 @@
 #include "CGameFlaggedMessage.h"
 
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x004524b0
 CGameFlaggedMessage::CGameFlaggedMessage(unsigned long p_messageId) : CNetworkMessage(p_messageId)

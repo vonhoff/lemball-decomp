@@ -11,7 +11,7 @@
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectInteractionStates.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/RandomConstants.h"
+#include "Visos/Math/RandomConstants.h"
 
 enum {
 	BALLOON_ANIMATION_PHASE_RANDOMIZATION_RANGE_MS = 4096

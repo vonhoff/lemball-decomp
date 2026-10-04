@@ -4,9 +4,9 @@
 #include "../../Frontend/Base/CBaseFrontendProcess.h"
 #include "../../Views/Sound/CSoundView.h"
 #include "../../Visos/Resources/Manifest.h"
-#include "Visos/Foundation/RandomConstants.h"
-#include "Visos/Graphics/CAnimWnd.h"
-#include "Visos/Graphics/CWnd.h"
+#include "Visos/Math/RandomConstants.h"
+#include "Platform/Windows/Windowing/CAnimWnd.h"
+#include "Platform/Windows/Windowing/CWnd.h"
 
 // FUNCTION: LEMBALL 0x00450c40
 void CSuccFailAnimWnd::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_display, int p_success)

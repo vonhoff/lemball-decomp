@@ -2,7 +2,7 @@
 
 #include "../Base/CGlobalGameObject.h"
 #include "../Managers/CBaseObjectManager.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00416850
 CGameObjectMess::CGameObjectMess(unsigned long p_messageId) : CNetworkMessage(p_messageId)

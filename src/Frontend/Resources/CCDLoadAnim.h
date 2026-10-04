@@ -3,12 +3,12 @@
 
 #include "../../Visos/Animation/CAnimsManager.h"
 #include "../../Visos/Animation/CRepeatAnim.h"
-#include "../../Visos/Graphics/CBigBitmap.h"
-#include "../../Visos/Graphics/CBitmap.h"
-#include "../../Visos/Graphics/CCopyToBackBuff.h"
-#include "../../Visos/Graphics/CDrawingMark.h"
-#include "../../Visos/Graphics/CLine.h"
-#include "../../Visos/Graphics/CSolidRect.h"
+#include "Visos/Graphics/Primitives/CBigBitmap.h"
+#include "Visos/Graphics/Primitives/CBitmap.h"
+#include "Visos/Graphics/Primitives/CCopyToBackBuff.h"
+#include "Visos/Graphics/Primitives/CDrawingMark.h"
+#include "Visos/Graphics/Primitives/CLine.h"
+#include "Visos/Graphics/Primitives/CSolidRect.h"
 #include "CCdLoadAnimDraw.h"
 #include "CCdLoadAnimProgress.h"
 

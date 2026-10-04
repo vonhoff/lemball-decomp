@@ -4,8 +4,8 @@
 #include "../../Network/Game/CNetworkManager.h"
 #include "../../Network/Messages/CGameAcceptMessage.h"
 #include "../../Network/Messages/CGameRejectMessage.h"
-#include "../../Visos/Messaging/BasePacketHeader.h"
-#include "../../Visos/Messaging/CReadPacket.h"
+#include "Visos/Network/Packets/BasePacketHeader.h"
+#include "Visos/Network/Packets/CReadPacket.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CBroadcast.h"
 #include "../../Visos/Network/CConnect.h"
@@ -16,7 +16,7 @@
 #define g_pNetworkOptionsDrawer ((CNetworkOptionsDrawer*) g_pBaseFrontendDrawer)
 
 #include "Frontend/Base/CBaseFrontendProcess.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 #include <new.h>
 #include <stddef.h>

@@ -19,8 +19,8 @@
 #include "AI/Base/ObjectTypes.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/VsDebug.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Diagnostics/VsDebug.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 enum {
 	BULLET_TRAVEL_DURATION_TICKS = 10

@@ -8,9 +8,9 @@
 #include "../../Map/Base/CMap.h"
 #include "../../Network/Game/CNetworkManager.h"
 #include "../../Network/Game/CPBNetworkGame.h"
-#include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Foundation/CVSOStream.h"
-#include "../../Visos/Foundation/VsTime.h"
+#include "Visos/Queues/CBaseQueue.h"
+#include "Visos/Streams/CVSOStream.h"
+#include "Visos/Time/VsTime.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../../Visos/Network/NetworkConstants.h"
@@ -61,8 +61,8 @@
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Queues/Message.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 #include "Visos/Network/CReadSocket.h"
 
 extern int g_anDefaultTrapDoorLemmings[4][4];

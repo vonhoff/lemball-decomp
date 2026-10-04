@@ -1,7 +1,7 @@
 #include "CAnimSpecial.h"
 
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/VsSort.h"
+#include "Visos/Sorting/VsSort.h"
 #include "AnimSpecialEntry.h"
 
 enum {

@@ -1,7 +1,7 @@
 targets:
   LEMBALL:
     filename: LEMBALL.EXE
-    source_root: src
+    source_root: build-msvc400/compiler-src
     data-sources:
       - tools/data/original-function-sizes.csv
       - tools/data/original-functions.csv

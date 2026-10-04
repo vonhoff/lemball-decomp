@@ -1,14 +1,14 @@
 #include "Entry.h"
 
-#include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/VsInit.h"
-#include "../../Visos/Graphics/CCursor.h"
-#include "../../Visos/Graphics/CWnd.h"
+#include "Visos/Queues/CBaseQueue.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Startup/VsInit.h"
+#include "Platform/Windows/Graphics/CCursor.h"
+#include "Platform/Windows/Windowing/CWnd.h"
 #include "../../Visos/Network/CBaseNetwork.h"
-#include "../../Visos/Resources/CMogRes.h"
-#include "../../Visos/Target/Graphics/CGraphicsDriver.h"
-#include "../../Visos/Target/System/CPlatformServices.h"
+#include "Visos/Resources/Archive/CMogRes.h"
+#include "Platform/Windows/Graphics/CGraphicsDriver.h"
+#include "CPlatformServices.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

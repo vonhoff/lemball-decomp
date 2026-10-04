@@ -4,8 +4,8 @@
 #include "../../Control/Level/CLevelLoader.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Drawers/CIntroAnimDrawer.h"
-#include "Visos/Graphics/CAnimWnd.h"
-#include "Visos/Graphics/CWnd.h"
+#include "Platform/Windows/Windowing/CAnimWnd.h"
+#include "Platform/Windows/Windowing/CWnd.h"
 
 // GLOBAL: LEMBALL 0x0049f194
 char g_szMoviePrefix[] = "lemball";

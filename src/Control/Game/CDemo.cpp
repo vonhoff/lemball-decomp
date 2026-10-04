@@ -1,11 +1,11 @@
 #include "CDemo.h"
 
-#include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Foundation/Message.h"
-#include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CPVWnd.h"
-#include "../../Visos/Messaging/PackParam.h"
-#include "../../Visos/Resources/CResBIN.h"
+#include "Visos/Queues/CBaseQueue.h"
+#include "Visos/Queues/Message.h"
+#include "Visos/Time/VsTime.h"
+#include "Visos/Windows/CPVWnd.h"
+#include "Visos/Queues/PackParam.h"
+#include "Visos/Resources/Types/CResBIN.h"
 
 #include <stddef.h>
 
@@ -115,7 +115,7 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	return true;
 }
 
-#include "../../Visos/Foundation/VsFile.h"
+#include "Visos/File/VsFile.h"
 
 // FUNCTION: LEMBALL 0x00409460
 bool CDemo::LoadBuffer()
@@ -159,9 +159,9 @@ bool CDemo::LoadBuffer()
 	return true;
 }
 
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Queues/Message.h"
 
 #include <string.h>
 

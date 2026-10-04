@@ -1,7 +1,7 @@
 #include "ResourceChunkTypes.h"
-#include "Visos/Foundation/VsInit.h"
-#include "Visos/Graphics/CBasePalManager.h"
-#include "Visos/Graphics/CPaletteManager.h"
+#include "Visos/Startup/VsInit.h"
+#include "Visos/Graphics/Palettes/CBasePalManager.h"
+#include "Visos/Graphics/Palettes/CPaletteManager.h"
 #include "Visos/Resources/ResourceTypeList.h"
 
 #include <stddef.h>

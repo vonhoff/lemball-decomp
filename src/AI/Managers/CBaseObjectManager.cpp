@@ -1,13 +1,13 @@
 #include "CBaseObjectManager.h"
 
 #include "../../Network/Game/CNetworkManager.h"
-#include "../../Visos/Messaging/CWriteCBuff.h"
+#include "Visos/Network/Packets/CWriteCBuff.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGameObject.h"
 #include "../Base/CGlobalGameObject.h"
 #include "../Messages/GameMessageIds.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 #include "Visos/Network/CWriteSocket.h"
 #include "Visos/Network/NetworkConstants.h"
 

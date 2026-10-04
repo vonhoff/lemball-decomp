@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_CWRITESOCKET_H
 
-#include "../Messaging/BasePacketHeader.h"
+#include "Visos/Network/Packets/BasePacketHeader.h"
 #include "CBaseCommonSocket.h"
 #include "CBaseSocket.h"
 class CNetworkMessage;

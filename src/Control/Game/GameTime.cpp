@@ -1,6 +1,6 @@
 #include "GameTime.h"
 
-#include "../../Visos/Foundation/VsTime.h"
+#include "Visos/Time/VsTime.h"
 #include "CDemo.h"
 #include "CGame.h"
 

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CGUNBUTTONS_H
 #define LEMBALL_FRONTEND_CONTROLS_CGUNBUTTONS_H
 
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVSRect.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Math/CVSRect.h"
 
 class CGWnd;
 class CGDI;

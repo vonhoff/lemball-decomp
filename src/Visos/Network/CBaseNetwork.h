@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CBASENETWORK_H
 #define LEMBALL_VISOS_NETWORK_CBASENETWORK_H
 
-#include "../Foundation/CBaseQueueHandler.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
 #include "CConnect.h"
 
 #define NETWORK_QUEUE_SEND_ONE 0x0b

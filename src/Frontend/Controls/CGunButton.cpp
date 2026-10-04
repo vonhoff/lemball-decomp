@@ -2,7 +2,7 @@
 
 #include "../../Views/Sound/CSoundView.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Queues/Message.h"
 
 // FUNCTION: LEMBALL 0x0044c1e0
 int sgn(int p_value)

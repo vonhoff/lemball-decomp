@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MESSAGES_CGAMEOBJECTMESS_H
 #define LEMBALL_AI_MESSAGES_CGAMEOBJECTMESS_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 class CGlobalGameObject;
 // SIZE 0x30

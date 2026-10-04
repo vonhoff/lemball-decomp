@@ -6,7 +6,7 @@
 #include "../Navigation/CAI.h"
 #include "AI/Base/ObjectInteractionStates.h"
 #include "CViewData.h"
-#include "Visos/Foundation/RandomConstants.h"
+#include "Visos/Math/RandomConstants.h"
 // FUNCTION: LEMBALL 0x0041c3f0
 int CCatapult::Usage()
 {

@@ -5,15 +5,15 @@
 #include "../../Frontend/Controls/CGunController.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"
-#include "../../Visos/Foundation/CVSOStream.h"
-#include "../../Visos/Resources/CResBITMAP.h"
+#include "Visos/Streams/CVSOStream.h"
+#include "Visos/Resources/Types/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Queues/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CBigBitmap.h"
+#include "Visos/Graphics/Primitives/CBigBitmap.h"
 
 #include <new.h>
 #include <stddef.h>

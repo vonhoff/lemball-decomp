@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CANIMSMANAGER_H
 #define LEMBALL_VISOS_ANIMATION_CANIMSMANAGER_H
 
-#include "../Foundation/CVSRect.h"
-#include "../Foundation/CVSSize.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/CVSSize.h"
 struct CVSPoint;
 
 class CGDI;

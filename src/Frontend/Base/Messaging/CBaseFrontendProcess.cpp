@@ -2,11 +2,11 @@
 
 #include "../../../Frontend/Support/CUserActionMessage.h"
 #include "../../../Network/Messages/CGameFlaggedMessage.h"
-#include "../../../Visos/Messaging/BasePacketHeader.h"
-#include "../../../Visos/Messaging/CReadPacket.h"
+#include "Visos/Network/Packets/BasePacketHeader.h"
+#include "Visos/Network/Packets/CReadPacket.h"
 #include "../../../Visos/Network/CConnect.h"
 #include "../CBaseFrontendDrawer.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Queues/Message.h"
 
 #include <stddef.h>
 

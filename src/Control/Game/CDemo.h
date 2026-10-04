@@ -1,8 +1,8 @@
 #ifndef LEMBALL_CONTROL_GAME_CDEMO_H
 #define LEMBALL_CONTROL_GAME_CDEMO_H
 
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Graphics/CBaseCursor.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Input/CBaseCursor.h"
 
 class CPVWnd;
 class CResBIN;

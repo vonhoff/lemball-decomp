@@ -6,7 +6,7 @@
 #include "AI/Navigation/CAI.h"
 #include "AI/Objects/CAmmo.h"
 #include "AI/Objects/CSwitch.h"
-#include "Visos/Foundation/FixedPoint.h"
+#include "Visos/Math/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x0041bbc0
 void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, unsigned int p_append)

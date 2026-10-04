@@ -1,7 +1,7 @@
 #include "CGameStatus.h"
 
-#include "../../Visos/Foundation/CVSOStream.h"
-#include "../../Visos/Foundation/VsString.h"
+#include "Visos/Streams/CVSOStream.h"
+#include "Visos/Strings/VsString.h"
 #include "../Level/CLevelLoader.h"
 
 #include <string.h>

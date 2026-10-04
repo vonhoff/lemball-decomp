@@ -5,8 +5,8 @@
 #include "../Objects/CBullet.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Managers/CBaseObjectManager.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/FixedPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x00417d80
 CBulletManager::CBulletManager()

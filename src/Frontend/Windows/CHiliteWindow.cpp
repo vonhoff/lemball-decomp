@@ -1,7 +1,7 @@
 #include "CHiliteWindow.h"
 
-#include "../../Visos/Graphics/CGDI.h"
-#include "../../Visos/Graphics/CSurface.h"
+#include "Visos/Graphics/Primitives/CGDI.h"
+#include "Visos/Graphics/Surfaces/CSurface.h"
 
 // FUNCTION: LEMBALL 0x0044f400
 CHiliteWindow::CHiliteWindow()

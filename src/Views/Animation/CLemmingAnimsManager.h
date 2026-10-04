@@ -2,8 +2,8 @@
 #define LEMBALL_VIEWS_ANIMATION_CLEMMINGANIMSMANAGER_H
 
 #include "../../Visos/Animation/CAnimsManager.h"
-#include "../../Visos/Graphics/CDrawingMark.h"
-#include "../../Visos/Graphics/CPrimitive.h"
+#include "Visos/Graphics/Primitives/CDrawingMark.h"
+#include "Visos/Graphics/Primitives/CPrimitive.h"
 #include "../Sound/CLoadUpdate.h"
 
 class CAI;

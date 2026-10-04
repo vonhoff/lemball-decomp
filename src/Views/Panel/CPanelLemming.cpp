@@ -8,8 +8,8 @@
 #include "AI/Base/ObjectTypes.h"
 #include "CPanel.h"
 #include "CPanelButton.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
 
 class CPlayerLemmingGroup;
 

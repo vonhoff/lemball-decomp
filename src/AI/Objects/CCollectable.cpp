@@ -10,7 +10,7 @@
 #include "AI/Base/ObjectActions.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
-#include "Visos/Foundation/CFixed.h"
+#include "Visos/Math/CFixed.h"
 
 #include <stddef.h>
 

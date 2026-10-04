@@ -1,6 +1,6 @@
 #include "CNetworkGameStage.h"
 
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x004523b0
 CNetworkGameStage::CNetworkGameStage() : CNetworkMessage(NETWORK_MESSAGE_GAME_STAGE)

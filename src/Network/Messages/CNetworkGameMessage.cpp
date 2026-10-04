@@ -11,8 +11,8 @@ CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(GAME_MESSAGE_GAME_I
 	m_headerEnabled = 1;
 }
 
-#include "../../Visos/Foundation/CString.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Strings/CString.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 #include <string.h>
 

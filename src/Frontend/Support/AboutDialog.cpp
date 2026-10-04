@@ -1,7 +1,7 @@
 #include "AboutDialog.h"
 
 #include "../../Platform/Windows/Entry.h"
-#include "../../Visos/Foundation/VisosVersion.h"
+#include "Visos/Startup/VisosVersion.h"
 #include "../../Visos/Sound/CSoundManager.h"
 
 enum {

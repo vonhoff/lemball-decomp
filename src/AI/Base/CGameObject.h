@@ -2,7 +2,7 @@
 #define LEMBALL_AI_BASE_CGAMEOBJECT_H
 
 #include "../../Control/Game/GameTime.h"
-#include "../../Visos/Foundation/CVSRect.h"
+#include "Visos/Math/CVSRect.h"
 #include "../Objects/CViewData.h"
 #include "AICOORD.h"
 #include "C3DVector.h"

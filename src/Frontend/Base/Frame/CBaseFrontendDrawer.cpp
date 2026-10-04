@@ -1,16 +1,16 @@
 #include "../CBaseFrontendDrawer.h"
 
-#include "../../../Visos/Foundation/CTextManager.h"
-#include "../../../Visos/Graphics/CGDI.h"
-#include "../../../Visos/Graphics/CSurface.h"
+#include "Visos/Text/CTextManager.h"
+#include "Visos/Graphics/Primitives/CGDI.h"
+#include "Visos/Graphics/Surfaces/CSurface.h"
 #include "../../Controls/CGunController.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/CVSSize.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/CVSSize.h"
 #include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CSolidRect.h"
+#include "Visos/Graphics/Primitives/CSolidRect.h"
 
 #include <stddef.h>
 

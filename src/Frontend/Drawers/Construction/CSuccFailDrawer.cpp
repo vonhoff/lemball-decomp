@@ -3,7 +3,7 @@
 #include "Control/Game/CGameStatus.h"
 #include "Frontend/Base/CBaseFrontendProcess.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
-#include "Visos/Foundation/VsTime.h"
+#include "Visos/Time/VsTime.h"
 
 extern char g_szSuccFailMoviePrefix[];
 

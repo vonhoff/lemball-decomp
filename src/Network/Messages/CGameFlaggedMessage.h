@@ -1,7 +1,7 @@
 #ifndef LEMBALL_NETWORK_MESSAGES_CGAMEFLAGGEDMESSAGE_H
 #define LEMBALL_NETWORK_MESSAGES_CGAMEFLAGGEDMESSAGE_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 // SIZE 0x30
 enum eGameMessageId {

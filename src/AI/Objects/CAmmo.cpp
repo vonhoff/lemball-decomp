@@ -3,7 +3,7 @@
 #include "../../Control/Game/CGame.h"
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/VsTime.h"
+#include "Visos/Time/VsTime.h"
 #include "../Base/AIScoreConstants.h"
 #include "../Navigation/CAI.h"
 #include "AI/Base/AICOORD.h"

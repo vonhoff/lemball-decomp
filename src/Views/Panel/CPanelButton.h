@@ -3,9 +3,9 @@
 
 #include "../../AI/Base/ObjectTypes.h"
 #include "../../Visos/Animation/CAnim.h"
-#include "../../Visos/Foundation/CVSRect.h"
-#include "../../Visos/Graphics/CDepressedButton.h"
-#include "../../Visos/Graphics/CSolidRect.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Controls/CDepressedButton.h"
+#include "Visos/Graphics/Primitives/CSolidRect.h"
 
 class CPanelLemming;
 class CPVGWnd;

@@ -7,7 +7,7 @@
 #include "AI/Base/CGameObject.h"
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
-#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Math/CVSRect.h"
 
 #include <string.h>
 

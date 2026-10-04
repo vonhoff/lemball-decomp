@@ -1,6 +1,6 @@
 #include "CEntryHandler.h"
 
-#include "../../Visos/Foundation/Message.h"
+#include "Visos/Queues/Message.h"
 
 // FUNCTION: LEMBALL 0x00453250
 void CEntryHandler::Reset()

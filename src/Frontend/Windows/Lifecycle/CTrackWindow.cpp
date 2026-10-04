@@ -1,7 +1,7 @@
 #include "../CTrackWindow.h"
 
-#include "Visos/Graphics/CHotAreaList.h"
-#include "Visos/Graphics/CPVGWnd.h"
+#include "Visos/Controls/CHotAreaList.h"
+#include "Platform/Windows/Windowing/CPVGWnd.h"
 
 // FUNCTION: LEMBALL 0x0044e8c0
 CTrackWindow::~CTrackWindow()

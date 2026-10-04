@@ -5,10 +5,10 @@
 
 #include "../../Visos/Animation/CAnimsManager.h"
 #include "../../Visos/Animation/CStaticAnim.h"
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVSPoint.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Math/CVSPoint.h"
 #include "../../Visos/Foundation/tagPRIMS.h"
-#include "../../Visos/Graphics/CDrawer.h"
+#include "Visos/Windows/CDrawer.h"
 #include "../Support/CUserActionMessage.h"
 #include "../Support/CoordPair.h"
 #include "FlowProcesses.h"

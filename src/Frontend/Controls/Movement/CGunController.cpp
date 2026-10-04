@@ -1,7 +1,7 @@
 #include "../CGunController.h"
 
 #include "../../../Views/Sound/CSoundView.h"
-#include "../../../Visos/Foundation/VsTime.h"
+#include "Visos/Time/VsTime.h"
 #include "Frontend/Controls/GunControllerJunction.h"
 #include "Views/Sound/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"

@@ -1,8 +1,8 @@
 #include "Views/Pause/CPauseWindow.h"
 
-#include "Visos/Foundation/CBaseQueue.h"
-#include "Visos/Graphics/CHotAreaList.h"
-#include "Visos/Graphics/CPVGWnd.h"
+#include "Visos/Queues/CBaseQueue.h"
+#include "Visos/Controls/CHotAreaList.h"
+#include "Platform/Windows/Windowing/CPVGWnd.h"
 
 #include <stddef.h>
 

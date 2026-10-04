@@ -1,6 +1,6 @@
 #include "C3DVector.h"
 
-#include "../../Visos/Foundation/CFixed.h"
+#include "Visos/Math/CFixed.h"
 
 // FUNCTION: LEMBALL 0x0040c270
 C3DVector& C3DVector::operator=(const C3DVector& p_other)

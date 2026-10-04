@@ -18,7 +18,7 @@
 #include "AI/Base/Rect.h"
 #include "AI/Managers/CBaseObjectManager.h"
 #include "AI/Objects/SwitchEntry.h"
-#include "Visos/Foundation/FixedPoint.h"
+#include "Visos/Math/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x0041af60
 CObjectManager::CObjectManager(CAI* p_ai, int p_arg1)

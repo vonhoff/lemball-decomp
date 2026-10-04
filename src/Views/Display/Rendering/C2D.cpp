@@ -1,8 +1,8 @@
 #include "../C2D.h"
 
 #include "../../../Frontend/Resources/CFrontendResourceLoader.h"
-#include "../../../Visos/Graphics/CGDI.h"
-#include "../../../Visos/Graphics/CSurface.h"
+#include "Visos/Graphics/Primitives/CGDI.h"
+#include "Visos/Graphics/Surfaces/CSurface.h"
 #include "../../../Visos/Resources/Manifest.h"
 #include "../../Animation/CLemmingAnimsManager.h"
 #include "AI/Base/C3DVector.h"

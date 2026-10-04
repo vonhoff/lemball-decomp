@@ -1,7 +1,7 @@
 #include "../CSuccFailDrawer.h"
 
 #include "../../../Control/Game/CGameStatus.h"
-#include "../../../Visos/Foundation/CTextManager.h"
+#include "Visos/Text/CTextManager.h"
 #include "../../../Visos/Network/NetworkMode.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
@@ -9,12 +9,12 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "../../../Network/Game/CNetworkManager.h"
 #include "../../../Network/Messages/CNetworkGameMessage.h"
 #include "../../../Visos/Network/CConnect.h"
-#include "../../../Visos/Resources/CResFONT.h"
+#include "Visos/Resources/Types/CResFONT.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Support/CoordPair.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSSize.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSSize.h"
 
 #include <string.h>
 

@@ -28,8 +28,8 @@
 #include "AI/Base/CGameObject.h"
 #include "AI/Messages/GameMessageIds.h"
 #include "CViewData.h"
-#include "Visos/Foundation/RandomConstants.h"
-#include "Visos/Foundation/VsDebug.h"
+#include "Visos/Math/RandomConstants.h"
+#include "Visos/Diagnostics/VsDebug.h"
 
 #include <string.h>
 

@@ -15,7 +15,7 @@
 #include "AI/Messages/CGameObjectMess.h"
 #include "AI/Messages/GameMessageIds.h"
 #include "ObjectInteractionStates.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 #include <stddef.h>
 

@@ -17,23 +17,23 @@
 #include "../../Frontend/Resources/CFrontendResourceLoader.h"
 #include "../../Map/Base/CMap.h"
 #include "../../Network/Game/CNetworkManager.h"
-#include "../../Visos/Foundation/CBaseQueue.h"
+#include "Visos/Queues/CBaseQueue.h"
 #include "../../Visos/Foundation/CObjSq.h"
-#include "../../Visos/Foundation/CTextManager.h"
+#include "Visos/Text/CTextManager.h"
 #include "../../Visos/Foundation/CVSMath.h"
-#include "../../Visos/Foundation/VsSort.h"
-#include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Graphics/CBasePalManager.h"
-#include "../../Visos/Graphics/CCursor.h"
-#include "../../Visos/Graphics/CGDI.h"
-#include "../../Visos/Graphics/CHotAreaList.h"
-#include "../../Visos/Graphics/CSurface.h"
-#include "../../Visos/Graphics/CZRLE.h"
+#include "Visos/Sorting/VsSort.h"
+#include "Visos/Time/VsTime.h"
+#include "Visos/Graphics/Palettes/CBasePalManager.h"
+#include "Platform/Windows/Graphics/CCursor.h"
+#include "Visos/Graphics/Primitives/CGDI.h"
+#include "Visos/Controls/CHotAreaList.h"
+#include "Visos/Graphics/Surfaces/CSurface.h"
+#include "Visos/Graphics/Primitives/CZRLE.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/NetworkConstants.h"
 #include "../../Visos/Network/NetworkMode.h"
-#include "../../Visos/Resources/CResFONT.h"
-#include "../../Visos/Resources/CResPALETTE.h"
+#include "Visos/Resources/Types/CResFONT.h"
+#include "Visos/Resources/Types/CResPALETTE.h"
 #include "../../Visos/Resources/ResourceLimits.h"
 #include "../Animation/CLemmingAnimsManager.h"
 #include "../Input/CPadToButton.h"
@@ -46,7 +46,7 @@
 #include "CMain2DDisplay.h"
 #include "CPBButton.h"
 #include "Frontend/Base/FlowProcesses.h"
-#include "Visos/Foundation/FixedPoint.h"
+#include "Visos/Math/FixedPoint.h"
 
 #include <new.h>
 #include <string.h>
@@ -397,7 +397,7 @@ void C2D::UnRegisterRemaps()
 	}
 }
 
-#include "../../Visos/Graphics/CCursor.h"
+#include "Platform/Windows/Graphics/CCursor.h"
 
 // FUNCTION: LEMBALL 0x004364b0
 void C2D::CursorChangeType(int p_cursorType, int p_value)
@@ -3883,26 +3883,26 @@ void C2D::Draw(const CVSRect& p_rect)
 	m_frameTime += timeGetTime() - startTime;
 }
 
-#include "../../Visos/Foundation/CChangeList.h"
+#include "Visos/Graphics/Surfaces/CChangeList.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/C3DVector.h"
 #include "AI/Base/CGameObject.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/CVSSize.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Graphics/CBaseCursor.h"
-#include "Visos/Graphics/CBaseRemap.h"
-#include "Visos/Graphics/CClipRect.h"
-#include "Visos/Graphics/CCopyToBackBuff.h"
-#include "Visos/Graphics/CDrawingMark.h"
-#include "Visos/Graphics/CHotAreaHandler.h"
-#include "Visos/Graphics/CPopActive.h"
-#include "Visos/Graphics/CPushActive.h"
-#include "Visos/Graphics/CSolidRect.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/CVSSize.h"
+#include "Visos/Queues/Message.h"
+#include "Visos/Input/CBaseCursor.h"
+#include "Visos/Graphics/Palettes/CBaseRemap.h"
+#include "Visos/Graphics/Primitives/CClipRect.h"
+#include "Visos/Graphics/Primitives/CCopyToBackBuff.h"
+#include "Visos/Graphics/Primitives/CDrawingMark.h"
+#include "Visos/Controls/CHotAreaHandler.h"
+#include "Visos/Graphics/Primitives/CPopActive.h"
+#include "Visos/Graphics/Primitives/CPushActive.h"
+#include "Visos/Graphics/Primitives/CSolidRect.h"
 
 class CBaseQueueHandler;
 class CRemap;

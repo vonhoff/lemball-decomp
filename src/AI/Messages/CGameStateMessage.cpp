@@ -1,7 +1,7 @@
 #include "CGameStateMessage.h"
 
 #include "GameMessageIds.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00410b80
 CGameStateMessage::CGameStateMessage() : CNetworkMessage(MESSAGE_GAME_STATE)

@@ -1,6 +1,6 @@
 #include "Frontend/Resources/CFrontendResourceLoader.h"
 
-#include "Visos/Resources/CResPALETTE.h"
+#include "Visos/Resources/Types/CResPALETTE.h"
 
 #include <stddef.h>
 

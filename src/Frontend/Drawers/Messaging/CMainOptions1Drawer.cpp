@@ -5,8 +5,8 @@
 #include "../../../Views/Display/CMain2DDisplay.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Queues/Message.h"
 
 class CGWnd;
 

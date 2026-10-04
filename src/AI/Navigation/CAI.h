@@ -2,8 +2,8 @@
 #define LEMBALL_AI_NAVIGATION_CAI_H
 
 #include "../../Visos/Foundation/CBaseProcess.h"
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 #include "../../Visos/Network/NetworkMode.h"
 #include "../Base/AICOORD.h"
 #include "../Base/CPt3.h"

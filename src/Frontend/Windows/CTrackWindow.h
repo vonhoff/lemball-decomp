@@ -1,12 +1,12 @@
 #ifndef LEMBALL_FRONTEND_WINDOWS_CTRACKWINDOW_H
 #define LEMBALL_FRONTEND_WINDOWS_CTRACKWINDOW_H
 
-#include "../../Visos/Foundation/CVSPoint.h"
-#include "../../Visos/Foundation/CVSRect.h"
-#include "../../Visos/Graphics/CGWnd.h"
-#include "../../Visos/Graphics/CHotAreaHandler.h"
-#include "../../Visos/Graphics/CLine.h"
-#include "../../Visos/Graphics/CSolidRect.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Platform/Windows/Windowing/CGWnd.h"
+#include "Visos/Controls/CHotAreaHandler.h"
+#include "Visos/Graphics/Primitives/CLine.h"
+#include "Visos/Graphics/Primitives/CSolidRect.h"
 
 class CPVGWnd;
 // SIZE 0x134

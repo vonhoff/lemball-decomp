@@ -1,17 +1,17 @@
 #include "CWriteSocket.h"
 
-#include "../Messaging/CAckMessage.h"
-#include "../Messaging/CPulseMessage.h"
-#include "../Messaging/CWriteCBuff.h"
-#include "../Messaging/CWriteNcBuff.h"
-#include "../Messaging/CWritePacket.h"
+#include "Visos/Network/Protocol/CAckMessage.h"
+#include "Visos/Network/Protocol/CPulseMessage.h"
+#include "Visos/Network/Packets/CWriteCBuff.h"
+#include "Visos/Network/Packets/CWriteNcBuff.h"
+#include "Visos/Network/Packets/CWritePacket.h"
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
-#include "CTCPIPNetwork.h"
+#include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
 #include "NetworkConstants.h"
-#include "Visos/Messaging/BasePacketHeader.h"
-#include "Visos/Messaging/CBasePacketBuff.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Packets/BasePacketHeader.h"
+#include "Visos/Network/Packets/CBasePacketBuff.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 #include <new.h>
 #include <string.h>

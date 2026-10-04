@@ -2,17 +2,17 @@
 
 #include "../../Control/Game/CGame.h"
 #include "../../Visos/Foundation/CVSMath.h"
-#include "../../Visos/Foundation/CVSRect.h"
-#include "../../Visos/Foundation/VSTrig.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/VSTrig.h"
 #include "../Navigation/CAI.h"
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/CGameObject.h"
 #include "AI/Groups/CGenericGroup.h"
 #include "AI/Objects/CViewData.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CFixed.h"
-#include "Visos/Foundation/CVector.h"
-#include "Visos/Foundation/RandomConstants.h"
+#include "Visos/Math/CFixed.h"
+#include "Visos/Math/CVector.h"
+#include "Visos/Math/RandomConstants.h"
 
 #include <stddef.h>
 

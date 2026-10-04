@@ -1,6 +1,6 @@
 #include "Frontend/Resources/CFrontendResourceLoader.h"
 
-#include "Visos/Resources/CResSTRING.h"
+#include "Visos/Resources/Types/CResSTRING.h"
 
 #include <stddef.h>
 

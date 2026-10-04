@@ -7,7 +7,10 @@
 // VTABLE: LEMBALL 0x00496d20
 class CPlayThruAnim : public CTimedAnim {
 public:
-	CPlayThruAnim(unsigned int p_frames = 0, int p_direction = ANIMATION_DIRECTION_BACKWARD) : CTimedAnim(p_frames, p_direction) {}
+	CPlayThruAnim(unsigned int p_frames = 0, int p_direction = ANIMATION_DIRECTION_BACKWARD)
+		: CTimedAnim(p_frames, p_direction)
+	{
+	}
 	virtual unsigned int GetFrameNo();                // vtable+0x00
 	virtual void StartAnim(unsigned long p_animTime); // vtable+0x04
 };

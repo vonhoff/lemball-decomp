@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_GROUPS_CGENERICGROUP_H
 #define LEMBALL_AI_GROUPS_CGENERICGROUP_H
 
-#include "../../Visos/Foundation/CVSRect.h"
+#include "Visos/Math/CVSRect.h"
 #include "../Base/AICOORD.h"
 #include "../Base/CGameObject.h"
 

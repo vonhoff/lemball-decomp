@@ -2,14 +2,14 @@
 #define LEMBALL_VIEWS_PAUSE_CPAUSEWINDOW_H
 
 #include "../../Visos/Animation/CAnim.h"
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CTextManager.h"
-#include "../../Visos/Foundation/CVSPoint.h"
-#include "../../Visos/Foundation/CVSRect.h"
-#include "../../Visos/Foundation/CVSSize.h"
-#include "../../Visos/Graphics/CGWnd.h"
-#include "../../Visos/Graphics/CHotAreaHandler.h"
-#include "../../Visos/Graphics/CSolidRect.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Text/CTextManager.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/CVSSize.h"
+#include "Platform/Windows/Windowing/CGWnd.h"
+#include "Visos/Controls/CHotAreaHandler.h"
+#include "Visos/Graphics/Primitives/CSolidRect.h"
 #include "CPauseVramHandler.h"
 
 class CBaseRemap;

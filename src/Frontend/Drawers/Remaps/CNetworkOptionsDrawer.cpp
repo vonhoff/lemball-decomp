@@ -1,10 +1,10 @@
 #include "../CNetworkOptionsDrawer.h"
 
 #include "../../../Views/Display/CMain2DDisplay.h"
-#include "../../../Visos/Graphics/CBasePalManager.h"
+#include "Visos/Graphics/Palettes/CBasePalManager.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Graphics/CBaseRemap.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Graphics/Palettes/CBaseRemap.h"
 
 class CRemap;
 

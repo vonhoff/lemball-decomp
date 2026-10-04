@@ -1,7 +1,7 @@
 #include "CSoundManager.h"
 
-#include "../Foundation/VsSound.h"
-#include "../Resources/CResEFFECT.h"
+#include "VsSound.h"
+#include "Visos/Resources/Types/CResEFFECT.h"
 #include "CBaseSoundDevice.h"
 #include "CPVMusicDevice.h"
 
@@ -429,8 +429,8 @@ void CSoundManager::UseMusicCD(unsigned int p_enabled)
 	m_musicDevice->m_useCdDirectory = p_enabled;
 }
 
-#include "../Foundation/CDebugOStream.h"
-#include "Visos/Foundation/CVSOStream.h"
+#include "Visos/Diagnostics/CDebugOStream.h"
+#include "Visos/Streams/CVSOStream.h"
 
 // GLOBAL: LEMBALL 0x004a1ca8
 char g_szEffectsDriverPrefix[12] = "Effects : ";

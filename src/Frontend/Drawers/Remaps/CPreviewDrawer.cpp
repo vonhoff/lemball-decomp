@@ -1,9 +1,9 @@
 #include "../CPreviewDrawer.h"
 
-#include "../../../Visos/Graphics/CBasePalManager.h"
-#include "../../../Visos/Resources/CResPALETTE.h"
+#include "Visos/Graphics/Palettes/CBasePalManager.h"
+#include "Visos/Resources/Types/CResPALETTE.h"
 #include "../../../Visos/Resources/Manifest.h"
-#include "Visos/Graphics/CBaseRemap.h"
+#include "Visos/Graphics/Palettes/CBaseRemap.h"
 
 class CGWnd;
 class CRemap;

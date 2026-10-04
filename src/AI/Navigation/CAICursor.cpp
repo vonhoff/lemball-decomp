@@ -1,8 +1,8 @@
 #include "CAICursor.h"
 
-#include "../../Visos/Foundation/CBaseQueue.h"
+#include "Visos/Queues/CBaseQueue.h"
 #include "CAI.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Queues/Message.h"
 
 // FUNCTION: LEMBALL 0x00414da0
 CAICursor::CAICursor(CAI* p_ai, int p_maximumX, int p_maximumY)

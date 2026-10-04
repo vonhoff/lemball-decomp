@@ -17,10 +17,10 @@
 #include "CBullet.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/CVSSize.h"
-#include "Visos/Foundation/RandomConstants.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/CVSSize.h"
+#include "Visos/Math/RandomConstants.h"
 
 enum {
 	ENEMY_HIT_RESPONSE_DELAY_TICKS = 60

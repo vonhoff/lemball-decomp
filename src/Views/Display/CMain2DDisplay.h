@@ -2,10 +2,10 @@
 #define LEMBALL_VIEWS_DISPLAY_CMAIN2DDISPLAY_H
 
 #include "../../Frontend/Base/FlowProcesses.h"
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVSRect.h"
-#include "../../Visos/Graphics/CDrawingMark.h"
-#include "../../Visos/Graphics/CGWnd.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Graphics/Primitives/CDrawingMark.h"
+#include "Platform/Windows/Windowing/CGWnd.h"
 
 enum {
 	DISPLAY_COORDINATE_AUTO_CENTER = -1

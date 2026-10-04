@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 
-#include "../../Visos/Foundation/CVSPoint.h"
-#include "../../Visos/Graphics/CBigBitmap.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Graphics/Primitives/CBigBitmap.h"
 #include "../Base/CBaseFrontendDrawer.h"
 #include "../Support/CoordPair.h"
 #include "../Windows/CSuccFailAnimWnd.h"

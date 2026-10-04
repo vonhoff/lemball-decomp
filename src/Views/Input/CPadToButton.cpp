@@ -1,10 +1,10 @@
 #include "CPadToButton.h"
 
-#include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Graphics/CPVButton.h"
+#include "Visos/Queues/CBaseQueue.h"
+#include "Visos/Controls/CPVButton.h"
 #include "PadToButtonEntry.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Queues/Message.h"
 
 #include <stddef.h>
 

@@ -1,7 +1,7 @@
 #include "CGodManager.h"
 
-#include "../../Visos/Messaging/BasePacketHeader.h"
-#include "../../Visos/Messaging/CReadPacket.h"
+#include "Visos/Network/Packets/BasePacketHeader.h"
+#include "Visos/Network/Packets/CReadPacket.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CConnect.h"
 #include "../Base/CGlobalGameObject.h"

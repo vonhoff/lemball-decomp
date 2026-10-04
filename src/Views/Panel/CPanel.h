@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VIEWS_PANEL_CPANEL_H
 #define LEMBALL_VIEWS_PANEL_CPANEL_H
 
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/CVSPoint.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Math/CVSPoint.h"
 
 class CAI;
 class C2D;

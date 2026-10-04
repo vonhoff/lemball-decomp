@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MESSAGES_CGAMESTATEMESSAGE_H
 #define LEMBALL_AI_MESSAGES_CGAMESTATEMESSAGE_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 enum eGameStates {
 	GAME_STATE_PAUSED = 0,

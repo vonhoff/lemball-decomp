@@ -1,6 +1,6 @@
 #include "Frontend/Resources/CFrontendResourceLoader.h"
 
-#include "Visos/Resources/CResBITMAP.h"
+#include "Visos/Resources/Types/CResBITMAP.h"
 
 #include <stddef.h>
 

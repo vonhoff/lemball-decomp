@@ -1,7 +1,9 @@
 #ifndef LEMBALL_PLATFORM_WINDOWS_THREAD_H
 #define LEMBALL_PLATFORM_WINDOWS_THREAD_H
 
-enum eThreadWaitTimeout { THREAD_WAIT_INFINITE = 0xffffffff };
+enum eThreadWaitTimeout {
+	THREAD_WAIT_INFINITE = 0xffffffff
+};
 
 extern "C" __declspec(dllimport) void* __stdcall CreateThread(void* p_security,
 															  unsigned int p_stack,

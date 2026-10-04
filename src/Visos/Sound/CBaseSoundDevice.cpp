@@ -18,7 +18,9 @@ CBaseSoundDevice::~CBaseSoundDevice()
 // FUNCTION: LEMBALL 0x0047f980
 unsigned char CBaseSoundDevice::GetMasterVolume()
 {
-	enum { SOUND_VOLUME_MAX = 0xff };
+	enum {
+		SOUND_VOLUME_MAX = 0xff
+	};
 	return SOUND_VOLUME_MAX;
 }
 
@@ -30,7 +32,9 @@ void CBaseSoundDevice::SetMasterVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047f9a0
 unsigned char CBaseSoundDevice::GetMusicVolume()
 {
-	enum { SOUND_VOLUME_MAX = 0xff };
+	enum {
+		SOUND_VOLUME_MAX = 0xff
+	};
 	return SOUND_VOLUME_MAX;
 }
 
@@ -42,7 +46,9 @@ void CBaseSoundDevice::SetMusicVolume(unsigned char p_volume)
 // FUNCTION: LEMBALL 0x0047f9c0
 unsigned char CBaseSoundDevice::GetEffectVolume()
 {
-	enum { SOUND_VOLUME_MAX = 0xff };
+	enum {
+		SOUND_VOLUME_MAX = 0xff
+	};
 	return SOUND_VOLUME_MAX;
 }
 

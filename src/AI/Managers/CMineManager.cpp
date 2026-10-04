@@ -7,7 +7,7 @@
 #include "AI/Base/AICOORD.h"
 #include "AI/Base/LevelVersions.h"
 #include "AI/Managers/CBaseObjectManager.h"
-#include "Visos/Foundation/FixedPoint.h"
+#include "Visos/Math/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x00424020
 CMineManager::CMineManager(CAI* p_ai, int p_capacity)

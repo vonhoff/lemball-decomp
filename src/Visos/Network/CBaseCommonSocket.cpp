@@ -1,6 +1,6 @@
 #include "CBaseCommonSocket.h"
 
-#include "CTCPIPNetwork.h"
+#include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
 #include "NetworkConstants.h"
 
 // FUNCTION: LEMBALL 0x0045f680

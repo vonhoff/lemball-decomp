@@ -1,6 +1,6 @@
 #include "CBaseSocket.h"
 
-#include "../Messaging/BasePacketHeader.h"
+#include "Visos/Network/Packets/BasePacketHeader.h"
 
 // FUNCTION: LEMBALL 0x0045f750
 CBaseSocket::CBaseSocket()

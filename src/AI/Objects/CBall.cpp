@@ -4,7 +4,7 @@
 #include "../../Control/Game/GameTime.h"
 #include "../../Map/Base/CMap.h"
 #include "../../Visos/Foundation/CVSMath.h"
-#include "../../Visos/Foundation/CVector.h"
+#include "Visos/Math/CVector.h"
 #include "../Base/CMovementInterpolation.h"
 #include "../Base/CPt3.h"
 #include "../Managers/CBallManager.h"

@@ -1,17 +1,17 @@
 #include "CNetworkManager.h"
 
-#include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Foundation/VsInit.h"
-#include "../../Visos/Foundation/VsTime.h"
-#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Queues/CBaseQueue.h"
+#include "Visos/Startup/VsInit.h"
+#include "Visos/Time/VsTime.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 #include "../../Visos/Network/CBaseNetwork.h"
 #include "../../Visos/Network/CBroadcast.h"
 #include "../../Visos/Network/CConnect.h"
-#include "../../Visos/Network/CFileNetwork.h"
+#include "Platform/Windows/FileTransport/CFileNetwork.h"
 #include "../Messages/CGameRejectMessage.h"
 #include "../Messages/CNetworkGameMessage.h"
 #include "CNetworkGameStage.h"
-#include "Visos/Foundation/CBaseQueueHandler.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
 #include "Visos/Network/CReadSocket.h"
 #include "Visos/Network/NetworkConstants.h"
 
@@ -123,10 +123,10 @@ void CNetworkManager::Stop()
 
 #include "../../Frontend/Base/CBaseFrontendDrawer.h"
 #include "../../Frontend/Processes/CNetworkOptionsProc.h"
-#include "../../Visos/Foundation/CVSOStream.h"
-#include "../../Visos/Foundation/Message.h"
-#include "../../Visos/Messaging/BasePacketHeader.h"
-#include "../../Visos/Messaging/CReadPacket.h"
+#include "Visos/Streams/CVSOStream.h"
+#include "Visos/Queues/Message.h"
+#include "Visos/Network/Packets/BasePacketHeader.h"
+#include "Visos/Network/Packets/CReadPacket.h"
 
 extern char* g_szGameName;
 extern char g_szNetworkGameName[16];

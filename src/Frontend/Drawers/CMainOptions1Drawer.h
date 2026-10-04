@@ -2,8 +2,8 @@
 #define LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS1DRAWER_H
 
 #include "../../Visos/Foundation/CBaseProcess.h"
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/VsTime.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Time/VsTime.h"
 #include "../Base/CBaseFrontendDrawer.h"
 
 #define MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS 0xacef0001

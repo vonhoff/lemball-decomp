@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_GROUPS_CFORMATIONMANAGER_H
 #define LEMBALL_AI_GROUPS_CFORMATIONMANAGER_H
 
-#include "../../Visos/Foundation/CVector.h"
+#include "Visos/Math/CVector.h"
 
 // SIZE 0x104
 class CFormationManager {

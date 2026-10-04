@@ -1,7 +1,7 @@
 #include "Frontend/Drawers/CNetworkOptionsDrawer.h"
 
 #include "Frontend/Base/CBaseFrontendDrawer.h"
-#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Math/CVSRect.h"
 
 // FUNCTION: LEMBALL 0x004536b0
 void CNetworkOptionsDrawer::DrawFrame(int p_position)

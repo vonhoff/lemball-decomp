@@ -1,8 +1,8 @@
 #include "CAnim.h"
 
-#include "../Graphics/CGDI.h"
-#include "../Graphics/CSurface.h"
-#include "../Resources/CResANIM.h"
+#include "Visos/Graphics/Primitives/CGDI.h"
+#include "Visos/Graphics/Surfaces/CSurface.h"
+#include "Visos/Resources/Types/CResANIM.h"
 class CResZRLE;
 
 // FUNCTION: LEMBALL 0x00443990

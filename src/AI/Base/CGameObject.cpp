@@ -12,7 +12,7 @@
 #include "CPt3.h"
 #include "ObjectInteractionStates.h"
 #include "Solution.h"
-#include "Visos/Foundation/RandomConstants.h"
+#include "Visos/Math/RandomConstants.h"
 
 #include <string.h>
 
@@ -1095,7 +1095,7 @@ bool CGameObject::Fall()
 #include "AI/Base/ObjectTypes.h"
 #include "Map/Ground/CGround.h"
 #include "Map/Ground/CGroundArray.h"
-#include "Visos/Foundation/CVSRect.h"
+#include "Visos/Math/CVSRect.h"
 #include "tCoord3d.h"
 
 // FUNCTION: LEMBALL 0x00416340

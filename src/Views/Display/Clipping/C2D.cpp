@@ -5,9 +5,9 @@
 #include "AI/Navigation/CAI.h"
 #include "Control/Game/GameMain.h"
 #include "Map/Base/CMap.h"
-#include "Visos/Foundation/CFixed.h"
+#include "Visos/Math/CFixed.h"
 #include "Visos/Foundation/CObjSq.h"
-#include "Visos/Foundation/FixedPoint.h"
+#include "Visos/Math/FixedPoint.h"
 
 #include <string.h>
 

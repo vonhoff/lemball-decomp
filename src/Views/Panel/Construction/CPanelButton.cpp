@@ -4,28 +4,30 @@
 #include "../../../AI/Groups/CPlayerLemmingGroupManager.h"
 #include "../../../AI/Navigation/CAI.h"
 #include "../../../AI/Objects/CPlayerLemming.h"
-#include "../../../Visos/Graphics/CGDI.h"
-#include "../../../Visos/Graphics/CHotAreaList.h"
-#include "../../../Visos/Graphics/CSurface.h"
+#include "Visos/Graphics/Primitives/CGDI.h"
+#include "Visos/Controls/CHotAreaList.h"
+#include "Visos/Graphics/Surfaces/CSurface.h"
 #include "../../Display/C2D.h"
 #include "../CPanel.h"
 #include "../CPanelLemming.h"
 #include "AI/Base/ObjectActions.h"
 #include "AI/Base/ObjectTypes.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/CVSSize.h"
-#include "Visos/Graphics/CBaseCursor.h"
-#include "Visos/Graphics/CDepressedButton.h"
-#include "Visos/Graphics/CGWnd.h"
-#include "Visos/Graphics/CPVGWnd.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/CVSSize.h"
+#include "Visos/Input/CBaseCursor.h"
+#include "Visos/Controls/CDepressedButton.h"
+#include "Platform/Windows/Windowing/CGWnd.h"
+#include "Platform/Windows/Windowing/CPVGWnd.h"
 
 class CRemap;
 class CResANIM;
 
 extern char g_szButton[];
 
-enum eAmmoCountCacheState { AMMO_COUNT_CACHE_UNSET = 0xffffffff };
+enum eAmmoCountCacheState {
+	AMMO_COUNT_CACHE_UNSET = 0xffffffff
+};
 
 // FUNCTION: LEMBALL 0x00442390
 CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVGWnd* p_parent)

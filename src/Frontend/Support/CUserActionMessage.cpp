@@ -1,7 +1,7 @@
 #include "CUserActionMessage.h"
 
 #include "../../Network/Messages/CGameFlaggedMessage.h"
-#include "Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x004453b0
 CUserActionMessage::CUserActionMessage() : CNetworkMessage(GAME_MESSAGE_USER_ACTION)

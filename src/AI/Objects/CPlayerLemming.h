@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 #define LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 
-#include "../../Visos/Messaging/CNetworkMessage.h"
+#include "Visos/Network/Protocol/CNetworkMessage.h"
 #include "../Base/AICOORD.h"
 #include "../Base/CGlobalGameObject.h"
 #include "AI/Base/ObjectActions.h"

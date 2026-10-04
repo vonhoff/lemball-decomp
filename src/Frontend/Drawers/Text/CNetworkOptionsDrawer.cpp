@@ -2,15 +2,15 @@
 
 #include "../../../Network/Game/CNetworkManager.h"
 #include "../../../Network/Messages/CNetworkGameMessage.h"
-#include "../../../Visos/Foundation/CTextManager.h"
+#include "Visos/Text/CTextManager.h"
 #include "../../../Visos/Network/CConnect.h"
 #include "../../../Visos/Network/CNetworkAddress.h"
-#include "../../../Visos/Resources/CResFONT.h"
+#include "Visos/Resources/Types/CResFONT.h"
 #include "../../Processes/CNetworkOptionsProc.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/CBaseFrontendProcess.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSSize.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSSize.h"
 
 #include <string.h>
 

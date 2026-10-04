@@ -2,15 +2,15 @@
 
 #include "../../AI/Navigation/CAI.h"
 #include "../../Map/Base/CMap.h"
-#include "../../Visos/Foundation/CBaseQueue.h"
-#include "../../Visos/Foundation/CFixed.h"
-#include "../../Visos/Foundation/CVSPoint.h"
-#include "../../Visos/Foundation/VsTime.h"
+#include "Visos/Queues/CBaseQueue.h"
+#include "Visos/Math/CFixed.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Time/VsTime.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Animation/CLemmingAnimsManager.h"
-#include "Visos/Foundation/FixedPoint.h"
-#include "Visos/Foundation/Message.h"
-#include "Visos/Foundation/VsDebug.h"
+#include "Visos/Math/FixedPoint.h"
+#include "Visos/Queues/Message.h"
+#include "Visos/Diagnostics/VsDebug.h"
 
 #include <string.h>
 

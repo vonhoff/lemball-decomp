@@ -6,8 +6,8 @@
 #include "../../Visos/Animation/CPlayThruAnim.h"
 #include "../../Visos/Animation/CRepeatAnim.h"
 #include "../../Visos/Animation/CStaticAnim.h"
-#include "../../Visos/Resources/CMogRes.h"
-#include "../../Visos/Resources/CResFONT.h"
+#include "Visos/Resources/Archive/CMogRes.h"
+#include "Visos/Resources/Types/CResFONT.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Display/CMain2DDisplay.h"
 #include "../Sound/CSoundView.h"
@@ -15,7 +15,7 @@
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CFrames.h"
 #include "Visos/Animation/CTimedAnim.h"
-#include "Visos/Foundation/CVSPoint.h"
+#include "Visos/Math/CVSPoint.h"
 #include "Visos/Resources/ResourceLimits.h"
 
 #include <stddef.h>

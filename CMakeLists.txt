@@ -3,9 +3,25 @@ project(lemball_decomp CXX)
 
 option(LEMBALL_ENFORCE_STARTUP_CHECKS "Enforce the reconstructed CD and installation checks" ON)
 
-file(GLOB_RECURSE LEMBALL_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+# MSVC 4.00 register allocation depends on include spelling even with identical
+# preprocessed tokens. Keep compiler identities and link order stable on moves.
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+execute_process(
+    COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/tools/stage_sources.py"
+        --root "${CMAKE_CURRENT_SOURCE_DIR}" --build "${CMAKE_BINARY_DIR}"
+    RESULT_VARIABLE _lemball_stage_result
+)
+if(NOT _lemball_stage_result EQUAL 0)
+    message(FATAL_ERROR "Failed to prepare MSVC source inputs")
+endif()
+include("${CMAKE_BINARY_DIR}/compiler-sources.cmake")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    ${LEMBALL_SOURCE_INPUTS}
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/source-layout.json"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tools/stage_sources.py"
+)
 
-set(LEMBALL_RC "${CMAKE_CURRENT_SOURCE_DIR}/src/LEMBALL.RC")
+set(LEMBALL_RC "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Windows/Resources/LEMBALL.RC")
 set(LEMBALL_RESOURCE "${CMAKE_BINARY_DIR}/LEMBALL.RES")
 get_filename_component(_lemball_cl_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
 get_filename_component(_lemball_msvc_root "${_lemball_cl_dir}" DIRECTORY)
@@ -21,7 +37,7 @@ set_source_files_properties("${LEMBALL_RESOURCE}" PROPERTIES
 )
 
 add_executable(LEMBALL WIN32 ${LEMBALL_SOURCES} ${LEMBALL_RESOURCE})
-target_include_directories(LEMBALL PRIVATE src)
+target_include_directories(LEMBALL PRIVATE "${CMAKE_BINARY_DIR}/compiler-src")
 target_compile_definitions(LEMBALL PRIVATE
     LEMBALL_1996_CXX=1
     LEMBALL_ENFORCE_STARTUP_CHECKS=$<BOOL:${LEMBALL_ENFORCE_STARTUP_CHECKS}>

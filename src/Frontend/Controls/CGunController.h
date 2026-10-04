@@ -3,9 +3,9 @@
 
 #include "../../Visos/Animation/CAnimsManager.h"
 #include "../../Visos/Animation/CStaticAnim.h"
-#include "../../Visos/Foundation/CBaseQueueHandler.h"
-#include "../../Visos/Foundation/Message.h"
-#include "../../Visos/Graphics/CClipRect.h"
+#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Visos/Queues/Message.h"
+#include "Visos/Graphics/Primitives/CClipRect.h"
 #include "GunControllerJunction.h"
 
 class CGWnd;

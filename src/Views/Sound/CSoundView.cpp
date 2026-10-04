@@ -11,8 +11,8 @@
 #include "../../Visos/Sound/CSoundManager.h"
 #include "Views/Sound/CLoadUpdate.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/FixedPoint.h"
-#include "Visos/Foundation/RandomConstants.h"
+#include "Visos/Math/FixedPoint.h"
+#include "Visos/Math/RandomConstants.h"
 
 #include <stddef.h>
 

@@ -6,7 +6,7 @@
 #include "Network/Game/CNetworkManager.h"
 #include "Views/Sound/CSoundView.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/VsTime.h"
+#include "Visos/Time/VsTime.h"
 #include "Visos/Network/CConnect.h"
 #include "Visos/Network/CNetworkAddress.h"
 

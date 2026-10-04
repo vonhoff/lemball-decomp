@@ -2,7 +2,7 @@
 
 #include "../../Control/Game/CGame.h"
 #include "AI/Base/AICOORD.h"
-#include "Visos/Foundation/FixedPoint.h"
+#include "Visos/Math/FixedPoint.h"
 
 #include <stdlib.h>
 

@@ -5,12 +5,12 @@
 #include "../../Control/Level/CLevelLoader.h"
 #include "../../Views/Display/CMain2DDisplay.h"
 #include "../../Views/Sound/CSoundView.h"
-#include "../../Visos/Animation/CStatManager.h"
-#include "../../Visos/Foundation/CArena.h"
-#include "../../Visos/Foundation/CTextManager.h"
-#include "../../Visos/Foundation/CVSOStream.h"
+#include "Visos/Statistics/CStatManager.h"
+#include "Visos/Memory/CArena.h"
+#include "Visos/Text/CTextManager.h"
+#include "Visos/Streams/CVSOStream.h"
 #include "../../Visos/Network/NetworkMode.h"
-#include "../../Visos/Resources/CResBITMAP.h"
+#include "Visos/Resources/Types/CResBITMAP.h"
 #include "../../Visos/Resources/Manifest.h"
 #include "../Base/CBaseFrontendProcess.h"
 #include "../Controls/CHiliteController.h"
@@ -19,18 +19,18 @@
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-#include "../../Visos/Graphics/CBigBitmap.h"
+#include "Visos/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/Base/CBaseFrontendDrawer.h"
 #include "Frontend/Base/FlowProcesses.h"
 #include "Frontend/Support/CoordPair.h"
 #include "Frontend/Windows/CSuccFailAnimWnd.h"
 #include "Views/Sound/SoundEffects.h"
-#include "Visos/Foundation/CVSPoint.h"
-#include "Visos/Foundation/CVSRect.h"
-#include "Visos/Foundation/CVSSize.h"
-#include "Visos/Foundation/Message.h"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/CVSSize.h"
+#include "Visos/Queues/Message.h"
 #include "Visos/Foundation/tagPRIMS.h"
-#include "Visos/Graphics/CPVGWnd.h"
+#include "Platform/Windows/Windowing/CPVGWnd.h"
 
 class CGWnd;
 
