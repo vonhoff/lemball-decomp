@@ -42,15 +42,13 @@ bool CGroundAnim::CheckAllAnims()
 		if (active != 0) {
 			switch (m_entries[index].m_mapCell->m_objectType) {
 			case TERRAIN_ANIM:
+			case TERRAIN_CONVEYOR_VARIANT_A:
+			case TERRAIN_CONVEYOR_VARIANT_B:
 				active = 1;
 				break;
 			case TERRAIN_FLAME:
 			case TERRAIN_ELECTRIC:
 				active = 0;
-				break;
-			case TERRAIN_CONVEYOR_VARIANT_A:
-			case TERRAIN_CONVEYOR_VARIANT_B:
-				active = 1;
 				break;
 			default: {
 				int next = index + 1;
