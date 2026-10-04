@@ -5,7 +5,7 @@
 #include "Map/CMap.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Geometry/tCoord3d.h"
-#include "GroundAnimEntry.h"
+#include "Gameplay/Animation/CGroundAnim.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 

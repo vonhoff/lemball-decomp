@@ -4,7 +4,15 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/CGameObject.h"
-#include "StateEntry.h"
+#include "Gameplay/Objects/ObjectActions.h"
+
+// SIZE 0x10
+struct StateEntry {
+	void* m_predicate;      // 0x00
+	void* m_actionFunction; // 0x04
+	eAction m_nextAction;   // 0x08
+	int m_actionArgument;   // 0x0c
+};
 #include "Application/SoundEffects.h"
 
 #include <stddef.h>

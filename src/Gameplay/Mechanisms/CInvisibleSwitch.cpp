@@ -10,7 +10,7 @@
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Geometry/tCoord3d.h"
-#include "InvisibleSwitchTarget.h"
+#include "Gameplay/Mechanisms/CInvisibleSwitch.h"
 #include "SwitchEntry.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"

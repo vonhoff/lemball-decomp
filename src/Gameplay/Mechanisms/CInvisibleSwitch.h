@@ -3,7 +3,11 @@
 
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Geometry/tCoord3d.h"
-#include "InvisibleSwitchTarget.h"
+// SIZE 0x08
+struct InvisibleSwitchTarget {
+	unsigned int m_message;    // 0x00
+	unsigned short m_objectId; // 0x04
+};
 
 class AICOORD;
 class CGameObject;
