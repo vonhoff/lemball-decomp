@@ -3,12 +3,18 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/PackParam.h"
-#include "CHotAreaElement.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Queues/Message.h"
 #include "CHotAreaHandler.h"
 
 #include <stddef.h>
+
+// SIZE 0x0c
+struct CHotAreaElement {
+	CHotAreaHandler* m_handler;  // 0x00
+	CHotAreaElement* m_previous; // 0x04
+	CHotAreaElement* m_next;     // 0x08
+};
 
 class CBaseQueueHandler;
 

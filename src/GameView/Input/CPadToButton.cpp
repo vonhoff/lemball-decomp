@@ -2,11 +2,16 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Controls/CPVButton.h"
-#include "PadToButtonEntry.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Queues/Message.h"
 
 #include <stddef.h>
+
+// SIZE 0x08
+struct PadToButtonEntry {
+	CPVButton* m_button;    // 0x00
+	unsigned int m_padCode; // 0x04
+};
 
 // FUNCTION: LEMBALL 0x0043a250
 CPadToButton::CPadToButton(int p_entryCapacity)

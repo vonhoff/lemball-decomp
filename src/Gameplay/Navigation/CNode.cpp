@@ -2,9 +2,14 @@
 
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
-#include "NodeNeighbour.h"
 
 #include <stddef.h>
+
+// SIZE 0x08
+struct NodeNeighbour {
+	int m_node; // 0x00
+	int m_cost; // 0x04
+};
 
 enum {
 	NODE_UNINITIALIZED_FIXED_COORDINATE = 0xaa55aa55
