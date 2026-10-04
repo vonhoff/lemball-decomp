@@ -118,7 +118,7 @@ void CFileConnect::ConnectSetup()
 	unsigned int packetBytes = CFileCommonSocket::m_headerSlotCount * g_networkPacketSize;
 	unsigned int requiredSize = CFileReadSocket::m_dataOffset + packetBytes;
 	unsigned int writeSize = CFileWriteSocket::m_dataOffset + packetBytes;
-	if (requiredSize < writeSize) {
+	if (writeSize > requiredSize) {
 		requiredSize = writeSize;
 	}
 
