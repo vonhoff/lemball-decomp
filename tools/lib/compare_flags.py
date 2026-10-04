@@ -1,4 +1,4 @@
-"""Operand-order equivalence for comparisons whose flags do not escape."""
+"""Operand-order and zero-test equivalence with proven flag lifetimes."""
 
 import re
 
@@ -18,6 +18,7 @@ REVERSED_BRANCH = {
     "jne": "jne",
 }
 REGISTER = re.compile(r"e?(?:ax|bx|cx|dx|si|di|sp|bp)|[abcd][lh]")
+REGISTER32 = re.compile(r"e(?:ax|bx|cx|dx|si|di|sp|bp)")
 MEMORY = re.compile(r"(?:byte|word|dword) ptr \[[^\[\],]+]")
 FLAG_WRITERS = {"cmp", "add", "sub", "neg"}
 LOGICAL_WRITERS = {"and", "or", "xor", "test"}
@@ -92,15 +93,38 @@ def prefix_overwrites_flags(data, start):
     return _flags_overwritten(instructions, start)
 
 
+def _zero_registers_before(instructions, targets):
+    """Track XOR-zeroed registers only through contiguous, single-entry MOVs."""
+    known = set()
+    before = {}
+    next_address = None
+    for address, size, mnemonic, operands in instructions.values():
+        if address != next_address or address in targets:
+            known.clear()
+        before[address] = known.copy()
+        raw = operands.split(", ")
+        if len(raw) == 2 and REGISTER32.fullmatch(raw[0]):
+            if mnemonic == "xor" and raw[0] == raw[1]:
+                known.add(raw[0])
+            elif mnemonic == "mov":
+                known.discard(raw[0])
+            else:
+                known.clear()
+        elif mnemonic != "nop":
+            known.clear()
+        next_address = address + size
+    return before
+
+
 def _guarded_pair(
-    instruction, instructions, targets, check_call, lines
+    instruction, instructions, targets, check_call, lines, zero_registers
 ) -> tuple[list[str], tuple] | None:
-    """Accept CMP/Jcc pairs with one entry and dead outgoing flags."""
+    """Accept CMP/TEST and Jcc with one entry and dead outgoing flags."""
     address, size, mnemonic, operands = instruction
-    if mnemonic != "cmp":
+    if mnemonic not in ("cmp", "test"):
         return None
     raw = operands.split(", ")
-    compared = lines[address].removeprefix("cmp ").split(", ")
+    compared = lines[address].partition(" ")[2].split(", ")
     if len(raw) != 2 or len(compared) != 2:
         return None
     if not any(REGISTER.fullmatch(operand) for operand in raw):
@@ -109,6 +133,15 @@ def _guarded_pair(
         REGISTER.fullmatch(operand) or MEMORY.fullmatch(operand) for operand in raw
     ):
         return None
+    if mnemonic == "test":
+        if raw[0] != raw[1] or not REGISTER32.fullmatch(raw[0]):
+            return None
+        compared = [compared[0], "0"]
+    elif all(REGISTER32.fullmatch(operand) for operand in raw):
+        if raw[1] in zero_registers[address]:
+            compared = [compared[0], "0"]
+        elif raw[0] in zero_registers[address]:
+            compared = ["0", compared[1]]
     branch = instructions.get(address + size)
     while branch is not None and branch[2] in FLAG_PRESERVERS:
         if branch[0] in targets:
@@ -141,10 +174,13 @@ def normalize_compare_branches(asm, sections, check_call=None):
     if not indirect_jumps_use_tables(instructions.values(), tables):
         return asm
     targets = control_flow_targets(sections, instructions)
+    zero_registers = _zero_registers_before(instructions, targets)
     lines = dict(asm)
     replacements = {}
     for address, instruction in instructions.items():
-        pair = _guarded_pair(instruction, instructions, targets, check_call, lines)
+        pair = _guarded_pair(
+            instruction, instructions, targets, check_call, lines, zero_registers
+        )
         if pair is None:
             continue
         operands, branch = pair

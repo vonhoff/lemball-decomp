@@ -370,6 +370,62 @@ class ThunkTests(unittest.TestCase):
                     {},
                 )
 
+    def test_xor_zero_register_comparison_can_match_self_test(self):
+        for comparison, branch in (("3bfe", "7e"), ("3bf7", "7d")):
+            with self.subTest(comparison=comparison):
+                self.assertTrue(
+                    compare(
+                        *fixture(
+                            "31f6 8b7934 " + comparison + " " + branch + "03 39c0c3 39c0c3",
+                            "31f6 8b7934 85ff 7e03 39c0c3 39c0c3",
+                        )
+                    )
+                )
+
+    def test_zero_comparison_requires_proven_unchanged_register(self):
+        for setup in ("89c6", "31f6 89c6", "31f6 66be0100", "31f6 40", "31ff"):
+            with self.subTest(setup=setup):
+                self.assertEqual(
+                    compare(
+                        *fixture(
+                            setup + " 3bfe 7e03 39c0c3 39c0c3",
+                            setup + " 85ff 7e03 39c0c3 39c0c3",
+                        )
+                    ),
+                    {},
+                )
+        self.assertEqual(
+            compare(
+                *fixture(
+                    "31f6 3bfe 7e03 39c0c3 39c0c3",
+                    "31f6 85f6 7e03 39c0c3 39c0c3",
+                )
+            ),
+            {},
+        )
+
+    def test_zero_definition_must_dominate_the_comparison(self):
+        for displacement in (2, 5):
+            with self.subTest(displacement=displacement):
+                prefix = f"eb{displacement:02x} 31f6 8b7934 "
+                self.assertEqual(
+                    compare(
+                        *fixture(
+                            prefix + "3bfe 7e03 39c0c3 39c0c3",
+                            prefix + "85ff 7e03 39c0c3 39c0c3",
+                        )
+                    ),
+                    {},
+                )
+
+    def test_zero_test_equivalence_does_not_hide_auxiliary_flag_difference(self):
+        for observer in ("9f", "9c", "27"):
+            with self.subTest(observer=observer):
+                tail = " 7e00 " + observer + " 39c0c3"
+                self.assertEqual(
+                    compare(*fixture("31f6 3bfe" + tail, "31f6 85ff" + tail)), {}
+                )
+
     def test_logical_writes_leave_auxiliary_flag_live_on_every_successor(self):
         for logical in ("85c0", "83e007", "09c0", "31c0"):
             with self.subTest(logical=logical):
