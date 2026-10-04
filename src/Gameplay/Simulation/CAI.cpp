@@ -958,6 +958,7 @@ CGlobalGameObject* CAI::FindObjectInBounds(CVSRect* p_bounds, eObjectType p_obje
 // FUNCTION: LEMBALL 0x00412890
 void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned short p_collisionFlags)
 {
+	int width;
 	int y;
 	int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
@@ -994,11 +995,12 @@ void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned shor
 	}
 	else {
 		CMap* map = m_map;
-		if (blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+		width = map->m_ground.m_width;
+		if (blockX >= width || blockY >= map->m_ground.m_height) {
 			collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 		}
 		else {
-			collision = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].m_collision;
+			collision = map->m_ground.m_ground[blockY * width + blockX].m_collision;
 		}
 	}
 
