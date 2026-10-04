@@ -175,12 +175,13 @@ bool CSlinky::Process()
 	rect.m_z2 = z + 7;
 	CGameObject* hit;
 	CAI* ai = g_pAI;
-	ai->m_collisionExclude = this;
+	CGameObject*& exclude = ai->m_collisionExclude;
+	exclude = this;
 	ai->m_collisionRect = rect;
 	ai->m_rectCollisionIndex = 0;
 	while (ai->m_rectCollisionIndex < ai->m_objectCount) {
 		CGameObject* object = ai->m_objects[ai->m_rectCollisionIndex];
-		if (object != ai->m_collisionExclude && object->Collision(ai->m_collisionRect)) {
+		if (object != exclude && object->Collision(ai->m_collisionRect)) {
 			ai->m_rectCollisionIndex++;
 			hit = object;
 			goto hitObject;
