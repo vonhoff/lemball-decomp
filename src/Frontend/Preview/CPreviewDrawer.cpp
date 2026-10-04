@@ -126,6 +126,15 @@ char g_szPreviewNone[] = "None";
 // GLOBAL: LEMBALL 0x0049f910
 char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 
+#include "Visos/Resources/Types/CResPALETTE.h"
+#include "Visos/Graphics/Palettes/CBaseRemap.h"
+
+class CGWnd;
+class CRemap;
+
+extern int g_previewRemapSourceIndices[10];
+extern int g_previewRemapTargetIndices[10];
+
 // FUNCTION: LEMBALL 0x004491b0
 CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)
@@ -741,6 +750,32 @@ bool CPreviewDrawer::AddWord(char* p_source, char* p_line, int& p_sourcePos, int
 	}
 	p_sourcePos = p_sourcePos + 1;
 	return false;
+}
+
+// FUNCTION: LEMBALL 0x0044a330
+void CPreviewDrawer::RegisterRemaps()
+{
+	CResPALETTE* palette;
+	int i;
+
+	palette = CResPALETTE::Load(RES_PALETTES_TITLEPALETTE);
+	m_remapTable = (unsigned char*) operator new(0x100);
+	i = 0;
+	do {
+		m_remapTable[i] = (unsigned char) i;
+		i = i + 1;
+	} while (i < 0x100);
+	i = 0;
+	do {
+		int target = g_previewRemapTargetIndices[i];
+		int source = g_previewRemapSourceIndices[i];
+		if (target != 0) {
+			m_remapTable[source] = (unsigned char) target;
+		}
+		i = i + 1;
+	} while (i < 10);
+	m_remap = g_pBasePalManager->RegisterRemap(RES_PALETTES_TITLEPALETTE, m_remapTable, PALETTE_DEFAULT);
+	palette->UnLoad();
 }
 
 // FUNCTION: LEMBALL 0x0044a3c0

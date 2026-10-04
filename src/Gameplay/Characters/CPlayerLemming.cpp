@@ -55,6 +55,7 @@ enum {
 	PLAYER_LEMMING_SPAWN_HEIGHT_OFFSET_FIXED = 68 * FIXED_POINT_ONE,
 	PLAYER_LEMMING_BOREDOM_DEADLINE_QUANTUM_MS = 66
 };
+
 // FUNCTION: LEMBALL 0x0040ecb0
 CPlayerLemming::CPlayerLemming(int p_x,
 							   int p_y,
@@ -879,6 +880,16 @@ bool CPlayerLemming::IsSelectable()
 		}
 	}
 	return true;
+}
+
+// FUNCTION: LEMBALL 0x004108b0
+void CPlayerLemming::GetViewData(CViewData& p_viewData)
+{
+	CGameObject::GetViewData(p_viewData);
+	int flags = (m_isGroupLeader != 0 ? LEMMING_VIEW_STATUS_GROUP_LEADER : 0) |
+				(m_groupIndex != 0 ? LEMMING_VIEW_STATUS_IN_GROUP : 0);
+	p_viewData.m_statusFlags = flags;
+	p_viewData.m_playerIndex = m_playerIndex;
 }
 
 // FUNCTION: LEMBALL 0x004109f0

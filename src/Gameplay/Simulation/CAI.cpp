@@ -99,6 +99,21 @@ enum {
 	AI_EMPTY_COLLISION_RECT_MAX_COORDINATE = -1
 };
 
+// GLOBAL: LEMBALL 0x004a782c
+CAI* g_pGenericGroupAI;
+
+// GLOBAL: LEMBALL 0x004a74b0
+CAI* g_pAI;
+
+// GLOBAL: LEMBALL 0x004a74b8
+int g_nGameOver = 0;
+
+// GLOBAL: LEMBALL 0x0049cf34
+CAI* g_pActiveAI = NULL;
+
+// GLOBAL: LEMBALL 0x0049cf60
+int g_anDefaultTrapDoorLemmings[4][4] = {{4, 0, 0, 0}, {3, 1, 0, 0}, {2, 1, 1, 0}, {1, 1, 1, 1}};
+
 // FUNCTION: LEMBALL 0x00410c10
 CAI::CAI(CGame* p_game)
 {
@@ -1442,15 +1457,3 @@ void CAI::Process()
 {
 	Process(0);
 }
-
-// GLOBAL: LEMBALL 0x004a782c
-CAI* g_pGenericGroupAI;
-
-// GLOBAL: LEMBALL 0x004a74b0
-CAI* g_pAI;
-
-// GLOBAL: LEMBALL 0x004a74b8
-int g_nGameOver = 0;
-
-// GLOBAL: LEMBALL 0x0049cf34
-CAI* g_pActiveAI = NULL;

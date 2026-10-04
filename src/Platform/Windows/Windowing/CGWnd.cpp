@@ -10,6 +10,17 @@
 
 #include <windows.h>
 
+#include "CPVGWnd.inl"
+#include "Visos/Math/CVSPoint.h"
+#include "Visos/Math/CVSRect.h"
+#include "Visos/Math/CVSSize.h"
+#include "Visos/Graphics/Surfaces/CPVSurface.h"
+#include "Visos/Windows/CPVWnd.h"
+#include "CWnd.h"
+
+#define WIN32_LEAN_AND_MEAN
+#include "Visos/Resources/Types/CResPALETTE.h"
+
 // FUNCTION: LEMBALL 0x0043a510
 void CGWnd::OnCreate()
 {
@@ -24,14 +35,6 @@ void CGWnd::OnDestroy()
 void CGWnd::OnSize()
 {
 }
-
-#include "CPVGWnd.inl"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
-#include "Visos/Graphics/Surfaces/CPVSurface.h"
-#include "Visos/Windows/CPVWnd.h"
-#include "CWnd.h"
 
 // FUNCTION: LEMBALL 0x00463b50
 CGWnd::CGWnd()
@@ -396,4 +399,26 @@ void CGWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title, unsig
 void CGWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 {
 	Create(p_rect, p_parent, p_title, 0);
+}
+
+// FUNCTION: LEMBALL 0x00464490
+void CGWnd::AttachPalette(unsigned long p_paletteId)
+{
+	CResPALETTE* palette;
+
+	if (p_paletteId == 0) {
+		return;
+	}
+	palette = CResPALETTE::Load(p_paletteId);
+	if (palette->m_loaded != 0) {
+		palette->m_age = 0;
+	}
+	else {
+		palette->LoadData();
+	}
+	palette->m_directUseCount = palette->m_directUseCount + 1;
+	m_gdi->m_renderTarget->AttachPalette(palette);
+	palette->m_directUseCount = palette->m_directUseCount - 1;
+	palette->UnLoad();
+	m_paletteResourceId = p_paletteId;
 }

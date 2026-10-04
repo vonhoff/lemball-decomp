@@ -31,6 +31,53 @@ CMap* g_pActiveMap = NULL;
 // GLOBAL: LEMBALL 0x0049e4e4
 CMap* g_pCurrentMap = NULL;
 
+// GLOBAL: LEMBALL 0x004a74b4
+CMap* g_pMap;
+
+// GLOBAL: LEMBALL 0x0049e4e8
+unsigned short g_blox1FrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e4ec
+unsigned short g_blox2FrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e4f0
+unsigned short g_steepSwSlopeFrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e4f4
+unsigned short g_blox4FrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e4f8
+unsigned short g_blox5FrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e4fc
+unsigned short g_blox6FrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e500
+unsigned short g_blox7FrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e504
+unsigned short g_steepSeSlopeFrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e51c
+unsigned short g_shallowSwSlopeFrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e520
+unsigned short g_shallowSeSlopeFrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e528
+unsigned short g_wCliffOnlyGroundDataLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e534
+unsigned short g_groundAnimFrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e538
+unsigned short g_treeFrameLimit = 0;
+
+// GLOBAL: LEMBALL 0x0049e544
+unsigned short g_embersFrameLimit = 1;
+
+#include "tagLoadGroundSurfaceData.h"
+
 // FUNCTION: LEMBALL 0x004303c0
 CMap::CMap()
 {
@@ -421,6 +468,63 @@ void CMap::GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY
 	}
 }
 
+// FUNCTION: LEMBALL 0x00430ce0
+void CMap::GameToScreen(int& p_x, int& p_y)
+{
+	int* outputY = &p_y;
+	int y = *outputY;
+	int x = p_x;
+	switch (m_orientation) {
+	case MAP_ORIENTATION_ROTATION_0_DEGREES:
+		p_x = x - y + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
+		*outputY = y / 2 + x / 2;
+		break;
+	case MAP_ORIENTATION_ROTATION_90_DEGREES:
+		p_x = MAP_PROJECTION_DOUBLE_BLOCK_PIXEL_SIZE - y - x;
+		*outputY = x / 2 - y / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		break;
+	case MAP_ORIENTATION_ROTATION_180_DEGREES:
+		p_x = y - x + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
+		*outputY = MAP_PROJECTION_BLOCK_PIXEL_SIZE - y / 2 - x / 2;
+		break;
+	case MAP_ORIENTATION_ROTATION_270_DEGREES:
+		p_x = x + y;
+		*outputY = y / 2 - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00430db0
+void CMap::LoadLevel(tagLoadGroundSurfaceData* p_data, unsigned long p_dataSize, unsigned char p_skip)
+{
+	unsigned short* data;
+	int x;
+	int y;
+	int width = p_data->m_width;
+	int height = p_data->m_height;
+	data = (unsigned short*) (p_data + 1);
+
+	m_ground.Clear();
+	ReSize(width, height);
+
+	for (y = 0; height > y; y++) {
+		for (x = 0; width > x; x++) {
+			eObjectType objectType = (eObjectType) *data++;
+			unsigned short objectData = *data++;
+			unsigned short groundHeight = *data++;
+
+			CGround* ground = m_ground.m_ground + m_ground.m_width * y + x;
+			ground->m_objectType = objectType;
+			ground->m_objectData = objectData;
+			ground->SetCollision();
+
+			m_ground.m_ground[m_ground.m_width * y + x].m_height = groundHeight;
+		}
+	}
+
+	CreateWalkBits();
+	CalculateCliff();
+}
+
 // FUNCTION: LEMBALL 0x00430e80
 void CMap::LoadLevelName(tagLoadGroundName* p_data, unsigned long p_dataSize)
 {
@@ -539,47 +643,39 @@ void CMap::SetLevelName(char* p_name)
 	m_levelName[MAP_LEVEL_NAME_MAX_CHARACTERS] = '\0';
 }
 
-// GLOBAL: LEMBALL 0x004a74b4
-CMap* g_pMap;
-
-// GLOBAL: LEMBALL 0x0049e4e8
-unsigned short g_blox1FrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e4ec
-unsigned short g_blox2FrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e4f0
-unsigned short g_steepSwSlopeFrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e4f4
-unsigned short g_blox4FrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e4f8
-unsigned short g_blox5FrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e4fc
-unsigned short g_blox6FrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e500
-unsigned short g_blox7FrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e504
-unsigned short g_steepSeSlopeFrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e51c
-unsigned short g_shallowSwSlopeFrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e520
-unsigned short g_shallowSeSlopeFrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e528
-unsigned short g_wCliffOnlyGroundDataLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e534
-unsigned short g_groundAnimFrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e538
-unsigned short g_treeFrameLimit = 0;
-
-// GLOBAL: LEMBALL 0x0049e544
-unsigned short g_embersFrameLimit = 1;
+// FUNCTION: LEMBALL 0x00431030
+void CMap::CalculateCliff()
+{
+	int x;
+	int y;
+	CGround* ground;
+	y = 0;
+	if (m_walkHeight > 0) {
+		do {
+			x = 0;
+			for (;;) {
+				int width = m_walkWidth;
+				if (x >= width) {
+					break;
+				}
+				ground = m_ground.m_ground + m_ground.m_width * y + x;
+				int height = ground->m_height;
+				if (x < width - 1 && y < m_walkHeight - 1) {
+					CGround* below = m_ground.m_ground + (y + 1) * m_ground.m_width + x;
+					CGround* right = ground + 1;
+					int lowerHeight;
+					if (right->m_height > below->m_height) {
+						lowerHeight = below->m_height;
+					}
+					else {
+						lowerHeight = right->m_height;
+					}
+					height -= lowerHeight;
+				}
+				ground->m_cliff = (unsigned short) ((height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE);
+				x++;
+			}
+			y++;
+		} while (y < m_walkHeight);
+	}
+}

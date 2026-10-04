@@ -19,6 +19,15 @@ enum {
 	TRACK_WINDOW_CONTEXT_ID_UNASSIGNED = -1
 };
 
+#define TRACK_VALUE_PERCENT_SCALE 100
+#define TRACK_PROGRESS_COLOUR_INDEX 0xac
+#define TRACK_BEVEL_LIGHT_COLOUR_INDEX 0xab
+#define TRACK_BEVEL_DARK_COLOUR_INDEX 0xbc
+
+#define TRACK_WINDOW_MESSAGE_SOURCE_ID 100
+
+#define TRACK_WINDOW_INIT_HOT_AREA_LIST_STYLE 0x800
+
 // FUNCTION: LEMBALL 0x0044e790
 CTrackWindow::CTrackWindow(const CVSRect& p_rect, int p_value, CPVGWnd* p_parent) : CHotAreaHandler(p_rect)
 {
@@ -37,6 +46,14 @@ CTrackWindow::CTrackWindow(const CVSRect& p_rect, int p_value, CPVGWnd* p_parent
 	SetActive(1);
 	m_externalEnabled = 1;
 	m_reserved = 1;
+}
+
+// FUNCTION: LEMBALL 0x0044e8c0
+CTrackWindow::~CTrackWindow()
+{
+	if (m_parent->m_lifecycleRefs == 1) {
+		m_parent->m_hotAreaList->RemoveFromList(this);
+	}
 }
 
 // FUNCTION: LEMBALL 0x0044e940
@@ -69,10 +86,6 @@ void CTrackWindow::Move(const CVSPoint& p_position)
 	m_trackRect.m_y = p_position.m_y;
 }
 
-#define TRACK_VALUE_PERCENT_SCALE 100
-#define TRACK_PROGRESS_COLOUR_INDEX 0xac
-#define TRACK_BEVEL_LIGHT_COLOUR_INDEX 0xab
-#define TRACK_BEVEL_DARK_COLOUR_INDEX 0xbc
 // FUNCTION: LEMBALL 0x0044ea00
 void CTrackWindow::OnPaint(const CVSRect& p_rect)
 {
@@ -111,11 +124,7 @@ void CTrackWindow::OnPaint(const CVSRect& p_rect)
 		m_edges[3].Draw(m_gdi);
 	}
 }
-#undef TRACK_PROGRESS_COLOUR_INDEX
-#undef TRACK_BEVEL_LIGHT_COLOUR_INDEX
-#undef TRACK_BEVEL_DARK_COLOUR_INDEX
 
-#define TRACK_WINDOW_MESSAGE_SOURCE_ID 100
 // FUNCTION: LEMBALL 0x0044eb60
 void CTrackWindow::SetButtonValue(int p_value)
 {
@@ -130,7 +139,6 @@ void CTrackWindow::SetButtonValue(int p_value)
 		g_pMasterInputQueue->Post(message);
 	}
 }
-#undef TRACK_WINDOW_MESSAGE_SOURCE_ID
 
 // FUNCTION: LEMBALL 0x0044ebc0
 void CTrackWindow::OnInside(const CVSPoint& p_point)
@@ -146,7 +154,6 @@ void CTrackWindow::OnInside(const CVSPoint& p_point)
 		SetButtonValue(distance * TRACK_VALUE_PERCENT_SCALE / (int) CHotAreaHandler::m_bounds.m_width);
 	}
 }
-#undef TRACK_VALUE_PERCENT_SCALE
 
 // FUNCTION: LEMBALL 0x0044ec10
 void CTrackWindow::OnButtonDown(const CVSPoint& p_point, int p_flags)
@@ -159,11 +166,16 @@ void CTrackWindow::OnDriverChange()
 {
 }
 
-#define TRACK_WINDOW_INIT_HOT_AREA_LIST_STYLE 0x800
 // FUNCTION: LEMBALL 0x0044efe0
 unsigned int CTrackWindow::GetStyle()
 {
 	return (unsigned int) (WINDOW_STYLE_DIRECT_SCROLL | TRACK_WINDOW_INIT_HOT_AREA_LIST_STYLE |
 						   WINDOW_STYLE_SHOW_ON_CREATE);
 }
+
+#undef TRACK_PROGRESS_COLOUR_INDEX
+#undef TRACK_BEVEL_LIGHT_COLOUR_INDEX
+#undef TRACK_BEVEL_DARK_COLOUR_INDEX
+#undef TRACK_WINDOW_MESSAGE_SOURCE_ID
+#undef TRACK_VALUE_PERCENT_SCALE
 #undef TRACK_WINDOW_INIT_HOT_AREA_LIST_STYLE

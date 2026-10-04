@@ -60,6 +60,29 @@ enum {
 
 class CAnimFrameBASE;
 
+// GLOBAL: LEMBALL 0x0049f144
+CBaseFrontendDrawer* g_pBaseFrontendDrawer = NULL;
+
+// GLOBAL: LEMBALL 0x0049f148
+char g_szUnknownUserActionSpecified[] = "Unknown user action specified\n";
+
+// GLOBAL: LEMBALL 0x0049f168
+char g_szUnknownUserActionReceived[] = "Unknown user action received\n";
+
+// GLOBAL: LEMBALL 0x0049f628
+int g_nPendingEffectsVolume = 100;
+
+// GLOBAL: LEMBALL 0x0049f62c
+int g_nPendingMusicVolume = 100;
+
+// GLOBAL: LEMBALL 0x004a6278
+int g_nMusicVolume = 0;
+
+// GLOBAL: LEMBALL 0x004a627c
+int g_nEffectsVolume = 0;
+
+#include "Visos/Animation/CStaticAnim.h"
+
 // FUNCTION: LEMBALL 0x00445420
 CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 										 CGDI* p_gdi,
@@ -309,6 +332,7 @@ void CBaseFrontendDrawer::ReplaceBackground()
 		}
 	}
 }
+
 // FUNCTION: LEMBALL 0x00445c10
 void CBaseFrontendDrawer::_DrawBackGround()
 {
@@ -447,6 +471,94 @@ void CBaseFrontendDrawer::ResetPrimitives()
 void CBaseFrontendDrawer::DrawFrame(CoordPair p_start, CoordPair p_end)
 {
 	DrawFrame(CVSRect(p_start.m_x, p_start.m_y, p_end.m_x, p_end.m_y));
+}
+
+// FUNCTION: LEMBALL 0x00446110
+void CBaseFrontendDrawer::DrawFrame(CVSRect p_rect)
+{
+	int startX = p_rect.m_x;
+	int startY = p_rect.m_y;
+	int width = p_rect.m_width;
+	int height = p_rect.m_height;
+	int tileWidth;
+	int tileHeight;
+	{
+		const CVSSize& tileSize = CAnimsManager::GetAnimSize(m_topFrameAnimId, 0);
+		tileWidth = tileSize.m_width;
+		tileHeight = tileSize.m_height;
+	}
+	width += tileWidth - 1;
+	width -= width % tileWidth;
+	height += tileHeight - 1;
+	height -= height % tileHeight;
+	{
+		CVSRect frame(p_rect.m_x, p_rect.m_y, (short) width, (short) height);
+		const CVSRect& frameBounds = frame;
+		CSolidRect& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
+		line.m_bounds.m_width = frameBounds.m_width;
+		line.m_bounds.m_height = frameBounds.m_height;
+		line.m_bounds.m_x = frameBounds.m_x;
+		line.m_bounds.m_y = frameBounds.m_y;
+		line.m_colour = 0x10;
+		m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount].Draw(m_gdi);
+	}
+	m_framePrimitiveCount++;
+	m_staticAnim.m_frameState = 0;
+	CAnimsManager::DrawAnim(CVSPoint((short) startX, (short) startY),
+							m_topFrameAnimId,
+							0,
+							(CAnimFrameBASE*) &m_staticAnim,
+							NULL);
+	int x = tileWidth;
+	int right = width - tileWidth;
+	for (; right > x; x += tileWidth) {
+		m_staticAnim.m_frameState = 1;
+		CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) startY),
+								m_topFrameAnimId,
+								0,
+								(CAnimFrameBASE*) &m_staticAnim,
+								NULL);
+	}
+	m_staticAnim.m_frameState = 2;
+	CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) startY),
+							m_topFrameAnimId,
+							0,
+							(CAnimFrameBASE*) &m_staticAnim,
+							NULL);
+	int y = tileHeight;
+	height -= tileHeight;
+	for (; y < height; y += tileHeight) {
+		m_staticAnim.m_frameState = 0;
+		short currentY = (short) (startY + y);
+		CVSPoint left((short) startX, currentY);
+		CAnimsManager::DrawAnim(left, m_sideFrameAnimId, 0, (CAnimFrameBASE*) &m_staticAnim, NULL);
+		m_staticAnim.m_frameState = 2;
+		CAnimsManager::DrawAnim(CVSPoint((short) (width - tileWidth + startX), currentY),
+								m_sideFrameAnimId,
+								0,
+								(CAnimFrameBASE*) &m_staticAnim,
+								NULL);
+	}
+	m_staticAnim.m_frameState = 0;
+	CAnimsManager::DrawAnim(CVSPoint((short) startX, (short) (startY + y)),
+							m_bottomFrameAnimId,
+							0,
+							(CAnimFrameBASE*) &m_staticAnim,
+							NULL);
+	for (x = tileWidth; right > x; x += tileWidth) {
+		m_staticAnim.m_frameState = 1;
+		CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) (startY + y)),
+								m_bottomFrameAnimId,
+								0,
+								(CAnimFrameBASE*) &m_staticAnim,
+								NULL);
+	}
+	m_staticAnim.m_frameState = 2;
+	CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) (startY + y)),
+							m_bottomFrameAnimId,
+							0,
+							(CAnimFrameBASE*) &m_staticAnim,
+							NULL);
 }
 
 // FUNCTION: LEMBALL 0x00446480
@@ -607,24 +719,3 @@ void CBaseFrontendDrawer::OnSize(const CVSRect& p_rect)
 	m_size.m_height = p_rect.m_height;
 	Restart();
 }
-
-// GLOBAL: LEMBALL 0x0049f144
-CBaseFrontendDrawer* g_pBaseFrontendDrawer = NULL;
-
-// GLOBAL: LEMBALL 0x0049f148
-char g_szUnknownUserActionSpecified[] = "Unknown user action specified\n";
-
-// GLOBAL: LEMBALL 0x0049f168
-char g_szUnknownUserActionReceived[] = "Unknown user action received\n";
-
-// GLOBAL: LEMBALL 0x0049f628
-int g_nPendingEffectsVolume = 100;
-
-// GLOBAL: LEMBALL 0x0049f62c
-int g_nPendingMusicVolume = 100;
-
-// GLOBAL: LEMBALL 0x004a6278
-int g_nMusicVolume = 0;
-
-// GLOBAL: LEMBALL 0x004a627c
-int g_nEffectsVolume = 0;

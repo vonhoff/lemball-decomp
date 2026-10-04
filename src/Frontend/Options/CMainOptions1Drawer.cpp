@@ -55,6 +55,12 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 													RES_NEWFRONT_ICONS_LORES_OKAY,
 													RES_NEWFRONT_ICONS_LORES_FULLSCREEN};
 
+#include "Visos/Queues/Message.h"
+
+class CGWnd;
+
+extern "C" unsigned long __stdcall timeGetTime(void);
+
 // FUNCTION: LEMBALL 0x00448200
 CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_1, 0, 0, 0, 0, 0)
@@ -230,6 +236,60 @@ CMainOptions1Drawer::~CMainOptions1Drawer()
 // FUNCTION: LEMBALL 0x00448610
 void CMainOptions1Drawer::DrawBackGround()
 {
+}
+
+// FUNCTION: LEMBALL 0x00448620
+bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
+{
+	int type;
+	int mode;
+	CGameStatus* status;
+
+	type = p_message->m_type;
+	switch (type) {
+	case MESSAGE_KEY_UP:
+	case MESSAGE_KEY_DOWN:
+		m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
+		break;
+	case MESSAGE_BUTTON_RELEASED:
+		m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
+		switch ((unsigned int) p_message->m_code) {
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS:
+			m_returnState = FLOW_MAIN_OPTIONS_2;
+			m_quitYet = 1;
+			g_nFrontendAutoFlowToggle = 1;
+			return true;
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_PASSWORD:
+			m_returnState = FLOW_PASSWORD;
+			m_quitYet = 1;
+			g_nFrontendAutoFlowToggle = 1;
+			return true;
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_RESOLUTION:
+			m_display->ToggleResolution();
+			return true;
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW:
+		case MAIN_OPTIONS1_BUTTON_MESSAGE_NETWORK: {
+			mode = m_selectedDisplayMode;
+			status = g_pGameStatus;
+			status->m_level = status->m_lastLevels[mode];
+			status->m_skill = mode;
+			m_quitYet = 1;
+			g_nFrontendAutoFlowToggle = 1;
+			if (p_message->m_code == MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW) {
+				m_returnState = FLOW_PREVIEW;
+			}
+			else {
+				m_returnState = FLOW_NETWORK_OPTIONS;
+			}
+			return true;
+		}
+		}
+		break;
+	default:
+		m_processedCount = m_processedCount + 1;
+		return false;
+	}
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x00448800

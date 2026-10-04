@@ -63,6 +63,9 @@ int g_anGunSpriteOffset[18] = {0, 12, -8, -2, 52, -2, -13, 28, 116, 0, 0, -13, 1
 // GLOBAL: LEMBALL 0x0049fab8
 int g_anGunSpriteOffsetCompact[20] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0, 10, 14, -8, 0, -12, -2, 0, 0};
 
+#include "Views/Sound/CSoundView.h"
+#include "GunControllerJunction.h"
+
 // FUNCTION: LEMBALL 0x0044c870
 CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigned int p_mode)
 	: CAnimsManager(p_gdi, RESOURCE_ID_COUNT, 10, 5, 0, 0)
@@ -475,6 +478,41 @@ void CGunController::DrawSpriteWindow()
 		break;
 	}
 	CAnimsManager::ResetPrimitives();
+}
+
+// FUNCTION: LEMBALL 0x0044d830
+void CGunController::MoveUp()
+{
+	int* directionField;
+	int remaining;
+	int direction;
+	int y;
+	int bestY;
+	int foundY;
+
+	bestY = GUN_CONTROLLER_ABOVE_TOP_BOUNDARY_Y;
+	foundY = GUN_JUNCTION_COORDINATE_UNASSIGNED;
+	directionField = &m_junctions[0].m_direction;
+	remaining = 8;
+	do {
+		direction = *directionField;
+		if (direction != GUN_JUNCTION_UNASSIGNED && (y = directionField[-2]) < m_targetY && bestY < y) {
+			if (direction != GUN_JUNCTION_BOTH) {
+				m_targetSide = direction;
+			}
+			foundY = directionField[-2];
+			bestY = foundY;
+			g_pSoundView->PlayEffect(SFX_RELOAD);
+		}
+		directionField += 8;
+	} while (--remaining != 0);
+	if (foundY != GUN_JUNCTION_COORDINATE_UNASSIGNED) {
+		m_targetY = foundY;
+	}
+	m_moveStartTime = CurrentMilliTimer();
+	m_moveEndTime = abs(m_targetY - m_gunY) * 3 + m_moveStartTime;
+	m_moveStartY = m_gunY;
+	m_verticalMoving = 1;
 }
 
 // FUNCTION: LEMBALL 0x0044d8e0

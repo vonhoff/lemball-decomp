@@ -218,6 +218,55 @@ int g_nNetworkOptionsShiftHeld = 0;
 // GLOBAL: LEMBALL 0x004a0394
 int g_nNetworkOptionsCapsOrShift = 0;
 
+#include "Visos/Network/CNetworkAddress.h"
+
+#include <stddef.h>
+
+extern char* g_szBroadcastPeerName;
+
+enum {
+	NETWORK_OPTIONS_REDRAW_INTERVAL_MS = 500
+};
+
+class CRemap;
+
+extern "C" unsigned long __stdcall timeGetTime(void);
+
+extern char* g_szBroadcastPeerName;
+
+extern unsigned char* g_apNetworkOptionsRemaps[6];
+
+#include "Visos/Resources/Types/CResFONT.h"
+#include "Visos/Math/CVSSize.h"
+
+class CRemap;
+
+extern "C" unsigned long __stdcall timeGetTime(void);
+
+extern char* g_szBroadcastPeerName;
+
+enum {
+	NETWORK_OPTIONS_REMAP_NONE = 6
+};
+
+#include "Visos/Strings/CString.h"
+
+class CRemap;
+
+extern "C" unsigned long __stdcall timeGetTime(void);
+
+extern char* g_szBroadcastPeerName;
+
+extern char* g_apNetworkOptionsMessages[NETWORK_OPTIONS_MESSAGE_COUNT];
+extern char g_szNetworkGameName[16];
+extern char g_szNetworkBroadcastAddress[NETWORK_OPTIONS_ADDRESS_MAX_LENGTH + 1];
+extern char g_szNetworkOptionsCursor[];
+extern char g_szNetworkOptionsDividerIp[];
+extern char g_szNetworkOptionsDividerLocal[];
+extern char g_szNetworkOptionsHeaderComputer[];
+extern char g_szNetworkOptionsHeaderIp[];
+extern char g_szNetworkOptionsHeaderName[];
+
 // FUNCTION: LEMBALL 0x00453280
 CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 	: CBaseFrontendDrawer(p_display,
@@ -363,6 +412,277 @@ void CNetworkOptionsDrawer::DrawBackGround()
 	DrawFrame(3);
 	DrawFrame(5);
 	DrawFrame(7);
+}
+
+// FUNCTION: LEMBALL 0x004536b0
+void CNetworkOptionsDrawer::DrawFrame(int p_position)
+{
+	NetworkOptionsFramePos* pos = &m_layoutTable->m_framePos[p_position];
+	CBaseFrontendDrawer::DrawFrame(CVSRect(pos[0].m_x, pos[0].m_y, pos[1].m_x, pos[1].m_y));
+}
+
+// FUNCTION: LEMBALL 0x004536f0
+void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_remap)
+{
+	char* gameName;
+	char* peerName;
+	char* addressStr;
+	char trimmedPeerName[24];
+	CResFONT* font;
+	CRemap* remap;
+	int len;
+
+	if (g_pNetworkManager != NULL) {
+		CConnect** connections = g_pNetworkManager->m_connections;
+		if (g_pNetworkManager->m_gameMessages[p_index].m_valid != 0) {
+			font = m_textManager->GetFont(m_chalkFontId);
+			NetworkOptionsLayout* layout = m_layoutTable;
+			CNetworkGameMessage* entries = g_pNetworkManager->m_gameMessages;
+			CVSPoint namePosition((short) layout->m_headerNameX, (short) layout->m_playerListY);
+			CVSPoint addressPosition((short) layout->m_headerIpX, (short) layout->m_playerListY);
+			CVSPoint peerPosition((short) layout->m_headerComputerX, (short) layout->m_playerListY);
+			CVSPoint& posName = namePosition;
+			CVSPoint& posAddress = addressPosition;
+			CVSPoint& posPeer = peerPosition;
+			short yOffset = (short) layout->m_rowStride * (short) p_value;
+			posName.m_y += yOffset;
+			posAddress.m_y += yOffset;
+			posPeer.m_y += yOffset;
+			remap = NULL;
+			if (p_remap != NETWORK_OPTIONS_REMAP_NONE) {
+				remap = (CRemap*) m_remaps[p_remap];
+			}
+			gameName = entries[p_index].m_gameName;
+			addressStr = connections[p_index]->m_destinationAddress->GetStr();
+			peerName = entries[p_index].m_peerName;
+			strncpy(trimmedPeerName, peerName, 0x14);
+			len = 0x14;
+			do {
+				trimmedPeerName[len] = 0;
+				short measuredWidth = font->GetSize(trimmedPeerName, TEXT_ADVANCE_X_POSITIVE).m_width;
+				len--;
+				if (m_layoutTable->m_peerNameWidth >= (int) measuredWidth) {
+					break;
+				}
+			} while (1);
+
+			posName.m_x -= font->GetSize(gameName, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+			posAddress.m_x -= font->GetSize(addressStr, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+			posPeer.m_x -= font->GetSize(peerName, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+
+			m_textManager
+				->DrawString(m_gdi, posName, CVSSize(), m_chalkFontId, gameName, TEXT_ADVANCE_X_POSITIVE, remap);
+			m_textManager
+				->DrawString(m_gdi, posAddress, CVSSize(), m_chalkFontId, addressStr, TEXT_ADVANCE_X_POSITIVE, remap);
+			m_textManager
+				->DrawString(m_gdi, posPeer, CVSSize(), m_chalkFontId, peerName, TEXT_ADVANCE_X_POSITIVE, remap);
+			p_value++;
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00453940
+void CNetworkOptionsDrawer::DrawText()
+{
+	int idx;
+	int searchIndex;
+	CVSPoint pos((short) m_layoutTable->m_editPos.m_x, (short) m_layoutTable->m_editPos.m_y);
+
+	if (m_drawingBackBuffer != 0) {
+		char* divider = g_szNetworkOptionsDividerIp;
+		if (m_mode == FRONTEND_LAYOUT_STANDARD) {
+			divider = g_szNetworkOptionsDividerLocal;
+		}
+		CResFONT* font = m_textManager->GetFont(m_chalkFontId);
+		CVSPoint posDivider(0, (short) m_layoutTable->m_dividerY);
+		CVSPoint posLabel((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_headerY);
+		CVSPoint posIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_headerY);
+		CVSPoint posComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_headerY);
+		posLabel.m_x -= font->GetSize(g_szNetworkOptionsHeaderName, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+		m_textManager->DrawString(m_gdi,
+								  posLabel,
+								  CVSSize(),
+								  m_chalkFontId,
+								  g_szNetworkOptionsHeaderName,
+								  TEXT_ADVANCE_X_POSITIVE,
+								  NULL);
+
+		posIp.m_x -= font->GetSize(g_szNetworkOptionsHeaderIp, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+		m_textManager->DrawString(m_gdi,
+								  posIp,
+								  CVSSize(),
+								  m_chalkFontId,
+								  g_szNetworkOptionsHeaderIp,
+								  TEXT_ADVANCE_X_POSITIVE,
+								  NULL);
+
+		posComputer.m_x -= font->GetSize(g_szNetworkOptionsHeaderComputer, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+		m_textManager->DrawString(m_gdi,
+								  posComputer,
+								  CVSSize(),
+								  m_chalkFontId,
+								  g_szNetworkOptionsHeaderComputer,
+								  TEXT_ADVANCE_X_POSITIVE,
+								  NULL);
+
+		short dividerWidth = font->GetSize(divider, TEXT_ADVANCE_X_POSITIVE).m_width;
+		posDivider.m_x = (short) (((int) m_size.m_width - (int) dividerWidth) / 2);
+		m_textManager->DrawString(m_gdi, posDivider, CVSSize(), m_chalkFontId, divider, TEXT_ADVANCE_X_POSITIVE, NULL);
+
+		if (g_szNetworkGameName[0] != 0) {
+			CVSPoint posMyName((short) m_layoutTable->m_headerNameX, (short) m_layoutTable->m_localPlayerY);
+			CVSPoint posMyIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_localPlayerY);
+			CVSPoint posMyComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_localPlayerY);
+			posMyName.m_x -= font->GetSize(g_szNetworkGameName, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+			m_textManager->DrawString(m_gdi,
+									  posMyName,
+									  CVSSize(),
+									  m_chalkFontId,
+									  g_szNetworkGameName,
+									  0x20,
+									  (CRemap*) m_remaps[0]);
+
+			char* myIp = m_localAddressText;
+			if (myIp != NULL && *myIp != 0) {
+				posMyIp.m_x -= font->GetSize(myIp, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+				m_textManager->DrawString(m_gdi,
+										  posMyIp,
+										  CVSSize(),
+										  m_chalkFontId,
+										  m_localAddressText,
+										  0x20,
+										  (CRemap*) m_remaps[0]);
+			}
+
+			char* myPeer = m_localComputerName;
+			if (myPeer != NULL && *myPeer != 0) {
+				char trimmed[21];
+				strncpy(trimmed, myPeer, 0x14);
+				int len = 0x14;
+				do {
+					trimmed[len--] = 0;
+				} while (m_layoutTable->m_peerNameWidth < font->GetSize(trimmed, TEXT_ADVANCE_X_POSITIVE).m_width);
+
+				CString lowerPeer(trimmed);
+				lowerPeer.lower();
+				posMyComputer.m_x -= font->GetSize(trimmed, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+				m_textManager->DrawString(m_gdi,
+										  posMyComputer,
+										  CVSSize(),
+										  m_chalkFontId,
+										  lowerPeer,
+										  0x20,
+										  (CRemap*) m_remaps[0]);
+			}
+		}
+
+		if (g_pNetworkManager != NULL) {
+			int i;
+			int row = 0;
+			for (i = 0; i < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT; i++) {
+				DrawEntry(i, row, 1);
+				if (row == NETWORK_OPTIONS_VISIBLE_PLAYER_ROW_COUNT) {
+					break;
+				}
+			}
+		}
+	}
+	else {
+		if (m_message != NETWORK_OPTIONS_MESSAGE_NONE) {
+			CVSPoint msgPos((short) m_layoutTable->m_messagePos.m_x, (short) m_layoutTable->m_messagePos.m_y);
+			CString msgText = g_apNetworkOptionsMessages[m_message - 1];
+			bool special = false;
+			if (m_message == NETWORK_OPTIONS_MESSAGE_SEARCHING_FOR_HOST) {
+				if (g_szNetworkBroadcastAddress[0] != 0) {
+					msgText += g_szNetworkBroadcastAddress;
+				}
+				else {
+					msgText = g_apNetworkOptionsMessages[NETWORK_OPTIONS_MESSAGE_SEARCHING_LOCAL_NETWORK - 1];
+				}
+				special = true;
+			}
+			CRemap* remap = NULL;
+			if (m_message >= NETWORK_OPTIONS_MESSAGE_FIRST_ERROR) {
+				remap = (CRemap*) m_remaps[3];
+				special = true;
+			}
+			else if (special) {
+				remap = (CRemap*) m_remaps[5];
+			}
+			if (m_redrawPending != 0 || !special) {
+				CResFONT* font = m_textManager->GetFont(m_chalkFontId);
+				msgPos.m_x -= font->GetSize(msgText.m_text, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
+				m_textManager
+					->DrawString(m_gdi, msgPos, CVSSize(), m_chalkFontId, msgText, TEXT_ADVANCE_X_POSITIVE, remap);
+			}
+		}
+
+		m_drawnMessage = m_message;
+		if (g_pNetworkManager != NULL) {
+			int row = 0;
+			int fallbackHighlighted = NETWORK_OPTIONS_NO_PLAYER_INDEX;
+			CNetworkGameMessage* messages = g_pNetworkManager->m_gameMessages;
+			if (m_highlightedPlayer != NETWORK_OPTIONS_NO_PLAYER_INDEX &&
+				m_playerEntries[m_highlightedPlayer].m_hoverState == 0) {
+				searchIndex = 0;
+				do {
+					if (m_playerEntries[searchIndex].m_hoverState != 0) {
+						m_highlightedPlayer = searchIndex;
+						break;
+					}
+					searchIndex = searchIndex + 1;
+				} while (searchIndex < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
+				if (searchIndex == NETWORK_OPTIONS_PLAYER_ENTRY_COUNT) {
+					fallbackHighlighted = m_highlightedPlayer;
+				}
+			}
+			idx = 0;
+			for (; idx < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT; idx++) {
+				if (messages[idx].m_valid != 0) {
+					int isAccepted = 0;
+					int state = 1;
+					if (m_playerEntries[idx].m_hoverState != 0 || fallbackHighlighted == idx) {
+						isAccepted = 1;
+					}
+					if (m_acceptedPlayer != idx) {
+						if (m_playerEntries[idx].m_activationState != 0 && m_redrawPending == 0) {
+							state = 3;
+						}
+					}
+					else if (m_playerEntries[idx].m_activationState == 0 || m_redrawPending != 0) {
+						state = 3;
+					}
+					state += isAccepted;
+					if (state != 1) {
+						DrawEntry(idx, row, state);
+					}
+					else {
+						row++;
+					}
+					if (row == NETWORK_OPTIONS_VISIBLE_PLAYER_ROW_COUNT) {
+						break;
+					}
+				}
+			}
+		}
+
+		if (m_editingActive != 0) {
+			CString editText = m_editor->m_text;
+			if (m_redrawPending == 0) {
+				editText += g_szNetworkOptionsCursor;
+			}
+			if (editText.getlength() > 0) {
+				CRemap* remap = (CRemap*) m_remaps[1];
+				m_textManager
+					->DrawString(m_gdi, pos, CVSSize(), m_chalkFontId, editText, TEXT_ADVANCE_X_POSITIVE, remap);
+			}
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00454050
+void CNetworkOptionsDrawer::DrawAnims()
+{
 }
 
 // FUNCTION: LEMBALL 0x00454060
@@ -696,6 +1016,119 @@ void CNetworkOptionsDrawer::StartMessageTimeout(int p_message, unsigned long p_d
 	now = timeGetTime();
 	m_redrawPending = 1;
 	m_lastDrawTime = now;
+}
+
+// FUNCTION: LEMBALL 0x004548c0
+void CNetworkOptionsDrawer::Processing()
+{
+	unsigned long now;
+	unsigned long duration;
+	char* ident;
+	char* peer;
+	CConnect** current;
+	CConnect** connections;
+	int index;
+	int activation;
+	int acceptedPlayer;
+
+	if (m_drawnMessage != (unsigned int) m_message) {
+		return;
+	}
+	if (m_startPending != 0) {
+		StartBroadcast();
+		m_startPending = 0;
+	}
+	if (m_pendingStage != NETWORK_OPTIONS_EDIT_NONE) {
+		StartEditing(m_pendingStage, 1);
+		m_pendingStage = NETWORK_OPTIONS_EDIT_NONE;
+	}
+	if (m_pendingEvent != NETWORK_OPTIONS_PENDING_EVENT_NONE) {
+		LastError();
+	}
+	now = CurrentMilliTimer();
+	if (now - m_lastDrawTime >= NETWORK_OPTIONS_REDRAW_INTERVAL_MS) {
+		m_redrawPending = m_redrawPending == 0;
+		now = CurrentMilliTimer();
+		m_lastDrawTime = now;
+	}
+	if (g_pNetworkManager != NULL) {
+		ident = g_pBroadcastAddress->GetStr();
+		peer = g_szBroadcastPeerName;
+		if (m_localAddressText != ident) {
+			m_backBufferNeeded = 1;
+			m_localAddressText = ident;
+		}
+		if (m_localComputerName != peer) {
+			m_backBufferNeeded = 1;
+			m_localComputerName = peer;
+		}
+		if (m_networkState == NETWORK_OPTIONS_HANDLERS_CURRENT) {
+			if (g_pNetworkManager->m_connectionsChanged != 0) {
+				g_pNetworkManager->m_connectionsChanged = 0;
+				m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
+				m_backBufferNeeded = 1;
+				InitialiseHandlers();
+			}
+		}
+		else {
+			m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
+			m_backBufferNeeded = 1;
+			InitialiseHandlers();
+		}
+		connections = g_pNetworkManager->m_connections;
+		current = connections;
+		index = 0;
+		do {
+			if (m_playerEntries[index].m_pressed != 0 && m_acceptedPlayer != index) {
+				g_pSoundView->PlayEffect(SFX_DRUM1);
+				acceptedPlayer = m_acceptedPlayer;
+				if (acceptedPlayer != NETWORK_OPTIONS_NO_PLAYER_INDEX) {
+					CConnect* connection = connections[acceptedPlayer];
+					if (connection != NULL) {
+						((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Reject(connection);
+					}
+				}
+				m_acceptedPlayer = index;
+				if (*current != NULL) {
+					activation = m_playerEntries[index].m_activationState;
+					if (activation != 0) {
+						Lock();
+					}
+					((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Accept(*current, activation);
+				}
+			}
+			m_playerEntries[index].m_pressed = 0;
+			current = current + 1;
+			index = index + 1;
+		} while (index < 10);
+	}
+	if (m_message != NETWORK_OPTIONS_MESSAGE_NONE) {
+		duration = m_messageDuration;
+		if (duration != 0) {
+			now = CurrentMilliTimer();
+			if (now - m_messageStartTime > duration) {
+				m_message = 1;
+				m_backBufferNeeded = 1;
+				m_messageDuration = 0;
+			}
+		}
+	}
+}
+
+// FUNCTION: LEMBALL 0x00454ad0
+void CNetworkOptionsDrawer::RegisterRemaps()
+{
+	CBaseRemap** remaps;
+	unsigned char** mappings;
+
+	remaps = m_remaps;
+	mappings = g_apNetworkOptionsRemaps;
+	do {
+		mappings++;
+		remaps++;
+		*(remaps - 1) =
+			g_pBasePalManager->RegisterRemap(m_display->m_paletteResourceId, *(mappings - 1), PALETTE_MAPPED);
+	} while (mappings < g_apNetworkOptionsRemaps + 6);
 }
 
 // FUNCTION: LEMBALL 0x00454b10

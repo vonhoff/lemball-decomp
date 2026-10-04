@@ -13,6 +13,38 @@ extern const int g_mazeNeighborOffsetsY[10];
 extern const int g_mazeCardinalNeighbors[10];
 extern const unsigned char g_mazeWalkMasks[32];
 
+// GLOBAL: LEMBALL 0x00495b10
+extern const unsigned char g_aChangeBitMasks[8][4] = {{0x80, 0, 0, 0},
+													  {0x40, 0, 0, 0},
+													  {0x20, 0, 0, 0},
+													  {0x10, 0, 0, 0},
+													  {0x08, 0, 0, 0},
+													  {0x04, 0, 0, 0},
+													  {0x02, 0, 0, 0},
+													  {0x01, 0, 0, 0}};
+
+// GLOBAL: LEMBALL 0x00495b30
+const int g_mazeNeighborOffsetsX[10] = {-1, 0, 1, -1, 0, 1, -1, 0, 1, 0};
+
+// GLOBAL: LEMBALL 0x00495b58
+const int g_mazeNeighborOffsetsY[10] = {-1, -1, -1, 0, 0, 0, 1, 1, 1, 0};
+
+// GLOBAL: LEMBALL 0x00495b80
+const int g_mazeCardinalNeighbors[10] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 0};
+
+// GLOBAL: LEMBALL 0x00495ba8
+const unsigned char g_mazeWalkMasks[32] = {0, 1,  0, 8,   0, 4,  0, 2,  0, 0, 0, 0, 0, 0, 0, 0,
+										   0, 16, 0, 128, 0, 64, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0};
+
+// GLOBAL: LEMBALL 0x0049cf58
+CMaze* g_pMaze = NULL;
+
+#include <stddef.h>
+
+extern "C" unsigned long __stdcall timeGetTime(void);
+
+extern const unsigned char g_aChangeBitMasks[8][4];
+
 // FUNCTION: LEMBALL 0x00423090
 CMaze::CMaze(CMap* p_map)
 {
@@ -22,6 +54,21 @@ CMaze::CMaze(CMap* p_map)
 	m_routeSearchBusy = 0;
 	m_width = 0;
 	m_height = 0;
+}
+
+// FUNCTION: LEMBALL 0x004230c0
+CMaze::~CMaze()
+{
+	int row = 0;
+	if (m_distances != NULL) {
+		if (m_height > 0) {
+			do {
+				delete[] m_distances[row];
+				row++;
+			} while (row < m_height);
+		}
+		delete[] m_distances;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00423110
@@ -131,29 +178,6 @@ bool CMaze::FindSquare(unsigned short p_distance, int& p_x, int& p_y)
 	return found;
 }
 
-// GLOBAL: LEMBALL 0x00495b10
-extern const unsigned char g_aChangeBitMasks[8][4] = {{0x80, 0, 0, 0},
-													  {0x40, 0, 0, 0},
-													  {0x20, 0, 0, 0},
-													  {0x10, 0, 0, 0},
-													  {0x08, 0, 0, 0},
-													  {0x04, 0, 0, 0},
-													  {0x02, 0, 0, 0},
-													  {0x01, 0, 0, 0}};
-
-// GLOBAL: LEMBALL 0x00495b30
-const int g_mazeNeighborOffsetsX[10] = {-1, 0, 1, -1, 0, 1, -1, 0, 1, 0};
-
-// GLOBAL: LEMBALL 0x00495b58
-const int g_mazeNeighborOffsetsY[10] = {-1, -1, -1, 0, 0, 0, 1, 1, 1, 0};
-
-// GLOBAL: LEMBALL 0x00495b80
-const int g_mazeCardinalNeighbors[10] = {0, 1, 0, 1, 0, 1, 0, 1, 0, 0};
-
-// GLOBAL: LEMBALL 0x00495ba8
-const unsigned char g_mazeWalkMasks[32] = {0, 1,  0, 8,   0, 4,  0, 2,  0, 0, 0, 0, 0, 0, 0, 0,
-										   0, 16, 0, 128, 0, 64, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0};
-
 // FUNCTION: LEMBALL 0x00423380
 void CMaze::UpdateChangeNext(int p_x, int p_y)
 {
@@ -238,6 +262,135 @@ void CMaze::SwapChange()
 	m_changeSelect = m_changeSelect == 0;
 }
 
+// FUNCTION: LEMBALL 0x00423530
+void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY)
+{
+	int width;
+	CMap* map;
+	if (p_resetStats != 0) {
+		m_totalTime = 0;
+		m_solutionCount = 0;
+	}
+	m_startTime = timeGetTime();
+	m_radius = 0;
+	m_startX = p_startX;
+	m_startY = p_startY;
+	m_endX = p_endX;
+	m_endY = p_endY;
+
+	int y = 0;
+	if (m_height > 0) {
+		do {
+			int x = 0;
+			if (m_width > 0) {
+				do {
+					unsigned short collision;
+					if (x < 0 || y < 0) {
+						collision = GROUND_COLLISION_OUT_OF_BOUNDS;
+					}
+					else {
+						map = m_map;
+						width = map->m_ground.m_width;
+						if (width <= x || map->m_ground.m_height <= y) {
+							collision = GROUND_COLLISION_OUT_OF_BOUNDS;
+						}
+						else {
+							collision = map->m_ground.m_ground[y * width + x].m_collision;
+						}
+					}
+					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
+						m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
+					}
+					else {
+						m_distances[y][x] = MAZE_DISTANCE_UNREACHED;
+					}
+					x++;
+				} while (x < m_width);
+			}
+			y++;
+		} while (y < m_height);
+	}
+
+	m_changeSelect = 0;
+	Clear(m_changeA);
+	Clear(m_changeB);
+	UpdateChangeNext(m_startX, m_startY);
+	m_distances[m_startY][m_startX] = 0;
+}
+
+// FUNCTION: LEMBALL 0x00423650
+bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
+{
+	p_reached = 0;
+	if (m_endY < 0 || m_endX < 0 || m_height <= m_endY || m_width <= m_endX ||
+		m_distances[m_endY][m_endX] == MAZE_DISTANCE_BLOCKED) {
+		return true;
+	}
+
+	bool changed = false;
+	SwapChange();
+	int radius = ++m_radius;
+	int xMin = m_startX - radius;
+	int xMax = m_startX + radius;
+	int yMin = m_startY - radius;
+	int yMax = m_startY + radius;
+	if (xMin < 0) {
+		xMin = 0;
+	}
+	if (m_width - 1 < xMax) {
+		xMax = m_width - 1;
+	}
+	if (yMin < 0) {
+		yMin = 0;
+	}
+	if (m_height - 1 < yMax) {
+		yMax = m_height - 1;
+	}
+
+	unsigned char* pChange;
+	if (m_changeSelect != 0) {
+		pChange =
+			m_changeA + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
+	}
+	else {
+		pChange =
+			m_changeB + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
+	}
+
+	if (yMin <= yMax) {
+		unsigned int mask;
+		memcpy(&mask, &g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK][0], 1);
+		int y = yMin;
+		do {
+			unsigned short* pDistance = m_distances[y] + xMin;
+			unsigned char* pChangeRow = pChange;
+			int x;
+			unsigned char currentMask;
+			memcpy(&currentMask, &mask, 1);
+			for (x = xMin; x <= xMax; x++, pDistance++) {
+				if ((currentMask & *pChangeRow) != 0 && *pDistance != MAZE_DISTANCE_BLOCKED && CalcNewDistance(x, y)) {
+					changed = true;
+					UpdateChangeNext(x, y);
+				}
+				currentMask >>= 1;
+				if (currentMask == 0) {
+					currentMask = MAZE_CHANGE_BITMAP_FIRST_COLUMN_MASK;
+					pChangeRow++;
+				}
+			}
+			pChange += 0x10;
+			y++;
+		} while (y <= yMax);
+	}
+
+	p_reached = m_distances[m_endY][m_endX] != MAZE_DISTANCE_UNREACHED;
+	p_noChanges = !p_reached || changed ? 0 : 1;
+	if (!p_reached && changed && m_radius < 0x14) {
+		return false;
+	}
+	return true;
+}
+
 // FUNCTION: LEMBALL 0x00423890
 int Direction(int p_x0, int p_y0, int p_x1, int p_y1)
 {
@@ -280,6 +433,3 @@ void CMaze::BSolution(int& p_count, Solution* p_solution)
 	m_totalTime += elapsed;
 	m_solutionCount++;
 }
-
-// GLOBAL: LEMBALL 0x0049cf58
-CMaze* g_pMaze = NULL;

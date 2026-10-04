@@ -38,6 +38,137 @@ enum ePauseSelectionKey {
 extern unsigned char* g_apPauseRemaps[4];
 extern char* g_apPauseMenuLabels[15];
 
+// GLOBAL: LEMBALL 0x0049f038
+unsigned char g_pauseRemap0[8] = {0x02, 0xf1, 0x51, 0x5d, 0x3d, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f040
+unsigned char g_pauseRemap1[8] = {0x02, 0xf1, 0x51, 0xe0, 0xe7, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f048
+unsigned char g_pauseRemap2[8] = {0x02, 0xf1, 0x51, 0xa8, 0x6c, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f050
+unsigned char g_pauseRemap3[8] = {0x02, 0xf1, 0x51, 0x28, 0x13, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f058
+unsigned char* g_apPauseRemaps[4] = {g_pauseRemap0, g_pauseRemap1, g_pauseRemap2, g_pauseRemap3};
+
+extern char g_szPausePaused[];
+extern char g_szPauseResume[];
+extern char g_szPauseRestart[];
+extern char g_szPauseQuit[];
+extern char g_szPausePleaseWait[];
+extern char g_szPauseLoading[];
+extern char g_szPauseAreYouSure[];
+extern char g_szPauseYes[];
+extern char g_szPauseNo[];
+extern char g_szPauseConnectionLost[];
+
+// GLOBAL: LEMBALL 0x0049f068
+char* g_apPauseMenuLabels[15] = {g_szPausePaused,
+								 g_szPauseResume,
+								 g_szPauseRestart,
+								 g_szPauseQuit,
+								 NULL,
+								 g_szPausePleaseWait,
+								 NULL,
+								 g_szPauseLoading,
+								 NULL,
+								 g_szPauseAreYouSure,
+								 g_szPauseYes,
+								 g_szPauseNo,
+								 NULL,
+								 g_szPauseConnectionLost,
+								 NULL};
+
+// GLOBAL: LEMBALL 0x0049f0a4
+char g_szPausePaused[] = "Paused";
+
+// GLOBAL: LEMBALL 0x0049f0ac
+char g_szPauseResume[] = "Resume";
+
+// GLOBAL: LEMBALL 0x0049f0b4
+char g_szPauseRestart[] = "Restart";
+
+// GLOBAL: LEMBALL 0x0049f0bc
+char g_szPauseQuit[] = "Quit";
+
+// GLOBAL: LEMBALL 0x0049f0c4
+char g_szPausePleaseWait[] = "Please Wait";
+
+// GLOBAL: LEMBALL 0x0049f0d0
+char g_szPauseLoading[] = "Loading...";
+
+// GLOBAL: LEMBALL 0x0049f0dc
+char g_szPauseAreYouSure[] = "Are you sure?";
+
+// GLOBAL: LEMBALL 0x0049f0ec
+char g_szPauseYes[] = "Yes";
+
+// GLOBAL: LEMBALL 0x0049f0f0
+char g_szPauseNo[] = "No";
+
+// GLOBAL: LEMBALL 0x0049f0f4
+char g_szPauseConnectionLost[] = "Connection Lost...";
+
+#include <stddef.h>
+
+extern char* g_apPauseMenuLabels[15];
+
+// FUNCTION: LEMBALL 0x00443af0
+void CPauseWindow::Initialise()
+{
+	int pauseMessage;
+	int index = 0;
+	pauseMessage = m_pauseMessage;
+	for (int menu = 0; menu <= pauseMessage; menu++) {
+		m_menuItemCount = 0;
+		do {
+			m_menuItemCount++;
+			index++;
+		} while (g_apPauseMenuLabels[index] != NULL);
+		index++;
+	}
+	m_minimumSelection = 0;
+	m_unavailableItems = 0;
+	m_menuLabels = g_apPauseMenuLabels + index - m_menuItemCount - 1;
+	switch (pauseMessage) {
+	case PAUSE_MSG_PAUSED:
+		m_minimumSelection = 1;
+		if (!m_receiverState->GetPauser()) {
+			m_minimumSelection++;
+			m_unavailableItems++;
+		}
+		m_selection = m_minimumSelection;
+		break;
+	case PAUSE_MSG_ARE_YOU_SURE:
+		m_minimumSelection = 1;
+		m_selection = 2;
+		break;
+	case PAUSE_MSG_PLEASE_WAIT:
+		m_minimumSelection = 1;
+		m_selection = 1;
+		break;
+	case PAUSE_MSG_LOADING:
+		m_minimumSelection = 1;
+		m_selection = 1;
+		break;
+	case PAUSE_MSG_CONNECTION_LOST:
+		m_minimumSelection = 1;
+		m_selection = 1;
+		break;
+	default:
+		m_selection = 0;
+	}
+	m_initialSelection = m_selection;
+	g_pMasterInputQueue->Attach(this, 0);
+	m_vramSurface = NULL;
+	m_menuItemRects = (CVSPoint*) (void*) new CVSRect[m_menuItemCount];
+	RegisterRemaps();
+	m_loaded = 0;
+	m_borderAnims = NULL;
+}
+
 // FUNCTION: LEMBALL 0x00443c70
 void CPauseWindow::Load()
 {
@@ -371,6 +502,22 @@ CPauseWindow::CPauseWindow(CReceiveWindowState* p_receiverState,
 	Restart();
 }
 
+// FUNCTION: LEMBALL 0x00444790
+CPauseWindow::~CPauseWindow()
+{
+	m_parentWindow->m_hotAreaList->RemoveFromList(this);
+	if (m_lifecycleRefs == 1) {
+		Destroy();
+	}
+	delete[] m_menuItemRects;
+	UnRegisterRemaps();
+	if (m_borderAnims != NULL) {
+		delete[] m_borderAnims;
+	}
+	UnLoad();
+	g_pMasterInputQueue->Detach(this, 0);
+}
+
 // FUNCTION: LEMBALL 0x004448c0
 void CPauseWindow::RegisterRemaps()
 {
@@ -585,76 +732,3 @@ void CPauseWindow::OnDriverChange()
 {
 	Restart();
 }
-
-// GLOBAL: LEMBALL 0x0049f038
-unsigned char g_pauseRemap0[8] = {0x02, 0xf1, 0x51, 0x5d, 0x3d, 0x00, 0x00, 0x00};
-
-// GLOBAL: LEMBALL 0x0049f040
-unsigned char g_pauseRemap1[8] = {0x02, 0xf1, 0x51, 0xe0, 0xe7, 0x00, 0x00, 0x00};
-
-// GLOBAL: LEMBALL 0x0049f048
-unsigned char g_pauseRemap2[8] = {0x02, 0xf1, 0x51, 0xa8, 0x6c, 0x00, 0x00, 0x00};
-
-// GLOBAL: LEMBALL 0x0049f050
-unsigned char g_pauseRemap3[8] = {0x02, 0xf1, 0x51, 0x28, 0x13, 0x00, 0x00, 0x00};
-
-// GLOBAL: LEMBALL 0x0049f058
-unsigned char* g_apPauseRemaps[4] = {g_pauseRemap0, g_pauseRemap1, g_pauseRemap2, g_pauseRemap3};
-
-extern char g_szPausePaused[];
-extern char g_szPauseResume[];
-extern char g_szPauseRestart[];
-extern char g_szPauseQuit[];
-extern char g_szPausePleaseWait[];
-extern char g_szPauseLoading[];
-extern char g_szPauseAreYouSure[];
-extern char g_szPauseYes[];
-extern char g_szPauseNo[];
-extern char g_szPauseConnectionLost[];
-
-// GLOBAL: LEMBALL 0x0049f068
-char* g_apPauseMenuLabels[15] = {g_szPausePaused,
-								 g_szPauseResume,
-								 g_szPauseRestart,
-								 g_szPauseQuit,
-								 NULL,
-								 g_szPausePleaseWait,
-								 NULL,
-								 g_szPauseLoading,
-								 NULL,
-								 g_szPauseAreYouSure,
-								 g_szPauseYes,
-								 g_szPauseNo,
-								 NULL,
-								 g_szPauseConnectionLost,
-								 NULL};
-
-// GLOBAL: LEMBALL 0x0049f0a4
-char g_szPausePaused[] = "Paused";
-
-// GLOBAL: LEMBALL 0x0049f0ac
-char g_szPauseResume[] = "Resume";
-
-// GLOBAL: LEMBALL 0x0049f0b4
-char g_szPauseRestart[] = "Restart";
-
-// GLOBAL: LEMBALL 0x0049f0bc
-char g_szPauseQuit[] = "Quit";
-
-// GLOBAL: LEMBALL 0x0049f0c4
-char g_szPausePleaseWait[] = "Please Wait";
-
-// GLOBAL: LEMBALL 0x0049f0d0
-char g_szPauseLoading[] = "Loading...";
-
-// GLOBAL: LEMBALL 0x0049f0dc
-char g_szPauseAreYouSure[] = "Are you sure?";
-
-// GLOBAL: LEMBALL 0x0049f0ec
-char g_szPauseYes[] = "Yes";
-
-// GLOBAL: LEMBALL 0x0049f0f0
-char g_szPauseNo[] = "No";
-
-// GLOBAL: LEMBALL 0x0049f0f4
-char g_szPauseConnectionLost[] = "Connection Lost...";

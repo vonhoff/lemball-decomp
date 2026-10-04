@@ -6,6 +6,8 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 
+#include "Level/LevelVersions.h"
+
 // FUNCTION: LEMBALL 0x0042bfe0
 CPaintGunManager::CPaintGunManager(CAI* p_ai, int p_capacity)
 	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_PAINT_GUNS,
@@ -118,5 +120,40 @@ void CPaintGunManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, int p
 		m_paintGuns[m_count].Set(p_id, position, 0);
 		m_paintGuns[m_count].m_direction = p_direction;
 		m_count++;
+	}
+}
+
+// FUNCTION: LEMBALL 0x0042c610
+void CPaintGunManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+{
+	unsigned short count = *(unsigned short*) p_data;
+	p_data += 2;
+	unsigned int remaining = count;
+	Initialise(remaining);
+	if (count != 0) {
+		unsigned short id;
+		unsigned short x;
+		unsigned short y;
+		unsigned short z;
+		unsigned short direction;
+		do {
+			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
+				id = *(unsigned short*) p_data;
+				p_data += 2;
+			}
+			else {
+				id = (unsigned short) CGameObject::NextId();
+			}
+			x = *(unsigned short*) p_data;
+			p_data += 2;
+			y = *(unsigned short*) p_data;
+			p_data += 2;
+			z = *(unsigned short*) p_data;
+			p_data += 2;
+			direction = *(unsigned short*) p_data;
+			p_data += 2;
+			Add(id, x, y, z, direction);
+			remaining--;
+		} while (remaining != 0);
 	}
 }

@@ -11,6 +11,42 @@
 
 #include <stddef.h>
 
+// GLOBAL: LEMBALL 0x0049f140
+CBaseFrontendProcess* g_pCurrentFrontendProcess = NULL;
+
+// GLOBAL: LEMBALL 0x0049ca30
+int g_nTestAllLevels = 0;
+
+// GLOBAL: LEMBALL 0x0049f4f0
+int g_nFrontendAutoFlowToggle = 1;
+
+// GLOBAL: LEMBALL 0x004a6284
+int g_nAnimationsDisabled = 0;
+
+// GLOBAL: LEMBALL 0x004a6288
+int g_nZoomEnabled = 0;
+
+// GLOBAL: LEMBALL 0x004a628c
+int g_nMusicAvailable = 0;
+
+// GLOBAL: LEMBALL 0x004a6290
+int g_nEffectsAvailable = 0;
+
+// GLOBAL: LEMBALL 0x004a6294
+int g_nAnimationsAvailable = 0;
+
+// GLOBAL: LEMBALL 0x004a6298
+int g_nZoomAvailable = 0;
+
+// GLOBAL: LEMBALL 0x004a6300
+int g_nDisplayMode = 0;
+
+#include "Game/CGameStatus.h"
+#include "Level/CLevelLoader.h"
+
+#include "Network/Messages/CGameFlaggedMessage.h"
+#include "Visos/Network/Packets/BasePacketHeader.h"
+
 // FUNCTION: LEMBALL 0x00407f20
 void CBaseFrontendProcess::Processing()
 {
@@ -20,6 +56,23 @@ void CBaseFrontendProcess::Processing()
 bool CBaseFrontendProcess::ProcessMessages(Message* p_message)
 {
 	return false;
+}
+
+// FUNCTION: LEMBALL 0x00446720
+CBaseFrontendProcess::CBaseFrontendProcess(CGame* p_game)
+{
+	m_game = p_game;
+	m_userActionMessage = new CUserActionMessage();
+	if (g_pGameStatus->m_skill == SKILL_NETWORK && g_pActiveConnection != NULL) {
+		m_networkWasActive = 1;
+	}
+	else {
+		m_networkWasActive = 0;
+	}
+	if (g_pBaseNetwork != NULL) {
+		g_pBaseNetwork->AttachMessageQueue(this);
+	}
+	g_pCurrentFrontendProcess = this;
 }
 
 // FUNCTION: LEMBALL 0x004467d0
@@ -64,38 +117,44 @@ void CBaseFrontendProcess::Action(eUserActions p_action, eUserActionStages p_sta
 	((CUserActionMessage*) m_userActionMessage)->Send(g_pActiveConnection);
 }
 
+// FUNCTION: LEMBALL 0x004468d0
+int CBaseFrontendProcess::ProcessMsg(Message* p_message)
+{
+	int code = p_message->m_code;
+	Message* message = p_message;
+	CReadPacket* packet;
+	CConnect* connection;
+	unsigned int id;
+
+	if (g_pBaseFrontendDrawer == NULL) {
+		return 0;
+	}
+	if (ProcessMessages(message) == 0) {
+		switch ((unsigned int) message->m_type) {
+		case NETWORK_EVENT_CRITICAL_PACKET_READY:
+			connection = (CConnect*) message->m_payload;
+			packet = (CReadPacket*) message->m_source;
+			if (code != 0) {
+				return 1;
+			}
+			id = ((BasePacketHeader*) packet->m_data)->m_messageId;
+			if (id != GAME_MESSAGE_USER_ACTION) {
+				return ReceiveCritical(id, packet, connection);
+			}
+			((CUserActionMessage*) m_userActionMessage)->Set(packet->m_data + sizeof(BasePacketHeader));
+			packet->m_used = 0;
+			g_pBaseFrontendDrawer->RemoteAction(((CUserActionMessage*) m_userActionMessage)->m_action,
+												((CUserActionMessage*) m_userActionMessage)->m_stage);
+			return 1;
+		default:
+			return 0;
+		}
+	}
+	return 1;
+}
+
 // FUNCTION: LEMBALL 0x00446990
 bool CBaseFrontendProcess::ReceiveCritical(unsigned long p_id, CReadPacket* p_packet, CConnect* p_connection)
 {
 	return false;
 }
-
-// GLOBAL: LEMBALL 0x0049f140
-CBaseFrontendProcess* g_pCurrentFrontendProcess = NULL;
-
-// GLOBAL: LEMBALL 0x0049ca30
-int g_nTestAllLevels = 0;
-
-// GLOBAL: LEMBALL 0x0049f4f0
-int g_nFrontendAutoFlowToggle = 1;
-
-// GLOBAL: LEMBALL 0x004a6284
-int g_nAnimationsDisabled = 0;
-
-// GLOBAL: LEMBALL 0x004a6288
-int g_nZoomEnabled = 0;
-
-// GLOBAL: LEMBALL 0x004a628c
-int g_nMusicAvailable = 0;
-
-// GLOBAL: LEMBALL 0x004a6290
-int g_nEffectsAvailable = 0;
-
-// GLOBAL: LEMBALL 0x004a6294
-int g_nAnimationsAvailable = 0;
-
-// GLOBAL: LEMBALL 0x004a6298
-int g_nZoomAvailable = 0;
-
-// GLOBAL: LEMBALL 0x004a6300
-int g_nDisplayMode = 0;

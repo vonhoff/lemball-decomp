@@ -18,6 +18,46 @@
 
 #pragma intrinsic(memcpy, memset)
 
+#define PLAYER_ONE_RUNTIME_FLAGS 0x200
+#define PLAYER_TWO_RUNTIME_FLAGS 0x100
+
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/C3DVector.h"
+#include "Gameplay/Geometry/CRect3.h"
+#include "ObjectActions.h"
+#include "ObjectTypes.h"
+#include "Map/CGround.h"
+#include "Map/CGroundArray.h"
+#include "Visos/Math/CVSRect.h"
+#include "Gameplay/Geometry/tCoord3d.h"
+
+// GLOBAL: LEMBALL 0x0049cf4c
+unsigned short g_wNetworkLemmingIndex = 0;
+
+// GLOBAL: LEMBALL 0x0049cf50
+unsigned short g_wLocalLemmingIndex = 0;
+
+// GLOBAL: LEMBALL 0x0049d070
+int g_anTurnDelayCursor[16] = {0, 30, 20, 12, 0, 0, 0, 15, 32, 0, 0, 0, 0, 0, 0, 0};
+
+// GLOBAL: LEMBALL 0x0049d0b0
+int g_anTurnDelayTarget[16] = {0, 87, 75, 0, 0, 0, 0, 75, 75, 0, 0, 0, 0, 0, 0, 0};
+
+// GLOBAL: LEMBALL 0x0049d108
+unsigned char g_abBitMasks[OBJECT_ID_BITMAP_BITS_PER_BYTE] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+
+// GLOBAL: LEMBALL 0x004a640c
+int g_wLemmingCount;
+
+// GLOBAL: LEMBALL 0x004a6410
+unsigned char g_abObjectIdBitmap[OBJECT_ID_BITMAP_BYTE_CAPACITY];
+
+// GLOBAL: LEMBALL 0x004a6510
+CGameObject* g_pObjects[OBJECT_REGISTRY_CAPACITY];
+
+// GLOBAL: LEMBALL 0x004a74bc
+unsigned short g_wObjectCount;
+
 // FUNCTION: LEMBALL 0x0040a7f0
 void CGameObject::ForgetObjectLink(unsigned short p_arg0)
 {
@@ -351,8 +391,6 @@ CGameObject::CGameObject(eObjectType p_objectType,
 	g_pObjects[m_objectId] = this;
 }
 
-#define PLAYER_ONE_RUNTIME_FLAGS 0x200
-#define PLAYER_TWO_RUNTIME_FLAGS 0x100
 // FUNCTION: LEMBALL 0x004150d0
 void CGameObject::Restart()
 {
@@ -380,8 +418,6 @@ void CGameObject::Restart()
 		break;
 	}
 }
-#undef PLAYER_ONE_RUNTIME_FLAGS
-#undef PLAYER_TWO_RUNTIME_FLAGS
 
 // FUNCTION: LEMBALL 0x00415160
 CGameObject::~CGameObject()
@@ -896,6 +932,7 @@ void CGameObject::DeleteFirstEntryFromDestinationList()
 	}
 	m_hasDestination = (unsigned short) 0 < m_destinationList->m_count;
 }
+
 // FUNCTION: LEMBALL 0x00415ef0
 void CGameObject::AddDestination(const AICOORD& p_destination)
 {
@@ -1087,16 +1124,6 @@ bool CGameObject::Fall()
 	}
 	return false;
 }
-
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Geometry/C3DVector.h"
-#include "Gameplay/Geometry/CRect3.h"
-#include "ObjectActions.h"
-#include "ObjectTypes.h"
-#include "Map/CGround.h"
-#include "Map/CGroundArray.h"
-#include "Visos/Math/CVSRect.h"
-#include "Gameplay/Geometry/tCoord3d.h"
 
 // FUNCTION: LEMBALL 0x00416340
 bool CGameObject::OnLift(tCoord3d& p_liftPosition)
@@ -1290,6 +1317,32 @@ short CGameObject::NextLoadingId()
 	return 0;
 }
 
+// FUNCTION: LEMBALL 0x004166d0
+short CollectUnusedObjectIds(unsigned short* p_ids, int p_capacity)
+{
+	int count = 0;
+	unsigned short* output;
+	int i = 0;
+	do {
+		if (g_abObjectIdBitmap[i] != OBJECT_ID_BITMAP_BYTE_FULL_MASK) {
+			int j = 0;
+			output = p_ids + count;
+			do {
+				if ((g_abObjectIdBitmap[i] & g_abBitMasks[j]) == 0) {
+					*output++ = j + i * OBJECT_ID_BITMAP_BITS_PER_BYTE;
+					count++;
+					if (count == p_capacity) {
+						return p_capacity;
+					}
+				}
+				j++;
+			} while (j < OBJECT_ID_BITMAP_BITS_PER_BYTE);
+		}
+		i++;
+	} while (i < OBJECT_ID_BITMAP_BYTE_CAPACITY);
+	return count;
+}
+
 // FUNCTION: LEMBALL 0x00416740
 void CGameObject::RegisterId()
 {
@@ -1346,29 +1399,5 @@ bool CGameObject::Process()
 	return false;
 }
 
-// GLOBAL: LEMBALL 0x0049cf4c
-unsigned short g_wNetworkLemmingIndex = 0;
-
-// GLOBAL: LEMBALL 0x0049cf50
-unsigned short g_wLocalLemmingIndex = 0;
-
-// GLOBAL: LEMBALL 0x0049d070
-int g_anTurnDelayCursor[16] = {0, 30, 20, 12, 0, 0, 0, 15, 32, 0, 0, 0, 0, 0, 0, 0};
-
-// GLOBAL: LEMBALL 0x0049d0b0
-int g_anTurnDelayTarget[16] = {0, 87, 75, 0, 0, 0, 0, 75, 75, 0, 0, 0, 0, 0, 0, 0};
-
-// GLOBAL: LEMBALL 0x0049d108
-unsigned char g_abBitMasks[OBJECT_ID_BITMAP_BITS_PER_BYTE] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-
-// GLOBAL: LEMBALL 0x004a640c
-int g_wLemmingCount;
-
-// GLOBAL: LEMBALL 0x004a6410
-unsigned char g_abObjectIdBitmap[OBJECT_ID_BITMAP_BYTE_CAPACITY];
-
-// GLOBAL: LEMBALL 0x004a6510
-CGameObject* g_pObjects[OBJECT_REGISTRY_CAPACITY];
-
-// GLOBAL: LEMBALL 0x004a74bc
-unsigned short g_wObjectCount;
+#undef PLAYER_ONE_RUNTIME_FLAGS
+#undef PLAYER_TWO_RUNTIME_FLAGS
