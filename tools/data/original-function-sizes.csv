@@ -5206,7 +5206,7 @@ address,size,evidence
 0x00473730,29,Ghidra body span
 0x00473750,30,Ghidra body span
 0x00473770,31,Ghidra body span
-0x00473790,316,Ghidra body span
+0x00473790,326,Original x86 RET 0x004738d5 includes post-ExitProcess epilogue; alignment starts 0x004738d6
 0x004738e0,301,Ghidra body span
 0x00473a10,65,Ghidra body span
 0x00473a60,647,Ghidra body span
