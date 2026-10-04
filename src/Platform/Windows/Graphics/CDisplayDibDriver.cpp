@@ -17,7 +17,6 @@
 
 enum {
 	VGA_DAC_INDEX_PORT = 0x3c8,
-	VGA_DAC_DATA_PORT = 0x3c9,
 	VGA_DAC_COMPONENT_SHIFT = 2,
 	VGA_PALETTE_ENTRY_COUNT = 256
 };
@@ -69,12 +68,14 @@ unsigned int CDisplayDibDriver::UpdateDibColourTable(CDrawingContext* p_context,
 													 void* p_colours)
 {
 	SetDIBColorTable((HDC) ((CGdiContext*) p_context)->m_hDC, p_start, p_count, (RGBQUAD*) p_colours);
-	_outp(VGA_DAC_INDEX_PORT, p_start);
+	unsigned short port = VGA_DAC_INDEX_PORT;
+	_outp(port, p_start);
+	port++;
 	RGBQUAD* colour = (RGBQUAD*) p_colours;
 	do {
-		_outp(VGA_DAC_DATA_PORT, colour->rgbRed >> VGA_DAC_COMPONENT_SHIFT);
-		_outp(VGA_DAC_DATA_PORT, colour->rgbGreen >> VGA_DAC_COMPONENT_SHIFT);
-		_outp(VGA_DAC_DATA_PORT, colour->rgbBlue >> VGA_DAC_COMPONENT_SHIFT);
+		_outp(port, colour->rgbRed >> VGA_DAC_COMPONENT_SHIFT);
+		_outp(port, colour->rgbGreen >> VGA_DAC_COMPONENT_SHIFT);
+		_outp(port, colour->rgbBlue >> VGA_DAC_COMPONENT_SHIFT);
 		colour++;
 		p_count--;
 	} while (p_count != 0);
