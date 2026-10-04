@@ -340,7 +340,7 @@ void CAI::Restart()
 		g_pDemo->GetUserPacket(packet, packetSize);
 		level = packet[0];
 		skill = (eSkill) packet[1];
-		*g_pSysOutput << "Starting demo mode for level " << level << " on skill " << (int) skill << "\r\n";
+		*g_pSysOutput << "Starting demo mode for level " << level << " on skill " << (int) skill << "\n";
 		*g_pRandomSeed = AI_DEMO_RANDOM_SEED;
 	}
 	else {
