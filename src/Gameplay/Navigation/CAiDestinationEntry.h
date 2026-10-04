@@ -14,7 +14,7 @@ class CAiDestinationEntry {
 public:
 	CAiDestinationEntry();
 	// FUNCTION: LEMBALL 0x00414cb0
-	AICOORD GetCoordinate() { return m_coordinate; }
+	AICOORD GetCoordinate() { return AICOORD(m_coordinate.m_xFixed, m_coordinate.m_yFixed, m_coordinate.m_zFixed); }
 	eDestinationType m_type;   // 0x00
 	AICOORD m_coordinate;      // 0x04
 	unsigned short m_metadata; // 0x10

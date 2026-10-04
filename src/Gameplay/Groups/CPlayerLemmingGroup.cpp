@@ -72,6 +72,9 @@ bool CPlayerLemmingGroup::Process()
 	int moving = 0;
 	AICOORD position;
 	AICOORD memberPosition;
+	int x;
+	int y;
+	int z;
 	CGenericGroup::CalculateBoundingBox(GROUP_BOUNDING_BOX_RADIUS_PIXELS);
 	CGameObject* member = CGenericGroup::GetFirstElementInGroup();
 	while (member != NULL) {
@@ -120,9 +123,9 @@ bool CPlayerLemmingGroup::Process()
 								position.m_yFixed = activation.m_yFixed;
 								position.m_zFixed = activation.m_zFixed;
 								{
-									int y = member->m_position.m_yFixed;
-									int z = member->m_position.m_zFixed;
-									int x = member->m_position.m_xFixed;
+									y = member->m_position.m_yFixed;
+									z = member->m_position.m_zFixed;
+									x = member->m_position.m_xFixed;
 									memberPosition.m_xFixed = x;
 									memberPosition.m_yFixed = y;
 									memberPosition.m_zFixed = z;
@@ -162,9 +165,9 @@ bool CPlayerLemmingGroup::Process()
 				case GROUP_OBJECT_USAGE_GROUP:
 					m_currentUseElement++;
 					{
-						int y = member->m_position.m_yFixed;
-						int z = member->m_position.m_zFixed;
-						int x = member->m_position.m_xFixed;
+						y = member->m_position.m_yFixed;
+						z = member->m_position.m_zFixed;
+						x = member->m_position.m_xFixed;
 						position.m_xFixed = x;
 						position.m_yFixed = y;
 						position.m_zFixed = z;
@@ -173,9 +176,9 @@ bool CPlayerLemmingGroup::Process()
 					while (member != NULL) {
 						member->AddDestination(position);
 						{
-							int y = member->m_position.m_yFixed;
-							int z = member->m_position.m_zFixed;
-							int x = member->m_position.m_xFixed;
+							y = member->m_position.m_yFixed;
+							z = member->m_position.m_zFixed;
+							x = member->m_position.m_xFixed;
 							position.m_xFixed = x;
 							position.m_yFixed = y;
 							position.m_zFixed = z;

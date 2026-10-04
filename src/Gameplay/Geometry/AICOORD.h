@@ -14,7 +14,7 @@ public:
 		m_zFixed = DEBUG_SENTINEL;
 	}
 
-	inline AICOORD(int p_x, int p_y, int p_z)
+	inline AICOORD(const int& p_x, const int& p_y, const int& p_z)
 	{
 		m_xFixed = p_x;
 		m_yFixed = p_y;
@@ -28,13 +28,7 @@ public:
 		m_zFixed = p_other.m_zFixed;
 		return *this;
 	}
-	// FUNCTION: LEMBALL 0x00410b50
-	AICOORD(const AICOORD& p_other)
-	{
-		m_xFixed = p_other.m_xFixed;
-		m_yFixed = p_other.m_yFixed;
-		m_zFixed = p_other.m_zFixed;
-	}
+	AICOORD(const AICOORD& p_other);
 
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04

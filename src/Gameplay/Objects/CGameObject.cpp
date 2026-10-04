@@ -85,13 +85,13 @@ int CGameObject::Usage()
 // FUNCTION: LEMBALL 0x0040a830 FOLDED
 AICOORD CGameObject::Position()
 {
-	return m_position;
+	return AICOORD(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
 }
 
 // FUNCTION: LEMBALL 0x0040a830 FOLDED
 AICOORD CGameObject::ActivatePosition()
 {
-	return m_position;
+	return AICOORD(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
 }
 
 // FUNCTION: LEMBALL 0x0040a860
@@ -1002,7 +1002,7 @@ AICOORD CGameObject::GetDestination()
 	if (m_destinationList->m_count > 0) {
 		return m_destinationList->m_entries[0].GetCoordinate();
 	}
-	return m_position;
+	return AICOORD(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
 }
 
 // FUNCTION: LEMBALL 0x00416050
