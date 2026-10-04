@@ -1658,8 +1658,8 @@ void C2D::SetMouseShape()
 	else {
 		g_nMouseShapeOnGround = ScreenToGame((int) game.m_x, (int) game.m_y, g_nMouseShapeGameX, g_nMouseShapeGameY);
 		if (g_nMouseShapeOnGround != 0) {
-			m_cursorState = C2D_CURSOR_STATE_GROUND;
 			m_cursorTimestamp = g_dwSimulationTimestamp;
+			m_cursorState = C2D_CURSOR_STATE_GROUND;
 			if (m_mouseButtonDown != 0) {
 				CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_PRESSED);
 				return;
