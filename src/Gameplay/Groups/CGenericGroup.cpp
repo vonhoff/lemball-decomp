@@ -304,9 +304,9 @@ void CGenericGroup::SendNewWaypoint(AICOORD p_coordinate)
 													   p_coordinate.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 													   p_coordinate.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 		g_pGroupFormationManager->TransformFormation(m_formationIndex, (direction - 2) * TRIG_ANGLE_EIGHTH_TURN);
-		int index = 0;
 		int count = GetElementsInGroup();
 		int height = p_coordinate.m_zFixed;
+		int index = 0;
 		while (index < count) {
 			CVector* vector = g_pGroupFormationManager->GetAVector(index);
 			destination.m_xFixed = vector->m_xFixed + p_coordinate.m_xFixed;
