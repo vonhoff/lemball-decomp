@@ -1576,12 +1576,6 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 	unsigned int code1;
 	unsigned int code2;
 	int coordinate;
-	int dx;
-	int dy;
-	int x1;
-	int y1;
-	int x2;
-	int y2;
 
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return 1;
@@ -1621,12 +1615,12 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 			if ((code1 & code2) != 0) {
 				return 1;
 			}
-			x2 = p_x2;
-			x1 = p_x1;
-			dx = x2 - x1;
-			y2 = p_y2;
-			y1 = p_y1;
-			dy = y2 - y1;
+			const int x2 = p_x2;
+			const int x1 = p_x1;
+			const int dx = x2 - x1;
+			const int y2 = p_y2;
+			const int y1 = p_y1;
+			const int dy = y2 - y1;
 			if (code1 != LINE_CLIP_REGION_INSIDE) {
 				if ((code1 & LINE_CLIP_REGION_LEFT) == 0) {
 					if ((code1 & LINE_CLIP_REGION_RIGHT) != 0) {
