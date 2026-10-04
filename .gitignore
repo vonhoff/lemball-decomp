@@ -39,3 +39,4 @@ objdiff.json
 data/*
 *.rsrc
 .gnupg-local/
+.arcade-cache/
