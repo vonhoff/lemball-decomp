@@ -30,6 +30,7 @@
 Deep comparison: `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
 Canonical progress: exact = non-stub, raw 100% assembly comparison score. Stubs contribute zero.
 Effective matches retain raw fuzzy scores. Effective badge includes exact + equivalent code; no effective fields in `report.json`.
+Retain incremental build outputs and saved reports in `build-msvc400`. Remove temporary trial artifacts only; clean builds for stale artifacts, not routine batch cleanup.
 
 ## Documentation changes
 
@@ -39,9 +40,9 @@ The source reconstruction workflow below applies to C/C++ source changes. Tool c
 
 ## Source changes
 
-1. Select a focused target with `tools/next.py` from the current report. When reconstruction-memory tools are available: `get_function_memory(addr)` before editing.
+1. Select a focused target with `tools/next.py` from the current report; sole selection/ranking entry point. Generate missing reports with `tools/report.py` after building. When reconstruction-memory tools are available: `get_function_memory(addr)` before editing.
 2. Read the full function, declarations, relevant original callers/callees. Preserve ABI, dispatch, side effects, reload timing, narrowing, ownership, initialization, allocation failures. Ambiguous diff: inspect raw x86.
-3. Match before/after trials. Revert failed trials; retry with new evidence. `record_attempt`: actual trials only. `record_observation`: durable x86 facts with address/citation. Tools unavailable: continue locally.
+3. Match before/after trials with `tools/match.py 0xADDR`; incremental build included. Use `--no-build` only for current artifacts; `--summary` for compact multi-address checks. Revert failed trials; retry with new evidence. `record_attempt`: actual trials only. `record_observation`: durable x86 facts with address/citation. Tools unavailable: continue locally.
 4. Batch boundary: `tools/report.py --check` snapshots the saved report to `build-msvc400/report-baseline.json`, regenerates progress, and audits prior exact matches. Header/ABI/multi-TU changes: `detect_changes`. Explain regressions. No full reports per speculative trial.
 5. Clang-format touched C/C++; run gate and relevant checks; commit verified work.
 
