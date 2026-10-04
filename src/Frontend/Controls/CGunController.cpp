@@ -367,22 +367,22 @@ void CGunController::DrawSpriteWindow()
 {
 	CGDI* previousGdi;
 	int* offsets;
-	CVSPoint position;
 	unsigned long frame;
 
 	m_spriteSurface->m_renderTarget->GetCurrDB();
-	m_cursorRect[0].m_bounds.m_width = m_spriteSurface->m_renderTarget->m_windowRect.m_width;
-	m_cursorRect[0].m_bounds.m_height = m_spriteSurface->m_renderTarget->m_windowRect.m_height;
-	m_cursorRect[0].m_bounds.m_x = 0;
-	m_cursorRect[0].m_bounds.m_y = 0;
+	{
+		CVSSize size(m_spriteSurface->m_renderTarget->m_windowRect);
+		CVSPoint origin(0, 0);
+		m_cursorRect[0].m_bounds.m_width = size.m_width;
+		m_cursorRect[0].m_bounds.m_height = size.m_height;
+		m_cursorRect[0].m_bounds.CVSPoint::operator=(origin);
+	}
 	m_cursorRect[0].m_flags = CClipRect::CLIP_IGNORE_PARENT;
 	m_cursorRect[0].Draw(m_spriteSurface);
 	offsets = g_anGunSpriteOffsetCompact;
 	if (m_alternateAssets != 1) {
 		offsets = g_anGunSpriteOffset;
 	}
-	position.m_x = 0;
-	position.m_y = 0;
 	switch (m_selectionState) {
 	case GUN_SELECTION_IDLE:
 		frame = 0;
@@ -390,58 +390,75 @@ void CGunController::DrawSpriteWindow()
 			frame = CAnimsManager::GetnAnims(g_gunTurnResourceId) - 1;
 		}
 		m_staticAnim.m_frameState = frame;
-		position.m_x = (short) (m_gunX + offsets[0]);
-		position.m_y = (short) (offsets[1] + m_gunY);
+
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
-		CAnimsManager::DrawAnim(position, g_gunTurnResourceId, 0, (CAnimFrameBASE*) &m_staticAnim, NULL);
+		CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (offsets[1] + m_gunY)),
+								g_gunTurnResourceId,
+								0,
+								(CAnimFrameBASE*) &m_staticAnim,
+								NULL);
 		CAnimsManager::m_gdi = previousGdi;
 		break;
 	case GUN_SELECTION_TURNING:
-		position.m_x = (short) (m_gunX + offsets[0]);
-		position.m_y = (short) (offsets[1] + m_gunY);
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
-		CAnimsManager::DrawAnim(position, g_gunTurnResourceId, 0, (CAnimFrameBASE*) m_sideAnim, NULL);
+		CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (offsets[1] + m_gunY)),
+								g_gunTurnResourceId,
+								0,
+								(CAnimFrameBASE*) m_sideAnim,
+								NULL);
 		CAnimsManager::m_gdi = previousGdi;
 		break;
 	case GUN_SELECTION_AIMING:
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
 		if (m_targetSide == GUN_SIDE_LEFT) {
-			position.m_x = (short) m_projectileX;
-			position.m_y = (short) m_projectileY;
-			CAnimsManager::DrawAnim(position, g_gunBulletLeftResourceId, 0, (CAnimFrameBASE*) m_cursorAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) m_projectileX, (short) m_projectileY),
+									g_gunBulletLeftResourceId,
+									0,
+									(CAnimFrameBASE*) m_cursorAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			position.m_x = (short) (m_gunX + offsets[0]);
-			position.m_y = (short) (m_gunY + offsets[1]);
-			CAnimsManager::DrawAnim(position, g_gunFireLeftResourceId, 0, (CAnimFrameBASE*) m_hitAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (m_gunY + offsets[1])),
+									g_gunFireLeftResourceId,
+									0,
+									(CAnimFrameBASE*) m_hitAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			position.m_x = (short) (m_gunX + offsets[2]);
-			position.m_y = (short) (m_gunY + offsets[3]);
-			CAnimsManager::DrawAnim(position, g_gunEffectLeftResourceId, 0, (CAnimFrameBASE*) m_leftShotAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[2]), (short) (m_gunY + offsets[3])),
+									g_gunEffectLeftResourceId,
+									0,
+									(CAnimFrameBASE*) m_leftShotAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		else {
-			position.m_x = (short) m_projectileX;
-			position.m_y = (short) m_projectileY;
-			CAnimsManager::DrawAnim(position, g_gunBulletRightResourceId, 0, (CAnimFrameBASE*) m_cursorAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) m_projectileX, (short) m_projectileY),
+									g_gunBulletRightResourceId,
+									0,
+									(CAnimFrameBASE*) m_cursorAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			position.m_x = (short) (m_gunX + offsets[0]);
-			position.m_y = (short) (m_gunY + offsets[1]);
-			CAnimsManager::DrawAnim(position, g_gunFireRightResourceId, 0, (CAnimFrameBASE*) m_hitAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (m_gunY + offsets[1])),
+									g_gunFireRightResourceId,
+									0,
+									(CAnimFrameBASE*) m_hitAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			position.m_x = (short) (m_gunX + offsets[4]);
-			position.m_y = (short) (m_gunY + offsets[5]);
-			CAnimsManager::DrawAnim(position, g_gunEffectRightResourceId, 0, (CAnimFrameBASE*) m_leftShotAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[4]), (short) (m_gunY + offsets[5])),
+									g_gunEffectRightResourceId,
+									0,
+									(CAnimFrameBASE*) m_leftShotAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		break;
@@ -449,27 +466,35 @@ void CGunController::DrawSpriteWindow()
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
 		if (m_targetSide == GUN_SIDE_LEFT) {
-			position.m_x = (short) m_projectileEndX;
-			position.m_y = (short) m_projectileEndY;
-			CAnimsManager::DrawAnim(position, g_gunSplatLeftResourceId, 0, (CAnimFrameBASE*) m_rightShotAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) m_projectileEndX, (short) m_projectileEndY),
+									g_gunSplatLeftResourceId,
+									0,
+									(CAnimFrameBASE*) m_rightShotAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			position.m_x = (short) (m_gunX + offsets[0]);
-			position.m_y = (short) (m_gunY + offsets[1]);
-			CAnimsManager::DrawAnim(position, g_gunFireLeftResourceId, 0, (CAnimFrameBASE*) m_hitAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (m_gunY + offsets[1])),
+									g_gunFireLeftResourceId,
+									0,
+									(CAnimFrameBASE*) m_hitAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		else {
-			position.m_x = (short) m_projectileEndX;
-			position.m_y = (short) m_projectileEndY;
-			CAnimsManager::DrawAnim(position, g_gunSplatRightResourceId, 0, (CAnimFrameBASE*) m_rightShotAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) m_projectileEndX, (short) m_projectileEndY),
+									g_gunSplatRightResourceId,
+									0,
+									(CAnimFrameBASE*) m_rightShotAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			position.m_x = (short) (m_gunX + offsets[0]);
-			position.m_y = (short) (m_gunY + offsets[1]);
-			CAnimsManager::DrawAnim(position, g_gunFireRightResourceId, 0, (CAnimFrameBASE*) m_hitAnim, NULL);
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (m_gunY + offsets[1])),
+									g_gunFireRightResourceId,
+									0,
+									(CAnimFrameBASE*) m_hitAnim,
+									NULL);
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		break;
