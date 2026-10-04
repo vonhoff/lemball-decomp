@@ -56,12 +56,17 @@ bool CMasterInput::RemoveItem(void* p_item)
 		CNode* m_next;
 	};
 
+	unsigned int index;
+	unsigned int count = m_itemCount;
 	CNode* node = (CNode*) m_firstItem;
 	CNode* previous;
-	for (unsigned int index = 0; index < m_itemCount; ++index) {
+	for (index = 0; index < count; ++index) {
 		if (node->m_item == p_item) {
 			if (index == 0) {
 				m_firstItem = node->m_next;
+				delete node;
+				--m_itemCount;
+				return true;
 			}
 			else {
 				previous->m_next = node->m_next;
@@ -101,13 +106,12 @@ bool CMasterInput::ProcessItems()
 // FUNCTION: LEMBALL 0x004721e0
 bool CMasterInput::IsEmpty()
 {
-	unsigned int i;
 	unsigned int count = m_itemCount;
 	if (count == 0) {
 		return true;
 	}
 	void** item = (void**) m_firstItem;
-	for (i = 0; i < count; i++) {
+	for (unsigned int i = 0; i < count; i++) {
 		if (item == NULL) {
 			return false;
 		}
