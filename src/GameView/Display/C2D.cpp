@@ -4841,7 +4841,7 @@ void C2D::DrawDemo()
 	// GLOBAL: LEMBALL 0x004a78c4
 	static unsigned long g_lastBlink = CurrentMilliTimer();
 	// GLOBAL: LEMBALL 0x004a78c8
-	// ?$S2@?1??DrawDemo@C2D@@QAEXXZ@4EA
+	// ?$S10@?1??DrawDemo@C2D@@QAEXXZ@4EA
 	// GLOBAL: LEMBALL 0x0049efc8
 	static int g_visible = 0;
 	if (CurrentMilliTimer() - g_lastBlink > DEMO_TEXT_BLINK_INTERVAL_MS) {
