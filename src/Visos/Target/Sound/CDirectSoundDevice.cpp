@@ -18,7 +18,9 @@
 
 enum {
 	DIRECT_SOUND_DEFAULT_SAMPLE_RATE_HZ = 22050,
-	DIRECT_SOUND_FALLBACK_SAMPLE_RATE_HZ = 11025
+	DSOUND_MIN_MAJOR_VERSION = 4,
+	DIRECT_SOUND_FALLBACK_SAMPLE_RATE_HZ = 11025,
+	DSOUND_MIN_MINOR_VERSION = 2
 };
 
 // GLOBAL: LEMBALL 0x004a3318
@@ -79,7 +81,8 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 				CVSOStream& debug = *g_pDebugOutput << "DSOUND version ";
 				CVSOStream& version = debug << (unsigned int) major << ".";
 				version << (unsigned int) minor << "." << versionLow << "\n";
-				if (major >= 4 && (major != 4 || minor >= 2)) {
+				if (major >= DSOUND_MIN_MAJOR_VERSION &&
+					(major != DSOUND_MIN_MAJOR_VERSION || minor >= DSOUND_MIN_MINOR_VERSION)) {
 					valid = 1;
 				}
 				else {
