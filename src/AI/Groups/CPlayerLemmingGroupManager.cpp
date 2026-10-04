@@ -18,6 +18,7 @@ enum {
 	DEFAULT_PLAYER_START_X_MAP_COORDINATE = 0x112,
 	DEFAULT_PLAYER_START_Y_MAP_COORDINATE = 0x34a,
 	PREALLOCATED_PLAYER_GROUP_COUNT = 5,
+	PLAYER_CONTROL_SCAN_COUNT = 8,
 	PLAYER_GROUP_FIRST_LEMMING_DELAY_MS = 3900,
 	PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS = 800,
 	PLAYER_GROUP_TRAP_DOOR_FINAL_DELAY_MS = 4100
@@ -246,14 +247,14 @@ bool CPlayerLemmingGroupManager::MakeParticularGroupPlayerControlled(CPlayerLemm
 		}
 		groups++;
 		index++;
-	} while (index < 8);
+	} while (index < PLAYER_CONTROL_SCAN_COUNT);
 	return false;
 }
 
 // FUNCTION: LEMBALL 0x004189c0
 bool CPlayerLemmingGroupManager::MakeNoGroupsPlayerControlled()
 {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < PLAYER_CONTROL_SCAN_COUNT; i++) {
 		if (m_groups[i] != NULL) {
 			((CPlayerLemmingGroup*) m_groups[i])->SetPlayerControlled(0, NULL);
 		}
