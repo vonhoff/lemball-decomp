@@ -3,9 +3,10 @@
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 
-def functions_by_address(report):
+def functions_by_address(report: dict[str, Any]) -> dict[int, dict[str, Any]]:
     return {
         int(function["metadata"]["virtual_address"]): function
         for unit in report["units"]
@@ -34,7 +35,7 @@ def effective_snapshot(report_bytes, accepted, additional):
     }
 
 
-def load_progress(report_path, effective_path=None):
+def load_progress(report_path, effective_path=None) -> tuple[dict[str, Any], set[int]]:
     """Read a saved batch; reject missing, old-format or mismatched sidecars."""
     try:
         raw = Path(report_path).read_bytes()
@@ -55,7 +56,9 @@ def load_progress(report_path, effective_path=None):
         ) from exc
 
 
-def exact_regressions(before, after):
+def exact_regressions(
+    before: dict[str, Any], after: dict[str, Any]
+) -> dict[int, tuple[dict[str, Any], dict[str, Any] | None]]:
     """Include lost inventory entries; equal total counts can hide regressions."""
     current = functions_by_address(after)
     return {

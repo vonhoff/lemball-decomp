@@ -4,7 +4,7 @@
 import argparse
 from itertools import groupby
 
-from colorama import Style
+from reccmp import color
 from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 from reccmp.types import EntityType
 
@@ -35,7 +35,7 @@ def check_annotations(paths=None):
     for path, errors in groupby(alerts, key=lambda alert: alert.path):
         display_errors(errors, path)
     if alerts:
-        print(Style.RESET_ALL, end="")
+        print(color.Style.RESET_ALL, end="")
     return int(any(alert.is_error() or alert.is_warning() for alert in alerts))
 
 
