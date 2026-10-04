@@ -12,7 +12,7 @@ struct IDirectDrawSurface;
 // VTABLE: LEMBALL 0x004987e8
 class CDirectDrawDriver : public CGraphicsDriver {
 public:
-	CDirectDrawDriver(CVSSize* p_size, int p_fullScreen);
+	CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen);
 	virtual ~CDirectDrawDriver();
 	virtual CDrawingContext* CreateDrawingContext();
 	virtual int DestroyDrawingContext(CDrawingContext* p_drawingContext);

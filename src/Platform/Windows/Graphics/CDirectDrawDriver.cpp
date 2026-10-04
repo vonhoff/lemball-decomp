@@ -23,14 +23,14 @@ enum {
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x00457410
-CDirectDrawDriver::CDirectDrawDriver(CVSSize* p_size, int p_fullScreen)
+CDirectDrawDriver::CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen)
 {
 	WNDCLASSA windowClass;
 	DDSURFACEDESC description;
 	unsigned long cooperativeFlags;
 	long result;
-	m_screenSize.m_width = p_size->m_width;
-	m_screenSize.m_height = p_size->m_height;
+	m_screenSize.m_width = p_size.m_width;
+	m_screenSize.m_height = p_size.m_height;
 	m_directDraw = NULL;
 	m_primarySurface = NULL;
 	m_surface24 = NULL;

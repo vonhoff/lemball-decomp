@@ -91,14 +91,12 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 		}
 		break;
 	case GFX_MODE_DD_FS_640X480: {
-		CVSSize size(640, 480);
-		g_pTargetGraphicsDriver = new CDirectDrawDriver(&size, 1);
+		g_pTargetGraphicsDriver = new CDirectDrawDriver(CVSSize(640, 480), 1);
 		break;
 	}
 	case GFX_MODE_DD_WIN_640X480: {
 		resolvedDriverMode = GFX_MODE_DD_FS_640X480;
-		CVSSize size(640, 480);
-		g_pTargetGraphicsDriver = new CDirectDrawDriver(&size, 1);
+		g_pTargetGraphicsDriver = new CDirectDrawDriver(CVSSize(640, 480), 1);
 		break;
 	}
 	default:
