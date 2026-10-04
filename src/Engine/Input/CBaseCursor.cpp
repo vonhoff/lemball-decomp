@@ -20,7 +20,9 @@
 
 enum {
 	CURSOR_FRAME_UNSELECTED = -1,
-	CURSOR_FOCUS_FLAG_ACTIVE = 0x01
+	CURSOR_FOCUS_FLAG_ACTIVE = 0x01,
+	CURSOR_MOUSE_INPUT_MASK = 0x01,
+	CURSOR_KEYBOARD_INPUT_MASK = 0x06
 };
 
 // GLOBAL: LEMBALL 0x004a9bec
@@ -346,8 +348,8 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	CGDI* gdi;
 	CSurface* surface;
 
-	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) == 0) &&
-		(m_keyboardInput == 0 || (g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) == 0)) {
+	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & CURSOR_MOUSE_INPUT_MASK) == 0) &&
+		(m_keyboardInput == 0 || (g_pMasterInput->m_state & CURSOR_KEYBOARD_INPUT_MASK) == 0)) {
 		return;
 	}
 	if ((g_cursorFocusFlag & CURSOR_FOCUS_FLAG_ACTIVE) == 0) {
@@ -445,8 +447,8 @@ void CBaseCursor::Process()
 	if (m_drawn == 0 && m_systemCursorVisible == 0) {
 		RestoreSystemCursor();
 	}
-	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) == 0) &&
-		(m_keyboardInput == 0 || (g_pMasterInput->m_state & MASTER_INPUT_ACTIVE_STATE_MASK) == 0)) {
+	if ((m_mouseInput == 0 || (g_pMasterInput->m_state & CURSOR_MOUSE_INPUT_MASK) == 0) &&
+		(m_keyboardInput == 0 || (g_pMasterInput->m_state & CURSOR_KEYBOARD_INPUT_MASK) == 0)) {
 		return;
 	}
 	if (m_active == 0) {
