@@ -59,7 +59,7 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Math/CVSPoint.h"
 #include "Visos/Math/CVSRect.h"
 #include "Visos/Math/CVSSize.h"

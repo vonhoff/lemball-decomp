@@ -54,7 +54,7 @@ void CCrate::Restart()
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x0041ccc0
 void CCrate::TriggerContents()

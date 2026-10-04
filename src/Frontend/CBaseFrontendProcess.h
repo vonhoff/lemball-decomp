@@ -1,9 +1,9 @@
 #ifndef LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 
+#include "CUserActionMessage.h"
 #include "Game/CBaseProcess.h"
 #include "Visos/Queues/CBaseQueueHandler.h"
-#include "CUserActionMessage.h"
 class CConnect;
 
 class CGame;
@@ -32,15 +32,7 @@ private:
 	CGame* m_game;                   // 0x24
 };
 
-extern int g_nTestAllLevels;
 extern int g_nFrontendAutoFlowToggle;
-extern int g_nAnimationsDisabled;
-extern int g_nZoomEnabled;
-extern int g_nMusicAvailable;
-extern int g_nEffectsAvailable;
-extern int g_nAnimationsAvailable;
-extern int g_nZoomAvailable;
-extern int g_nDisplayMode;
 
 extern CBaseFrontendProcess* g_pCurrentFrontendProcess;
 

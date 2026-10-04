@@ -12,7 +12,7 @@
 #include "Gameplay/Objects/CViewData.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 enum eTrapDoorSoundState {
 	TRAPDOOR_SOUND_NOT_TRIGGERED = 0,

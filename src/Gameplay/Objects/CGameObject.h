@@ -11,7 +11,7 @@
 #include "ObjectActions.h"
 #include "ObjectIds.h"
 #include "ObjectTypes.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 enum {
 	GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS = 4000,

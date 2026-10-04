@@ -38,7 +38,7 @@ extern char g_szUnknownUserActionReceived[];
 #include "FlowProcesses.h"
 #include "CUserActionMessage.h"
 #include "CoordPair.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Math/CVSPoint.h"
 #include "Visos/Math/CVSRect.h"

@@ -10,7 +10,7 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Math/RandomConstants.h"
 
 enum {

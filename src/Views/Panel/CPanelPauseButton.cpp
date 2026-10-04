@@ -6,7 +6,7 @@
 #include "../Display/C2D.h"
 #include "../Sound/CSoundView.h"
 #include "CPanel.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Queues/Message.h"
 #include "Visos/Input/CBaseCursor.h"
 #include "Visos/Controls/CGraphicButton.h"

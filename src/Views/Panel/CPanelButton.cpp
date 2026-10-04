@@ -15,7 +15,7 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "CPanel.h"
 #include "CPanelLemming.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Animation/CAnim.h"
 #include "Visos/Math/CVSPoint.h"
 #include "Visos/Math/CVSRect.h"

@@ -28,7 +28,7 @@ void CCatapult::Restart()
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 #include <stddef.h>
 

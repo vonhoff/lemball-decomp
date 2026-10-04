@@ -18,7 +18,7 @@
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Diagnostics/VsDebug.h"
 #include "Visos/Network/Protocol/CNetworkMessage.h"
 

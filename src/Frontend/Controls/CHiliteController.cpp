@@ -14,7 +14,7 @@
 #include "ControlMessageIds.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/Controls/HiliteControllerJunction.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CStaticAnim.h"
 #include "Visos/Queues/Message.h"

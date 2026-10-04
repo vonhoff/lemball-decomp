@@ -1,7 +1,7 @@
 #include "CGunButton.h"
 
 #include "../../Views/Sound/CSoundView.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Queues/Message.h"
 
 // FUNCTION: LEMBALL 0x0044c200

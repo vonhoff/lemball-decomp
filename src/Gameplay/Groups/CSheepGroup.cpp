@@ -9,7 +9,7 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "CGenericGroup.h"
 #include "Gameplay/Objects/CViewData.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Math/CFixed.h"
 #include "Visos/Math/CVector.h"
 #include "Visos/Math/RandomConstants.h"

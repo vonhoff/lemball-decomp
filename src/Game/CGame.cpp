@@ -1,5 +1,7 @@
 #include "CGame.h"
 
+#include "Game/GameMain.h"
+
 #include "Gameplay/Simulation/CAI.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CBaseFrontendProcess.h"

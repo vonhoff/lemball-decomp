@@ -10,7 +10,7 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 enum {
 	MINE_DETONATION_DURATION_TICKS = 20,

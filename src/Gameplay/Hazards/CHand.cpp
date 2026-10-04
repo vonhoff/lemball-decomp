@@ -11,7 +11,7 @@
 #include "Gameplay/Objects/CViewData.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 #define HAND_PLAYER_TRIGGER_HALF_WIDTH 16
 #define HAND_PLAYER_TRIGGER_DOWNWARD_RANGE 48

@@ -24,7 +24,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Frontend/FlowProcesses.h"
 #include "Frontend/CoordPair.h"
 #include "CSuccFailAnimWnd.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Math/CVSPoint.h"
 #include "Visos/Math/CVSRect.h"
 #include "Visos/Math/CVSSize.h"

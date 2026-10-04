@@ -11,7 +11,7 @@
 #include "Visos/Resources/Types/CResANIM.h"
 #include "CHiliteController.h"
 #include "Frontend/Controls/ButtonActionMessages.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Queues/Message.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 

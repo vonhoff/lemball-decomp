@@ -2,7 +2,7 @@
 
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x00422c40
 int CBonus::Collected()

@@ -13,7 +13,7 @@
 #include "Gameplay/Objects/ObjectInteractionStates.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 enum {
 	AMMO_PICKUP_ACTIVATION_DURATION_TICKS = 8,

@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_SOUND_CSOUNDVIEW_H
 #define LEMBALL_VIEWS_SOUND_CSOUNDVIEW_H
 
-#include "SoundEffects.h"
+#include "Game/SoundEffects.h"
 class CLoadUpdate;
 
 class AICOORD;

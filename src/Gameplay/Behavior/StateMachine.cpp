@@ -6,7 +6,7 @@
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "StateEntry.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 #include <stddef.h>
 

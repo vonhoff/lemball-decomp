@@ -156,7 +156,7 @@ void CRocket::DoActivate()
 #include "Gameplay/Objects/CViewData.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x004273f0
 void CRocket::GetViewData(CViewData& p_viewData)

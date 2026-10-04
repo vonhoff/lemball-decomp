@@ -1,5 +1,7 @@
 #include "CMainOptions1Drawer.h"
 
+#include "Game/GameMain.h"
+
 #include "Game/CGameStatus.h"
 #include "Level/CLevelLoader.h"
 #include "Frontend/CBaseFrontendProcess.h"

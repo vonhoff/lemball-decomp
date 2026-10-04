@@ -14,7 +14,7 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "../Sound/CSoundView.h"
 #include "Views/Pause/CPauseVramHandler.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Animation/CAnim.h"
 #include "Visos/Text/CTextManager.h"
 #include "Visos/Math/CVSPoint.h"

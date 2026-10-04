@@ -6,7 +6,7 @@ enum eLemmingViewStatusFlag {
 	LEMMING_VIEW_STATUS_IN_GROUP = 0x02
 };
 
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "ObjectActions.h"
 #include "ObjectIds.h"

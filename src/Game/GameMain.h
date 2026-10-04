@@ -12,6 +12,15 @@ void DisplayHelp();
 int VSmain(int p_argc, char** p_argv);
 int DoCommandLine(int p_argc, char** p_argv);
 
+extern int g_nTestAllLevels;
+extern int g_nAnimationsDisabled;
+extern int g_nZoomEnabled;
+extern int g_nMusicAvailable;
+extern int g_nEffectsAvailable;
+extern int g_nAnimationsAvailable;
+extern int g_nZoomAvailable;
+extern int g_nDisplayMode;
+
 extern int g_nSoundDebugRequested;
 extern int g_nStartupGraphicsDialogRequested;
 extern int g_nStoredLevelDemoModeEnabled;

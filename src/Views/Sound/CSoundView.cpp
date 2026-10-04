@@ -1,5 +1,7 @@
 #include "CSoundView.h"
 
+#include "Game/GameMain.h"
+
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Game/CDemo.h"
@@ -10,7 +12,7 @@
 #include "../../Visos/Resources/Manifest.h"
 #include "../../Visos/Sound/CSoundManager.h"
 #include "Frontend/Loading/CLoadUpdate.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Math/FixedPoint.h"
 #include "Visos/Math/RandomConstants.h"
 

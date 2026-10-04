@@ -8,7 +8,7 @@
 #include "../Sound/CSoundView.h"
 #include "CPanelLemming.h"
 #include "CPanelPauseButton.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Queues/CBaseQueueHandler.h"
 #include "Visos/Math/CVSPoint.h"
 #include "Visos/Math/CVSRect.h"

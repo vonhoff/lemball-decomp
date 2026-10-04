@@ -1,5 +1,7 @@
 #include "CPreviewDrawer.h"
 
+#include "Game/GameMain.h"
+
 #include "Game/CGameStatus.h"
 #include "Level/CLevelLoader.h"
 #include "Level/tPreviewData.h"

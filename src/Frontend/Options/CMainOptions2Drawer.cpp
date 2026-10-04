@@ -1,4 +1,6 @@
 #include "CMainOptions2Drawer.h"
+
+#include "Game/GameMain.h"
 #include "Frontend/FrontendLayoutMode.h"
 
 #include "Frontend/CBaseFrontendProcess.h"

@@ -15,7 +15,7 @@
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
-#include "Views/Sound/SoundEffects.h"
+#include "Game/SoundEffects.h"
 #include "Visos/Animation/CAnimsManager.h"
 #include "Visos/Animation/CStaticAnim.h"
 #include "Visos/Math/CVSPoint.h"

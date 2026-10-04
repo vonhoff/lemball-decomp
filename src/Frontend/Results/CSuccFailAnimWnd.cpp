@@ -1,5 +1,7 @@
 #include "CSuccFailAnimWnd.h"
 
+#include "Game/GameMain.h"
+
 #include "Game/CGame.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Views/Sound/CSoundView.h"

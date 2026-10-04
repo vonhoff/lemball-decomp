@@ -1,19 +1,19 @@
 #include "GameMain.h"
 
-#include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CBaseFrontendProcess.h"
-#include "Platform/Windows/Entry.h"
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Math/VSTrig.h"
-#include "Visos/Strings/VsString.h"
-#include "Platform/Windows/Graphics/CGraphicsDriver.h"
-#include "Platform/Windows/Graphics/CGraphicsState.h"
-#include "Level/CLevelLoader.h"
-#include "Visos/Startup/PreInit.h"
 #include "CDemo.h"
 #include "CGame.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "GameTime.h"
+#include "Level/CLevelLoader.h"
+#include "Platform/Windows/Entry.h"
+#include "Platform/Windows/Graphics/CGraphicsDriver.h"
+#include "Platform/Windows/Graphics/CGraphicsState.h"
+#include "Visos/Math/VSTrig.h"
+#include "Visos/Startup/PreInit.h"
+#include "Visos/Streams/CVSOStream.h"
+#include "Visos/Strings/VsString.h"
 
 #include <string.h>
 
@@ -30,6 +30,30 @@ enum {
 };
 
 extern "C" __declspec(dllimport) void* __stdcall LoadIconA(void* p_instance, const char* p_name);
+
+// GLOBAL: LEMBALL 0x0049ca30
+int g_nTestAllLevels = 0;
+
+// GLOBAL: LEMBALL 0x004a6284
+int g_nAnimationsDisabled = 0;
+
+// GLOBAL: LEMBALL 0x004a6288
+int g_nZoomEnabled = 0;
+
+// GLOBAL: LEMBALL 0x004a628c
+int g_nMusicAvailable = 0;
+
+// GLOBAL: LEMBALL 0x004a6290
+int g_nEffectsAvailable = 0;
+
+// GLOBAL: LEMBALL 0x004a6294
+int g_nAnimationsAvailable = 0;
+
+// GLOBAL: LEMBALL 0x004a6298
+int g_nZoomAvailable = 0;
+
+// GLOBAL: LEMBALL 0x004a6300
+int g_nDisplayMode = 0;
 
 // FUNCTION: LEMBALL 0x00406160
 PreInit* VSPreInit(PreInit* p_preInit)
