@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILERWSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILERWSOCKET_H
 
-#include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
-#include "Platform/Windows/Network/FileTransport/CFileWriteSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
 #include "Multiplayer/Transport/CRwSocket.h"
 
 // SIZE 0x154

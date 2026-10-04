@@ -1,4 +1,4 @@
-#include "Platform/Windows/Network/FileTransport/CFileBroadcast.h"
+#include "Multiplayer/Transport/FileTransport/CFileBroadcast.h"
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Streams/CVSOStream.h"
@@ -6,19 +6,19 @@
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Protocol/CHeaders.h"
 #include "Multiplayer/Transport/Protocol/CPortsMessage.h"
-#include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
+
 #include "Multiplayer/Transport/CNetworkAddress.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/Message.h"
 #include "Multiplayer/Transport/CBroadcast.h"
-#include "Platform/Windows/Network/FileTransport/CFileCommonSocket.h"
-#include "Platform/Windows/Network/FileTransport/CFileOpenManagement.h"
-#include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
-#include "Platform/Windows/Network/FileTransport/CFileWriteSocket.h"
-#include "Platform/Windows/Network/FileTransport/CNetworkFile.h"
-#include "Platform/Windows/Network/FileTransport/COpenCount.h"
+#include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileOpenManagement.h"
+#include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
+#include "Multiplayer/Transport/FileTransport/CNetworkFile.h"
+#include "Multiplayer/Transport/FileTransport/COpenCount.h"
 
 #include <string.h>
 
@@ -254,3 +254,6 @@ void CFileBroadcast::Closed(int p_notifyPeer)
 
 // GLOBAL: LEMBALL 0x004a2de0
 CPortsMessage* g_pFileBroadcast = NULL;
+
+// GLOBAL: LEMBALL 0x004a2de4
+char* g_pFileBroadcastData = NULL;

@@ -1,4 +1,4 @@
-#include "Platform/Windows/Network/FileTransport/CFileWriteSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
 
 #include "Multiplayer/Transport/Protocol/CHeaderMessage.h"
 #include "Multiplayer/Transport/Protocol/CHeaders.h"
@@ -7,9 +7,9 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-#include "Platform/Windows/Network/FileTransport/CFileBaseSocket.h"
-#include "Platform/Windows/Network/FileTransport/CFileCommonSocket.h"
-#include "Platform/Windows/Network/FileTransport/CNetworkFile.h"
+#include "Multiplayer/Transport/FileTransport/CFileBaseSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
+#include "Multiplayer/Transport/FileTransport/CNetworkFile.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
 
 #include <string.h>

@@ -1,7 +1,7 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 
 #include "Multiplayer/Transport/CNetworkAddress.h"
-#include "Platform/WinSock/WinSock.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 
 #include <string.h>
 

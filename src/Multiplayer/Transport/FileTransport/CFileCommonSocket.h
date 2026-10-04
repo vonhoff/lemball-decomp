@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CFILECOMMONSOCKET_H
 
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
-#include "Platform/Windows/Network/FileTransport/CNetworkFile.h"
+#include "Multiplayer/Transport/FileTransport/CNetworkFile.h"
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x0049a4f0 CBaseCommonSocket

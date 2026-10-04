@@ -2,9 +2,9 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/Network/FileTransport/CFileBroadcast.h"
-#include "Platform/Windows/Network/FileTransport/CFileConnect.h"
-#include "Platform/Windows/Network/FileTransport/CFileNetworkAddress.h"
+#include "Multiplayer/Transport/FileTransport/CFileBroadcast.h"
+#include "Multiplayer/Transport/FileTransport/CFileConnect.h"
+#include "Multiplayer/Transport/FileTransport/CFileNetworkAddress.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Platform/Windows/ThreadConstants.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
@@ -138,6 +138,3 @@ void* g_hFileNetworkThread = NULL;
 
 // GLOBAL: LEMBALL 0x004a2268
 int g_fileNetworkWindowClassRegistered = 0;
-
-// GLOBAL: LEMBALL 0x004a2de4
-char* g_pFileBroadcastData = NULL;

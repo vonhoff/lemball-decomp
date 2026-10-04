@@ -9,7 +9,7 @@ enum {
 #include "DirectSound.h"
 #include "Engine/Sound/EffectFormat.h"
 
-#include "Platform/DirectX/DirectSound.h"
+#include "Platform/Windows/DirectX/DirectSound.h"
 
 #include <string.h>
 

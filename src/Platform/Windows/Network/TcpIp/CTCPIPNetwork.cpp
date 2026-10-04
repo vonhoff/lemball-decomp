@@ -5,7 +5,7 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPConnect.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
-#include "Platform/WinSock/WinSock.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Platform/Windows/ThreadConstants.h"

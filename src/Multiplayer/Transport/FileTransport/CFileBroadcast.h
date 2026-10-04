@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CFILEBROADCAST_H
 
 #include "Multiplayer/Transport/CBroadcast.h"
-#include "Platform/Windows/Network/FileTransport/CFileOpenManagement.h"
+#include "Multiplayer/Transport/FileTransport/CFileOpenManagement.h"
 
 class CPortsMessage;
 
@@ -38,6 +38,7 @@ private:
 #pragma warning(default : 4250)
 
 extern CPortsMessage* g_pFileBroadcast;
+extern char* g_pFileBroadcastData;
 
 // SYNTHETIC: LEMBALL 0x0047bb60
 // CFileBroadcast::`scalar deleting destructor'

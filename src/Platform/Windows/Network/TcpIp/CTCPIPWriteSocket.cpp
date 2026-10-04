@@ -3,7 +3,7 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
-#include "Platform/WinSock/WinSock.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
 

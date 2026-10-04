@@ -4,7 +4,7 @@
 #include "Platform/Windows/Network/CNetworkWnd.h"
 
 extern int g_socketWindowClassRegistered;
-#include "Platform/WinSock/WinSock.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 
 #include <stddef.h>
 

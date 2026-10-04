@@ -4,7 +4,7 @@
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
-#include "Platform/WinSock/WinSock.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 
 // SIZE 0xdc
 // VTABLE: LEMBALL 0x0049a088 CNetworkWnd

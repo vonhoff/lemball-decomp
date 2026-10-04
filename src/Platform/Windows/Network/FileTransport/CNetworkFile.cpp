@@ -1,4 +1,4 @@
-#include "Platform/Windows/Network/FileTransport/CNetworkFile.h"
+#include "Multiplayer/Transport/FileTransport/CNetworkFile.h"
 
 #include "Engine/Streams/CVSOStream.h"
 

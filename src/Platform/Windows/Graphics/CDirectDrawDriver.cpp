@@ -6,7 +6,7 @@
 #include "CDirectDrawContext.h"
 #include "CDirectDrawSurface.h"
 #include "DirectDrawError.h"
-#include "Platform/DirectX/DirectDraw.h"
+#include "Platform/Windows/DirectX/DirectDraw.h"
 
 #define WIN32_LEAN_AND_MEAN
 

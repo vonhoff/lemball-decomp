@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILEOPENMANAGEMENT_H
 #define LEMBALL_VISOS_NETWORK_CFILEOPENMANAGEMENT_H
 
-#include "Platform/Windows/Network/FileTransport/CFileRWSocket.h"
-#include "Platform/Windows/Network/FileTransport/COpenCount.h"
+#include "Multiplayer/Transport/FileTransport/CFileRWSocket.h"
+#include "Multiplayer/Transport/FileTransport/COpenCount.h"
 
 // SIZE 0x34
 // VTABLE: LEMBALL 0x0049a9f4 CFileCommonSocket

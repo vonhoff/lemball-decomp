@@ -4,7 +4,7 @@
 #include "Platform/Windows/Windowing/CWnd.h"
 #include "CDirectSoundEffect.h"
 #include "DirectSound.h"
-#include "Platform/DirectX/DirectSound.h"
+#include "Platform/Windows/DirectX/DirectSound.h"
 
 #include <string.h>
 

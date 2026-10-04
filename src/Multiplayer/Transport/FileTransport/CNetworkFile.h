@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CNETWORKFILE_H
 #define LEMBALL_VISOS_NETWORK_CNETWORKFILE_H
 
-#include "Platform/Windows/Network/FileTransport/CAbstractFile.h"
+#include "Multiplayer/Transport/FileTransport/CAbstractFile.h"
 
 // SIZE 0x14
 // VTABLE: LEMBALL 0x0049a628

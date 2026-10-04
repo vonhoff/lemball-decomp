@@ -11,7 +11,7 @@
 
 #pragma intrinsic(strcpy)
 
-#include "Platform/WinSock/WinSock.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

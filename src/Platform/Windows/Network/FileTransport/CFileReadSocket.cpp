@@ -1,4 +1,4 @@
-#include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
 
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/Protocol/CHeaderMessage.h"
@@ -8,9 +8,9 @@
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-#include "Platform/Windows/Network/FileTransport/CFileBaseSocket.h"
-#include "Platform/Windows/Network/FileTransport/CFileCommonSocket.h"
-#include "Platform/Windows/Network/FileTransport/CNetworkFile.h"
+#include "Multiplayer/Transport/FileTransport/CFileBaseSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
+#include "Multiplayer/Transport/FileTransport/CNetworkFile.h"
 #include "Multiplayer/Transport/CReadSocket.h"
 
 // FUNCTION: LEMBALL 0x00479930

@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CFILECONNECT_H
 
 #include "Multiplayer/Transport/CConnect.h"
-#include "Platform/Windows/Network/FileTransport/CFileOpenManagement.h"
+#include "Multiplayer/Transport/FileTransport/CFileOpenManagement.h"
 
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x0049ab68 CFileCommonSocket

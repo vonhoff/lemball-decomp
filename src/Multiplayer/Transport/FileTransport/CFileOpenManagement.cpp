@@ -1,9 +1,9 @@
-#include "Platform/Windows/Network/FileTransport/CFileOpenManagement.h"
+#include "Multiplayer/Transport/FileTransport/CFileOpenManagement.h"
 
-#include "Platform/Windows/Network/FileTransport/CFileCommonSocket.h"
-#include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
-#include "Platform/Windows/Network/FileTransport/CFileWriteSocket.h"
-#include "Platform/Windows/Network/FileTransport/COpenCount.h"
+#include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
+#include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
+#include "Multiplayer/Transport/FileTransport/COpenCount.h"
 
 // FUNCTION: LEMBALL 0x0047a470
 bool CFileOpenManagement::IncOpenCount()
