@@ -90,7 +90,7 @@ void CTrackWindow::Move(const CVSPoint& p_position)
 void CTrackWindow::OnPaint(const CVSRect& p_rect)
 {
 	int height = m_trackRect.m_height;
-	int width = (int) m_trackRect.m_width * m_value / TRACK_VALUE_PERCENT_SCALE;
+	short width = (short) ((int) m_trackRect.m_width * m_value / TRACK_VALUE_PERCENT_SCALE);
 	if (m_value != 0) {
 		m_line.m_colour = TRACK_PROGRESS_COLOUR_INDEX;
 		m_line.m_bounds.m_width = width;
