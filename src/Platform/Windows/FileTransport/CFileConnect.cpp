@@ -1,19 +1,19 @@
 #include "CFileConnect.h"
 
-#include "Visos/Time/VsTime.h"
-#include "Visos/Network/Protocol/CHeaders.h"
+#include "Engine/Time/VsTime.h"
+#include "Engine/Network/Protocol/CHeaders.h"
 #include "CFileNetwork.h"
 #include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
-#include "Visos/Network/NetworkConstants.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/NetworkConstants.h"
+#include "Engine/Network/CConnect.h"
 #include "CFileCommonSocket.h"
 #include "CFileOpenManagement.h"
 #include "CFileReadSocket.h"
 #include "CFileWriteSocket.h"
 #include "CNetworkFile.h"
 #include "COpenCount.h"
-#include "Visos/Network/CReadSocket.h"
-#include "Visos/Network/CWriteSocket.h"
+#include "Engine/Network/CReadSocket.h"
+#include "Engine/Network/CWriteSocket.h"
 
 #include <string.h>
 

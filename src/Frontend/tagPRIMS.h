@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_TAGPRIMS_H
 #define LEMBALL_VISOS_FOUNDATION_TAGPRIMS_H
 
-#include "Visos/Graphics/Primitives/CBigBitmap.h"
-#include "Visos/Graphics/Primitives/CClipRect.h"
-#include "Visos/Graphics/Primitives/CCopyToBackBuff.h"
-#include "Visos/Graphics/Primitives/CDrawingMark.h"
-#include "Visos/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CClipRect.h"
+#include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
+#include "Engine/Graphics/Primitives/CDrawingMark.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
 
 // SIZE 0x260
 class tagPRIMS {

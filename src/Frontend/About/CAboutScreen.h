@@ -1,14 +1,14 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_CABOUTSCREEN_H
 #define LEMBALL_FRONTEND_SUPPORT_CABOUTSCREEN_H
 
-#include "Visos/Queues/CBaseQueueHandler.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
-#include "Visos/Graphics/Primitives/CBigBitmap.h"
-#include "Visos/Graphics/Primitives/CClipRect.h"
-#include "Visos/Windows/CDrawer.h"
-#include "Visos/Graphics/Primitives/CDrawingMark.h"
-#include "Visos/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CClipRect.h"
+#include "Engine/Windows/CDrawer.h"
+#include "Engine/Graphics/Primitives/CDrawingMark.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
 
 class CGDI;
 class CMain2DDisplay;

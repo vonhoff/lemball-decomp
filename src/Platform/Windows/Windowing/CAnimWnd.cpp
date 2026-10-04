@@ -1,16 +1,16 @@
 #include "CAnimWnd.h"
 
 #include "Platform/Windows/Entry.h"
-#include "Visos/Streams/CVSIOs.h"
-#include "Visos/Diagnostics/VsDebug.h"
-#include "Visos/Resources/Types/CResMOVIE.h"
+#include "Engine/Streams/CVSIOs.h"
+#include "Engine/Diagnostics/VsDebug.h"
+#include "Engine/Resources/Types/CResMOVIE.h"
 #include "Platform/Windows/Graphics/WinGDraw.h"
 #include "Platform/Windows/CPlatformServices.h"
 #include "CGWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Strings/CString.h"
-#include "Visos/Resources/Types/CResSTRING.h"
+#include "Engine/Strings/CString.h"
+#include "Engine/Resources/Types/CResSTRING.h"
 
 // clang-format off
 #include <windows.h>

@@ -7,7 +7,7 @@
 #include "Gameplay/Objects/CViewData.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Visos/Math/CFixed.h"
+#include "Engine/Math/CFixed.h"
 
 enum {
 	BALLOON_POST_BALLOON_1_ACTIVE_MASK = 0x01,

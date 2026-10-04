@@ -1,6 +1,6 @@
 #include "CDirectDrawSurface.h"
 
-#include "Visos/Streams/CVSOStream.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "DirectDrawError.h"
 #include "Platform/DirectX/IDirectDrawSurface.h"
 

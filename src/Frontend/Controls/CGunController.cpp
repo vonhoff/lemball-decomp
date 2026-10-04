@@ -1,14 +1,14 @@
 #include "CGunController.h"
 
-#include "../../Views/Sound/CSoundView.h"
-#include "../../Visos/Animation/CPlayThruAnim.h"
-#include "Visos/Queues/CBaseQueue.h"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Time/VsTime.h"
-#include "Visos/Graphics/Primitives/CGDI.h"
-#include "Visos/Controls/CGraphicButton.h"
-#include "Visos/Graphics/Surfaces/CSurface.h"
-#include "../../Visos/Resources/Manifest.h"
+#include "../../GameView/Sound/CSoundView.h"
+#include "../../Engine/Animation/CPlayThruAnim.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Time/VsTime.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Controls/CGraphicButton.h"
+#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "../../Engine/Resources/Manifest.h"
 #include "CSpriteWindow.h"
 #include "CTrackWindow.h"
 #include "CGunButtons.h"
@@ -16,21 +16,21 @@
 #include "ControlMessageIds.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/Controls/GunControllerJunction.h"
-#include "Game/SoundEffects.h"
-#include "Visos/Animation/CAnimsManager.h"
-#include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
-#include "Visos/Queues/Message.h"
-#include "Visos/Graphics/Primitives/CClipRect.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Animation/CAnimsManager.h"
+#include "Engine/Animation/CStaticAnim.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-#include "Visos/Resources/ResourceLimits.h"
+#include "Engine/Resources/ResourceLimits.h"
 
 #include <stdlib.h>
 
 class CAnimFrameBASE;
 
-#include "Visos/Math/CVSMath.h"
+#include "Engine/Math/CVSMath.h"
 
 enum {
 	GUN_CONTROLLER_CURSOR_ANIMATION_DURATION_MS = 250,
@@ -63,7 +63,7 @@ int g_anGunSpriteOffset[18] = {0, 12, -8, -2, 52, -2, -13, 28, 116, 0, 0, -13, 1
 // GLOBAL: LEMBALL 0x0049fab8
 int g_anGunSpriteOffsetCompact[20] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0, 10, 14, -8, 0, -12, -2, 0, 0};
 
-#include "Views/Sound/CSoundView.h"
+#include "GameView/Sound/CSoundView.h"
 #include "GunControllerJunction.h"
 
 // FUNCTION: LEMBALL 0x0044c870

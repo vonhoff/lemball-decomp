@@ -1,7 +1,7 @@
 #include "CBalloon.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
@@ -10,8 +10,8 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
-#include "Game/SoundEffects.h"
-#include "Visos/Math/RandomConstants.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Math/RandomConstants.h"
 
 enum {
 	BALLOON_ANIMATION_PHASE_RANDOMIZATION_RANGE_MS = 4096

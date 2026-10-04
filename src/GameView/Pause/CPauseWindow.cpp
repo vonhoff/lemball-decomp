@@ -1,0 +1,734 @@
+#include "CPauseWindow.h"
+
+#include "Application/GameMain.h"
+#include "Frontend/CBaseFrontendProcess.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Graphics/Palettes/CBasePalManager.h"
+#include "Platform/Windows/Graphics/CCursor.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Controls/CHotAreaList.h"
+#include "CReceiveWindowState.h"
+#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Engine/Resources/Types/CResANIM.h"
+#include "Engine/Resources/Types/CResFONT.h"
+#include "../../Engine/Resources/Manifest.h"
+#include "../Sound/CSoundView.h"
+#include "GameView/Pause/CPauseVramHandler.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Animation/CAnim.h"
+#include "Engine/Text/CTextManager.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/Input/CBaseCursor.h"
+#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Controls/CHotAreaHandler.h"
+#include "Platform/Windows/Windowing/CPVGWnd.h"
+#include "Engine/Windows/CPVWnd.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Resources/Types/CResZRLE.h"
+#include "Engine/Resources/ResourceLimits.h"
+
+enum ePauseSelectionKey {
+	PAUSE_KEY_SELECT_OPTION = 0x2a,
+	PAUSE_PLATFORM_DELETE_KEY = 0x2e
+};
+
+extern unsigned char* g_apPauseRemaps[4];
+extern char* g_apPauseMenuLabels[15];
+
+// GLOBAL: LEMBALL 0x0049f038
+unsigned char g_pauseRemap0[8] = {0x02, 0xf1, 0x51, 0x5d, 0x3d, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f040
+unsigned char g_pauseRemap1[8] = {0x02, 0xf1, 0x51, 0xe0, 0xe7, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f048
+unsigned char g_pauseRemap2[8] = {0x02, 0xf1, 0x51, 0xa8, 0x6c, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f050
+unsigned char g_pauseRemap3[8] = {0x02, 0xf1, 0x51, 0x28, 0x13, 0x00, 0x00, 0x00};
+
+// GLOBAL: LEMBALL 0x0049f058
+unsigned char* g_apPauseRemaps[4] = {g_pauseRemap0, g_pauseRemap1, g_pauseRemap2, g_pauseRemap3};
+
+extern char g_szPausePaused[];
+extern char g_szPauseResume[];
+extern char g_szPauseRestart[];
+extern char g_szPauseQuit[];
+extern char g_szPausePleaseWait[];
+extern char g_szPauseLoading[];
+extern char g_szPauseAreYouSure[];
+extern char g_szPauseYes[];
+extern char g_szPauseNo[];
+extern char g_szPauseConnectionLost[];
+
+// GLOBAL: LEMBALL 0x0049f068
+char* g_apPauseMenuLabels[15] = {g_szPausePaused,
+								 g_szPauseResume,
+								 g_szPauseRestart,
+								 g_szPauseQuit,
+								 NULL,
+								 g_szPausePleaseWait,
+								 NULL,
+								 g_szPauseLoading,
+								 NULL,
+								 g_szPauseAreYouSure,
+								 g_szPauseYes,
+								 g_szPauseNo,
+								 NULL,
+								 g_szPauseConnectionLost,
+								 NULL};
+
+// GLOBAL: LEMBALL 0x0049f0a4
+char g_szPausePaused[] = "Paused";
+
+// GLOBAL: LEMBALL 0x0049f0ac
+char g_szPauseResume[] = "Resume";
+
+// GLOBAL: LEMBALL 0x0049f0b4
+char g_szPauseRestart[] = "Restart";
+
+// GLOBAL: LEMBALL 0x0049f0bc
+char g_szPauseQuit[] = "Quit";
+
+// GLOBAL: LEMBALL 0x0049f0c4
+char g_szPausePleaseWait[] = "Please Wait";
+
+// GLOBAL: LEMBALL 0x0049f0d0
+char g_szPauseLoading[] = "Loading...";
+
+// GLOBAL: LEMBALL 0x0049f0dc
+char g_szPauseAreYouSure[] = "Are you sure?";
+
+// GLOBAL: LEMBALL 0x0049f0ec
+char g_szPauseYes[] = "Yes";
+
+// GLOBAL: LEMBALL 0x0049f0f0
+char g_szPauseNo[] = "No";
+
+// GLOBAL: LEMBALL 0x0049f0f4
+char g_szPauseConnectionLost[] = "Connection Lost...";
+
+#include <stddef.h>
+
+extern char* g_apPauseMenuLabels[15];
+
+// FUNCTION: LEMBALL 0x00443af0
+void CPauseWindow::Initialise()
+{
+	int pauseMessage;
+	int index = 0;
+	pauseMessage = m_pauseMessage;
+	for (int menu = 0; menu <= pauseMessage; menu++) {
+		m_menuItemCount = 0;
+		do {
+			m_menuItemCount++;
+			index++;
+		} while (g_apPauseMenuLabels[index] != NULL);
+		index++;
+	}
+	m_minimumSelection = 0;
+	m_unavailableItems = 0;
+	m_menuLabels = g_apPauseMenuLabels + index - m_menuItemCount - 1;
+	switch (pauseMessage) {
+	case PAUSE_MSG_PAUSED:
+		m_minimumSelection = 1;
+		if (!m_receiverState->GetPauser()) {
+			m_minimumSelection++;
+			m_unavailableItems++;
+		}
+		m_selection = m_minimumSelection;
+		break;
+	case PAUSE_MSG_ARE_YOU_SURE:
+		m_minimumSelection = 1;
+		m_selection = 2;
+		break;
+	case PAUSE_MSG_PLEASE_WAIT:
+		m_minimumSelection = 1;
+		m_selection = 1;
+		break;
+	case PAUSE_MSG_LOADING:
+		m_minimumSelection = 1;
+		m_selection = 1;
+		break;
+	case PAUSE_MSG_CONNECTION_LOST:
+		m_minimumSelection = 1;
+		m_selection = 1;
+		break;
+	default:
+		m_selection = 0;
+	}
+	m_initialSelection = m_selection;
+	g_pMasterInputQueue->Attach(this, 0);
+	m_vramSurface = NULL;
+	m_menuItemRects = (CVSPoint*) (void*) new CVSRect[m_menuItemCount];
+	RegisterRemaps();
+	m_loaded = 0;
+	m_borderAnims = NULL;
+}
+
+// FUNCTION: LEMBALL 0x00443c70
+void CPauseWindow::Load()
+{
+	if (g_nCompactPrimaryContextLayout == 0 && g_nZoomEnabled != 0) {
+		m_lowResolution = 0;
+		m_horizontalBorderAnimId = RES_BORDERS_HIRES_BORDERCORNERS;
+		m_verticalBorderAnimId = RES_BORDERS_HIRES_BORDEREDGES;
+		m_fontId = RES_BORDERS_HIRES_CUTFONT;
+	}
+	else {
+		m_lowResolution = 1;
+		m_horizontalBorderAnimId = RES_BORDERS_LORES_BORDERCORNERS;
+		m_verticalBorderAnimId = RES_BORDERS_LORES_BORDEREDGES;
+		m_fontId = RES_BORDERS_LORES_CUTFONT;
+	}
+	m_horizontalBorderAnim = CResANIM::Load(m_horizontalBorderAnimId);
+	m_verticalBorderAnim = CResANIM::Load(m_verticalBorderAnimId);
+	CTextManager::LoadFont(m_fontId);
+	m_font = CTextManager::GetFont(m_fontId);
+	m_loaded = 1;
+}
+
+// FUNCTION: LEMBALL 0x00443d40
+void CPauseWindow::UnLoad()
+{
+	if (m_loaded != 0) {
+		CTextManager::UnLoadFont(m_fontId);
+		m_verticalBorderAnim->UnLoad();
+		m_horizontalBorderAnim->UnLoad();
+		m_loaded = 0;
+	}
+}
+
+// FUNCTION: LEMBALL 0x00443d80
+void CPauseWindow::Restart()
+{
+	UnLoad();
+	Load();
+	CVSRect rect = CalculateWindow();
+	CreateTheWindow(rect);
+}
+
+// FUNCTION: LEMBALL 0x00443db0
+void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
+{
+	short verticalOffset = (short) m_verticalTextOffset;
+	CVSSize size;
+	CVSRect borderRect;
+
+	if (m_pauseMessage != PAUSE_MSG_ARE_YOU_SURE) {
+		if (m_menuItemCount > 0) {
+			int item = 0;
+			CVSPoint* textSize = m_menuItemRects;
+			do {
+				item++;
+				textSize[1].m_x = (short) ((p_rect.m_width - textSize->m_x) / 2);
+				textSize[1].m_y = verticalOffset;
+				verticalOffset = (short) (verticalOffset + textSize->m_y + m_textSpacing.m_y);
+				textSize += 2;
+			} while (item < m_menuItemCount);
+		}
+	}
+	else {
+		short x = (short) ((p_rect.m_width - m_menuItemRects[0].m_x) / 2);
+		m_menuItemRects[1].m_x = x;
+		m_menuItemRects[1].m_y = verticalOffset;
+		verticalOffset = (short) (verticalOffset + m_menuItemRects[0].m_y + m_textSpacing.m_y);
+		m_menuItemRects[3].m_x = x;
+		m_menuItemRects[3].m_y = verticalOffset;
+		m_menuItemRects[5].m_x = (short) (x + m_menuItemRects[0].m_x - m_menuItemRects[4].m_x);
+		m_menuItemRects[5].m_y = verticalOffset;
+	}
+
+	m_bounds.m_width = p_rect.m_width;
+	m_bounds.m_height = p_rect.m_height;
+	m_bounds.m_x = p_rect.m_x;
+	m_bounds.m_y = p_rect.m_y;
+	CHotAreaHandler::SetActive(1);
+	m_externalEnabled = 1;
+
+	if (m_lifecycleRefs != 1) {
+		m_gdiFlags = m_borderAnimCount * 2 + 0x3ed;
+		Create(p_rect, m_parentWindow, "Pause mode");
+		m_parentWindow->m_hotAreaList->AddToList(this);
+	}
+	else {
+		CPVWnd::SetRect(p_rect);
+	}
+
+	size = *(const CVSSize*) &p_rect;
+	borderRect.m_width = size.m_width;
+	borderRect.m_height = size.m_height;
+	borderRect.m_x = 0;
+	borderRect.m_y = 0;
+	m_borderPadding.m_x = 4;
+	m_borderPadding.m_y = 4;
+	if (m_lowResolution == 0) {
+		m_borderPadding.m_x = 8;
+		m_borderPadding.m_y = 8;
+	}
+	size.m_width = m_borderPadding.m_x;
+	size.m_height = m_borderPadding.m_y;
+	((CVSPoint*) &borderRect.m_x)->AddInPlace((CVSPoint*) &size);
+	size.m_width = (short) (m_borderPadding.m_x * 2);
+	size.m_height = (short) (m_borderPadding.m_y * 2);
+	((CVSPoint*) &borderRect.m_width)->SubtractInPlace((CVSPoint*) &size);
+	m_borderLine[0].m_bounds.m_width = borderRect.m_width;
+	m_borderLine[0].m_bounds.m_height = borderRect.m_height;
+	m_borderLine[0].m_bounds.m_x = borderRect.m_x;
+	m_borderLine[0].m_bounds.m_y = borderRect.m_y;
+	m_borderLine[0].m_colour = 0xc;
+}
+
+// FUNCTION: LEMBALL 0x00444050
+CVSRect CPauseWindow::CalculateWindow()
+{
+	short positionX;
+	short positionY;
+	CVSSize maxTextSize;
+	short parentWidth;
+	short parentHeight;
+	short horizontalWidth;
+	short verticalHeight;
+	short* horizontalBorder;
+	short* verticalBorder;
+	short* verticalCorner;
+	int lowResolution;
+	int itemCount;
+	int i;
+
+	lowResolution = m_lowResolution;
+	m_textSpacing.m_x = 0;
+	m_textSpacing.m_y = 2;
+	if (lowResolution == 0) {
+		m_textSpacing.m_x = 0;
+		m_textSpacing.m_y = 4;
+	}
+	m_windowPadding.m_x = 0x14;
+	m_windowPadding.m_y = 0x0a;
+	if (lowResolution == 0) {
+		m_windowPadding.m_x = 0x28;
+		m_windowPadding.m_y = 0x14;
+	}
+
+	maxTextSize.m_height = 0;
+	maxTextSize.m_width = 0;
+	itemCount = m_menuItemCount;
+	if (m_pauseMessage == PAUSE_MSG_ARE_YOU_SURE) {
+		itemCount--;
+	}
+	for (i = 0; i < m_menuItemCount; i++) {
+		const CVSSize& measuredTextSize = m_font->GetSize(m_menuLabels[i], TEXT_ADVANCE_X_POSITIVE);
+		CVSPoint* storedTextSize = m_menuItemRects + i * 2;
+		storedTextSize->m_x = measuredTextSize.m_width;
+		storedTextSize->m_y = measuredTextSize.m_height;
+		if (itemCount > i) {
+			maxTextSize.m_height += measuredTextSize.m_height + m_textSpacing.m_y;
+		}
+		if (maxTextSize.m_width < measuredTextSize.m_width) {
+			maxTextSize.m_width = measuredTextSize.m_width;
+		}
+	}
+	maxTextSize.m_height -= m_textSpacing.m_y;
+	maxTextSize.m_width += m_windowPadding.m_x;
+
+	CPVGWnd* parent = m_parentWindow;
+	int zoom;
+	if ((int) parent->m_innerRect.m_width * (int) parent->m_innerRect.m_height == 0) {
+		zoom = parent->m_zoom;
+		parentWidth = (short) ((int) parent->m_rect.m_width / zoom);
+		parentHeight = parent->m_rect.m_height;
+	}
+	else {
+		zoom = parent->m_zoom;
+		parentWidth = (short) ((int) parent->m_innerRect.m_width / zoom);
+		parentHeight = parent->m_innerRect.m_height;
+	}
+	parentHeight = (short) ((int) parentHeight / zoom);
+
+	CVSSize paddedTextSizeValue(maxTextSize);
+	CVSSize& paddedTextSize = paddedTextSizeValue;
+	paddedTextSize.m_height += m_windowPadding.m_y;
+	positionX = (short) (parentWidth - paddedTextSize.m_width) / 2;
+	CVSSize windowSize;
+	windowSize = paddedTextSize;
+	positionY = (short) (parentHeight - paddedTextSize.m_height) / 2;
+
+	verticalCorner = &m_verticalBorderAnim->m_animationEntries[2].m_width;
+	verticalHeight = verticalCorner[1];
+	verticalBorder = &m_verticalBorderAnim->m_animationEntries[0].m_width;
+	horizontalWidth = verticalBorder[0];
+	horizontalBorder = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
+	windowSize.m_width = (short) (((int) windowSize.m_width + horizontalWidth - 1) / horizontalWidth);
+	windowSize.m_width = (short) (windowSize.m_width * horizontalWidth);
+	windowSize.m_height = (short) (((int) windowSize.m_height + verticalHeight - 1) / verticalHeight);
+	windowSize.m_height = (short) (windowSize.m_height * verticalHeight);
+	m_verticalTextOffset = ((int) windowSize.m_height - (int) maxTextSize.m_height) / 2;
+	short horizontalTiles = windowSize.m_width / horizontalWidth;
+	short verticalTiles = windowSize.m_height / verticalHeight;
+	horizontalTiles -= 2;
+	verticalTiles -= 2;
+	m_borderTiles.m_width = horizontalTiles;
+	m_borderTiles.m_height = verticalTiles;
+
+	int borderAnimCount = m_borderTiles.m_width + m_borderTiles.m_height;
+	if (m_borderAnimCount != borderAnimCount) {
+		if (m_borderAnims != NULL) {
+			delete[] m_borderAnims;
+		}
+		m_borderAnimCount = borderAnimCount;
+		m_borderAnims = new CAnim[m_borderAnimCount * 2];
+	}
+
+	CVSPoint cornerPositions[2] = {CVSPoint(windowSize.m_width, windowSize.m_height), CVSPoint(0, 0)};
+	short* cornerSize = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
+	cornerPositions[0].m_x = (short) (cornerPositions[0].m_x - cornerSize[0]);
+	cornerPositions[0].m_y = (short) (cornerPositions[0].m_y - cornerSize[1]);
+	{
+		int cornerBatchCount = 1;
+		CAnim* corners = m_cornerAnims;
+		do {
+			corners[0].m_x = cornerPositions[1].m_x;
+			corners[0].m_y = cornerPositions[1].m_y;
+			corners[0].m_animResource = m_horizontalBorderAnim;
+			corners[0].m_animIndex = 0;
+			corners[0].m_flags = 0;
+			corners[0].m_remap = NULL;
+			corners[1].m_x = cornerPositions[0].m_x;
+			corners[1].m_y = cornerPositions[1].m_y;
+			corners[1].m_animResource = m_horizontalBorderAnim;
+			corners[1].m_animIndex = 1;
+			corners[1].m_flags = 0;
+			corners[1].m_remap = NULL;
+			corners[2].m_x = cornerPositions[1].m_x;
+			corners[2].m_y = cornerPositions[0].m_y;
+			corners[2].m_animResource = m_horizontalBorderAnim;
+			corners[2].m_animIndex = 2;
+			corners[2].m_flags = 0;
+			corners[2].m_remap = NULL;
+			corners[3].m_x = cornerPositions[0].m_x;
+			corners[3].m_y = cornerPositions[0].m_y;
+			corners[3].m_animResource = m_horizontalBorderAnim;
+			corners[3].m_animIndex = 3;
+			corners[3].m_flags = 0;
+			corners[3].m_remap = NULL;
+			corners += 4;
+		} while (--cornerBatchCount != 0);
+	}
+
+	CVSPoint firstPositionValue(0, 0);
+	CVSPoint& firstBorderPosition = firstPositionValue;
+	firstBorderPosition.m_x = horizontalBorder[0];
+	CVSPoint secondPositionValue(firstBorderPosition);
+	CVSPoint& secondBorderPosition = secondPositionValue;
+	secondBorderPosition.m_y += (short) (windowSize.m_height - verticalBorder[1]);
+	for (i = 0; i < m_borderTiles.m_width; i++) {
+		int pair = 0;
+		int opposite = 1;
+		do {
+			CResANIM* firstResource = m_verticalBorderAnim;
+			CAnim& firstBorder = m_borderAnims[i + m_borderAnimCount * pair * 2];
+			firstBorder.m_x = firstBorderPosition.m_x;
+			firstBorder.m_y = firstBorderPosition.m_y;
+			firstBorder.m_animResource = firstResource;
+			firstBorder.m_animIndex = 0;
+			firstBorder.m_flags = 0;
+			firstBorder.m_remap = NULL;
+			CResANIM* secondResource = m_verticalBorderAnim;
+			CAnim& secondBorder = m_borderAnims[m_borderAnimCount * opposite + i];
+			secondBorder.m_x = secondBorderPosition.m_x;
+			secondBorder.m_y = secondBorderPosition.m_y;
+			secondBorder.m_animResource = secondResource;
+			secondBorder.m_animIndex = 1;
+			secondBorder.m_flags = 0;
+			secondBorder.m_remap = NULL;
+			pair++;
+			opposite += 2;
+		} while (opposite < 3);
+		firstBorderPosition.m_x = (short) (firstBorderPosition.m_x + verticalBorder[0]);
+		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + verticalBorder[0]);
+	}
+
+	firstBorderPosition.m_x = cornerPositions[1].m_x;
+	firstBorderPosition.m_y = cornerPositions[1].m_y;
+	firstBorderPosition.m_y += horizontalBorder[1];
+	secondBorderPosition.m_x = firstBorderPosition.m_x;
+	secondBorderPosition.m_y = firstBorderPosition.m_y;
+	secondBorderPosition.m_x += (short) (windowSize.m_width - verticalCorner[0]);
+	for (i = 0; i < m_borderTiles.m_height; i++) {
+		for (int pair = 0, opposite = 1; opposite < 3; pair++, opposite += 2) {
+			CResANIM* firstResource = m_verticalBorderAnim;
+			CAnim& firstBorder = m_borderAnims[m_borderTiles.m_width + m_borderAnimCount * pair * 2 + i];
+			firstBorder.m_x = firstBorderPosition.m_x;
+			firstBorder.m_y = firstBorderPosition.m_y;
+			firstBorder.m_animResource = firstResource;
+			firstBorder.m_animIndex = 2;
+			firstBorder.m_flags = 0;
+			firstBorder.m_remap = NULL;
+			CResANIM* secondResource = m_verticalBorderAnim;
+			CAnim& secondBorder = m_borderAnims[m_borderAnimCount * opposite + m_borderTiles.m_width + i];
+			secondBorder.m_x = secondBorderPosition.m_x;
+			secondBorder.m_y = secondBorderPosition.m_y;
+			secondBorder.m_animResource = secondResource;
+			secondBorder.m_animIndex = 3;
+			secondBorder.m_flags = 0;
+			secondBorder.m_remap = NULL;
+		}
+		firstBorderPosition.m_y = (short) (firstBorderPosition.m_y + verticalCorner[1]);
+		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner[1]);
+	}
+
+	CVSRect result;
+	(CVSSize&) result = windowSize;
+	result.m_x = positionX;
+	result.m_y = positionY;
+	return result;
+}
+
+// FUNCTION: LEMBALL 0x00444680
+CPauseWindow::CPauseWindow(CReceiveWindowState* p_receiverState,
+						   CPVGWnd* p_parentWindow,
+						   ePauseWindowMessages p_pauseMessage)
+	: CTextManager(RESOURCE_ID_COUNT, 1, 15, 0)
+{
+	m_receiverState = p_receiverState;
+	m_pauseMessage = p_pauseMessage;
+	m_parentWindow = p_parentWindow;
+	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	m_borderAnimCount = 0;
+	Initialise();
+	Restart();
+}
+
+// FUNCTION: LEMBALL 0x00444790
+CPauseWindow::~CPauseWindow()
+{
+	m_parentWindow->m_hotAreaList->RemoveFromList(this);
+	if (m_lifecycleRefs == 1) {
+		Destroy();
+	}
+	delete[] m_menuItemRects;
+	UnRegisterRemaps();
+	if (m_borderAnims != NULL) {
+		delete[] m_borderAnims;
+	}
+	UnLoad();
+	g_pMasterInputQueue->Detach(this, 0);
+}
+
+// FUNCTION: LEMBALL 0x004448c0
+void CPauseWindow::RegisterRemaps()
+{
+	CPauseWindow* window = this;
+	CBaseRemap** remaps = window->m_remaps;
+	unsigned char** mappings = g_apPauseRemaps;
+	do {
+		*remaps =
+			g_pBasePalManager->RegisterRemap(window->m_parentWindow->m_paletteResourceId, *mappings, PALETTE_MAPPED);
+		mappings++;
+		remaps++;
+	} while (mappings < (unsigned char**) g_apPauseMenuLabels);
+}
+
+// FUNCTION: LEMBALL 0x00444900
+void CPauseWindow::UnRegisterRemaps()
+{
+	int i;
+	CBaseRemap** remaps = m_remaps;
+
+	i = 4;
+	do {
+		g_pBasePalManager->UnRegisterRemap(*remaps);
+		remaps++;
+		i--;
+	} while (i != 0);
+}
+
+// FUNCTION: LEMBALL 0x00444930
+CBaseRemap* CPauseWindow::Remap(int p_item)
+{
+	if (m_selection == p_item) {
+		return m_remaps[2];
+	}
+	if (m_minimumSelection <= p_item) {
+		return m_remaps[0];
+	}
+	if (p_item <= m_unavailableItems && p_item > 0) {
+		return m_remaps[3];
+	}
+	return m_remaps[1];
+}
+
+// FUNCTION: LEMBALL 0x00444980
+void CPauseWindow::OnPaint(const CVSRect& p_rect)
+{
+	m_gdi->m_renderTarget->GetCurrDB();
+	m_borderLine[0].Draw(m_gdi);
+	int i;
+	for (i = 0; i < m_borderAnimCount * 2; i++) {
+		m_borderAnims[i].Draw(m_gdi);
+	}
+	int count = 4;
+	CAnim* corner = m_cornerAnims;
+	do {
+		corner->Draw(m_gdi);
+		corner++;
+	} while (--count != 0);
+	for (i = 0; i < m_menuItemCount; i++) {
+		CVSPoint* position = (CVSRect*) (void*) m_menuItemRects + i;
+		CVSSize advance;
+		advance.m_height = 0;
+		advance.m_width = 0;
+		CTextManager::DrawString(m_gdi,
+								 *position,
+								 advance,
+								 m_fontId,
+								 m_menuLabels[i],
+								 TEXT_ADVANCE_X_POSITIVE,
+								 (class CRemap*) Remap(i));
+	}
+	CTextManager::ResetPrimitives();
+}
+
+// FUNCTION: LEMBALL 0x00444a90
+void CPauseWindow::OnInside(const CVSPoint& p_point)
+{
+	int selection = m_minimumSelection;
+	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	if (selection < m_menuItemCount) {
+		short relX = p_point.m_x - m_relativeTopLeft.m_x;
+		short relY = p_point.m_y - m_relativeTopLeft.m_y;
+		CVSPoint* textSizes = m_menuItemRects + selection * 2 + 1;
+		do {
+			short textX = textSizes->m_x;
+			if (textX <= relX) {
+				short boundX = textSizes[-1].m_x + textX;
+				if (boundX > relX) {
+					short textY = textSizes->m_y;
+					if (textY <= relY) {
+						short boundY = textSizes[-1].m_y + textY;
+						if (boundY > relY) {
+							m_cursorState = CURSOR_HAND_FRAME_HOVER;
+							m_selection = selection;
+							break;
+						}
+					}
+				}
+			}
+			textSizes += 2;
+			selection++;
+		} while (selection < m_menuItemCount);
+	}
+	CursorChangeType(CURSOR_DISPLAY_HAND, m_cursorState);
+}
+
+// FUNCTION: LEMBALL 0x00444b20
+void CPauseWindow::OnButtonDown(const CVSPoint& p_point, int p_flags)
+{
+	int selection = m_minimumSelection;
+	if (selection < m_menuItemCount) {
+		short relX = p_point.m_x - m_relativeTopLeft.m_x;
+		short relY = p_point.m_y - m_relativeTopLeft.m_y;
+		CVSPoint* textSizes = m_menuItemRects + selection * 2 + 1;
+		do {
+			short textX = textSizes->m_x;
+			if (textX <= relX) {
+				short boundX = textSizes[-1].m_x + textX;
+				if (boundX > relX) {
+					short textY = textSizes->m_y;
+					if (textY <= relY) {
+						short boundY = textSizes[-1].m_y + textY;
+						if (boundY > relY) {
+							m_receiverState->SetOptionSelection(m_selection + 1);
+							m_selection = selection;
+							m_cursorState = CURSOR_HAND_FRAME_PRESSED;
+							CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_PRESSED);
+							g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
+							return;
+						}
+					}
+				}
+			}
+			textSizes += 2;
+			selection++;
+		} while (selection < m_menuItemCount);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00444bd0
+void CPauseWindow::OnButtonUp(const CVSPoint& p_point, int p_flags)
+{
+	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);
+}
+
+// FUNCTION: LEMBALL 0x00444bf0
+void CPauseWindow::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
+{
+	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);
+}
+
+// FUNCTION: LEMBALL 0x00444c10
+int CPauseWindow::ProcessMsg(Message* p_message)
+{
+	int pauseMessage = m_pauseMessage;
+
+	if (pauseMessage == PAUSE_MSG_PAUSED || pauseMessage == PAUSE_MSG_ARE_YOU_SURE) {
+		switch (p_message->m_type) {
+		case MESSAGE_KEY_DOWN:
+			switch (p_message->m_code) {
+			case INPUT_KEY_UP:
+			case INPUT_KEY_LEFT:
+				if (m_selection > m_minimumSelection) {
+					m_selection--;
+					g_pSoundView->PlayEffect(SFX_CHANGEOP);
+					return 1;
+				}
+				break;
+			case INPUT_KEY_DOWN:
+			case INPUT_KEY_RIGHT:
+				if (m_selection < m_menuItemCount - 1) {
+					m_selection++;
+					g_pSoundView->PlayEffect(SFX_CHANGEOP);
+					return 1;
+				}
+				break;
+			case INPUT_KEY_ACTIVATE:
+			case PAUSE_KEY_SELECT_OPTION:
+			case PAUSE_PLATFORM_DELETE_KEY:
+			case INPUT_KEY_RETURN:
+			case 'W':
+			case 'X':
+				m_receiverState->SetOptionSelection(m_selection + 1);
+				g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
+				return 1;
+			case INPUT_KEY_ESCAPE:
+				if (pauseMessage != 0 || m_receiverState->GetPauser()) {
+					m_receiverState->SetOptionSelection(m_initialSelection + 1);
+					g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
+				}
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+// FUNCTION: LEMBALL 0x00444da0
+void CPauseWindow::FreeVram()
+{
+	if (m_vramSurface != NULL) {
+		m_vramSurface->FreeVram();
+	}
+	m_gdi->Render();
+	m_gdi->m_primitiveCount = 0;
+}
+
+// FUNCTION: LEMBALL 0x00444dd0
+void CPauseWindow::OnDriverChange()
+{
+	Restart();
+}

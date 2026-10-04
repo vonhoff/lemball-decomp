@@ -4,8 +4,8 @@ enum {
 	SOUND_EFFECT_NO_BUFFER_INDEX = -1
 };
 
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Strings/VsString.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Strings/VsString.h"
 #include "DirectSound.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"

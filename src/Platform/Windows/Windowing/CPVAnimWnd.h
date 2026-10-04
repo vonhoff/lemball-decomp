@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVANIMWND_H
 #define LEMBALL_VISOS_GRAPHICS_CPVANIMWND_H
 
-#include "Visos/Strings/CString.h"
+#include "Engine/Strings/CString.h"
 #include "CGWnd.h"
 
 // SIZE 0xa0

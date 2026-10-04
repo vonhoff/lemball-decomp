@@ -1,17 +1,17 @@
 #include "CNetworkOptionsDrawer.h"
 
-#include "Game/CGameStatus.h"
-#include "Network/CNetworkManager.h"
-#include "Network/Messages/CNetworkGameMessage.h"
-#include "Views/Display/CMain2DDisplay.h"
-#include "Views/Sound/CSoundView.h"
-#include "Visos/Text/CTextManager.h"
-#include "Visos/Time/VsTime.h"
-#include "Visos/Graphics/Palettes/CBasePalManager.h"
+#include "Application/CGameStatus.h"
+#include "Multiplayer/CNetworkManager.h"
+#include "Multiplayer/Messages/CNetworkGameMessage.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Engine/Text/CTextManager.h"
+#include "Engine/Time/VsTime.h"
+#include "Engine/Graphics/Palettes/CBasePalManager.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-#include "Visos/Controls/CHotAreaList.h"
-#include "Visos/Network/CConnect.h"
-#include "Visos/Resources/Manifest.h"
+#include "Engine/Controls/CHotAreaList.h"
+#include "Engine/Network/CConnect.h"
+#include "Engine/Resources/Manifest.h"
 #include "Frontend/Controls/CHiliteController.h"
 #include "CNetworkOptionsProc.h"
 #include "CEditString.h"
@@ -20,11 +20,11 @@
 #include "Frontend/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "CEntryHandler.h"
-#include "Game/SoundEffects.h"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Queues/Message.h"
-#include "Visos/Graphics/Palettes/CBaseRemap.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/Graphics/Palettes/CBaseRemap.h"
 
 #include <string.h>
 
@@ -218,7 +218,7 @@ int g_nNetworkOptionsShiftHeld = 0;
 // GLOBAL: LEMBALL 0x004a0394
 int g_nNetworkOptionsCapsOrShift = 0;
 
-#include "Visos/Network/CNetworkAddress.h"
+#include "Engine/Network/CNetworkAddress.h"
 
 #include <stddef.h>
 
@@ -236,8 +236,8 @@ extern char* g_szBroadcastPeerName;
 
 extern unsigned char* g_apNetworkOptionsRemaps[6];
 
-#include "Visos/Resources/Types/CResFONT.h"
-#include "Visos/Math/CVSSize.h"
+#include "Engine/Resources/Types/CResFONT.h"
+#include "Engine/Math/CVSSize.h"
 
 class CRemap;
 
@@ -249,7 +249,7 @@ enum {
 	NETWORK_OPTIONS_REMAP_NONE = 6
 };
 
-#include "Visos/Strings/CString.h"
+#include "Engine/Strings/CString.h"
 
 class CRemap;
 

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_BASE_CGAMEOBJECT_H
 #define LEMBALL_AI_BASE_CGAMEOBJECT_H
 
-#include "Game/GameTime.h"
-#include "Visos/Math/CVSRect.h"
+#include "Application/GameTime.h"
+#include "Engine/Math/CVSRect.h"
 #include "CViewData.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
@@ -11,7 +11,7 @@
 #include "ObjectActions.h"
 #include "ObjectIds.h"
 #include "ObjectTypes.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 enum {
 	GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS = 4000,

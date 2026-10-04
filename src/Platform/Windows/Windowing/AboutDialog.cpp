@@ -1,8 +1,8 @@
 #include "AboutDialog.h"
 
 #include "Platform/Windows/Entry.h"
-#include "Visos/Startup/VisosVersion.h"
-#include "Visos/Sound/CSoundManager.h"
+#include "Engine/Startup/VisosVersion.h"
+#include "Engine/Sound/CSoundManager.h"
 
 enum {
 	ABOUT_SYSTEM_INFO_BUFFER_SIZE = 1024,

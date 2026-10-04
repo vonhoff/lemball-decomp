@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CPASSWORDDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CPASSWORDDRAWER_H
 
-#include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Graphics/Primitives/CClipRect.h"
+#include "Engine/Animation/CStaticAnim.h"
+#include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 
 class CGDI;

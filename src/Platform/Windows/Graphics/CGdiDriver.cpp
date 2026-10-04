@@ -7,9 +7,9 @@
 #include <new.h>
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
 #include "CDibContext.h"
 #include "CDrawingContext.h"
 

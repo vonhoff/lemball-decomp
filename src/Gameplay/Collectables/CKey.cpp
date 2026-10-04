@@ -9,7 +9,7 @@
 #include "Gameplay/Objects/ObjectInteractionStates.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 enum {
 	KEY_ACTIVATION_POSITION_X_OFFSET_FIXED = -8 * FIXED_POINT_ONE

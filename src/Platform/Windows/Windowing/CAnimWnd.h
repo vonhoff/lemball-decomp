@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CANIMWND_H
 #define LEMBALL_VISOS_GRAPHICS_CANIMWND_H
 
-#include "Visos/Strings/CString.h"
+#include "Engine/Strings/CString.h"
 #include "CPVAnimWnd.h"
 
 // SIZE 0xbc

@@ -1,13 +1,13 @@
 #include "CFileNetwork.h"
 
-#include "Visos/Queues/CBaseQueue.h"
-#include "Visos/Streams/CVSOStream.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "CFileBroadcast.h"
 #include "CFileConnect.h"
 #include "CFileNetworkAddress.h"
-#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Platform/Windows/ThreadConstants.h"
-#include "Visos/Network/CBaseNetwork.h"
+#include "Engine/Network/CBaseNetwork.h"
 #include "Platform/Windows/Network/CNetworkWnd.h"
 
 #include <new.h>

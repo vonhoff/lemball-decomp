@@ -1,7 +1,7 @@
 #include "CPlayerLemmingGroup.h"
 
 #include "Gameplay/Geometry/Facing.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Navigation/CAiDestinationEntry.h"
 #include "Gameplay/Navigation/CAiDestinationList.h"

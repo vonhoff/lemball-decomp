@@ -3,12 +3,12 @@
 
 #include "FrontendLayoutMode.h"
 
-#include "Visos/Animation/CAnimsManager.h"
-#include "Visos/Animation/CStaticAnim.h"
-#include "Visos/Queues/CBaseQueueHandler.h"
-#include "Visos/Math/CVSPoint.h"
+#include "Engine/Animation/CAnimsManager.h"
+#include "Engine/Animation/CStaticAnim.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Math/CVSPoint.h"
 #include "tagPRIMS.h"
-#include "Visos/Windows/CDrawer.h"
+#include "Engine/Windows/CDrawer.h"
 #include "CUserActionMessage.h"
 #include "CoordPair.h"
 #include "FlowProcesses.h"

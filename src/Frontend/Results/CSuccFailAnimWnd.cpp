@@ -1,12 +1,12 @@
 #include "CSuccFailAnimWnd.h"
 
-#include "Game/GameMain.h"
+#include "Application/GameMain.h"
 
-#include "Game/CGame.h"
+#include "Application/CGame.h"
 #include "Frontend/CBaseFrontendProcess.h"
-#include "Views/Sound/CSoundView.h"
-#include "Visos/Resources/Manifest.h"
-#include "Visos/Math/RandomConstants.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Engine/Resources/Manifest.h"
+#include "Engine/Math/RandomConstants.h"
 #include "Platform/Windows/Windowing/CAnimWnd.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 

@@ -6,7 +6,7 @@ enum {
 
 #include "Map/CMap.h"
 #include "Map/CGround.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Characters/CPlayerLemming.h"

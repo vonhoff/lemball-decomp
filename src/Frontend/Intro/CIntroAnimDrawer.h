@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CINTROANIMDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CINTROANIMDRAWER_H
 
-#include "Visos/Graphics/Primitives/CClipRect.h"
+#include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "CIntroAnimAnimWindow.h"
 

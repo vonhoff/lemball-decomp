@@ -3,7 +3,7 @@
 
 #include "CFileBaseSocket.h"
 #include "CFileCommonSocket.h"
-#include "Visos/Network/CWriteSocket.h"
+#include "Engine/Network/CWriteSocket.h"
 
 class CNetworkMessage;
 

@@ -1,6 +1,6 @@
 #include "CGraphicsDriver.h"
 
-#include "Visos/Graphics/Surfaces/CPVGDIBitmap.h"
+#include "Engine/Graphics/Surfaces/CPVGDIBitmap.h"
 #include "CGdiContext.h"
 
 #define WIN32_LEAN_AND_MEAN

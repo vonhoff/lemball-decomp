@@ -1,10 +1,10 @@
 #include "CMciMusicDevice.h"
 
 #include "Platform/Windows/Entry.h"
-#include "Visos/Strings/CString.h"
-#include "Visos/Streams/CVSIOs.h"
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Resources/Types/CResSTRING.h"
+#include "Engine/Strings/CString.h"
+#include "Engine/Streams/CVSIOs.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Resources/Types/CResSTRING.h"
 #include "Platform/Windows/CPlatformServices.h"
 
 #include <string.h>

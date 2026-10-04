@@ -1,12 +1,12 @@
 
 #include "CGraphicsState.h"
 
-#include "Visos/Strings/CString.h"
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Startup/VsInit.h"
-#include "Visos/Graphics/Primitives/CGDI.h"
-#include "Visos/Windows/CPVWnd.h"
-#include "Visos/Graphics/Surfaces/CSurface.h"
+#include "Engine/Strings/CString.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Startup/VsInit.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Windows/CPVWnd.h"
+#include "Engine/Graphics/Surfaces/CSurface.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 #include "CDirectDrawDriver.h"
 #include "CDisplayDibDriver.h"
@@ -16,7 +16,7 @@
 #include <new.h>
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Math/CVSSize.h"
+#include "Engine/Math/CVSSize.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 #include "CGraphicsDriver.h"

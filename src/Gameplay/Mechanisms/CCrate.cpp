@@ -1,7 +1,7 @@
 #include "CCrate.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
 
@@ -54,7 +54,7 @@ void CCrate::Restart()
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x0041ccc0
 void CCrate::TriggerContents()

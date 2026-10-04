@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CHILITEBUTTONS_H
 #define LEMBALL_FRONTEND_CONTROLS_CHILITEBUTTONS_H
 
-#include "Visos/Queues/CBaseQueueHandler.h"
-#include "Visos/Math/CVSRect.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Math/CVSRect.h"
 
 class CGWnd;
 class CGDI;

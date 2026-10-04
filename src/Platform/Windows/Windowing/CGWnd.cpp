@@ -4,22 +4,22 @@
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "Platform/Windows/Graphics/CGraphicsState.h"
 #include "Platform/Windows/Graphics/CCursor.h"
-#include "Visos/Graphics/Primitives/CGDI.h"
-#include "Visos/Graphics/Surfaces/CGDIDevice.h"
-#include "Visos/Graphics/Surfaces/CSurface.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Graphics/Surfaces/CGDIDevice.h"
+#include "Engine/Graphics/Surfaces/CSurface.h"
 
 #include <windows.h>
 
 #include "CPVGWnd.inl"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
-#include "Visos/Graphics/Surfaces/CPVSurface.h"
-#include "Visos/Windows/CPVWnd.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Graphics/Surfaces/CPVSurface.h"
+#include "Engine/Windows/CPVWnd.h"
 #include "CWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Visos/Resources/Types/CResPALETTE.h"
+#include "Engine/Resources/Types/CResPALETTE.h"
 
 // FUNCTION: LEMBALL 0x0043a510
 void CGWnd::OnCreate()

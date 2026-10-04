@@ -1,31 +1,31 @@
 #include "CPreviewDrawer.h"
 
-#include "Game/GameMain.h"
+#include "Application/GameMain.h"
 
-#include "Game/CGameStatus.h"
+#include "Application/CGameStatus.h"
 #include "Level/CLevelLoader.h"
 #include "Level/tPreviewData.h"
-#include "Views/Display/CMain2DDisplay.h"
-#include "Visos/Animation/CAnimsManager.h"
-#include "Visos/Animation/CRepeatAnim.h"
-#include "Visos/Text/CTextManager.h"
-#include "Visos/Graphics/Palettes/CBasePalManager.h"
-#include "Visos/Network/NetworkMode.h"
-#include "Visos/Resources/Types/CResBITMAP.h"
-#include "Visos/Resources/Types/CResFONT.h"
-#include "Visos/Resources/Manifest.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "Engine/Animation/CAnimsManager.h"
+#include "Engine/Animation/CRepeatAnim.h"
+#include "Engine/Text/CTextManager.h"
+#include "Engine/Graphics/Palettes/CBasePalManager.h"
+#include "Engine/Network/NetworkMode.h"
+#include "Engine/Resources/Types/CResBITMAP.h"
+#include "Engine/Resources/Types/CResFONT.h"
+#include "Engine/Resources/Manifest.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CHiliteController.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/CoordPair.h"
-#include "Visos/Animation/AnimationConstants.h"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSSize.h"
-#include "Visos/Queues/Message.h"
+#include "Engine/Animation/AnimationConstants.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Queues/Message.h"
 #include "Frontend/tagPRIMS.h"
-#include "Visos/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
 
 #include <string.h>
 
@@ -128,8 +128,8 @@ char g_szPreviewNone[] = "None";
 // GLOBAL: LEMBALL 0x0049f910
 char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 
-#include "Visos/Resources/Types/CResPALETTE.h"
-#include "Visos/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Resources/Types/CResPALETTE.h"
+#include "Engine/Graphics/Palettes/CBaseRemap.h"
 
 class CGWnd;
 class CRemap;

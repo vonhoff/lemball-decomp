@@ -1,6 +1,6 @@
 #include "CObjectManager.h"
 
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "CGameObject.h"
 #include "Gameplay/Messages/GameMessageIds.h"
 #include "Gameplay/Simulation/CAI.h"
@@ -18,7 +18,7 @@
 #include "Gameplay/Geometry/Rect.h"
 #include "CBaseObjectManager.h"
 #include "Gameplay/Mechanisms/SwitchEntry.h"
-#include "Visos/Math/FixedPoint.h"
+#include "Engine/Math/FixedPoint.h"
 
 // GLOBAL: LEMBALL 0x004a74c0
 CObjectManager* g_pObjectManager;

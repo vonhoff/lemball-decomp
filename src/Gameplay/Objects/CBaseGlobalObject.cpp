@@ -1,6 +1,6 @@
 #include "CBaseGlobalObject.h"
 
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Messages/CObjectPosMess.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "CGlobalGameObject.h"

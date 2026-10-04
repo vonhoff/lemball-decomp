@@ -1,18 +1,18 @@
 #include "CFileReadSocket.h"
 
-#include "Visos/Time/VsTime.h"
-#include "Visos/Network/Protocol/CHeaderMessage.h"
-#include "Visos/Network/Protocol/CHeaders.h"
+#include "Engine/Time/VsTime.h"
+#include "Engine/Network/Protocol/CHeaderMessage.h"
+#include "Engine/Network/Protocol/CHeaders.h"
 #include "CFileNetwork.h"
-#include "Visos/Network/CNetworkAddress.h"
+#include "Engine/Network/CNetworkAddress.h"
 #include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
-#include "Visos/Network/NetworkConstants.h"
-#include "Visos/Network/Protocol/CNetworkMessage.h"
-#include "Visos/Network/CBaseNetwork.h"
+#include "Engine/Network/NetworkConstants.h"
+#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Engine/Network/CBaseNetwork.h"
 #include "CFileBaseSocket.h"
 #include "CFileCommonSocket.h"
 #include "CNetworkFile.h"
-#include "Visos/Network/CReadSocket.h"
+#include "Engine/Network/CReadSocket.h"
 
 // FUNCTION: LEMBALL 0x00479930
 CFileReadSocket::CFileReadSocket() : CFileBaseSocket(), CReadSocket(), CFileCommonSocket()

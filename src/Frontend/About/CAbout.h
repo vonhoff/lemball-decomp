@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_CABOUT_H
 #define LEMBALL_FRONTEND_PROCESSES_CABOUT_H
 
-#include "Game/CBaseProcess.h"
+#include "Application/CBaseProcess.h"
 
 class CGame;
 // SIZE 0x10

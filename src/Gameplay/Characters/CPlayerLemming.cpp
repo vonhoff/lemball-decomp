@@ -1,14 +1,14 @@
 #include "CPlayerLemming.h"
 
-#include "Game/CDemo.h"
-#include "Game/CGame.h"
-#include "Game/CGameStatus.h"
-#include "Game/GameTime.h"
+#include "Application/CDemo.h"
+#include "Application/CGame.h"
+#include "Application/CGameStatus.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
@@ -28,8 +28,8 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Messages/GameMessageIds.h"
 #include "Gameplay/Objects/CViewData.h"
-#include "Visos/Math/RandomConstants.h"
-#include "Visos/Diagnostics/VsDebug.h"
+#include "Engine/Math/RandomConstants.h"
+#include "Engine/Diagnostics/VsDebug.h"
 
 #include <string.h>
 

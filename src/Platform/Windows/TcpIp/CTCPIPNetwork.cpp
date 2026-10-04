@@ -1,13 +1,13 @@
 #include "CTCPIPNetwork.h"
 
-#include "Visos/Queues/CBaseQueue.h"
+#include "Engine/Queues/CBaseQueue.h"
 #include "CTCPIPBroadcast.h"
 #include "CTCPIPConnect.h"
 #include "CTCPIPNetworkAddress.h"
-#include "Visos/Network/NetworkConstants.h"
+#include "Engine/Network/NetworkConstants.h"
 #include "Platform/WinSock/WSAData.h"
 #include "Platform/WinSock/WinSock.h"
-#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Platform/Windows/ThreadConstants.h"
 #include "Platform/Windows/Network/CNetworkWnd.h"
 

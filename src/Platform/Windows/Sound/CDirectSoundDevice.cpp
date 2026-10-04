@@ -1,6 +1,6 @@
 #include "CDirectSoundDevice.h"
 
-#include "Visos/Streams/CVSOStream.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 #include "CDirectSoundEffect.h"
 #include "DirectSound.h"

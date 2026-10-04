@@ -1,7 +1,7 @@
 #include "CGameObject.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Simulation/CAI.h"
@@ -12,7 +12,7 @@
 #include "Gameplay/Geometry/CPt3.h"
 #include "ObjectInteractionStates.h"
 #include "Gameplay/Navigation/Solution.h"
-#include "Visos/Math/RandomConstants.h"
+#include "Engine/Math/RandomConstants.h"
 
 #include <string.h>
 
@@ -28,7 +28,7 @@
 #include "ObjectTypes.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Visos/Math/CVSRect.h"
+#include "Engine/Math/CVSRect.h"
 #include "Gameplay/Geometry/tCoord3d.h"
 
 // GLOBAL: LEMBALL 0x0049cf4c

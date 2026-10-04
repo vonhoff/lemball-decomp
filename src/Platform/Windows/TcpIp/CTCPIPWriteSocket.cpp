@@ -2,10 +2,10 @@
 
 #include "CTCPIPNetwork.h"
 #include "CTCPIPNetworkAddress.h"
-#include "Visos/Network/NetworkConstants.h"
+#include "Engine/Network/NetworkConstants.h"
 #include "Platform/WinSock/WinSock.h"
-#include "Visos/Network/CBaseCommonSocket.h"
-#include "Visos/Network/CWriteSocket.h"
+#include "Engine/Network/CBaseCommonSocket.h"
+#include "Engine/Network/CWriteSocket.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

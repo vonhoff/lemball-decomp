@@ -1,9 +1,9 @@
 #include "CPVGWnd.h"
 
-#include "Visos/Graphics/Primitives/CGDI.h"
-#include "Visos/Graphics/Surfaces/CSurface.h"
-#include "Visos/Graphics/Surfaces/CPVSurface.h"
-#include "Visos/Windows/CPVWnd.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Graphics/Surfaces/CSurface.h"
+#include "Engine/Graphics/Surfaces/CPVSurface.h"
+#include "Engine/Windows/CPVWnd.h"
 #include "CWnd.h"
 
 #include <stddef.h>
@@ -31,8 +31,8 @@ unsigned int CPVGWnd::GetStyle()
 	return WINDOW_STYLE_DIRECT_SCROLL;
 }
 
-#include "Visos/Graphics/Primitives/CDrawingMark.h"
-#include "Visos/Graphics/Surfaces/CChangeList.h"
+#include "Engine/Graphics/Primitives/CDrawingMark.h"
+#include "Engine/Graphics/Surfaces/CChangeList.h"
 #include "Platform/Windows/CPlatformServices.h"
 
 #include <string.h>

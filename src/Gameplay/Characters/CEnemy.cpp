@@ -1,7 +1,7 @@
 #include "CEnemy.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
@@ -17,10 +17,10 @@
 #include "Gameplay/Projectiles/CBullet.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
-#include "Visos/Math/RandomConstants.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Math/RandomConstants.h"
 
 enum {
 	ENEMY_HIT_RESPONSE_DELAY_TICKS = 60

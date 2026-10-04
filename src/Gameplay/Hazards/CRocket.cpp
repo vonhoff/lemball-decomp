@@ -1,6 +1,6 @@
 #include "CRocket.h"
 
-#include "Game/CGame.h"
+#include "Application/CGame.h"
 #include "Map/CMap.h"
 #include "Map/CGround.h"
 #include "Gameplay/Geometry/Facing.h"
@@ -64,7 +64,7 @@ void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 	}
 }
 
-#include "Game/GameTime.h"
+#include "Application/GameTime.h"
 
 // FUNCTION: LEMBALL 0x004268e0
 bool CRocket::Process()
@@ -132,7 +132,7 @@ int CRocket::StepOn(const AICOORD& p_position, CGameObject* p_object)
 	return 0;
 }
 
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Messages/CObjectPosMess.h"
 
 // FUNCTION: LEMBALL 0x00426a60
@@ -156,7 +156,7 @@ void CRocket::DoActivate()
 #include "Gameplay/Objects/CViewData.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x004273f0
 void CRocket::GetViewData(CViewData& p_viewData)

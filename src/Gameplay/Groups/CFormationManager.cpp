@@ -1,8 +1,8 @@
 #include "CFormationManager.h"
 
-#include "Visos/Math/VSTrig.h"
-#include "Visos/Math/CFixed.h"
-#include "Visos/Math/CVector.h"
+#include "Engine/Math/VSTrig.h"
+#include "Engine/Math/CFixed.h"
+#include "Engine/Math/CVector.h"
 
 #include <new.h>
 #include <stddef.h>

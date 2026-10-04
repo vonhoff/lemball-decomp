@@ -16,7 +16,7 @@ void CFlag::SetSFX()
 #include "CCollectable.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x00422b40
 bool CFlag::Process()

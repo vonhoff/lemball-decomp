@@ -1,11 +1,11 @@
 #include "CTCPIPReadSocket.h"
 
-#include "Visos/Streams/CVSOStream.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "CTCPIPNetwork.h"
 #include "CTCPIPNetworkAddress.h"
-#include "Visos/Network/NetworkConstants.h"
-#include "Visos/Network/CBaseCommonSocket.h"
-#include "Visos/Network/CNetworkAddress.h"
+#include "Engine/Network/NetworkConstants.h"
+#include "Engine/Network/CBaseCommonSocket.h"
+#include "Engine/Network/CNetworkAddress.h"
 
 #include <string.h>
 

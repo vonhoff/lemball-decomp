@@ -1,7 +1,7 @@
 #include "CTrapDoor.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
@@ -12,7 +12,7 @@
 #include "Gameplay/Objects/CViewData.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 enum eTrapDoorSoundState {
 	TRAPDOOR_SOUND_NOT_TRIGGERED = 0,

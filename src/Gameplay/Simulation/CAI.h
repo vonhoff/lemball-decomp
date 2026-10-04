@@ -1,10 +1,10 @@
 #ifndef LEMBALL_AI_NAVIGATION_CAI_H
 #define LEMBALL_AI_NAVIGATION_CAI_H
 
-#include "Game/CBaseProcess.h"
-#include "Visos/Queues/CBaseQueueHandler.h"
-#include "Visos/Network/Protocol/CNetworkMessage.h"
-#include "Visos/Network/NetworkMode.h"
+#include "Application/CBaseProcess.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Engine/Network/NetworkMode.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/CRect3.h"

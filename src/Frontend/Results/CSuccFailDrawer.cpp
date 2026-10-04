@@ -1,17 +1,17 @@
 #include "CSuccFailDrawer.h"
 
-#include "Game/CGameStatus.h"
-#include "Game/GameMain.h"
+#include "Application/CGameStatus.h"
+#include "Application/GameMain.h"
 #include "Level/CLevelLoader.h"
-#include "Views/Display/CMain2DDisplay.h"
-#include "Views/Sound/CSoundView.h"
-#include "Visos/Statistics/CStatManager.h"
-#include "Visos/Memory/CArena.h"
-#include "Visos/Text/CTextManager.h"
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Network/NetworkMode.h"
-#include "Visos/Resources/Types/CResBITMAP.h"
-#include "Visos/Resources/Manifest.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Engine/Statistics/CStatManager.h"
+#include "Engine/Memory/CArena.h"
+#include "Engine/Text/CTextManager.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Network/NetworkMode.h"
+#include "Engine/Resources/Types/CResBITMAP.h"
+#include "Engine/Resources/Manifest.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CHiliteController.h"
 #include "Frontend/FrontendLayoutMode.h"
@@ -19,16 +19,16 @@
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-#include "Visos/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/FlowProcesses.h"
 #include "Frontend/CoordPair.h"
 #include "CSuccFailAnimWnd.h"
-#include "Game/SoundEffects.h"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
-#include "Visos/Queues/Message.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Queues/Message.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 
 class CGWnd;
@@ -174,16 +174,16 @@ unsigned long g_dwSuccFailSuccessBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SU
 // GLOBAL: LEMBALL 0x0049fe18
 char g_szPaintballSequence[] = "Paintball Sequence";
 
-#include "Visos/Time/VsTime.h"
+#include "Engine/Time/VsTime.h"
 
 extern char g_szSuccFailMoviePrefix[];
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-#include "Network/CNetworkManager.h"
-#include "Network/Messages/CNetworkGameMessage.h"
-#include "Visos/Network/CConnect.h"
-#include "Visos/Resources/Types/CResFONT.h"
+#include "Multiplayer/CNetworkManager.h"
+#include "Multiplayer/Messages/CNetworkGameMessage.h"
+#include "Engine/Network/CConnect.h"
+#include "Engine/Resources/Types/CResFONT.h"
 
 #include <string.h>
 

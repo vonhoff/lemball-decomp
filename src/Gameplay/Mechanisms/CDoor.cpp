@@ -1,7 +1,7 @@
 #include "CDoor.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -11,7 +11,7 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 enum {
 	DOOR_OPENING_ANIMATION_DURATION_TICKS = 80,

@@ -1,18 +1,18 @@
 #include "CSheepGroup.h"
 
-#include "Game/CGame.h"
+#include "Application/CGame.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/VSTrig.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/VSTrig.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "CGenericGroup.h"
 #include "Gameplay/Objects/CViewData.h"
-#include "Game/SoundEffects.h"
-#include "Visos/Math/CFixed.h"
-#include "Visos/Math/CVector.h"
-#include "Visos/Math/RandomConstants.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Math/CFixed.h"
+#include "Engine/Math/CVector.h"
+#include "Engine/Math/RandomConstants.h"
 
 #include <stddef.h>
 

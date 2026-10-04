@@ -1,21 +1,21 @@
 #include "CMainOptions1Drawer.h"
 
-#include "Game/GameMain.h"
+#include "Application/GameMain.h"
 
-#include "Game/CGameStatus.h"
+#include "Application/CGameStatus.h"
 #include "Level/CLevelLoader.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CGunController.h"
-#include "Views/Display/CMain2DDisplay.h"
-#include "Visos/Resources/Types/CResBITMAP.h"
-#include "Visos/Resources/Manifest.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "Engine/Resources/Types/CResBITMAP.h"
+#include "Engine/Resources/Manifest.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/FlowProcesses.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/Controls/ButtonActionMessages.h"
-#include "Visos/Math/CVSRect.h"
+#include "Engine/Math/CVSRect.h"
 #include "Frontend/tagPRIMS.h"
-#include "Visos/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
 
 #include <stddef.h>
 
@@ -57,7 +57,7 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 													RES_NEWFRONT_ICONS_LORES_OKAY,
 													RES_NEWFRONT_ICONS_LORES_FULLSCREEN};
 
-#include "Visos/Queues/Message.h"
+#include "Engine/Queues/Message.h"
 
 class CGWnd;
 

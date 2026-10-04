@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CTRANSLATOR_H
 #define LEMBALL_VISOS_FOUNDATION_CTRANSLATOR_H
 
-#include "Visos/Queues/CBaseQueueHandler.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x004988a0

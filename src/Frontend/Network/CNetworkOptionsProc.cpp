@@ -1,22 +1,22 @@
 #include "CNetworkOptionsProc.h"
 
-#include "Game/CGame.h"
-#include "Network/CNetworkManager.h"
-#include "Network/Messages/CGameAcceptMessage.h"
-#include "Network/Messages/CGameRejectMessage.h"
-#include "Visos/Network/Packets/BasePacketHeader.h"
-#include "Visos/Network/Packets/CReadPacket.h"
-#include "Visos/Network/CBaseNetwork.h"
-#include "Visos/Network/CBroadcast.h"
-#include "Visos/Network/CConnect.h"
-#include "Visos/Network/NetworkConstants.h"
+#include "Application/CGame.h"
+#include "Multiplayer/CNetworkManager.h"
+#include "Multiplayer/Messages/CGameAcceptMessage.h"
+#include "Multiplayer/Messages/CGameRejectMessage.h"
+#include "Engine/Network/Packets/BasePacketHeader.h"
+#include "Engine/Network/Packets/CReadPacket.h"
+#include "Engine/Network/CBaseNetwork.h"
+#include "Engine/Network/CBroadcast.h"
+#include "Engine/Network/CConnect.h"
+#include "Engine/Network/NetworkConstants.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "CNetworkOptionsDrawer.h"
 
 #define g_pNetworkOptionsDrawer ((CNetworkOptionsDrawer*) g_pBaseFrontendDrawer)
 
 #include "Frontend/CBaseFrontendProcess.h"
-#include "Visos/Network/Protocol/CNetworkMessage.h"
+#include "Engine/Network/Protocol/CNetworkMessage.h"
 
 #include <new.h>
 #include <stddef.h>

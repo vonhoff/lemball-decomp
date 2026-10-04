@@ -1,10 +1,10 @@
 #include "CMover.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Groups/CPlayerLemmingGroup.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
 #include "Gameplay/Geometry/AICOORD.h"

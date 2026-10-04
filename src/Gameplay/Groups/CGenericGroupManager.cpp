@@ -7,7 +7,7 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
-#include "Visos/Math/CVSRect.h"
+#include "Engine/Math/CVSRect.h"
 
 #include <string.h>
 

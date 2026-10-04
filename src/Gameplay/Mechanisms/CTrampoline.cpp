@@ -1,7 +1,7 @@
 #include "CTrampoline.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Simulation/CAI.h"
@@ -12,14 +12,14 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 enum {
 	TRAMPOLINE_ACTIVATION_RADIUS_PIXELS = 32,
 	TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED = 4 * FIXED_POINT_ONE
 };
 
-#include "Visos/Math/CFixed.h"
+#include "Engine/Math/CFixed.h"
 #include "Gameplay/Geometry/C3DVector.h"
 
 #include <stddef.h>

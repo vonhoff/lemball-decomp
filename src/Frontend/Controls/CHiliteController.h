@@ -1,11 +1,11 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CHILITECONTROLLER_H
 #define LEMBALL_FRONTEND_CONTROLS_CHILITECONTROLLER_H
 
-#include "../../Visos/Animation/CAnimsManager.h"
-#include "../../Visos/Animation/CStaticAnim.h"
-#include "Visos/Queues/CBaseQueueHandler.h"
-#include "Visos/Queues/Message.h"
-#include "Visos/Graphics/Primitives/CClipRect.h"
+#include "../../Engine/Animation/CAnimsManager.h"
+#include "../../Engine/Animation/CStaticAnim.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/Graphics/Primitives/CClipRect.h"
 #include "HiliteControllerJunction.h"
 
 class CGWnd;

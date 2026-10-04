@@ -1,14 +1,14 @@
-#include "Visos/Diagnostics/VsDebug.h"
+#include "Engine/Diagnostics/VsDebug.h"
 
 #include "CTextWnd.h"
-#include "Visos/Diagnostics/CDebugOStream.h"
-#include "Visos/Strings/CString.h"
-#include "Visos/Diagnostics/CVSDebugStreambuf.h"
-#include "Visos/Startup/ProcessExitCodes.h"
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/File/VsFile.h"
-#include "Visos/Startup/VsInit.h"
-#include "Visos/Strings/VsString.h"
+#include "Engine/Diagnostics/CDebugOStream.h"
+#include "Engine/Strings/CString.h"
+#include "Engine/Diagnostics/CVSDebugStreambuf.h"
+#include "Engine/Startup/ProcessExitCodes.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/File/VsFile.h"
+#include "Engine/Startup/VsInit.h"
+#include "Engine/Strings/VsString.h"
 
 #include <setjmp.h>
 #include <string.h>

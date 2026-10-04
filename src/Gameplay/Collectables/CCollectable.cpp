@@ -1,7 +1,7 @@
 #include "CCollectable.h"
 
 #include "Map/CMap.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
@@ -10,7 +10,7 @@
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Visos/Math/CFixed.h"
+#include "Engine/Math/CFixed.h"
 
 #include <stddef.h>
 

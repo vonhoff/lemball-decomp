@@ -1,10 +1,10 @@
 #include "WinGDraw.h"
 
-#include "Visos/Graphics/Primitives/CGDI.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-#include "Visos/Windows/CPVWnd.h"
-#include "Visos/Graphics/Surfaces/CSurface.h"
+#include "Engine/Windows/CPVWnd.h"
+#include "Engine/Graphics/Surfaces/CSurface.h"
 #include "WinGDrawState.h"
 
 #include <string.h>

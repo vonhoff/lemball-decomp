@@ -1,9 +1,9 @@
 #include "CTCPIPRWSocket.h"
 
-#include "Visos/Network/CRwSocket.h"
+#include "Engine/Network/CRwSocket.h"
 #include "CTCPIPReadSocket.h"
 #include "CTCPIPWriteSocket.h"
-#include "Visos/Network/NetworkConstants.h"
+#include "Engine/Network/NetworkConstants.h"
 
 // FUNCTION: LEMBALL 0x00470220
 int CTCPIPRWSocket::Process(unsigned int p_message, unsigned int p_wParam, long p_lParam)

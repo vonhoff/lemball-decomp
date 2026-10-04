@@ -2,12 +2,12 @@
 
 #include "CBaseFrontendDrawer.h"
 #include "CUserActionMessage.h"
-#include "Visos/Network/CBaseNetwork.h"
-#include "Visos/Network/CConnect.h"
-#include "Visos/Network/NetworkConstants.h"
-#include "Visos/Network/Packets/CReadPacket.h"
-#include "Visos/Queues/Message.h"
-#include "Visos/Time/VsTime.h"
+#include "Engine/Network/CBaseNetwork.h"
+#include "Engine/Network/CConnect.h"
+#include "Engine/Network/NetworkConstants.h"
+#include "Engine/Network/Packets/CReadPacket.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/Time/VsTime.h"
 
 #include <stddef.h>
 
@@ -17,10 +17,10 @@ CBaseFrontendProcess* g_pCurrentFrontendProcess = NULL;
 // GLOBAL: LEMBALL 0x0049f4f0
 int g_nFrontendAutoFlowToggle = 1;
 
-#include "Game/CGameStatus.h"
+#include "Application/CGameStatus.h"
 #include "Level/CLevelLoader.h"
-#include "Network/Messages/CGameFlaggedMessage.h"
-#include "Visos/Network/Packets/BasePacketHeader.h"
+#include "Multiplayer/Messages/CGameFlaggedMessage.h"
+#include "Engine/Network/Packets/BasePacketHeader.h"
 
 // FUNCTION: LEMBALL 0x00407f20
 void CBaseFrontendProcess::Processing()

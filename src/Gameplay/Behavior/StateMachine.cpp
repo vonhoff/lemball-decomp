@@ -1,12 +1,12 @@
 #include "StateMachine.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "StateEntry.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 #include <stddef.h>
 

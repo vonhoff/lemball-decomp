@@ -1,15 +1,15 @@
 #include "CBaseObjectManager.h"
 
-#include "Network/CNetworkManager.h"
-#include "Visos/Network/Packets/CWriteCBuff.h"
-#include "Visos/Network/CBaseNetwork.h"
-#include "Visos/Network/CConnect.h"
+#include "Multiplayer/CNetworkManager.h"
+#include "Engine/Network/Packets/CWriteCBuff.h"
+#include "Engine/Network/CBaseNetwork.h"
+#include "Engine/Network/CConnect.h"
 #include "CGameObject.h"
 #include "CGlobalGameObject.h"
 #include "Gameplay/Messages/GameMessageIds.h"
-#include "Visos/Network/Protocol/CNetworkMessage.h"
-#include "Visos/Network/CWriteSocket.h"
-#include "Visos/Network/NetworkConstants.h"
+#include "Engine/Network/Protocol/CNetworkMessage.h"
+#include "Engine/Network/CWriteSocket.h"
+#include "Engine/Network/NetworkConstants.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

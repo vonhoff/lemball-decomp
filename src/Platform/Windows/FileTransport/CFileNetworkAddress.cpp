@@ -1,7 +1,7 @@
 #include "CFileNetworkAddress.h"
 
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Network/CNetworkAddress.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Network/CNetworkAddress.h"
 
 #include <string.h>
 

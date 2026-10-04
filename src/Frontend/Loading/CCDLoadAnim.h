@@ -1,14 +1,14 @@
 #ifndef LEMBALL_FRONTEND_RESOURCES_CCDLOADANIM_H
 #define LEMBALL_FRONTEND_RESOURCES_CCDLOADANIM_H
 
-#include "Visos/Animation/CAnimsManager.h"
-#include "Visos/Animation/CRepeatAnim.h"
-#include "Visos/Graphics/Primitives/CBigBitmap.h"
-#include "Visos/Graphics/Primitives/CBitmap.h"
-#include "Visos/Graphics/Primitives/CCopyToBackBuff.h"
-#include "Visos/Graphics/Primitives/CDrawingMark.h"
-#include "Visos/Graphics/Primitives/CLine.h"
-#include "Visos/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Animation/CAnimsManager.h"
+#include "Engine/Animation/CRepeatAnim.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBitmap.h"
+#include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
+#include "Engine/Graphics/Primitives/CDrawingMark.h"
+#include "Engine/Graphics/Primitives/CLine.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "CCdLoadAnimDraw.h"
 #include "CCdLoadAnimProgress.h"
 

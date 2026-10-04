@@ -1,7 +1,7 @@
 #include "InputTranslationEntry.h"
 
-#include "Visos/Input/CMasterInput.h"
-#include "Visos/Queues/Message.h"
+#include "Engine/Input/CMasterInput.h"
+#include "Engine/Queues/Message.h"
 
 #include <stddef.h>
 

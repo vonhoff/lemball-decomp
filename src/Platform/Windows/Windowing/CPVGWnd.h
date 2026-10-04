@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 #define LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Graphics/Primitives/CCopyToBackBuff.h"
-#include "Visos/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "CWnd.h"
-#include "Visos/Graphics/Primitives/CZBuffClear.h"
+#include "Engine/Graphics/Primitives/CZBuffClear.h"
 class CGDI;
 class CPVWnd;
 

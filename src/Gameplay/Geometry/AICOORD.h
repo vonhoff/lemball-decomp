@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_BASE_AICOORD_H
 #define LEMBALL_AI_BASE_AICOORD_H
 
-#include "Visos/Math/FixedPoint.h"
-#include "Visos/Diagnostics/VsDebug.h"
+#include "Engine/Math/FixedPoint.h"
+#include "Engine/Diagnostics/VsDebug.h"
 
 // SIZE 0x0c
 class AICOORD {

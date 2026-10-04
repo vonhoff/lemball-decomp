@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPREADSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPREADSOCKET_H
 
-#include "Visos/Network/CBaseCommonSocket.h"
-#include "Visos/Network/CReadSocket.h"
+#include "Engine/Network/CBaseCommonSocket.h"
+#include "Engine/Network/CReadSocket.h"
 #include "CTCPIPCommonSocket.h"
 
 // SIZE 0xac

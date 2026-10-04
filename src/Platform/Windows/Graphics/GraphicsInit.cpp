@@ -1,8 +1,8 @@
-#include "Visos/Startup/PreInit.h"
-#include "Visos/Startup/VsInit.h"
+#include "Engine/Startup/PreInit.h"
+#include "Engine/Startup/VsInit.h"
 #include "CCursor.h"
-#include "Visos/Graphics/Surfaces/CGDIDevice.h"
-#include "Visos/Graphics/Surfaces/CSurface.h"
+#include "Engine/Graphics/Surfaces/CGDIDevice.h"
+#include "Engine/Graphics/Surfaces/CSurface.h"
 #include "CGraphicsDriver.h"
 #include "CGraphicsState.h"
 

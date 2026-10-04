@@ -1,8 +1,8 @@
 #include "CFileCommonSocket.h"
 
-#include "Visos/Time/VsTime.h"
-#include "Visos/Network/NetworkConstants.h"
-#include "Visos/Network/CBaseCommonSocket.h"
+#include "Engine/Time/VsTime.h"
+#include "Engine/Network/NetworkConstants.h"
+#include "Engine/Network/CBaseCommonSocket.h"
 
 // FUNCTION: LEMBALL 0x00479880
 bool CFileCommonSocket::CreateSocket(const char* p_path)

@@ -1,12 +1,12 @@
-#include "Visos/Queues/CBaseQueue.h"
-#include "Visos/Queues/CBaseQueueHandler.h"
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Startup/ProcessExitCodes.h"
-#include "Visos/Startup/VsInit.h"
-#include "Visos/Network/CBaseNetwork.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Startup/ProcessExitCodes.h"
+#include "Engine/Startup/VsInit.h"
+#include "Engine/Network/CBaseNetwork.h"
 #include "Platform/Windows/FileTransport/CFileNetwork.h"
 #include "Platform/Windows/TcpIp/CTCPIPNetwork.h"
-#include "Visos/Network/NetworkConstants.h"
+#include "Engine/Network/NetworkConstants.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

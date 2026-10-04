@@ -1,12 +1,12 @@
 #include "CBulletManager.h"
 
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "CBullet.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/FixedPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x00417d80
 CBulletManager::CBulletManager()

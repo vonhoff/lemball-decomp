@@ -1,9 +1,9 @@
-#include "Visos/Startup/PreInit.h"
-#include "Visos/Memory/CArena.h"
-#include "Visos/Memory/CRAMArena.h"
-#include "Visos/Memory/CSmallMemory.h"
-#include "Visos/Streams/CVSOStream.h"
-#include "Visos/Startup/VsInit.h"
+#include "Engine/Startup/PreInit.h"
+#include "Engine/Memory/CArena.h"
+#include "Engine/Memory/CRAMArena.h"
+#include "Engine/Memory/CSmallMemory.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Startup/VsInit.h"
 
 enum {
 	GLOBAL_ALLOC_FLAG_MOVEABLE = 0x0002

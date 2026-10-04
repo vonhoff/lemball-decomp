@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CPREVIEWDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CPREVIEWDRAWER_H
 
-#include "Visos/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CoordPair.h"
 #include "Frontend/CUserActionMessage.h"

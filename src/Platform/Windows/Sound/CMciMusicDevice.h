@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CMCIMUSICDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CMCIMUSICDEVICE_H
 
-#include "Visos/Sound/CPVMusicDevice.h"
+#include "Engine/Sound/CPVMusicDevice.h"
 
 #define WIN32_LEAN_AND_MEAN
 // clang-format off

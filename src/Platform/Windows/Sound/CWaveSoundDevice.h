@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CWAVESOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CWAVESOUNDDEVICE_H
 
-#include "Visos/Sound/CBaseSoundDevice.h"
+#include "Engine/Sound/CBaseSoundDevice.h"
 
 #define WIN32_LEAN_AND_MEAN
 // clang-format off

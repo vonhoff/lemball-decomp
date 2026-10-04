@@ -1,7 +1,7 @@
 #include "CDirectDrawDriver.h"
 
 #include "Platform/Windows/Entry.h"
-#include "Visos/Streams/CVSOStream.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 #include "CDirectDrawContext.h"
 #include "CDirectDrawSurface.h"
@@ -13,9 +13,9 @@
 #include "Platform/DirectX/DDSURFACEDESC.h"
 #include "Platform/DirectX/IDirectDrawPalette.h"
 #include "Platform/DirectX/IDirectDrawSurface.h"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVSSize.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
 #include "CDibContext.h"
 #include "CDrawingContext.h"
 

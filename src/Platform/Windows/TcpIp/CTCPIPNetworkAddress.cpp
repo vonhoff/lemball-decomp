@@ -1,6 +1,6 @@
 #include "CTCPIPNetworkAddress.h"
 
-#include "Visos/Network/CNetworkAddress.h"
+#include "Engine/Network/CNetworkAddress.h"
 #include "Platform/WinSock/WinSock.h"
 #include "Platform/WinSock/in_addr.h"
 

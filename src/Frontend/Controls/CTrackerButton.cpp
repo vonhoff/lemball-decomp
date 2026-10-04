@@ -1,11 +1,11 @@
 #include "CTrackerButton.h"
 
 #include "CTrackWindow.h"
-#include "Visos/Math/CVSPoint.h"
-#include "Visos/Math/CVSRect.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-#include "Visos/Controls/CGraphicButton.h"
-#include "Visos/Controls/CHotAreaHandler.h"
+#include "Engine/Controls/CGraphicButton.h"
+#include "Engine/Controls/CHotAreaHandler.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 
 #include <stddef.h>

@@ -1,7 +1,7 @@
 #include "CGenericGroup.h"
 
 #include "Gameplay/Geometry/Facing.h"
-#include "Visos/Math/VSTrig.h"
+#include "Engine/Math/VSTrig.h"
 #include "Gameplay/Navigation/CAiDestinationList.h"
 #include "CFormationManager.h"
 
@@ -274,8 +274,8 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectTypes.h"
-#include "Visos/Math/CVSRect.h"
-#include "Visos/Math/CVector.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVector.h"
 
 // FUNCTION: LEMBALL 0x0041e290
 void CGenericGroup::AddNewWaypoint(AICOORD p_coordinate, CFormationManager* p_formationManager)

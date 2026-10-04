@@ -1,8 +1,8 @@
 #include "CWaveSoundDevice.h"
 
-#include "Visos/Streams/CVSOStream.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "CWaveEffect.h"
-#include "Visos/Sound/CBaseSoundDevice.h"
+#include "Engine/Sound/CBaseSoundDevice.h"
 
 #include <new.h>
 #define WAVE_SOUND_TRACKED_CHANNEL_COUNT 8

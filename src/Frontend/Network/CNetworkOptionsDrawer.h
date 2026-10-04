@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CNETWORKOPTIONSDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CNETWORKOPTIONSDRAWER_H
 
-#include "Visos/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 
 enum eNetworkOptionsMessageId {

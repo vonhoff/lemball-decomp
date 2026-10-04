@@ -3,7 +3,7 @@
 #include "CFileCommonSocket.h"
 #include "CFileReadSocket.h"
 #include "CFileWriteSocket.h"
-#include "Visos/Network/CRwSocket.h"
+#include "Engine/Network/CRwSocket.h"
 
 // FUNCTION: LEMBALL 0x0047a220
 CFileRWSocket::CFileRWSocket() : CRwSocket(), CFileReadSocket(), CFileWriteSocket()

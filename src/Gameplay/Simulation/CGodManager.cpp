@@ -1,9 +1,9 @@
 #include "CGodManager.h"
 
-#include "Visos/Network/Packets/BasePacketHeader.h"
-#include "Visos/Network/Packets/CReadPacket.h"
-#include "Visos/Network/CBaseNetwork.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/Packets/BasePacketHeader.h"
+#include "Engine/Network/Packets/CReadPacket.h"
+#include "Engine/Network/CBaseNetwork.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Messages/CGameStateMessage.h"
 #include "Gameplay/Messages/GameMessageIds.h"

@@ -1,8 +1,8 @@
 #include "Facing.h"
 
-#include "Game/CGame.h"
+#include "Application/CGame.h"
 #include "AICOORD.h"
-#include "Visos/Math/FixedPoint.h"
+#include "Engine/Math/FixedPoint.h"
 
 #include <stdlib.h>
 

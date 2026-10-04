@@ -1,7 +1,7 @@
 #include "CDuplicator.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Groups/CPlayerLemmingGroup.h"
@@ -16,7 +16,7 @@
 #include "Gameplay/Objects/CViewData.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 #include <stddef.h>
 

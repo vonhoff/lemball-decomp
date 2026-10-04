@@ -1,6 +1,6 @@
 #include "CIce.h"
 
-#include "Game/CGame.h"
+#include "Application/CGame.h"
 #include "Map/CMap.h"
 #include "Map/CGround.h"
 #include "Gameplay/Geometry/tCoord3d.h"

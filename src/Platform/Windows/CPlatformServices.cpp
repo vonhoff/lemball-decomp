@@ -1,9 +1,9 @@
 #include "CPlatformServices.h"
 
-#include "Visos/Input/CMasterInput.h"
-#include "Visos/Streams/CVSIOs.h"
-#include "Visos/Queues/Message.h"
-#include "Visos/File/VsFile.h"
+#include "Engine/Input/CMasterInput.h"
+#include "Engine/Streams/CVSIOs.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/File/VsFile.h"
 #include "Platform/Windows/Input/InputTranslationEntry.h"
 
 #include <new.h>

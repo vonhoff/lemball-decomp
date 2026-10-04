@@ -1,12 +1,12 @@
 #include "Entry.h"
 
-#include "Visos/Queues/CBaseQueue.h"
-#include "Visos/Queues/CBaseQueueHandler.h"
-#include "Visos/Startup/VsInit.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Startup/VsInit.h"
 #include "Platform/Windows/Graphics/CCursor.h"
 #include "Platform/Windows/Windowing/CWnd.h"
-#include "../../Visos/Network/CBaseNetwork.h"
-#include "Visos/Resources/Archive/CMogRes.h"
+#include "../../Engine/Network/CBaseNetwork.h"
+#include "Engine/Resources/Archive/CMogRes.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "CPlatformServices.h"
 

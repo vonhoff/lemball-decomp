@@ -1,9 +1,9 @@
 #include "CAmmo.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
-#include "Visos/Time/VsTime.h"
+#include "Engine/Time/VsTime.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -13,7 +13,7 @@
 #include "Gameplay/Objects/ObjectInteractionStates.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 enum {
 	AMMO_PICKUP_ACTIVATION_DURATION_TICKS = 8,

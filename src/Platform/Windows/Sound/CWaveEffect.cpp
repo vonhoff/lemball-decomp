@@ -1,6 +1,6 @@
 #include "CWaveEffect.h"
 
-#include "Visos/Streams/CVSOStream.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "EffPatchHeader.h"
 #include "EffWaveHeader.h"
 #include "PCMSampleFormat.h"

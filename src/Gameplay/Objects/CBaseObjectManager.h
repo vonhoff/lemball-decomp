@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_MANAGERS_CBASEOBJECTMANAGER_H
 #define LEMBALL_AI_MANAGERS_CBASEOBJECTMANAGER_H
 
-#include "Visos/Network/Protocol/CNetworkMessage.h"
+#include "Engine/Network/Protocol/CNetworkMessage.h"
 
 #include <stddef.h>
 

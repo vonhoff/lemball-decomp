@@ -1,10 +1,10 @@
 #include "CBall.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Visos/Math/CVector.h"
+#include "Engine/Math/CVector.h"
 #include "Gameplay/Movement/CMovementInterpolation.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "CBallManager.h"

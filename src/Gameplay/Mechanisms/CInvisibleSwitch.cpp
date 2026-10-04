@@ -14,7 +14,7 @@
 #include "SwitchEntry.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 #include <stddef.h>
 

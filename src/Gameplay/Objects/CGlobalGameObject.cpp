@@ -1,7 +1,7 @@
 #include "CGlobalGameObject.h"
 
 #include "Gameplay/Messages/CTransportObjectMess.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Messages/CObjectChangeStateMess.h"
 #include "Gameplay/Messages/CObjectDiesMess.h"
 #include "Gameplay/Messages/CObjectHitMess.h"
@@ -15,7 +15,7 @@
 #include "Gameplay/Messages/CGameObjectMess.h"
 #include "Gameplay/Messages/GameMessageIds.h"
 #include "ObjectInteractionStates.h"
-#include "Visos/Network/Protocol/CNetworkMessage.h"
+#include "Engine/Network/Protocol/CNetworkMessage.h"
 
 #include <stddef.h>
 

@@ -1,6 +1,6 @@
 #include "DirectDrawError.h"
 
-#include "Visos/Strings/VsString.h"
+#include "Engine/Strings/VsString.h"
 
 #include <string.h>
 

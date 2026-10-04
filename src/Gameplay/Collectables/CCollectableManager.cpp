@@ -1,6 +1,6 @@
 #include "CCollectableManager.h"
 
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "CBonus.h"
 #include "CCollectable.h"

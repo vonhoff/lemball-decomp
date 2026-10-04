@@ -1,7 +1,7 @@
 #include "CSlinky.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -11,7 +11,7 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Visos/Math/RandomConstants.h"
+#include "Engine/Math/RandomConstants.h"
 
 #include <stddef.h>
 

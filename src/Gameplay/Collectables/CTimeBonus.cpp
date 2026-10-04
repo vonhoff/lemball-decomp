@@ -2,7 +2,7 @@
 
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 enum {
 	TIME_BONUS_ADDED_SECONDS = 30

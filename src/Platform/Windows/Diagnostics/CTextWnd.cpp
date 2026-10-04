@@ -1,7 +1,7 @@
 #include "CTextWnd.h"
 
 #include "Platform/Windows/Entry.h"
-#include "Visos/Diagnostics/VsDebug.h"
+#include "Engine/Diagnostics/VsDebug.h"
 #include "CTextLine.h"
 #include "CTextLineBuffer.h"
 

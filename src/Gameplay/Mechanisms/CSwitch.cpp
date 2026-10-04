@@ -1,7 +1,7 @@
 #include "CSwitch.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
@@ -15,7 +15,7 @@
 #include "Gameplay/Objects/CViewData.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 // GLOBAL: LEMBALL 0x0049e1b8
 unsigned short g_wNextSwitchIndex;

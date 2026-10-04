@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CTCPIPNETWORK_H
 
 #include "Platform/Windows/Network/CNetworkWnd.h"
-#include "Visos/Network/CBaseNetwork.h"
+#include "Engine/Network/CBaseNetwork.h"
 
 #define TCPIP_MESSAGE_FORCE_PROCESS 0x444
 #define TCPIP_TIMER_ID 0x12345678

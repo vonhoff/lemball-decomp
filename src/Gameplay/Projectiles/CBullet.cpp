@@ -1,11 +1,11 @@
 #include "CBullet.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
 #include "Map/CGround.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "CBulletManager.h"
 #include "Gameplay/Messages/GameMessageIds.h"
@@ -18,9 +18,9 @@
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
-#include "Visos/Diagnostics/VsDebug.h"
-#include "Visos/Network/Protocol/CNetworkMessage.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Diagnostics/VsDebug.h"
+#include "Engine/Network/Protocol/CNetworkMessage.h"
 
 enum {
 	BULLET_TRAVEL_DURATION_TICKS = 10

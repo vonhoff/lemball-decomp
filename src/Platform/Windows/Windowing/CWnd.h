@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CWND_H
 #define LEMBALL_VISOS_GRAPHICS_CWND_H
 
-#include "Visos/Windows/CPVWnd.h"
+#include "Engine/Windows/CPVWnd.h"
 struct CVSPoint;
 
 enum eWindowStyleFlags {

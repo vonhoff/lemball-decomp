@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CTCPIPCOMMONSOCKET_H
 
 #include "Platform/Windows/Network/CNetworkWnd.h"
-#include "Visos/Network/CBaseCommonSocket.h"
+#include "Engine/Network/CBaseCommonSocket.h"
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x0049a060 CNetworkWnd

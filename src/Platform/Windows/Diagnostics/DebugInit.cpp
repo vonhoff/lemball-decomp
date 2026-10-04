@@ -1,8 +1,8 @@
 #include "Platform/Windows/Thread.h"
-#include "Visos/Diagnostics/VsDebug.h"
-#include "Visos/Startup/ProcessExitCodes.h"
-#include "Visos/File/VsFile.h"
-#include "Visos/Startup/VsInit.h"
+#include "Engine/Diagnostics/VsDebug.h"
+#include "Engine/Startup/ProcessExitCodes.h"
+#include "Engine/File/VsFile.h"
+#include "Engine/Startup/VsInit.h"
 
 #include <stddef.h>
 

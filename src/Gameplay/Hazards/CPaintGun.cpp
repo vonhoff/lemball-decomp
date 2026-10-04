@@ -1,10 +1,10 @@
 #include "CPaintGun.h"
 
-#include "Game/CGame.h"
-#include "Game/GameTime.h"
+#include "Application/CGame.h"
+#include "Application/GameTime.h"
 #include "Map/CMap.h"
-#include "Visos/Time/VsTime.h"
-#include "Visos/Network/CConnect.h"
+#include "Engine/Time/VsTime.h"
+#include "Engine/Network/CConnect.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
@@ -13,7 +13,7 @@
 #include "Gameplay/Projectiles/CBullet.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Game/SoundEffects.h"
+#include "Application/SoundEffects.h"
 
 #include <stddef.h>
 
