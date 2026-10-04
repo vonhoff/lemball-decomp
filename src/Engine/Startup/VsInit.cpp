@@ -231,7 +231,7 @@ void INIT_SubSystems()
 		stat = NULL;
 	}
 	g_pStatManager->Register(stat);
-	g_pMasterArena->m_usageStat = (void*) stat;
+	g_pMasterArena->m_usageStat = stat;
 }
 
 // FUNCTION: LEMBALL 0x00459520

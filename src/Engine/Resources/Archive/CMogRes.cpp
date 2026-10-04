@@ -65,7 +65,7 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 	}
 	g_pMogloadStat = new CMogloadStat("Mogload memory");
 	g_pStatManager->Register(g_pMogloadStat);
-	g_pMogloadArena->m_usageStat = (void*) g_pMogloadStat;
+	g_pMogloadArena->m_usageStat = g_pMogloadStat;
 }
 
 // FUNCTION: LEMBALL 0x0045c770

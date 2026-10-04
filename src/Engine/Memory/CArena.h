@@ -6,6 +6,7 @@
 
 #include <stddef.h>
 class CMBlock;
+class CBaseStat;
 
 void INIT_SubSystems();
 
@@ -61,7 +62,7 @@ protected:
 	unsigned char* m_arenaBase; // 0x24
 	unsigned int m_arenaSize;   // 0x28
 	unsigned int m_freeSize;    // 0x2c
-	void* m_usageStat;          // 0x30
+	CBaseStat* m_usageStat;     // 0x30
 	CMBlock* m_firstBlock;      // 0x34
 	CMBlock* m_lastBlock;       // 0x38
 	CMBlock* m_lastFreeBlock;   // 0x3c

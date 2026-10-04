@@ -275,7 +275,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		if (g_pArenaHighWater < data) {
 			g_pArenaHighWater = data;
 		}
-		((CBaseStat*) m_usageStat)->Update(data - m_arenaBase);
+		m_usageStat->Update(data - m_arenaBase);
 	}
 	LeaveCritical();
 	return true;
@@ -312,15 +312,16 @@ bool CArena::AllocateArena(CArena** p_arena, unsigned long p_size, char* p_descr
 	unsigned char* memory;
 	CMBlock* block;
 	CArena* arena;
+	CArena*& output = *p_arena;
 
-	if (!Allocate(&memory, (*p_arena = NULL, p_size), "Arena container")) {
+	if (!Allocate(&memory, (output = NULL, p_size), "Arena container")) {
 		return false;
 	}
 	EnterCritical();
 	block = (CMBlock*) (memory - GetSizeOfBlock());
 	arena = CreateNew(block->m_data, block->m_size, p_description, this, NULL);
 	AddToArenaList(arena);
-	*p_arena = arena;
+	output = arena;
 	LeaveCritical();
 	return true;
 }
