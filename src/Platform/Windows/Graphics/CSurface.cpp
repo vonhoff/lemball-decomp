@@ -1200,9 +1200,10 @@ void CSurface::Blit(CScreenScroll* p_scroll)
 // FUNCTION: LEMBALL 0x00474d40
 void CSurface::Blit(CZBuffClear* p_clear)
 {
-	int width = p_clear->m_bounds.m_width;
 	int startX;
-	int height = p_clear->m_bounds.m_height;
+	int height;
+	int width = p_clear->m_bounds.m_width;
+	height = p_clear->m_bounds.m_height;
 
 	if (width == 0 || height == 0) {
 		return;
