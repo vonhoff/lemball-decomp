@@ -120,11 +120,13 @@ bool CPaintGun::Process()
 			Action(ACTION_RUNNING);
 		}
 		else if (m_lastMovementTick < g_dwGameTick) {
-			int y = m_position.m_yFixed;
-			int z = m_position.m_zFixed;
-			AICOORD position(m_position.m_xFixed, y, z + PAINT_GUN_PROJECTILE_HEIGHT_OFFSET_FIXED);
-			AICOORD start(position);
-			AICOORD target(position);
+			AICOORD position;
+			position = m_position;
+			position.m_zFixed += PAINT_GUN_PROJECTILE_HEIGHT_OFFSET_FIXED;
+			AICOORD start;
+			AICOORD target;
+			start = position;
+			target = position;
 			int coordinate;
 
 			start.m_xFixed = position.m_xFixed + (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
