@@ -178,7 +178,7 @@ class ReportTests(unittest.TestCase):
         totals = result["measures"]
         self.assertEqual(
             [unit["name"] for unit in result["units"]],
-            ["Exact", "Mixed", "Unmatched original code"],
+            ["Exact", "Mixed", "Unknown"],
         )
         for unit in result["units"]:
             addresses = [
