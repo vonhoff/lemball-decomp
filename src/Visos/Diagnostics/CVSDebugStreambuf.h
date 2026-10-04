@@ -21,16 +21,6 @@ public:
 extern CVSDebugStreambuf* g_pDebugStreambuf;
 extern CVSDebugStreambuf* g_pSysStreambuf;
 extern CVSDebugStreambuf* g_pErrorStreambuf;
-extern void* g_pDebugAcceleratorTable;
-extern int g_nDebugInitialised;
-extern int g_nDebugFileOutputEnabled;
-extern int g_nAsyncDebugEnabled;
-extern void* g_pDebugThread;
-extern void* g_pDebugSyncEvent;
-extern int g_nDebugThreadId;
-extern FILE* g_pDebugOutputFile;
-extern char* g_pDebugOutputPath;
-
 // SYNTHETIC: LEMBALL 0x0045af60
 // CVSDebugStreambuf::`scalar deleting destructor'
 

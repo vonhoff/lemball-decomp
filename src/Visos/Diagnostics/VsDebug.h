@@ -13,4 +13,16 @@ int _RAWOUT_ErrorString(char* p_text);
 int _RAWOUT_SysString(char* p_text);
 void DisplayRelAssert(void* p_reason, void* p_file, unsigned int p_line);
 void FatalWin32Error(char* p_context);
+struct FILE;
+
+extern void* g_pDebugAcceleratorTable;
+extern int g_nDebugInitialised;
+extern int g_nDebugFileOutputEnabled;
+extern int g_nAsyncDebugEnabled;
+extern void* g_pDebugThread;
+extern void* g_pDebugSyncEvent;
+extern int g_nDebugThreadId;
+extern FILE* g_pDebugOutputFile;
+extern char* g_pDebugOutputPath;
+
 #endif

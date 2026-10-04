@@ -1,5 +1,5 @@
 #include "Platform/Windows/Thread.h"
-#include "Visos/Diagnostics/CVSDebugStreambuf.h"
+#include "Visos/Diagnostics/VsDebug.h"
 #include "Visos/Startup/ProcessExitCodes.h"
 #include "Visos/File/VsFile.h"
 #include "Visos/Startup/VsInit.h"

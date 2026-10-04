@@ -352,6 +352,18 @@ int CGameObject::UsableState()
 	return GROUP_OBJECT_REQUEST_ACCEPTED;
 }
 
+// FUNCTION: LEMBALL 0x00413050
+void ReindexAllObjects()
+{
+	unsigned int count = g_wObjectCount;
+	for (unsigned int index = 0; index < count; ++index) {
+		CGameObject* object = g_pObjects[index & OBJECT_ID_MASK];
+		if (object != 0 && object->m_objectId != index) {
+			object->m_objectId = (unsigned short) index;
+		}
+	}
+}
+
 // FUNCTION: LEMBALL 0x00414f30
 CGameObject::CGameObject(eObjectType p_objectType,
 						 unsigned short p_collisionFlags,

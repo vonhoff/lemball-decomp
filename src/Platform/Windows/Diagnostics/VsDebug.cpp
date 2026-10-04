@@ -34,6 +34,35 @@ extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code)
 
 #pragma intrinsic(strlen)
 
+#include "Platform/Windows/ThreadConstants.h"
+
+// GLOBAL: LEMBALL 0x004a071c
+void* g_pDebugAcceleratorTable = NULL;
+
+// GLOBAL: LEMBALL 0x004a0e68
+int g_nDebugInitialised = 0;
+
+// GLOBAL: LEMBALL 0x004a0e80
+int g_nDebugFileOutputEnabled = 0;
+
+// GLOBAL: LEMBALL 0x004a0e84
+int g_nAsyncDebugEnabled = 0;
+
+// GLOBAL: LEMBALL 0x004a29f4
+void* g_pDebugThread = NULL;
+
+// GLOBAL: LEMBALL 0x004a2a04
+void* g_pDebugSyncEvent = NULL;
+
+// GLOBAL: LEMBALL 0x004a2a08
+int g_nDebugThreadId = THREAD_ID_BEFORE_CREATE;
+
+// GLOBAL: LEMBALL 0x004a2a0c
+FILE* g_pDebugOutputFile = NULL;
+
+// GLOBAL: LEMBALL 0x004a2a10
+char* g_pDebugOutputPath = "debug.out";
+
 // FUNCTION: LEMBALL 0x00459970
 void _VSExit(int p_exitCode)
 {

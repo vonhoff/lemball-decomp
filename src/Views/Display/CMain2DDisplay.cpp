@@ -12,7 +12,7 @@
 #include "Frontend/Password/CPasswordDrawer.h"
 #include "Frontend/Preview/CPreviewDrawer.h"
 #include "Frontend/Results/CSuccFailDrawer.h"
-#include "Frontend/About/AboutDialog.h"
+#include "Platform/Windows/Windowing/AboutDialog.h"
 #include "Frontend/About/CAboutScreen.h"
 #include "../../Platform/Windows/Entry.h"
 #include "Visos/Queues/CBaseQueue.h"
