@@ -20,6 +20,10 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 
 extern char* g_szBroadcastPeerName;
 
+enum {
+	NETWORK_OPTIONS_REMAP_NONE = 6
+};
+
 // FUNCTION: LEMBALL 0x004536f0
 void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p_remap)
 {
@@ -48,7 +52,7 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 			posAddress.m_y += yOffset;
 			posPeer.m_y += yOffset;
 			remap = NULL;
-			if (p_remap != 6) {
+			if (p_remap != NETWORK_OPTIONS_REMAP_NONE) {
 				remap = (CRemap*) m_remaps[p_remap];
 			}
 			gameName = entries[p_index].m_gameName;
