@@ -85,10 +85,11 @@ void CFileReadSocket::Process()
 				ReadBuff(m_pendingReadSlot);
 				CHeaderMessage* header = &m_file->m_headers[m_pendingReadSlot];
 				header->m_mirroredSequence = header->m_sequence;
+				unsigned short sequence;
 				int index;
 				for (index = m_pendingReadSlot; index < CFileCommonSocket::m_headerSlotCount; index++) {
 					header = &m_file->m_headers[index];
-					unsigned short sequence = header->m_sequence;
+					sequence = header->m_sequence;
 					if (header->m_mirroredSequence < sequence) {
 						m_pendingReadSlot = index;
 						break;
