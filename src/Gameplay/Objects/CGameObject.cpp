@@ -737,11 +737,11 @@ bool CGameObject::SearchRoute()
 						coordinate.m_xFixed = ((unsigned int) (unsigned short) solution->m_x
 											   << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
 											  (GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
+						CAiDestinationList* list = m_destinationList;
 						coordinate.m_yFixed = ((unsigned int) (unsigned short) solution->m_y
 											   << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
 											  (GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
 						coordinate.m_zFixed = 0;
-						CAiDestinationList* list = m_destinationList;
 						unsigned short count = list->m_count;
 						if (count < list->m_capacity) {
 							list->m_count = count + 1;
