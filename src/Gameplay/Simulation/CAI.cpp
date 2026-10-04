@@ -180,11 +180,11 @@ void CAI::Restart()
 		}
 		g_pGameStatus->m_levelState = 0;
 	}
-	for (i = 0; i < NETWORK_START_POSITION_COUNT; i++) {
-		m_networkStartsZ[i] = 0;
-		m_networkStartsY[i] = 0;
-		m_networkStartsX[i] = 0;
-		m_networkTrapDoors[i] = 0;
+	for (unsigned int startIndex = 0; startIndex < NETWORK_START_POSITION_COUNT; startIndex++) {
+		m_networkStartsZ[startIndex] = 0;
+		m_networkStartsY[startIndex] = 0;
+		m_networkStartsX[startIndex] = 0;
+		m_networkTrapDoors[startIndex] = 0;
 	}
 	m_networkTrapDoors[0] = 4;
 	m_networkTrapDoorCount = 1;
