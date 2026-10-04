@@ -6,7 +6,7 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 
 // FUNCTION: LEMBALL 0x0042bfe0
 CPaintGunManager::CPaintGunManager(CAI* p_ai, int p_capacity)

@@ -5,7 +5,7 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "CMine.h"
 #include "Gameplay/Geometry/AICOORD.h"
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Engine/Math/FixedPoint.h"
 

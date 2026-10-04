@@ -4,7 +4,7 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "CIce.h"
 #include "Gameplay/Objects/CGameObject.h"
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 
 // FUNCTION: LEMBALL 0x0042d7a0

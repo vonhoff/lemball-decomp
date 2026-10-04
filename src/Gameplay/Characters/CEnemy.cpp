@@ -7,7 +7,7 @@
 #include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Behavior/StateMachine.h"
-#include "tagWaypointInformation.h"
+#include "Gameplay/Characters/EnemyBehavior.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"

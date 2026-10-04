@@ -23,4 +23,6 @@ extern char g_szRegistryRunning[8];
 extern char g_szRegistryNotRunning[4];
 extern char g_szRegistryValueRunning[8];
 extern char g_szFileModeRead[4];
+extern char g_szCurrentDirectory[256];
+extern char g_szSourceDiskPath[256];
 #endif

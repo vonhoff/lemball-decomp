@@ -51,7 +51,7 @@
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/CRect3.h"
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Projectiles/CBullet.h"

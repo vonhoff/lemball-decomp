@@ -1,6 +1,6 @@
 #include "CLevelLoader.h"
 
-#include "LevelVersions.h"
+#include "Level/LevelFormat.h"
 #include "Gameplay/Groups/CEnemyGroupManager.h"
 #include "Gameplay/Groups/CPlayerLemmingGroupManager.h"
 #include "Gameplay/Groups/CSheepGroupManager.h"
@@ -31,7 +31,6 @@
 #include "Engine/Resources/Types/CResBIN.h"
 #include "Engine/Resources/Manifest.h"
 #include "tPreviewData.h"
-#include "tagLoadBlockHeader.h"
 
 #include <string.h>
 struct tagLoadEnemyData;

@@ -69,21 +69,6 @@ void SetRemoteGameTimeReal(unsigned long p_timestamp)
 	}
 }
 
-// FUNCTION: LEMBALL 0x00409150
-void _DEMO_Init(int p_sourceId)
-{
-	g_pDemo = new CDemo(p_sourceId);
-}
-
-// FUNCTION: LEMBALL 0x00409180
-void _DEMO_Quit()
-{
-	if (g_pDemo != NULL) {
-		delete g_pDemo;
-		g_pDemo = NULL;
-	}
-}
-
 // GLOBAL: LEMBALL 0x0049ce08
 unsigned long g_dwSimulationTimestamp;
 

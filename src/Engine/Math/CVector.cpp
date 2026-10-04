@@ -38,9 +38,3 @@ CVector operator+(const CVector& p_left, const CVector& p_right)
 	int x = p_right.m_xFixed + p_left.m_xFixed;
 	return CVector(x, y);
 }
-
-// GLOBAL: LEMBALL 0x0049e0d0
-FormationVectorTemplate g_aFormationTemplates[24] = {
-	{0, 0}, {-16, 0},   {-32, 0},  {-48, 0},   {-64, 0},   {-80, 0},   {-96, 0},  {-112, 0},
-	{0, 0}, {-24, -16}, {-24, 16}, {-48, -32}, {-48, 32},  {-72, -48}, {-72, 48}, {-96, -64},
-	{0, 0}, {-24, -24}, {-24, 0},  {-24, 24},  {-48, -48}, {-48, -24}, {-48, 0},  {-48, 24}};

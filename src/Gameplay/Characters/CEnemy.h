@@ -4,7 +4,6 @@
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Characters/EnemyBehavior.h"
-#include "tEnemyLemmingUnion.h"
 
 class CAI;
 // SIZE 0x170

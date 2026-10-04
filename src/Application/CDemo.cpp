@@ -16,6 +16,21 @@ enum {
 	DEMO_BUFFER_NEEDS_LOAD = -1
 };
 
+// FUNCTION: LEMBALL 0x00409150
+void _DEMO_Init(int p_sourceId)
+{
+	g_pDemo = new CDemo(p_sourceId);
+}
+
+// FUNCTION: LEMBALL 0x00409180
+void _DEMO_Quit()
+{
+	if (g_pDemo != NULL) {
+		delete g_pDemo;
+		g_pDemo = NULL;
+	}
+}
+
 // FUNCTION: LEMBALL 0x004091b0
 CDemo::CDemo(int p_sourceId)
 {

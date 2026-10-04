@@ -2,7 +2,6 @@
 
 #include "Map/CMap.h"
 #include "Engine/Sorting/VsSort.h"
-#include "GameView/Animation/AnimSpecialEntry.h"
 
 enum {
 	ANIM_SPECIAL_DIAGONAL_DEPTH_STEP = 64,

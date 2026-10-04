@@ -2,7 +2,7 @@
 
 #include "CLaser.h"
 #include "Gameplay/Objects/CViewData.h"
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 
 // FUNCTION: LEMBALL 0x00429320
 CLaserManager::CLaserManager(CAI* p_ai, int p_capacity)

@@ -2,7 +2,7 @@
 
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Objects/ObjectTypes.h"
-#include "tagLoadDefaultBlox.h"
+#include "Level/LevelFormat.h"
 #include "CGround.h"
 #include "CGroundArray.h"
 
@@ -75,8 +75,6 @@ unsigned short g_treeFrameLimit = 0;
 
 // GLOBAL: LEMBALL 0x0049e544
 unsigned short g_embersFrameLimit = 1;
-
-#include "tagLoadGroundSurfaceData.h"
 
 // FUNCTION: LEMBALL 0x004303c0
 CMap::CMap()

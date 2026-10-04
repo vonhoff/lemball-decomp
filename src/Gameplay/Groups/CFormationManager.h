@@ -3,6 +3,13 @@
 
 #include "Engine/Math/CVector.h"
 
+enum FormationVectorComponent {
+	kFormationVectorX,
+	kFormationVectorY,
+};
+
+typedef int FormationVectorTemplate[2];
+
 // SIZE 0x104
 class CFormationManager {
 public:
@@ -21,4 +28,5 @@ private:
 };
 
 extern CFormationManager* g_pGenericGroupFormationManager;
+extern FormationVectorTemplate g_aFormationTemplates[24];
 #endif

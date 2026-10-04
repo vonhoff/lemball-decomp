@@ -10,9 +10,3 @@ CVSIOs::CVSIOs(CVSStreambuf* p_streamBuffer)
 CVSIOs::~CVSIOs()
 {
 }
-
-// GLOBAL: LEMBALL 0x004a8088
-char g_szCurrentDirectory[256];
-
-// GLOBAL: LEMBALL 0x004a9ff8
-char g_szSourceDiskPath[256];

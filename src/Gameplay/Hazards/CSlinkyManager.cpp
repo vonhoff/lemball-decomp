@@ -3,7 +3,7 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "CSlinky.h"
 #include "Gameplay/Objects/CGameObject.h"
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 
 #include <stddef.h>
 

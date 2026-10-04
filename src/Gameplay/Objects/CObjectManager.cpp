@@ -26,7 +26,7 @@ CObjectManager* g_pObjectManager;
 // GLOBAL: LEMBALL 0x004a7830
 CObjectManager* g_pGenericGroupObjectManager;
 
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 
 // FUNCTION: LEMBALL 0x0041af60
 CObjectManager::CObjectManager(CAI* p_ai, int p_arg1)

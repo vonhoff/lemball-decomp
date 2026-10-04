@@ -15,15 +15,7 @@ public:
 	int m_yFixed; // 0x04
 };
 
-enum FormationVectorComponent {
-	kFormationVectorX,
-	kFormationVectorY,
-};
-
-typedef int FormationVectorTemplate[2];
-
 CVector operator*(const CVector& p_vector, int p_scale);
 CVector operator+(const CVector& p_left, const CVector& p_right);
 
-extern FormationVectorTemplate g_aFormationTemplates[24];
 #endif

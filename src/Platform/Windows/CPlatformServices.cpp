@@ -1,7 +1,6 @@
 #include "CPlatformServices.h"
 
 #include "Engine/Input/CMasterInput.h"
-#include "Engine/Streams/CVSIOs.h"
 #include "Engine/Queues/Message.h"
 #include "Engine/Files/VsFile.h"
 #include "Platform/Windows/Input/InputTranslation.h"
@@ -200,3 +199,9 @@ char* ReadSourceDiskRegistryPath()
 	RegCloseKey(key);
 	return g_szSourceDiskPath;
 }
+
+// GLOBAL: LEMBALL 0x004a8088
+char g_szCurrentDirectory[256];
+
+// GLOBAL: LEMBALL 0x004a9ff8
+char g_szSourceDiskPath[256];

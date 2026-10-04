@@ -10,7 +10,7 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Map/CGround.h"

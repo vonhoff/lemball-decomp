@@ -1,6 +1,6 @@
 #include "CSheepGroupManager.h"
 
-#include "Level/tagLoadSheepData.h"
+#include "Level/LevelFormat.h"
 #include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Characters/CSheep.h"

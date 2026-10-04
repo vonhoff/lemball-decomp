@@ -66,7 +66,7 @@ struct ObjectClipGrid {
 #include "Gameplay/Hazards/CSlinky.h"
 #include "Gameplay/Mechanisms/CSwitch.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "GameView/Animation/AnimSpecialEntry.h"
+#include "GameView/Animation/CAnimSpecial.h"
 #include "GameView/Animation/CAnimSpecial.h"
 #include "Engine/Sorting/VsSort.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"

@@ -15,7 +15,7 @@ enum {
 // GLOBAL: LEMBALL 0x0049e1c0
 unsigned short g_wMovingLiftCount = 0;
 
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 
 #include "Gameplay/Geometry/AICOORD.h"
 

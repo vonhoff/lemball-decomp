@@ -1,7 +1,7 @@
 #include "CEnemyGroupManager.h"
 
-#include "Level/tagLoadEnemyData.h"
-#include "Gameplay/Characters/tagWaypointInformation.h"
+#include "Level/LevelFormat.h"
+#include "Gameplay/Characters/EnemyBehavior.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Characters/CEnemy.h"
 #include "Gameplay/Objects/CGameObject.h"

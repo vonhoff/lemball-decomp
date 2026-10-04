@@ -51,6 +51,9 @@ private:
 	unsigned int m_state54;      // 0x54
 };
 
+void _DEMO_Init(int p_sourceId);
+void _DEMO_Quit();
+
 extern int g_nDemoMode;
 extern CDemo* g_pDemo;
 extern char g_szDemoFilePath[80];

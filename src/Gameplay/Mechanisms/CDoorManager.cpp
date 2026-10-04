@@ -4,7 +4,7 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "CDoor.h"
 #include "Gameplay/Objects/CViewData.h"
-#include "Level/LevelVersions.h"
+#include "Level/LevelFormat.h"
 #include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"

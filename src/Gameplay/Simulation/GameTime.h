@@ -8,8 +8,6 @@ void ClockEditMode(unsigned int p_enabled);
 void ResetGameTimes();
 void SetGameTime();
 void SetRemoteGameTimeReal(unsigned long p_timestamp);
-void _DEMO_Init(int p_sourceId);
-void _DEMO_Quit();
 
 extern unsigned long g_dwSimulationTimestamp;
 extern unsigned long g_dwRemoteGameTick;
