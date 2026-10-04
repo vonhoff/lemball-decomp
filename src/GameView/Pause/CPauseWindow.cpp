@@ -320,7 +320,7 @@ CVSRect CPauseWindow::CalculateWindow()
 		itemCount--;
 	}
 	for (i = 0; i < m_menuItemCount; i++) {
-		const CVSSize& measuredTextSize = m_font->GetSize(m_menuLabels[i], TEXT_ADVANCE_X_POSITIVE);
+		CVSSize measuredTextSize = m_font->GetSize(m_menuLabels[i], TEXT_ADVANCE_X_POSITIVE);
 		CVSPoint* storedTextSize = m_menuItemRects + i * 2;
 		storedTextSize->m_x = measuredTextSize.m_width;
 		storedTextSize->m_y = measuredTextSize.m_height;
@@ -480,11 +480,7 @@ CVSRect CPauseWindow::CalculateWindow()
 		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner[1]);
 	}
 
-	CVSRect result;
-	(CVSSize&) result = windowSize;
-	result.m_x = positionX;
-	result.m_y = positionY;
-	return result;
+	return CVSRect(positionX, positionY, windowSize.m_width, windowSize.m_height);
 }
 
 // FUNCTION: LEMBALL 0x00444680
