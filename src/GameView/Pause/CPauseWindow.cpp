@@ -261,8 +261,8 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 	size = *(const CVSSize*) &p_rect;
 	borderRect.m_width = size.m_width;
 	borderRect.m_height = size.m_height;
-	borderRect.m_x = 0;
 	borderRect.m_y = 0;
+	borderRect.m_x = 0;
 	m_borderPadding.m_x = 4;
 	m_borderPadding.m_y = 4;
 	if (m_lowResolution == 0) {
