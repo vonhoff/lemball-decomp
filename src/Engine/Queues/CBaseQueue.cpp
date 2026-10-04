@@ -363,7 +363,7 @@ bool CBaseQueue::ProcessNMsgs(unsigned int p_count)
 	available = m_messageCount;
 	if (p_count != 0) {
 		do {
-			if (available <= index) {
+			if (index >= available) {
 				break;
 			}
 			if (GetNth(&message, 0) == 0) {
