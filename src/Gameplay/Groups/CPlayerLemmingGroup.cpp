@@ -419,7 +419,7 @@ bool CPlayerLemmingGroup::CheckNetworkStateChanged()
 	bool changed = false;
 	CPlayerLemming* lemming = (CPlayerLemming*) CGenericGroup::GetFirstElementInGroup();
 	while (lemming != 0) {
-		bool lemmingChanged = lemming->CheckNetworkStateChanged() != 0;
+		unsigned int lemmingChanged = lemming->CheckNetworkStateChanged();
 		changed = lemmingChanged || changed;
 		lemming = (CPlayerLemming*) CGenericGroup::GetNextElementInGroup();
 	}
