@@ -32,9 +32,12 @@ CLift::~CLift()
 // FUNCTION: LEMBALL 0x00424d30
 void CLift::CalculateCliff()
 {
-	int startX = (short) (m_start.m_x / GROUND_BLOCK_PIXEL_SIZE);
-	int startY = (short) (m_start.m_y / GROUND_BLOCK_PIXEL_SIZE);
-	int endX = (short) (m_end.m_x / GROUND_BLOCK_PIXEL_SIZE);
+	int startX;
+	int endX;
+	int startY;
+	startX = (short) (m_start.m_x / GROUND_BLOCK_PIXEL_SIZE);
+	startY = (short) (m_start.m_y / GROUND_BLOCK_PIXEL_SIZE);
+	endX = (short) (m_end.m_x / GROUND_BLOCK_PIXEL_SIZE);
 	if (startY > 0) {
 		for (int x = startX; x <= endX; x++) {
 			CGround* ground = &g_pActiveMap->m_ground.m_ground[(startY - 1) * g_pActiveMap->m_ground.m_width + x];
