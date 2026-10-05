@@ -100,11 +100,9 @@ int CSlinkyManager::GetViewData(CViewData* p_viewData)
 	int i = 0;
 	int count = 0;
 	if (m_count > 0) {
-		CSlinky* slinky = m_slinkies;
 		do {
-			slinky->GetViewData(*p_viewData);
+			m_slinkies[i].GetViewData(*p_viewData);
 			p_viewData++;
-			slinky++;
 			count++;
 			i++;
 		} while (m_count > i);
