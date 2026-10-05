@@ -161,10 +161,11 @@ void CBulletManager::RemoveBullet(CBullet* p_bullet)
 // FUNCTION: LEMBALL 0x004180e0
 int CBulletManager::GetViewData(CViewData* p_viewData)
 {
+	CViewData* viewData;
 	CBullet* bullet = GetFirstBullet();
 	int count = 0;
 	if (bullet != NULL) {
-		CViewData* viewData = p_viewData;
+		viewData = p_viewData;
 		do {
 			bullet->GetViewData(*viewData);
 			viewData++;
