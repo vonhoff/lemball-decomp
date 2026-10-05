@@ -908,8 +908,7 @@ void CAI::CollectNetworkGroupData(int* p_output)
 	*p_output = 0;
 	int sheepCount = m_sheepGroupManager->GetAllBoundingBoxes(reinterpret_cast<Rect*>(p_output + 1));
 	*p_output = sheepCount;
-	int playerCount = m_playerGroupManager->GetAllBoundingBoxes(
-		reinterpret_cast<Rect*>(p_output + sheepCount * (sizeof(Rect) / sizeof(int)) + 1));
+	int playerCount = m_playerGroupManager->GetAllBoundingBoxes(reinterpret_cast<Rect*>(p_output + 1) + sheepCount);
 	*p_output = sheepCount + playerCount;
 }
 
