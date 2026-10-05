@@ -21,11 +21,10 @@ void CGroundArray::SetCollision(int p_x, int p_y, int p_collision)
 void CGroundArray::Clear()
 {
 	CGround* ground;
-	int x;
 	int y = 0;
 	if (m_height > 0) {
 		do {
-			x = 0;
+			int x = 0;
 			for (;;) {
 				if (x >= m_width) {
 					break;
