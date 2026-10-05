@@ -734,12 +734,16 @@ void CPlayerLemming::OnBalloon()
 	int baseZ = (int) groundZ + 32;
 	int curZ = m_position.m_zFixed;
 	int tileZ = curZ >> FIXED_POINT_FRACTION_BITS;
+	int lowerZ = baseZ - 6;
+	int upperZ = baseZ + 6;
 	if (dist != 0) {
 		int factor = (g_dwGameTick - m_lastMovementTick) * 2;
 		m_position.m_xFixed += ((postPos.m_xFixed - m_position.m_xFixed) * factor) / dist;
 		m_position.m_yFixed += ((postPos.m_yFixed - m_position.m_yFixed) * factor) / dist;
 	}
-	if (tileZ < baseZ - 6 || tileZ > baseZ + 6) {
+	int aboveLowerZ = tileZ >= lowerZ;
+	int belowUpperZ = tileZ <= upperZ;
+	if ((aboveLowerZ & belowUpperZ) == 0) {
 		if (tileZ > baseZ) {
 			curZ -= PLAYER_LEMMING_VERTICAL_CORRECTION_STEP_FIXED;
 		}
