@@ -94,7 +94,8 @@ CSoundView::CSoundView()
 	m_unk0x64 = 0;
 	m_initialGameTick = g_dwGameTick;
 	m_flags = 0;
-	m_currentState = SOUND_STATE_SILENT;
+	unsigned short& currentState = m_currentState;
+	currentState = SOUND_STATE_SILENT;
 	m_musicHandle = 0;
 	m_musicResourceId = 0;
 	m_randomMusicIndex = 0;
