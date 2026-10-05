@@ -7,6 +7,7 @@
 struct CVSPoint;
 class CPVGWnd;
 class CResANIM;
+class CRemap;
 class CPrimitive;
 
 // SIZE 0x130
@@ -39,7 +40,7 @@ private:
 	short m_graphicOffsetX;         // 0x118
 	short m_graphicOffsetY;         // 0x11a
 	CResANIM* m_animation;          // 0x11c
-	unsigned int m_frame;           // 0x120
+	CRemap* m_remap;                // 0x120
 	CPrimitive* m_primitive;        // 0x124
 	CPushActive m_statRegion[1];    // 0x128
 };

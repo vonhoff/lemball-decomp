@@ -1,18 +1,18 @@
 #include "CGraphicButton.h"
 
-#include "Engine/Animation/CAnim.h"
-#include "Engine/Resources/Types/CResANIM.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Input/CHotAreaList.h"
-#include "Platform/Windows/Graphics/CSurface.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSRect.h"
 #include "CDepressedButton.h"
 #include "CGWnd.h"
-#include "Engine/Input/CHotAreaHandler.h"
 #include "CPVGWnd.h"
+#include "Engine/Animation/CAnim.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CPrimitive.h"
+#include "Engine/Input/CHotAreaHandler.h"
+#include "Engine/Input/CHotAreaList.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResZRLE.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 enum {
 	GRAPHIC_BUTTON_ALIGN_HORIZONTAL_CENTER = 0x04,
@@ -60,7 +60,7 @@ void CGraphicButton::Initialise()
 	short boxWidth;
 	short boxHeight;
 
-	m_frame = 0;
+	m_remap = NULL;
 	m_primitive = new CAnim[1];
 	m_gdiFlags = m_gdiFlags + 1;
 	m_animation = CResANIM::Load(m_animationId);
@@ -167,7 +167,7 @@ void CGraphicButton::DrawButton()
 		y++;
 	}
 	m_gdi->m_renderTarget->GetCurrDB();
-	CRemap* remap = (CRemap*) m_frame;
+	CRemap* remap = m_remap;
 	CResANIM* animation = m_animation;
 	CAnim* primitive = (CAnim*) m_primitive;
 	primitive->m_x = x;
