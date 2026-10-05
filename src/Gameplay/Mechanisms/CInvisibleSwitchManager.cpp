@@ -82,10 +82,7 @@ void CInvisibleSwitchManager::AddPointSwitch(unsigned short p_id, short p_x, sho
 	minimum.m_x = p_x;
 	minimum.m_y = p_y;
 	minimum.m_z = p_z;
-	tCoord3d maximum;
-	maximum.m_x = p_x;
-	maximum.m_y = p_y;
-	maximum.m_z = p_z;
+	tCoord3d maximum = minimum;
 	AddSwitch(p_id, minimum, maximum);
 }
 
