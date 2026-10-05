@@ -311,12 +311,14 @@ bool CIce::Process()
 			int x = (position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
 			int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
 			int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-			if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+			int width;
+			if (x < 0 || y < 0 || bx >= (width = g_pMap->m_ground.m_width) || by >= g_pMap->m_ground.m_height) {
 				groundZ = 0;
 			}
 			else {
-				groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
-																					   y & GROUND_BLOCK_PIXEL_MASK);
+				x &= GROUND_BLOCK_PIXEL_MASK;
+				y &= GROUND_BLOCK_PIXEL_MASK;
+				groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
 			}
 		}
 		if ((position.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
