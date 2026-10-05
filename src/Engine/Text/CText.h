@@ -23,12 +23,12 @@ public:
 	virtual void Set(int p_x,
 					 int p_y,
 					 CResFONT* p_font,
-					 char* p_text,
+					 const char* p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x18
 	virtual void Set(CVSPoint& p_position,
 					 CResFONT* p_font,
-					 char* p_text,
+					 const char* p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x14
 	virtual void Set(int p_x,

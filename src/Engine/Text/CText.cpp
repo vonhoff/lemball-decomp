@@ -12,7 +12,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00469a50
-void CText::Set(int p_x, int p_y, CResFONT* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
+void CText::Set(int p_x, int p_y, CResFONT* p_font, const char* p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	short& startX = m_startX;
 	short& startY = m_startY;
@@ -25,7 +25,7 @@ void CText::Set(int p_x, int p_y, CResFONT* p_font, char* p_text, unsigned long 
 }
 
 // FUNCTION: LEMBALL 0x00469a80
-void CText::Set(CVSPoint& p_position, CResFONT* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
+void CText::Set(CVSPoint& p_position, CResFONT* p_font, const char* p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	m_startX = p_position.m_x;
 	m_startY = p_position.m_y;
