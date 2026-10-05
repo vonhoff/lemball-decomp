@@ -261,7 +261,8 @@ void CMogDir::Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse)
 		current = &m_currentDir;
 		saved = *current;
 		root = &m_root;
-		*current = *root;
+		current->m_index = root->m_index;
+		current->m_info = root->m_info;
 		current->m_index = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
 		while (p_chunk.m_info == NULL) {
 			dir = GetNextDir();
