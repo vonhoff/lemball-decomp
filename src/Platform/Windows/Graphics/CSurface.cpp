@@ -166,7 +166,7 @@ CSurface::CSurface(const CVSRect& p_rect, class CSurface* p_parentSurface)
 	parentList->m_count++;
 
 	if (g_pSurfaceList == NULL) {
-		head = (SurfaceListHead*) operator new(0xc);
+		head = (SurfaceListHead*) operator new(sizeof(SurfaceListHead));
 		if (head != NULL) {
 			head->m_first = NULL;
 			head->m_last = NULL;
