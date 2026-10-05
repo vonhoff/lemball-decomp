@@ -407,7 +407,6 @@ void INIT_PreInit()
 	unsigned int* capability;
 	int i;
 	PreInit* result;
-	unsigned int value;
 	int displayMode;
 
 	capability = g_anPreInitCapabilities;
@@ -428,7 +427,7 @@ void INIT_PreInit()
 	}
 	capability = g_anPreInitCapabilities;
 	do {
-		value = *capability;
+		const unsigned int& value = *capability;
 		if ((int) value % SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD != 0) {
 			*capability =
 				((int) (value + SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD - 1) / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD) *
