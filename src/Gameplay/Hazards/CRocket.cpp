@@ -96,7 +96,7 @@ bool CRocket::Process()
 
 	switch (action) {
 	case ACTION_FLYING:
-		if ((m_position.m_zFixed & FIXED_POINT_INTEGER_MASK) > 200 * FIXED_POINT_ONE) {
+		if ((int) (m_position.m_zFixed & FIXED_POINT_INTEGER_MASK) > 200 * FIXED_POINT_ONE) {
 			Action(ACTION_READY);
 			return true;
 		}
