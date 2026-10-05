@@ -82,20 +82,18 @@ void CSheepGroupManager::RemoveSheepGroup(CSheepGroup* p_group)
 	int& count = g_pGenericGroupAI->m_objectCount;
 	int originalCount = count;
 	if (index < originalCount) {
-		CGameObject** object = g_pGenericGroupAI->m_objects;
+		CGameObject**& objects = g_pGenericGroupAI->m_objects;
+		CGameObject** object = objects;
 		do {
 			if (*object == p_group) {
 				count--;
 				if (index < count) {
-					int offset = index * sizeof(*object);
 					do {
+						objects[index] = objects[index + 1];
 						index++;
-						object = (CGameObject**) ((char*) g_pGenericGroupAI->m_objects + offset);
-						offset += sizeof(*object);
-						*object = object[1];
 					} while (index < count);
 				}
-				g_pGenericGroupAI->m_objects[count] = NULL;
+				objects[count] = NULL;
 				break;
 			}
 			object++;
