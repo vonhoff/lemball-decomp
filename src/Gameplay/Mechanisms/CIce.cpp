@@ -82,8 +82,9 @@ void CIce::Set(unsigned short p_id,
 	unsigned short minZ;
 	{
 		CMap* map = g_pMap;
-		int width = map->m_ground.m_width;
-		if (minGroundX < 0 || minGroundY < 0 || (minGroundX >> GROUND_BLOCK_PIXEL_SHIFT) >= width ||
+		int width;
+		if (minGroundX < 0 || minGroundY < 0 ||
+			(minGroundX >> GROUND_BLOCK_PIXEL_SHIFT) >= (width = map->m_ground.m_width) ||
 			(minGroundY >> GROUND_BLOCK_PIXEL_SHIFT) >= g_pMap->m_ground.m_height) {
 			minZ = 0;
 		}
@@ -101,8 +102,9 @@ void CIce::Set(unsigned short p_id,
 	unsigned short maxZ;
 	{
 		CMap* map = g_pMap;
-		int width = map->m_ground.m_width;
-		if (maxGroundX < 0 || maxGroundY < 0 || (maxGroundX >> GROUND_BLOCK_PIXEL_SHIFT) >= width ||
+		int width;
+		if (maxGroundX < 0 || maxGroundY < 0 ||
+			(maxGroundX >> GROUND_BLOCK_PIXEL_SHIFT) >= (width = map->m_ground.m_width) ||
 			(maxGroundY >> GROUND_BLOCK_PIXEL_SHIFT) >= g_pMap->m_ground.m_height) {
 			maxZ = 0;
 		}
