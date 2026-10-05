@@ -18,12 +18,12 @@ bool _RES_Init()
 {
 	ResourceTypeList* list;
 
-	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
+	list = new ResourceTypeList;
 	if (list != NULL) {
 		list->m_capacity = 2;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
-		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+		list->m_typeCodes = new unsigned int[list->m_capacity];
 	}
 	else {
 		list = NULL;
@@ -34,12 +34,12 @@ bool _RES_Init()
 	list->m_count = list->m_count + 1;
 	g_pResourceTypes = list;
 
-	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
+	list = new ResourceTypeList;
 	if (list != NULL) {
 		list->m_capacity = 1;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
-		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+		list->m_typeCodes = new unsigned int[list->m_capacity];
 	}
 	else {
 		list = NULL;
@@ -48,12 +48,12 @@ bool _RES_Init()
 	list->m_count = list->m_count + 1;
 	g_pCompressedResourceTypes = list;
 
-	list = (ResourceTypeList*) operator new(sizeof(ResourceTypeList));
+	list = new ResourceTypeList;
 	if (list != NULL) {
 		list->m_capacity = 2;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
-		list->m_typeCodes = (unsigned int*) operator new(list->m_capacity * sizeof(unsigned int));
+		list->m_typeCodes = new unsigned int[list->m_capacity];
 	}
 	else {
 		list = NULL;
@@ -76,18 +76,18 @@ bool _RES_Quit()
 	delete g_pBasePalManager;
 	list = g_pPreloadedResourceTypes;
 	if (list != NULL) {
-		operator delete(list->m_typeCodes);
-		operator delete(list);
+		delete[] list->m_typeCodes;
+		delete list;
 	}
 	list = g_pResourceTypes;
 	if (list != NULL) {
-		operator delete(list->m_typeCodes);
-		operator delete(list);
+		delete[] list->m_typeCodes;
+		delete list;
 	}
 	list = g_pCompressedResourceTypes;
 	if (list != NULL) {
-		operator delete(list->m_typeCodes);
-		operator delete(list);
+		delete[] list->m_typeCodes;
+		delete list;
 	}
 	return true;
 }
