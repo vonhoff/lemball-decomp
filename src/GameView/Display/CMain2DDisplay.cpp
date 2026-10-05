@@ -210,8 +210,9 @@ bool CMain2DDisplay::IsWindowValid()
 	if (!GetSizeStatus()) {
 		return false;
 	}
+	short width;
 	short height = m_rect.m_height;
-	short width = m_rect.m_width;
+	width = m_rect.m_width;
 	if (m_lowWidth == width && m_lowHeight == height) {
 		return true;
 	}
