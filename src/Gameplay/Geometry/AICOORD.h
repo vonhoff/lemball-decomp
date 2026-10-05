@@ -14,7 +14,7 @@ public:
 		m_zFixed = DEBUG_SENTINEL;
 	}
 
-	inline AICOORD(const int& p_x, const int& p_y, const int& p_z)
+	inline AICOORD(int p_x, int p_y, int p_z)
 	{
 		m_xFixed = p_x;
 		m_yFixed = p_y;
