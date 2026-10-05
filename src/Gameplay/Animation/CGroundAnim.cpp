@@ -128,14 +128,13 @@ void CGroundAnim::AddStaticGroundAnim(const tCoord3d& p_coordinate)
 		return;
 	}
 
-	GroundAnimEntry& entry = m_entries[m_count];
-	entry.m_active = 0;
-	entry.m_direction = 0;
-	entry.m_coordinate = p_coordinate;
+	m_entries[m_count].m_active = 0;
+	m_entries[m_count].m_direction = 0;
+	m_entries[m_count].m_coordinate = p_coordinate;
 	++m_count;
 
 	for (int index = 0; index < m_count; ++index) {
-		m_entries[index].m_currentFrame = m_entries[index].m_endFrame;
+		m_entries[index].m_currentFrame = m_entries[index].m_startFrame;
 	}
 }
 
