@@ -161,9 +161,11 @@ bool CDuplicator::Activate(CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00427910
 void CDuplicator::DoActivate()
 {
-	m_stateTimer = g_dwSimulationTimestamp;
-	int y = m_position.m_yFixed + DUPLICATOR_STAGING_POSITION_Y_OFFSET_FIXED;
+	unsigned long timestamp = g_dwSimulationTimestamp;
+	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
+	y += DUPLICATOR_STAGING_POSITION_Y_OFFSET_FIXED;
+	m_stateTimer = timestamp;
 	CGameObject* activator = m_activator;
 	m_actionDeadline += g_dwGameTick;
 	m_duplicatedObject = activator;
