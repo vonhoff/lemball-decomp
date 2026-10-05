@@ -427,12 +427,13 @@ void CTextWnd::SetSelectionHighlight(int p_selected)
 // FUNCTION: LEMBALL 0x00474430
 void CTextWnd::EnsureLineVisible(int p_line)
 {
-	EnterCritical();
+	CCritical& critical = *this;
+	critical.EnterCritical();
 	if (p_line < m_topLine) {
 		m_topLine = p_line;
 		SetScrollPos((HWND) m_windowHandle, SB_VERT, p_line, TRUE);
 		RedrawAll();
-		LeaveCritical();
+		critical.LeaveCritical();
 		return;
 	}
 	if (p_line >= m_topLine + m_visibleRows) {
@@ -440,7 +441,7 @@ void CTextWnd::EnsureLineVisible(int p_line)
 		SetScrollPos((HWND) m_windowHandle, SB_VERT, m_topLine, TRUE);
 		RedrawAll();
 	}
-	LeaveCritical();
+	critical.LeaveCritical();
 }
 
 // FUNCTION: LEMBALL 0x004744a0
