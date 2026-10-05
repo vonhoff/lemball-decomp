@@ -46,8 +46,9 @@ CVSRect* CVSRect::ExpandToInclude(const CVSRect& p_rect)
 			m_height = m_height + (top - rectY);
 			m_y = p_rect.m_y;
 		}
+		short sourceY;
 		short rectHeight = p_rect.m_height;
-		short sourceY = p_rect.m_y;
+		sourceY = p_rect.m_y;
 		top = m_y;
 		short rectBottom = rectHeight + sourceY;
 		short bottom = m_height + top;
