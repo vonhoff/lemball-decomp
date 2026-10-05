@@ -17,10 +17,9 @@ CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* p_ai, int p_capacity)
 // FUNCTION: LEMBALL 0x0040a270
 void CInvisibleSwitchManager::Restart()
 {
-	CInvisibleSwitchManager* owner = this;
-	if (owner->m_switches != NULL) {
-		for (int i = 0; i < owner->m_capacity; i++) {
-			owner->m_switches[i].Restart();
+	if (m_switches != NULL) {
+		for (int i = 0; i < m_capacity; i++) {
+			m_switches[i].Restart();
 		}
 	}
 }
