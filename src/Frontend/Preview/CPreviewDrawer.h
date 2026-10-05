@@ -9,9 +9,6 @@
 #define PREVIEW_LEVEL_NAME_LINE_COUNT 3
 #define PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES 32
 #define PREVIEW_TEXT_MAX_CHARACTERS 32
-#define PREVIEW_TEXT_POSITION_COMPONENT_COUNT 2
-#define PREVIEW_TEXT_POSITION_X 0
-#define PREVIEW_TEXT_POSITION_Y 1
 
 class CBaseRemap;
 class CGDI;
@@ -109,7 +106,7 @@ private:
 	int m_timeSeconds;                                                                               // 0x3f8
 	char m_levelNameLines[PREVIEW_LEVEL_NAME_LINE_COUNT][PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES]; // 0x3fc
 	char m_timeText[5];                                                                              // 0x45c
-	int m_textPositions[PREVIEW_LEVEL_NAME_LINE_COUNT * PREVIEW_TEXT_POSITION_COMPONENT_COUNT];      // 0x464
+	CoordPair m_textPositions[PREVIEW_LEVEL_NAME_LINE_COUNT];                                        // 0x464
 	unsigned int m_buttonBinding;                                                                    // 0x47c
 	unsigned int m_nextDisabled;                                                                     // 0x480
 	unsigned int m_previousDisabled;                                                                 // 0x484

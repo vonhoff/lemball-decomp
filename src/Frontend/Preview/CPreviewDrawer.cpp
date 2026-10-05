@@ -304,17 +304,17 @@ void CPreviewDrawer::DrawText()
 
 	if (m_drawingBackBuffer != 0) {
 		line = (char*) m_levelNameLines;
-		positions = m_textPositions;
+		CoordPair* linePosition = m_textPositions;
 		count = PREVIEW_LEVEL_NAME_LINE_COUNT;
 		do {
-			if (*positions != PREVIEW_TEXT_POSITION_UNSET) {
-				CVSPoint pos((short) positions[PREVIEW_TEXT_POSITION_X], (short) positions[PREVIEW_TEXT_POSITION_Y]);
+			if (linePosition->m_x != PREVIEW_TEXT_POSITION_UNSET) {
+				CVSPoint pos((short) linePosition->m_x, (short) linePosition->m_y);
 				advance.m_height = 0;
 				advance.m_width = 0;
 				m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, line, PREVIEW_TEXT_MAX_CHARACTERS, NULL);
 			}
 			line = line + PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES;
-			positions = positions + PREVIEW_TEXT_POSITION_COMPONENT_COUNT;
+			linePosition++;
 			count = count - 1;
 		} while (count != 0);
 
@@ -604,7 +604,7 @@ void CPreviewDrawer::LoadLevelInformation()
 	int layoutY;
 	int layoutWidth;
 	char* targetLine;
-	int* targetPos;
+	CoordPair* targetPos;
 	int endOfSource;
 
 	endOfSource = 0;
@@ -639,9 +639,9 @@ void CPreviewDrawer::LoadLevelInformation()
 
 	targetPos = m_textPositions;
 	for (i = 0; i < PREVIEW_LEVEL_NAME_LINE_COUNT; i++) {
-		targetPos[PREVIEW_TEXT_POSITION_X] = PREVIEW_TEXT_POSITION_UNSET;
-		targetPos[PREVIEW_TEXT_POSITION_Y] = PREVIEW_TEXT_POSITION_UNSET;
-		targetPos += PREVIEW_TEXT_POSITION_COMPONENT_COUNT;
+		targetPos->m_x = PREVIEW_TEXT_POSITION_UNSET;
+		targetPos->m_y = PREVIEW_TEXT_POSITION_UNSET;
+		targetPos++;
 	}
 
 	lineIndex = 0;
@@ -674,13 +674,13 @@ void CPreviewDrawer::LoadLevelInformation()
 		}
 		const CVSSize& size = font->GetSize(candidateLine, PREVIEW_TEXT_MAX_CHARACTERS);
 		short measuredHeight = size.m_height;
-		targetPos[PREVIEW_TEXT_POSITION_X] = (layoutWidth / 2 - (int) (size.m_width / 2)) + layoutX;
-		targetPos[PREVIEW_TEXT_POSITION_Y] = layoutY;
+		targetPos->m_x = (layoutWidth / 2 - (int) (size.m_width / 2)) + layoutX;
+		targetPos->m_y = layoutY;
 		strcpy(targetLine, candidateLine);
 		layoutY = layoutY + measuredHeight;
 		lineIndex = lineIndex + 1;
 		targetLine = targetLine + PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES;
-		targetPos = targetPos + PREVIEW_TEXT_POSITION_COMPONENT_COUNT;
+		targetPos++;
 	} while (lineIndex < PREVIEW_LEVEL_NAME_LINE_COUNT);
 
 	m_timeText[0] = (char) (m_timeSeconds / 60) + '0';
