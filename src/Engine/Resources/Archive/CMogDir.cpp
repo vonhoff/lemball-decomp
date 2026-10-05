@@ -43,16 +43,16 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	m_currentDir.m_info = chunkInfo;
 	vsSeek(g_pMogFile, p_fileOffset, MOG_SEEK_FROM_START);
 	if (p_fileOffset == 0) {
-		((CRawRead*) this)->InputByte();
+		InputByte();
 		vsSeek(g_pMogFile, p_fileOffset, MOG_SEEK_FROM_START);
 	}
-	((CRawRead*) this)->InputDword();
-	((CRawRead*) this)->InputDword();
-	m_chunkCount = ((CRawRead*) this)->InputDword();
-	if (((CRawRead*) this)->InputDword() != MOG_FORMAT_VERSION) {
+	InputDword();
+	InputDword();
+	m_chunkCount = InputDword();
+	if (InputDword() != MOG_FORMAT_VERSION) {
 		_VSRELassert("IsValidResourceFile", "MOGLOAD.CPP", 0x1a2);
 	}
-	m_directoryEndOffset = ((CRawRead*) this)->InputDword();
+	m_directoryEndOffset = InputDword();
 	m_payloadStartOffset = vsTell(g_pMogFile);
 	directoryDataSize = m_directoryEndOffset - m_payloadStartOffset;
 	m_directoryData = (unsigned char*) CMogloadArena::operator new(directoryDataSize);
@@ -121,11 +121,11 @@ void CMogDir::GetChunkInfo(ChunkInfo* p_info)
 	p_info->m_next.m_info = NULL;
 	p_info->m_child.m_info = NULL;
 	p_info->m_directory = NULL;
-	p_info->m_data = m_directoryData + (((CRawRead*) this)->InputDword() - m_payloadStartOffset);
-	p_info->m_id = ((CRawRead*) this)->InputDword();
-	p_info->m_type = ((CRawRead*) this)->InputDword();
-	p_info->m_fileOffset = ((CRawRead*) this)->InputDword();
-	p_info->m_size = ((CRawRead*) this)->InputDword();
+	p_info->m_data = m_directoryData + (InputDword() - m_payloadStartOffset);
+	p_info->m_id = InputDword();
+	p_info->m_type = InputDword();
+	p_info->m_fileOffset = InputDword();
+	p_info->m_size = InputDword();
 	vsRead(g_pMogFile, p_info->m_name, sizeof(p_info->m_name));
 }
 
