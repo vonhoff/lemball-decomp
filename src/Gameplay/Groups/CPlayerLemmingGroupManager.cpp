@@ -723,8 +723,9 @@ int CPlayerLemmingGroupManager::GetViewData(CViewData* p_viewData)
 		CViewData* viewCursor = p_viewData;
 		count = 4;
 		do {
-			CPlayerLemming* lemming = *lemmingCursor++;
+			CPlayerLemming* lemming = *lemmingCursor;
 			lemming->GetViewData(*viewCursor++);
+			lemmingCursor++;
 		} while (--remaining != 0);
 		p_viewData = viewCursor;
 	}
