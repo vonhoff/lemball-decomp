@@ -7,11 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum {
-	DIB_COPY_WORD_BYTE_SHIFT = 2,
-	DIB_COPY_WORD_BYTE_MASK = (1 << DIB_COPY_WORD_BYTE_SHIFT) - 1
-};
-
 // FUNCTION: LEMBALL 0x00472290
 CPVGDIBitmap::CPVGDIBitmap() : m_height(0)
 {
@@ -117,11 +112,8 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 {
 	int width;
 	int height;
-	const short* xy;
+	const CVSPoint* position;
 	short deltaY;
-	unsigned int count;
-	unsigned int* srcPtr;
-	unsigned int* destPtr;
 
 	width = (int) p_rect->m_width;
 	height = (int) p_rect->m_height;
@@ -129,12 +121,9 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 		return;
 	}
 	if (m_directScroll == 0) {
-		xy = &p_rect->m_x;
-		if (p_rect == NULL) {
-			xy = NULL;
-		}
-		deltaY = (short) (xy[1] - p_destination->m_y);
-		m_xOffset = m_xOffset - (unsigned int) (short) (xy[0] - p_destination->m_x);
+		position = p_rect;
+		deltaY = (short) (position->m_y - p_destination->m_y);
+		m_xOffset = m_xOffset - (unsigned int) (short) (position->m_x - p_destination->m_x);
 		height = deltaY + (int) m_firstLine;
 		m_firstLine = (unsigned int) height;
 		width = m_height;
@@ -149,14 +138,16 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 		SetLinePtrs();
 		return;
 	}
-	if (p_destination->m_y == p_rect->m_y) {
-		if (p_destination->m_x != p_rect->m_x && 0 < height) {
-			int srcY = p_rect->m_y;
-			int dstY = p_destination->m_y;
+	int rectX = p_rect->m_x;
+	int rectY = p_rect->m_y;
+	int destinationX = p_destination->m_x;
+	int destinationY = p_destination->m_y;
+	if (destinationY == rectY) {
+		if (destinationX != rectX && 0 < height) {
+			int srcY = rectY;
+			int dstY = destinationY;
 			do {
-				memmove((unsigned char*) m_lines[srcY] + p_rect->m_x,
-						(unsigned char*) m_lines[dstY] + p_destination->m_x,
-						width);
+				memmove((unsigned char*) m_lines[srcY] + rectX, (unsigned char*) m_lines[dstY] + destinationX, width);
 				height = height - 1;
 				srcY = srcY + 1;
 				dstY = dstY + 1;
@@ -164,23 +155,12 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 		}
 		return;
 	}
-	if (p_rect->m_y < p_destination->m_y) {
+	if (rectY < destinationY) {
 		if (0 < height) {
-			int srcY = p_rect->m_y;
-			int dstY = p_destination->m_y;
+			int srcY = rectY;
+			int dstY = destinationY;
 			do {
-				destPtr = (unsigned int*) ((unsigned char*) m_lines[srcY] + p_rect->m_x);
-				srcPtr = (unsigned int*) ((unsigned char*) m_lines[dstY] + p_destination->m_x);
-				for (count = width >> DIB_COPY_WORD_BYTE_SHIFT; count != 0; count = count - 1) {
-					*destPtr = *srcPtr;
-					destPtr = destPtr + 1;
-					srcPtr = srcPtr + 1;
-				}
-				for (count = width & DIB_COPY_WORD_BYTE_MASK; count != 0; count = count - 1) {
-					*(unsigned char*) destPtr = *(unsigned char*) srcPtr;
-					destPtr = (unsigned int*) ((int) destPtr + 1);
-					srcPtr = (unsigned int*) ((int) srcPtr + 1);
-				}
+				memcpy((unsigned char*) m_lines[srcY] + rectX, (unsigned char*) m_lines[dstY] + destinationX, width);
 				srcY = srcY + 1;
 				dstY = dstY + 1;
 				height = height - 1;
@@ -188,22 +168,11 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 		}
 		return;
 	}
+	int srcY = height - 1 + rectY;
+	int dstY = height - 1 + destinationY;
 	if (0 < height) {
-		int srcY = height - 1 + p_rect->m_y;
-		int dstY = height - 1 + p_destination->m_y;
 		do {
-			destPtr = (unsigned int*) ((unsigned char*) m_lines[srcY] + p_rect->m_x);
-			srcPtr = (unsigned int*) ((unsigned char*) m_lines[dstY] + p_destination->m_x);
-			for (count = width >> DIB_COPY_WORD_BYTE_SHIFT; count != 0; count = count - 1) {
-				*destPtr = *srcPtr;
-				destPtr = destPtr + 1;
-				srcPtr = srcPtr + 1;
-			}
-			for (count = width & DIB_COPY_WORD_BYTE_MASK; count != 0; count = count - 1) {
-				*(unsigned char*) destPtr = *(unsigned char*) srcPtr;
-				destPtr = (unsigned int*) ((int) destPtr + 1);
-				srcPtr = (unsigned int*) ((int) srcPtr + 1);
-			}
+			memcpy((unsigned char*) m_lines[srcY] + rectX, (unsigned char*) m_lines[dstY] + destinationX, width);
 			srcY = srcY - 1;
 			dstY = dstY - 1;
 			height = height - 1;

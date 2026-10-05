@@ -42,7 +42,8 @@ void CCopyText::Set(int p_x, int p_y, CResFONT* p_font, CString p_text, unsigned
 	startY = (short) p_y;
 	m_font = p_font;
 	m_text = text;
-	m_remap = p_remap;
+	CRemap*& remap = m_remap;
+	remap = p_remap;
 	m_flags = p_flags;
 }
 
