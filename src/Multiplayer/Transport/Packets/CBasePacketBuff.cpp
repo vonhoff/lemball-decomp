@@ -10,7 +10,7 @@ CBasePacketBuff::CBasePacketBuff(int p_packetCount, unsigned short p_packetSize)
 	m_packetSize = p_packetSize;
 	m_packetCount = p_packetCount;
 	if (p_packetCount > 0) {
-		m_packets = (CBasePacket**) operator new(p_packetCount * sizeof(CBasePacket*));
+		m_packets = new CBasePacket*[p_packetCount];
 	}
 	else {
 		m_packets = NULL;
@@ -28,6 +28,6 @@ CBasePacketBuff::~CBasePacketBuff()
 				delete m_packets[index];
 			}
 		}
-		operator delete(m_packets);
+		delete[] m_packets;
 	}
 }
