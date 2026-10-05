@@ -53,10 +53,9 @@ CGodManager::~CGodManager()
 // FUNCTION: LEMBALL 0x0040b120
 void CGodManager::Restart()
 {
-	CGodManager* self = this;
-	for (int i = 0; i < self->m_count; i++) {
-		if (self->m_managers[i] != NULL) {
-			self->m_managers[i]->Restart();
+	for (int i = 0; i < m_count; i++) {
+		if (m_managers[i] != NULL) {
+			m_managers[i]->Restart();
 		}
 	}
 }
