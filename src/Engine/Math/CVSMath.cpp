@@ -60,8 +60,8 @@ unsigned int CVSMath::SqRoot(unsigned int p_value)
 		SQRT_ROOT_LOWER_BOUND_2_14 = 0x4000,
 		SQRT_ROOT_LOWER_BOUND_2_15 = 0x8000
 	};
-	unsigned int uHigh;
 	unsigned int uLow;
+	unsigned int uHigh;
 	unsigned int uMid;
 
 	if (p_value > SQRT_INPUT_LIMIT_2_26) {
