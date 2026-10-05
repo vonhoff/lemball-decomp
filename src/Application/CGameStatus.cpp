@@ -180,6 +180,7 @@ void CGameStatus::GotoLastLevels()
 // FUNCTION: LEMBALL 0x00408dc0
 void CGameStatus::IncLevel()
 {
+	int level;
 	int skill = m_skill;
 	int maxLevel;
 
@@ -200,8 +201,9 @@ void CGameStatus::IncLevel()
 		maxLevel = SKILL_LEVEL_COUNT_NETWORK;
 		break;
 	}
-	if (m_level < maxLevel) {
-		m_level = m_level + 1;
+	level = m_level;
+	if (level < maxLevel) {
+		m_level = level + 1;
 	}
 	if (skill != SKILL_NETWORK) {
 		if (m_maxLevels[skill] < m_level) {
