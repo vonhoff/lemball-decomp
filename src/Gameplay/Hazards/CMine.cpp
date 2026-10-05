@@ -97,6 +97,7 @@ void CMine::DoActivate()
 // FUNCTION: LEMBALL 0x00423dd0
 void CMine::SetTerrain()
 {
+	int width;
 	int blockX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	int blockY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (m_terrainSet == 0) {
@@ -104,7 +105,7 @@ void CMine::SetTerrain()
 		m_transientFlags = 1;
 		if (blockX >= 0 && blockY >= 0) {
 			CMap* map = g_pMap;
-			int width = map->m_ground.m_width;
+			width = map->m_ground.m_width;
 			if (blockX < width && blockY < map->m_ground.m_height) {
 				map->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_HAZARD;
 			}
