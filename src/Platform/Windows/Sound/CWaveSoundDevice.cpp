@@ -15,6 +15,8 @@
 // FUNCTION: LEMBALL 0x0047c880
 CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 {
+	unsigned int i;
+	unsigned int channel;
 	UINT deviceId;
 	UINT deviceCount;
 	int found;
@@ -30,13 +32,13 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	m_unk0x18 = 0;
 	m_deviceId = WAVE_MAPPER;
 	m_sampleRate = 0;
-	for (unsigned int i = 0; i < WAVE_SOUND_TRACKED_CHANNEL_COUNT; i++) {
+	for (i = 0; i < WAVE_SOUND_TRACKED_CHANNEL_COUNT; i++) {
 		m_channelState[i] = 0xffffffff;
 		m_pad0x40[i] = 0;
 		m_effectPlaying[i] = 0;
 	}
 	m_nextHandle = 1;
-	for (unsigned int channel = 0; channel < m_channelCount; channel++) {
+	for (channel = 0; channel < m_channelCount; channel++) {
 		m_effects[channel] = NULL;
 		m_effectUsed[channel] = 0;
 		m_effectHandles[channel] = 0;
