@@ -34,7 +34,7 @@ CHeaderMessage* CHeaders::GetNextHeaderBySequence()
 	int index = m_currentIndex;
 	int count = m_count;
 	for (; index < count; index++) {
-		if (m_sequences[index] < m_headers[index].m_sequence) {
+		if (m_sequences[index] < m_headers[index].m_sequenceState.m_sequence) {
 			break;
 		}
 	}
@@ -43,7 +43,7 @@ CHeaderMessage* CHeaders::GetNextHeaderBySequence()
 		return NULL;
 	}
 	m_currentIndex = index;
-	m_sequences[index] = m_headers[index].m_sequence;
+	m_sequences[index] = m_headers[index].m_sequenceState.m_sequence;
 	return m_headers + m_currentIndex;
 }
 

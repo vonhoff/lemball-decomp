@@ -84,13 +84,13 @@ void CFileReadSocket::Process()
 				m_file->m_headers[m_pendingReadSlot].Set((unsigned char*) g_pNetworkPacketScratch);
 				ReadBuff(m_pendingReadSlot);
 				CHeaderMessage* header = &m_file->m_headers[m_pendingReadSlot];
-				header->m_mirroredSequence = header->m_sequence;
+				header->m_sequenceState.m_mirroredSequence = header->m_sequenceState.m_sequence;
 				unsigned short sequence;
 				int index;
 				for (index = m_pendingReadSlot; index < CFileCommonSocket::m_headerSlotCount; index++) {
-					header = &m_file->m_headers[index];
-					sequence = header->m_sequence;
-					if (header->m_mirroredSequence < sequence) {
+					HeaderSequenceState& state = m_file->m_headers[index].m_sequenceState;
+					sequence = state.m_sequence;
+					if (state.m_mirroredSequence < sequence) {
 						m_pendingReadSlot = index;
 						break;
 					}
@@ -109,14 +109,14 @@ void CFileReadSocket::Process()
 				bool found = false;
 				for (; index < CFileCommonSocket::m_headerSlotCount; index++) {
 					CHeaderMessage* header = &m_file->m_headers[index];
-					if (header->m_mirroredSequence < header->m_sequence) {
+					if (header->m_sequenceState.m_mirroredSequence < header->m_sequenceState.m_sequence) {
 						if (found) {
 							m_pendingReadSlot = index;
 							return;
 						}
 						ReadBuff(index);
 						header = &m_file->m_headers[index];
-						header->m_mirroredSequence = header->m_sequence;
+						header->m_sequenceState.m_mirroredSequence = header->m_sequenceState.m_sequence;
 						found = true;
 					}
 				}
