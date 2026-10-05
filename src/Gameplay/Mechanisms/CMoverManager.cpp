@@ -156,15 +156,16 @@ void CMoverManager::Switch(int p_message, int p_id)
 // FUNCTION: LEMBALL 0x0042f680
 void CMoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	unsigned short count = *(unsigned short*) p_data;
-	p_data += 2;
+	unsigned char* cursor = p_data;
+	unsigned short count = *(unsigned short*) cursor;
+	cursor += 2;
 	Initialise(count);
 	m_count = 0;
 	for (int i = 0; i < count; i++) {
 		unsigned short id;
 		if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
-			id = *(unsigned short*) p_data;
-			p_data += 2;
+			id = *(unsigned short*) cursor;
+			cursor += 2;
 		}
 		else {
 			id = (unsigned short) CGameObject::NextId();
@@ -173,18 +174,18 @@ void CMoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned ch
 		int pathId = 0;
 		int movementMode = 0;
 		if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_MOVER_PATHS) {
-			pathId = *(unsigned short*) p_data;
-			p_data += 2;
+			pathId = *(unsigned short*) cursor;
+			cursor += 2;
 			if ((pathId & MOVER_PATH_WAIT_FOR_SWITCH_FLAG) != 0) {
 				movementMode = 1;
 				pathId &= MOVER_PATH_ID_MASK;
 			}
 		}
 
-		int startNode = *(unsigned short*) p_data;
-		p_data += 2;
-		int nodeCount = *(unsigned short*) p_data;
-		p_data += 2;
+		int startNode = *(unsigned short*) cursor;
+		cursor += 2;
+		int nodeCount = *(unsigned short*) cursor;
+		cursor += 2;
 		Add(id, pathId, movementMode, startNode, nodeCount);
 	}
 }
