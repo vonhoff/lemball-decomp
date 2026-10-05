@@ -1223,9 +1223,10 @@ void CAI::AddNewTrapDoor(const AICOORD& p_position, unsigned long p_time)
 void CAI::AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time)
 {
 	short id = CGameObject::NextLoadingId();
-	AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
-					 p_y << FIXED_POINT_FRACTION_BITS,
-					 p_z << FIXED_POINT_FRACTION_BITS);
+	AICOORD position;
+	position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 	m_trapDoorManager->AddNewDoor(id, position, TRAPDOOR_MODE_LOCAL_AUTOMATIC, p_time);
 }
 
