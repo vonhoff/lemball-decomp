@@ -169,12 +169,12 @@ void CGraphicButton::DrawButton()
 	m_gdi->m_renderTarget->GetCurrDB();
 	CRemap* remap = m_remap;
 	CResANIM* animation = m_animation;
-	CAnim* primitive = (CAnim*) m_primitive;
+	CAnim* primitive = m_primitive;
 	primitive->m_x = x;
 	primitive->m_y = y;
 	primitive->m_animResource = animation;
 	primitive->m_animIndex = (unsigned int) (pressed >= 1);
 	primitive->m_flags = 0;
 	primitive->m_remap = remap;
-	((CAnim*) m_primitive)->Draw(m_gdi);
+	m_primitive->Draw(m_gdi);
 }

@@ -8,7 +8,7 @@ struct CVSPoint;
 class CPVGWnd;
 class CResANIM;
 class CRemap;
-class CPrimitive;
+class CAnim;
 
 // SIZE 0x130
 // VTABLE: LEMBALL 0x00499748 CGWnd
@@ -41,7 +41,7 @@ private:
 	short m_graphicOffsetY;         // 0x11a
 	CResANIM* m_animation;          // 0x11c
 	CRemap* m_remap;                // 0x120
-	CPrimitive* m_primitive;        // 0x124
+	CAnim* m_primitive;             // 0x124
 	CPushActive m_statRegion[1];    // 0x128
 };
 
