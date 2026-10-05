@@ -244,6 +244,7 @@ void CSoundView::PrepareEffects(unsigned short p_stateMask)
 
 	if (g_nEffectsAvailable != 0) {
 		timestamp = timeGetTime() - SOUND_EFFECT_COOLDOWN_MS;
+		CLoadUpdate*& loadUpdate = m_loadUpdate;
 		for (i = 0; i < SOUND_EFFECT_SLOT_COUNT; i++) {
 			slot = &m_effectSlots[i];
 			spec = slot->m_spec;
@@ -251,8 +252,8 @@ void CSoundView::PrepareEffects(unsigned short p_stateMask)
 				slot->m_handle = g_pSoundManager->PrepareEffect(spec->m_resourceId);
 			}
 			slot->m_lastPlayed = timestamp;
-			if (m_loadUpdate != NULL) {
-				m_loadUpdate->UpdateNonCacheLoad();
+			if (loadUpdate != NULL) {
+				loadUpdate->UpdateNonCacheLoad();
 			}
 		}
 	}
