@@ -1012,10 +1012,14 @@ AICOORD CGameObject::GetNextDestination()
 {
 	CAiDestinationList* list = m_destinationList;
 	if (list->m_count != 0) {
-		for (unsigned short index = 0; index + 1 < list->m_count; ++index) {
-			list->m_entries[index].m_type = list->m_entries[index + 1].m_type;
-			list->m_entries[index].m_coordinate = list->m_entries[index + 1].m_coordinate;
-			list->m_entries[index].m_metadata = list->m_entries[index + 1].m_metadata;
+		for (int index = 0; index < list->m_count - 1; ++index) {
+			CAiDestinationEntry* entry = &list->m_entries[index];
+			CAiDestinationEntry* next = entry + 1;
+			entry->m_type = next->m_type;
+			entry->m_coordinate.m_xFixed = next->m_coordinate.m_xFixed;
+			entry->m_coordinate.m_yFixed = next->m_coordinate.m_yFixed;
+			entry->m_coordinate.m_zFixed = next->m_coordinate.m_zFixed;
+			entry->m_metadata = next->m_metadata;
 		}
 		--list->m_count;
 	}
