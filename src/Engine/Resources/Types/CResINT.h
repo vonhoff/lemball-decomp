@@ -32,4 +32,7 @@ inline CResINT::CResINT(unsigned int p_resourceId)
 // SYNTHETIC: LEMBALL 0x0045e930
 // CResINT::`vector deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0045e9a0
+// CResINT::~CResINT
+
 #endif
