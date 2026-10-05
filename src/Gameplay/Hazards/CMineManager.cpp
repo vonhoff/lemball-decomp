@@ -177,10 +177,11 @@ void CMineManager::Process()
 // FUNCTION: LEMBALL 0x00424800
 int CMineManager::GetViewData(CViewData* p_viewData)
 {
+	CViewData* viewData;
 	int count = 0;
 	int i = 0;
 	if (0 < m_count) {
-		CViewData* viewData = p_viewData;
+		viewData = p_viewData;
 		do {
 			m_mines[i].GetViewData(*viewData);
 			viewData++;
