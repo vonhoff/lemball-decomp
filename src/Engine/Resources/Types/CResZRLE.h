@@ -55,4 +55,7 @@ private:
 // SYNTHETIC: LEMBALL 0x0045e850
 // CResZRLE::`vector deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0045e8c0
+// CResZRLE::~CResZRLE
+
 #endif
