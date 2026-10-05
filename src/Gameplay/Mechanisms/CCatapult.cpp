@@ -154,8 +154,9 @@ void CCatapult::DoActivate()
 // FUNCTION: LEMBALL 0x0041ca60
 AICOORD CCatapult::ActivatePosition()
 {
-	int y = m_position.m_yFixed - CATAPULT_ACTIVATION_POSITION_Y_OFFSET_FIXED;
+	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
+	y -= CATAPULT_ACTIVATION_POSITION_Y_OFFSET_FIXED;
 	int x = m_position.m_xFixed - CATAPULT_ACTIVATION_POSITION_X_OFFSET_FIXED;
 	return AICOORD(x, y, z);
 }
