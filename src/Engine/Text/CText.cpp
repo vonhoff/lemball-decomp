@@ -14,8 +14,10 @@
 // FUNCTION: LEMBALL 0x00469a50
 void CText::Set(int p_x, int p_y, CResFONT* p_font, char* p_text, unsigned long p_flags, CRemap* p_remap)
 {
-	m_startX = (short) p_x;
-	m_startY = (short) p_y;
+	short& startX = m_startX;
+	short& startY = m_startY;
+	startX = (short) p_x;
+	startY = (short) p_y;
 	m_font = p_font;
 	m_remap = p_remap;
 	m_flags = p_flags;
