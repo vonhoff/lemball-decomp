@@ -418,14 +418,16 @@ bool CGenericGroup::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinat
 // FUNCTION: LEMBALL 0x0041e640
 int CGenericGroup::GetViewData(CViewData* p_viewData)
 {
+	CViewData* output;
 	int count;
 	CGenericGroup* self = this;
 	CGameObject* object = self->GetFirstElementInGroup();
 	count = 0;
 	if (object != NULL) {
+		output = p_viewData;
 		do {
-			object->GetViewData(*p_viewData);
-			p_viewData++;
+			object->GetViewData(*output);
+			output++;
 			count++;
 			object = self->GetNextElementInGroup();
 		} while (object != NULL);
