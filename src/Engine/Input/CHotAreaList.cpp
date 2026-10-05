@@ -88,7 +88,7 @@ CHotAreaList::~CHotAreaList()
 	g_pMasterInputQueue->Detach(static_cast<CBaseQueueHandler*>(this), MASTER_INPUT_QUEUE_PRIORITY);
 	g_nHotAreaListCount = g_nHotAreaListCount - 1;
 	if (g_nHotAreaListCount == 0) {
-		operator delete(g_pHotAreaCursor);
+		delete g_pHotAreaCursor;
 	}
 }
 
