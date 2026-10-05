@@ -219,8 +219,9 @@ void CBall::Delete()
 // FUNCTION: LEMBALL 0x00421b40
 void CBall::SetHeightCorrect()
 {
+	int y;
 	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
 	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
