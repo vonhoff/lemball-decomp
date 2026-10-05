@@ -77,9 +77,9 @@ void CGroundAnim::Process()
 			m_needsValidation = 0;
 		}
 
+		int index = 0;
 		m_nextProcessTick = g_dwGameTick + GROUND_ANIM_PROCESS_INTERVAL_TICKS;
-		if (m_count > 0) {
-			int index = 0;
+		if (index < m_count) {
 			do {
 				if (m_entries[index].m_active != 0) {
 					switch (m_entries[index].m_direction) {
