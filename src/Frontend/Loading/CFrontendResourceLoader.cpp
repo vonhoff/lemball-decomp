@@ -184,6 +184,7 @@ unsigned int g_dwFrontendStringIds[1] = {RES_REGISTRATION_FINGERPRINT};
 CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int p_soundState)
 {
 	unsigned int i;
+	unsigned int fontIndex;
 	unsigned int* id;
 
 	m_loadedMovies = 0;
@@ -235,7 +236,7 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	for (i = 0; i < (unsigned int) m_animCapacity; i++) {
 		LoadANIM(m_animResourceIds[i]);
 	}
-	for (unsigned int fontIndex = 0; fontIndex < (unsigned int) m_fontCapacity; fontIndex++) {
+	for (fontIndex = 0; fontIndex < (unsigned int) m_fontCapacity; fontIndex++) {
 		LoadFONT(m_fontResourceIds[fontIndex]);
 	}
 	for (unsigned int bitmapIndex = 0; bitmapIndex < (unsigned int) m_bitmapCapacity; bitmapIndex++) {
