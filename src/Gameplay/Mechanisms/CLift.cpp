@@ -282,16 +282,18 @@ int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 	if (x >= startX && x <= endX && y >= startY && y <= endY) {
 		int z = position->m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		CMap* map = g_pActiveMap;
+		int width;
 		int blockX = startX >> GROUND_BLOCK_PIXEL_SHIFT;
 		int blockY = startY >> GROUND_BLOCK_PIXEL_SHIFT;
 		unsigned short groundZ;
-		if (startX < 0 || startY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
+		if (startX < 0 || startY < 0 || blockX >= (width = map->m_ground.m_width) ||
+			blockY >= g_pActiveMap->m_ground.m_height) {
 			groundZ = 0;
 		}
 		else {
 			startX &= GROUND_BLOCK_PIXEL_MASK;
 			startY &= GROUND_BLOCK_PIXEL_MASK;
-			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(startX, startY);
+			groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(startX, startY);
 		}
 		int minZ = groundZ - 2;
 		int maxZ = groundZ + 4;
