@@ -22,9 +22,9 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	int found;
 
 	m_channelCount = (unsigned int) p_channelCount;
-	m_effects = (CWaveEffect**) operator new((unsigned int) p_channelCount * sizeof(*m_effects));
-	m_effectHandles = (unsigned int*) operator new((unsigned int) p_channelCount * sizeof(*m_effectHandles));
-	m_effectUsed = (unsigned int*) operator new((unsigned int) p_channelCount * sizeof(*m_effectUsed));
+	m_effects = new CWaveEffect*[p_channelCount];
+	m_effectHandles = new unsigned int[p_channelCount];
+	m_effectUsed = new unsigned int[p_channelCount];
 	m_musicDevice = 0;
 	m_available = 0;
 	m_stereo = 0;
@@ -110,9 +110,9 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 CWaveSoundDevice::~CWaveSoundDevice()
 {
 	Close();
-	operator delete(m_effects);
-	operator delete(m_effectHandles);
-	operator delete(m_effectUsed);
+	delete[] m_effects;
+	delete[] m_effectHandles;
+	delete[] m_effectUsed;
 }
 
 // FUNCTION: LEMBALL 0x0047caf0
