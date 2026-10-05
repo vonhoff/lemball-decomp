@@ -233,10 +233,9 @@ CVSSize CAnimsManager::GetMaxAnimSize(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00467660
 CVSSize CAnimsManager::GetMaxAnimHalfSize(unsigned long p_resourceId)
 {
-	CVSSize size = GetMaxAnimSize(p_resourceId);
-	size.m_width = (short) (size.m_width / 2);
-	size.m_height = (short) (size.m_height / 2);
-	return size;
+	const CVSSize& size = GetMaxAnimSize(p_resourceId);
+	short height = (short) (size.m_height / 2);
+	return CVSSize((short) (size.m_width / 2), height);
 }
 
 // FUNCTION: LEMBALL 0x004676a0
