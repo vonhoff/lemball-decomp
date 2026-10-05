@@ -40,8 +40,9 @@ CGenericGroup::CGenericGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormat
 	m_elementCount = 0;
 	m_groupState = GROUP_STATE_IDLE;
 	memset(m_elements, 0, sizeof(m_elements));
-	m_bounds.m_height = GROUP_INITIAL_BOUNDS_VALUE;
-	m_bounds.m_width = GROUP_INITIAL_BOUNDS_VALUE;
+	CVSSize* boundsSize = &m_bounds;
+	boundsSize->m_height = GROUP_INITIAL_BOUNDS_VALUE;
+	boundsSize->m_width = GROUP_INITIAL_BOUNDS_VALUE;
 	m_bounds.m_y = GROUP_INITIAL_BOUNDS_VALUE;
 	m_bounds.m_x = GROUP_INITIAL_BOUNDS_VALUE;
 }
