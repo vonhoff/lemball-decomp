@@ -519,8 +519,9 @@ CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 		width = m_highWidth;
 		height = m_highHeight;
 	}
-	y = (short) (screenSize.m_height - height) / 2;
+	short centeredY = (short) (screenSize.m_height - height) / 2;
 	x = (short) (screenSize.m_width - width) / 2;
+	y = centeredY;
 	if (p_x != DISPLAY_COORDINATE_AUTO_CENTER) {
 		x = (short) p_x;
 	}
