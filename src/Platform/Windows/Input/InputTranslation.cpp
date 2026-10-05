@@ -118,7 +118,7 @@ bool __stdcall HandleInputQuitEvent(const Message* p_event)
 	switch ((unsigned int) p_event->m_type) {
 	case MESSAGE_KEY_UP:
 		if (p_event->m_payload == NULL &&
-			(p_event->m_code == INPUT_KEY_ACTIVATE || p_event->m_code == INPUT_KEY_DELETE)) {
+			(p_event->m_code == INPUT_KEY_ACTIVATE || p_event->m_code == WINDOWS_VK_DELETE)) {
 			g_dwInputQuitRequested = 1;
 			return false;
 		}
