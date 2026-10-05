@@ -61,18 +61,21 @@ void CBullet::Set(unsigned short p_id,
 	m_destination.m_xFixed = p_target.m_xFixed;
 	m_destination.m_yFixed = p_target.m_yFixed;
 	m_active = 1;
+	int targetY;
 	int targetX = p_target.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-	int targetY = p_target.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	targetY = p_target.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int blockX = targetX >> GROUND_BLOCK_PIXEL_SHIFT;
+	int width;
+	CMap* map = g_pMap;
 	int blockY = targetY >> GROUND_BLOCK_PIXEL_SHIFT;
-	int width = g_pMap->m_ground.m_width;
 	unsigned short z;
-	if (targetX < 0 || targetY < 0 || width <= blockX || g_pMap->m_ground.m_height <= blockY) {
+	if (targetX < 0 || targetY < 0 || (width = map->m_ground.m_width) <= blockX ||
+		g_pMap->m_ground.m_height <= blockY) {
 		z = 0;
 	}
 	else {
-		z = g_pMap->m_ground.m_ground[blockY * width + blockX].GetZ(targetX & GROUND_BLOCK_PIXEL_MASK,
-																	targetY & GROUND_BLOCK_PIXEL_MASK);
+		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(targetX & GROUND_BLOCK_PIXEL_MASK,
+																 targetY & GROUND_BLOCK_PIXEL_MASK);
 	}
 	m_sourceObjectId = p_id;
 	m_destination.m_zFixed = (z + 12) << FIXED_POINT_FRACTION_BITS;
