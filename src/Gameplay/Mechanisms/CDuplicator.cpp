@@ -137,8 +137,9 @@ bool CDuplicator::Process()
 // FUNCTION: LEMBALL 0x00427890
 AICOORD CDuplicator::ActivatePosition()
 {
-	int y = m_position.m_yFixed + DUPLICATOR_ACTIVATION_POSITION_Y_OFFSET_FIXED;
+	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
+	y += DUPLICATOR_ACTIVATION_POSITION_Y_OFFSET_FIXED;
 	int x = m_position.m_xFixed;
 	return AICOORD(x, y, z);
 }
