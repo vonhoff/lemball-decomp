@@ -302,8 +302,7 @@ bool CIce::Process()
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AICOORD positionValue(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
-		const AICOORD& position = positionValue;
+		AICOORD position(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
 		unsigned short groundZ;
 		{
 			CMap* map = g_pMap;
