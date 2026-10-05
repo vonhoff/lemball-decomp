@@ -1,10 +1,10 @@
 #include "CDirectSoundDevice.h"
 
-#include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/Windowing/CWnd.h"
 #include "CDirectSoundEffect.h"
 #include "DirectSound.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/DirectX/DirectSound.h"
+#include "Platform/Windows/Windowing/CWnd.h"
 
 #include <string.h>
 
@@ -84,8 +84,8 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 					valid = 1;
 				}
 				else {
-					valid = 0;
 					*g_pErrorOutput << "DSOUND version too old\n";
+					valid = 0;
 					*g_pErrorOutput << "Defaulting to windows sound device\n";
 				}
 			}
