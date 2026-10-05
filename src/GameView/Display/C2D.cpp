@@ -3935,11 +3935,12 @@ void C2D::DrawObject(CViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043df30
 void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_groundHeight, int p_adjustForGround)
 {
+	int gameY = p_y;
 	if (p_adjustForGround != 0) {
 		CMap* map = m_map;
 		p_groundHeight += 4;
 		int blockX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
-		int nextY = p_y + GROUND_BLOCK_PIXEL_SIZE;
+		int nextY = gameY + GROUND_BLOCK_PIXEL_SIZE;
 		int nextBlockY = nextY >> GROUND_BLOCK_PIXEL_SHIFT;
 		int yHeight;
 		int xHeight;
@@ -3950,20 +3951,20 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 		}
 		else {
 			int localX = p_x & GROUND_BLOCK_PIXEL_MASK;
-			int localY = p_y & GROUND_BLOCK_PIXEL_MASK;
+			int localY = gameY & GROUND_BLOCK_PIXEL_MASK;
 			sampledHeight = map->m_ground.GetGroundCell(blockX, nextBlockY)->GetZ(localX, localY);
 		}
 		yHeight = sampledHeight;
 
 		map = m_map;
-		int blockY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = gameY >> GROUND_BLOCK_PIXEL_SHIFT;
 		int nextBlockX = (p_x + GROUND_BLOCK_PIXEL_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
-		if (p_x + GROUND_BLOCK_PIXEL_SIZE < 0 || p_y < 0 || map->m_ground.m_width <= nextBlockX ||
+		if (p_x + GROUND_BLOCK_PIXEL_SIZE < 0 || gameY < 0 || map->m_ground.m_width <= nextBlockX ||
 			map->m_ground.m_height <= blockY) {
 			sampledHeight = 0;
 		}
 		else {
-			int localY = p_y & GROUND_BLOCK_PIXEL_MASK;
+			int localY = gameY & GROUND_BLOCK_PIXEL_MASK;
 			int localX = p_x & GROUND_BLOCK_PIXEL_MASK;
 			sampledHeight = map->m_ground.GetGroundCell(nextBlockX, blockY)->GetZ(localX, localY);
 		}
@@ -3977,12 +3978,12 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 		else {
 			sampledHeight = map->m_ground.m_ground[map->m_ground.m_width * nextBlockY + nextBlockX].GetZ(
 				p_x & GROUND_BLOCK_PIXEL_MASK,
-				p_y & GROUND_BLOCK_PIXEL_MASK);
+				gameY & GROUND_BLOCK_PIXEL_MASK);
 		}
 		diagonalHeight = sampledHeight;
 
 		blockX = p_x / GROUND_BLOCK_PIXEL_SIZE;
-		blockY = p_y / GROUND_BLOCK_PIXEL_SIZE;
+		blockY = gameY / GROUND_BLOCK_PIXEL_SIZE;
 		unsigned short yCollision;
 		unsigned short xCollision;
 		unsigned short diagonalCollision;
@@ -4018,19 +4019,19 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 		if (shiftDiagonal && shiftX) {
 			if (shiftY) {
 				p_x += GROUND_BLOCK_PIXEL_SIZE;
-				p_y = nextY;
+				gameY = nextY;
 			}
 		}
 		else if (shiftY) {
-			p_y = nextY;
+			gameY = nextY;
 		}
 	}
 
 	p_x >>= 4;
-	p_y >>= 4;
+	gameY >>= 4;
 	ObjectClipGrid* grid = m_objectClipGrid;
-	if (p_x >= 0 && p_y >= 0 && p_x < grid->m_width && p_y < grid->m_height) {
-		CObjSq* cell = &grid->m_cells[grid->m_width * p_y + p_x];
+	if (p_x >= 0 && gameY >= 0 && p_x < grid->m_width && gameY < grid->m_height) {
+		CObjSq* cell = &grid->m_cells[grid->m_width * gameY + p_x];
 		if (cell->m_objectCount < 4) {
 			cell->m_viewIndices[cell->m_objectCount] = (short) p_viewIndex;
 			cell->m_objectCount++;
