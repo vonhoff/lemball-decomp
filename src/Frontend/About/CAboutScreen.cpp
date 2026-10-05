@@ -126,14 +126,11 @@ void CAboutScreen::DrawRegistrationText()
 	CVSSize sizeValue = font->GetSize(g_szRegisteredTo, TEXT_ADVANCE_X_POSITIVE);
 	CVSSize& size = sizeValue;
 	labelY = (int) (m_size.m_height / 2) - (int) (size.m_height / 2);
-	short labelPointStorage[2];
-	CVSPoint& labelPosition = *(CVSPoint*) labelPointStorage;
 	{
 		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		labelPosition.m_x = (short) (m_size.m_width / 2 - size.m_width / 2);
-		labelPosition.m_y = (short) labelY;
+		CVSPoint labelPosition((short) (m_size.m_width / 2 - size.m_width / 2), (short) labelY);
 		m_textManager->DrawString(m_gdi,
 								  labelPosition,
 								  advance,
@@ -153,10 +150,7 @@ void CAboutScreen::DrawRegistrationText()
 		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
-		short pointStorage[2];
-		CVSPoint& position = *(CVSPoint*) pointStorage;
-		position.m_x = (short) (m_size.m_width - size.m_width) / 2;
-		position.m_y = (short) (m_size.m_height - size.m_height) / 2;
+		CVSPoint position((short) (m_size.m_width - size.m_width) / 2, (short) (m_size.m_height - size.m_height) / 2);
 		position.m_y += size.m_height * 4;
 		m_textManager
 			->DrawString(m_gdi, position, advance, RES_GAME_FONT3, g_szVisosBuildBuffer, TEXT_ADVANCE_X_POSITIVE, NULL);
