@@ -423,8 +423,9 @@ void CMap::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY
 // FUNCTION: LEMBALL 0x00430b30
 void CMap::ScreenToGame(int& p_x, int& p_y)
 {
+	int y;
 	int x = p_x;
-	int y = p_y;
+	y = p_y;
 	switch (m_orientation) {
 	case MAP_ORIENTATION_ROTATION_0_DEGREES:
 		p_x = x / 2 + y - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;

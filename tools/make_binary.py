@@ -2,75 +2,18 @@
 """Build LEMBALL with MSVC 4.00; save the full log to last_build.log."""
 
 import argparse
-import ctypes
-import os
 import re
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 from lib import BUILD, ROOT
 
 LOG_PATH = BUILD / "last_build.log"
-MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
 MSVC_DIAGNOSTIC = re.compile(
     r"\b(?:fatal )?error\s+[A-Z]*\d*\s*:|\bwarning\s+[A-Z]*\d*\s*:|Command line (?:error|warning)\b",
     re.IGNORECASE,
 )
-
-
-def win_short_path(path: str) -> str:
-    absp = os.path.abspath(path)
-    get_short = ctypes.WinDLL("kernel32")["GetShortPathNameW"]
-    get_short.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint]
-    get_short.restype = ctypes.c_uint
-    buf = ctypes.create_unicode_buffer(32768)
-    if get_short(absp, buf, 32768) and buf.value:
-        return buf.value
-    return absp
-
-
-def resolve_cmake() -> str:
-    venv = ROOT / ".decomp-venv/Scripts/cmake.exe"
-    path = str(venv) if venv.exists() else shutil.which("cmake")
-    if not path:
-        raise SystemExit("cmake not found")
-    return win_short_path(path)
-
-
-def handle_link(args: list[str]) -> int:
-    linker, link_args = win_short_path(args[0]), args[1:]
-    # LINK 4.00 requires short working-directory and toolchain paths.
-    os.chdir(win_short_path(os.getcwd()))
-    for env_var in ("LIB", "INCLUDE", "PATH"):
-        val = os.environ.get(env_var, "")
-        if val:
-            os.environ[env_var] = ";".join(
-                win_short_path(p) for p in val.split(";") if p
-            )
-
-    for arg in link_args:
-        if arg.startswith("@"):
-            rsp_path = Path(arg[1:])
-            content = rsp_path.read_text(encoding="utf-8")
-            # LINK 4.00 limits lines to 16383 characters; multiple response files crash it.
-            rsp_path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
-
-    res = subprocess.run(
-        [linker, *link_args],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        errors="replace",
-        check=False,
-    )
-    output = res.stdout
-    sys.stdout.write(output)
-    if MSVC_WARNING.search(output):
-        sys.stderr.write("linker emitted warnings\n")
-        return res.returncode or 1
-    return res.returncode
 
 
 def stale_link_inputs(build_dir: Path) -> list[Path]:
@@ -132,11 +75,24 @@ def build_with_link_check(
     )
 
 
-def run_build(clean_first=False, disable_enforcements=False) -> int:
-    """Configure, optionally clean, build with link checks, and save diagnostics."""
-    cmake = resolve_cmake()
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--clean-first", action="store_true", help="Perform full clean build"
+    )
+    parser.add_argument(
+        "--disable-startup-checks",
+        action="store_true",
+        help="Disable startup CD and installation checks",
+    )
+    args = parser.parse_args()
+
+    venv = ROOT / ".decomp-venv/Scripts/cmake.exe"
+    cmake = str(venv) if venv.exists() else shutil.which("cmake")
+    if not cmake:
+        raise SystemExit("cmake not found")
     BUILD.mkdir(parents=True, exist_ok=True)
-    startup_checks = "OFF" if disable_enforcements else "ON"
+    startup_checks = "OFF" if args.disable_startup_checks else "ON"
     configured = subprocess.run(
         [
             cmake,
@@ -150,12 +106,12 @@ def run_build(clean_first=False, disable_enforcements=False) -> int:
     if configured:
         return configured
 
-    if clean_first:
+    if args.clean_first:
         for fname in ("LEMBALL.pdb", "LEMBALL.ilk", "LEMBALL.EXE"):
             (BUILD / fname).unlink(missing_ok=True)
 
     cmake_args = [cmake, "--build", "--preset", "msvc400"]
-    if clean_first:
+    if args.clean_first:
         cmake_args.append("--clean-first")
 
     returncode, output = build_with_link_check(cmake_args, BUILD, ROOT)
@@ -169,26 +125,6 @@ def run_build(clean_first=False, disable_enforcements=False) -> int:
 
     print(f"build: exit={returncode}; log={LOG_PATH}")
     return returncode
-
-
-def main() -> int:
-    if len(sys.argv) > 1 and sys.argv[1] == "--link":
-        return handle_link(sys.argv[2:])
-
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--clean-first", action="store_true", help="Perform full clean build"
-    )
-    parser.add_argument(
-        "--disable-enforcements",
-        action="store_true",
-        help="Disable startup CD and installation checks",
-    )
-    args = parser.parse_args()
-
-    return run_build(
-        clean_first=args.clean_first, disable_enforcements=args.disable_enforcements
-    )
 
 
 if __name__ == "__main__":

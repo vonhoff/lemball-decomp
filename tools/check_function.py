@@ -2,13 +2,11 @@
 """Compare reconstructed functions at original LEMBALL.EXE addresses."""
 
 import argparse
-import sys
 from dataclasses import replace
-from io import TextIOWrapper
+import sys
 
 from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
-from build import run_build
 from lib import load_engine
 from lib.effective import additional_effective_matches
 
@@ -22,19 +20,11 @@ def main() -> int:
         help="Hex addresses (e.g. 0x0045ca30)",
     )
     parser.add_argument(
-        "--no-build", action="store_true", help="Skip incremental build"
-    )
-    parser.add_argument(
         "--summary",
         action="store_true",
         help="One row per address; omit assembly diffs",
     )
     args = parser.parse_args()
-    if not args.no_build:
-        code = run_build()
-        if code:
-            print(f"BUILD_FAILED exit={code} (see build-msvc400/last_build.log)")
-            return code
 
     _, engine = load_engine()
     comparisons = [engine.compare_address(address) for address in args.addrs]
@@ -74,7 +64,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    for output in (sys.stdout, sys.stderr):
-        if isinstance(output, TextIOWrapper):
-            output.reconfigure(errors="backslashreplace")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="backslashreplace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(errors="backslashreplace")
     raise SystemExit(main())

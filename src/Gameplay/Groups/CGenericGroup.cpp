@@ -229,6 +229,8 @@ void CGenericGroup::GetBoundingBox(CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x0041e1c0
 void CGenericGroup::CalculateBoundingBox(int p_radius)
 {
+	int x;
+	int y;
 	int minY = GROUP_MIN_BOUND_INITIAL_VALUE;
 	int minX = GROUP_MIN_BOUND_INITIAL_VALUE;
 	int maxY = GROUP_MAX_BOUND_INITIAL_VALUE;
@@ -240,8 +242,8 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 		do {
 			CGameObject* object = *element;
 			if (object != NULL) {
-				int x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-				int y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+				x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+				y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 				int right = radius + x;
 				x -= radius;
 				int bottom = y + radius;

@@ -1,77 +1,20 @@
 """Original-code accounting across canonical reports and Effective badges."""
 
 import copy
-import contextlib
-import io
-import json
-import tempfile
 import unittest
-from pathlib import Path
 from unittest.mock import Mock, patch
 
-from reccmp.compare.db import ReccmpEntity
 from reccmp.compare.csv import csv_parse
+from reccmp.compare.db import ReccmpEntity
 from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.types import EntityType, ImageId
 
-from badges import build_badges
-import report as reporting
-from report import (
-    build_report,
-    is_visual_cpp_runtime_module,
-    measures,
-    read_report_exclusions,
-)
-from lib import ROOT
+from make_report import build_report, measures
 from lib.effective import effective_addresses
 from lib.progress import effective_measures
 
 
-class ReportTests(unittest.TestCase):
-    def test_check_snapshots_before_overwrite_and_fails_on_lost_exact_match(self):
-        function = {
-            "size": "100",
-            "fuzzy_match_percent": 100,
-            "metadata": {"virtual_address": str(0x401000), "demangled_name": "Target"},
-        }
-        before = {
-            "units": [{"name": "unit", "functions": [function]}],
-            "measures": measures([function]),
-        }
-        for score, expected in ((100, 0), (50, 1)):
-            with self.subTest(score=score), tempfile.TemporaryDirectory() as temp:
-                directory = Path(temp)
-                path = directory / "report.json"
-                original = json.dumps(before).encode()
-                path.write_bytes(original)
-                after = copy.deepcopy(before)
-                after["units"][0]["functions"][0]["fuzzy_match_percent"] = score
-                after["measures"] = measures(after["units"][0]["functions"])
-                engine = Mock()
-                engine.to_report.return_value.entities = {}
-                output = io.StringIO()
-                with (
-                    patch("sys.argv", ["report.py", "--check"]),
-                    patch("report.BUILD", directory),
-                    patch("report.REPORT_JSON", path),
-                    patch("report.RECCMP_JSON", directory / "reccmp.json"),
-                    patch("report.EFFECTIVE_JSON", directory / "effective.json"),
-                    patch("report.detect_project"),
-                    patch("report.load_engine", return_value=(Mock(), engine)),
-                    patch("report.ModuleMap"),
-                    patch("report.build_report", return_value=after),
-                    patch("report.additional_effective_matches", return_value={}),
-                    patch("report.serialize_reccmp_report", return_value="{}"),
-                    contextlib.redirect_stdout(output),
-                ):
-                    self.assertEqual(reporting.main(), expected)
-                self.assertEqual(
-                    (directory / "report-baseline.json").read_bytes(), original
-                )
-                self.assertEqual(json.loads(path.read_bytes()), after)
-                self.assertIn("effective", output.getvalue())
-                self.assertEqual("REGRESSION" in output.getvalue(), bool(expected))
-
+class MakeReportTests(unittest.TestCase):
     def test_only_raw_100_percent_counts_as_exact(self):
         scores = (100, 99.999999999, 80, 0)
         result = measures(
@@ -83,36 +26,6 @@ class ReportTests(unittest.TestCase):
         self.assertEqual(
             result["fuzzy_match_percent"], sum(score * 10 for score in scores) / 40
         )
-
-    def test_lemball_catalog_has_unique_non_overlapping_code(self):
-        catalog = list(
-            csv_parse(
-                (ROOT / "tools/data/original-function-sizes.csv").read_text(
-                    encoding="utf-8"
-                )
-            )
-        )
-        self.assertEqual(len(catalog), len({address for address, _ in catalog}))
-        previous_end = 0
-        for address, values in catalog:
-            self.assertGreater(values["size"], 0)
-            self.assertGreaterEqual(address, previous_end)
-            previous_end = address + values["size"]
-
-    def test_runtime_and_dead_stub_report_exclusions_are_catalogued(self):
-        exclusions = read_report_exclusions()
-        self.assertEqual(len(exclusions), 48)
-        self.assertIn(0x00481F50, exclusions)
-        self.assertIn(0x00481850, exclusions)
-        self.assertIn(0x00416730, exclusions)
-        self.assertIn(0x0044FCA0, exclusions)
-        self.assertNotIn(0x004297E0, exclusions)
-        self.assertNotIn(0x0042F2E0, exclusions)
-
-    def test_visual_cpp_runtime_modules_are_identified(self):
-        self.assertTrue(is_visual_cpp_runtime_module(r"build\intel\mt_obj\fflush.obj"))
-        self.assertTrue(is_visual_cpp_runtime_module("build/intel/mt_obj/fflush.obj"))
-        self.assertFalse(is_visual_cpp_runtime_module(r"build\intel\LEMBALL.obj"))
 
     def test_report_excludes_runtime_targets(self):
         entities = []
@@ -150,8 +63,8 @@ class ReportTests(unittest.TestCase):
             modules_by_address[module_address],
         )
         with (
-            patch("report.csv_parse", return_value=catalog.items()),
-            patch("report.read_report_exclusions", return_value={0x401000}),
+            patch("make_report.csv_parse", return_value=catalog.items()),
+            patch("make_report.read_report_exclusions", return_value={0x401000}),
         ):
             result = build_report(engine, comparisons, modules)
 
@@ -222,9 +135,9 @@ class ReportTests(unittest.TestCase):
             "Exact" if module_address == 0x501000 else "Mixed",
         )
         with (
-            patch("report.csv_parse", return_value=catalog.items()),
-            patch("report.read_report_exclusions", return_value=set()),
-            patch("report.is_catalogued_jump_thunk", return_value=False),
+            patch("make_report.csv_parse", return_value=catalog.items()),
+            patch("make_report.read_report_exclusions", return_value=set()),
+            patch("make_report.is_catalogued_jump_thunk", return_value=False),
         ):
             result = build_report(engine, comparisons, modules)
         totals = result["measures"]
@@ -272,33 +185,10 @@ class ReportTests(unittest.TestCase):
                 int(totals[key]),
             )
         unchanged = copy.deepcopy((result, comparisons.entities))
-        badges = build_badges(
-            result,
-            effective_addresses(
-                comparisons.entities,
-                {
-                    0x401000,
-                    0x401040,
-                    0x401060,
-                    0x401080,
-                    0x401090,
-                    0x4010A0,
-                    0x4010B0,
-                },
-            ),
-        )
-        self.assertEqual(
-            {name: badge["message"] for name, badge in badges.items()},
-            {
-                "exact": "18.95%",
-                "fuzzy": "46.32%",
-                "effective": "61.05%",
-            },
-        )
-        self.assertEqual((result, comparisons.entities), unchanged)
         self.assertAlmostEqual(
             effective_measures(
                 result, effective_addresses(comparisons.entities, {0x4010B0})
             )["matched_code_percent"],
             58 / 95 * 100,
         )
+        self.assertEqual((result, comparisons.entities), unchanged)

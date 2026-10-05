@@ -19,15 +19,16 @@
 
 | Script | Purpose |
 | --- | --- |
-| `tools/build.py` | Build/link; `--clean-first` for stale PDB/build artifacts |
-| `tools/match.py 0xADDR` | Build/compare/diff with raw and Effective scores; `--no-build` for current artifacts, `--summary` to omit diffs |
-| `tools/next.py` | Select unfinished functions; Effective filtering, `--exact` for raw, `--min-size N --sort size` for larger targets |
-| `tools/gate.py` | Source policy, annotation, and catalog checks |
-| `tools/report.py` | Canonical reports plus console Effective score; `--check` snapshots the saved report and audits prior exact matches |
-| `tools/badges.py` | README badges, separate from canonical progress |
+| `tools/make_binary.py` | Build executable; `--clean-first` for full clean rebuild |
+| `tools/link_binary.py` | CMake toolchain MSVC 4.00 linker adapter |
+| `tools/check_function.py 0xADDR` | Compare/diff function against target; `--summary` to omit diffs |
+| `tools/triage_targets.py` | Select unfinished functions; `--exact` for raw, `--min-size N --sort size` for larger targets |
+| `tools/check_source.py` | Source policy, annotation, and catalog checks; `-v` for review details |
+| `tools/make_report.py` | Canonical reports plus console Effective score |
+| `tools/make_badges.py` | README badges, separate from canonical progress |
 | `python -m unittest discover -s tests` (from `tools/`) | Tool tests |
 
-Deep comparison: `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
+Deep comparison: `reccmp-vtable` / `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
 Canonical progress: exact = non-stub, raw 100% assembly comparison score. Stubs contribute zero.
 Effective matches retain raw fuzzy scores. Effective badge includes exact + equivalent code; no effective fields in `report.json`.
 Retain incremental build outputs and saved reports in `build-msvc400`. Remove temporary trial artifacts only; clean builds for stale artifacts, not routine batch cleanup.
@@ -40,11 +41,11 @@ The source reconstruction workflow below applies to C/C++ source changes. Tool c
 
 ## Source changes
 
-1. Select a focused target with `tools/next.py` from the current report; sole selection/ranking entry point. Generate missing reports with `tools/report.py` after building. When reconstruction-memory tools are available: `get_function_memory(addr)` before editing.
+1. Select a focused target with `tools/triage_targets.py` from the current report; sole selection/ranking entry point. Generate missing reports with `tools/make_report.py` after building. When reconstruction-memory tools are available: `get_function_memory(addr)` before editing.
 2. Read the full function, declarations, relevant original callers/callees. Preserve ABI, dispatch, side effects, reload timing, narrowing, ownership, initialization, allocation failures. Ambiguous diff: inspect raw x86.
-3. Match before/after trials with `tools/match.py 0xADDR`; incremental build included. Use `--no-build` only for current artifacts; `--summary` for compact multi-address checks. Revert failed trials; retry with new evidence. `record_attempt`: actual trials only. `record_observation`: durable x86 facts with address/citation. Tools unavailable: continue locally.
-4. Batch boundary: `tools/report.py --check` snapshots the saved report to `build-msvc400/report-baseline.json`, regenerates progress, and audits prior exact matches. Header/ABI/multi-TU changes: `detect_changes`. Explain regressions. No full reports per speculative trial.
-5. Clang-format touched C/C++; run gate and relevant checks; commit verified work.
+3. Build and match trials with `tools/make_binary.py && tools/check_function.py 0xADDR`. Use `--summary` for compact multi-address checks. Revert failed trials; retry with new evidence. `record_attempt`: actual trials only. `record_observation`: durable x86 facts with address/citation. Tools unavailable: continue locally.
+4. Batch boundary: `tools/make_report.py` to inspect progress and diff against git. Header/ABI/multi-TU changes: `detect_changes`. Explain regressions. No full reports per speculative trial.
+5. Clang-format touched C/C++; run `tools/check_source.py` and relevant checks; commit verified work.
 
 ## Source conventions
 
@@ -55,4 +56,4 @@ The source reconstruction workflow below applies to C/C++ source changes. Tool c
 - Calling conventions: arguments, forwarding, cleanup; zero-argument `RET` alone insufficient. Qualified base calls require direct-dispatch evidence.
 - Constants: evidenced meaning; verify resource IDs against Manifest/RC. Preserve original assertion filenames when renaming files.
 - Reccmp annotations: original Windows addresses; STUB promotion only when substantially implemented.
-- `gate.py --names`: catalog review details by Windows address; parameter names ignored, types/constness checked. ABI differences need Windows evidence; normal pass leaves reviews open.
+- `check_source.py -v`: catalog review details by Windows address; parameter names ignored, types/constness checked. ABI differences need Windows evidence; normal pass leaves reviews open.

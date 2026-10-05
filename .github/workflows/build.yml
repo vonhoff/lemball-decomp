@@ -50,7 +50,7 @@ jobs:
           "S:\msvc400\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Gate checks
-        run: python tools/gate.py
+        run: python tools/check_source.py
 
       - name: Tool tests
         working-directory: S:\tools
@@ -72,13 +72,13 @@ jobs:
           }
 
       - name: Configure and build
-        run: python tools/build.py --clean-first
+        run: python tools/make_binary.py --clean-first
 
       - name: Generate objdiff report
-        run: python tools/report.py
+        run: python tools/make_report.py
 
       - name: Generate progress badges
-        run: python tools/badges.py
+        run: python tools/make_badges.py
 
       - name: Upload progress report
         uses: actions/upload-artifact@v7

@@ -1,4 +1,4 @@
-"""Gate rejects source-policy violations and catalog mismatches."""
+"""Source checks reject source-policy violations and catalog mismatches."""
 
 import contextlib
 import io
@@ -7,10 +7,10 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import gate
+import check_source
 
 
-class GateTests(unittest.TestCase):
+class CheckSourceTests(unittest.TestCase):
     def test_source_failures_reach_exit_status(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "Fixture.cpp"
@@ -26,7 +26,7 @@ class GateTests(unittest.TestCase):
                 )
                 with (
                     self.subTest(owner=owner, body=body),
-                    patch("sys.argv", ["gate.py", "--path", str(path)]),
+                    patch("sys.argv", ["check_source.py", "--path", str(path)]),
                     contextlib.redirect_stdout(io.StringIO()),
                 ):
-                    self.assertEqual(gate.main(), expected)
+                    self.assertEqual(check_source.main(), expected)

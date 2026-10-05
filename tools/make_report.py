@@ -12,7 +12,7 @@ from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType
 
-from lib import BUILD, EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, load_engine
+from lib import EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, load_engine
 from lib.effective import (
     additional_effective_matches,
     effective_addresses,
@@ -20,8 +20,6 @@ from lib.effective import (
 from lib.progress import (
     effective_measures,
     effective_snapshot,
-    exact_regressions,
-    load_progress,
 )
 
 REPORT_EXCLUSIONS = ROOT / "tools/data/report-exclusions.csv"
@@ -29,25 +27,30 @@ REPORT_EXCLUSIONS = ROOT / "tools/data/report-exclusions.csv"
 
 def measures(functions, total_units=1):
     """Count exact matches and weight raw scores by original code size."""
-    total_code = sum(int(function["size"]) for function in functions)
-    exact_sizes = [
-        int(function["size"])
-        for function in functions
-        if function["fuzzy_match_percent"] == 100
-    ]
-    exact_code = sum(exact_sizes)
+    total_code = 0
+    exact_code = 0
+    exact_count = 0
+    fuzzy_weighted = 0.0
+    for f in functions:
+        size = int(f["size"])
+        total_code += size
+        score = f["fuzzy_match_percent"]
+        fuzzy_weighted += score * size
+        if score == 100:
+            exact_code += size
+            exact_count += 1
+    total_functions = len(functions)
     return {
         "total_units": total_units,
         "total_code": str(total_code),
         "matched_code": str(exact_code),
-        "fuzzy_match_percent": sum(
-            f["fuzzy_match_percent"] * int(f["size"]) for f in functions
-        )
-        / total_code,
-        "matched_code_percent": exact_code / total_code * 100,
-        "total_functions": len(functions),
-        "matched_functions": len(exact_sizes),
-        "matched_functions_percent": len(exact_sizes) / len(functions) * 100,
+        "fuzzy_match_percent": (fuzzy_weighted / total_code) if total_code else 0.0,
+        "matched_code_percent": (exact_code / total_code * 100) if total_code else 0.0,
+        "total_functions": total_functions,
+        "matched_functions": exact_count,
+        "matched_functions_percent": (
+            (exact_count / total_functions * 100) if total_functions else 0.0
+        ),
     }
 
 
@@ -134,21 +137,10 @@ def build_report(engine, comparisons, modules) -> dict[str, Any]:
     return {"version": 2, "units": units, "measures": measures(functions, len(units))}
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--check",
-        action="store_true",
-        help="Snapshot the saved report, regenerate, and fail on any lost exact match",
-    )
-    args = parser.parse_args()
-    baseline = None
-    if args.check:
-        try:
-            baseline, _ = load_progress(REPORT_JSON)
-        except ValueError as exc:
-            parser.error(str(exc))
-        (BUILD / "report-baseline.json").write_bytes(REPORT_JSON.read_bytes())
+    parser.parse_args()
+
     detect_project(
         project_directory=ROOT,
         search_path=[ROOT / "data"],
@@ -179,23 +171,6 @@ def main():
         f"{effective['matched_code_percent']:.2f}% effective; "
         f"{totals['fuzzy_match_percent']:.2f}% fuzzy"
     )
-    if baseline is not None:
-        previous = baseline["measures"]
-        print(
-            f"Delta: {totals['matched_functions'] - previous['matched_functions']:+d} exact functions; "
-            f"{int(totals['matched_code']) - int(previous['matched_code']):+d} exact bytes; "
-            f"{totals['fuzzy_match_percent'] - previous['fuzzy_match_percent']:+.4f} fuzzy points"
-        )
-        regressions = exact_regressions(baseline, report)
-        for address, (old, new) in sorted(regressions.items()):
-            score = "MISSING" if new is None else f"{new['fuzzy_match_percent']:.8f}%"
-            print(
-                f"REGRESSION 0x{address:08x}: 100% -> {score} {old['metadata']['demangled_name']}"
-            )
-        print(
-            f"Exact audit: {len(regressions)} regressions; baseline={BUILD / 'report-baseline.json'}"
-        )
-        return int(bool(regressions))
     return 0
 
 
