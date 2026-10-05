@@ -282,10 +282,11 @@ void CHiliteController::SetHilite(int p_buttonIndex)
 // FUNCTION: LEMBALL 0x0044fb70
 void CHiliteController::PostSelectionMessage()
 {
-	m_navigationState.m_type = MESSAGE_BUTTON_RELEASED;
+	Message& posted = m_navigationState;
+	posted.m_type = MESSAGE_BUTTON_RELEASED;
 	m_navigationState.m_time = CurrentQueueTimer();
 	m_navigationState.m_code = m_junctions[m_currentButton].m_controlMessage;
-	g_pMasterInputQueue->Post(m_navigationState);
+	g_pMasterInputQueue->Post(posted);
 	g_pSoundView->PlayEffect(SFX_GUNHIT);
 }
 
