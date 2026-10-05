@@ -65,11 +65,13 @@ void CTrapDoorManager::AddNewDoor(unsigned short p_id,
 // FUNCTION: LEMBALL 0x0040c890
 int CTrapDoorManager::GetViewData(CViewData* p_viewData)
 {
+	CTrapDoor** door;
+	CViewData* viewData;
 	int count = 0;
 	int i = 0;
 	if (m_count > 0) {
-		CTrapDoor** door = m_doors;
-		CViewData* viewData = p_viewData;
+		door = m_doors;
+		viewData = p_viewData;
 		do {
 			if ((*door)->m_action != ACTION_READY && (*door)->m_action != ACTION_DOOR_CLOSED) {
 				(*door)->GetViewData(*viewData++);
