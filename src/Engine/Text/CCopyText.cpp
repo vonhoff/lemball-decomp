@@ -35,10 +35,13 @@ void CCopyText::Set(CVSPoint& p_position, CResFONT* p_font, char* p_text, unsign
 void CCopyText::Set(int p_x, int p_y, CResFONT* p_font, CString p_text, unsigned long p_flags, CRemap* p_remap)
 {
 	strcpy(m_buffer, p_text.m_text);
-	m_startX = (short) p_x;
-	m_startY = (short) p_y;
+	short& startX = m_startX;
+	short& startY = m_startY;
+	char* text = m_buffer;
+	startX = (short) p_x;
+	startY = (short) p_y;
 	m_font = p_font;
-	m_text = m_buffer;
+	m_text = text;
 	m_remap = p_remap;
 	m_flags = p_flags;
 }
