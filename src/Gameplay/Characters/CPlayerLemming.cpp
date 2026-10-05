@@ -691,8 +691,8 @@ void CPlayerLemming::OnBalloon()
 		m_balloonPostActive = 0;
 		SetSndEffect(SFX_BALLOON_EXPLODE);
 		m_isFalling = 1;
-		m_actionArgument = 0;
 		m_lastMovementTick = g_dwGameTick;
+		m_actionArgument = 0;
 		m_action = ACTION_FALLING;
 		m_flightZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		ResetInstructions();
