@@ -576,11 +576,11 @@ void CSuccFailDrawer::Go()
 bool CSuccFailDrawer::ConfirmedAction(eUserActions p_action)
 {
 	switch (p_action) {
-	case USER_ACTION_SUCC_FAIL_GO_CONFIRM:
-		Go();
-		return true;
 	case USER_ACTION_SUCC_FAIL_RETURN_CONFIRM:
 		Return();
+		return true;
+	case USER_ACTION_SUCC_FAIL_GO_CONFIRM:
+		Go();
 		return true;
 	default:
 		return false;
