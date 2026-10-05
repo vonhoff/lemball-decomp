@@ -10,7 +10,7 @@
 // FUNCTION: LEMBALL 0x0041a140
 CFormationManager::CFormationManager()
 {
-	CVector* formation;
+	const FormationVectorTemplate* formation;
 	CVector* source;
 	int formationCount;
 	int vectorCount;
@@ -18,13 +18,13 @@ CFormationManager::CFormationManager()
 	int x;
 
 	source = m_sourceVectors;
-	formation = (CVector*) g_aFormationTemplates;
+	formation = g_aFormationTemplates;
 	formationCount = 3;
 	do {
 		vectorCount = FORMATION_VECTOR_COUNT;
 		do {
-			y = formation->m_yFixed;
-			x = formation->m_xFixed;
+			y = (*formation)[kFormationVectorY];
+			x = (*formation)[kFormationVectorX];
 			x <<= 12;
 			source++;
 			y <<= 12;
