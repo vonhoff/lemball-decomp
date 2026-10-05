@@ -111,7 +111,7 @@ void CBaseObjectManager::GetData()
 	while (type != MESSAGE_GAME_STREAM_END) {
 		unsigned short id = GetWORD();
 		CGlobalGameObject* found = NULL;
-		for (unsigned int i = 0; (int) i < (int) (unsigned int) g_wObjectCount; i++) {
+		for (int i = 0; i < g_wObjectCount; i++) {
 			CGameObject* obj = g_pObjects[(unsigned short) i];
 			if (obj != NULL && (unsigned short) obj->GetId() == id) {
 				found = (CGlobalGameObject*) obj;
