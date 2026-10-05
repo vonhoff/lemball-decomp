@@ -504,13 +504,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 void CWnd::MoveAbsolute(const CVSPoint& p_point)
 {
 	void** node = (void**) m_childList;
-	CVSPoint* position;
-	if (this != (CWnd*) -8) {
-		position = (CVSPoint*) &m_rect.m_x;
-	}
-	else {
-		position = NULL;
-	}
+	CVSPoint* position = &m_rect;
 	CVSPoint delta((short) (p_point.m_x - position->m_x), (short) (p_point.m_y - position->m_y));
 	for (;;) {
 		if (node == NULL) {
