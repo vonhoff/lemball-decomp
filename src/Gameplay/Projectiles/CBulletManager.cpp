@@ -134,8 +134,10 @@ void CBulletManager::Process()
 // FUNCTION: LEMBALL 0x00418080
 void CBulletManager::RemoveBullet(CBullet* p_bullet)
 {
-	for (int i = 0; i < BULLET_ACTIVE_LIST_SEARCH_COUNT; i++) {
-		if (p_bullet == m_activeBullets[i]) {
+	int i = 0;
+	CBullet** entry = m_activeBullets;
+	do {
+		if (p_bullet == *entry) {
 			CBullet** slot = &m_activeBullets[i];
 			m_activeBullets[i]->Free();
 			if (i < BULLET_ACTIVE_LIST_SEARCH_LAST_INDEX) {
@@ -151,7 +153,9 @@ void CBulletManager::RemoveBullet(CBullet* p_bullet)
 			m_activeCount--;
 			return;
 		}
-	}
+		entry++;
+		i++;
+	} while (i < BULLET_ACTIVE_LIST_SEARCH_COUNT);
 }
 
 // FUNCTION: LEMBALL 0x004180e0
