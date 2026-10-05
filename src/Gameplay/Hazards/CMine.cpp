@@ -49,11 +49,9 @@ void CMine::Initialise()
 // FUNCTION: LEMBALL 0x00423cb0
 void CMine::Set(AICOORD p_position)
 {
-	int& y = m_position.m_yFixed;
-	int& z = m_position.m_zFixed;
 	m_position.m_xFixed = p_position.m_xFixed;
-	y = p_position.m_yFixed;
-	z = p_position.m_zFixed;
+	m_position.m_yFixed = p_position.m_yFixed;
+	m_position.m_zFixed = p_position.m_zFixed;
 	m_activated = 0;
 	m_enabled = 1;
 	m_terrainSet = 0;
