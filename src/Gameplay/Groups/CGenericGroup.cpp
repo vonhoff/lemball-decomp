@@ -406,9 +406,7 @@ bool CGenericGroup::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinat
 			int x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 			int y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 			if (x - 24 < rectRight && rectX < x + 24 && y - 24 < rectBottom && rectY < y + 24) {
-				p_coordinate->m_xFixed = object->m_position.m_xFixed;
-				p_coordinate->m_yFixed = object->m_position.m_yFixed;
-				p_coordinate->m_zFixed = object->m_position.m_zFixed;
+				*p_coordinate = object->m_position;
 				return true;
 			}
 			object = GetNextElementInGroup();
