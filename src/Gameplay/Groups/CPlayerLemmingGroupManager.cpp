@@ -670,11 +670,18 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 // FUNCTION: LEMBALL 0x004193f0
 bool CPlayerLemmingGroupManager::CheckNetworkStateChanged()
 {
+	CGenericGroup** groups;
 	bool changed = false;
-	for (int index = 0; index < m_groupCount; ++index) {
-		CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) m_groups[index];
-		bool groupChanged = group->CheckNetworkStateChanged();
-		changed = groupChanged || changed;
+	int index = 0;
+	if (m_groupCount > 0) {
+		groups = m_groups;
+		do {
+			CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) *groups;
+			bool groupChanged = group->CheckNetworkStateChanged();
+			changed = groupChanged || changed;
+			groups++;
+			index++;
+		} while (index < m_groupCount);
 	}
 	return changed;
 }
