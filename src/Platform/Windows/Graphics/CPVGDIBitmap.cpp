@@ -234,8 +234,10 @@ CVSSize CPVGDIBitmap::SetSize(const CVSSize& p_size, int p_pitch)
 // FUNCTION: LEMBALL 0x00472670
 void CPVGDIBitmap::SetBitsBase(unsigned char* p_bits, int p_stride)
 {
-	m_bitsBase = p_bits;
-	m_bits = m_rowPadding + p_bits;
+	unsigned char* bits = m_rowPadding + p_bits;
+	unsigned char*& bitsBase = m_bitsBase;
+	bitsBase = p_bits;
+	m_bits = bits;
 	m_stride = p_stride;
 	if (p_stride < 0) {
 		m_bits += (1 - m_height) * p_stride;
