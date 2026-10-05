@@ -125,7 +125,7 @@ void CPanel::RefreshLemmings()
 // FUNCTION: LEMBALL 0x004431f0
 void CPanel::OnSize()
 {
-	CVSPoint calculated = GetPausePos();
+	const CVSPoint& calculated = GetPausePos();
 	short x = calculated.m_x;
 	m_panelPosition.m_x = x;
 	short y = calculated.m_y;
