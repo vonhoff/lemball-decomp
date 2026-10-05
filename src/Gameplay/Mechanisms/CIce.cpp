@@ -242,7 +242,7 @@ bool CIce::Process()
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AICOORD current = object->m_position;
+		AICOORD current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
 		int x = current.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int y = current.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		if (x < minX || x > maxX || y < minY || y > maxY) {
