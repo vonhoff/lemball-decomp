@@ -36,6 +36,7 @@ CGroundAnim::~CGroundAnim()
 // FUNCTION: LEMBALL 0x0040cf40
 bool CGroundAnim::CheckAllAnims()
 {
+	int next;
 	int index = 0;
 	while (index < m_count) {
 		unsigned int& active = m_entries[index].m_active;
@@ -51,7 +52,7 @@ bool CGroundAnim::CheckAllAnims()
 				active = 0;
 				break;
 			default: {
-				int next = index + 1;
+				next = index + 1;
 				active = 0;
 				while (next < m_count) {
 					m_entries[next - 1] = m_entries[next];
