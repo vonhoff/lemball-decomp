@@ -542,26 +542,26 @@ void CGunController::MoveDown()
 {
 	int remaining;
 	int foundY;
-	int* directionField;
+	GunControllerJunction* junction;
 	int direction;
 	int y;
 	int bestY;
 
 	bestY = GUN_CONTROLLER_HIGHEST_SEARCH_Y;
 	foundY = GUN_JUNCTION_COORDINATE_UNASSIGNED;
-	directionField = &m_junctions[0].m_direction;
+	junction = m_junctions;
 	remaining = 8;
 	do {
-		direction = *directionField;
-		if (direction != GUN_JUNCTION_UNASSIGNED && m_targetY < (y = directionField[-2]) && y < bestY) {
+		direction = junction->m_direction;
+		if (direction != GUN_JUNCTION_UNASSIGNED && m_targetY < (y = junction->m_y) && y < bestY) {
 			if (direction != GUN_JUNCTION_BOTH) {
 				m_targetSide = direction;
 			}
-			foundY = directionField[-2];
+			foundY = junction->m_y;
 			bestY = foundY;
 			g_pSoundView->PlayEffect(SFX_RELOAD);
 		}
-		directionField += 8;
+		junction++;
 	} while (--remaining != 0);
 	if (foundY != GUN_JUNCTION_COORDINATE_UNASSIGNED) {
 		m_targetY = foundY;
