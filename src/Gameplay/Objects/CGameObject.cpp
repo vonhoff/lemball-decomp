@@ -734,11 +734,12 @@ bool CGameObject::SearchRoute()
 				if (index >= 0) {
 					Solution* solution = &solutions[index];
 					do {
+						CAiDestinationList* list;
 						AICOORD coordinate;
 						coordinate.m_xFixed = ((unsigned int) (unsigned short) solution->m_x
 											   << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
 											  (GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
-						CAiDestinationList* list = m_destinationList;
+						list = m_destinationList;
 						coordinate.m_yFixed = ((unsigned int) (unsigned short) solution->m_y
 											   << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
 											  (GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
