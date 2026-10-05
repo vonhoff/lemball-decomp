@@ -320,9 +320,10 @@ void CObjectManager::ActivateObjectsById(int p_id, CGameObject* p_activator)
 // FUNCTION: LEMBALL 0x0041b8f0
 CGlobalGameObject* CObjectManager::FindObject(int p_id)
 {
+	int count = m_count;
 	int i = 0;
 	while (1) {
-		if (m_count <= i) {
+		if (i >= count) {
 			return NULL;
 		}
 		if (m_objects[i]->m_objectId == p_id) {
@@ -330,10 +331,8 @@ CGlobalGameObject* CObjectManager::FindObject(int p_id)
 		}
 		i++;
 	}
-	if (m_objects[i]->m_objectActive == 0) {
-		return NULL;
-	}
-	return m_objects[i];
+	CGlobalGameObject* object = m_objects[i];
+	return object->m_objectActive ? object : NULL;
 }
 
 // FUNCTION: LEMBALL 0x0041b940
