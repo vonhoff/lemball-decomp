@@ -414,6 +414,7 @@ void CMaze::BSolution(int& p_count, Solution* p_solution)
 	p_solution[p_count].m_y = (short) y;
 	p_count++;
 
+	int nextDirection;
 	int previousX = x;
 	int previousY = y;
 	if (FindSquare(--distance, x, y)) {
@@ -424,7 +425,7 @@ void CMaze::BSolution(int& p_count, Solution* p_solution)
 			previousY = y;
 			FindSquare(distance, x, y);
 			distance--;
-			int nextDirection = Direction(previousX, previousY, x, y);
+			nextDirection = Direction(previousX, previousY, x, y);
 			if (direction != nextDirection) {
 				p_solution[p_count].m_x = (short) previousX;
 				p_solution[p_count].m_y = (short) previousY;
