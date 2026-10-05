@@ -178,9 +178,17 @@ AICOORD CCrate::ActivatePosition()
 		goto contents_position;
 	}
 
-default_position:
-	return AICOORD(x - DEFAULT_X_OFFSET, y - DEFAULT_Y_OFFSET, z);
+default_position: {
+	int defaultX = x - DEFAULT_X_OFFSET;
+	int defaultY = y - DEFAULT_Y_OFFSET;
+	int defaultZ = z;
+	return AICOORD(defaultX, defaultY, defaultZ);
+}
 
-contents_position:
-	return AICOORD(x - CONTENTS_X_OFFSET, y, z);
+contents_position: {
+	int contentsX = x - CONTENTS_X_OFFSET;
+	int contentsY = y;
+	int contentsZ = z;
+	return AICOORD(contentsX, contentsY, contentsZ);
+}
 }
