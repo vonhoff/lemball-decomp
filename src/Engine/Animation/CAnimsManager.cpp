@@ -69,8 +69,8 @@ CAnimsManager::CAnimsManager(CGDI* p_gdi,
 	m_doubleBuffered = p_doubleBuffered;
 	m_loadedResourceCount = 0;
 	m_reserved6c = 0xffffffff;
-	m_resources = (CResBase**) operator new(m_resourceCapacity * sizeof(*m_resources));
-	m_resourceSlots = (short*) operator new(m_resourceIdCount * sizeof(*m_resourceSlots));
+	m_resources = new CResBase*[m_resourceCapacity];
+	m_resourceSlots = new short[m_resourceIdCount];
 	for (i = 0; i < m_resourceCapacity; i++) {
 		m_resources[i] = NULL;
 	}
@@ -119,11 +119,11 @@ CAnimsManager::~CAnimsManager()
 		} while (scanned < m_loadedResourceCount);
 	}
 	if (m_resources != NULL) {
-		operator delete(m_resources);
+		delete[] m_resources;
 		m_resources = NULL;
 	}
 	if (m_resourceSlots != NULL) {
-		operator delete(m_resourceSlots);
+		delete[] m_resourceSlots;
 		m_resourceSlots = NULL;
 	}
 	if (m_zrlePrimitives != NULL) {
