@@ -648,8 +648,8 @@ void CMap::CalculateCliff()
 {
 	int x;
 	int width;
-	int y;
 	CGround* ground;
+	int y;
 	y = 0;
 	if (m_walkHeight > 0) {
 		do {
