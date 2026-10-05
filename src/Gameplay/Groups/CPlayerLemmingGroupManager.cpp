@@ -445,8 +445,9 @@ int CPlayerLemmingGroupManager::GetLemmingCountForPlayer(int p_playerIndex)
 void CPlayerLemmingGroupManager::InitialiseNetwork()
 {
 	if (g_pActiveConnection != NULL) {
+		int remaining;
 		CPlayerLemming** lemmings = m_networkLemmings;
-		int remaining = 4;
+		remaining = 4;
 		do {
 			if (m_networkInitialised == 0) {
 				*lemmings = new CPlayerLemming(0, 0, 0, 0, 1, 0);
