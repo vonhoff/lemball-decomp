@@ -22,9 +22,10 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 	int nDeltaY = (p_toY - p_fromY) << FIXED_POINT_FRACTION_BITS;
 
 	int nAbsX = VsAbs(nDeltaX);
+	int nFraction;
 	int nAbsY = VsAbs(nDeltaY);
 
-	int nFraction = nAbsY & FIXED_POINT_FRACTION_MASK;
+	nFraction = nAbsY & FIXED_POINT_FRACTION_MASK;
 	nFraction = (nFraction * 0x6a0) >> FIXED_POINT_FRACTION_BITS;
 	int nHigh = nAbsY >> FIXED_POINT_FRACTION_BITS;
 	unsigned int nDirection;

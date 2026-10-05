@@ -13,6 +13,7 @@ void CMove3d::Set(CPt3& p_start, CPt3& p_end, int p_startTime, int p_speed)
 	m_start = p_start;
 	m_startTime = p_startTime;
 
+	int distance;
 	int dx = p_end.m_x - p_start.m_x;
 	int dy = p_end.m_y - p_start.m_y;
 	int dz = p_end.m_z - p_start.m_z;
@@ -24,7 +25,7 @@ void CMove3d::Set(CPt3& p_start, CPt3& p_end, int p_startTime, int p_speed)
 		dz /= 4;
 	}
 
-	int distance = dz * dz;
+	distance = dz * dz;
 	distance += dy * dy;
 	distance += dx * dx;
 	if (distance == 0) {
