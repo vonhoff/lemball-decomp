@@ -1109,7 +1109,7 @@ bool CGameObject::Fall()
 			else {
 				centreedY = y - 1;
 			}
-			position->m_yFixed = centreedY << FIXED_POINT_FRACTION_BITS;
+			m_position.m_yFixed = centreedY << FIXED_POINT_FRACTION_BITS;
 		}
 
 		int groundZ = (int) g_pMap->GetZ(x, y, &mover) << FIXED_POINT_FRACTION_BITS;
