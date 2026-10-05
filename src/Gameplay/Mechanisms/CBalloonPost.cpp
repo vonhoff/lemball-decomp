@@ -80,16 +80,17 @@ void CBalloonPost::Process()
 {
 	CFixed height(0);
 	if ((m_activeMask & BALLOON_POST_BALLOON_1_ACTIVE_MASK) != 0) {
+		int width;
 		int y = m_positions[0].m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		int x = m_positions[0].m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = m_map;
 		unsigned short z;
-		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+		if (x >= 0 && y >= 0 && blockX < (width = map->m_ground.m_width) && blockY < map->m_ground.m_height) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
@@ -99,16 +100,17 @@ void CBalloonPost::Process()
 		m_posts[0]->m_position.m_zFixed = height.m_value;
 	}
 	if ((m_activeMask & BALLOON_POST_BALLOON_3_ACTIVE_MASK) != 0) {
+		int width;
 		int y = m_positions[1].m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		int x = m_positions[1].m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = m_map;
 		unsigned short z;
-		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+		if (x >= 0 && y >= 0 && blockX < (width = map->m_ground.m_width) && blockY < map->m_ground.m_height) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
@@ -118,16 +120,17 @@ void CBalloonPost::Process()
 		m_posts[1]->m_position.m_zFixed = height.m_value;
 	}
 	if ((m_activeMask & BALLOON_POST_BALLOON_5_ACTIVE_MASK) != 0) {
+		int width;
 		int y = m_positions[2].m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		int x = m_positions[2].m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = m_map;
 		unsigned short z;
-		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+		if (x >= 0 && y >= 0 && blockX < (width = map->m_ground.m_width) && blockY < map->m_ground.m_height) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;
@@ -137,16 +140,17 @@ void CBalloonPost::Process()
 		m_posts[2]->m_position.m_zFixed = height.m_value;
 	}
 	if ((m_activeMask & BALLOON_POST_BALLOON_7_ACTIVE_MASK) != 0) {
+		int width;
 		int y = m_positions[3].m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		int x = m_positions[3].m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = m_map;
 		unsigned short z;
-		if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
+		if (x >= 0 && y >= 0 && blockX < (width = map->m_ground.m_width) && blockY < map->m_ground.m_height) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
 		}
 		else {
 			z = 0;

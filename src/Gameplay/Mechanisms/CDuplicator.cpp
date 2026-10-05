@@ -120,9 +120,11 @@ bool CDuplicator::Process()
 		m_duplicatedObject->ResetInstructions();
 		CPlayerLemming* dead = g_pAI->GetDead();
 		if (dead != NULL) {
-			AICOORD pos(m_position.m_xFixed,
-						m_position.m_yFixed + DUPLICATOR_DUPLICATE_SPAWN_Y_OFFSET_FIXED,
-						m_position.m_zFixed);
+			AICOORD pos;
+			pos.m_xFixed = m_position.m_xFixed;
+			int z = m_position.m_zFixed;
+			pos.m_yFixed = m_position.m_yFixed + DUPLICATOR_DUPLICATE_SPAWN_Y_OFFSET_FIXED;
+			pos.m_zFixed = z;
 			dead->Resurrect(pos);
 			CPlayerLemmingGroup* group = ((CPlayerLemming*) m_duplicatedObject)->GetGroup();
 			group->AddLemmingToGroup(dead);
@@ -159,9 +161,11 @@ bool CDuplicator::Activate(CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00427910
 void CDuplicator::DoActivate()
 {
-	m_stateTimer = g_dwSimulationTimestamp;
-	int y = m_position.m_yFixed + DUPLICATOR_STAGING_POSITION_Y_OFFSET_FIXED;
+	unsigned long timestamp = g_dwSimulationTimestamp;
+	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
+	y += DUPLICATOR_STAGING_POSITION_Y_OFFSET_FIXED;
+	m_stateTimer = timestamp;
 	CGameObject* activator = m_activator;
 	m_actionDeadline += g_dwGameTick;
 	m_duplicatedObject = activator;

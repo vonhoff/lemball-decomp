@@ -49,7 +49,7 @@ void CBall::Set(AICOORD p_start, AICOORD p_destination, int p_speed)
 {
 	enum {
 		FIRST_VERSION_USING_BALL_SPEED = 7,
-		MIN_CUSTOM_SPEED = 2
+		MAX_DEFAULTED_SPEED = 1
 	};
 
 	m_position = p_start;
@@ -63,7 +63,7 @@ void CBall::Set(AICOORD p_start, AICOORD p_destination, int p_speed)
 	else {
 		m_speed = (unsigned short) p_speed;
 	}
-	if (m_speed < MIN_CUSTOM_SPEED) {
+	if (m_speed <= MAX_DEFAULTED_SPEED) {
 		m_speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
 	}
 	m_enabled = 1;
@@ -219,8 +219,9 @@ void CBall::Delete()
 // FUNCTION: LEMBALL 0x00421b40
 void CBall::SetHeightCorrect()
 {
+	int y;
 	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
 	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
