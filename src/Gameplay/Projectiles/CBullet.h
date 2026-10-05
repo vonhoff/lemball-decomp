@@ -62,6 +62,9 @@ private:
 // SYNTHETIC: LEMBALL 0x004183d0
 // CBullet::~CBullet
 
+// SYNTHETIC: LEMBALL 0x0041af10
+// CBullet::`scalar deleting destructor'
+
 // SYNTHETIC: LEMBALL 0x0041af50
 // ??_ECBullet@@WBDI@AEPAXI@Z
 
