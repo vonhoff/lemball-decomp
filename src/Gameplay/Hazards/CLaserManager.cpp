@@ -113,10 +113,9 @@ int CLaserManager::GetViewData(CViewData* p_viewData)
 void CLaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectType p_orientation)
 {
 	if (m_count < m_capacity) {
-		AICOORD position;
-		position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
-		position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
-		position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
+		AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
+						 p_y << FIXED_POINT_FRACTION_BITS,
+						 p_z << FIXED_POINT_FRACTION_BITS);
 		m_lasers[m_count].Set(p_id, position, p_orientation);
 		m_count++;
 	}
