@@ -3,6 +3,7 @@
 #include "Chunk.h"
 #include "ChunkInfo.h"
 #include "CMogloadArena.h"
+#include "CRawRead.h"
 
 #include <stddef.h>
 
@@ -11,7 +12,7 @@
 #define MOG_FORMAT_VERSION 3
 
 // SIZE 0x38
-class CMogDir {
+class CMogDir : public CRawRead {
 public:
 	void* operator new(size_t p_size) { return CMogloadArena::operator new(p_size); }
 	void* operator new(size_t, void* p_ptr) { return p_ptr; }
