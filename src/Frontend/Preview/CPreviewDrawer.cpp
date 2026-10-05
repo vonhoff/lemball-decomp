@@ -297,7 +297,6 @@ void CPreviewDrawer::DrawBackGround()
 void CPreviewDrawer::DrawText()
 {
 	CVSSize advance;
-	CVSSize pos;
 	int* positions;
 	char* line;
 	int count;
@@ -309,17 +308,10 @@ void CPreviewDrawer::DrawText()
 		count = PREVIEW_LEVEL_NAME_LINE_COUNT;
 		do {
 			if (*positions != PREVIEW_TEXT_POSITION_UNSET) {
-				pos.m_width = (short) positions[PREVIEW_TEXT_POSITION_X];
-				pos.m_height = (short) positions[PREVIEW_TEXT_POSITION_Y];
+				CVSPoint pos((short) positions[PREVIEW_TEXT_POSITION_X], (short) positions[PREVIEW_TEXT_POSITION_Y]);
 				advance.m_height = 0;
 				advance.m_width = 0;
-				m_textManager->DrawString(m_gdi,
-										  (CVSPoint&) pos,
-										  advance,
-										  m_chalkFontId,
-										  line,
-										  PREVIEW_TEXT_MAX_CHARACTERS,
-										  NULL);
+				m_textManager->DrawString(m_gdi, pos, advance, m_chalkFontId, line, PREVIEW_TEXT_MAX_CHARACTERS, NULL);
 			}
 			line = line + PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES;
 			positions = positions + PREVIEW_TEXT_POSITION_COMPONENT_COUNT;
@@ -336,29 +328,23 @@ void CPreviewDrawer::DrawText()
 				advance.m_height = 0;
 				advance.m_width = 0;
 				CoordPair* layoutPosition = &m_layout->m_positions[*positions];
-				pos.m_width = (short) layoutPosition->m_x;
-				pos.m_height = (short) layoutPosition->m_y;
+				CVSPoint pos((short) layoutPosition->m_x, (short) layoutPosition->m_y);
 				positions = positions + 1;
-				m_textManager->DrawString(m_gdi,
-										  (CVSPoint&) pos,
-										  advance,
-										  m_chalkFontId,
-										  g_szPreviewX,
-										  PREVIEW_TEXT_MAX_CHARACTERS,
-										  NULL);
+				m_textManager
+					->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewX, PREVIEW_TEXT_MAX_CHARACTERS, NULL);
 				count = count - 1;
 			} while (count != 0);
 		}
 
 		{
-			PreviewLayout* layout = m_layout;
 			if (m_timeText[0] > '9') {
+				PreviewLayout* layout = m_layout;
 				advance.m_height = 0;
 				advance.m_width = 0;
-				pos.m_width = (short) layout->m_positions[PreviewTimeText].m_x;
-				pos.m_height = (short) layout->m_positions[PreviewTimeText].m_y;
+				CVSPoint pos((short) layout->m_positions[PreviewTimeText].m_x,
+							 (short) layout->m_positions[PreviewTimeText].m_y);
 				m_textManager->DrawString(m_gdi,
-										  (CVSPoint&) pos,
+										  pos,
 										  advance,
 										  m_chalkFontId,
 										  g_szPreviewInfinite,
@@ -366,52 +352,45 @@ void CPreviewDrawer::DrawText()
 										  NULL);
 			}
 			else {
+				PreviewLayout* layout = m_layout;
 				advance.m_height = 0;
 				advance.m_width = 0;
-				pos.m_width = (short) layout->m_positions[PreviewTimeText].m_x;
-				pos.m_height = (short) layout->m_positions[PreviewTimeText].m_y;
-				m_textManager->DrawString(m_gdi,
-										  (CVSPoint&) pos,
-										  advance,
-										  m_chalkFontId,
-										  m_timeText,
-										  PREVIEW_TEXT_MAX_CHARACTERS,
-										  NULL);
+				CVSPoint pos((short) layout->m_positions[PreviewTimeText].m_x,
+							 (short) layout->m_positions[PreviewTimeText].m_y);
+				m_textManager
+					->DrawString(m_gdi, pos, advance, m_chalkFontId, m_timeText, PREVIEW_TEXT_MAX_CHARACTERS, NULL);
 			}
 		}
 
-		skill = g_pGameStatus->m_skill;
-		PreviewLayout* skillLayout = m_layout;
-		int skillX = skillLayout->m_positions[PreviewSkillText].m_x;
-		int skillY = skillLayout->m_positions[PreviewSkillText].m_y;
-		short halfWidth = (short) (m_textManager->GetFont(m_chalkFontId)
-									   ->GetSize(g_szPreviewSkillNames[skill], PREVIEW_TEXT_MAX_CHARACTERS)
-									   .m_width /
-								   2);
-		pos.m_width = (short) (skillX - halfWidth);
-		advance.m_height = 0;
-		advance.m_width = 0;
-		pos.m_height = (short) skillY;
-		m_textManager->DrawString(m_gdi,
-								  (CVSPoint&) pos,
-								  advance,
-								  m_chalkFontId,
-								  g_szPreviewSkillNames[skill],
-								  PREVIEW_TEXT_MAX_CHARACTERS,
-								  NULL);
+		{
+			skill = g_pGameStatus->m_skill;
+			PreviewLayout* skillLayout = m_layout;
+			int skillX = skillLayout->m_positions[PreviewSkillText].m_x;
+			int skillY = skillLayout->m_positions[PreviewSkillText].m_y;
+			short halfWidth = (short) (m_textManager->GetFont(m_chalkFontId)
+										   ->GetSize(g_szPreviewSkillNames[skill], PREVIEW_TEXT_MAX_CHARACTERS)
+										   .m_width /
+									   2);
+			skillX -= halfWidth;
+			CVSPoint pos((short) skillX, (short) skillY);
+			advance.m_height = 0;
+			advance.m_width = 0;
+			m_textManager->DrawString(m_gdi,
+									  pos,
+									  advance,
+									  m_chalkFontId,
+									  g_szPreviewSkillNames[skill],
+									  PREVIEW_TEXT_MAX_CHARACTERS,
+									  NULL);
+		}
 
 		if (m_teamCount > 4) {
 			advance.m_height = 0;
 			advance.m_width = 0;
-			pos.m_width = (short) m_layout->m_positions[PreviewTimeText].m_x;
-			pos.m_height = (short) m_layout->m_positions[PreviewNoneText].m_y;
-			m_textManager->DrawString(m_gdi,
-									  (CVSPoint&) pos,
-									  advance,
-									  m_chalkFontId,
-									  g_szPreviewNone,
-									  PREVIEW_TEXT_MAX_CHARACTERS,
-									  NULL);
+			CVSPoint pos((short) m_layout->m_positions[PreviewTimeText].m_x,
+						 (short) m_layout->m_positions[PreviewNoneText].m_y);
+			m_textManager
+				->DrawString(m_gdi, pos, advance, m_chalkFontId, g_szPreviewNone, PREVIEW_TEXT_MAX_CHARACTERS, NULL);
 		}
 	}
 }
