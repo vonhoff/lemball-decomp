@@ -231,7 +231,7 @@ private:
 	unsigned int m_frameTime;                    // 0x194
 	unsigned int m_levelTestFrame;               // 0x198
 	char m_pad0x19c[8];                          // 0x19c
-	unsigned int m_cursorState;                  // 0x1a4
+	eC2DCursorState m_cursorState;               // 0x1a4
 	unsigned int m_cursorTimestamp;              // 0x1a8
 	unsigned short m_cursorBlinkPhase;           // 0x1ac
 	char m_groundClipScratch[0x71a];             // 0x1ae
