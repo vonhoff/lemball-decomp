@@ -186,9 +186,10 @@ void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 // FUNCTION: LEMBALL 0x0040cbc0
 void CTrapDoorManager::ClearAllTrapDoors()
 {
+	int remaining;
 	m_count = 0;
 	CTrapDoor** door = m_doors;
-	int remaining = TRAP_DOOR_CAPACITY;
+	remaining = TRAP_DOOR_CAPACITY;
 	do {
 		if (*door != NULL) {
 			delete *door;
