@@ -120,12 +120,12 @@ void CIntroAnimDrawer::Processing()
 		return;
 	}
 	if (m_startCountdown == 0) {
-		CVSSize displaySize(m_display->m_rect);
-		CVSRect introRect(0, 0, displaySize.m_width, displaySize.m_height);
+		CVSRect introRect(0, 0, &m_display->m_rect);
 		introRect.m_x = (short) (introRect.m_width - 320) / 2;
 		short height = introRect.m_height;
-		introRect.m_width = 320;
-		introRect.m_height = 240;
+		CVSSize* introSize = &introRect;
+		introSize->m_width = 320;
+		introSize->m_height = 240;
 		introRect.m_y = (short) (height - 240) / 2;
 		if (m_started == 0) {
 			g_pSoundView->ChangeState(SOUND_STATE_INTRO, NULL);
