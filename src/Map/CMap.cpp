@@ -645,6 +645,7 @@ void CMap::SetLevelName(char* p_name)
 void CMap::CalculateCliff()
 {
 	int x;
+	int width;
 	int y;
 	CGround* ground;
 	y = 0;
@@ -652,7 +653,7 @@ void CMap::CalculateCliff()
 		do {
 			x = 0;
 			for (;;) {
-				int width = m_walkWidth;
+				width = m_walkWidth;
 				if (x >= width) {
 					break;
 				}
