@@ -1060,7 +1060,8 @@ copyRow:
 		goto copyRow;
 	}
 copiedRows:
-	CVSRect rect = CVSRect(0, 0, m_windowRect.m_width, m_windowRect.m_height);
+	CVSSize size(m_windowRect.m_width, m_windowRect.m_height);
+	CVSRect rect(0, 0, &size);
 	rect.m_x = rect.m_y = 0;
 	m_changeList->Reset();
 	AddToChangeList(rect);
