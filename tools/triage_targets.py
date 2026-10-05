@@ -8,12 +8,13 @@ from lib.progress import load_progress
 
 def rank_functions(report, effective=(), min_size=0, sort="score"):
     """Rank unfinished functions without changing the canonical report."""
+    effective_set = set(effective)
     functions = (
         {**function, "unit": unit["name"]}
         for unit in report["units"]
         for function in unit["functions"]
         if function["fuzzy_match_percent"] < 100
-        and int(function["metadata"]["virtual_address"]) not in effective
+        and int(function["metadata"]["virtual_address"]) not in effective_set
         and int(function["size"]) >= min_size
     )
     return sorted(

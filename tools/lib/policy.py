@@ -1,8 +1,11 @@
 """Narrow source-policy tripwires and functional comment syntax."""
 
+from itertools import groupby
 import re
 
+from reccmp import color
 from reccmp.parser.marker import MarkerType, is_marker_exact, match_marker
+from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 
 from . import ROOT, SRC, TOKENS, collect_sources, mask_comments_and_strings
 
@@ -112,3 +115,19 @@ def check_policy(paths=None):
             failures += 1
     print(f"policy: {failures} violations")
     return int(bool(failures))
+
+
+def check_annotations(paths=None) -> int:
+    files = tuple(collect_sources(paths))
+    target = DecomplintTarget(files, "LEMBALL", "utf-8")
+    alerts = [
+        alert
+        for alert in lint_all_targets((target,))
+        if alert.target in (None, "LEMBALL")
+    ]
+    alerts.sort(key=lambda alert: str(alert.path).lower())
+    for path, errors in groupby(alerts, key=lambda alert: alert.path):
+        display_errors(errors, path)
+    if alerts:
+        print(color.Style.RESET_ALL, end="")
+    return int(any(alert.is_error() or alert.is_warning() for alert in alerts))

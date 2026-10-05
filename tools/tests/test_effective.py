@@ -376,7 +376,11 @@ class ThunkTests(unittest.TestCase):
                 self.assertTrue(
                     compare(
                         *fixture(
-                            "31f6 8b7934 " + comparison + " " + branch + "03 39c0c3 39c0c3",
+                            "31f6 8b7934 "
+                            + comparison
+                            + " "
+                            + branch
+                            + "03 39c0c3 39c0c3",
                             "31f6 8b7934 85ff 7e03 39c0c3 39c0c3",
                         )
                     )

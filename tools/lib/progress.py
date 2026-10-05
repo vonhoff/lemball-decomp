@@ -6,26 +6,25 @@ from pathlib import Path
 from typing import Any
 
 
-def functions_by_address(report: dict[str, Any]) -> dict[int, dict[str, Any]]:
-    return {
-        int(function["metadata"]["virtual_address"]): function
-        for unit in report["units"]
-        for function in unit["functions"]
-    }
-
-
-def effective_measures(report, accepted):
-    functions = functions_by_address(report)
-    sizes = [int(f["size"]) for address, f in functions.items() if address in accepted]
+def effective_measures(report: dict[str, Any], accepted: set[int]) -> dict[str, Any]:
+    matched_code = 0
+    matched_count = 0
+    for unit in report["units"]:
+        for f in unit["functions"]:
+            if int(f["metadata"]["virtual_address"]) in accepted:
+                matched_code += int(f["size"])
+                matched_count += 1
     total = int(report["measures"]["total_code"])
     return {
-        "matched_code": sum(sizes),
-        "matched_functions": len(sizes),
-        "matched_code_percent": sum(sizes) / total * 100 if total else 0.0,
+        "matched_code": matched_code,
+        "matched_functions": matched_count,
+        "matched_code_percent": (matched_code / total * 100) if total else 0.0,
     }
 
 
-def effective_snapshot(report_bytes, accepted, additional):
+def effective_snapshot(
+    report_bytes: bytes, accepted: set[int], additional: dict[int, Any]
+) -> dict[str, Any]:
     """Bind accepted addresses to the exact canonical report that produced them."""
     return {
         "version": 1,
@@ -35,7 +34,9 @@ def effective_snapshot(report_bytes, accepted, additional):
     }
 
 
-def load_progress(report_path, effective_path=None) -> tuple[dict[str, Any], set[int]]:
+def load_progress(
+    report_path: Path | str, effective_path: Path | str | None = None
+) -> tuple[dict[str, Any], set[int]]:
     """Read a saved batch; reject missing, old-format or mismatched sidecars."""
     try:
         raw = Path(report_path).read_bytes()
@@ -50,20 +51,7 @@ def load_progress(report_path, effective_path=None) -> tuple[dict[str, Any], set
                 raise ValueError("effective results do not belong to this report")
             accepted = {int(address) for address in snapshot["addresses"]}
         return report, accepted
-    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+    except (OSError, ValueError, KeyError) as exc:
         raise ValueError(
-            f"Cannot read saved progress: {exc}. Run python tools/report.py first."
+            f"Cannot read saved progress: {exc}. Run python tools/make_report.py first."
         ) from exc
-
-
-def exact_regressions(
-    before: dict[str, Any], after: dict[str, Any]
-) -> dict[int, tuple[dict[str, Any], dict[str, Any] | None]]:
-    """Include lost inventory entries; equal total counts can hide regressions."""
-    current = functions_by_address(after)
-    return {
-        address: (function, current.get(address))
-        for address, function in functions_by_address(before).items()
-        if function["fuzzy_match_percent"] == 100
-        and (address not in current or current[address]["fuzzy_match_percent"] != 100)
-    }
