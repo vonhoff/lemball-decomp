@@ -24,7 +24,7 @@ CHeaders::CHeaders(int p_headerCount)
 // FUNCTION: LEMBALL 0x004796e0
 CHeaders::~CHeaders()
 {
-	operator delete(m_sequences);
+	delete[] m_sequences;
 	delete[] m_headers;
 }
 
