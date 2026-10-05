@@ -3457,8 +3457,8 @@ void C2D::DrawSheep(CViewData& p_viewData, int p_objectNo)
 
 	unsigned int direction;
 	unsigned int stateTimer;
-	int y;
 	int x;
+	int y;
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
 	stateTimer = p_viewData.m_stateTimer;
