@@ -259,9 +259,10 @@ CSwitch* CObjectManager::AddSwitch(unsigned short p_id,
 								   int p_legacyLast,
 								   int p_legacyAux)
 {
-	AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
-					 p_y << FIXED_POINT_FRACTION_BITS,
-					 p_z << FIXED_POINT_FRACTION_BITS);
+	AICOORD position;
+	position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 	CSwitch* object = new CSwitch(position, (swMessage) p_message, p_legacyFirst, p_legacyLast, p_legacyAux);
 	object->Restart();
 	return (CSwitch*) AddObject(p_id, object, 1);
@@ -319,9 +320,10 @@ void CObjectManager::ActivateObjectsById(int p_id, CGameObject* p_activator)
 // FUNCTION: LEMBALL 0x0041b8f0
 CGlobalGameObject* CObjectManager::FindObject(int p_id)
 {
+	int count = m_count;
 	int i = 0;
 	while (1) {
-		if (m_count <= i) {
+		if (i >= count) {
 			return NULL;
 		}
 		if (m_objects[i]->m_objectId == p_id) {
@@ -329,10 +331,8 @@ CGlobalGameObject* CObjectManager::FindObject(int p_id)
 		}
 		i++;
 	}
-	if (m_objects[i]->m_objectActive == 0) {
-		return NULL;
-	}
-	return m_objects[i];
+	CGlobalGameObject* object = m_objects[i];
+	return object->m_objectActive ? object : NULL;
 }
 
 // FUNCTION: LEMBALL 0x0041b940

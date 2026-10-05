@@ -676,8 +676,8 @@ void CGameObject::StopMoving()
 // FUNCTION: LEMBALL 0x004157b0
 unsigned short CGameObject::MapCheck(int p_x, int p_y)
 {
-	int blockY = (p_y + ((p_y >> 31) & GROUND_BLOCK_PIXEL_MASK)) >> GROUND_BLOCK_PIXEL_SHIFT;
-	int blockX = (p_x + ((p_x >> 31) & GROUND_BLOCK_PIXEL_MASK)) >> GROUND_BLOCK_PIXEL_SHIFT;
+	int blockY = p_y / GROUND_BLOCK_PIXEL_SIZE;
+	int blockX = p_x / GROUND_BLOCK_PIXEL_SIZE;
 	unsigned short collision = 0;
 
 	for (int x = blockX; x <= blockX; x++) {
