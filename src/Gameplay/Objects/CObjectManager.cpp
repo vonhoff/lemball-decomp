@@ -118,7 +118,6 @@ void CObjectManager::ClearAllObjects()
 void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
 {
 	int index = 0;
-	int linkedIndex;
 	for (; index < m_count; index++) {
 		if (m_objects[index] == p_object) {
 			p_object->Delete();
@@ -132,7 +131,7 @@ void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
 			m_count--;
 			return;
 		}
-		linkedIndex = 0;
+		int linkedIndex = 0;
 		while (1) {
 			if (linkedIndex >= m_count) {
 				break;
