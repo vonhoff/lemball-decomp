@@ -66,7 +66,7 @@ bool _GDI_Quit()
 	CGraphicsState* system;
 
 	delete g_pCursor;
-	surface = (CSurface*) g_pGdiHelperTarget;
+	surface = g_pGdiHelperTarget;
 	if (surface != NULL) {
 		surface->~CSurface();
 		operator delete(surface);

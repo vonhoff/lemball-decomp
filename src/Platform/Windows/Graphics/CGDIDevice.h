@@ -37,5 +37,5 @@ private:
 };
 
 extern CGDIDevice* g_pGdiDevice;
-extern void* g_pGdiHelperTarget;
+extern CSurface* g_pGdiHelperTarget;
 #endif

@@ -69,7 +69,7 @@ void CGWnd::_OnCreate()
 
 	CPVWnd::_OnCreate();
 	if (m_parent == NULL) {
-		parentSurface = (CSurface*) g_pGdiHelperTarget;
+		parentSurface = g_pGdiHelperTarget;
 	}
 	else {
 		parentSurface = ((CGWnd*) m_parent)->m_gdi->m_renderTarget;
@@ -312,8 +312,8 @@ void CGWnd::Flush()
 	}
 	if (m_nativeWindow != NULL) {
 		dc = GetDC((HWND) m_nativeWindow);
-		EnterCriticalSection((CRITICAL_SECTION*) ((CSurface*) g_pGdiHelperTarget)->m_lock);
-		((CSurface*) g_pGdiHelperTarget)->SetWindowPtr(dc);
+		EnterCriticalSection((CRITICAL_SECTION*) g_pGdiHelperTarget->m_lock);
+		g_pGdiHelperTarget->SetWindowPtr(dc);
 	}
 	childNode = (void**) m_childList;
 	for (;;) {
@@ -326,7 +326,7 @@ void CGWnd::Flush()
 	m_gdi->m_renderTarget->Flush();
 	if (m_nativeWindow != NULL) {
 		ReleaseDC((HWND) m_nativeWindow, dc);
-		LeaveCriticalSection((CRITICAL_SECTION*) ((CSurface*) g_pGdiHelperTarget)->m_lock);
+		LeaveCriticalSection((CRITICAL_SECTION*) g_pGdiHelperTarget->m_lock);
 	}
 }
 

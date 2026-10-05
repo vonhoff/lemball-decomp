@@ -25,7 +25,7 @@ CPVBackBuffSurface::~CPVBackBuffSurface()
 // FUNCTION: LEMBALL 0x004664e0
 bool CPVBackBuffSurface::HasBackBuff()
 {
-	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface != g_pGdiHelperTarget) {
 		return m_parentSurface->HasBackBuff();
 	}
 	return m_enabled;

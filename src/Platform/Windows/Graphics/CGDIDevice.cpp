@@ -14,7 +14,7 @@ enum {
 CGDIDevice* g_pGdiDevice = NULL;
 
 // GLOBAL: LEMBALL 0x004a200c
-void* g_pGdiHelperTarget = NULL;
+CSurface* g_pGdiHelperTarget = NULL;
 
 // FUNCTION: LEMBALL 0x0046bc00
 CGDIDevice::CGDIDevice(int p_surfaceCapacity)
@@ -86,7 +86,7 @@ CSurface* CGDIDevice::AllocateSurface(const CVSRect& p_rect, CSurface* p_parentS
 
 	m_surfaceSlots[i].m_surface = new CSurface(p_rect, p_parentSurface);
 	m_surfaceSlots[i].m_parent = p_parentSurface;
-	m_surfaceSlots[i].m_isPrimary = (void*) p_parentSurface == g_pGdiHelperTarget;
+	m_surfaceSlots[i].m_isPrimary = p_parentSurface == g_pGdiHelperTarget;
 	m_surfaceSlots[i].m_flushed = 0;
 	m_surfaceSlots[i].m_available = 0;
 	if (m_surfaceSlots[i].m_isPrimary != 0) {
@@ -155,5 +155,5 @@ void CGDIDevice::Flush(CSurface* p_surface)
 		timer->m_timingStart = CurrentMilliTimer();
 		timer->m_timingActive = 1;
 	}
-	m_surfaceSlots[i].m_surface->ToScreen((CSurface*) g_pGdiHelperTarget);
+	m_surfaceSlots[i].m_surface->ToScreen(g_pGdiHelperTarget);
 }
