@@ -208,17 +208,19 @@ CVSSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_a
 CVSSize CAnimsManager::GetMaxAnimSize(unsigned long p_resourceId)
 {
 	CVSSize maxSize;
+	short& maximumWidth = maxSize.m_width;
+	short& maximumHeight = maxSize.m_height;
 	unsigned long animCount = GetnAnims(p_resourceId);
 	unsigned long animIndex = 0;
 
 	if (animCount != 0) {
 		do {
 			CVSSize animSize = GetAnimSize(p_resourceId, animIndex);
-			if (maxSize.m_width < animSize.m_width) {
-				maxSize.m_width = animSize.m_width;
+			if (maximumWidth < animSize.m_width) {
+				maximumWidth = animSize.m_width;
 			}
-			if (maxSize.m_height < animSize.m_height) {
-				maxSize.m_height = animSize.m_height;
+			if (maximumHeight < animSize.m_height) {
+				maximumHeight = animSize.m_height;
 			}
 			++animIndex;
 			animCount = GetnAnims(p_resourceId);
