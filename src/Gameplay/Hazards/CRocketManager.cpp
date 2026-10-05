@@ -31,6 +31,7 @@ void CRocketManager::Restart()
 // FUNCTION: LEMBALL 0x00426b50
 void CRocketManager::Initialise(int p_capacity)
 {
+	int i;
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
@@ -39,7 +40,7 @@ void CRocketManager::Initialise(int p_capacity)
 	}
 	if (m_rockets == NULL) {
 		m_rockets = new CRocket[p_capacity];
-		for (int i = 0; i < m_capacity; i++) {
+		for (i = 0; i < m_capacity; i++) {
 			m_rockets[i].Restart();
 			m_rockets[i].m_manager = this;
 		}
