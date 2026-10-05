@@ -302,7 +302,7 @@ bool CIce::Process()
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AICOORD positionValue(object->m_position);
+		AICOORD positionValue(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
 		const AICOORD& position = positionValue;
 		unsigned short groundZ;
 		{
