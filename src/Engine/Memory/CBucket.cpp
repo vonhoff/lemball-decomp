@@ -54,7 +54,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 		m_flags |= BUCKET_FLAG_OWNS_ALLOCATION_MAP;
 	}
 
-	m_map = (unsigned int*) p_map;
+	m_map = p_map;
 	m_memory = memory;
 	memset(p_map, 0, m_mapWordCount * sizeof(unsigned long));
 	m_freeOffset.m_wWord = 0;

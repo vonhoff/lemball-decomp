@@ -35,7 +35,7 @@ private:
 	unsigned int m_peakAllocations;   // 0x3c
 	unsigned short m_flags;           // 0x40
 	unsigned int m_mapWordCount;      // 0x44
-	unsigned int* m_map;              // 0x48
+	unsigned long* m_map;             // 0x48
 	unsigned char* m_memory;          // 0x4c
 	Boffset m_freeOffset;             // 0x50
 };
