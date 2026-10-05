@@ -646,7 +646,8 @@ void CGameObject::StartMoving()
 				m_flightVelocity.m_xFixed = GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED;
 				const int& fallSteps = (objectZ - groundZ) / 8;
 				m_flightVelocity.m_zFixed = (fallSteps + 1) << FIXED_POINT_FRACTION_BITS;
-				m_actionArgument = 0;
+				short& actionArgument = m_actionArgument;
+				actionArgument = 0;
 				m_lastMovementTick = g_dwGameTick;
 				m_flightZ = objectZ;
 				m_groundPosition.m_xFixed = m_position.m_xFixed;
