@@ -211,11 +211,11 @@ CGame::CGame(char* p_runtimeFileName)
 	NextProcess(FLOW_INTRO_ANIM);
 
 	strcpy(m_runtimeName, g_szDefaultRuntimeDir);
-	if (p_runtimeFileName == NULL) {
-		strcat(m_runtimeName, g_szDefaultRuntimeFile);
+	if (p_runtimeFileName != NULL) {
+		strcat(m_runtimeName, p_runtimeFileName);
 	}
 	else {
-		strcat(m_runtimeName, p_runtimeFileName);
+		memcpy(m_runtimeName + strlen(m_runtimeName), g_szDefaultRuntimeFile, sizeof(g_szDefaultRuntimeFile));
 	}
 
 	m_quit = 0;
