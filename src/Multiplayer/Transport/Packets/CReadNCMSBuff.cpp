@@ -20,7 +20,7 @@ CReadNCMSBuff::CReadNCMSBuff(unsigned long p_firstMessageId,
 	m_messageCount = p_lastMessageId - p_firstMessageId + 1;
 	m_nextExpectedSequence = 0;
 	if (p_messageCapacity > 0) {
-		m_messages = (CReadMSBuff**) operator new(m_messageCount * sizeof(CReadMSBuff*));
+		m_messages = new CReadMSBuff*[m_messageCount];
 		for (index = 0; index < m_messageCount; index++) {
 			m_messages[index] = new CReadMSBuff(m_messageCount, p_messageCapacity, p_packetSize);
 		}
@@ -39,7 +39,7 @@ CReadNCMSBuff::~CReadNCMSBuff()
 		for (index = 0; index < m_messageCount; index++) {
 			delete m_messages[index];
 		}
-		operator delete(m_messages);
+		delete[] m_messages;
 	}
 }
 
