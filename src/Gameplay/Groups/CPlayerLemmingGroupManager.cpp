@@ -67,8 +67,14 @@ void CPlayerLemmingGroupManager::Restart()
 // FUNCTION: LEMBALL 0x00418540
 CPlayerLemmingGroupManager::~CPlayerLemmingGroupManager()
 {
-	for (int i = 0; i < m_deadCount; i++) {
-		delete m_dead[i];
+	int i = 0;
+	if (i < m_deadCount) {
+		CPlayerLemming** dead = m_dead;
+		do {
+			delete *dead;
+			dead++;
+			i++;
+		} while (i < m_deadCount);
 	}
 	if (m_networkInitialised != 0) {
 		for (int i = 0; i < 4; i++) {
