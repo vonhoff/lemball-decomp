@@ -13,6 +13,7 @@ class CPlayerLemming;
 class CPlayerLemmingGroup : public CGenericGroup {
 public:
 	CPlayerLemming* GetFirstDeadLemming();
+	CPlayerLemming* GetCurrentDeadLemming();
 	CPlayerLemmingGroup(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	bool AddLemmingToGroup(CPlayerLemming* p_lemming);
 	bool CheckPlayerControlled();

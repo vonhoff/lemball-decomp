@@ -381,6 +381,22 @@ CPlayerLemming* CPlayerLemmingGroup::GetFirstDeadLemming()
 	return lemming;
 }
 
+// FUNCTION: LEMBALL 0x004148c0
+CPlayerLemming* CPlayerLemmingGroup::GetCurrentDeadLemming()
+{
+	CPlayerLemming* lemming = (CPlayerLemming*) CGenericGroup::GetCurrentElementInGroup();
+	while (1) {
+		if (lemming == NULL) {
+			return NULL;
+		}
+		if (lemming->m_action == ACTION_DEAD) {
+			break;
+		}
+		lemming = (CPlayerLemming*) CGenericGroup::GetNextElementInGroup();
+	}
+	return lemming;
+}
+
 // FUNCTION: LEMBALL 0x004148f0
 void CPlayerLemmingGroup::ClearExistingWaypoints()
 {
