@@ -100,11 +100,17 @@ void CLaserManager::Process()
 // FUNCTION: LEMBALL 0x004298a0
 int CLaserManager::GetViewData(CViewData* p_viewData)
 {
+	CViewData* output;
 	int count = 0;
-	for (int i = 0; i < m_count; i++) {
-		int laserCount = m_lasers[i].GetViewData(p_viewData);
-		count += laserCount;
-		p_viewData += laserCount;
+	int i = 0;
+	if (0 < m_count) {
+		output = p_viewData;
+		do {
+			int laserCount = m_lasers[i].GetViewData(output);
+			count += laserCount;
+			output += laserCount;
+			i++;
+		} while (i < m_count);
 	}
 	return count;
 }
