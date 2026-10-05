@@ -16,4 +16,7 @@ public:
 // SYNTHETIC: LEMBALL 0x0045eac0
 // CResSTRING::`vector deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0045eb30
+// CResSTRING::~CResSTRING
+
 #endif
