@@ -145,6 +145,18 @@ private:
 	void* m_currDb;                      // 0x554
 };
 
+// SYNTHETIC: LEMBALL 0x0046dc90 SYMBOL
+// ?HasBackBuff@CPVBackBuffSurface@@WEGM@AEHXZ
+
+// SYNTHETIC: LEMBALL 0x0046dca0 SYMBOL
+// ?HasZBuff@CPVZBuffSurface@@WEMA@AEHXZ
+
+// SYNTHETIC: LEMBALL 0x0046dcb0 SYMBOL
+// ?SetWorldWidth@CPVScrollableSurface@@WFBI@AEXH@Z
+
+// SYNTHETIC: LEMBALL 0x0046dcc0 SYMBOL
+// ?GetWorldWidth@CPVScrollableSurface@@WFBI@AEHXZ
+
 // GLOBAL: LEMBALL 0x00499dd8
 // CSurface::`vbtable'{for `CPVBackBuffSurface'}
 

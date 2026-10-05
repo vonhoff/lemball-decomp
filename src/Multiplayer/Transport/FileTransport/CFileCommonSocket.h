@@ -24,4 +24,7 @@ protected:
 // SYNTHETIC: LEMBALL 0x0047b910
 // CFileCommonSocket::`scalar deleting destructor'
 
+// SYNTHETIC: LEMBALL 0x0047bbd0 SYMBOL
+// ?SocketError@CFileCommonSocket@@WPPPPPOME@AEXXZ
+
 #endif
