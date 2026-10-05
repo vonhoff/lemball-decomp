@@ -72,7 +72,7 @@ protected:
 	unsigned int m_messageId;        // 0x04
 	unsigned char* m_buffer;         // 0x08
 	unsigned char* m_bufferEnd;      // 0x0c
-	unsigned int m_openDepth;        // 0x10
+	int m_openDepth;                 // 0x10
 	unsigned int m_ownsBuffer;       // 0x14
 	unsigned int m_payloadCapacity;  // 0x18
 	unsigned char* m_writeCursor;    // 0x1c

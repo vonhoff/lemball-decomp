@@ -50,7 +50,7 @@ void CBaseObjectManager::Add(CNetworkMessage* p_message)
 				return;
 			}
 		}
-		if ((int) m_openDepth <= 0) {
+		if (m_openDepth <= 0) {
 			OpenDataStream();
 		}
 		if ((m_writeCursor - m_buffer) + p_message->m_payloadCapacity + 2 > m_payloadCapacity) {
@@ -72,7 +72,7 @@ void CBaseObjectManager::AddData()
 // FUNCTION: LEMBALL 0x0040add0
 void CBaseObjectManager::ProcessNetwork()
 {
-	if ((int) m_openDepth <= 0 || m_pendingSendCount != 0 || g_pActiveConnection == NULL) {
+	if (m_openDepth <= 0 || m_pendingSendCount != 0 || g_pActiveConnection == NULL) {
 		return;
 	}
 	CNetworkMessage::Add((unsigned short) MESSAGE_GAME_STREAM_END);

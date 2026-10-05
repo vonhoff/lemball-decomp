@@ -115,7 +115,7 @@ bool CConnect::Send(CNetworkMessage& p_message)
 	Message message;
 
 	if (m_readReady != 0 && m_killRequested == 0) {
-		isOpen = (int) p_message.m_openDepth > 0;
+		isOpen = p_message.m_openDepth > 0;
 		opened = !isOpen;
 		if (opened) {
 			p_message.OpenDataStream();
