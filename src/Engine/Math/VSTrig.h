@@ -17,7 +17,7 @@ class VSTrig {
 public:
 	CFixed Cos(int p_angle);
 	CFixed Sin(int p_angle);
-	CVector Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos);
+	CVector Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos) const;
 	CVector Rotate(CVector& p_vector, int p_angle);
 	VSTrig();
 

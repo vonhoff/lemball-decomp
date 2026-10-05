@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0041a3e0
-CVector VSTrig::Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos)
+CVector VSTrig::Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos) const
 {
 	int sin = p_sin.m_value;
 	int cosLo = p_cos.m_value & FIXED_POINT_FRACTION_MASK;
