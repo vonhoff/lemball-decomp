@@ -172,9 +172,10 @@ CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
 									   unsigned short p_linkedObjectId,
 									   eObjectType p_linkedObjectType)
 {
-	AICOORD position(p_x << FIXED_POINT_FRACTION_BITS,
-					 p_y << FIXED_POINT_FRACTION_BITS,
-					 p_z << FIXED_POINT_FRACTION_BITS);
+	AICOORD position;
+	position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
+	position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
 	return Add(p_id, position, p_objectType, p_linkedObjectId, p_linkedObjectType);
 }
 
