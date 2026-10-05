@@ -51,6 +51,7 @@ public:
 	friend class CFramedButton;
 	friend class CTextButton;
 	friend class CInputTextButton;
+	friend class CStateTextButton;
 	friend class CGunButtons;
 	friend class CHiliteButtons;
 	friend class CGunController;
