@@ -334,7 +334,7 @@ private:
 // ??_EC2D@@WBE@AEPAXI@Z
 
 // GLOBAL: LEMBALL 0x004a78a8
-// ?$S1@?1??GetClipRectangle@C2D@@QAEPAVCVSRect@@XZ@4EA
+// ?$S2@?1??GetClipRectangle@C2D@@QAEPAVCVSRect@@XZ@4EA
 
 // GLOBAL: LEMBALL 0x004a78b0
 // g_clipRectangle
