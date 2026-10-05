@@ -14,12 +14,12 @@ struct QueueHandlerNode {
 // FUNCTION: LEMBALL 0x00463020
 CBaseQueue::CBaseQueue(unsigned int p_capacity)
 {
-	unsigned char* buffer;
+	Message* buffer;
 
-	buffer = (unsigned char*) operator new(p_capacity * sizeof(Message));
+	buffer = (Message*) operator new(p_capacity * sizeof(*buffer));
 	m_messageBuffer = buffer;
 	m_capacity = p_capacity;
-	m_messageBufferEnd = buffer + p_capacity * sizeof(Message);
+	m_messageBufferEnd = buffer + p_capacity;
 	m_writeCursor = buffer;
 	m_readCursor = buffer;
 	m_messageCount = 0;
@@ -35,13 +35,13 @@ CBaseQueue::CBaseQueue(unsigned int p_capacity)
 // FUNCTION: LEMBALL 0x004630a0
 CBaseQueue::CBaseQueue(unsigned int p_capacity, char* p_name)
 {
-	unsigned char* buffer;
+	Message* buffer;
 
 	(void) p_name;
-	buffer = (unsigned char*) operator new(p_capacity * sizeof(Message));
+	buffer = (Message*) operator new(p_capacity * sizeof(*buffer));
 	m_messageBuffer = buffer;
 	m_capacity = p_capacity;
-	m_messageBufferEnd = buffer + p_capacity * sizeof(Message);
+	m_messageBufferEnd = buffer + p_capacity;
 	m_writeCursor = buffer;
 	m_readCursor = buffer;
 	m_messageCount = 0;
@@ -79,7 +79,7 @@ CBaseQueue::~CBaseQueue()
 // FUNCTION: LEMBALL 0x004631a0
 bool CBaseQueue::Post(Message& p_message)
 {
-	unsigned char* write;
+	Message* write;
 	bool result;
 
 	EnterCritical();
@@ -95,10 +95,10 @@ bool CBaseQueue::Post(Message& p_message)
 	}
 	m_messageCount = m_messageCount + 1;
 	write = m_writeCursor;
-	*(Message*) write = p_message;
+	*write = p_message;
 	write = m_writeCursor;
-	m_writeCursor = write + sizeof(Message);
-	if (m_messageBufferEnd <= write + sizeof(Message)) {
+	m_writeCursor = write + 1;
+	if (m_messageBufferEnd <= write + 1) {
 		m_writeCursor = m_messageBuffer;
 	}
 	LeaveCritical();
@@ -243,9 +243,9 @@ bool CBaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 	Message* slot;
 
 	EnterCritical();
-	slot = (Message*) m_readCursor + p_index;
-	if ((Message*) m_messageBufferEnd <= slot) {
-		slot = (Message*) m_messageBuffer + (slot - (Message*) m_messageBufferEnd);
+	slot = m_readCursor + p_index;
+	if (m_messageBufferEnd <= slot) {
+		slot = m_messageBuffer + (slot - m_messageBufferEnd);
 	}
 	*p_message = *slot;
 	LeaveCritical();
@@ -255,35 +255,35 @@ bool CBaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 // FUNCTION: LEMBALL 0x00463610
 bool CBaseQueue::PutNth(Message* p_message, unsigned int p_index)
 {
-	unsigned char* slot;
+	Message* slot;
 	Message* dest;
 	Message* src;
 	unsigned int shifted;
 
 	EnterCritical();
-	slot = m_readCursor + p_index * sizeof(Message);
+	slot = m_readCursor + p_index;
 	if (m_messageBufferEnd <= slot) {
-		slot = m_messageBuffer + (((int) slot - (int) m_messageBufferEnd) / (int) sizeof(Message)) * sizeof(Message);
+		slot = m_messageBuffer + (slot - m_messageBufferEnd);
 	}
 	if (m_messageCount > p_index) {
-		dest = (Message*) m_writeCursor;
+		dest = m_writeCursor;
 		src = dest - 1;
 		for (shifted = 0; shifted < m_messageCount - p_index; shifted++) {
-			if (src < (Message*) m_messageBuffer) {
-				src = (Message*) m_messageBufferEnd - 1;
+			if (src < m_messageBuffer) {
+				src = m_messageBufferEnd - 1;
 			}
-			if (dest < (Message*) m_messageBuffer) {
-				dest = (Message*) m_messageBufferEnd - 1;
+			if (dest < m_messageBuffer) {
+				dest = m_messageBufferEnd - 1;
 			}
 			*dest = *src;
 			src--;
 			dest--;
 		}
 	}
-	*(Message*) slot = *p_message;
+	*slot = *p_message;
 	slot = m_writeCursor;
-	m_writeCursor = slot + sizeof(Message);
-	if (m_messageBufferEnd <= slot + sizeof(Message)) {
+	m_writeCursor = slot + 1;
+	if (m_messageBufferEnd <= slot + 1) {
 		m_writeCursor = m_messageBuffer;
 	}
 	m_messageCount = m_messageCount + 1;
@@ -294,18 +294,18 @@ bool CBaseQueue::PutNth(Message* p_message, unsigned int p_index)
 // FUNCTION: LEMBALL 0x004636e0
 bool CBaseQueue::DeleteNth(unsigned int p_index)
 {
-	unsigned char* slot;
-	unsigned char* src;
-	unsigned char* read;
+	Message* slot;
+	Message* src;
+	Message* read;
 	unsigned int count;
-	unsigned char* end;
+	Message* end;
 
 	EnterCritical();
 	read = m_readCursor;
 	end = m_messageBufferEnd;
-	slot = read + p_index * sizeof(Message);
+	slot = read + p_index;
 	if (end <= slot) {
-		slot = m_messageBuffer + (((int) slot - (int) end) / (int) sizeof(Message)) * sizeof(Message);
+		slot = m_messageBuffer + (slot - end);
 	}
 	count = m_messageCount;
 	if (count == 1) {
@@ -315,8 +315,8 @@ bool CBaseQueue::DeleteNth(unsigned int p_index)
 		return true;
 	}
 	if (slot == read) {
-		m_readCursor = read + sizeof(Message);
-		if (end <= read + sizeof(Message)) {
+		m_readCursor = read + 1;
+		if (end <= read + 1) {
 			m_readCursor = m_messageBuffer;
 		}
 		m_messageCount = count - 1;
@@ -324,7 +324,7 @@ bool CBaseQueue::DeleteNth(unsigned int p_index)
 		return true;
 	}
 	src = slot;
-	slot += sizeof(Message);
+	slot++;
 	if (end <= slot) {
 		slot = m_messageBuffer;
 	}
@@ -336,16 +336,16 @@ bool CBaseQueue::DeleteNth(unsigned int p_index)
 			if (m_messageBufferEnd <= src) {
 				src = m_messageBuffer;
 			}
-			*(Message*) slot = *(Message*) src;
-			src = src + sizeof(Message);
-			slot = slot + sizeof(Message);
+			*slot = *src;
+			src = src + 1;
+			slot = slot + 1;
 			p_index = p_index + 1;
 		} while (p_index < m_messageCount);
 	}
 	slot = m_writeCursor;
-	m_writeCursor = slot - sizeof(Message);
+	m_writeCursor = slot - 1;
 	if (m_writeCursor <= m_messageBuffer) {
-		m_writeCursor = m_messageBufferEnd - sizeof(Message);
+		m_writeCursor = m_messageBufferEnd - 1;
 	}
 	m_messageCount = m_messageCount - 1;
 	LeaveCritical();

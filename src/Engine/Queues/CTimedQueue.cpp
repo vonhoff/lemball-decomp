@@ -5,7 +5,7 @@
 // FUNCTION: LEMBALL 0x00458e80
 bool CTimedQueue::Post(Message& p_message)
 {
-	unsigned char* slot;
+	Message* slot;
 	unsigned int count;
 	unsigned int index;
 	Message* message;
@@ -21,11 +21,11 @@ bool CTimedQueue::Post(Message& p_message)
 	count = m_messageCount;
 	if (count != 0) {
 		do {
-			message = (Message*) slot;
+			message = slot;
 			if ((int) (p_message.m_time - message->m_time) < 0) {
 				break;
 			}
-			slot = slot + sizeof(Message);
+			slot = slot + 1;
 			index = index + 1;
 			if (m_messageBufferEnd <= slot) {
 				slot = m_messageBuffer;

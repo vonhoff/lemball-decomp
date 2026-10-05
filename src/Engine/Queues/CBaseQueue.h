@@ -38,19 +38,19 @@ public:
 	friend class CTimedQueue;
 
 private:
-	unsigned int m_capacity;           // 0x24
-	unsigned int m_messageCount;       // 0x28
-	unsigned int m_handlerCount;       // 0x2c
-	unsigned int m_nextSequence;       // 0x30
-	unsigned int m_overflowCount;      // 0x34
-	unsigned int m_postCount;          // 0x38
-	unsigned int m_sendCount;          // 0x3c
-	unsigned int m_unhandledCount;     // 0x40
-	unsigned char* m_messageBuffer;    // 0x44
-	unsigned char* m_messageBufferEnd; // 0x48
-	unsigned char* m_readCursor;       // 0x4c
-	unsigned char* m_writeCursor;      // 0x50
-	QueueHandlerNode* m_handlerList;   // 0x54
+	unsigned int m_capacity;         // 0x24
+	unsigned int m_messageCount;     // 0x28
+	unsigned int m_handlerCount;     // 0x2c
+	unsigned int m_nextSequence;     // 0x30
+	unsigned int m_overflowCount;    // 0x34
+	unsigned int m_postCount;        // 0x38
+	unsigned int m_sendCount;        // 0x3c
+	unsigned int m_unhandledCount;   // 0x40
+	Message* m_messageBuffer;        // 0x44
+	Message* m_messageBufferEnd;     // 0x48
+	Message* m_readCursor;           // 0x4c
+	Message* m_writeCursor;          // 0x50
+	QueueHandlerNode* m_handlerList; // 0x54
 };
 
 extern CBaseQueue* g_pMasterInputQueue;
