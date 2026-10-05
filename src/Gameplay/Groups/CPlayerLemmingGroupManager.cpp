@@ -305,9 +305,10 @@ bool CPlayerLemmingGroupManager::MakeNoGroupsPlayerControlled()
 // FUNCTION: LEMBALL 0x004189f0
 CPlayerLemmingGroup* CPlayerLemmingGroupManager::GetPlayerControlledGroup()
 {
+	CGenericGroup** groups;
 	int i = 0;
 	if (m_groupCount > 0) {
-		CGenericGroup** groups = m_groups;
+		groups = m_groups;
 		do {
 			CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) *groups;
 			if (group != NULL && group->CheckPlayerControlled() == true) {
