@@ -525,7 +525,7 @@ void CPauseWindow::RegisterRemaps()
 			g_pBasePalManager->RegisterRemap(window->m_parentWindow->m_paletteResourceId, *mappings, PALETTE_MAPPED);
 		mappings++;
 		remaps++;
-	} while (mappings < (unsigned char**) g_apPauseMenuLabels);
+	} while (mappings < g_apPauseRemaps + sizeof(g_apPauseRemaps) / sizeof(*g_apPauseRemaps));
 }
 
 // FUNCTION: LEMBALL 0x00444900
