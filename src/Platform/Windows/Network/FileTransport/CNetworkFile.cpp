@@ -15,8 +15,8 @@ extern "C" __declspec(dllimport) int __stdcall CloseHandle(void* p_handle);
 extern "C" __declspec(dllimport) int __stdcall DeleteFileA(const char* p_name);
 extern "C" __declspec(dllimport) int __stdcall WriteFile(void* p_handle,
 														 const void* p_buffer,
-														 unsigned int p_bytes,
-														 unsigned int* p_written,
+														 unsigned long p_bytes,
+														 unsigned long* p_written,
 														 void* p_overlapped);
 extern "C" __declspec(dllimport) int __stdcall ReadFile(void* p_handle,
 														void* p_buffer,
@@ -123,7 +123,7 @@ bool CNetworkFile::CheckExists(const char* p_filename)
 bool CNetworkFile::Write(const unsigned char* p_data, int p_size)
 {
 	int success;
-	unsigned int written;
+	unsigned long written;
 
 	success = WriteFile(m_handle, p_data, (unsigned int) p_size, &written, NULL);
 	if (success == 0) {
