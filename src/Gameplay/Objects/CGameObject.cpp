@@ -1058,8 +1058,8 @@ void CGameObject::Jump()
 												  &mover);
 	const unsigned int& groundHeight = groundHeightValue;
 	int& positionZ = m_position.m_zFixed;
-	positionZ = (elapsed * 3 + m_flightZ) << FIXED_POINT_FRACTION_BITS;
 	unsigned int groundZ = groundHeight << FIXED_POINT_FRACTION_BITS;
+	positionZ = (elapsed * 3 + m_flightZ) << FIXED_POINT_FRACTION_BITS;
 	if (m_position.m_zFixed >= (int) groundZ) {
 		AICOORD* position = &m_position;
 		m_position = m_groundPosition;
