@@ -3,6 +3,12 @@
 
 #include "CNetworkMessage.h"
 
+// SIZE 0x04
+struct HeaderSequenceState {
+	unsigned short m_sequence;         // 0x00
+	unsigned short m_mirroredSequence; // 0x02
+};
+
 // SIZE 0x60
 // VTABLE: LEMBALL 0x0049a4a8
 class CHeaderMessage : public CNetworkMessage {
@@ -15,12 +21,11 @@ private:
 	friend class CHeaders;
 	friend class CFileReadSocket;
 	friend class CFileWriteSocket;
-	unsigned short m_sequence;         // 0x2c
-	unsigned short m_mirroredSequence; // 0x2e
-	unsigned long m_headerValue;       // 0x30
-	char m_text0[21];                  // 0x34
-	char m_text1[21];                  // 0x49
-	unsigned short m_padding;          // 0x5e
+	HeaderSequenceState m_sequenceState; // 0x2c
+	unsigned long m_headerValue;         // 0x30
+	char m_text0[21];                    // 0x34
+	char m_text1[21];                    // 0x49
+	unsigned short m_padding;            // 0x5e
 };
 
 // SYNTHETIC: LEMBALL 0x0047b7f0
