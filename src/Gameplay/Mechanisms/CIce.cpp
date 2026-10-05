@@ -295,8 +295,9 @@ bool CIce::Process()
 					groundZ = 0;
 				}
 				else {
-					groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
-																		   y & GROUND_BLOCK_PIXEL_MASK);
+					x &= GROUND_BLOCK_PIXEL_MASK;
+					y &= GROUND_BLOCK_PIXEL_MASK;
+					groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
 				}
 			}
 			if ((current.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
