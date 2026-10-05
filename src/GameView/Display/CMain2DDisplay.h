@@ -12,6 +12,7 @@ enum {
 };
 
 class CGame;
+class CCdLoadAnimDraw;
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8 CGWnd
 // VTABLE: LEMBALL 0x00496ba8 CBaseQueueHandler
@@ -50,7 +51,7 @@ public:
 
 private:
 	unsigned int m_windowReady;    // 0xa0
-	void* m_loadingDraw;           // 0xa4
+	CCdLoadAnimDraw* m_loadingDraw; // 0xa4
 	void* m_cursorResource;        // 0xa8
 	void* m_gamePalette;           // 0xac
 	void* m_titlePalette;          // 0xb0

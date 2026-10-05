@@ -167,7 +167,7 @@ void CMain2DDisplay::OnPaint(const CVSRect& p_rect)
 	if (m_gdi != NULL) {
 		if (IsWindowValid() != 0) {
 			if (m_loadingDraw != NULL) {
-				((CCdLoadAnimDraw*) m_loadingDraw)->Draw();
+				m_loadingDraw->Draw();
 			}
 			if (m_drawer != NULL) {
 				m_drawer->Draw(p_rect);
