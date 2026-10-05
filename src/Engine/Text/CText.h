@@ -26,7 +26,7 @@ public:
 					 const char* p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x18
-	virtual void Set(CVSPoint& p_position,
+	virtual void Set(const CVSPoint& p_position,
 					 CResFONT* p_font,
 					 const char* p_text,
 					 unsigned long p_flags,
@@ -37,7 +37,7 @@ public:
 					 CString p_text,
 					 unsigned long p_flags,
 					 CRemap* p_remap); // vtable+0x10
-	virtual void Set(CVSPoint& p_position,
+	virtual void Set(const CVSPoint& p_position,
 					 CResFONT* p_font,
 					 CString p_text,
 					 unsigned long p_flags,
