@@ -420,10 +420,24 @@ void CEnemy::EndFiring()
 	m_fireState = ENEMY_FIRE_IDLE;
 	int width = g_pMap->m_ground.m_width;
 	int height = g_pMap->m_ground.m_height;
+	int pixelWidth = width << GROUND_BLOCK_PIXEL_SHIFT;
+	int pixelHeight = height << GROUND_BLOCK_PIXEL_SHIFT;
 	int x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) + g_enemyFacingOffsets[m_facingDirection].m_dx;
 	int y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) + g_enemyFacingOffsets[m_facingDirection].m_dy;
-	if (x >= 0 && y >= 0 && x < (width << GROUND_BLOCK_PIXEL_SHIFT) && y < (height << GROUND_BLOCK_PIXEL_SHIFT)) {
-		if (g_pMap->m_ground.GetZ(x, y) == (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
+	if (x >= 0 && y >= 0 && x < pixelWidth && y < pixelHeight) {
+		int z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+		CMap* map = g_pMap;
+		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
+		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
+		unsigned short groundZ;
+		if (x < 0 || y < 0 || blockX >= width || blockY >= height) {
+			groundZ = 0;
+		}
+		else {
+			groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
+																		   y & GROUND_BLOCK_PIXEL_MASK);
+		}
+		if (groundZ == z) {
 			if ((MapCheck(x, y) & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
 				m_position.m_xFixed = x << FIXED_POINT_FRACTION_BITS;
 				m_position.m_yFixed = y << FIXED_POINT_FRACTION_BITS;
