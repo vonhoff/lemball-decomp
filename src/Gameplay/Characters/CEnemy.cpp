@@ -347,8 +347,9 @@ bool CEnemy::LineOfSight(AICOORD p_target)
 	int deltaY = p_target.m_yFixed - m_position.m_yFixed;
 	int absX = VsAbs(deltaX);
 	int absY = VsAbs(deltaY);
+	int fraction;
 	int low = absY & FIXED_POINT_FRACTION_MASK;
-	int fraction = (low * ENEMY_LOS_MIN_RATIO_FIXED) >> FIXED_POINT_FRACTION_BITS;
+	fraction = (low * ENEMY_LOS_MIN_RATIO_FIXED) >> FIXED_POINT_FRACTION_BITS;
 	int high = absY >> FIXED_POINT_FRACTION_BITS;
 	if (high * ENEMY_LOS_MIN_RATIO_FIXED + fraction < absX) {
 		if ((high * ENEMY_LOS_MAX_RATIO_HALF_FIXED + low) * 2 + fraction > absX) {
