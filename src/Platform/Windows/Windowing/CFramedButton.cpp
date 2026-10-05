@@ -52,7 +52,8 @@ void CFramedButton::InitializeFramePrimitives()
 	m_frameLine = new CSolidRect[1];
 	m_gdiFlags++;
 	m_frameEdges = new CLine[FRAMED_BUTTON_EDGE_COUNT];
-	m_gdiFlags += FRAMED_BUTTON_EDGE_COUNT;
+	unsigned int& flags = m_gdiFlags;
+	flags += FRAMED_BUTTON_EDGE_COUNT;
 }
 
 // FUNCTION: LEMBALL 0x00468c10
