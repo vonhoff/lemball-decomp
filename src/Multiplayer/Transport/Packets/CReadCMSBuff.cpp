@@ -14,7 +14,7 @@ CReadCMSBuff::CReadCMSBuff(int p_messageCount, int p_messageCapacity, unsigned s
 
 	m_messageCount = p_messageCount;
 	if (p_messageCapacity > 0) {
-		m_messages = (CReadMSBuff**) operator new(p_messageCount * sizeof(CReadMSBuff*));
+		m_messages = new CReadMSBuff*[p_messageCount];
 		for (index = 0; index < p_messageCount; index++) {
 			m_messages[index] = new CReadMSBuff(p_messageCount, p_messageCapacity, p_packetSize);
 		}
@@ -33,7 +33,7 @@ CReadCMSBuff::~CReadCMSBuff()
 		for (index = 0; index < m_messageCount; index++) {
 			delete m_messages[index];
 		}
-		operator delete(m_messages);
+		delete[] m_messages;
 	}
 }
 
