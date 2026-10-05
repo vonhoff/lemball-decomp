@@ -340,10 +340,10 @@ inline CVSPoint operator/(const CVSPoint& p_point, int p_divisor)
 // FUNCTION: LEMBALL 0x0046b5c0
 void CBaseCursor::Draw(CGWnd* p_window)
 {
-	short innerHeight;
-	CVSPoint* innerXY;
 	short clipX;
 	short clipY;
+	short innerHeight;
+	CVSPoint* innerXY;
 	int zoom;
 	CGDI* gdi;
 	CSurface* surface;
