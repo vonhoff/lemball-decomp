@@ -8,8 +8,6 @@
 
 #define FONT_GLYPH_TABLE_BYTES 0x400
 #define FONT_GLYPH_COUNT 0x100
-#define FONT_INT_RESOURCE_STRIDE 0x4c
-#define FONT_ZRLE_RESOURCE_STRIDE 0x54
 
 // FUNCTION: LEMBALL 0x00473650
 CFontTable::CFontTable(CResFONT* p_font)
@@ -17,8 +15,6 @@ CFontTable::CFontTable(CResFONT* p_font)
 	unsigned int offset;
 	unsigned int index;
 	int glyphIndex;
-	int zrleOffset;
-	int intOffset;
 
 	m_glyphs = (CResZRLE**) ::operator new(FONT_GLYPH_TABLE_BYTES);
 	offset = 0;
@@ -27,21 +23,16 @@ CFontTable::CFontTable(CResFONT* p_font)
 		offset++;
 	} while (offset < FONT_GLYPH_COUNT);
 
-	zrleOffset = 0;
-	index = zrleOffset;
+	index = 0;
 	if (p_font->m_totalSize / p_font->m_listHeader->m_headerSize != 0) {
-		intOffset = 0;
 		do {
 			if (p_font->m_fontEntries == NULL) {
-				glyphIndex = p_font->m_fontTable->GetChar(
-					(CResZRLE*) ((unsigned char*) p_font->m_animationEntries + zrleOffset));
+				glyphIndex = p_font->m_fontTable->GetChar(&p_font->m_animationEntries[index]);
 			}
 			else {
-				glyphIndex = ((CResINT*) ((unsigned char*) p_font->m_fontEntries + intOffset))->m_value;
+				glyphIndex = p_font->m_fontEntries[index].m_value;
 			}
-			m_glyphs[glyphIndex] = (CResZRLE*) ((unsigned char*) p_font->m_animationEntries + zrleOffset);
-			intOffset += FONT_INT_RESOURCE_STRIDE;
-			zrleOffset += FONT_ZRLE_RESOURCE_STRIDE;
+			m_glyphs[glyphIndex] = &p_font->m_animationEntries[index];
 			index++;
 		} while (index < p_font->m_totalSize / p_font->m_listHeader->m_headerSize);
 	}
