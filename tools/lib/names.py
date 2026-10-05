@@ -181,27 +181,14 @@ def scan(path, symbols, by_windows):
             yield dict(row, **best, catalog_candidates=comparisons)
 
 
-def print_review(row):
-    """Print one name/signature review and its original Windows evidence."""
-    detail = row.get("reason") or (
-        f"{row['original_signature']} -> {row['actual_signature']}"
-        f" ({', '.join(row['differences']) or row['signature_status']})"
-    )
-    print(
-        f"{row['path']}:{row['line']}: {row['status']}: {detail} [{row['windows_address']}]"
-    )
-    if row.get("windows_evidence"):
-        print(f"  Windows evidence: {row['windows_evidence']}")
-
-
 def check_names(paths: list[Path | str] | None = None, verbose=False):
     """Fail on unresolved identities or name mismatches; keep ABI reviews informational."""
     symbols, mappings = read_catalog()
     files = collect_sources(paths)
     rows = [row for path in files for row in scan(path, symbols, mappings)]
-    counts = dict(Counter(row["status"] for row in rows))
-    signatures = dict(
-        Counter(row["signature_status"] for row in rows if "signature_status" in row)
+    counts = Counter(row["status"] for row in rows)
+    signatures = Counter(
+        row["signature_status"] for row in rows if "signature_status" in row
     )
     for row in rows:
         required = row["status"] in ("mismatch", "unresolved", "windows")
@@ -210,14 +197,22 @@ def check_names(paths: list[Path | str] | None = None, verbose=False):
             or row.get("signature_status") in ("review", "unresolved")
         )
         if required or requested:
-            print_review(row)
-    print(f"names: {len(files)} files, {len(rows)} entries from CSV: {counts}")
-    print(f"names: parameter/const comparisons: {signatures}")
-    if signatures.get("review") or signatures.get("unresolved"):
+            detail = row.get("reason") or (
+                f"{row['original_signature']} -> {row['actual_signature']}"
+                f" ({', '.join(row['differences']) or row['signature_status']})"
+            )
+            print(
+                f"{row['path']}:{row['line']}: {row['status']}: {detail} [{row['windows_address']}]"
+            )
+            if row.get("windows_evidence"):
+                print(f"  Windows evidence: {row['windows_evidence']}")
+    print(f"names: {len(files)} files, {len(rows)} entries from CSV: {dict(counts)}")
+    print(f"names: parameter/const comparisons: {dict(signatures)}")
+    if signatures["review"] or signatures["unresolved"]:
         print(
             "names: signature review requires Windows evidence; "
-            "gate.py --names lists items."
+            "check_source.py --verbose lists items."
         )
-    if counts.get("unresolved"):
+    if counts["unresolved"]:
         return 2
-    return int(bool(counts.get("mismatch")))
+    return int(bool(counts["mismatch"]))

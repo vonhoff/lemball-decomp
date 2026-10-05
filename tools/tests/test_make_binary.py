@@ -7,10 +7,10 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import build
+import make_binary
 
 
-class BuildTests(unittest.TestCase):
+class MakeBinaryTests(unittest.TestCase):
     def test_link_freshness(self):
         for mode, expected, attempts in (
             ("current", 0, 1),
@@ -47,8 +47,8 @@ class BuildTests(unittest.TestCase):
                         [], 7 if build_mode == "failed" else 0, "build output"
                     )
 
-                with patch.object(build.subprocess, "run", side_effect=invoke):
-                    code, _ = build.build_with_link_check(
+                with patch.object(make_binary.subprocess, "run", side_effect=invoke):
+                    code, _ = make_binary.build_with_link_check(
                         ["cmake", "--build"], directory, directory
                     )
                 self.assertEqual((code, calls), (expected, attempts))

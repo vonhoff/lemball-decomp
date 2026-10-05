@@ -1,30 +1,17 @@
-"""Upstream comparison display and build failure propagation."""
+"""Upstream comparison display without build coupling."""
 
 import contextlib
 import copy
 import io
-import runpy
 import unittest
 from unittest.mock import Mock, patch
 
 from reccmp.compare.report import ReccmpComparedEntity
 
-import match as matching
+import check_function
 
 
-class MatchTests(unittest.TestCase):
-    def test_cli_help_supports_redirected_text_streams(self):
-        output = io.StringIO()
-        with (
-            patch("sys.argv", ["match.py", "--help"]),
-            contextlib.redirect_stdout(output),
-            contextlib.redirect_stderr(io.StringIO()),
-            self.assertRaises(SystemExit) as exit_status,
-        ):
-            runpy.run_path(matching.__file__, run_name="__main__")
-        self.assertEqual(exit_status.exception.code, 0)
-        self.assertIn("--summary", output.getvalue())
-
+class CheckFunctionTests(unittest.TestCase):
     def test_summary_is_compact_and_missing_addresses_fail(self):
         engine = Mock()
         engine.compare_address.side_effect = [
@@ -38,16 +25,17 @@ class MatchTests(unittest.TestCase):
         with (
             patch(
                 "sys.argv",
-                ["match.py", "401000", "401020", "401040", "--no-build", "--summary"],
+                ["check_function.py", "401000", "401020", "401040", "--summary"],
             ),
-            patch("match.load_engine", return_value=(None, engine)),
+            patch("check_function.load_engine", return_value=(None, engine)),
             patch(
-                "match.additional_effective_matches", return_value={0x401000: ("Rule",)}
+                "check_function.additional_effective_matches",
+                return_value={0x401000: ("Rule",)},
             ),
-            patch("match.print_match_verbose") as verbose,
+            patch("check_function.print_match_verbose") as verbose,
             contextlib.redirect_stdout(output),
         ):
-            self.assertEqual(matching.main(), 1)
+            self.assertEqual(check_function.main(), 1)
             verbose.assert_not_called()
         self.assertEqual(
             output.getvalue().splitlines(),
@@ -57,16 +45,6 @@ class MatchTests(unittest.TestCase):
                 "0x00401040: NOT_FOUND",
             ],
         )
-
-    def test_failed_build_prevents_comparison(self):
-        with (
-            patch("sys.argv", ["match.py", "0x401000"]),
-            patch("match.run_build", return_value=7),
-            patch("match.load_engine") as load,
-            contextlib.redirect_stdout(io.StringIO()),
-        ):
-            self.assertEqual(matching.main(), 7)
-            load.assert_not_called()
 
     def test_both_scores_display_preserves_raw_comparisons(self):
         comparisons = [
@@ -89,16 +67,17 @@ class MatchTests(unittest.TestCase):
         with (
             patch(
                 "sys.argv",
-                ["match.py", *[hex(c.orig_addr) for c in comparisons], "--no-build"],
+                ["check_function.py", *[hex(c.orig_addr) for c in comparisons]],
             ),
-            patch("match.load_engine", return_value=(None, engine)),
+            patch("check_function.load_engine", return_value=(None, engine)),
             patch(
-                "match.additional_effective_matches", return_value={0x401020: ("Rule",)}
+                "check_function.additional_effective_matches",
+                return_value={0x401020: ("Rule",)},
             ),
-            patch("match.print_match_verbose") as display,
+            patch("check_function.print_match_verbose") as display,
             contextlib.redirect_stdout(output),
         ):
-            self.assertEqual(matching.main(), 0)
+            self.assertEqual(check_function.main(), 0)
             shown = [call_args.args[0] for call_args in display.call_args_list]
             self.assertEqual([c.is_effective_match for c in shown], [True, True, False])
             self.assertEqual([c.accuracy for c in shown], [0.8, 0.75, 0.5])

@@ -14,14 +14,17 @@ from reccmp.formats.exceptions import (
 from reccmp.types import EntityType
 
 from .compare_flags import (
+    REGISTER32,
     control_flow_targets,
     indirect_jumps_use_tables,
     normalize_compare_branches,
     prefix_overwrites_flags,
 )
 
+JUMP_TARGET_RE = re.compile(r"(?:j\w+|loop\w*) (-?0x[0-9a-f]+)")
 
-@dataclass
+
+@dataclass(slots=True)
 class AssemblySignature:
     size: int
     instructions: list
@@ -72,7 +75,7 @@ def _is_alignment_instruction(instruction):
     if mnemonic not in ("mov", "lea"):
         return False
     destination, _, source = operands.partition(", ")
-    if not re.fullmatch(r"e(?:ax|bx|cx|dx|si|di|sp|bp)", destination):
+    if not REGISTER32.fullmatch(destination):
         return False
     return source == (destination if mnemonic == "mov" else f"[{destination}]")
 
@@ -135,7 +138,7 @@ def _comparison_signature(asm, sections, start, size, check_call):
     if not _valid_control_flow(sections, ends, start, size):
         return None
     for address, line in asm:
-        jump = re.fullmatch(r"(?:j\w+|loop\w*) (-?0x[0-9a-f]+)", line)
+        jump = JUMP_TARGET_RE.fullmatch(line)
         if jump and ends[address] + int(jump[1], 16) not in ends:
             return None
     guarded = normalize_compare_branches(asm, sections, check_call)
@@ -211,15 +214,19 @@ class ThunkParseAsm(ParseAsm):
 def additional_effective_matches(engine, comparisons):
     upstream: FunctionComparator = engine.function_comparator
     comparator = replace(upstream)
-    functions = list(upstream.db.get_matches_by_type(EntityType.FUNCTION))
+    orig_targets = set()
+    recomp_targets = set()
+    for entity in upstream.db.get_matches_by_type(EntityType.FUNCTION):
+        orig_targets.add(entity.orig_addr)
+        recomp_targets.add(entity.recomp_addr)
     original = ThunkParseAsm(
         upstream.orig_bin,
-        {entity.orig_addr for entity in functions},
+        orig_targets,
         comparator.orig_sanitize,
     )
     rebuilt = ThunkParseAsm(
         upstream.recomp_bin,
-        {entity.recomp_addr for entity in functions},
+        recomp_targets,
         comparator.recomp_sanitize,
     )
     comparator.orig_sanitize, comparator.recomp_sanitize = original, rebuilt

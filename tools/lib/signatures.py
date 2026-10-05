@@ -6,7 +6,21 @@ CodeWarrior grammar: https://github.com/encounter/cwdemangle (CC0).
 import re
 from dataclasses import dataclass
 
-from . import TYPE_DEF, delimiter_ends
+TYPE_DEF = re.compile(
+    r"\b(?P<kind>class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
+)
+
+
+def delimiter_ends(code: str, opening: str, closing: str) -> dict[int, int]:
+    """Map each opening delimiter to its matching closing delimiter."""
+    ends, stack = {}, []
+    for pos, char in enumerate(code):
+        if char == opening:
+            stack.append(pos)
+        elif char == closing and stack:
+            ends[stack.pop()] = pos
+    return ends
+
 
 METHOD_NAMES = {
     "__ct": "<constructor>",

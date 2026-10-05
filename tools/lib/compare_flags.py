@@ -20,6 +20,8 @@ REVERSED_BRANCH = {
 REGISTER = re.compile(r"e?(?:ax|bx|cx|dx|si|di|sp|bp)|[abcd][lh]")
 REGISTER32 = re.compile(r"e(?:ax|bx|cx|dx|si|di|sp|bp)")
 MEMORY = re.compile(r"(?:byte|word|dword) ptr \[[^\[\],]+]")
+BRANCH_OR_CALL = re.compile(r"call|j\w+|loop\w*")
+INDIRECT_TABLE_JUMP = re.compile(r"dword ptr \[(?:e[a-z]{2}\*4 \+ )?(0x[0-9a-f]+)]")
 FLAG_WRITERS = {"cmp", "add", "sub", "neg"}
 LOGICAL_WRITERS = {"and", "or", "xor", "test"}
 FLAG_PRESERVERS = {"mov", "movsx", "movzx", "lea", "push", "pop", "nop"}
@@ -64,7 +66,7 @@ def control_flow_targets(sections, instructions):
         for _, target in section.contents
     }
     for _, _, mnemonic, operands in instructions.values():
-        if re.fullmatch(r"call|j\w+|loop\w*", mnemonic) and operands.startswith("0x"):
+        if operands.startswith("0x") and BRANCH_OR_CALL.fullmatch(mnemonic):
             targets.add(int(operands, 16))
     return targets
 
@@ -74,9 +76,7 @@ def indirect_jumps_use_tables(instructions, tables):
     for _, _, mnemonic, operands in instructions:
         if mnemonic != "jmp" or operands.startswith("0x"):
             continue
-        table = re.fullmatch(
-            r"dword ptr \[(?:e[a-z]{2}\*4 \+ )?(0x[0-9a-f]+)]", operands
-        )
+        table = INDIRECT_TABLE_JUMP.fullmatch(operands)
         if table is None or tables.get(int(table[1], 16)) != SectionType.ADDR_TAB:
             return False
     return True
