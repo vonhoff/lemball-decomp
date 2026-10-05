@@ -77,7 +77,7 @@ void CTCPIPNetwork::ForceProcess()
 }
 
 // FUNCTION: LEMBALL 0x004715c0
-void* CTCPIPNetwork::GetNewNetworkAddress()
+CNetworkAddress* CTCPIPNetwork::GetNewNetworkAddress()
 {
 	void* storage;
 	CTCPIPNetworkAddress* address;

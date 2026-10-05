@@ -29,7 +29,7 @@ CReadSocket::CReadSocket()
 	m_criticalMultiBuffer = NULL;
 	m_packetHeader = NULL;
 	if (g_pBroadcastReceiveAddress == NULL) {
-		g_pBroadcastReceiveAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
+		g_pBroadcastReceiveAddress = g_pBaseNetwork->GetNewNetworkAddress();
 	}
 }
 

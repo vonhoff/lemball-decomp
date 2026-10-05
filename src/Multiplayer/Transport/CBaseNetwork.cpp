@@ -712,7 +712,7 @@ void* CBaseNetwork::GetNewBroadcast()
 	return NULL;
 }
 
-void* CBaseNetwork::GetNewNetworkAddress()
+CNetworkAddress* CBaseNetwork::GetNewNetworkAddress()
 {
 	return NULL;
 }

@@ -92,7 +92,7 @@ void CFileNetwork::ForceProcess()
 }
 
 // FUNCTION: LEMBALL 0x0046f860
-void* CFileNetwork::GetNewNetworkAddress()
+CNetworkAddress* CFileNetwork::GetNewNetworkAddress()
 {
 	void* storage;
 	CFileNetworkAddress* address;

@@ -28,7 +28,7 @@ public:
 	virtual void ForceProcess() = 0;            // vtable+0x20
 	virtual void* GetNewConnect() = 0;          // vtable+0x24
 	virtual void* GetNewBroadcast() = 0;        // vtable+0x28
-	virtual void* GetNewNetworkAddress() = 0;   // vtable+0x2c
+	virtual CNetworkAddress* GetNewNetworkAddress() = 0; // vtable+0x2c
 	virtual void WaitProcess();                 // vtable+0x30
 	virtual ~CBaseNetwork();                    // vtable+0x04
 	CConnect* NewConnect();

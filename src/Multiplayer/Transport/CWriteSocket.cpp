@@ -33,7 +33,7 @@ CWriteSocket::CWriteSocket()
 	m_secondaryCriticalBuffer = NULL;
 	m_segmentedMessage = NULL;
 	m_segmentIndex = NETWORK_SEGMENT_INDEX_INACTIVE;
-	m_destinationAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
+	m_destinationAddress = g_pBaseNetwork->GetNewNetworkAddress();
 }
 
 // FUNCTION: LEMBALL 0x0045fd80

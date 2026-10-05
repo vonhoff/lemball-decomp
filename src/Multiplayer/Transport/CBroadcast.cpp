@@ -37,7 +37,7 @@ CBroadcast::CBroadcast()
 	m_runEnabled = 0;
 	m_addressMode = 0;
 	m_specificAddress = NULL;
-	g_pBroadcastAddress = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
+	g_pBroadcastAddress = g_pBaseNetwork->GetNewNetworkAddress();
 	m_connectionData = new unsigned char[NETWORK_PORT_COUNT];
 	for (index = 0; index < NETWORK_PORT_COUNT; index++) {
 		m_connectionData[index] = 0;
@@ -180,7 +180,7 @@ void CBroadcast::Process()
 				g_pMessReqConnect->m_requestedPort = g_broadcastPort;
 				g_pMessReqConnect->m_peerName = g_szBroadcastPeerName;
 				g_pMessReqConnect->m_connectionData = m_connectionData;
-				address = (CNetworkAddress*) g_pBaseNetwork->GetNewNetworkAddress();
+				address = g_pBaseNetwork->GetNewNetworkAddress();
 				if (m_addressMode == BROADCAST_ADDRESS_SPECIFIC) {
 					if (m_specificAddress != NULL) {
 						*address = *m_specificAddress;

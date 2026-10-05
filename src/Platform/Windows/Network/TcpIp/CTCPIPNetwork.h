@@ -20,7 +20,7 @@ public:
 	CTCPIPNetwork();
 	virtual void* GetNewBroadcast();                                                   // vtable+0x28
 	virtual void* GetNewConnect();                                                     // vtable+0x24
-	virtual void* GetNewNetworkAddress();                                              // vtable+0x2c
+	virtual CNetworkAddress* GetNewNetworkAddress();                                   // vtable+0x2c
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
 	virtual void ForceProcess();                                                       // vtable+0x1c
 	virtual void Initialise();                                                         // vtable+0x0c
