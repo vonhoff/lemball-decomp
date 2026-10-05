@@ -701,17 +701,18 @@ void CPlayerLemming::OnBalloon()
 		m_groundPosition.m_xFixed = posX;
 		m_groundPosition.m_yFixed = posY;
 		int tileY = posY >> FIXED_POINT_FRACTION_BITS;
+		CMap* map = g_pMap;
 		int tileX = posX >> FIXED_POINT_FRACTION_BITS;
 		int blockY = tileY >> GROUND_BLOCK_PIXEL_SHIFT;
 		int blockX = tileX >> GROUND_BLOCK_PIXEL_SHIFT;
 		unsigned short groundZ;
-		if (tileX < 0 || tileY < 0 || blockX >= g_pMap->m_ground.m_width || blockY >= g_pMap->m_ground.m_height) {
+		if (tileX < 0 || tileY < 0 || blockX >= map->m_ground.m_width || blockY >= g_pMap->m_ground.m_height) {
 			groundZ = 0;
 		}
 		else {
 			int cellX = tileX & GROUND_BLOCK_PIXEL_MASK;
 			int cellY = tileY & GROUND_BLOCK_PIXEL_MASK;
-			groundZ = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY);
+			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 		}
 		m_groundPosition.m_zFixed = (int) (unsigned int) groundZ << FIXED_POINT_FRACTION_BITS;
 		return;
@@ -719,17 +720,18 @@ void CPlayerLemming::OnBalloon()
 	int posY = m_position.m_yFixed;
 	int posX = m_position.m_xFixed;
 	int tileY = posY >> FIXED_POINT_FRACTION_BITS;
+	CMap* map = g_pMap;
 	int tileX = posX >> FIXED_POINT_FRACTION_BITS;
 	int blockY = tileY >> GROUND_BLOCK_PIXEL_SHIFT;
 	int blockX = tileX >> GROUND_BLOCK_PIXEL_SHIFT;
 	unsigned short groundZ;
-	if (tileX < 0 || tileY < 0 || blockX >= g_pMap->m_ground.m_width || blockY >= g_pMap->m_ground.m_height) {
+	if (tileX < 0 || tileY < 0 || blockX >= map->m_ground.m_width || blockY >= g_pMap->m_ground.m_height) {
 		groundZ = 0;
 	}
 	else {
 		int cellX = tileX & GROUND_BLOCK_PIXEL_MASK;
 		int cellY = tileY & GROUND_BLOCK_PIXEL_MASK;
-		groundZ = g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(cellX, cellY);
+		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	int baseZ = (int) groundZ + 32;
 	int curZ = m_position.m_zFixed;
