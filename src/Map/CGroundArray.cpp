@@ -1,7 +1,7 @@
 #include "CGroundArray.h"
 
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "CGround.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 // FUNCTION: LEMBALL 0x0040eb70
 CGround* CGroundArray::GetGroundCell(int p_x, int p_y)
@@ -49,7 +49,9 @@ unsigned short CGroundArray::GetZ(int p_x, int p_y)
 	int blockX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
 	int blockY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
 	if (p_x >= 0 && p_y >= 0 && blockX < m_width && m_height > blockY) {
-		return m_ground[blockY * m_width + blockX].GetZ(p_x & GROUND_BLOCK_PIXEL_MASK, p_y & GROUND_BLOCK_PIXEL_MASK);
+		p_x &= GROUND_BLOCK_PIXEL_MASK;
+		p_y &= GROUND_BLOCK_PIXEL_MASK;
+		return m_ground[blockY * m_width + blockX].GetZ(p_x, p_y);
 	}
 	return 0;
 }
