@@ -145,8 +145,9 @@ void CPanel::OnSize()
 // FUNCTION: LEMBALL 0x00443250
 void CPanel::Process()
 {
+	int count;
 	CPanelLemming** lemming = m_lemmings;
-	int count = 4;
+	count = 4;
 
 	do {
 		(*lemming)->UpdateStatus();
