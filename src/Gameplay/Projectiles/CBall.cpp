@@ -49,7 +49,7 @@ void CBall::Set(AICOORD p_start, AICOORD p_destination, int p_speed)
 {
 	enum {
 		FIRST_VERSION_USING_BALL_SPEED = 7,
-		MIN_CUSTOM_SPEED = 2
+		MAX_DEFAULTED_SPEED = 1
 	};
 
 	m_position = p_start;
@@ -63,7 +63,7 @@ void CBall::Set(AICOORD p_start, AICOORD p_destination, int p_speed)
 	else {
 		m_speed = (unsigned short) p_speed;
 	}
-	if (m_speed < MIN_CUSTOM_SPEED) {
+	if (m_speed <= MAX_DEFAULTED_SPEED) {
 		m_speed = (unsigned short) g_anTurnDelayCursor[m_objectType];
 	}
 	m_enabled = 1;
