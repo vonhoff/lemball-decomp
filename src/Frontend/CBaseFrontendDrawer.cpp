@@ -301,7 +301,9 @@ void CBaseFrontendDrawer::ReplaceBackground()
 	m_gdi->AddToList(&m_primitiveBundle[m_primitiveBank].m_drawingMark);
 	if (m_drawingBackBuffer != 0) {
 		if (m_drawFrame == 0) {
-			CVSRect frame(0, 0, m_size.m_width, m_size.m_height);
+			CVSRect frame;
+			frame.m_width = m_size.m_width;
+			frame.m_height = m_size.m_height;
 			const CVSSize* size = &frame;
 			const CVSPoint* origin = &frame;
 			CSolidRect& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
