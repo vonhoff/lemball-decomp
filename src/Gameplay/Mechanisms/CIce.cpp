@@ -172,7 +172,7 @@ bool CIce::Process()
 	int i;
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AICOORD position = AICOORD(object->m_position);
+		AICOORD position(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
 		int dx = (m_velocityX * elapsed * FIXED_POINT_ONE) / 8;
 		int dy = (m_velocityY * elapsed * FIXED_POINT_ONE) / 8;
 		int ax = abs(dx >> FIXED_POINT_FRACTION_BITS);
