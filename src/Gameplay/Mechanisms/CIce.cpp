@@ -408,7 +408,7 @@ void CIce::Switched()
 	{
 		for (int i = 0; i < m_objectCount; i++) {
 			CGameObject* object = m_objects[i];
-			AICOORD current = object->m_position;
+			AICOORD current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
 			object->m_hidden = 0;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
