@@ -48,7 +48,9 @@ void CPVGWnd::Clear(int p_colour)
 	}
 
 	m_gdi->m_renderTarget->GetCurrDB();
-	CVSRect clearRect(m_gdi->m_renderTarget->CPVSurface::m_windowRect);
+	CVSSize size(m_gdi->m_renderTarget->CPVSurface::m_windowRect.m_width,
+				 m_gdi->m_renderTarget->CPVSurface::m_windowRect.m_height);
+	CVSRect clearRect(0, 0, &size);
 	clearRect.m_x = clearRect.m_y = 0;
 	CDrawingMark* drawingMark = new CDrawingMark;
 
