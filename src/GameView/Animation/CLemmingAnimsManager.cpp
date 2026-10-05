@@ -1055,7 +1055,7 @@ void CLemmingAnimsManager::DrawAnimOnGdi(CGDI* p_gdi,
 }
 
 // FUNCTION: LEMBALL 0x00434bc0
-void CLemmingAnimsManager::LoadAnimation(unsigned long p_resourceId, int p_animType)
+void CLemmingAnimsManager::LoadAnimation(unsigned long p_resourceId, eAnimFrameType p_animType)
 {
 	if (m_countingLoads != 0) {
 		m_loadProgress++;
@@ -1096,7 +1096,7 @@ void CLemmingAnimsManager::UpdateNonCacheLoad()
 // FUNCTION: LEMBALL 0x00434d40
 void CLemmingAnimsManager::LoadAnimation(unsigned long p_firstResourceId,
 										 unsigned long p_lastResourceId,
-										 int p_animType)
+										 eAnimFrameType p_animType)
 {
 	if (m_countingLoads != 0) {
 		m_loadProgress += p_lastResourceId - p_firstResourceId;

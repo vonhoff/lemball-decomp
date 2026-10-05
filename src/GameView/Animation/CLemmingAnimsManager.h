@@ -57,8 +57,8 @@ public:
 				  unsigned long p_time,
 				  CRemap* p_remap);
 	void Load(int p_groundStyle);
-	void LoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId, int p_animType);
-	void LoadAnimation(unsigned long p_resourceId, int p_animType);
+	void LoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId, eAnimFrameType p_animType);
+	void LoadAnimation(unsigned long p_resourceId, eAnimFrameType p_animType);
 	void LoadMainRammed();
 	void LoadVrammed();
 	void SetupStyleSensitive();
