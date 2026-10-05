@@ -1271,7 +1271,6 @@ bool CNetworkOptionsDrawer::HighlightNextEntry()
 // FUNCTION: LEMBALL 0x00454df0
 void CNetworkOptionsDrawer::InitialiseHandlers()
 {
-	CVSRect rect;
 	CConnect** connections;
 	CNetworkGameMessage* messages;
 	int index;
@@ -1282,10 +1281,11 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 		connections = g_pNetworkManager->m_connections;
 		messages = g_pNetworkManager->m_gameMessages;
 	}
-	rect.m_height = m_layoutTable->m_entryHeight;
-	rect.m_y = m_layoutTable->m_entryY;
-	rect.m_x = m_layoutTable->m_entryX;
-	rect.m_width = (short) m_layoutTable->m_entryWidth;
+	CVSRect rect(m_layoutTable->m_entryX,
+				 m_layoutTable->m_entryY,
+				 (short) m_layoutTable->m_entryWidth,
+				 m_layoutTable->m_entryHeight);
+	short& rowY = rect.m_y;
 	index = 0;
 	m_visibleEntryCount = 0;
 	do {
@@ -1295,14 +1295,13 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 			entry->m_bounds.m_width = rect.m_width;
 			entry->m_bounds.m_height = rect.m_height;
 			entry->m_bounds.m_x = rect.m_x;
-			entry->m_bounds.m_y = rect.m_y;
+			entry->m_bounds.m_y = rowY;
 			entry->SetActive(1);
-			rect.m_y += (short) m_layoutTable->m_rowStride;
+			rowY += (short) m_layoutTable->m_rowStride;
 			m_visibleEntryCount++;
 		}
 		else {
-			CEntryHandler* entry = &m_playerEntries[index];
-			entry->SetActive(0);
+			m_playerEntries[index].SetActive(0);
 		}
 		index++;
 	} while (index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
