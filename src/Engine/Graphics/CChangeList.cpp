@@ -124,7 +124,7 @@ void CChangeList::Add(const CVSRect& p_area)
 	short cellWidth;
 	int cellX;
 	int cellY;
-	unsigned int spanX;
+	int spanX;
 	int spanY;
 	int mapHeight;
 	int mapWidth;
@@ -142,10 +142,10 @@ void CChangeList::Add(const CVSRect& p_area)
 			spanY = mapHeight - cellY;
 		}
 		mapWidth = (int) m_mapSize.m_width;
-		if (mapWidth < (int) (cellX + spanX)) {
-			spanX = (unsigned int) (mapWidth - cellX);
+		if (mapWidth < cellX + spanX) {
+			spanX = mapWidth - cellX;
 		}
-		if ((int) spanX > 0 && spanY > 0) {
+		if (spanX > 0 && spanY > 0) {
 			row = m_map + cellX + mapWidth * cellY;
 			while (spanY > 0) {
 				memset(row, m_activeMark, spanX);
