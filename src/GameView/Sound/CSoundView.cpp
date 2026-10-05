@@ -286,7 +286,7 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 {
 	unsigned short stateMask = p_state;
 	int restartMusic;
-	int musicId;
+	unsigned long musicId;
 	int seed;
 
 	if (m_currentState != stateMask) {
