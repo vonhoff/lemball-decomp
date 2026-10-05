@@ -484,7 +484,7 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 	apply = 0;
 	state = message.m_state;
 	stage = message.m_stage;
-	*g_pSysOutput << "Received Game State " << (int) state << ", stage " << (int) stage << "\r\n";
+	*g_pSysOutput << "Received Game State " << (int) state << ", stage " << (int) stage << "\n";
 	switch (stage) {
 	case GAME_STATE_STAGE_REQUEST:
 		if (m_gameStatePending != 0) {
@@ -1168,10 +1168,12 @@ void CAI::GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z)
 // FUNCTION: LEMBALL 0x00412d80
 void CAI::GetPlayerStartCoordinates(int& p_x, int& p_y, int& p_z, int p_index)
 {
+	int index;
 	CPlayerLemmingGroupManager* manager = m_playerGroupManager;
-	p_x = manager->m_startX[p_index];
-	p_y = manager->m_startY[p_index];
-	p_z = manager->m_startZ[p_index];
+	index = p_index;
+	p_x = manager->m_startX[index];
+	p_y = manager->m_startY[index];
+	p_z = manager->m_startZ[index];
 }
 
 // FUNCTION: LEMBALL 0x00412dc0
