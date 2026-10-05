@@ -33,6 +33,7 @@ def collect_sources(paths=None):
 def load_engine():
     from reccmp.compare import Compare
     from reccmp.project.detect import RecCmpProject
+    from .vtable_lookup import install_vtable_lookups
 
     def mute_folded_diagnostic(record):
         return not (
@@ -47,6 +48,8 @@ def load_engine():
     logger = logging.getLogger("reccmp.compare.db")
     logger.addFilter(mute_folded_diagnostic)
     try:
-        return target, Compare.from_target(target)
+        engine = Compare.from_target(target)
+        install_vtable_lookups(engine.function_comparator)
+        return target, engine
     finally:
         logger.removeFilter(mute_folded_diagnostic)

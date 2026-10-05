@@ -222,12 +222,12 @@ def additional_effective_matches(engine, comparisons):
     original = ThunkParseAsm(
         upstream.orig_bin,
         orig_targets,
-        comparator.orig_sanitize,
+        upstream.orig_sanitize,
     )
     rebuilt = ThunkParseAsm(
         upstream.recomp_bin,
         recomp_targets,
-        comparator.recomp_sanitize,
+        upstream.recomp_sanitize,
     )
     comparator.orig_sanitize, comparator.recomp_sanitize = original, rebuilt
     matches = {}
