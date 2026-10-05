@@ -571,13 +571,13 @@ void CSurface::SetLinePtrs()
 		}
 		parentY = (int) CPVScrollableSurface::m_windowRect.m_y;
 		y = 0;
-		if (0 < m_height) {
+		if (0 < m_size.m_height) {
 			do {
 				m_lines[y] = (void*) ((int) CPVScrollableSurface::m_parentSurface->m_lines[parentY] +
 									  (int) CPVScrollableSurface::m_windowRect.m_x);
 				y = y + 1;
 				parentY = parentY + 1;
-			} while (y < m_height);
+			} while (y < m_size.m_height);
 		}
 	}
 	else {

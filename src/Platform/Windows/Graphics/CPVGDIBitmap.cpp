@@ -8,9 +8,8 @@
 #include <string.h>
 
 // FUNCTION: LEMBALL 0x00472290
-CPVGDIBitmap::CPVGDIBitmap() : m_height(0)
+CPVGDIBitmap::CPVGDIBitmap()
 {
-	m_width = 0;
 	Initialise();
 }
 
@@ -50,22 +49,22 @@ void CPVGDIBitmap::Initialise()
 // FUNCTION: LEMBALL 0x00472340
 void CPVGDIBitmap::CreateLinePtrs()
 {
-	if ((int) m_lineCapacity < m_height) {
+	if ((int) m_lineCapacity < m_size.m_height) {
 		if (m_lines != NULL) {
 			operator delete(m_lines);
 			m_lines = NULL;
 		}
-		if (m_height > 0) {
+		if (m_size.m_height > 0) {
 			short heightWord;
 			unsigned int size;
 
-			heightWord = m_height;
+			heightWord = m_size.m_height;
 			size = (unsigned int) heightWord;
 			size = size * sizeof(*m_lines);
 			m_lines = (void**) operator new(size);
 			ResetLinePtrs();
 		}
-		m_lineCapacity = (unsigned int) m_height;
+		m_lineCapacity = (unsigned int) m_size.m_height;
 		return;
 	}
 	ResetLinePtrs();
@@ -79,7 +78,7 @@ void CPVGDIBitmap::ResetLinePtrs()
 	SetLinePtrs();
 	if ((int) m_rowPadding > 0) {
 		memset(m_bitsBase, 0, m_rowPadding);
-		memset(m_bitsBase + abs(m_stride) * m_height + m_rowPadding, 0, m_rowPadding);
+		memset(m_bitsBase + abs(m_stride) * m_size.m_height + m_rowPadding, 0, m_rowPadding);
 	}
 }
 
@@ -93,18 +92,18 @@ void CPVGDIBitmap::SetLinePtrs()
 	bits = m_bits;
 	line = m_firstLine;
 	row = 0;
-	if (m_height <= 0) {
+	if (m_size.m_height <= 0) {
 		return;
 	}
 	do {
 		m_lines[line] = bits + m_xOffset;
 		line = line + 1;
 		bits = bits + m_stride;
-		if ((int) line >= m_height) {
-			line = line - (unsigned int) m_height;
+		if ((int) line >= m_size.m_height) {
+			line = line - (unsigned int) m_size.m_height;
 		}
 		row = row + 1;
-	} while (row < m_height);
+	} while (row < m_size.m_height);
 }
 
 // FUNCTION: LEMBALL 0x00472440
@@ -126,7 +125,7 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 		m_xOffset = m_xOffset - (unsigned int) (short) (position->m_x - p_destination->m_x);
 		height = deltaY + (int) m_firstLine;
 		m_firstLine = (unsigned int) height;
-		width = m_height;
+		width = m_size.m_height;
 		if ((int) m_firstLine < width) {
 			if ((int) m_firstLine < 0) {
 				m_firstLine = (unsigned int) (width + (int) m_firstLine);
@@ -183,13 +182,13 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 // FUNCTION: LEMBALL 0x004725f0
 CVSSize CPVGDIBitmap::SetSize(const CVSSize& p_size, int p_pitch)
 {
-	m_width = p_size.m_width;
-	m_height = p_size.m_height;
+	m_size.m_width = p_size.m_width;
+	m_size.m_height = p_size.m_height;
 	if (p_pitch == 0 || m_directScroll != 0) {
 		m_rowPadding = 0;
 	}
 	else {
-		m_rowPadding = p_pitch - m_width;
+		m_rowPadding = p_pitch - m_size.m_width;
 	}
 	if (p_size.m_width == 0) {
 		m_extraRows = 0;
@@ -197,7 +196,7 @@ CVSSize CPVGDIBitmap::SetSize(const CVSSize& p_size, int p_pitch)
 	else {
 		m_extraRows = (int) (p_size.m_width - 1 + m_rowPadding * 2) / (int) p_size.m_width;
 	}
-	return CVSSize(m_width, (short) (m_height + m_extraRows));
+	return CVSSize(m_size.m_width, (short) (m_size.m_height + m_extraRows));
 }
 
 // FUNCTION: LEMBALL 0x00472670
@@ -209,7 +208,7 @@ void CPVGDIBitmap::SetBitsBase(unsigned char* p_bits, int p_stride)
 	m_bits = bits;
 	m_stride = p_stride;
 	if (p_stride < 0) {
-		m_bits += (1 - m_height) * p_stride;
+		m_bits += (1 - m_size.m_height) * p_stride;
 	}
 	CreateLinePtrs();
 }

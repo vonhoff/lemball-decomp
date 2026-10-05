@@ -43,8 +43,7 @@ private:
 	unsigned int m_rowPadding;   // 0x20
 	unsigned int m_extraRows;    // 0x24
 	unsigned int m_lineCapacity; // 0x28
-	short m_width;               // 0x2c
-	short m_height;              // 0x2e
+	CVSSize m_size;              // 0x2c
 	CVSRect m_rect0;             // 0x30
 	CVSRect m_rect1;             // 0x38
 };
