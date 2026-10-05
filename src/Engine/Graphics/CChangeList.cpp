@@ -122,7 +122,6 @@ void CChangeList::PopActive()
 void CChangeList::Add(const CVSRect& p_area)
 {
 	short cellWidth;
-	short cellHeight;
 	int cellX;
 	int cellY;
 	unsigned int spanX;
@@ -133,7 +132,7 @@ void CChangeList::Add(const CVSRect& p_area)
 
 	if (m_map != NULL) {
 		cellWidth = m_cellSize.m_width;
-		cellHeight = m_cellSize.m_height;
+		const short& cellHeight = m_cellSize.m_height;
 		cellX = (int) (p_area.m_x / cellWidth);
 		cellY = (int) (p_area.m_y / cellHeight);
 		spanX = ((int) p_area.m_width + (int) p_area.m_x - 1 + (int) cellWidth) / (int) cellWidth - cellX;
