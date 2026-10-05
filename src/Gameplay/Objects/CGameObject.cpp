@@ -682,8 +682,10 @@ unsigned short CGameObject::MapCheck(int p_x, int p_y)
 
 	for (int x = blockX; x <= blockX; x++) {
 		for (int y = blockY; y <= blockY; y++) {
-			if (x >= 0 && y >= 0 && x < g_pMap->m_ground.m_width && y < g_pMap->m_ground.m_height) {
-				collision |= g_pMap->m_ground.m_ground[y * g_pMap->m_ground.m_width + x].m_collision;
+			int width;
+			CMap* map;
+			if (x >= 0 && y >= 0 && x < (width = g_pMap->m_ground.m_width) && y < (map = g_pMap)->m_ground.m_height) {
+				collision |= map->m_ground.m_ground[y * width + x].m_collision;
 			}
 			else {
 				collision |= GROUND_COLLISION_OUT_OF_BOUNDS;
