@@ -168,13 +168,9 @@ int CGameStatus::StringToDWord()
 // FUNCTION: LEMBALL 0x00406dd0
 void CGameStatus::GotoLastLevels()
 {
-	int remaining = 4;
-	int* last = m_lastLevels;
-	do {
-		last[0] = last[-5];
-		last = last + 1;
-		remaining = remaining - 1;
-	} while (remaining != 0);
+	for (int skill = 0; skill < 4; skill++) {
+		m_lastLevels[skill] = m_maxLevels[skill];
+	}
 }
 
 // FUNCTION: LEMBALL 0x00408dc0
