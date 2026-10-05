@@ -66,7 +66,7 @@ private:
 	CPVButton* m_buttons[12];              // 0x424
 	CClipRect m_hiliteRect;                // 0x454
 	CStaticAnim m_hiliteAnim;              // 0x464
-	void* m_hiliteSurface;                 // 0x474
+	CGDI* m_hiliteGdi;                     // 0x474
 	int m_hiliteX;                         // 0x478
 	int m_hiliteY;                         // 0x47c
 	int m_selectedButton;                  // 0x480

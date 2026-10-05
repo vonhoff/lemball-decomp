@@ -551,7 +551,7 @@ void CPasswordDrawer::DrawHilite()
 	CGDI* savedGdi;
 	CSurface* surface;
 
-	surface = ((CGDI*) m_hiliteSurface)->m_renderTarget;
+	surface = m_hiliteGdi->m_renderTarget;
 	short width = surface->m_windowRect.m_width;
 	short height = surface->m_windowRect.m_height;
 	m_hiliteRect.m_flags = CClipRect::CLIP_IGNORE_PARENT;
@@ -559,11 +559,11 @@ void CPasswordDrawer::DrawHilite()
 	m_hiliteRect.m_bounds.m_height = height;
 	m_hiliteRect.m_bounds.m_x = 0;
 	m_hiliteRect.m_bounds.m_y = 0;
-	m_hiliteRect.Draw((CGDI*) m_hiliteSurface);
+	m_hiliteRect.Draw(m_hiliteGdi);
 	CVSPoint position((short) m_hiliteX, (short) m_hiliteY);
 	savedGdi = CAnimsManager::m_gdi;
 	m_hiliteAnim.m_frameState = 0;
-	CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
+	CAnimsManager::m_gdi = m_hiliteGdi;
 	CAnimsManager::DrawAnim(position, m_animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, NULL);
 	CAnimsManager::m_gdi = savedGdi;
 }
@@ -583,5 +583,5 @@ void CPasswordDrawer::SetHiliteWindow()
 				 (short) (pitch * 3),
 				 (short) (pitch * 4));
 	m_hiliteWindow->Create(rect, (CPVGWnd*) m_display, NULL);
-	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
+	m_hiliteGdi = m_hiliteWindow->m_gdi;
 }
