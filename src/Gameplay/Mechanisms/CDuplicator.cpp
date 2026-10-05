@@ -120,9 +120,11 @@ bool CDuplicator::Process()
 		m_duplicatedObject->ResetInstructions();
 		CPlayerLemming* dead = g_pAI->GetDead();
 		if (dead != NULL) {
-			AICOORD pos(m_position.m_xFixed,
-						m_position.m_yFixed + DUPLICATOR_DUPLICATE_SPAWN_Y_OFFSET_FIXED,
-						m_position.m_zFixed);
+			AICOORD pos;
+			pos.m_xFixed = m_position.m_xFixed;
+			int z = m_position.m_zFixed;
+			pos.m_yFixed = m_position.m_yFixed + DUPLICATOR_DUPLICATE_SPAWN_Y_OFFSET_FIXED;
+			pos.m_zFixed = z;
 			dead->Resurrect(pos);
 			CPlayerLemmingGroup* group = ((CPlayerLemming*) m_duplicatedObject)->GetGroup();
 			group->AddLemmingToGroup(dead);
