@@ -15,6 +15,7 @@
 #include "CTrackerButton.h"
 #include "Frontend/Controls/ControlMessages.h"
 #include "Frontend/FrontendLayoutMode.h"
+#include "Frontend/CoordPair.h"
 #include "Frontend/Controls/CGunController.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Animation/CAnimsManager.h"
@@ -59,9 +60,11 @@ unsigned long g_gunTurnResourceId = 0;
 unsigned long g_gunSplatLeftResourceId = 0;
 
 // GLOBAL: LEMBALL 0x0049fa70
-int g_anGunSpriteOffset[18] = {0, 12, -8, -2, 52, -2, -13, 28, 116, 0, 0, -13, 19, 28, -16, 0, -24, -2};
+CoordPair g_anGunSpriteOffset[9] =
+	{{0, 12}, {-8, -2}, {52, -2}, {-13, 28}, {116, 0}, {0, -13}, {19, 28}, {-16, 0}, {-24, -2}};
 // GLOBAL: LEMBALL 0x0049fab8
-int g_anGunSpriteOffsetCompact[20] = {0, 6, -4, -2, 26, -2, -7, 14, 58, 0, 0, 0, 10, 14, -8, 0, -12, -2, 0, 0};
+CoordPair g_anGunSpriteOffsetCompact[10] =
+	{{0, 6}, {-4, -2}, {26, -2}, {-7, 14}, {58, 0}, {0, 0}, {10, 14}, {-8, 0}, {-12, -2}, {0, 0}};
 
 // FUNCTION: LEMBALL 0x0044c870
 CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigned int p_mode)
@@ -366,7 +369,7 @@ void CGunController::DrawButtons(int p_firstState, int p_secondState)
 void CGunController::DrawSpriteWindow()
 {
 	CGDI* previousGdi;
-	int* offsets;
+	CoordPair* offsets;
 	unsigned long frame;
 
 	m_spriteSurface->m_renderTarget->GetCurrDB();
@@ -393,7 +396,7 @@ void CGunController::DrawSpriteWindow()
 
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
-		CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (offsets[1] + m_gunY)),
+		CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0].m_x), (short) (offsets[0].m_y + m_gunY)),
 								g_gunTurnResourceId,
 								0,
 								(CAnimFrameBASE*) &m_staticAnim,
@@ -403,7 +406,7 @@ void CGunController::DrawSpriteWindow()
 	case GUN_SELECTION_TURNING:
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
-		CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (offsets[1] + m_gunY)),
+		CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0].m_x), (short) (offsets[0].m_y + m_gunY)),
 								g_gunTurnResourceId,
 								0,
 								(CAnimFrameBASE*) m_sideAnim,
@@ -422,7 +425,7 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (m_gunY + offsets[1])),
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0].m_x), (short) (m_gunY + offsets[0].m_y)),
 									g_gunFireLeftResourceId,
 									0,
 									(CAnimFrameBASE*) m_hitAnim,
@@ -430,7 +433,7 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[2]), (short) (m_gunY + offsets[3])),
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[1].m_x), (short) (m_gunY + offsets[1].m_y)),
 									g_gunEffectLeftResourceId,
 									0,
 									(CAnimFrameBASE*) m_leftShotAnim,
@@ -446,7 +449,7 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (m_gunY + offsets[1])),
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0].m_x), (short) (m_gunY + offsets[0].m_y)),
 									g_gunFireRightResourceId,
 									0,
 									(CAnimFrameBASE*) m_hitAnim,
@@ -454,7 +457,7 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[4]), (short) (m_gunY + offsets[5])),
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[2].m_x), (short) (m_gunY + offsets[2].m_y)),
 									g_gunEffectRightResourceId,
 									0,
 									(CAnimFrameBASE*) m_leftShotAnim,
@@ -474,7 +477,7 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (m_gunY + offsets[1])),
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0].m_x), (short) (m_gunY + offsets[0].m_y)),
 									g_gunFireLeftResourceId,
 									0,
 									(CAnimFrameBASE*) m_hitAnim,
@@ -490,7 +493,7 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0]), (short) (m_gunY + offsets[1])),
+			CAnimsManager::DrawAnim(CVSPoint((short) (m_gunX + offsets[0].m_x), (short) (m_gunY + offsets[0].m_y)),
 									g_gunFireRightResourceId,
 									0,
 									(CAnimFrameBASE*) m_hitAnim,
@@ -644,7 +647,7 @@ void CGunController::SelectOption()
 {
 	int i;
 	int* targetX;
-	int* offsets;
+	CoordPair* offsets;
 	unsigned int delta;
 
 	m_selectionMessage.m_type = MESSAGE_BUTTON_RELEASED;
@@ -673,18 +676,18 @@ void CGunController::SelectOption()
 		m_leftShotAnim->StartAnim(GUN_CONTROLLER_FIRE_ANIMATION_DURATION_MS);
 		targetX = &m_projectileTargetX;
 		if (m_targetSide == GUN_SIDE_LEFT) {
-			m_projectileX = offsets[6] + m_selectionStartX;
-			m_projectileY = offsets[7] + m_targetY;
-			*targetX = offsets[8] + m_junctions[i].m_leftX;
-			m_projectileEndX = offsets[10] + m_junctions[i].m_leftX;
-			m_projectileEndY = offsets[11] + m_junctions[i].m_y;
+			m_projectileX = offsets[3].m_x + m_selectionStartX;
+			m_projectileY = offsets[3].m_y + m_targetY;
+			*targetX = offsets[4].m_x + m_junctions[i].m_leftX;
+			m_projectileEndX = offsets[5].m_x + m_junctions[i].m_leftX;
+			m_projectileEndY = offsets[5].m_y + m_junctions[i].m_y;
 		}
 		else {
-			m_projectileX = offsets[12] + m_selectionStartX;
-			m_projectileY = offsets[13] + m_targetY;
-			*targetX = offsets[14] + m_junctions[i].m_rightX;
-			m_projectileEndX = offsets[16] + m_junctions[i].m_rightX;
-			m_projectileEndY = offsets[17] + m_junctions[i].m_y;
+			m_projectileX = offsets[6].m_x + m_selectionStartX;
+			m_projectileY = offsets[6].m_y + m_targetY;
+			*targetX = offsets[7].m_x + m_junctions[i].m_rightX;
+			m_projectileEndX = offsets[8].m_x + m_junctions[i].m_rightX;
+			m_projectileEndY = offsets[8].m_y + m_junctions[i].m_y;
 		}
 		m_selectStartTime = CurrentMilliTimer();
 		delta = *targetX - m_projectileX;
