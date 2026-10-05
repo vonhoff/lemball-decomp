@@ -54,8 +54,9 @@ bool CTower::Activate(CGameObject* p_object)
 // FUNCTION: LEMBALL 0x0041d010
 AICOORD CTower::ActivatePosition()
 {
-	int y = m_position.m_yFixed + TOWER_ACTIVATION_POSITION_Y_OFFSET_FIXED;
+	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
+	y += TOWER_ACTIVATION_POSITION_Y_OFFSET_FIXED;
 	int x = m_position.m_xFixed + TOWER_ACTIVATION_POSITION_X_OFFSET_FIXED;
 	return AICOORD(x, y, z);
 }
