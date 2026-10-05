@@ -271,6 +271,7 @@ void CMaze::SwapChange()
 // FUNCTION: LEMBALL 0x00423530
 void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY)
 {
+	int x;
 	int width;
 	CMap* map;
 	if (p_resetStats != 0) {
@@ -287,7 +288,7 @@ void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, i
 	int y = 0;
 	if (m_height > 0) {
 		do {
-			int x = 0;
+			x = 0;
 			if (m_width > 0) {
 				do {
 					unsigned short collision;
