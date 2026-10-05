@@ -49,9 +49,10 @@ void CTrapDoor::Restart()
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
 	m_action = ACTION_READY;
 	m_stateTimer = g_dwSimulationTimestamp;
+	unsigned int now = g_dwGameTick;
 	m_active = 1;
 	m_deadline = 80;
-	m_actionDeadline = g_dwGameTick;
+	m_actionDeadline = now;
 }
 
 // FUNCTION: LEMBALL 0x0040c3b0
