@@ -31,6 +31,8 @@ void CBallManager::Restart()
 // FUNCTION: LEMBALL 0x00421ef0
 void CBallManager::Initialise(int p_capacity)
 {
+	int i;
+
 	m_capacity = p_capacity;
 	m_activeCount = 0;
 	if (p_capacity == 0) {
@@ -39,7 +41,7 @@ void CBallManager::Initialise(int p_capacity)
 	}
 	if (m_balls == NULL) {
 		m_balls = new CBall*[p_capacity];
-		for (int i = 0; i < m_capacity; i++) {
+		for (i = 0; i < m_capacity; i++) {
 			m_balls[i] = new CBall();
 			m_balls[i]->Restart();
 		}

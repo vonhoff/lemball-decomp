@@ -40,7 +40,8 @@ void CPaintGunManager::Initialise(int p_capacity)
 	if (m_paintGuns == NULL) {
 		m_paintGuns = new CPaintGun[p_capacity];
 		for (int i = 0; i < m_capacity; i++) {
-			m_paintGuns[i].Restart();
+			CPaintGun& paintGun = m_paintGuns[i];
+			paintGun.Restart();
 			m_paintGuns[i].m_manager = this;
 		}
 	}

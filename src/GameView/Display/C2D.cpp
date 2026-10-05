@@ -56,6 +56,7 @@ struct ObjectClipGrid {
 #include "Map/CGroundArray.h"
 #include "Engine/Math/CFixed.h"
 #include "Gameplay/Geometry/tCoord3d.h"
+#include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Mechanisms/LiftEndpointRecord.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
 #include "GameView/Sound/CSoundView.h"
@@ -4512,12 +4513,12 @@ void C2D::TransformAndSortViewData()
 			viewData->m_gameX = (short) viewData->m_positionX;
 			viewData->m_gameY = (short) viewData->m_positionY;
 
-			C3DVector position;
+			CPt3 position;
 			memcpy(&position, &m_viewData[viewIndex].m_positionX, sizeof(position));
-			m_map->GameToScreen(position.m_xFixed, position.m_yFixed);
-			position.m_yFixed -= position.m_zFixed;
-			position.m_xFixed -= m_viewOriginX;
-			position.m_yFixed -= m_viewOriginY;
+			m_map->GameToScreen(position.m_x, position.m_y);
+			position.m_y -= position.m_z;
+			position.m_x -= m_viewOriginX;
+			position.m_y -= m_viewOriginY;
 			memcpy(&m_viewData[viewIndex].m_positionX, &position, sizeof(position));
 			viewIndex++;
 		} while ((int) m_viewDataCount > viewIndex);

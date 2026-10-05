@@ -38,6 +38,7 @@ void CSlinkyManager::Restart()
 // FUNCTION: LEMBALL 0x0040b930
 void CSlinkyManager::Initialise(int p_capacity)
 {
+	int i;
 	m_capacity = p_capacity;
 	m_count = 0;
 	if (p_capacity == 0) {
@@ -47,7 +48,7 @@ void CSlinkyManager::Initialise(int p_capacity)
 	if (m_slinkies == NULL) {
 		m_slinkies = new CSlinky[p_capacity];
 		// LINE: LEMBALL 0x0040b99b
-		for (int i = 0; i < m_capacity; i++) {
+		for (i = 0; i < m_capacity; i++) {
 			m_slinkies[i].Restart();
 		}
 	}
