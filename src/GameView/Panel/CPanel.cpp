@@ -32,8 +32,8 @@ CVSPoint CPanel::GetPausePos()
 		height = m_window->m_rect.m_height;
 	}
 	width = (short) ((int) width / zoom);
-	y = (short) ((int) height / zoom - (int) m_pauseSize.m_y);
-	x = (short) (((int) width - (int) m_panelSize.m_x) / 2);
+	y = (short) ((int) height / zoom - (int) m_pauseSize.m_height);
+	x = (short) (((int) width - (int) m_panelSize.m_width) / 2);
 	return result;
 }
 
@@ -51,17 +51,17 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_resources[3] = CResANIM::Load(RES_GAME_BUTBALLOON);
 
 	CVSSize* size = (CVSSize*) &m_resources[1]->m_animationEntries[0].m_width;
-	m_ammoButtonSize.m_x = size->m_width;
-	m_ammoButtonSize.m_y = size->m_height;
+	m_ammoButtonSize.m_width = size->m_width;
+	m_ammoButtonSize.m_height = size->m_height;
 	size = (CVSSize*) &m_resources[2]->m_animationEntries[0].m_width;
-	m_lemmingButtonSize.m_x = size->m_width;
-	m_lemmingButtonSize.m_y = size->m_height;
+	m_lemmingButtonSize.m_width = size->m_width;
+	m_lemmingButtonSize.m_height = size->m_height;
 	size = (CVSSize*) &m_resources[0]->m_animationEntries[0].m_width;
-	m_pauseSize.m_x = size->m_width;
-	m_pauseSize.m_y = size->m_height;
-	m_panelSize.m_x = m_pauseSize.m_x;
-	m_panelSize.m_y = m_pauseSize.m_y;
-	m_panelSize.m_x = (short) (m_panelSize.m_x + (m_lemmingButtonSize.m_x + m_ammoButtonSize.m_x) * 4);
+	m_pauseSize.m_width = size->m_width;
+	m_pauseSize.m_height = size->m_height;
+	m_panelSize.m_width = m_pauseSize.m_width;
+	m_panelSize.m_height = m_pauseSize.m_height;
+	m_panelSize.m_width = (short) (m_panelSize.m_width + (m_lemmingButtonSize.m_width + m_ammoButtonSize.m_width) * 4);
 	CVSPoint calculated = GetPausePos();
 	short x = calculated.m_x;
 	m_panelPosition.m_x = x;
@@ -76,7 +76,7 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 		m_pauseButton = NULL;
 	}
 
-	position.m_x = position.m_x + m_pauseSize.m_x;
+	position.m_x = position.m_x + m_pauseSize.m_width;
 	i = 0;
 	lemming = m_lemmings;
 	do {
@@ -132,7 +132,7 @@ void CPanel::OnSize()
 	m_panelPosition.m_y = y;
 	CVSPoint position(x, y);
 	m_pauseButton->Move(position);
-	position.m_x += m_pauseSize.m_x;
+	position.m_x += m_pauseSize.m_width;
 	CPanelLemming** lemming = m_lemmings;
 	int count = 4;
 	do {
@@ -208,9 +208,9 @@ int CPanel::ProcessMsg(Message* p_message)
 // FUNCTION: LEMBALL 0x00443360
 bool CPanel::MouseInPanel(const CVSPoint& p_point)
 {
-	short panelWidth = m_panelSize.m_x;
+	short panelWidth = m_panelSize.m_width;
 	short panelX = m_panelPosition.m_x;
-	short panelHeight = m_panelSize.m_y;
+	short panelHeight = m_panelSize.m_height;
 	short panelY = m_panelPosition.m_y;
 	if (panelX <= p_point.m_x && (short) (panelWidth + panelX) > p_point.m_x && panelY <= p_point.m_y &&
 		(short) (panelHeight + panelY) > p_point.m_y) {

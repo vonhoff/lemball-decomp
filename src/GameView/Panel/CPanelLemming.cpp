@@ -17,7 +17,7 @@ class CPlayerLemmingGroup;
 void CPanelLemming::Move(const CVSPoint& p_position)
 {
 	CVSPoint position = p_position;
-	position.m_x += (m_panel->m_lemmingButtonSize.m_x + m_panel->m_ammoButtonSize.m_x) * (short) m_playerIndex;
+	position.m_x += (m_panel->m_lemmingButtonSize.m_width + m_panel->m_ammoButtonSize.m_width) * (short) m_playerIndex;
 	m_button->Move(position);
 }
 
@@ -34,9 +34,9 @@ CPanelLemming::CPanelLemming(CPlayerLemming* p_lemming, const CVSPoint& p_positi
 
 	rect.m_x = p_position.m_x;
 	rect.m_y = p_position.m_y;
-	rect.m_x += (p_panel->m_lemmingButtonSize.m_x + p_panel->m_ammoButtonSize.m_x) * m_playerIndex;
-	rect.m_width = m_panel->m_lemmingButtonSize.m_x + m_panel->m_ammoButtonSize.m_x;
-	rect.m_height = m_panel->m_lemmingButtonSize.m_y;
+	rect.m_x += (p_panel->m_lemmingButtonSize.m_width + p_panel->m_ammoButtonSize.m_width) * m_playerIndex;
+	rect.m_width = m_panel->m_lemmingButtonSize.m_width + m_panel->m_ammoButtonSize.m_width;
+	rect.m_height = m_panel->m_lemmingButtonSize.m_height;
 	m_button = new CPanelButton(this, rect, m_window);
 }
 
