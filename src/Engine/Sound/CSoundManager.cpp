@@ -148,26 +148,23 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 CSoundManager::~CSoundManager()
 {
 	unsigned int i;
-	CBaseSoundDevice** devices;
 
 	if (m_musicAvailable != 0 && m_musicOutput != NULL) {
-		((SoundDeviceDispatch*) m_musicOutput)->Slot1c();
+		m_musicOutput->Dummy1c();
 	}
 	if (m_effectsAvailable != 0 && m_effectOutput != NULL) {
-		((SoundDeviceDispatch*) m_effectOutput)->Slot20();
+		m_effectOutput->StopAllEffects();
 	}
 	i = 0;
 	m_musicOutput = NULL;
 	m_effectOutput = NULL;
 	if (i < m_deviceCount) {
-		devices = m_devices;
 		do {
-			if (*devices != NULL) {
-				(*devices)->SetMasterVolume(0);
-				((SoundDeviceDispatch*) *devices)->Slot14();
-				delete *devices;
+			if (m_devices[i] != NULL) {
+				m_devices[i]->SetMasterVolume(0);
+				m_devices[i]->Close();
+				delete m_devices[i];
 			}
-			devices = devices + 1;
 			i = i + 1;
 		} while (i < m_deviceCount);
 	}
