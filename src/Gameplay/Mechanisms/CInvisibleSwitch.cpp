@@ -70,10 +70,11 @@ void CInvisibleSwitch::Set(const tCoord3d& p_cornerA, const tCoord3d& p_cornerB)
 	m_objectCount = 0;
 	m_minCorner = p_cornerA;
 	m_maxCorner = p_cornerB;
-	if (m_minCorner.m_x > m_maxCorner.m_x) {
-		short x = m_minCorner.m_x;
-		m_minCorner.m_x = m_maxCorner.m_x;
-		m_maxCorner.m_x = x;
+	short minX = m_minCorner.m_x;
+	short maxX = m_maxCorner.m_x;
+	if (minX > maxX) {
+		m_minCorner.m_x = maxX;
+		m_maxCorner.m_x = minX;
 	}
 	short minY = m_minCorner.m_y;
 	if (minY > m_maxCorner.m_y) {

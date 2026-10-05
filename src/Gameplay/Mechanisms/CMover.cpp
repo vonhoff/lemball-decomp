@@ -61,8 +61,8 @@ CMover::~CMover()
 void CMover::SetPos()
 {
 	int x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
-	int maxX = x + 15;
 	int y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
+	int maxX = x + 15;
 	int maxY = y + 15;
 	x /= 16;
 	y /= 16;

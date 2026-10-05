@@ -533,7 +533,6 @@ void C2D::ShutDown()
 {
 	ObjectClipGrid* objectClipGrid;
 	SpriteGroundLookup* spriteGroundLookup;
-	CLemmingAnimsManager* lemmingAnims;
 	unsigned long started;
 	unsigned long now;
 
@@ -572,11 +571,7 @@ void C2D::ShutDown()
 	operator delete(m_zBuffer);
 	operator delete(m_viewData);
 	CursorChangeType(0, 0);
-	lemmingAnims = m_lemmingAnims;
-	if (lemmingAnims != NULL) {
-		lemmingAnims->~CLemmingAnimsManager();
-		operator delete(lemmingAnims);
-	}
+	delete m_lemmingAnims;
 	UnRegisterRemaps();
 	CPBButton::DumpStrs();
 	if (m_ai->m_networkMode != NETWORK_MODE_SINGLE_PLAYER && m_returnState == FLOW_MAIN_OPTIONS_1) {
@@ -3462,8 +3457,8 @@ void C2D::DrawSheep(CViewData& p_viewData, int p_objectNo)
 
 	unsigned int direction;
 	unsigned int stateTimer;
-	int y;
 	int x;
+	int y;
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
 	stateTimer = p_viewData.m_stateTimer;
@@ -4846,7 +4841,7 @@ void C2D::DrawDemo()
 	// GLOBAL: LEMBALL 0x004a78c4
 	static unsigned long g_lastBlink = CurrentMilliTimer();
 	// GLOBAL: LEMBALL 0x004a78c8
-	// ?$S2@?1??DrawDemo@C2D@@QAEXXZ@4EA
+	// ?$S10@?1??DrawDemo@C2D@@QAEXXZ@4EA
 	// GLOBAL: LEMBALL 0x0049efc8
 	static int g_visible = 0;
 	if (CurrentMilliTimer() - g_lastBlink > DEMO_TEXT_BLINK_INTERVAL_MS) {
