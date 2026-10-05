@@ -262,7 +262,7 @@ bool CMover::Process()
 			next = 0;
 		}
 		m_currentNode = next;
-		AICOORD oldPosition = m_position;
+		AICOORD oldPosition(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
 		int groundX;
 		int y;
 		int x;
