@@ -274,8 +274,8 @@ CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 								CAnimFrameBASE* p_frame,
 								CRemap* p_remap)
 {
-	unsigned int frameIndex;
 	CResBase* resource;
+	unsigned int frameIndex;
 	CResZRLE* sizeSource;
 	CZRLE* zrle;
 	CAnim* anim;
