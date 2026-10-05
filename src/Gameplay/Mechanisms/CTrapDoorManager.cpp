@@ -137,8 +137,9 @@ void CTrapDoorManager::SetTrapDoorPosition(int p_x, int p_y, int p_z, int p_inde
 // FUNCTION: LEMBALL 0x0040ca40
 void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip)
 {
-	unsigned short* data = (unsigned short*) p_data;
-	int count = *data++;
+	unsigned char* data = p_data;
+	int count = *(unsigned short*) data;
+	data += sizeof(unsigned short);
 	int selections[4];
 	for (int selection = 0; selection < 4; selection++) {
 		selections[selection] = 0;
@@ -151,9 +152,11 @@ void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 				id = CGameObject::NextLoadingId();
 			}
 			AICOORD position;
-			position.m_xFixed = *data++ << FIXED_POINT_FRACTION_BITS;
-			position.m_yFixed = *data++ << FIXED_POINT_FRACTION_BITS;
-			data++;
+			position.m_xFixed = *(unsigned short*) data << FIXED_POINT_FRACTION_BITS;
+			data += sizeof(unsigned short);
+			position.m_yFixed = *(unsigned short*) data << FIXED_POINT_FRACTION_BITS;
+			data += sizeof(unsigned short);
+			data += sizeof(unsigned short);
 			int y;
 			int x;
 			y = position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
@@ -171,7 +174,8 @@ void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 				z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 			}
 			position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
-			selections[i] = *data++;
+			selections[i] = *(unsigned short*) data;
+			data += sizeof(unsigned short);
 			if (p_skip == 0) {
 				AddNewDoor(id, position, TRAPDOOR_MODE_NETWORK_START, 0);
 			}
