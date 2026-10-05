@@ -52,7 +52,7 @@ CBasePalManager::~CBasePalManager()
 }
 
 // FUNCTION: LEMBALL 0x0046ad70
-CBaseRemap* CBasePalManager::RegisterRemap(unsigned int p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)
+CBaseRemap* CBasePalManager::RegisterRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)
 {
 	CBaseRemap** slot;
 	void* storage;
