@@ -64,8 +64,9 @@ void CHandManager::RemoveHand(CGameObject* p_object)
 	short id = p_object->GetId();
 	for (; index < m_count; index++) {
 		if (m_hands[index].GetId() == id) {
-			m_hands[index++].SetId(INVALID_OBJECT_ID);
-			for (int next = index; next < m_count; next++) {
+			int next = index + 1;
+			m_hands[index].SetId(INVALID_OBJECT_ID);
+			for (; next < m_count; next++) {
 				m_hands[next - 1] = m_hands[next];
 			}
 			m_count--;
