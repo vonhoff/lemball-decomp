@@ -62,7 +62,7 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_panelSize.m_width = m_pauseSize.m_width;
 	m_panelSize.m_height = m_pauseSize.m_height;
 	m_panelSize.m_width = (short) (m_panelSize.m_width + (m_lemmingButtonSize.m_width + m_ammoButtonSize.m_width) * 4);
-	CVSPoint calculated = GetPausePos();
+	const CVSPoint& calculated = GetPausePos();
 	short x = calculated.m_x;
 	m_panelPosition.m_x = x;
 	short y = calculated.m_y;
