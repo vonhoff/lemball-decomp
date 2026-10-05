@@ -323,7 +323,11 @@ CPlayerLemmingGroup* CPlayerLemmingGroupManager::GetPlayerControlledGroup()
 // FUNCTION: LEMBALL 0x00418a30
 void CPlayerLemmingGroupManager::AddNewWaypointToCurrentGroup(int p_x, int p_y)
 {
-	AICOORD coordinate(p_x << FIXED_POINT_FRACTION_BITS, p_y << FIXED_POINT_FRACTION_BITS, 0);
+	int x = p_x << FIXED_POINT_FRACTION_BITS;
+	AICOORD coordinate;
+	coordinate.m_zFixed = 0;
+	coordinate.m_xFixed = x;
+	coordinate.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
 	CPlayerLemmingGroup* group = GetPlayerControlledGroup();
 	if (group != NULL) {
 		group->AddNewWaypoint(coordinate, g_pGenericGroupFormationManager);
