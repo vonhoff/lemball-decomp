@@ -132,7 +132,7 @@ private:
 	unsigned int m_broadcasting;         // 0x3b8
 	unsigned int m_networkMode;          // 0x3bc
 	unsigned int m_redrawPending;        // 0x3c0
-	unsigned int m_networkState;         // 0x3c4
+	eNetworkOptionsHandlerState m_networkState; // 0x3c4
 	unsigned int m_lastDrawTime;         // 0x3c8
 	CEntryHandler* m_playerEntries;      // 0x3cc
 	int m_acceptedPlayer;                // 0x3d0
