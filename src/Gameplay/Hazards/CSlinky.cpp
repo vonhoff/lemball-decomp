@@ -52,8 +52,8 @@ void CSlinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 		}
 	}
 	int positionZ = z << FIXED_POINT_FRACTION_BITS;
-	m_position.m_xFixed = m_minX << FIXED_POINT_FRACTION_BITS;
-	m_position.m_yFixed = m_minY << FIXED_POINT_FRACTION_BITS;
+	m_position.m_xFixed = (int) ((unsigned int) m_minX << FIXED_POINT_FRACTION_BITS);
+	m_position.m_yFixed = (int) ((unsigned int) m_minY << FIXED_POINT_FRACTION_BITS);
 	m_position.m_zFixed = positionZ;
 	m_actionDeadline = g_dwGameTick;
 	m_stateTimer = g_dwSimulationTimestamp;
