@@ -74,8 +74,9 @@ void CBullet::Set(unsigned short p_id,
 		z = 0;
 	}
 	else {
-		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(targetX & GROUND_BLOCK_PIXEL_MASK,
-																 targetY & GROUND_BLOCK_PIXEL_MASK);
+		targetX &= GROUND_BLOCK_PIXEL_MASK;
+		targetY &= GROUND_BLOCK_PIXEL_MASK;
+		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(targetX, targetY);
 	}
 	m_sourceObjectId = p_id;
 	m_destination.m_zFixed = (z + 12) << FIXED_POINT_FRACTION_BITS;
