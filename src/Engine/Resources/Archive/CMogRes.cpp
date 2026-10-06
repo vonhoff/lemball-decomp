@@ -257,8 +257,8 @@ unsigned char* CMogRes::AllocateMainMem(unsigned long p_size)
 				}
 			}
 			int i = 0;
-			unsigned int remaining = m_resourceCount;
-			if ((int) remaining > 0) {
+			int remaining = m_resourceCount;
+			if (remaining > 0) {
 				do {
 					if (m_resources[i] == NULL) {
 						do {
