@@ -125,12 +125,12 @@ bool CWriteSocket::SendCritical(CNetworkMessage& p_message)
 		return false;
 	}
 	if (SendPacket(data, size) != 0) {
-		packet->m_lastSendTime = timeGetTime();
+		packet->m_lastSendTime = CurrentMilliTimer();
 		packet->m_available = 0;
 		packet->m_retryCount++;
 	}
 	else {
-		packet->m_lastSendTime = timeGetTime() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
+		packet->m_lastSendTime = CurrentMilliTimer() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 		packet->m_available = 0;
 	}
 	return true;
