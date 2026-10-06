@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e2b0
-CResZRLE* CResZRLE::Load(unsigned int p_resourceId)
+CResZRLE* CResZRLE::Load(unsigned long p_resourceId)
 {
 	register unsigned int id = p_resourceId;
 	CResZRLE* res = (CResZRLE*) g_pActiveMogRes->Find(id);
