@@ -16,7 +16,7 @@ unsigned int __stdcall CalculatePowerOfTwo(unsigned int p_exponent)
 // FUNCTION: LEMBALL 0x00406be0
 unsigned int __stdcall ExtractBitField(unsigned int p_value, unsigned int p_shift, unsigned int p_width)
 {
-	register unsigned int mask = CalculatePowerOfTwo(p_width);
+	unsigned int mask = CalculatePowerOfTwo(p_width);
 	mask--;
 	mask &= p_value >> p_shift;
 	return mask;
