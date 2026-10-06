@@ -26,12 +26,11 @@ enum ePreInitDisplayMode {
 
 #pragma intrinsic(memcpy, memset)
 
-enum InitCmdOptionField {
-	kInitCmdOptionName,
-	kInitCmdOptionValue,
+// SIZE 0x08
+struct InitCmdOption {
+	char* m_name; // 0x00
+	int* m_value; // 0x04
 };
-
-typedef void* InitCmdOption[2];
 
 // GLOBAL: LEMBALL 0x004a9368
 jmp_buf g_vsExitJumpBuffer;
@@ -271,19 +270,19 @@ bool INIT_CheckOptions(char* p_option)
 		option = g_aInitCmdOptions;
 		index = 0;
 		do {
-			colon = strchr((char*) (*option)[kInitCmdOptionName], ':');
+			colon = strchr(option->m_name, ':');
 			if (colon != NULL) {
-				maxCount = (unsigned int) (colon - (char*) (*option)[kInitCmdOptionName]);
+				maxCount = (unsigned int) (colon - option->m_name);
 			}
 			else {
-				maxCount = strlen((char*) (*option)[kInitCmdOptionName]);
+				maxCount = strlen(option->m_name);
 			}
-			if (strncmp(optionText, (char*) (*option)[kInitCmdOptionName], maxCount) == 0) {
-				if (strlen((char*) g_aInitCmdOptions[index][kInitCmdOptionName]) != maxCount) {
-					*(int*) g_aInitCmdOptions[index][kInitCmdOptionValue] = strtol(optionText + maxCount + 1, &end, 10);
+			if (strncmp(optionText, option->m_name, maxCount) == 0) {
+				if (strlen(g_aInitCmdOptions[index].m_name) != maxCount) {
+					*g_aInitCmdOptions[index].m_value = strtol(optionText + maxCount + 1, &end, 10);
 				}
 				else {
-					int* value = (int*) g_aInitCmdOptions[index][kInitCmdOptionValue];
+					int* value = g_aInitCmdOptions[index].m_value;
 					*value = *value ^ 1;
 				}
 				g_afInitOptionSelected[index] = 1;
@@ -375,7 +374,7 @@ int INIT_Main(char* p_commandLine)
 	*g_pDebugOutput << g_szCommandLineOptions;
 	i = 0;
 	do {
-		*g_pDebugOutput << g_szOptionPrefix << (char*) g_aInitCmdOptions[i][kInitCmdOptionName] << g_szOptionIs;
+		*g_pDebugOutput << g_szOptionPrefix << g_aInitCmdOptions[i].m_name << g_szOptionIs;
 		if (g_afInitOptionSelected[i] == 0) {
 			*g_pDebugOutput << g_szOptionNot;
 		}
