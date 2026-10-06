@@ -275,7 +275,7 @@ unsigned char* CMogRes::AllocateMainMem(unsigned long p_size)
 }
 
 // FUNCTION: LEMBALL 0x0045cab0
-CResBase* CMogRes::Find(unsigned int p_resourceId)
+CResBase* CMogRes::Find(unsigned long p_resourceId)
 {
 	register int i = 0;
 	register int count = m_resourceCount;

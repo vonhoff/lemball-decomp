@@ -15,7 +15,7 @@ struct CVSRange;
 class CMogRes : public CRawRead {
 public:
 	CMogRes(char* p_path, unsigned long p_arenaSize);
-	CResBase* Find(unsigned int p_resourceId);
+	CResBase* Find(unsigned long p_resourceId);
 	bool CheckAllUnloaded();
 	bool Load(const CVSRange& p_range, unsigned char*& p_data, CResBase* p_resource);
 	bool Load(unsigned int p_resourceId, CResBase* p_resource, unsigned int p_recurse);
