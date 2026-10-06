@@ -110,7 +110,7 @@ protected:
 	unsigned int m_drawingBackBuffer;      // 0x364
 	unsigned int m_backBufferReady;        // 0x368
 	int m_framePrimitiveCount;             // 0x36c
-	int m_flowProcess;                     // 0x370
+	eFlowProcesses m_flowProcess;          // 0x370
 	int m_returnState;                     // 0x374
 	int m_quitYet;                         // 0x378
 	CVSSize m_size;                        // 0x37c
