@@ -15,6 +15,7 @@
 #include "Engine/Queues/Message.h"
 #include "CRwSocket.h"
 #include "CWriteSocket.h"
+#include "Engine/Time/VsTime.h"
 
 #include <string.h>
 
@@ -171,7 +172,7 @@ void CBroadcast::Process()
 		if (m_runEnabled != 0) {
 			unsigned long time;
 
-			time = timeGetTime();
+			time = CurrentMilliTimer();
 			if (NETWORK_BROADCAST_INTERVAL_MS < time - m_lastBroadcastTime) {
 				bool send;
 				CNetworkAddress* address;
