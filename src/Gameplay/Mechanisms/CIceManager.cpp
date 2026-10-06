@@ -98,7 +98,7 @@ bool CIceManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x0042dd90
-void CIceManager::Switch(int p_message, int p_id)
+void CIceManager::Switch(swMessage p_message, int p_id)
 {
 	int index = 0;
 	if (0 < m_count) {
