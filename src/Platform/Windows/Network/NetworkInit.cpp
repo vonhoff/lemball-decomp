@@ -1,17 +1,16 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Streams/CVSOStream.h"
 #include "Engine/Startup/ProcessExitCodes.h"
 #include "Engine/Startup/VsInit.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
-#include "Multiplayer/Transport/NetworkConstants.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x0046f210
 unsigned int FileNetworkMessageThread()
@@ -71,16 +70,16 @@ bool VSFNET_Init()
 
 	SetThreadPriority(g_hFileNetworkThread, 2);
 
-	startTime = timeGetTime();
-	while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork == NULL) {
+	startTime = CurrentMilliTimer();
+	while (CurrentMilliTimer() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork == NULL) {
 	}
 	if (g_pBaseNetwork == NULL) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
 		return false;
 	}
 
-	startTime = timeGetTime();
-	while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pNetworkStatusQueue == NULL) {
+	startTime = CurrentMilliTimer();
+	while (CurrentMilliTimer() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pNetworkStatusQueue == NULL) {
 	}
 	if (g_pNetworkStatusQueue == NULL) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
@@ -98,8 +97,8 @@ bool VSFNET_Quit()
 	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->m_shutdownRequested = 1;
 		g_pBaseNetwork->ForceProcess();
-		startTime = timeGetTime();
-		while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork != NULL) {
+		startTime = CurrentMilliTimer();
+		while (CurrentMilliTimer() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork != NULL) {
 		}
 		if (g_pBaseNetwork != NULL) {
 			*g_pErrorOutput << "Network quit timed out\n";
@@ -168,16 +167,16 @@ bool VSNET_Init()
 
 	SetThreadPriority(g_hTCPIPNetworkThread, 2);
 
-	startTime = timeGetTime();
-	while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork == NULL) {
+	startTime = CurrentMilliTimer();
+	while (CurrentMilliTimer() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork == NULL) {
 	}
 	if (g_pBaseNetwork == NULL) {
 		*g_pErrorOutput << "Network initialisation timed out\n";
 		return false;
 	}
 
-	startTime = timeGetTime();
-	while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pNetworkStatusQueue == NULL) {
+	startTime = CurrentMilliTimer();
+	while (CurrentMilliTimer() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pNetworkStatusQueue == NULL) {
 	}
 	if (g_pNetworkStatusQueue == NULL) {
 		*g_pErrorOutput << "Network queue initialisation timed out\n";
@@ -195,8 +194,8 @@ bool VSNET_Quit()
 	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->m_shutdownRequested = 1;
 		g_pBaseNetwork->ForceProcess();
-		startTime = timeGetTime();
-		while (timeGetTime() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork != NULL) {
+		startTime = CurrentMilliTimer();
+		while (CurrentMilliTimer() - startTime < NETWORK_LIFECYCLE_TIMEOUT_MS && g_pBaseNetwork != NULL) {
 		}
 		if (g_pBaseNetwork != NULL) {
 			*g_pErrorOutput << "Network quit timed out\n";
