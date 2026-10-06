@@ -97,8 +97,8 @@ void CConnect::FirstReceive()
 	m_readReady = 1;
 	if (m_isHost != 0) {
 		m_closePending = 1;
-		CWriteSocket::m_lastSendTime = timeGetTime() - NETWORK_CLOSE_PENDING_PULSE_INTERVAL_MS;
-		CReadSocket::m_lastReceiveTime = timeGetTime();
+		CWriteSocket::m_lastSendTime = CurrentMilliTimer() - NETWORK_CLOSE_PENDING_PULSE_INTERVAL_MS;
+		CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 		if (g_pBaseNetwork->m_suspendBroadcastOnConnect != 0) {
 			g_pBaseNetwork->m_broadcast->Suspend();
 		}
