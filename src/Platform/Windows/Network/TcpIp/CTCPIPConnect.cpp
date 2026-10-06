@@ -20,8 +20,8 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 // FUNCTION: LEMBALL 0x00470dd0
 bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)
 {
-	m_address = (CNetworkAddress*) operator new(strlen(p_remoteName) + 1);
-	strcpy((char*) m_address, p_remoteName);
+	m_address = (char*) operator new(strlen(p_remoteName) + 1);
+	strcpy(m_address, p_remoteName);
 	m_asyncBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
 	m_name = (char*) operator new(strlen(p_localName) + 1);
 	strcpy(m_name, p_localName);
@@ -51,12 +51,12 @@ void CTCPIPConnect::GotHost(int p_failed)
 		address.m_ipv4Address = hostAddress.s_addr;
 		strcpy(address.m_text, inet_ntoa(hostAddress));
 		SetDestAddr(&address);
-		m_port = (short) atoi((char*) m_address);
+		m_port = (short) atoi(m_address);
 		if (m_port == 0) {
 			m_writeReady = 1;
 			m_asyncRequest = WSAAsyncGetServByName(m_windowHandle,
 												   TCPIP_MESSAGE_SERVICE_RESOLVED,
-												   (const char*) m_address,
+												   m_address,
 												   "TCP",
 												   m_asyncBuffer,
 												   MAXGETHOSTSTRUCT);

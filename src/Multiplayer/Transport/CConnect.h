@@ -60,7 +60,7 @@ public:
 
 private:
 	char* m_name;                 // 0x08
-	CNetworkAddress* m_address;   // 0x0c
+	char* m_address;              // 0x0c
 	CConnect* m_nextConnect;      // 0x10
 	CConnect* m_previousConnect;  // 0x14
 	int m_newPortRequestCount;    // 0x18
