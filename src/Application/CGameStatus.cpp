@@ -89,10 +89,10 @@ void CGameStatus::UnJiggleLevelData(unsigned int p_value)
 
 	unsigned int value;
 	int remaining = PASSWORD_LEVEL_DATA_CHUNK_COUNT;
-	unsigned int* dest = &mixed[7];
+	unsigned int* dest = mixed + PASSWORD_LEVEL_DATA_CHUNK_COUNT;
 	do {
 		value = p_value;
-		*dest-- = value & PASSWORD_LEVEL_DATA_CHUNK_MASK;
+		*--dest = value & PASSWORD_LEVEL_DATA_CHUNK_MASK;
 		p_value >>= PASSWORD_LEVEL_DATA_CHUNK_BITS;
 		remaining--;
 	} while (remaining != 0);
