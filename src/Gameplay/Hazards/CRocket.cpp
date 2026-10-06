@@ -78,7 +78,7 @@ bool CRocket::Process()
 	}
 	eAction action = m_action;
 	if (action == ACTION_FLYING) {
-		const unsigned long& height = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << FIXED_POINT_FRACTION_BITS;
+		const unsigned long height = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << FIXED_POINT_FRACTION_BITS;
 		m_position.m_zFixed = height;
 	}
 
