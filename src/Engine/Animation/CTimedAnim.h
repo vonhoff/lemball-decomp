@@ -27,8 +27,8 @@ public:
 	friend class CLemmingAnimsManager;
 
 private:
-	unsigned int m_animTime;  // 0x10
-	unsigned int m_fixedTime; // 0x14
+	unsigned long m_animTime;  // 0x10
+	unsigned long m_fixedTime; // 0x14
 	int m_direction;          // 0x18
 };
 
