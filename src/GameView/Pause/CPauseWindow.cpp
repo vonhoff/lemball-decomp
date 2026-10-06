@@ -383,34 +383,34 @@ CVSRect CPauseWindow::CalculateWindow()
 		m_borderAnims = new CAnim[m_borderAnimCount * 2];
 	}
 
-	CVSPoint cornerPositions[2] = {CVSPoint(windowSize.m_width, windowSize.m_height), CVSPoint(0, 0)};
+	CVSRect cornerBounds(0, 0, windowSize.m_width, windowSize.m_height);
 	short* cornerSize = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
-	cornerPositions[0].m_x = (short) (cornerPositions[0].m_x - cornerSize[0]);
-	cornerPositions[0].m_y = (short) (cornerPositions[0].m_y - cornerSize[1]);
+	cornerBounds.m_width = (short) (cornerBounds.m_width - cornerSize[0]);
+	cornerBounds.m_height = (short) (cornerBounds.m_height - cornerSize[1]);
 	{
 		int cornerBatchCount = 1;
 		CAnim* corners = m_cornerAnims;
 		do {
-			corners[0].m_x = cornerPositions[1].m_x;
-			corners[0].m_y = cornerPositions[1].m_y;
+			corners[0].m_x = cornerBounds.m_x;
+			corners[0].m_y = cornerBounds.m_y;
 			corners[0].m_animResource = m_horizontalBorderAnim;
 			corners[0].m_animIndex = 0;
 			corners[0].m_flags = 0;
 			corners[0].m_remap = NULL;
-			corners[1].m_x = cornerPositions[0].m_x;
-			corners[1].m_y = cornerPositions[1].m_y;
+			corners[1].m_x = cornerBounds.m_width;
+			corners[1].m_y = cornerBounds.m_y;
 			corners[1].m_animResource = m_horizontalBorderAnim;
 			corners[1].m_animIndex = 1;
 			corners[1].m_flags = 0;
 			corners[1].m_remap = NULL;
-			corners[2].m_x = cornerPositions[1].m_x;
-			corners[2].m_y = cornerPositions[0].m_y;
+			corners[2].m_x = cornerBounds.m_x;
+			corners[2].m_y = cornerBounds.m_height;
 			corners[2].m_animResource = m_horizontalBorderAnim;
 			corners[2].m_animIndex = 2;
 			corners[2].m_flags = 0;
 			corners[2].m_remap = NULL;
-			corners[3].m_x = cornerPositions[0].m_x;
-			corners[3].m_y = cornerPositions[0].m_y;
+			corners[3].m_x = cornerBounds.m_width;
+			corners[3].m_y = cornerBounds.m_height;
 			corners[3].m_animResource = m_horizontalBorderAnim;
 			corners[3].m_animIndex = 3;
 			corners[3].m_flags = 0;
@@ -452,8 +452,8 @@ CVSRect CPauseWindow::CalculateWindow()
 		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + verticalBorder[0]);
 	}
 
-	firstBorderPosition.m_x = cornerPositions[1].m_x;
-	firstBorderPosition.m_y = cornerPositions[1].m_y;
+	firstBorderPosition.m_x = cornerBounds.m_x;
+	firstBorderPosition.m_y = cornerBounds.m_y;
 	firstBorderPosition.m_y += horizontalBorder[1];
 	secondBorderPosition.m_x = firstBorderPosition.m_x;
 	secondBorderPosition.m_y = firstBorderPosition.m_y;
