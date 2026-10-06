@@ -117,9 +117,9 @@ CMain2DDisplay::~CMain2DDisplay()
 {
 	CResBase* resource;
 
-	resource = (CResBase*) m_titlePalette;
+	resource = m_titlePalette;
 	resource->UnLoad();
-	resource = (CResBase*) m_gamePalette;
+	resource = m_gamePalette;
 	resource->UnLoad();
 	resource = (CResBase*) m_cursorResource;
 	resource->UnLoad();

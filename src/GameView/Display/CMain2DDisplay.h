@@ -13,6 +13,7 @@ enum {
 
 class CGame;
 class CCdLoadAnimDraw;
+class CResPALETTE;
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8 CGWnd
 // VTABLE: LEMBALL 0x00496ba8 CBaseQueueHandler
@@ -50,25 +51,25 @@ public:
 	friend class CCDLoadAnim;
 
 private:
-	unsigned int m_windowReady;    // 0xa0
+	unsigned int m_windowReady;     // 0xa0
 	CCdLoadAnimDraw* m_loadingDraw; // 0xa4
-	void* m_cursorResource;        // 0xa8
-	void* m_gamePalette;           // 0xac
-	void* m_titlePalette;          // 0xb0
-	void* m_map;                   // 0xb4
-	unsigned int m_frameCount;     // 0xb8
-	unsigned int m_drawerClosing;  // 0xbc
-	CGame* m_game;                 // 0xc0
-	void* m_ai;                    // 0xc4
-	unsigned int m_quitRequested;  // 0xc8
-	eFlowProcesses m_currentFlow;  // 0xcc
-	CDrawingMark m_drawingMark;    // 0xd0
-	class CDrawer* m_drawer;       // 0xd4
-	unsigned int m_resolutionMode; // 0xd8
-	short m_lowWidth;              // 0xdc
-	short m_lowHeight;             // 0xde
-	short m_highWidth;             // 0xe0
-	short m_highHeight;            // 0xe2
+	void* m_cursorResource;         // 0xa8
+	CResPALETTE* m_gamePalette;     // 0xac
+	CResPALETTE* m_titlePalette;    // 0xb0
+	void* m_map;                    // 0xb4
+	unsigned int m_frameCount;      // 0xb8
+	unsigned int m_drawerClosing;   // 0xbc
+	CGame* m_game;                  // 0xc0
+	void* m_ai;                     // 0xc4
+	unsigned int m_quitRequested;   // 0xc8
+	eFlowProcesses m_currentFlow;   // 0xcc
+	CDrawingMark m_drawingMark;     // 0xd0
+	class CDrawer* m_drawer;        // 0xd4
+	unsigned int m_resolutionMode;  // 0xd8
+	short m_lowWidth;               // 0xdc
+	short m_lowHeight;              // 0xde
+	short m_highWidth;              // 0xe0
+	short m_highHeight;             // 0xe2
 };
 
 // SYNTHETIC: LEMBALL 0x004322e0
