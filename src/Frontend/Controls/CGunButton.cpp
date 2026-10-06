@@ -15,7 +15,7 @@ void CGunButton::OnReleased(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x0044c230
-void CGunButton::OnPressed(int p_flags)
+void CGunButton::OnPressed(eMouseButtonIndex p_flags)
 {
 	if (m_pressed == 0 || (p_flags != MOUSE_BUTTON_INDEX_LEFT && p_flags != MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 0;

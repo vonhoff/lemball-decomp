@@ -8,7 +8,7 @@ void CToggleButton::OnReleased(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00443850
-void CToggleButton::OnPressed(int p_flags)
+void CToggleButton::OnPressed(eMouseButtonIndex p_flags)
 {
 	m_enabled = m_pressed ^ m_toggled;
 }

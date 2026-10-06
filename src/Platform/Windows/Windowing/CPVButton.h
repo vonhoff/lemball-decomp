@@ -4,6 +4,7 @@
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "CGWnd.h"
 #include "Engine/Input/CHotAreaHandler.h"
+#include "Engine/Queues/Message.h"
 #include "Engine/Graphics/Primitives/CLine.h"
 class CBaseQueue;
 class CPrimitive;
@@ -17,14 +18,14 @@ class CPVButton : public CGWnd, public CHotAreaHandler {
 public:
 	CPVButton(CPVGWnd* p_ownerWindow);
 	CPVButton(const CVSRect& p_bounds, CPVGWnd* p_ownerWindow);
-	int ConvertDoubleClick(int p_flags);
+	eMouseButtonIndex ConvertDoubleClick(int p_flags);
 	virtual unsigned int GetStyle();                               // vtable+0x64
 	virtual void OnPaint(const CVSRect& p_rect);                   // vtable+0xa8
 	virtual void Destroy();                                        // vtable+0x74
 	virtual void _DrawButton();                                    // vtable+0xb8
 	virtual void DrawButton() = 0;                                 // vtable+0xbc
 	virtual void OnReleased(int p_flags) = 0;                      // vtable+0xc0
-	virtual void OnPressed(int p_flags) = 0;                       // vtable+0xc4
+	virtual void OnPressed(eMouseButtonIndex p_flags) = 0;         // vtable+0xc4
 	virtual void OnEnterButton() = 0;                              // vtable+0xc8
 	virtual void OnExitButton() = 0;                               // vtable+0xcc
 	virtual void Move(const CVSPoint& p_point);                    // vtable+0x38

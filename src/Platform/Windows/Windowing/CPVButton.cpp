@@ -186,7 +186,7 @@ void CPVButton::OnExit()
 }
 
 // FUNCTION: LEMBALL 0x00468000
-int CPVButton::ConvertDoubleClick(int p_flags)
+eMouseButtonIndex CPVButton::ConvertDoubleClick(int p_flags)
 {
 	switch (p_flags) {
 	case MOUSE_BUTTON_INDEX_LEFT:
@@ -206,7 +206,7 @@ int CPVButton::ConvertDoubleClick(int p_flags)
 // FUNCTION: LEMBALL 0x00468050
 void CPVButton::OnButtonDown(const CVSPoint& p_point, int p_flags)
 {
-	int converted;
+	eMouseButtonIndex converted;
 	CVSPoint clickPos;
 
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK) {
@@ -224,7 +224,7 @@ void CPVButton::OnButtonDown(const CVSPoint& p_point, int p_flags)
 // FUNCTION: LEMBALL 0x004680c0
 void CPVButton::OnButtonUp(const CVSPoint& p_point, int p_flags)
 {
-	int converted;
+	eMouseButtonIndex converted;
 
 	if (m_pressed != 0) {
 		converted = ConvertDoubleClick(p_flags);
@@ -266,7 +266,7 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 void CPVButton::_OnReleased(int p_flags)
 {
 	Message posted;
-	int converted;
+	eMouseButtonIndex converted;
 
 	if (m_autoDraw == 0) {
 		m_forceDrawCount = 1;
@@ -286,7 +286,7 @@ void CPVButton::_OnReleased(int p_flags)
 void CPVButton::_OnPressed(int p_flags)
 {
 	Message posted;
-	int converted;
+	eMouseButtonIndex converted;
 
 	if (m_autoDraw == 0) {
 		m_forceDrawCount = 1;

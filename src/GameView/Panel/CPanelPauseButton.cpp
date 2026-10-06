@@ -45,7 +45,7 @@ void CPanelPauseButton::OnPaint(const CVSRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00442280
-void CPanelPauseButton::OnPressed(int p_flags)
+void CPanelPauseButton::OnPressed(eMouseButtonIndex p_flags)
 {
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT) {
 		m_pressedInside = 1;

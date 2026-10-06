@@ -14,7 +14,7 @@ public:
 		: CGraphicButton(p_position, p_parent, p_animId, p_flags)
 	{
 	}
-	virtual void OnPressed(int p_flags);  // vtable+0xc4
+	virtual void OnPressed(eMouseButtonIndex p_flags); // vtable+0xc4
 	virtual void OnReleased(int p_flags); // vtable+0xc0
 };
 

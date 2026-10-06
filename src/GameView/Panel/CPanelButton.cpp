@@ -271,7 +271,7 @@ void CPanelButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00442ae0
-void CPanelButton::OnPressed(int p_flags)
+void CPanelButton::OnPressed(eMouseButtonIndex p_flags)
 {
 	CPanelLemming* panelLemming = m_lemming;
 	C2D* game = panelLemming->m_panel->m_game;
