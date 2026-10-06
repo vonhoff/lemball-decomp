@@ -81,10 +81,10 @@ EffectSpec g_pEffectSpecs[SOUND_EFFECT_SPEC_COUNT] = {
 };
 
 // GLOBAL: LEMBALL 0x0049ed98
-unsigned int g_dwEffectsOn = 0;
+unsigned int g_dwEffectsOn = 1;
 
 // GLOBAL: LEMBALL 0x0049ed9c
-unsigned int g_dwMusicOn = 0;
+unsigned int g_dwMusicOn = 1;
 
 // FUNCTION: LEMBALL 0x00439a70
 CSoundView::CSoundView()
