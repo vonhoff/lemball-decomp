@@ -684,12 +684,14 @@ unsigned short CGameObject::MapCheck(int p_x, int p_y)
 		for (int y = blockY; y <= blockY; y++) {
 			int width;
 			CMap* map;
+			unsigned short cellCollision;
 			if (x >= 0 && y >= 0 && x < (width = g_pMap->m_ground.m_width) && y < (map = g_pMap)->m_ground.m_height) {
-				collision |= map->m_ground.m_ground[y * width + x].m_collision;
+				cellCollision = map->m_ground.m_ground[y * width + x].m_collision;
 			}
 			else {
-				collision |= GROUND_COLLISION_OUT_OF_BOUNDS;
+				cellCollision = GROUND_COLLISION_OUT_OF_BOUNDS;
 			}
+			collision |= cellCollision;
 		}
 	}
 	return collision;
