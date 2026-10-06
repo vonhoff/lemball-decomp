@@ -12,8 +12,7 @@
 #pragma intrinsic(strcpy)
 
 #include "Platform/Windows/WinSock/WinSock.h"
-
-extern "C" unsigned long __stdcall timeGetTime(void);
+#include "Engine/Time/VsTime.h"
 
 extern unsigned int g_tcpIpBytesReceived;
 
@@ -49,7 +48,7 @@ bool CTCPIPReadSocket::ReadBuffFrom()
 bool CTCPIPReadSocket::ReadBuff()
 {
 	g_receivedPacketSize = recv(m_socketHandle, (char*) g_pNetworkPacketScratch, g_networkPacketSize, 0);
-	m_lastReceiveTime = timeGetTime();
+	m_lastReceiveTime = CurrentMilliTimer();
 	if (g_receivedPacketSize == (unsigned int) -1) {
 		*g_pErrorOutput << "Receive error (after receive):" << WSAGetLastError() << "\n";
 		SocketError();
