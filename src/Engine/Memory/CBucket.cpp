@@ -41,7 +41,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 	if (memory == NULL) {
 		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
-		memory = (unsigned char*) operator new(m_totalBytes);
+		memory = new unsigned char[m_totalBytes];
 		g_nSmallMemoryEnabled = smallMemEnabled;
 		m_flags |= BUCKET_FLAG_OWNS_MEMORY;
 	}
@@ -49,7 +49,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 	if (p_map == NULL) {
 		int smallMemEnabled = g_nSmallMemoryEnabled;
 		g_nSmallMemoryEnabled = 0;
-		p_map = (unsigned long*) operator new(m_mapWordCount * sizeof(unsigned long));
+		p_map = new unsigned long[m_mapWordCount];
 		g_nSmallMemoryEnabled = smallMemEnabled;
 		m_flags |= BUCKET_FLAG_OWNS_ALLOCATION_MAP;
 	}
@@ -71,13 +71,13 @@ CBucket::~CBucket()
 	}
 	if ((m_flags & BUCKET_FLAG_OWNS_MEMORY) != 0) {
 		if (m_memory != NULL) {
-			operator delete(m_memory);
+			delete[] m_memory;
 			m_memory = NULL;
 		}
 	}
 	if ((m_flags & BUCKET_FLAG_OWNS_ALLOCATION_MAP) != 0) {
 		if (m_map != NULL) {
-			operator delete(m_map);
+			delete[] m_map;
 			m_map = NULL;
 		}
 	}
