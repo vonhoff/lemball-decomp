@@ -56,10 +56,10 @@ int g_nMouseCaptureCount = 0;
 int g_nDisplayDibActive = 0;
 
 // GLOBAL: LEMBALL 0x004a1f74
-int g_nLastCursorX = 0;
+int g_nLastCursorX = -1;
 
 // GLOBAL: LEMBALL 0x004a1f78
-int g_nLastCursorY = 0;
+int g_nLastCursorY = -1;
 
 // GLOBAL: LEMBALL 0x004a1fec
 int g_cursorState = 0;
