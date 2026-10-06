@@ -66,10 +66,10 @@ int g_nShowUnloading = 0;
 int g_nShowLoading = 0;
 
 // GLOBAL: LEMBALL 0x004a0e94
-int g_nVisosVersionMajor = 3;
+int g_nVisosVersionMajor = 0;
 
 // GLOBAL: LEMBALL 0x004a0e98
-int g_nVisosVersionMinor = 0;
+int g_nVisosVersionMinor = 3;
 
 extern char g_szOptionParanoid[12];
 
