@@ -195,9 +195,9 @@ char* g_apNetworkOptionsMessages[NETWORK_OPTIONS_MESSAGE_COUNT] = {
 };
 
 // GLOBAL: LEMBALL 0x004a0348
-int g_anNetworkOptionsEditMessages[3] = {NETWORK_OPTIONS_MESSAGE_ENTER_NAME,
-										 NETWORK_OPTIONS_MESSAGE_ENTER_IP_ADDRESS,
-										 NETWORK_OPTIONS_MESSAGE_NONE};
+eNetOptsMessages g_anNetworkOptionsEditMessages[3] = {NETWORK_OPTIONS_MESSAGE_ENTER_NAME,
+													  NETWORK_OPTIONS_MESSAGE_ENTER_IP_ADDRESS,
+													  NETWORK_OPTIONS_MESSAGE_NONE};
 
 // GLOBAL: LEMBALL 0x004a0358
 int g_anNetworkOptionsEditMaxLength[3] = {8, NETWORK_OPTIONS_ADDRESS_MAX_LENGTH, 0};
@@ -285,7 +285,7 @@ CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_
 	m_message = NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT;
 	m_drawnMessage = NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT;
 	m_messageDuration = 0;
-	m_pendingEvent = NETWORK_OPTIONS_PENDING_EVENT_NONE;
+	m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
 	m_broadcasting = 0;
 	m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
 	m_redrawPending = 0;
@@ -691,7 +691,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 	bool handled;
 	unsigned int code;
 
-	if (m_startPending != 0 || (unsigned int) m_message != m_drawnMessage) {
+	if (m_startPending != 0 || m_message != m_drawnMessage) {
 		return false;
 	}
 
@@ -750,7 +750,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 				case INPUT_KEY_ESCAPE:
 					m_broadcasting = 0;
 					m_editingActive = 0;
-					m_pendingEvent = NETWORK_OPTIONS_PENDING_EVENT_NONE;
+					m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
 					SetMessage(NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT);
 					goto input_accepted;
 				case INPUT_KEY_RETURN:
@@ -877,7 +877,7 @@ void CNetworkOptionsDrawer::Start(unsigned int p_mode)
 	m_networkMode = p_mode;
 	m_broadcasting = 0;
 	m_editingActive = 0;
-	m_pendingEvent = NETWORK_OPTIONS_PENDING_EVENT_NONE;
+	m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
 	((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->StopBroadcast();
 	if (g_szNetworkGameName[0] != 0) {
 		*m_editor = g_szNetworkGameName;
@@ -913,7 +913,7 @@ void CNetworkOptionsDrawer::Stop()
 }
 
 // FUNCTION: LEMBALL 0x00454650
-void CNetworkOptionsDrawer::SetMessage(int p_message)
+void CNetworkOptionsDrawer::SetMessage(eNetOptsMessages p_message)
 {
 	unsigned long now;
 
@@ -1000,11 +1000,11 @@ void CNetworkOptionsDrawer::LastError()
 		}
 	}
 	StartMessageTimeout(m_pendingEvent, 6000);
-	m_pendingEvent = NETWORK_OPTIONS_PENDING_EVENT_NONE;
+	m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
 }
 
 // FUNCTION: LEMBALL 0x00454870
-void CNetworkOptionsDrawer::StartMessageTimeout(int p_message, unsigned long p_duration)
+void CNetworkOptionsDrawer::StartMessageTimeout(eNetOptsMessages p_message, unsigned long p_duration)
 {
 	unsigned long now;
 
@@ -1031,7 +1031,7 @@ void CNetworkOptionsDrawer::Processing()
 	int activation;
 	int acceptedPlayer;
 
-	if (m_drawnMessage != (unsigned int) m_message) {
+	if (m_drawnMessage != m_message) {
 		return;
 	}
 	if (m_startPending != 0) {
@@ -1042,7 +1042,7 @@ void CNetworkOptionsDrawer::Processing()
 		StartEditing(m_pendingStage, 1);
 		m_pendingStage = NETWORK_OPTIONS_EDIT_NONE;
 	}
-	if (m_pendingEvent != NETWORK_OPTIONS_PENDING_EVENT_NONE) {
+	if (m_pendingEvent != NETWORK_OPTIONS_MESSAGE_NONE) {
 		LastError();
 	}
 	now = CurrentMilliTimer();
@@ -1107,7 +1107,7 @@ void CNetworkOptionsDrawer::Processing()
 		if (duration != 0) {
 			now = CurrentMilliTimer();
 			if (now - m_messageStartTime > duration) {
-				m_message = 1;
+				m_message = NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT;
 				m_backBufferNeeded = 1;
 				m_messageDuration = 0;
 			}

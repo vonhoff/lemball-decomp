@@ -4,7 +4,7 @@
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 
-enum eNetworkOptionsMessageId {
+enum eNetOptsMessages {
 	NETWORK_OPTIONS_MESSAGE_NONE = 0,
 	NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT = 1,
 	NETWORK_OPTIONS_MESSAGE_ENTER_NAME = 2,
@@ -29,10 +29,6 @@ enum {
 enum eNetworkOptionsHandlerState {
 	NETWORK_OPTIONS_HANDLERS_CURRENT = 0,
 	NETWORK_OPTIONS_HANDLERS_STALE = 1
-};
-
-enum eNetworkOptionsPendingEvent {
-	NETWORK_OPTIONS_PENDING_EVENT_NONE = 0
 };
 
 #define NETWORK_OPTIONS_ADDRESS_MAX_LENGTH 20
@@ -110,11 +106,11 @@ public:
 	void Processing();
 	void RegisterRemaps();
 	void ResetHandlers();
-	void SetMessage(int p_message);
+	void SetMessage(eNetOptsMessages p_message);
 	void Start(unsigned int p_mode);
 	void StartBroadcast();
 	void StartEditing(eEditingStage p_stage, unsigned int p_clear);
-	void StartMessageTimeout(int p_message, unsigned long p_duration);
+	void StartMessageTimeout(eNetOptsMessages p_message, unsigned long p_duration);
 	void Stop();
 	void StopEditing();
 	virtual void UnLoad(); // vtable+0x44
@@ -129,8 +125,8 @@ private:
 	unsigned int m_editingActive;        // 0x39c
 	eEditingStage m_editingStage;        // 0x3a0
 	eEditingStage m_pendingStage;        // 0x3a4
-	int m_message;                       // 0x3a8
-	unsigned int m_drawnMessage;         // 0x3ac
+	eNetOptsMessages m_message;          // 0x3a8
+	eNetOptsMessages m_drawnMessage;     // 0x3ac
 	unsigned int m_messageStartTime;     // 0x3b0
 	unsigned long m_messageDuration;     // 0x3b4
 	unsigned int m_broadcasting;         // 0x3b8
@@ -150,7 +146,7 @@ private:
 	unsigned int m_unknown410;           // 0x410
 	CBaseRemap* m_remaps[6];             // 0x414
 	NetworkOptionsLayout* m_layoutTable; // 0x42c
-	int m_pendingEvent;                  // 0x430
+	eNetOptsMessages m_pendingEvent;     // 0x430
 	unsigned int m_handlerCount;         // 0x434
 };
 
