@@ -15,6 +15,7 @@
 #include "GameView/Loading/CLoadUpdate.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Time/VsTime.h"
 #include "Engine/Math/RandomConstants.h"
 
 #include <stddef.h>
@@ -243,7 +244,7 @@ void CSoundView::PrepareEffects(unsigned short p_stateMask)
 	EffectSlot* slot;
 
 	if (g_nEffectsAvailable != 0) {
-		timestamp = timeGetTime() - SOUND_EFFECT_COOLDOWN_MS;
+		timestamp = CurrentMilliTimer() - SOUND_EFFECT_COOLDOWN_MS;
 		CLoadUpdate*& loadUpdate = m_loadUpdate;
 		for (i = 0; i < SOUND_EFFECT_SLOT_COUNT; i++) {
 			slot = &m_effectSlots[i];
