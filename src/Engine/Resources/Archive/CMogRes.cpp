@@ -236,7 +236,7 @@ int CMogRes::GetFreeHandle()
 }
 
 // FUNCTION: LEMBALL 0x0045ca30
-unsigned char* CMogRes::AllocateMainMem(unsigned int p_size)
+unsigned char* CMogRes::AllocateMainMem(unsigned long p_size)
 {
 	register unsigned char* memory;
 	register unsigned int size = p_size;

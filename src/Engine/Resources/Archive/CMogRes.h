@@ -24,7 +24,7 @@ public:
 	int GetFreeHandle();
 	int KillLeastResource(unsigned int p_requiredSize);
 	void DeallocateMem(unsigned char* p_data, unsigned char p_owned);
-	unsigned char* AllocateMainMem(unsigned int p_size);
+	unsigned char* AllocateMainMem(unsigned long p_size);
 	void AgeResources();
 	void CleanUpResources();
 	void Remove(CResBase* p_resource);
