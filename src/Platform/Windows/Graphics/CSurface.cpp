@@ -1345,8 +1345,7 @@ void CSurface::Blit(CLine* p_line)
 {
 	int y2 = p_line->m_end.m_y;
 	int x2 = p_line->m_end.m_x;
-	int colourValue = p_line->m_colour;
-	const int& colour = colourValue;
+	int colour = p_line->m_colour;
 	int y1 = p_line->m_start.m_y;
 	int x1 = p_line->m_start.m_x;
 	if (x2 < x1) {
