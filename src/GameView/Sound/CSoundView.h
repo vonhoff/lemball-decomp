@@ -27,7 +27,7 @@ enum eEffectHandleState {
 
 struct EffectSlot {
 	EffectSpec* m_spec;         // 0x00
-	unsigned int m_handle;      // 0x04
+	unsigned long m_handle;     // 0x04
 	unsigned long m_lastPlayed; // 0x08
 };
 
