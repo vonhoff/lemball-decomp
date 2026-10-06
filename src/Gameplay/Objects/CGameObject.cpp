@@ -39,7 +39,7 @@ unsigned short g_wNetworkLemmingIndex = 0;
 unsigned short g_wLocalLemmingIndex = 0;
 
 // GLOBAL: LEMBALL 0x0049d070
-int g_anTurnDelayCursor[16] = {0, 30, 20, 12, 0, 0, 0, 15, 32, 0, 0, 0, 0, 0, 0, 0};
+int g_anTurnDelayCursor[16] = {0, 30, 20, 12, 0, 0, 0, 15, 15, 32, 0, 0, 0, 0, 0, 0};
 
 // GLOBAL: LEMBALL 0x0049d0b0
 int g_anTurnDelayTarget[16] = {0, 87, 75, 0, 0, 0, 0, 75, 75, 0, 0, 0, 0, 0, 0, 0};
