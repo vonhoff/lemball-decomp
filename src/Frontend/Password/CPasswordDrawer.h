@@ -4,6 +4,7 @@
 #include "Engine/Animation/CStaticAnim.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/CoordPair.h"
 
 class CGDI;
 class CMain2DDisplay;
@@ -61,7 +62,7 @@ private:
 	PasswordTextLayout* m_layout;          // 0x3a8
 	unsigned long* m_buttonAnimIds;        // 0x3ac
 	char m_password[16];                   // 0x3b0
-	int m_buttonOffsets[24];               // 0x3c0
+	CoordPair m_buttonOffsets[12];         // 0x3c0
 	int m_passwordLength;                  // 0x420
 	CPVButton* m_buttons[12];              // 0x424
 	CClipRect m_hiliteRect;                // 0x454

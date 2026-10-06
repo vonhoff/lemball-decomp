@@ -208,7 +208,7 @@ void CPasswordDrawer::Load()
 	} while (--primitiveCount != 0);
 	CAnimsManager::LoadAnims(m_animationId);
 	int* keyMap = g_passwordKeyMap;
-	int* offsetPtr = m_buttonOffsets;
+	CoordPair* offsetPtr = m_buttonOffsets;
 	gridStartX = m_layout->m_keypadX;
 	gridY = m_layout->m_keypadY;
 	gridX = gridStartX;
@@ -223,14 +223,14 @@ void CPasswordDrawer::Load()
 													3);
 			m_buttons[*keyMap]->m_controlMessage = PASSWORD_BUTTON_MESSAGE_FIRST + *keyMap;
 			m_buttons[*keyMap]->m_messageQueue = g_pMasterInputQueue;
-			offsetPtr[0] = gridX - m_layout->m_keypadX;
-			offsetPtr[1] = buttonY - m_layout->m_keypadY;
+			offsetPtr->m_x = gridX - m_layout->m_keypadX;
+			offsetPtr->m_y = buttonY - m_layout->m_keypadY;
 			CGDI* buttonGdi = m_buttons[*keyMap]->m_gdi;
 			CSurface* target = buttonGdi->m_renderTarget;
 			m_buttons[*keyMap]->SetAutoDraw(0);
 			target->m_flag70 = 0;
 			gridX = gridX + m_layout->m_buttonWidth + m_layout->m_buttonGapX;
-			offsetPtr = offsetPtr + 2;
+			offsetPtr++;
 			keyMap++;
 			--col;
 		} while (col != 0);
@@ -239,8 +239,8 @@ void CPasswordDrawer::Load()
 		buttonY = gridY;
 		--row;
 	} while (row != 0);
-	m_hiliteX = m_buttonOffsets[m_selectedButton * 2];
-	m_hiliteY = m_buttonOffsets[m_selectedButton * 2 + 1];
+	m_hiliteX = m_buttonOffsets[m_selectedButton].m_x;
+	m_hiliteY = m_buttonOffsets[m_selectedButton].m_y;
 	SetHiliteWindow();
 }
 
@@ -301,8 +301,8 @@ void CPasswordDrawer::ShiftHilite(int p_delta)
 	if (m_selectedButton >= PASSWORD_BUTTON_INDEX_COUNT) {
 		m_selectedButton -= PASSWORD_BUTTON_INDEX_COUNT;
 	}
-	m_hiliteX = m_buttonOffsets[m_selectedButton * 2];
-	m_hiliteY = m_buttonOffsets[m_selectedButton * 2 + 1];
+	m_hiliteX = m_buttonOffsets[m_selectedButton].m_x;
+	m_hiliteY = m_buttonOffsets[m_selectedButton].m_y;
 	g_pSoundView->PlayEffect(SFX_CHANGEOP);
 }
 
