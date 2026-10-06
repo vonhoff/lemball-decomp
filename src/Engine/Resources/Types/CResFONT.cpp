@@ -58,7 +58,7 @@ CResFONT* CResFONT::Load(unsigned int p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x0045d8b0
-void CResFONT::AllocateResources(unsigned int p_count)
+void CResFONT::AllocateResources(unsigned long p_count)
 {
 	m_fontEntries = new CResINT[p_count];
 	m_animationEntries = new CResZRLE[p_count];

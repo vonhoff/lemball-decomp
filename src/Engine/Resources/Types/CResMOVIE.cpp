@@ -53,7 +53,7 @@ CResMOVIE::~CResMOVIE()
 }
 
 // FUNCTION: LEMBALL 0x0045dfa0
-void CResMOVIE::AllocateResources(unsigned int p_count)
+void CResMOVIE::AllocateResources(unsigned long p_count)
 {
 	m_movieEntries = new CResSTRING[p_count];
 	m_fontEntries = new CResINT[p_count];

@@ -12,7 +12,7 @@ public:
 	CResMOVIE();
 	CResMOVIE(unsigned long p_resourceId);
 	static CResMOVIE* Load(unsigned int p_resourceId);
-	virtual void AllocateResources(unsigned int p_count);                          // vtable+0x44
+	virtual void AllocateResources(unsigned long p_count);                         // vtable+0x44
 	virtual bool DirectResources(unsigned long p_index, unsigned char*& p_cursor); // vtable+0x50
 	virtual bool DirectResources(unsigned long p_index,
 								 unsigned char*& p_headerCursor,

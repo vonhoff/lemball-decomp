@@ -19,7 +19,7 @@ CResANIM* CResANIM::Load(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x0045d6a0
-void CResANIM::AllocateResources(unsigned int p_count)
+void CResANIM::AllocateResources(unsigned long p_count)
 {
 	m_animationEntries = new CResZRLE[p_count];
 }
