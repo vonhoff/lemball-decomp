@@ -110,7 +110,7 @@ private:
 	unsigned int m_childCount;    // 0x2c
 	unsigned int m_sizeStatus;    // 0x30
 	unsigned int m_active;        // 0x34
-	unsigned int m_zoom;          // 0x38
+	int m_zoom;                   // 0x38
 };
 
 #endif

@@ -30,7 +30,7 @@ public:
 private:
 	CHotAreaElement* m_head;           // 0x48
 	CHotAreaElement* m_tail;           // 0x4c
-	unsigned int m_scale;              // 0x50
+	int m_scale;                       // 0x50
 	CVSPoint m_relativeTopLeft;        // 0x54
 	CVSPoint m_innerOrigin;            // 0x58
 	CHotAreaHandler* m_currentHandler; // 0x5c
