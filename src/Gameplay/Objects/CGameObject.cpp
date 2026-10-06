@@ -1107,7 +1107,7 @@ bool CGameObject::Fall()
 			else {
 				centreedX = x - 1;
 			}
-			position->m_xFixed = centreedX << FIXED_POINT_FRACTION_BITS;
+			position->m_xFixed = centreedX * FIXED_POINT_ONE;
 		}
 
 		if ((y & GROUND_BLOCK_PIXEL_MASK) != GROUND_BLOCK_PIXEL_HALF_SIZE) {
@@ -1118,7 +1118,7 @@ bool CGameObject::Fall()
 			else {
 				centreedY = y - 1;
 			}
-			m_position.m_yFixed = centreedY << FIXED_POINT_FRACTION_BITS;
+			m_position.m_yFixed = centreedY * FIXED_POINT_ONE;
 		}
 
 		int groundZ = (int) g_pMap->GetZ(x, y, &mover) << FIXED_POINT_FRACTION_BITS;
