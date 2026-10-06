@@ -1,21 +1,19 @@
 #include "CMainOptions1Drawer.h"
 
-#include "Application/GameMain.h"
-
 #include "Application/CGameStatus.h"
-#include "Level/CLevelLoader.h"
+#include "Application/FlowProcesses.h"
+#include "Application/GameMain.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/Types/CResBITMAP.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CGunController.h"
-#include "GameView/Display/CMain2DDisplay.h"
-#include "Engine/Resources/Types/CResBITMAP.h"
-#include "Engine/Resources/Manifest.h"
-#include "Frontend/tagPRIMS.h"
-#include "Application/FlowProcesses.h"
-#include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/Controls/ControlMessages.h"
-#include "Engine/Math/CVSRect.h"
-
-#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Frontend/FrontendLayoutMode.h"
+#include "Frontend/tagPRIMS.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "Level/CLevelLoader.h"
 
 #include <stddef.h>
 
@@ -67,7 +65,7 @@ extern "C" unsigned long __stdcall timeGetTime(void);
 CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
 	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_1, 0, 0, 0, 0, 0)
 {
-	m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
+	m_idleDeadline = CurrentMilliTimer() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 	m_toggleResolutionButton = 0;
 	m_navigationButton = 0;
 	m_auxButtonState1 = 0;
@@ -306,9 +304,9 @@ void CMainOptions1Drawer::Processing()
 		m_quitYet = 1;
 		m_returnState = FLOW_PREVIEW;
 	}
-	now = timeGetTime();
+	now = CurrentMilliTimer();
 	if (m_display->IsWindowValid() == 0 || m_display->IsFocusWindow() == 0) {
-		m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
+		m_idleDeadline = CurrentMilliTimer() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 		return;
 	}
 	if (now <= m_idleDeadline) {

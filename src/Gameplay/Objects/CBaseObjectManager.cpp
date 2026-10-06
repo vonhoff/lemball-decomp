@@ -1,15 +1,16 @@
 #include "CBaseObjectManager.h"
 
-#include "Multiplayer/CNetworkManager.h"
-#include "Multiplayer/Transport/Packets/CWriteCBuff.h"
-#include "Multiplayer/Transport/CBaseNetwork.h"
-#include "Multiplayer/Transport/CConnect.h"
 #include "CGameObject.h"
 #include "CGlobalGameObject.h"
+#include "Engine/Time/VsTime.h"
 #include "Gameplay/Messages/GameMessageIds.h"
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Multiplayer/CNetworkManager.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/Packets/CWriteCBuff.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
@@ -39,9 +40,9 @@ void CBaseObjectManager::Add(CNetworkMessage* p_message)
 {
 	while (1) {
 		if (m_pendingSendCount != 0) {
-			unsigned long start = timeGetTime();
+			unsigned long start = CurrentMilliTimer();
 			while (m_pendingSendCount != 0) {
-				if (timeGetTime() - start >= NETWORK_PENDING_SEND_TIMEOUT_MS) {
+				if (CurrentMilliTimer() - start >= NETWORK_PENDING_SEND_TIMEOUT_MS) {
 					break;
 				}
 				g_pBaseNetwork->WaitProcess();
