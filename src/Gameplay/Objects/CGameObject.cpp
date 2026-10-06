@@ -723,7 +723,7 @@ bool CGameObject::SearchRoute()
 	};
 	if (m_routeSearchActive != 0) {
 		int solutionCount;
-		int complete;
+		bool complete;
 		unsigned int reached;
 		unsigned int noChanges;
 		Solution solutions[GAME_OBJECT_ROUTE_SOLUTION_CAPACITY];
