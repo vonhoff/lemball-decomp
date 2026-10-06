@@ -49,8 +49,8 @@ private:
 	int m_endX;                     // 0x1020
 	int m_endY;                     // 0x1024
 	unsigned int m_unk0x1028;       // 0x1028
-	unsigned int m_startTime;       // 0x102c
-	unsigned int m_totalTime;       // 0x1030
+	unsigned long m_startTime;      // 0x102c
+	unsigned long m_totalTime;      // 0x1030
 	int m_solutionCount;            // 0x1034
 	int m_radius;                   // 0x1038
 };
