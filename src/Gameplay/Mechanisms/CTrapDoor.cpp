@@ -37,7 +37,7 @@ CTrapDoor::CTrapDoor(AICOORD& p_position, unsigned int p_mode) : CBaseGlobalObje
 	m_spawnPosition.m_xFixed = p_position.m_xFixed;
 	m_spawnPosition.m_yFixed = p_position.m_yFixed;
 	m_spawnPosition.m_zFixed = p_position.m_zFixed;
-	m_mode = p_mode;
+	m_mode = (eTrapDoorMode) p_mode;
 }
 
 // FUNCTION: LEMBALL 0x0040c350

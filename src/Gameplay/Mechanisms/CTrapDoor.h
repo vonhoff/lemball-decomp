@@ -24,7 +24,7 @@ public:
 	friend class CTrapDoorManager;
 
 private:
-	unsigned int m_mode;     // 0x144
+	eTrapDoorMode m_mode;    // 0x144
 	unsigned int m_active;   // 0x148
 	unsigned int m_deadline; // 0x14c
 };
