@@ -166,7 +166,7 @@ void CTCPIPConnect::Connect()
 // FUNCTION: LEMBALL 0x004712e0
 int CTCPIPConnect::Process(unsigned int p_message, unsigned int p_wParam, long p_lParam)
 {
-	int result;
+	NameResult result;
 
 	if (m_killRequested == 0) {
 		switch (p_message) {

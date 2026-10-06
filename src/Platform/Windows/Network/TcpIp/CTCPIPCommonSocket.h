@@ -25,7 +25,7 @@ public:
 	using CBaseCommonSocket::SocketError;
 
 	CTCPIPCommonSocket();
-	int OnNameResolved(unsigned int p_wParam, unsigned int p_lParam, char** p_buffer);
+	NameResult OnNameResolved(unsigned int p_wParam, unsigned int p_lParam, char** p_buffer);
 	virtual int SysCloseSocket();  // vtable+0x00
 	virtual void SocketError();    // vtable+0x08
 	virtual ~CTCPIPCommonSocket(); // vtable+0x04

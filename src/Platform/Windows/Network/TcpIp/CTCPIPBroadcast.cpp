@@ -246,7 +246,7 @@ int CTCPIPBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long
 {
 	unsigned int event;
 	unsigned int error;
-	int result;
+	NameResult result;
 
 	switch (p_message) {
 	case TCPIP_MESSAGE_LOCAL_HOST_RESOLVED:

@@ -29,7 +29,9 @@ CTCPIPCommonSocket::~CTCPIPCommonSocket()
 }
 
 // FUNCTION: LEMBALL 0x0046fdb0
-int CTCPIPCommonSocket::OnNameResolved(unsigned int p_wParam, unsigned int p_lParam, char** p_buffer)
+CTCPIPCommonSocket::NameResult CTCPIPCommonSocket::OnNameResolved(unsigned int p_wParam,
+																  unsigned int p_lParam,
+																  char** p_buffer)
 {
 	int error;
 
