@@ -244,8 +244,9 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 
 	m_bounds.m_width = p_rect.m_width;
 	m_bounds.m_height = p_rect.m_height;
-	m_bounds.m_x = p_rect.m_x;
-	m_bounds.m_y = p_rect.m_y;
+	const CVSPoint& position = p_rect;
+	m_bounds.m_x = position.m_x;
+	m_bounds.m_y = position.m_y;
 	CHotAreaHandler::SetActive(1);
 	m_externalEnabled = 1;
 
