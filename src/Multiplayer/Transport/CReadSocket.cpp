@@ -10,6 +10,7 @@
 #include "Multiplayer/Transport/Packets/CReadPacket.h"
 #include "CNetworkAddress.h"
 #include "CBaseNetwork.h"
+#include "Engine/Time/VsTime.h"
 #include "NetworkConstants.h"
 #include "Multiplayer/Transport/Packets/CBasePacketBuff.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
@@ -17,8 +18,6 @@
 
 #include <new.h>
 #include <stddef.h>
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x0045f820
 CReadSocket::CReadSocket()
@@ -220,12 +219,12 @@ bool CReadSocket::ProcessPacket()
 void CReadSocket::Process()
 {
 	if (m_readReady != 0) {
-		if (m_closePending != 0 && timeGetTime() - m_lastReceiveTime > NETWORK_RECEIVE_IDLE_TIMEOUT_MS) {
+		if (m_closePending != 0 && CurrentMilliTimer() - m_lastReceiveTime > NETWORK_RECEIVE_IDLE_TIMEOUT_MS) {
 			CloseSocket();
 			Closed(1);
 		}
 	}
-	else if (m_eventPending != 0 && timeGetTime() - m_lastReceiveTime > NETWORK_RECEIVE_IDLE_TIMEOUT_MS) {
+	else if (m_eventPending != 0 && CurrentMilliTimer() - m_lastReceiveTime > NETWORK_RECEIVE_IDLE_TIMEOUT_MS) {
 		CloseSocket();
 		Closed(0);
 	}
