@@ -123,15 +123,15 @@ bool CSlinky::Move()
 		{
 			const int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 			count++;
-			m_destination.m_xFixed = (x + dx) << FIXED_POINT_FRACTION_BITS;
+			m_destination.m_xFixed = (int) ((unsigned int) (x + dx) << FIXED_POINT_FRACTION_BITS);
 		}
 		{
 			const int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-			m_destination.m_yFixed = (y + dy) << FIXED_POINT_FRACTION_BITS;
+			m_destination.m_yFixed = (int) ((unsigned int) (y + dy) << FIXED_POINT_FRACTION_BITS);
 		}
 		{
 			const int z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
-			m_destination.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+			m_destination.m_zFixed = (int) ((unsigned int) z << FIXED_POINT_FRACTION_BITS);
 		}
 	} while (count < MAX_ATTEMPTS && !GoodEndPt(m_destination));
 	return true;
