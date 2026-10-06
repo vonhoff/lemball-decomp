@@ -7,6 +7,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
+#include "Engine/Time/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CGunController.h"
 #include "Frontend/Controls/ControlMessages.h"
@@ -18,8 +19,6 @@
 #include <stddef.h>
 
 class CGWnd;
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // GLOBAL: LEMBALL 0x0049f490
 int g_anMainOptions1ButtonLayout[12] = {32, 116, 480, 116, 48, 232, 464, 232, 80, 348, 416, 348};
@@ -58,8 +57,6 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 #include "Engine/Queues/Message.h"
 
 class CGWnd;
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00448200
 CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
@@ -249,10 +246,10 @@ bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
 	switch (type) {
 	case MESSAGE_KEY_UP:
 	case MESSAGE_KEY_DOWN:
-		m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
+		m_idleDeadline = CurrentMilliTimer() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 		break;
 	case MESSAGE_BUTTON_RELEASED:
-		m_idleDeadline = timeGetTime() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
+		m_idleDeadline = CurrentMilliTimer() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 		switch ((unsigned int) p_message->m_code) {
 		case MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS:
 			m_returnState = FLOW_MAIN_OPTIONS_2;
