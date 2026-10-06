@@ -15,10 +15,10 @@ public:
 	friend class CReadCMSBuff;
 
 protected:
-	unsigned int m_subpacketPayloadSize;   // 0x08
-	unsigned int m_messageSlotCount;       // 0x0c
-	unsigned int m_receivedSubpacketCount; // 0x10
-	unsigned int m_assembledSize;          // 0x14
+	unsigned int m_subpacketPayloadSize; // 0x08
+	unsigned int m_messageSlotCount;     // 0x0c
+	int m_receivedSubpacketCount;        // 0x10
+	unsigned int m_assembledSize;        // 0x14
 };
 
 // SYNTHETIC: LEMBALL 0x00462a40

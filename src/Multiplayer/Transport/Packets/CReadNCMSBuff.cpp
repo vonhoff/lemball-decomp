@@ -62,7 +62,7 @@ CReadMSBuff* CReadNCMSBuff::UpdateSubPacket()
 		return NULL;
 	}
 
-	if (header->m_packetSequence != packetSequence && (int) message->m_receivedSubpacketCount > 0) {
+	if (header->m_packetSequence != packetSequence && message->m_receivedSubpacketCount > 0) {
 		m_nextExpectedSequence = (unsigned int) packetSequence + 1;
 		return NULL;
 	}
