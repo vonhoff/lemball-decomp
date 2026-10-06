@@ -132,13 +132,13 @@ void CResFONT::OnLoad()
 }
 
 // FUNCTION: LEMBALL 0x0045db20
-CResZRLE* CResFONT::ASCIItoZRLE(unsigned int p_ascii)
+CResZRLE* CResFONT::ASCIItoZRLE(unsigned long p_ascii) const
 {
 	return m_fontTable->GetZRLE(p_ascii);
 }
 
 // FUNCTION: LEMBALL 0x0045db30
-CVSSize CResFONT::GetSize(const char* p_text, unsigned int p_flags)
+CVSSize CResFONT::GetSize(const char* p_text, unsigned long p_flags) const
 {
 	int textIndex = 0;
 	CVSSize sizeValue;

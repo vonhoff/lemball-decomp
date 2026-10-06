@@ -13,8 +13,8 @@ class CResFONT : public CResBaseLIST {
 public:
 	CResFONT();
 	CResFONT(unsigned long p_resourceId);
-	CResZRLE* ASCIItoZRLE(unsigned int p_ascii);
-	CVSSize GetSize(const char* p_text, unsigned int p_flags);
+	CResZRLE* ASCIItoZRLE(unsigned long p_ascii) const;
+	CVSSize GetSize(const char* p_text, unsigned long p_flags) const;
 
 	static CResFONT* Load(unsigned int p_resourceId);
 	virtual void OnLoad();                                                         // vtable+0x2c
