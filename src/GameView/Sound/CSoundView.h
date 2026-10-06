@@ -77,8 +77,8 @@ private:
 	char m_headerState[0x50];                          // 0x14
 	unsigned int m_unk0x64;                            // 0x64
 	EffectSlot m_effectSlots[SOUND_EFFECT_SLOT_COUNT]; // 0x68
-	unsigned int m_musicResourceId;                    // 0x2c0
-	unsigned int m_musicHandle;                        // 0x2c4
+	unsigned long m_musicResourceId;                   // 0x2c0
+	unsigned long m_musicHandle;                       // 0x2c4
 	unsigned int m_randomMusicIndex;                   // 0x2c8
 };
 
