@@ -12,6 +12,7 @@
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Packets/CBasePacketBuff.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Engine/Time/VsTime.h"
 
 #include <new.h>
 #include <string.h>
@@ -24,7 +25,7 @@ CWriteSocket::CWriteSocket()
 {
 	BasePacketHeader* header;
 
-	m_lastSendTime = timeGetTime() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
+	m_lastSendTime = CurrentMilliTimer() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 	header = (BasePacketHeader*) operator new(sizeof(BasePacketHeader));
 	m_packetHeader = header;
 	header->m_magic = BASE_PACKET_MAGIC;
@@ -326,7 +327,7 @@ void CWriteSocket::Process()
 		}
 		packet = (CWritePacket*) buffer->m_packets[index % buffer->m_packetCount];
 		if (packet->m_available == 0 &&
-			NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS < timeGetTime() - packet->m_lastSendTime) {
+			NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS < CurrentMilliTimer() - packet->m_lastSendTime) {
 			if (g_pBaseNetwork->m_criticalRetryLimit == 0 ||
 				packet->m_retryCount != g_pBaseNetwork->m_criticalRetryLimit) {
 				ResendCritical(packet);
@@ -340,7 +341,7 @@ void CWriteSocket::Process()
 		}
 		index++;
 	}
-	if (m_closePending != 0 && NETWORK_CLOSE_PENDING_PULSE_INTERVAL_MS < timeGetTime() - m_lastSendTime) {
+	if (m_closePending != 0 && NETWORK_CLOSE_PENDING_PULSE_INTERVAL_MS < CurrentMilliTimer() - m_lastSendTime) {
 		Send(*g_pPulseMessage);
 	}
 }

@@ -12,6 +12,7 @@
 #include "Multiplayer/Transport/CNetworkAddress.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
+#include "Engine/Time/VsTime.h"
 
 #include <new.h>
 #include <string.h>
@@ -19,8 +20,6 @@
 #pragma intrinsic(memcpy, strcpy, strlen)
 
 #include "Platform/Windows/WinSock/WinSock.h"
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00470270
 CTCPIPBroadcast::CTCPIPBroadcast()
@@ -235,7 +234,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 	}
 	m_readReady = 1;
 	m_writeReady = 0;
-	CBroadcast::m_lastBroadcastTime = timeGetTime() - NETWORK_BROADCAST_INTERVAL_MS;
+	CBroadcast::m_lastBroadcastTime = CurrentMilliTimer() - NETWORK_BROADCAST_INTERVAL_MS;
 	message.m_type = 2;
 	message.m_code = 0;
 	g_pNetworkStatusQueue->Post(message);

@@ -7,6 +7,7 @@
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
+#include "Engine/Time/VsTime.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -160,7 +161,7 @@ void CTCPIPConnect::Connect()
 	}
 	m_eventPending = 1;
 	m_isHost = 1;
-	CReadSocket::m_lastReceiveTime = timeGetTime();
+	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 }
 
 // FUNCTION: LEMBALL 0x004712e0

@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 #pragma intrinsic(strcpy, strlen)
 
 enum {
@@ -21,6 +19,7 @@ enum {
 #include "CRawRead.h"
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Resources/Archive/CMogloadStat.h"
+#include "Engine/Time/VsTime.h"
 
 #define RESOURCE_PATH_SEPARATOR '/'
 
@@ -54,9 +53,9 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 		m_error = 1;
 		return;
 	}
-	timeGetTime();
+	CurrentMilliTimer();
 	m_rootDirectory = new CMogDir(0);
-	timeGetTime();
+	CurrentMilliTimer();
 	m_workingDirectory = m_rootDirectory;
 	SetWD(g_mogRootPath);
 	m_resources = (CResBase**) CMogloadArena::operator new(RESOURCE_HANDLE_COUNT * sizeof(*m_resources));

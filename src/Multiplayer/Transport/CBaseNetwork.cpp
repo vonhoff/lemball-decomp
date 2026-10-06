@@ -16,10 +16,9 @@
 #include "CNetworkAddress.h"
 #include "NetworkConstants.h"
 #include "Engine/Queues/Message.h"
+#include "Engine/Time/VsTime.h"
 
 struct BasePacketHeader;
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 enum {
 	NETWORK_QUEUE_MESSAGE_CAPACITY = 0x1e,
@@ -89,10 +88,10 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 	m_networkName = (char*) p_networkName;
 	g_networkPacketSize = p_packetSize;
 	ForceProcess();
-	start = timeGetTime();
+	start = CurrentMilliTimer();
 	if (m_initialised == 0) {
 		do {
-			if (g_lastNetworkError != 0 || timeGetTime() - start >= NETWORK_LIFECYCLE_TIMEOUT_MS) {
+			if (g_lastNetworkError != 0 || CurrentMilliTimer() - start >= NETWORK_LIFECYCLE_TIMEOUT_MS) {
 				break;
 			}
 			WaitProcess();
@@ -102,11 +101,11 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 		}
 	}
 
-	start = timeGetTime();
+	start = CurrentMilliTimer();
 	while (m_serverMode != 0 && !(m_serverMode != 0 && m_broadcast != NULL && m_broadcast->m_readReady != 0) &&
-		   g_lastNetworkError == 0 && timeGetTime() - start < NETWORK_LIFECYCLE_TIMEOUT_MS) {
-		waitStart = timeGetTime();
-		while (timeGetTime() - waitStart < NETWORK_STARTUP_POLL_INTERVAL_MS) {
+		   g_lastNetworkError == 0 && CurrentMilliTimer() - start < NETWORK_LIFECYCLE_TIMEOUT_MS) {
+		waitStart = CurrentMilliTimer();
+		while (CurrentMilliTimer() - waitStart < NETWORK_STARTUP_POLL_INTERVAL_MS) {
 		}
 		ForceProcess();
 	}
@@ -125,8 +124,8 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 
 	m_shutdownRequested = 1;
 	ForceProcess();
-	start = timeGetTime();
-	while (m_initialised != 0 && timeGetTime() - start < NETWORK_LIFECYCLE_TIMEOUT_MS) {
+	start = CurrentMilliTimer();
+	while (m_initialised != 0 && CurrentMilliTimer() - start < NETWORK_LIFECYCLE_TIMEOUT_MS) {
 	}
 	return false;
 }

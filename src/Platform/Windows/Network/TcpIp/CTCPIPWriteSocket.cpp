@@ -6,8 +6,7 @@
 #include "Platform/Windows/WinSock/WinSock.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
-
-extern "C" unsigned long __stdcall timeGetTime(void);
+#include "Engine/Time/VsTime.h"
 
 // FUNCTION: LEMBALL 0x00470030
 CTCPIPWriteSocket::CTCPIPWriteSocket()
@@ -31,7 +30,7 @@ bool CTCPIPWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 		return false;
 	}
 	sent = sendto(m_socketHandle, (const char*) p_data, p_size, 0, &m_destination, sizeof(m_destination));
-	m_lastSendTime = timeGetTime();
+	m_lastSendTime = CurrentMilliTimer();
 	if (sent == NETWORK_SOCKET_ERROR) {
 		if (WSAGetLastError() == WSAEWOULDBLOCK) {
 			return false;
