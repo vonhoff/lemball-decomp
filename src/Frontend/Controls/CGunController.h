@@ -104,7 +104,7 @@ private:
 	int m_selectionStartX;                // 0x98
 	int m_targetY;                        // 0x9c
 	int m_targetSide;                     // 0xa0
-	int m_selectionState;                 // 0xa4
+	eGunSelectionState m_selectionState;  // 0xa4
 	int m_projectileX;                    // 0xa8
 	int m_projectileY;                    // 0xac
 	int m_projectileTargetX;              // 0xb0
