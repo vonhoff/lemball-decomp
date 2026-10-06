@@ -26,7 +26,7 @@ public:
 	virtual bool DirectResources(unsigned long p_index,
 								 unsigned char*& p_headerCursor,
 								 unsigned char*& p_dataCursor);               // vtable+0x4c
-	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force); // vtable+0x54
+	virtual void UnLoadResources(unsigned long p_index, unsigned int p_force); // vtable+0x54
 	virtual ~CResFONT();                                                      // vtable+0x00
 
 	friend class CFontTable;

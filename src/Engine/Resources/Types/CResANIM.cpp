@@ -62,7 +62,7 @@ bool CResANIM::DirectResources(unsigned long p_index, unsigned char*& p_headerCu
 }
 
 // FUNCTION: LEMBALL 0x0045e780
-void CResANIM::UnLoadResources(unsigned int p_index, unsigned int p_force)
+void CResANIM::UnLoadResources(unsigned long p_index, unsigned int p_force)
 {
 	m_animationEntries[p_index].UnLoadExtData(p_force);
 }

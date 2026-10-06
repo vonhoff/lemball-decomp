@@ -26,7 +26,7 @@ public:
 	virtual bool ForceLoadVram(unsigned int p_index);                         // vtable+0x3c
 	virtual unsigned int GetnVramEntries();                                   // vtable+0x48
 	virtual void AllocateResources(unsigned long p_count);                    // vtable+0x44
-	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force); // vtable+0x54
+	virtual void UnLoadResources(unsigned long p_index, unsigned int p_force); // vtable+0x54
 	virtual void UnLoadVramData(unsigned int p_index, unsigned int p_force);  // vtable+0x40
 	inline virtual ~CResANIM()
 	{

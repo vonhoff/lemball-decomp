@@ -102,7 +102,7 @@ bool CResFONT::DirectResources(unsigned long p_index, unsigned char*& p_cursor)
 }
 
 // FUNCTION: LEMBALL 0x0045da50
-void CResFONT::UnLoadResources(unsigned int p_index, unsigned int p_force)
+void CResFONT::UnLoadResources(unsigned long p_index, unsigned int p_force)
 {
 	m_fontEntries[p_index].UnLoadExtData(p_force);
 	m_animationEntries[p_index].UnLoadExtData(p_force);

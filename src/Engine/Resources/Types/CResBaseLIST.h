@@ -43,7 +43,7 @@ public:
 	virtual bool DirectResources(unsigned long p_index,
 								 unsigned char*& p_headerCursor,
 								 unsigned char*& p_dataCursor) = 0;               // vtable+0x4c
-	virtual void UnLoadResources(unsigned int p_index, unsigned int p_force) = 0; // vtable+0x54
+	virtual void UnLoadResources(unsigned long p_index, unsigned int p_force) = 0; // vtable+0x54
 
 	friend class CFontTable;
 	friend class CAnimsManager;
