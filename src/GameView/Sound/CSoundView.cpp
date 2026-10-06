@@ -200,8 +200,8 @@ void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AICOORD& p_list
 			for (i = 0; i < p_count; i++) {
 				effectId = p_viewData[i].m_soundEffect;
 				if (effectId != 0) {
-					const int& effectX = (unsigned short) p_viewData[i].m_gameX;
-					const int& effectY = (unsigned short) p_viewData[i].m_gameY;
+					int effectX = (unsigned short) p_viewData[i].m_gameX;
+					int effectY = (unsigned short) p_viewData[i].m_gameY;
 					dist = Distance(x, y, effectX, effectY);
 					attenuatedVol = volume;
 					dist -= SOUND_EFFECT_FULL_VOLUME_RADIUS_PIXELS;
