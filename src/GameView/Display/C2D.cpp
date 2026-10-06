@@ -4469,8 +4469,8 @@ void C2D::SetOrigin()
 			int screenY = origin.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 			int screenZ = origin.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 			m_map->GameToScreen(screenX, screenY);
-			origin.m_xFixed = screenX << FIXED_POINT_FRACTION_BITS;
-			origin.m_yFixed = (screenY - screenZ) * FIXED_POINT_ONE;
+			origin.m_xFixed = (int) ((unsigned int) screenX << FIXED_POINT_FRACTION_BITS);
+			origin.m_yFixed = (int) ((unsigned int) (screenY - screenZ) << FIXED_POINT_FRACTION_BITS);
 		}
 		int oldViewOriginX = m_viewOriginX;
 		projectedX = origin.m_xFixed >> FIXED_POINT_FRACTION_BITS;
