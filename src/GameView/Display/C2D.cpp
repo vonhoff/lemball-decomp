@@ -102,7 +102,7 @@ enum eLevelTestFrame {
 
 extern int g_anC2DRemapSourceIndices[17];
 
-extern int g_anC2DRemapTargetIndices[4][17];
+extern int g_anC2DRemapTargetIndices[4 * 17];
 
 extern unsigned char g_abC2DType2Remap[5];
 
@@ -110,11 +110,10 @@ extern unsigned char g_abC2DType2Remap[5];
 int g_anC2DRemapSourceIndices[17] = {250, 204, 205, 206, 118, 107, 101, 95, 85, 75, 69, 59, 49, 46, 44, 37, 48};
 
 // GLOBAL: LEMBALL 0x0049e8fc
-int g_anC2DRemapTargetIndices[4][17] = {
-	{224, 225, 226, 227, 228, 229, 230, 231, 232, 232, 233, 234, 234, 234, 234, 235, 235},
-	{192, 193, 194, 195, 196, 197, 198, 199, 200, 200, 201, 202, 202, 202, 202, 203, 203},
-	{208, 209, 210, 211, 212, 213, 214, 215, 216, 216, 217, 218, 218, 218, 218, 219, 219},
-	{179, 180, 181, 182, 183, 184, 185, 186, 187, 187, 188, 189, 189, 189, 189, 190, 191}};
+int g_anC2DRemapTargetIndices[4 * 17] = {
+	224, 225, 226, 227, 228, 229, 230, 231, 232, 232, 233, 234, 234, 234, 234, 235, 235, 192, 193, 194, 195, 196, 197,
+	198, 199, 200, 200, 201, 202, 202, 202, 202, 203, 203, 208, 209, 210, 211, 212, 213, 214, 215, 216, 216, 217, 218,
+	218, 218, 218, 219, 219, 179, 180, 181, 182, 183, 184, 185, 186, 187, 187, 188, 189, 189, 189, 189, 190, 191};
 
 // GLOBAL: LEMBALL 0x0049ea28
 unsigned char g_abC2DType2Remap[5] = {2, 241, 81, 168, 108};
@@ -606,7 +605,7 @@ void C2D::RegisterRemaps()
 	int* targets;
 	int remapIndex;
 
-	targets = g_anC2DRemapTargetIndices[0];
+	targets = g_anC2DRemapTargetIndices;
 	palette = CResPALETTE::Load(RES_GAME_GAMEPALETTE);
 	paletteSize = (int) palette->m_entryCount;
 	remapIndex = 0;
