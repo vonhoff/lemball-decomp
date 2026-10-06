@@ -17,8 +17,6 @@
 
 extern unsigned short g_wMovingLiftCount;
 
-extern unsigned short g_wMovingLiftCount;
-
 // FUNCTION: LEMBALL 0x00424d00
 CLift::CLift() : CGlobalGameObject(TERRAIN_LIFT, 0, 0)
 {
