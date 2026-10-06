@@ -53,8 +53,8 @@ bool CheckValidPointer(void* p_pointer)
 {
 	if (g_nSmallMemoryEnabled != 0 && g_pSmallMemory != NULL) {
 		int i = 0;
-		register unsigned char* ptr = (unsigned char*) p_pointer;
-		register CBucket** buckets = (CBucket**) g_pSmallMemory;
+		unsigned char* ptr = (unsigned char*) p_pointer;
+		CBucket** buckets = g_pSmallMemory->m_buckets;
 		do {
 			if (*buckets != NULL && (*buckets)->CheckValidPointer(ptr)) {
 				return true;
