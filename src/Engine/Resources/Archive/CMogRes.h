@@ -38,7 +38,7 @@ private:
 	unsigned int m_error;         // 0x08
 	char* m_workingPath;          // 0x0c
 	CResBase** m_resources;       // 0x10
-	unsigned int m_resourceCount; // 0x14
+	int m_resourceCount;          // 0x14
 	unsigned int m_arenaSize;     // 0x18
 	unsigned int m_skipCleanup;   // 0x1c
 	unsigned int m_unk0x20;       // 0x20

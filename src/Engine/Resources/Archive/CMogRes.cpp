@@ -172,7 +172,7 @@ int CMogRes::KillLeastResource(unsigned int p_requiredSize)
 	int bestIndex = RESOURCE_INDEX_NONE;
 	unsigned int bestSize = 0;
 
-	if ((int) m_resourceCount > i) {
+	if (m_resourceCount > i) {
 		do {
 			if (m_resources[i] == NULL) {
 				CResBase** slot = &m_resources[i];
@@ -205,7 +205,7 @@ int CMogRes::KillLeastResource(unsigned int p_requiredSize)
 		next:
 			i++;
 			scanned++;
-		} while (scanned < (int) m_resourceCount);
+		} while (scanned < m_resourceCount);
 	}
 	return bestIndex;
 }
@@ -216,8 +216,8 @@ int CMogRes::GetFreeHandle()
 	int i = 0;
 	int handle = RESOURCE_INDEX_NONE;
 
-	if ((int) m_resourceCount > 0) {
-		if ((int) m_resourceCount < RESOURCE_HANDLE_COUNT) {
+	if (m_resourceCount > 0) {
+		if (m_resourceCount < RESOURCE_HANDLE_COUNT) {
 			while (i < RESOURCE_HANDLE_COUNT && m_resources[i] != NULL) {
 				i++;
 			}
@@ -374,7 +374,7 @@ void CMogRes::AgeResources()
 	int zero = 0;
 	int scanned = 0;
 
-	if ((int) m_resourceCount > zero) {
+	if (m_resourceCount > zero) {
 		do {
 			if (m_resources[i] == NULL) {
 				do {
@@ -386,7 +386,7 @@ void CMogRes::AgeResources()
 			}
 			scanned++;
 			i++;
-		} while ((int) m_resourceCount > scanned);
+		} while (m_resourceCount > scanned);
 	}
 }
 
@@ -433,7 +433,7 @@ void CMogRes::Remove(CResBase* p_resource)
 	int scanned = 0;
 	int i = 0;
 
-	if ((int) m_resourceCount > scanned) {
+	if (m_resourceCount > scanned) {
 		do {
 			if (m_resources[i] == NULL) {
 				do {
@@ -446,7 +446,7 @@ void CMogRes::Remove(CResBase* p_resource)
 			}
 			scanned++;
 			i++;
-		} while (scanned < (int) m_resourceCount);
+		} while (scanned < m_resourceCount);
 	}
 	int total = m_resourceCount;
 	if (scanned != total) {
