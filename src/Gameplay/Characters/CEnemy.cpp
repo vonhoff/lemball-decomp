@@ -285,9 +285,8 @@ void CEnemy::EnemyAction_PATROL(tEnemyLemmingUnion* p_data)
 		destination.m_zFixed = position.m_z;
 
 		p_data->m_waypointInformation->m_waypointIndex += p_data->m_waypointInformation->m_waypointStep;
-		if ((int) p_data->m_waypointInformation->m_waypointCount <=
-				(int) p_data->m_waypointInformation->m_waypointIndex ||
-			(int) p_data->m_waypointInformation->m_waypointIndex < 0) {
+		if ((int) p_data->m_waypointInformation->m_waypointCount <= p_data->m_waypointInformation->m_waypointIndex ||
+			p_data->m_waypointInformation->m_waypointIndex < 0) {
 			switch (p_data->m_waypointInformation->m_patrolMode) {
 			case WAYPOINT_PATROL_REVERSE:
 				p_data->m_waypointInformation->m_waypointStep = -p_data->m_waypointInformation->m_waypointStep;
