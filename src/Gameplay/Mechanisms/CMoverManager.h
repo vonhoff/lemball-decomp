@@ -2,6 +2,7 @@
 #define LEMBALL_AI_NAVIGATION_CMOVERMANAGER_H
 
 #include "Gameplay/Objects/CBaseObjectManager.h"
+#include "SwitchEntry.h"
 
 class CAI;
 class CMover;
@@ -19,7 +20,7 @@ public:
 	void Add(unsigned short p_id, int p_pathId, unsigned int p_movementMode, int p_startNode, int p_nodeCount);
 	void Initialise(int p_capacity);
 	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
-	void Switch(int p_message, int p_id);
+	void Switch(swMessage p_message, int p_id);
 	void RemoveMover(CMover* p_mover);
 
 private:

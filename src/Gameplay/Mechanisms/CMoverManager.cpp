@@ -138,7 +138,7 @@ void CMoverManager::Add(unsigned short p_id,
 }
 
 // FUNCTION: LEMBALL 0x0042f620
-void CMoverManager::Switch(int p_message, int p_id)
+void CMoverManager::Switch(swMessage p_message, int p_id)
 {
 	CMoverManager* self = this;
 	int index = 0;
