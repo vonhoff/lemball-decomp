@@ -424,13 +424,13 @@ CGlobalGameObject* CObjectManager::FindObjectInBounds(CVSRect* p_bounds, eObject
 	query.m_bottom = query.m_top + p_bounds->m_height;
 	int index = 0;
 	int count = m_count;
-	Rect bounds;
 	while (1) {
 		if (index >= count) {
 			return NULL;
 		}
 		CGlobalGameObject* object = m_objects[index];
 		if (object->m_objectType == p_objectType) {
+			Rect bounds;
 			bounds.m_left = (object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 			bounds.m_top = (object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 			bounds.m_right = bounds.m_left + 8;
