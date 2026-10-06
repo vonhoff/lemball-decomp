@@ -216,32 +216,22 @@ void CPVGDIBitmap::SetBitsBase(unsigned char* p_bits, int p_stride)
 // FUNCTION: LEMBALL 0x004726b0
 void CPVGDIBitmap::GetRects(const CVSRect& p_rect, CVSRect*& p_rect0, CVSRect*& p_rect1)
 {
-	const short* position;
+	const CVSPoint* position;
 
 	m_rect0.m_width = p_rect.m_width;
 	m_rect0.m_height = p_rect.m_height;
-	if (&p_rect != NULL) {
-		position = &p_rect.m_x;
-	}
-	else {
-		position = NULL;
-	}
-	m_rect0.m_x = position[0];
-	m_rect0.m_y = position[1];
+	position = &p_rect;
+	m_rect0.m_x = position->m_x;
+	m_rect0.m_y = position->m_y;
 	p_rect0 = &m_rect0;
 	p_rect1 = NULL;
 	if ((int) m_firstLine < (int) (short) (p_rect.m_height + p_rect.m_y) && (int) p_rect.m_y < (int) m_firstLine) {
 		m_rect0.m_height = (short) m_firstLine - m_rect0.m_y;
 		m_rect1.m_width = p_rect.m_width;
 		m_rect1.m_height = p_rect.m_height;
-		if (&p_rect != NULL) {
-			position = &p_rect.m_x;
-		}
-		else {
-			position = NULL;
-		}
-		m_rect1.m_x = position[0];
-		m_rect1.m_y = position[1];
+		position = &p_rect;
+		m_rect1.m_x = position->m_x;
+		m_rect1.m_y = position->m_y;
 		m_rect1.m_height = (short) ((p_rect.m_height - (short) m_firstLine) + p_rect.m_y);
 		m_rect1.m_y = (short) m_firstLine;
 		p_rect1 = &m_rect1;
