@@ -132,7 +132,7 @@ private:
 	int m_message;                       // 0x3a8
 	unsigned int m_drawnMessage;         // 0x3ac
 	unsigned int m_messageStartTime;     // 0x3b0
-	unsigned int m_messageDuration;      // 0x3b4
+	unsigned long m_messageDuration;     // 0x3b4
 	unsigned int m_broadcasting;         // 0x3b8
 	unsigned int m_networkMode;          // 0x3bc
 	unsigned int m_redrawPending;        // 0x3c0
