@@ -62,8 +62,6 @@ void CPVButton::OnVisibilityChange()
 CPVButton::CPVButton(const CVSRect& p_bounds, CPVGWnd* p_ownerWindow)
 	: CHotAreaHandler(CVSRect(0, 0, p_bounds.m_width, p_bounds.m_height))
 {
-	m_clickY = 0;
-	m_clickX = 0;
 	const CVSRect* rect = &p_bounds;
 	const short* position;
 	if (rect != NULL) {
@@ -81,8 +79,6 @@ CPVButton::CPVButton(const CVSRect& p_bounds, CPVGWnd* p_ownerWindow)
 // FUNCTION: LEMBALL 0x00467cd0
 CPVButton::CPVButton(CPVGWnd* p_ownerWindow)
 {
-	m_clickY = 0;
-	m_clickX = 0;
 	m_ownerWindow = p_ownerWindow;
 	Initialise();
 }
@@ -215,8 +211,8 @@ void CPVButton::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 	converted = ConvertDoubleClick(p_flags);
 	clickPos.m_y = (short) (p_point.m_y - m_relativeTopLeft.m_y);
 	clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
-	m_clickX = clickPos.m_x;
-	m_clickY = clickPos.m_y;
+	m_clickPosition.m_x = clickPos.m_x;
+	m_clickPosition.m_y = clickPos.m_y;
 	_OnPressed(converted);
 	OnPressed(converted);
 }
@@ -231,8 +227,8 @@ void CPVButton::OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 		CVSPoint clickPos;
 		clickPos.m_y = (short) (p_point.m_y - m_relativeTopLeft.m_y);
 		clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
-		m_clickX = clickPos.m_x;
-		m_clickY = clickPos.m_y;
+		m_clickPosition.m_x = clickPos.m_x;
+		m_clickPosition.m_y = clickPos.m_y;
 		m_pressed = 0;
 		_OnReleased(converted);
 		OnReleased(converted);
@@ -251,8 +247,8 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_
 	const CVSPoint& origin = originValue;
 	relativeValue.m_y = (short) (p_point.m_y - origin.m_y);
 	relativeValue.m_x = (short) (p_point.m_x - origin.m_x);
-	m_clickX = relative.m_x;
-	m_clickY = relative.m_y;
+	m_clickPosition.m_x = relative.m_x;
+	m_clickPosition.m_y = relative.m_y;
 	state = m_buttonState;
 	i = 6;
 	while (i != 0) {

@@ -75,8 +75,7 @@ private:
 	CBaseQueue* m_messageQueue;      // 0xf4
 	unsigned int m_autoDraw;         // 0xf8
 	unsigned int m_drawCompleted;    // 0xfc
-	short m_clickX;                  // 0x100
-	short m_clickY;                  // 0x102
+	CVSPoint m_clickPosition;        // 0x100
 };
 
 // SYNTHETIC: LEMBALL 0x00469880
