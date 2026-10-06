@@ -29,8 +29,8 @@ CFramedButton::CFramedButton(const CVSRect& p_rect, CPVGWnd* p_parent, unsigned 
 	CVSRect createRect;
 	createRect.m_width = m_bounds.m_width;
 	createRect.m_height = m_bounds.m_height;
-	createRect.m_x = m_buttonX;
-	createRect.m_y = m_buttonY;
+	createRect.m_x = m_buttonPosition.m_x;
+	createRect.m_y = m_buttonPosition.m_y;
 	CGWnd* window = this;
 	window->Create(createRect, m_ownerWindow, g_szButton);
 	CHotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;

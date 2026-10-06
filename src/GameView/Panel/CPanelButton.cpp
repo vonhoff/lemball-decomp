@@ -80,7 +80,7 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVG
 	{
 		CVSRect createRect;
 		createRect.CVSSize::operator=(m_bounds);
-		createRect.CVSPoint::operator=(*(const CVSPoint*) &m_buttonX);
+		createRect.CVSPoint::operator=(m_buttonPosition);
 		CGWnd* window = this;
 		window->Create(createRect, m_ownerWindow, g_szButton);
 	}

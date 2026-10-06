@@ -27,8 +27,8 @@ CTextButton::CTextButton(const CVSRect& p_rect,
 	: CFramedButton(p_parent, TEXT_BUTTON_FRAME_COLOUR_INDEX)
 {
 	const CVSPoint* position = &p_rect;
-	m_buttonX = position->m_x;
-	m_buttonY = position->m_y;
+	m_buttonPosition.m_x = position->m_x;
+	m_buttonPosition.m_y = position->m_y;
 	CVSRect bounds(p_rect);
 	bounds.m_x = 0;
 	bounds.m_y = 0;
@@ -101,7 +101,7 @@ void CTextButton::SetText(char* p_normalText, char* p_pressedText)
 	m_pressedTextPosition.m_x++;
 	m_pressedTextPosition.m_y++;
 	if (m_nativeButtonCreated == 0) {
-		CVSRect rect(m_buttonX, m_buttonY, m_bounds.m_width, m_bounds.m_height);
+		CVSRect rect(m_buttonPosition.m_x, m_buttonPosition.m_y, m_bounds.m_width, m_bounds.m_height);
 		Create(rect, m_ownerWindow, g_szButton);
 		m_bounds.m_x += m_relativeTopLeft.m_x;
 		m_bounds.m_y += m_relativeTopLeft.m_y;

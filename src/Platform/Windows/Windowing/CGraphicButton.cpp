@@ -40,9 +40,9 @@ CGraphicButton::CGraphicButton(const CVSPoint& p_position,
 	m_animationId = p_animId;
 	Initialise();
 	short x = p_position.m_x;
-	m_buttonX = x;
+	m_buttonPosition.m_x = x;
 	short y = p_position.m_y;
-	m_buttonY = y;
+	m_buttonPosition.m_y = y;
 	CVSRect createRect(x, y, CHotAreaHandler::m_bounds.m_width, CHotAreaHandler::m_bounds.m_height);
 	CGWnd* window = this;
 	window->Create(createRect, m_ownerWindow, g_szButton);

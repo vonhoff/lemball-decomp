@@ -48,6 +48,6 @@ void CTrackerButton::Move(const CVSPoint& p_point)
 	CGWnd::Move(p_point);
 	CHotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;
 	CHotAreaHandler::m_bounds.m_y += m_relativeTopLeft.m_y;
-	m_trackWindow->Move(CVSPoint(m_buttonX + m_trackOffsetX, m_buttonY + m_trackOffsetY));
+	m_trackWindow->Move(CVSPoint(m_buttonPosition.m_x + m_trackOffsetX, m_buttonPosition.m_y + m_trackOffsetY));
 	m_trackWindow->Move(CVSPoint(p_point.m_x + m_trackOffsetX, p_point.m_y + m_trackOffsetY));
 }

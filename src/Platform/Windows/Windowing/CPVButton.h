@@ -3,6 +3,7 @@
 
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "CGWnd.h"
+#include "Engine/Math/CVSPoint.h"
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Queues/Message.h"
 #include "Engine/Graphics/Primitives/CLine.h"
@@ -68,8 +69,7 @@ private:
 	unsigned int m_pressed;          // 0xd0
 	unsigned int m_lastDrawnPressed; // 0xd4
 	unsigned int m_forceDrawCount;   // 0xd8
-	short m_buttonX;                 // 0xdc
-	short m_buttonY;                 // 0xde
+	CVSPoint m_buttonPosition;       // 0xdc
 	CPrimitive* m_primitive;         // 0xe0
 	CClipRect m_clipRect[1];         // 0xe4
 	CBaseQueue* m_messageQueue;      // 0xf4
