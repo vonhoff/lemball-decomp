@@ -201,7 +201,7 @@ void CConnect::Process()
 {
 	if (m_killRequested == 0) {
 		if (m_established == 0 && m_eventPending == 0) {
-			if (CONNECT_TIMEOUT_MS < timeGetTime() - m_connectTime) {
+			if (CONNECT_TIMEOUT_MS < CurrentMilliTimer() - m_connectTime) {
 				Kill();
 				return;
 			}
