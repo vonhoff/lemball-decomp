@@ -2,33 +2,34 @@
 
 #include "Application/CGameStatus.h"
 #include "Application/GameMain.h"
-#include "Level/CLevelLoader.h"
-#include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
-#include "Engine/Statistics/CStatManager.h"
 #include "Engine/Memory/CArena.h"
-#include "Engine/Text/CTextManager.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Multiplayer/Transport/NetworkMode.h"
-#include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/Types/CResBITMAP.h"
+#include "Engine/Statistics/CStatManager.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Text/CTextManager.h"
+#include "Engine/Time/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CHiliteController.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/tagPRIMS.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Level/CLevelLoader.h"
+#include "Multiplayer/Transport/NetworkMode.h"
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-#include "Engine/Graphics/Primitives/CBigBitmap.h"
-#include "Frontend/CBaseFrontendDrawer.h"
 #include "Application/FlowProcesses.h"
-#include "Frontend/CoordPair.h"
-#include "CSuccFailAnimWnd.h"
 #include "Application/SoundEffects.h"
+#include "CSuccFailAnimWnd.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/CoordPair.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 
 class CGWnd;
@@ -180,10 +181,10 @@ extern char g_szSuccFailMoviePrefix[];
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 
-#include "Multiplayer/CNetworkManager.h"
-#include "Multiplayer/CNetworkGameMessage.h"
-#include "Multiplayer/Transport/CConnect.h"
 #include "Engine/Resources/Types/CResFONT.h"
+#include "Multiplayer/CNetworkGameMessage.h"
+#include "Multiplayer/CNetworkManager.h"
+#include "Multiplayer/Transport/CConnect.h"
 
 #include <string.h>
 
@@ -594,7 +595,7 @@ void CSuccFailDrawer::Processing()
 	SuccFailLayout* layout;
 
 	if (m_animStarted == 0) {
-		now = timeGetTime();
+		now = CurrentMilliTimer();
 		if (now > m_animStartDeadline && m_animationsEnabled != 0) {
 			if (m_display->IsWindowValid() != 0) {
 				layout = m_layout;
@@ -626,7 +627,7 @@ sound:
 			g_pSoundView->PlayEffect(SFX_FAILURE);
 		}
 		m_soundStarted = 1;
-		m_soundStartTime = timeGetTime();
+		m_soundStartTime = CurrentMilliTimer();
 	}
 }
 
