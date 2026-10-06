@@ -15,10 +15,10 @@ public:
 	~CReadNCMSBuff();
 
 private:
-	int m_messageCount;         // 0x18
-	int m_firstMessageId;       // 0x1c
-	CReadMSBuff** m_messages;   // 0x20
-	int m_nextExpectedSequence; // 0x24
+	int m_messageCount;             // 0x18
+	unsigned long m_firstMessageId; // 0x1c
+	CReadMSBuff** m_messages;       // 0x20
+	int m_nextExpectedSequence;     // 0x24
 };
 
 // SYNTHETIC: LEMBALL 0x00462a60
