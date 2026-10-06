@@ -241,17 +241,17 @@ void CBullet::AddData()
 void CBullet::GetData()
 {
 	SetRemoteGameTimeReal(GetDWORD());
-	const int x = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	const int x = (int) (short) GetWORD() * FIXED_POINT_ONE;
 	m_position.m_xFixed = x;
-	const int y = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	const int y = (int) (short) GetWORD() * FIXED_POINT_ONE;
 	m_position.m_yFixed = y;
-	const int z = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	const int z = (int) (short) GetWORD() * FIXED_POINT_ONE;
 	m_position.m_zFixed = z;
-	const int destinationX = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	const int destinationX = (int) (short) GetWORD() * FIXED_POINT_ONE;
 	m_destination.m_xFixed = destinationX;
-	const int destinationY = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	const int destinationY = (int) (short) GetWORD() * FIXED_POINT_ONE;
 	m_destination.m_yFixed = destinationY;
-	const int destinationZ = (int) (short) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	const int destinationZ = (int) (short) GetWORD() * FIXED_POINT_ONE;
 	m_destination.m_zFixed = destinationZ;
 	m_facingDirection = (short) GetWORD();
 	m_soundEffect = (eSoundEffect) GetDWORD();
