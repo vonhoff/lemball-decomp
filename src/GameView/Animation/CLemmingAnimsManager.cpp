@@ -78,7 +78,7 @@ CLemmingAnimsManager::CLemmingAnimsManager(CGDI* p_gdi, CMain2DDisplay* p_displa
 	m_display = p_display;
 	m_gdi = p_gdi;
 	m_ai = p_ai;
-	m_animFrames = (CAnimFrameBASE**) operator new(RESOURCE_ID_COUNT * sizeof(*m_animFrames));
+	m_animFrames = new CAnimFrameBASE*[RESOURCE_ID_COUNT];
 	m_drawFlags = 0;
 	for (int i = 0; i < RESOURCE_ID_COUNT; i++) {
 		m_animFrames[i] = NULL;
@@ -99,7 +99,7 @@ CLemmingAnimsManager::~CLemmingAnimsManager()
 
 	Unload();
 	if (m_animFrames != NULL) {
-		operator delete(m_animFrames);
+		delete[] m_animFrames;
 	}
 }
 
