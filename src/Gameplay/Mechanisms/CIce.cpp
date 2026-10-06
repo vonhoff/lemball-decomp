@@ -199,8 +199,9 @@ bool CIce::Process()
 				terrainZ = 0;
 			}
 			else {
-				terrainZ = map->m_ground.m_ground[by * width + bx].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
-																		y & GROUND_BLOCK_PIXEL_MASK);
+				x &= GROUND_BLOCK_PIXEL_MASK;
+				y &= GROUND_BLOCK_PIXEL_MASK;
+				terrainZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
 			}
 		}
 		int groundZ = terrainZ;
