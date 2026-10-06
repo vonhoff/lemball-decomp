@@ -117,9 +117,9 @@ void CIce::Set(unsigned short p_id,
 	}
 	m_max.m_z = (short) maxZ;
 
-	m_position.m_xFixed = ((int) p_cornerA.m_x) << FIXED_POINT_FRACTION_BITS;
-	m_position.m_yFixed = ((int) p_cornerA.m_y) << FIXED_POINT_FRACTION_BITS;
-	m_position.m_zFixed = ((int) p_cornerA.m_z) << FIXED_POINT_FRACTION_BITS;
+	m_position.m_xFixed = (int) p_cornerA.m_x * FIXED_POINT_ONE;
+	m_position.m_yFixed = (int) p_cornerA.m_y * FIXED_POINT_ONE;
+	m_position.m_zFixed = (int) p_cornerA.m_z * FIXED_POINT_ONE;
 	for (int y = minY; y <= maxY; y += GROUND_BLOCK_PIXEL_SIZE) {
 		for (int x = minX; x <= maxX; x += GROUND_BLOCK_PIXEL_SIZE) {
 			int blockX = x / GROUND_BLOCK_PIXEL_SIZE;
