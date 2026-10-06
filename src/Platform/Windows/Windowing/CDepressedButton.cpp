@@ -6,7 +6,7 @@
 #include "Engine/Queues/Message.h"
 
 // FUNCTION: LEMBALL 0x0043a620 FOLDED
-void CDepressedButton::OnReleased(int p_flags)
+void CDepressedButton::OnReleased(eMouseButtonIndex p_flags)
 {
 	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 1;

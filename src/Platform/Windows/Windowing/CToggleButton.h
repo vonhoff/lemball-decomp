@@ -18,7 +18,7 @@ public:
 	virtual void OnEnterButton();         // vtable+0xc8
 	virtual void OnExitButton();          // vtable+0xcc
 	virtual void OnPressed(eMouseButtonIndex p_flags); // vtable+0xc4
-	virtual void OnReleased(int p_flags); // vtable+0xc0
+	virtual void OnReleased(eMouseButtonIndex p_flags); // vtable+0xc0
 	friend class CPanel;
 	friend class CPanelPauseButton;
 

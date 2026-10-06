@@ -259,7 +259,7 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_
 }
 
 // FUNCTION: LEMBALL 0x00468180
-void CPVButton::_OnReleased(int p_flags)
+void CPVButton::_OnReleased(eMouseButtonIndex p_flags)
 {
 	Message posted;
 	eMouseButtonIndex converted;
@@ -279,7 +279,7 @@ void CPVButton::_OnReleased(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x004681f0
-void CPVButton::_OnPressed(int p_flags)
+void CPVButton::_OnPressed(eMouseButtonIndex p_flags)
 {
 	Message posted;
 	eMouseButtonIndex converted;

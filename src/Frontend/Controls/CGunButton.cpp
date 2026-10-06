@@ -5,7 +5,7 @@
 #include "Engine/Queues/Message.h"
 
 // FUNCTION: LEMBALL 0x0044c200
-void CGunButton::OnReleased(int p_flags)
+void CGunButton::OnReleased(eMouseButtonIndex p_flags)
 {
 	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 1;

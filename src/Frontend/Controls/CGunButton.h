@@ -15,7 +15,7 @@ public:
 	{
 	}
 	virtual void OnPressed(eMouseButtonIndex p_flags); // vtable+0xc4
-	virtual void OnReleased(int p_flags); // vtable+0xc0
+	virtual void OnReleased(eMouseButtonIndex p_flags); // vtable+0xc0
 };
 
 // SYNTHETIC: LEMBALL 0x0044e650

@@ -25,7 +25,7 @@ public:
 	virtual void Destroy();                                        // vtable+0x74
 	virtual void _DrawButton();                                    // vtable+0xb8
 	virtual void DrawButton() = 0;                                 // vtable+0xbc
-	virtual void OnReleased(int p_flags) = 0;                      // vtable+0xc0
+	virtual void OnReleased(eMouseButtonIndex p_flags) = 0;        // vtable+0xc0
 	virtual void OnPressed(eMouseButtonIndex p_flags) = 0;         // vtable+0xc4
 	virtual void OnEnterButton() = 0;                              // vtable+0xc8
 	virtual void OnExitButton() = 0;                               // vtable+0xcc
@@ -41,8 +41,8 @@ public:
 	void Draw(unsigned int p_force);
 	void Initialise();
 	void SetAutoDraw(unsigned int p_enabled);
-	void _OnReleased(int p_flags);
-	void _OnPressed(int p_flags);
+	void _OnReleased(eMouseButtonIndex p_flags);
+	void _OnPressed(eMouseButtonIndex p_flags);
 	void _OnEnterButton();
 	void _OnExitButton();
 

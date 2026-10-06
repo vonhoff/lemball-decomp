@@ -22,7 +22,7 @@ public:
 	}
 	virtual void OnPaint(const CVSRect& p_rect); // vtable+0xa8
 	virtual void _DrawButton();                  // vtable+0xb8
-	virtual void OnReleased(int p_flags);        // vtable+0xc0
+	virtual void OnReleased(eMouseButtonIndex p_flags); // vtable+0xc0
 	virtual void OnPressed(eMouseButtonIndex p_flags); // vtable+0xc4
 	virtual void OnEnterButton();                // vtable+0xc8
 	virtual void OnExitButton();                 // vtable+0xcc

@@ -55,7 +55,7 @@ void CPanelPauseButton::OnPressed(eMouseButtonIndex p_flags)
 }
 
 // FUNCTION: LEMBALL 0x004422b0
-void CPanelPauseButton::OnReleased(int p_flags)
+void CPanelPauseButton::OnReleased(eMouseButtonIndex p_flags)
 {
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT) {
 		unsigned int paused = m_toggled ^ 1;

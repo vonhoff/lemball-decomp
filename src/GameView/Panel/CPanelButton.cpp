@@ -255,7 +255,7 @@ void CPanelButton::OnPaint(const CVSRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00442aa0
-void CPanelButton::OnReleased(int p_flags)
+void CPanelButton::OnReleased(eMouseButtonIndex p_flags)
 {
 	m_pressedInside = 0;
 	CursorChangeType(CURSOR_DISPLAY_HAND, 0);

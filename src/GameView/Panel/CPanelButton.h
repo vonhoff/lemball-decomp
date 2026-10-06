@@ -22,7 +22,7 @@ public:
 	virtual void OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x0c
 	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
 	virtual void OnPressed(eMouseButtonIndex p_flags);                     // vtable+0xc4
-	virtual void OnReleased(int p_flags);                                  // vtable+0xc0
+	virtual void OnReleased(eMouseButtonIndex p_flags);                    // vtable+0xc0
 	virtual ~CPanelButton();                                               // vtable+0x00
 
 private:
