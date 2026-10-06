@@ -60,8 +60,8 @@ public:
 
 protected:
 	unsigned char* m_arenaBase; // 0x24
-	unsigned int m_arenaSize;   // 0x28
-	unsigned int m_freeSize;    // 0x2c
+	unsigned long m_arenaSize;  // 0x28
+	unsigned long m_freeSize;   // 0x2c
 	CBaseStat* m_usageStat;     // 0x30
 	CMBlock* m_firstBlock;      // 0x34
 	CMBlock* m_lastBlock;       // 0x38

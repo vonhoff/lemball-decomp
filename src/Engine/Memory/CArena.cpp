@@ -227,7 +227,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 		Hex hexSize;
 		hexSize.m_value = aligned;
 		*g_pErrorOutput << "CArena::Allocate : Not enough free memory : " << p_description << " : 0x" << hexSize
-						<< " : Free Size is " << (unsigned long) m_freeSize << "\n";
+						<< " : Free Size is " << m_freeSize << "\n";
 		LeaveCritical();
 		return false;
 	}
