@@ -147,9 +147,9 @@ void CLift::Set(tCoord3d& p_start,
 	int startY = p_start.m_y;
 	int startZ = p_start.m_z;
 	int startX = p_start.m_x;
-	m_position.m_yFixed = startY << FIXED_POINT_FRACTION_BITS;
-	m_position.m_zFixed = startZ << FIXED_POINT_FRACTION_BITS;
-	m_position.m_xFixed = startX << FIXED_POINT_FRACTION_BITS;
+	m_position.m_yFixed = startY * FIXED_POINT_ONE;
+	m_position.m_zFixed = startZ * FIXED_POINT_ONE;
+	m_position.m_xFixed = startX * FIXED_POINT_ONE;
 	m_liftId = g_wMovingLiftCount++;
 	m_start = p_start;
 	m_end = p_end;
