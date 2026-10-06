@@ -66,10 +66,8 @@ private:
 	CDrawingMark m_drawingMark;     // 0xd0
 	class CDrawer* m_drawer;        // 0xd4
 	unsigned int m_resolutionMode;  // 0xd8
-	short m_lowWidth;               // 0xdc
-	short m_lowHeight;              // 0xde
-	short m_highWidth;              // 0xe0
-	short m_highHeight;             // 0xe2
+	CVSSize m_lowResolutionSize;    // 0xdc
+	CVSSize m_highResolutionSize;   // 0xe0
 };
 
 // SYNTHETIC: LEMBALL 0x004322e0

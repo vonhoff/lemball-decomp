@@ -85,11 +85,7 @@ enum eMainDisplayMenuAction {
 // FUNCTION: LEMBALL 0x00431590
 CMain2DDisplay::CMain2DDisplay(CGame* p_game)
 {
-	m_lowHeight = 0;
-	m_lowWidth = 0;
-	m_highHeight = 0;
 	m_quitRequested = 0;
-	m_highWidth = 0;
 	m_loadingDraw = NULL;
 	m_frameCount = 0;
 	m_game = p_game;
@@ -105,10 +101,10 @@ CMain2DDisplay::CMain2DDisplay(CGame* p_game)
 	m_titlePalette = CResPALETTE::Load(RES_GAME_TITLEPALETTE);
 	CursorChangeType(CURSOR_DISPLAY_PAW, 0);
 	g_pMasterInputQueue->Attach(static_cast<CBaseQueueHandler*>(this), MASTER_INPUT_QUEUE_PRIORITY);
-	m_lowWidth = MAIN_DISPLAY_LOW_RESOLUTION_WIDTH_PX;
-	m_lowHeight = MAIN_DISPLAY_LOW_RESOLUTION_HEIGHT_PX;
-	m_highWidth = MAIN_DISPLAY_HIGH_RESOLUTION_WIDTH_PX;
-	m_highHeight = MAIN_DISPLAY_HIGH_RESOLUTION_HEIGHT_PX;
+	m_lowResolutionSize.m_width = MAIN_DISPLAY_LOW_RESOLUTION_WIDTH_PX;
+	m_lowResolutionSize.m_height = MAIN_DISPLAY_LOW_RESOLUTION_HEIGHT_PX;
+	m_highResolutionSize.m_width = MAIN_DISPLAY_HIGH_RESOLUTION_WIDTH_PX;
+	m_highResolutionSize.m_height = MAIN_DISPLAY_HIGH_RESOLUTION_HEIGHT_PX;
 	m_resolutionMode = g_nCompactPrimaryContextLayout;
 }
 
@@ -213,10 +209,10 @@ bool CMain2DDisplay::IsWindowValid()
 	short width;
 	short height = m_rect.m_height;
 	width = m_rect.m_width;
-	if (m_lowWidth == width && m_lowHeight == height) {
+	if (m_lowResolutionSize.m_width == width && m_lowResolutionSize.m_height == height) {
 		return true;
 	}
-	if (m_highWidth == width && m_highHeight == height) {
+	if (m_highResolutionSize.m_width == width && m_highResolutionSize.m_height == height) {
 		return true;
 	}
 	return false;
@@ -513,12 +509,12 @@ CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 	compact = g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240;
 	g_nCompactPrimaryContextLayout = compact;
 	if (compact != 0) {
-		width = m_lowWidth;
-		height = m_lowHeight;
+		width = m_lowResolutionSize.m_width;
+		height = m_lowResolutionSize.m_height;
 	}
 	else {
-		width = m_highWidth;
-		height = m_highHeight;
+		width = m_highResolutionSize.m_width;
+		height = m_highResolutionSize.m_height;
 	}
 	short centeredY = (short) (screenSize.m_height - height) / 2;
 	x = (short) (screenSize.m_width - width) / 2;
