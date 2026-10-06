@@ -16,8 +16,6 @@
 
 #include "Platform/Windows/WinSock/WinSock.h"
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 // FUNCTION: LEMBALL 0x00470dd0
 bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)
 {
@@ -137,8 +135,8 @@ void CTCPIPConnect::Listen(CNetworkAddress* p_address)
 	m_closePending = 1;
 	m_eventPending = 1;
 	m_isHost = 0;
-	CWriteSocket::m_lastSendTime = timeGetTime() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
-	CReadSocket::m_lastReceiveTime = timeGetTime();
+	CWriteSocket::m_lastSendTime = CurrentMilliTimer() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
+	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 }
 
 // FUNCTION: LEMBALL 0x00471210
