@@ -1,25 +1,25 @@
 #include "CPVButton.h"
 
-#include "Engine/Queues/CBaseQueue.h"
+#include "CGWnd.h"
+#include "CPVGWnd.h"
+#include "CPVWnd.h"
+#include "CWnd.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Graphics/Primitives/CPrimitive.h"
+#include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Input/CHotAreaList.h"
-#include "Platform/Windows/Graphics/CSurface.h"
-#include "CWnd.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
-#include "CGWnd.h"
-#include "Engine/Input/CHotAreaHandler.h"
-#include "CPVGWnd.h"
-#include "CPVWnd.h"
-#include "Engine/Graphics/Primitives/CPrimitive.h"
+#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 #include <stddef.h>
 
 extern int g_nGunButtonsRedrawPending;
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x0043a540
 void CPVButton::Destroy()
@@ -269,7 +269,7 @@ void CPVButton::_OnReleased(eMouseButtonIndex p_flags)
 	}
 	if (m_messageQueue != NULL) {
 		converted = ConvertDoubleClick(p_flags);
-		posted.m_time = timeGetTime();
+		posted.m_time = CurrentQueueTimer();
 		posted.m_code = (int) m_controlMessage;
 		posted.m_payload = this;
 		posted.m_type = MESSAGE_BUTTON_RELEASED;
@@ -289,7 +289,7 @@ void CPVButton::_OnPressed(eMouseButtonIndex p_flags)
 	}
 	if (m_messageQueue != NULL) {
 		converted = ConvertDoubleClick(p_flags);
-		posted.m_time = timeGetTime();
+		posted.m_time = CurrentQueueTimer();
 		posted.m_code = (int) m_controlMessage;
 		posted.m_payload = this;
 		posted.m_type = MESSAGE_BUTTON_PRESSED;
@@ -304,7 +304,7 @@ void CPVButton::_OnEnterButton()
 	Message posted;
 
 	if (m_messageQueue != NULL) {
-		posted.m_time = timeGetTime();
+		posted.m_time = CurrentQueueTimer();
 		posted.m_code = (int) m_controlMessage;
 		posted.m_type = MESSAGE_BUTTON_ENTERED;
 		posted.m_payload = this;
@@ -318,7 +318,7 @@ void CPVButton::_OnExitButton()
 	Message posted;
 
 	if (m_messageQueue != NULL) {
-		posted.m_time = timeGetTime();
+		posted.m_time = CurrentQueueTimer();
 		posted.m_code = (int) m_controlMessage;
 		posted.m_type = MESSAGE_BUTTON_EXITED;
 		posted.m_payload = this;
