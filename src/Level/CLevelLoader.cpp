@@ -221,7 +221,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 		binResource->UnLoad();
 	}
 	else {
-		operator delete(g_pLevelFileData);
+		delete[] g_pLevelFileData;
 	}
 }
 
@@ -235,7 +235,7 @@ bool CLevelLoader::LocateStartOfLevelFile()
 	if (file != NULL) {
 		size = vsSeek(file, 0, 2);
 		vsSeek(file, 0, 0);
-		g_pLevelFileData = operator new(size);
+		g_pLevelFileData = new unsigned char[size];
 		vsRead(file, g_pLevelFileData, size);
 		vsClose(file);
 		return true;
@@ -398,7 +398,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 		binResource->UnLoad();
 	}
 	else {
-		operator delete(g_pLevelFileData);
+		delete[] g_pLevelFileData;
 	}
 	*g_pDebugOutput << g_szNSkillFormat << (int) p_skill << g_szNLevelFormat << p_level << g_szNameBracketFormat
 					<< p_preview->m_name << g_szCloseBracketNewline;
@@ -456,4 +456,4 @@ char g_szCommandLineLevelFile[232] = {0};
 char* g_pActiveLevelFile = NULL;
 
 // GLOBAL: LEMBALL 0x004a6400
-void* g_pLevelFileData;
+unsigned char* g_pLevelFileData;
