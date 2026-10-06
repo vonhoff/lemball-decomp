@@ -26,8 +26,8 @@ public:
 	~CTCPIPBroadcast();
 
 private:
-	char* m_specificNameBuffer;         // 0x24
-	unsigned int m_specificNameRequest; // 0x28
+	char* m_specificNameBuffer;  // 0x24
+	void* m_specificNameRequest; // 0x28
 };
 #pragma warning(default : 4250)
 

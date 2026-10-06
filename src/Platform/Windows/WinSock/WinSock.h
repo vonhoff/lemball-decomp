@@ -72,18 +72,18 @@ extern "C" int __stdcall bind(int p_socket, const TcpIpSocketAddress* p_address,
 extern "C" unsigned short __stdcall htons(unsigned short p_value);
 extern "C" unsigned short __stdcall ntohs(unsigned short p_value);
 extern "C" int __stdcall setsockopt(int p_socket, int p_level, int p_option, const char* p_value, int p_valueSize);
-extern "C" int __stdcall WSACancelAsyncRequest(unsigned int p_request);
-extern "C" unsigned int __stdcall WSAAsyncGetHostByName(void* p_window,
-														unsigned int p_message,
-														const char* p_name,
-														char* p_buffer,
-														int p_bufferSize);
-extern "C" unsigned int __stdcall WSAAsyncGetServByName(void* p_window,
-														unsigned int p_message,
-														const char* p_service,
-														const char* p_protocol,
-														char* p_buffer,
-														int p_bufferSize);
+extern "C" int __stdcall WSACancelAsyncRequest(void* p_request);
+extern "C" void* __stdcall WSAAsyncGetHostByName(void* p_window,
+												 unsigned int p_message,
+												 const char* p_name,
+												 char* p_buffer,
+												 int p_bufferSize);
+extern "C" void* __stdcall WSAAsyncGetServByName(void* p_window,
+												 unsigned int p_message,
+												 const char* p_service,
+												 const char* p_protocol,
+												 char* p_buffer,
+												 int p_bufferSize);
 extern "C" int __stdcall WSAAsyncSelect(int p_socket, void* p_window, unsigned int p_message, long p_events);
 extern "C" int __stdcall closesocket(int p_socket);
 extern "C" int __stdcall WSAGetLastError();

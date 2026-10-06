@@ -34,8 +34,8 @@ public:
 	friend class CTCPIPConnect;
 
 private:
-	char* m_asyncBuffer;         // 0x14
-	unsigned int m_asyncRequest; // 0x18
+	char* m_asyncBuffer;  // 0x14
+	void* m_asyncRequest; // 0x18
 };
 
 // SYNTHETIC: LEMBALL 0x00471a90
