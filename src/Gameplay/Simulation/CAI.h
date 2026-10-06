@@ -114,7 +114,7 @@ public:
 	virtual int ProcessMsg(Message* p_message); // vtable+0x08
 	void AddANetworkStart(int p_x, int p_y, int p_z, int p_index);
 	void AddData();
-	void AddNewTrapDoor(const AICOORD& p_position, unsigned long p_time);
+	void AddNewTrapDoor(AICOORD& p_position, unsigned long p_time);
 	void AddNewTrapDoor(int p_x, int p_y, int p_z, unsigned long p_time);
 	void ClearAllTrapDoors();
 	void AddTime(int p_time);

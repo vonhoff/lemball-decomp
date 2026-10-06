@@ -1213,7 +1213,7 @@ int CAI::ExportLiftEndpointRecords(LiftEndpointRecord* p_records)
 }
 
 // FUNCTION: LEMBALL 0x00412e80
-void CAI::AddNewTrapDoor(const AICOORD& p_position, unsigned long p_time)
+void CAI::AddNewTrapDoor(AICOORD& p_position, unsigned long p_time)
 {
 	short id = CGameObject::NextLoadingId();
 	m_trapDoorManager->AddNewDoor(id, p_position, TRAPDOOR_MODE_LOCAL_AUTOMATIC, p_time);

@@ -47,11 +47,11 @@ CTrapDoorManager::~CTrapDoorManager()
 
 // FUNCTION: LEMBALL 0x0040c810
 void CTrapDoorManager::AddNewDoor(unsigned short p_id,
-								  const AICOORD& p_position,
+								  AICOORD& p_position,
 								  unsigned int p_mode,
 								  unsigned long p_deadline)
 {
-	m_doors[m_count] = new CTrapDoor((AICOORD&) p_position, p_mode);
+	m_doors[m_count] = new CTrapDoor(p_position, p_mode);
 	m_doors[m_count]->Restart();
 	m_doors[m_count]->SetId(p_id);
 	m_doors[m_count]->m_manager = this;
