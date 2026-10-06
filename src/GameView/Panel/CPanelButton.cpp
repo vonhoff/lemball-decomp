@@ -262,7 +262,7 @@ void CPanelButton::OnReleased(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00442ac0
-void CPanelButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
+void CPanelButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	if (m_pressedInside != 0) {
 		m_pressedInside = 0;

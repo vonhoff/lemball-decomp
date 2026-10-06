@@ -118,7 +118,7 @@ int CHiliteController::ProcessMsg(Message* p_message)
 		if (p_message->m_code == INPUT_KEY_SPACE || p_message->m_code == INPUT_KEY_ACTIVATE ||
 			p_message->m_code == INPUT_KEY_RETURN) {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
-			button->OnButtonUp(CVSPoint(0, 0), 0);
+			button->OnButtonUp(CVSPoint(0, 0), MOUSE_BUTTON_INDEX_LEFT);
 			return 0;
 		}
 		break;
@@ -156,7 +156,7 @@ int CHiliteController::ProcessMsg(Message* p_message)
 		case INPUT_KEY_ACTIVATE:
 		case INPUT_KEY_RETURN: {
 			CGraphicButton* button = m_buttons[m_currentButton]->m_button;
-			button->OnButtonDown(CVSPoint(0, 0), 0);
+			button->OnButtonDown(CVSPoint(0, 0), MOUSE_BUTTON_INDEX_LEFT);
 			break;
 		}
 		}

@@ -30,11 +30,11 @@ public:
 	virtual void OnEnterButton() = 0;                              // vtable+0xc8
 	virtual void OnExitButton() = 0;                               // vtable+0xcc
 	virtual void Move(const CVSPoint& p_point);                    // vtable+0x38
-	virtual void OnButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x04
-	virtual void OnButtonDown(const CVSPoint& p_point, int p_flags);
+	virtual void OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x04
+	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags);
 	virtual void OnEnter();                                                // vtable+0x10
 	virtual void OnExit();                                                 // vtable+0x14
-	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x0c
 	virtual void OnVisibilityChange();                                     // vtable+0x80
 	virtual ~CPVButton();                                                  // vtable+0x00
 	void CheckForceDraw();

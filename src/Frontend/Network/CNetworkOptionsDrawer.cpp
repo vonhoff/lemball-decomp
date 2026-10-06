@@ -804,7 +804,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
 		case INPUT_KEY_RETURN:
 			if (m_highlightedPlayer != NETWORK_OPTIONS_NO_PLAYER_INDEX) {
 				CVSPoint pt;
-				m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, 0);
+				m_playerEntries[m_highlightedPlayer].OnButtonDown(pt, MOUSE_BUTTON_INDEX_LEFT);
 				return true;
 			}
 			break;

@@ -293,7 +293,7 @@ void CPasswordDrawer::ShiftHilite(int p_delta)
 	CVSPoint pt;
 	pt.m_x = 0;
 	pt.m_y = 0;
-	m_buttons[g_passwordKeyMap[m_selectedButton]]->OnButtonUp(pt, 0);
+	m_buttons[g_passwordKeyMap[m_selectedButton]]->OnButtonUp(pt, MOUSE_BUTTON_INDEX_LEFT);
 	m_selectedButton += p_delta;
 	if (m_selectedButton < 0) {
 		m_selectedButton += PASSWORD_BUTTON_INDEX_COUNT;
@@ -320,20 +320,20 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		case INPUT_KEY_ACTIVATE: {
 			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
 			CVSPoint pt(0, 0);
-			button->OnButtonUp(pt, 0);
+			button->OnButtonUp(pt, MOUSE_BUTTON_INDEX_LEFT);
 			return true;
 		}
 		case INPUT_KEY_RETURN: {
 			CPVButton* button = m_buttons[PASSWORD_BUTTON_SUBMIT];
 			CVSPoint pt(0, 0);
-			button->OnButtonUp(pt, 0);
+			button->OnButtonUp(pt, MOUSE_BUTTON_INDEX_LEFT);
 			return true;
 		}
 		case INPUT_KEY_DELETE:
 		case INPUT_KEY_BACKSPACE: {
 			CPVButton* button = m_buttons[PASSWORD_BUTTON_CLEAR];
 			CVSPoint pt(0, 0);
-			button->OnButtonUp(pt, 0);
+			button->OnButtonUp(pt, MOUSE_BUTTON_INDEX_LEFT);
 			return true;
 		}
 		}
@@ -341,7 +341,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 			{
 				CPVButton* button = m_buttons[code - INPUT_KEY_0];
 				CVSPoint pt(0, 0);
-				button->OnButtonUp(pt, 0);
+				button->OnButtonUp(pt, MOUSE_BUTTON_INDEX_LEFT);
 				return true;
 			}
 		}
@@ -365,20 +365,20 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 		case INPUT_KEY_ACTIVATE: {
 			CPVButton* button = m_buttons[g_passwordKeyMap[m_selectedButton]];
 			CVSPoint pt(0, 0);
-			button->OnButtonDown(pt, 0);
+			button->OnButtonDown(pt, MOUSE_BUTTON_INDEX_LEFT);
 			return true;
 		}
 		case INPUT_KEY_RETURN: {
 			CPVButton* button = m_buttons[11];
 			CVSPoint pt(0, 0);
-			button->OnButtonDown(pt, 0);
+			button->OnButtonDown(pt, MOUSE_BUTTON_INDEX_LEFT);
 			return true;
 		}
 		case INPUT_KEY_DELETE:
 		case INPUT_KEY_BACKSPACE: {
 			CPVButton* button = m_buttons[PASSWORD_BUTTON_CLEAR];
 			CVSPoint pt(0, 0);
-			button->OnButtonDown(pt, 0);
+			button->OnButtonDown(pt, MOUSE_BUTTON_INDEX_LEFT);
 			return true;
 		}
 		}
@@ -386,7 +386,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 			{
 				CPVButton* button = m_buttons[code - INPUT_KEY_0];
 				CVSPoint pt(0, 0);
-				button->OnButtonDown(pt, 0);
+				button->OnButtonDown(pt, MOUSE_BUTTON_INDEX_LEFT);
 				return true;
 			}
 		}

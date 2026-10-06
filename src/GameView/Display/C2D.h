@@ -99,8 +99,8 @@ public:
 	virtual bool QuitYet();                                          // vtable+0x2c
 	virtual int GetReturnState();                                    // vtable+0x28
 	virtual int ProcessMsg(Message* p_message);                      // vtable+0x08
-	virtual void OnButtonDown(const CVSPoint& p_point, int p_flags); // vtable+0x04
-	virtual void OnButtonUp(const CVSPoint& p_point, int p_flags);   // vtable+0x08
+	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x04
+	virtual void OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags);   // vtable+0x08
 	virtual void OnDriverChange();                                   // vtable+0x30
 	virtual void OnInside(const CVSPoint& p_point);                  // vtable+0x18
 	virtual void OnSize(const CVSRect& p_rect);                      // vtable+0x10

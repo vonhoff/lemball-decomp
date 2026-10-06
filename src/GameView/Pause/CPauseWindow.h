@@ -56,11 +56,11 @@ public:
 	CPauseWindow(CReceiveWindowState* p_receiverState, CPVGWnd* p_parentWindow, ePauseWindowMessages p_pauseMessage);
 	CVSRect CalculateWindow();
 	virtual int ProcessMsg(Message* p_message);                            // vtable+0x08
-	virtual void OnButtonDown(const CVSPoint& p_point, int p_flags);       // vtable+0x04
+	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x04
 	virtual void FreeVram();                                               // vtable+0x00
-	virtual void OnButtonUp(const CVSPoint& p_point, int p_flags);         // vtable+0x08
+	virtual void OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x08
 	virtual void OnDriverChange();                                         // vtable+0x5c
-	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x0c
 	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
 	virtual void OnPaint(const CVSRect& p_rect);                           // vtable+0xa8
 	void CreateTheWindow(const CVSRect& p_rect);

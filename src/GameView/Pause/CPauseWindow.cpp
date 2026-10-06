@@ -622,7 +622,7 @@ void CPauseWindow::OnInside(const CVSPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x00444b20
-void CPauseWindow::OnButtonDown(const CVSPoint& p_point, int p_flags)
+void CPauseWindow::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	int selection = m_minimumSelection;
 	if (selection < m_menuItemCount) {
@@ -655,14 +655,14 @@ void CPauseWindow::OnButtonDown(const CVSPoint& p_point, int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00444bd0
-void CPauseWindow::OnButtonUp(const CVSPoint& p_point, int p_flags)
+void CPauseWindow::OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
 	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);
 }
 
 // FUNCTION: LEMBALL 0x00444bf0
-void CPauseWindow::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
+void CPauseWindow::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
 	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);

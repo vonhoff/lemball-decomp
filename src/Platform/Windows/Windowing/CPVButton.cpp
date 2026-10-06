@@ -204,7 +204,7 @@ eMouseButtonIndex CPVButton::ConvertDoubleClick(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00468050
-void CPVButton::OnButtonDown(const CVSPoint& p_point, int p_flags)
+void CPVButton::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	eMouseButtonIndex converted;
 	CVSPoint clickPos;
@@ -222,7 +222,7 @@ void CPVButton::OnButtonDown(const CVSPoint& p_point, int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x004680c0
-void CPVButton::OnButtonUp(const CVSPoint& p_point, int p_flags)
+void CPVButton::OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	eMouseButtonIndex converted;
 
@@ -240,7 +240,7 @@ void CPVButton::OnButtonUp(const CVSPoint& p_point, int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00468130
-void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
+void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	int i;
 	unsigned int* state;

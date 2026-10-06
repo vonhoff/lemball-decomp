@@ -13,17 +13,17 @@ enum {
 };
 
 // FUNCTION: LEMBALL 0x00439960
-void CHotAreaHandler::OnButtonDown(const CVSPoint& p_point, int p_flags)
+void CHotAreaHandler::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 }
 
 // FUNCTION: LEMBALL 0x00439970
-void CHotAreaHandler::OnButtonUp(const CVSPoint& p_point, int p_flags)
+void CHotAreaHandler::OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 }
 
 // FUNCTION: LEMBALL 0x00439980
-void CHotAreaHandler::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
+void CHotAreaHandler::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	m_buttonState[p_flags + 3] = 0;
 	m_buttonState[p_flags] = 0;
@@ -138,7 +138,7 @@ void CHotAreaHandler::Reset()
 void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, class CHotAreaHandler* p_currentHandler)
 {
 	unsigned short type;
-	int button;
+	eMouseButtonIndex button;
 	unsigned int payload;
 
 	type = p_message->m_type;

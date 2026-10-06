@@ -56,11 +56,11 @@ int CPadToButton::ProcessMsg(Message* p_message)
 			CPVButton* button = entries[index].m_button;
 			if (type == MESSAGE_KEY_DOWN) {
 				CVSPoint point(0, 0);
-				button->OnButtonDown(point, 0);
+				button->OnButtonDown(point, MOUSE_BUTTON_INDEX_LEFT);
 			}
 			else {
 				CVSPoint point(0, 0);
-				button->OnButtonUp(point, 0);
+				button->OnButtonUp(point, MOUSE_BUTTON_INDEX_LEFT);
 			}
 			result = 1;
 		}

@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_CHOTAREAHANDLER_H
 
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/Message.h"
 struct CVSPoint;
 
 struct Message;
@@ -15,9 +16,9 @@ public:
 	CHotAreaHandler(const CVSRect& p_bounds);
 	void ProcessArea(Message* p_message, const CVSPoint& p_point, class CHotAreaHandler* p_currentHandler);
 	virtual ~CHotAreaHandler() {}                                          // vtable+0x00
-	virtual void OnButtonDown(const CVSPoint& p_point, int p_flags);       // vtable+0x04
-	virtual void OnButtonUp(const CVSPoint& p_point, int p_flags);         // vtable+0x08
-	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags);       // vtable+0x04
+	virtual void OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags);         // vtable+0x08
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x0c
 	virtual void OnEnter();                                                // vtable+0x10
 	virtual void OnExit();                                                 // vtable+0x14
 	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18

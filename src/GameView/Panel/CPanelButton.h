@@ -19,7 +19,7 @@ public:
 	virtual void DrawButton();                                             // vtable+0xbc
 	virtual void OnEnterButton();                                          // vtable+0xc8
 	virtual void OnExitButton();                                           // vtable+0xcc
-	virtual void OnExternalButtonUp(const CVSPoint& p_point, int p_flags); // vtable+0x0c
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x0c
 	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
 	virtual void OnPressed(eMouseButtonIndex p_flags);                     // vtable+0xc4
 	virtual void OnReleased(int p_flags);                                  // vtable+0xc0

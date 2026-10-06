@@ -75,7 +75,7 @@ void CPanelPauseButton::OnReleased(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00442350
-void CPanelPauseButton::OnExternalButtonUp(const CVSPoint& p_point, int p_flags)
+void CPanelPauseButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 {
 	CPVButton::OnExternalButtonUp(p_point, p_flags);
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT && m_pressedInside != 0) {
