@@ -173,11 +173,11 @@ void CCDLoadAnim::Draw()
 	const short& originY = originStorage[1];
 	CVector radius((long) (short) -m_points[3].m_x, 0L);
 	const CVSPoint& thickness = m_points[4];
-	int thicknessY = ((int) thickness.m_y) << FIXED_POINT_FRACTION_BITS;
-	int thicknessX = ((int) thickness.m_x) << FIXED_POINT_FRACTION_BITS;
+	int thicknessY = ((int) thickness.m_y) * FIXED_POINT_ONE;
+	int thicknessX = ((int) thickness.m_x) * FIXED_POINT_ONE;
 	CVector left = radius + CVector(thicknessX, thicknessY);
-	thicknessY = (-(int) m_points[4].m_y) << FIXED_POINT_FRACTION_BITS;
-	thicknessX = ((int) m_points[4].m_x) << FIXED_POINT_FRACTION_BITS;
+	thicknessY = (-(int) m_points[4].m_y) * FIXED_POINT_ONE;
+	thicknessX = ((int) m_points[4].m_x) * FIXED_POINT_ONE;
 	CVector right = radius + CVector(thicknessX, thicknessY);
 	angle = m_progress;
 	if (CCD_LOAD_ANIM_PROGRESS_PERCENT_MAX < angle) {
