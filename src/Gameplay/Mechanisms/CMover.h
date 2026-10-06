@@ -29,7 +29,7 @@ public:
 	void MoveOccupantsToDestination();
 	void Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode, int p_startNode, int p_nodeCount);
 	void SetPos();
-	void SetUpNextNode(unsigned int p_time);
+	void SetUpNextNode(unsigned long p_time);
 	void StopObjectsMoving();
 	void Switch();
 	void VerifyObjects();

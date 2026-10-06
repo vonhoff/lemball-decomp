@@ -129,7 +129,7 @@ void CMover::Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode,
 }
 
 // FUNCTION: LEMBALL 0x0042e850
-void CMover::SetUpNextNode(unsigned int p_time)
+void CMover::SetUpNextNode(unsigned long p_time)
 {
 	int nextNode = m_currentNode + 1;
 	if (m_nodeCount <= nextNode) {
