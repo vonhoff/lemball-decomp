@@ -18,7 +18,7 @@ class CResBITMAP : public CResRaster {
 public:
 	inline CResBITMAP(unsigned int p_resourceId) { DoLoad(p_resourceId); }
 	inline CResBITMAP() {}
-	static CResBITMAP* Load(unsigned int p_resourceId);
+	static CResBITMAP* Load(unsigned long p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
 

@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e210
-CResBITMAP* CResBITMAP::Load(unsigned int p_resourceId)
+CResBITMAP* CResBITMAP::Load(unsigned long p_resourceId)
 {
 	CResBITMAP* res = (CResBITMAP*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {
