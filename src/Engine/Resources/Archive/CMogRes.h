@@ -22,7 +22,7 @@ public:
 	bool Load(CResBase* p_resource, Chunk p_chunk);
 	bool SetWD(char* p_path);
 	int GetFreeHandle();
-	int KillLeastResource(unsigned int p_requiredSize);
+	int KillLeastResource(unsigned long p_requiredSize);
 	void DeallocateMem(unsigned char* p_data, unsigned char p_owned);
 	unsigned char* AllocateMainMem(unsigned long p_size);
 	void AgeResources();

@@ -161,7 +161,7 @@ done:
 }
 
 // FUNCTION: LEMBALL 0x0045c940
-int CMogRes::KillLeastResource(unsigned int p_requiredSize)
+int CMogRes::KillLeastResource(unsigned long p_requiredSize)
 {
 	enum eResourceEvictionInitialBound {
 		RESOURCE_REFERENCE_COUNT_INITIAL_UPPER_BOUND = 0xffffffffUL
