@@ -55,7 +55,7 @@ void* g_pDebugThread = NULL;
 void* g_pDebugSyncEvent = NULL;
 
 // GLOBAL: LEMBALL 0x004a2a08
-int g_nDebugThreadId = THREAD_ID_BEFORE_CREATE;
+unsigned long g_nDebugThreadId = THREAD_ID_BEFORE_CREATE;
 
 // GLOBAL: LEMBALL 0x004a2a0c
 FILE* g_pDebugOutputFile = NULL;

@@ -24,10 +24,10 @@ bool _DBG_Init()
 		g_pDebugSyncEvent = CreateEventA(NULL, 0, 0, "Sync_Debug");
 		g_pDebugThread = CreateThread(NULL,
 									  0,
-									  (unsigned int(__stdcall*)(void*)) DebugMessageThreadMain,
+									  (unsigned long(__stdcall*)(void*)) DebugMessageThreadMain,
 									  NULL,
 									  0,
-									  (unsigned int*) &g_nDebugThreadId);
+									  &g_nDebugThreadId);
 		if (g_pDebugThread == NULL) {
 			MessageBoxA(NULL, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
 			ExitProcess(VISOS_THREAD_START_FAILURE_EXIT_CODE);

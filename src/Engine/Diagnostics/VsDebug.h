@@ -21,7 +21,7 @@ extern int g_nDebugFileOutputEnabled;
 extern int g_nAsyncDebugEnabled;
 extern void* g_pDebugThread;
 extern void* g_pDebugSyncEvent;
-extern int g_nDebugThreadId;
+extern unsigned long g_nDebugThreadId;
 extern FILE* g_pDebugOutputFile;
 extern char* g_pDebugOutputPath;
 

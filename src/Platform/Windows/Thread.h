@@ -6,11 +6,11 @@ enum eThreadWaitTimeout {
 };
 
 extern "C" __declspec(dllimport) void* __stdcall CreateThread(void* p_security,
-															  unsigned int p_stack,
-															  unsigned int(__stdcall* p_start)(void*),
+															  unsigned long p_stack,
+															  unsigned long(__stdcall* p_start)(void*),
 															  void* p_param,
-															  unsigned int p_flags,
-															  unsigned int* p_id);
+															  unsigned long p_flags,
+															  unsigned long* p_id);
 extern "C" __declspec(dllimport) int __stdcall SetThreadPriority(void* p_thread, int p_priority);
 extern "C" __declspec(dllimport) void* __stdcall CreateEventA(void* p_security,
 															  int p_manual,
