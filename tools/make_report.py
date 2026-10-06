@@ -2,6 +2,8 @@
 """Generate objdiff progress from raw assembly comparisons."""
 
 import argparse
+import hashlib
+from collections.abc import Collection
 import json
 from collections import defaultdict
 from typing import Any
@@ -12,15 +14,14 @@ from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType
 
-from lib import EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, load_engine
-from lib.effective import (
+from lib.project import EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT
+from lib.comparison.engine import load_engine
+from lib.comparison.thunks import read_jump_target
+from lib.comparison.matches import (
     additional_effective_matches,
-    effective_addresses,
 )
-from lib.progress import (
-    effective_measures,
-    effective_snapshot,
-)
+from lib.progress.metrics import effective_measures
+from lib.progress.snapshot import EFFECTIVE_POLICY
 
 REPORT_EXCLUSIONS = ROOT / "tools/data/report-exclusions.csv"
 
@@ -60,11 +61,8 @@ def is_catalogued_jump_thunk(
     """Recognize a five-byte direct jump that forwards to another inventory entry."""
     if size != 5:
         return False
-    instruction = bytes(image.read(address, 5))
-    if instruction[0] != 0xE9:
-        return False
-    target = address + 5 + int.from_bytes(instruction[1:], "little", signed=True)
-    return target != address and target in catalog
+    target = read_jump_target(image, address)
+    return target is not None and target != address and target in catalog
 
 
 def read_report_exclusions() -> set[int]:
@@ -135,6 +133,37 @@ def build_report(engine, comparisons, modules) -> dict[str, Any]:
     ]
     functions = [function for unit in units for function in unit["functions"]]
     return {"version": 2, "units": units, "measures": measures(functions, len(units))}
+
+
+def effective_addresses(
+    comparisons: dict, additional: Collection[int] = ()
+) -> set[int]:
+    """Function addresses counted by the Effective metric."""
+    return {
+        address
+        for address, comparison in comparisons.items()
+        if comparison.is_function()
+        and comparison.is_matched()
+        and not comparison.is_stub
+        and (
+            comparison.accuracy == 1
+            or comparison.is_effective_match
+            or address in additional
+        )
+    }
+
+
+def effective_snapshot(
+    report_bytes: bytes, accepted: set[int], additional: Collection[int] = ()
+) -> dict[str, Any]:
+    """Bind accepted addresses to the exact canonical report that produced them."""
+    return {
+        "version": 1,
+        "policy": EFFECTIVE_POLICY,
+        "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
+        "addresses": sorted(accepted),
+        "additional": sorted(additional),
+    }
 
 
 def main() -> int:

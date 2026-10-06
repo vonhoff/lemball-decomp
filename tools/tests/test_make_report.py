@@ -4,17 +4,67 @@ import copy
 import unittest
 from unittest.mock import Mock, patch
 
-from reccmp.compare.csv import csv_parse
 from reccmp.compare.db import ReccmpEntity
 from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.types import EntityType, ImageId
+from reccmp.formats.exceptions import InvalidVirtualReadError
 
-from make_report import build_report, measures
-from lib.effective import effective_addresses
-from lib.progress import effective_measures
+from make_report import build_report, is_catalogued_jump_thunk, measures
+from make_report import effective_addresses
+from lib.progress.metrics import effective_measures
 
 
 class MakeReportTests(unittest.TestCase):
+    def test_effective_accepts_raw_upstream_and_additional_matches_directly(self):
+        comparisons = {
+            address: ReccmpComparedEntity(
+                address, "Fixture", score, kind, rebuilt, **flags
+            )
+            for address, score, kind, rebuilt, flags in (
+                (1, 1.0, EntityType.FUNCTION, 101, {}),
+                (2, 0.8, EntityType.FUNCTION, 102, {"is_effective_match": True}),
+                (3, 0.7, EntityType.FUNCTION, 103, {}),
+                (4, 0.999999999, EntityType.FUNCTION, 104, {}),
+                (5, 1.0, EntityType.FUNCTION, 105, {"is_stub": True}),
+                (6, 1.0, EntityType.FUNCTION, None, {}),
+                (7, 1.0, EntityType.DATA, 107, {}),
+            )
+        }
+        self.assertEqual(effective_addresses(comparisons), {1, 2})
+        self.assertEqual(effective_addresses(comparisons, {3, 5, 6, 7}), {1, 2, 3})
+
+    def test_catalogued_thunk_requires_complete_e9_to_another_entry(self):
+        for instruction, expected in (
+            ("e90b000000", True),
+            ("e90b0000", False),
+            ("e80b000000", False),
+            ("e9fbffffff", False),
+            ("e90c000000", False),
+            ("", False),
+        ):
+            with self.subTest(instruction=instruction):
+                image = Mock()
+                image.read.return_value = bytes.fromhex(instruction)
+                self.assertEqual(
+                    is_catalogued_jump_thunk(
+                        image, 0x401000, 5, {0x401000: {}, 0x401010: {}}
+                    ),
+                    expected,
+                )
+                image.read.assert_called_once_with(0x401000, 5)
+
+    def test_catalogued_thunk_rejects_wrong_size_and_unreadable_code(self):
+        image = Mock()
+        self.assertFalse(is_catalogued_jump_thunk(image, 0x401000, 4, {}))
+        image.read.assert_not_called()
+        image.read.side_effect = InvalidVirtualReadError(0x401000)
+        self.assertFalse(is_catalogued_jump_thunk(image, 0x401000, 5, {}))
+
+    def test_catalogued_thunk_wraps_the_ia32_target(self):
+        image = Mock()
+        image.read.return_value = bytes.fromhex("e91b000000")
+        self.assertTrue(is_catalogued_jump_thunk(image, 0xFFFFFFF0, 5, {0x10: {}}))
+
     def test_only_raw_100_percent_counts_as_exact(self):
         scores = (100, 99.999999999, 80, 0)
         result = measures(
@@ -187,7 +237,10 @@ class MakeReportTests(unittest.TestCase):
         unchanged = copy.deepcopy((result, comparisons.entities))
         self.assertAlmostEqual(
             effective_measures(
-                result, effective_addresses(comparisons.entities, {0x4010B0})
+                result,
+                effective_addresses(
+                    comparisons.entities, {0x401000, 0x401070, 0x4010B0}
+                ),
             )["matched_code_percent"],
             58 / 95 * 100,
         )

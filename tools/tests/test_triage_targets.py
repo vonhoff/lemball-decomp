@@ -34,6 +34,6 @@ class TriageTargetsTests(unittest.TestCase):
         def addresses(rows):
             return [int(row["metadata"]["virtual_address"]) for row in rows]
 
-        self.assertEqual(addresses(rank_functions(report, {4})), [1, 2])
-        self.assertEqual(addresses(rank_functions(report, {4}, min_size=300)), [2])
+        self.assertEqual(addresses(rank_functions(report, {4})), [3, 1, 2])
+        self.assertEqual(addresses(rank_functions(report, {4}, min_size=300)), [3, 2])
         self.assertEqual(addresses(rank_functions(report, sort="size")), [2, 4, 1])

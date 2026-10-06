@@ -1,12 +1,8 @@
 """Source-policy tripwires and legitimate low-level operations."""
 
-import contextlib
-import io
-import tempfile
 import unittest
-from pathlib import Path
 
-from lib.policy import check_policy, violations
+from lib.source.policy import violations
 
 
 class PolicyTests(unittest.TestCase):
@@ -87,13 +83,3 @@ class PolicyTests(unittest.TestCase):
         for code in cases:
             with self.subTest(code=code):
                 self.assertTrue(list(violations(code)))
-
-    def test_source_extensions_and_diagnostic_lines(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            for suffix in (".cpp", ".h", ".inl", ".RC"):
-                path = root / f"Fixture{suffix}"
-                path.write_text('\n"__asm";\n__asm nop;\n', encoding="utf-8")
-            with contextlib.redirect_stdout(io.StringIO()) as output:
-                self.assertEqual(check_policy([root]), 1)
-            self.assertEqual(output.getvalue().count(":3: assembly:"), 4)

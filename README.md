@@ -23,12 +23,12 @@ including original code with no rebuilt counterpart.
 
 ## Effective Matching
 
-Effective counts exact matches, reccmp equivalents, and verified jump-thunk matches.
+Effective counts all non-stub raw 100% matches, reccmp equivalents, and jump-thunk matches.
 
-[tools/lib/effective.py](tools/lib/effective.py) recognizes direct calls or jumps
-through an `E9` thunk to the same paired function. The complete decoded
-instruction streams must otherwise agree under reccmp's address normalization,
-with resolved operands and identical instruction offsets.
+[tools/lib/comparison/matches.py](tools/lib/comparison/matches.py) recognizes direct calls or jumps
+through one `E9` thunk to a paired function, then reruns reccmp's comparison.
+Raw 100% and reccmp effective matches count directly. Raw scores remain unchanged;
+Effective results are stored separately from the canonical progress report.
 
 ## References
 

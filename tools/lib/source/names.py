@@ -1,56 +1,15 @@
-"""Audit C++ names and signatures against independent, reviewed CSV evidence."""
+"""Audit source signatures against independent symbol catalog evidence."""
 
-import csv
 import re
-from collections import Counter, defaultdict
-from pathlib import Path
 
-from . import ROOT, TOKENS, collect_sources, mask_comments_and_strings
-from .signatures import (
-    adjacent_signature,
-    canonical_type,
-    class_ranges,
-    decode_signature,
-)
+from .codewarrior import decode_signature
+from .signatures import adjacent_signature, canonical_type, class_ranges
+from ..project import TARGET_ID, WINDOWS_NAME_REVIEWS
+from .scan import TOKENS, mask_comments_and_strings
 
-CATALOG = ROOT / "tools/data/mac-symbol-catalog.csv"
 WINDOWS_MARK = re.compile(
-    r"//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s*LEMBALL\s+(0x[0-9a-fA-F]+)\b"
+    rf"//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s*{re.escape(TARGET_ID)}\s+(0x[0-9a-fA-F]+)\b"
 )
-
-
-def read_catalog(path=CATALOG):
-    """Read symbol identities and Windows mappings from the fixed catalog."""
-    symbols, by_windows = {}, defaultdict(list)
-    with path.open(newline="", encoding="utf-8-sig") as stream:
-        rows = csv.reader(stream)
-        next(rows)
-        for mac, name, win in rows:
-            mac = int(mac, 16)
-            symbols[mac] = name
-            if win:
-                by_windows[int(win, 16)].append(mac)
-    for candidates in by_windows.values():
-        candidates.sort()
-    return symbols, by_windows
-
-
-WINDOWS_NAME_REVIEWS = {
-    (
-        0x0043A500,
-        "OnZoomBox__4CWndFUc",
-        "CWnd::OnDriverChange()",
-    ): "LEMBALL.EXE: CWnd vtable+0x5c at 0x0049942c points through "
-    "0x00401028 to the zero-argument RET at 0x0043a500; CPVWnd's same "
-    "slot points to OnDriverChange at 0x00466340.",
-    (
-        0x0045EDA0,
-        "GetCDDir__FPCc",
-        "CPlatformServices::GetCDDir(const char*)",
-    ): "LEMBALL.EXE: caller 0x00406e60 loads the platform object into ECX "
-    "before CALL 0x0045eda0; the callee returns with RET 4 at 0x0045ee61. "
-    "Windows uses a member function for the catalog's free function.",
-}
 
 
 def compare_signature(expected, actual):
@@ -112,8 +71,7 @@ def annotation_blocks(text, code):
 
 
 def compare_catalog_candidates(address, actual, symbols, candidates):
-    """Preserve every folded identity; apply Windows reviews only to exact keys."""
-    comparisons = []
+    """Compare folded candidates; apply Windows reviews only to exact keys."""
     actual_signature = actual.display()
     for mac in candidates:
         symbol = symbols[mac]
@@ -123,8 +81,7 @@ def compare_catalog_candidates(address, actual, symbols, candidates):
             comparison.update(
                 status="windows", signature_status="review", windows_evidence=evidence
             )
-        comparisons.append(dict(comparison, address_68k=f"0x{mac:08x}", symbol=symbol))
-    return comparisons
+        yield comparison
 
 
 CANDIDATE_PRIORITY = {
@@ -132,7 +89,6 @@ CANDIDATE_PRIORITY = {
     "windows": 1,
     "case": 2,
     "mismatch": 3,
-    "unresolved": 4,
 }
 
 
@@ -168,51 +124,11 @@ def scan(path, symbols, by_windows):
             except ValueError as error:
                 yield dict(row, status="unresolved", reason=str(error))
                 continue
-            comparisons = compare_catalog_candidates(
-                address, actual, symbols, candidates
-            )
             best = min(
-                comparisons,
+                compare_catalog_candidates(address, actual, symbols, candidates),
                 key=lambda candidate: (
                     CANDIDATE_PRIORITY[candidate["status"]],
-                    candidate.get("signature_status") != "match",
+                    candidate["signature_status"] != "match",
                 ),
             )
-            yield dict(row, **best, catalog_candidates=comparisons)
-
-
-def check_names(paths: list[Path | str] | None = None, verbose=False):
-    """Fail on unresolved identities or name mismatches; keep ABI reviews informational."""
-    symbols, mappings = read_catalog()
-    files = collect_sources(paths)
-    rows = [row for path in files for row in scan(path, symbols, mappings)]
-    counts = Counter(row["status"] for row in rows)
-    signatures = Counter(
-        row["signature_status"] for row in rows if "signature_status" in row
-    )
-    for row in rows:
-        required = row["status"] in ("mismatch", "unresolved", "windows")
-        requested = verbose and (
-            row["status"] == "case"
-            or row.get("signature_status") in ("review", "unresolved")
-        )
-        if required or requested:
-            detail = row.get("reason") or (
-                f"{row['original_signature']} -> {row['actual_signature']}"
-                f" ({', '.join(row['differences']) or row['signature_status']})"
-            )
-            print(
-                f"{row['path']}:{row['line']}: {row['status']}: {detail} [{row['windows_address']}]"
-            )
-            if row.get("windows_evidence"):
-                print(f"  Windows evidence: {row['windows_evidence']}")
-    print(f"names: {len(files)} files, {len(rows)} entries from CSV: {dict(counts)}")
-    print(f"names: parameter/const comparisons: {dict(signatures)}")
-    if signatures["review"] or signatures["unresolved"]:
-        print(
-            "names: signature review requires Windows evidence; "
-            "check_source.py --verbose lists items."
-        )
-    if counts["unresolved"]:
-        return 2
-    return int(bool(counts["mismatch"]))
+            yield dict(row, **best)

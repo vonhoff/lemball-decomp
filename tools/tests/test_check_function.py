@@ -12,6 +12,14 @@ import check_function
 
 
 class CheckFunctionTests(unittest.TestCase):
+    def test_raw_exact_counts_without_additional_checks(self):
+        comparison = ReccmpComparedEntity(0x401000, "Caller", 1, recomp_addr=0x501000)
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            check_function.display_comparison(0x401000, comparison, set(), True)
+        self.assertIn("Raw: 100.00%  Effective: 100.00%", output.getvalue())
+        self.assertNotIn("UNVERIFIED", output.getvalue())
+
     def test_summary_is_compact_and_missing_addresses_fail(self):
         engine = Mock()
         engine.compare_address.side_effect = [
@@ -30,7 +38,7 @@ class CheckFunctionTests(unittest.TestCase):
             patch("check_function.load_engine", return_value=(None, engine)),
             patch(
                 "check_function.additional_effective_matches",
-                return_value={0x401000: ("Rule",)},
+                return_value={0x401000},
             ),
             patch("check_function.print_match_verbose") as verbose,
             contextlib.redirect_stdout(output),
@@ -72,7 +80,7 @@ class CheckFunctionTests(unittest.TestCase):
             patch("check_function.load_engine", return_value=(None, engine)),
             patch(
                 "check_function.additional_effective_matches",
-                return_value={0x401020: ("Rule",)},
+                return_value={0x401020},
             ),
             patch("check_function.print_match_verbose") as display,
             contextlib.redirect_stdout(output),

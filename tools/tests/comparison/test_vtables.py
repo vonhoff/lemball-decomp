@@ -2,15 +2,15 @@
 
 import struct
 import unittest
-from types import SimpleNamespace
 from unittest.mock import Mock
 
 from reccmp.compare.db import EntityDb
 from reccmp.compare.functions import FunctionComparator
 from reccmp.formats.exceptions import InvalidVirtualAddressError
+from reccmp.formats.image import Image
 from reccmp.types import EntityType, ImageId
 
-from lib.vtable_lookup import install_vtable_lookups
+from lib.comparison.vtables import install_vtable_lookups
 
 
 def fixture():
@@ -27,10 +27,11 @@ def fixture():
         batch.match(0x4000, 0x5000)
     memory = {
         ImageId.ORIG: {
+            0x4000: b"\xc3",
             0x1004: struct.pack("<I", 0x3000),
             0x3000: b"\xe9" + struct.pack("<i", 0x4000 - 0x3005),
         },
-        ImageId.RECOMP: {0x2004: struct.pack("<I", 0x5000)},
+        ImageId.RECOMP: {0x2004: struct.pack("<I", 0x5000), 0x5000: b"\xc3"},
     }
 
     def image(side):
@@ -39,8 +40,8 @@ def fixture():
                 raise InvalidVirtualAddressError(address)
             return memory[side][address][:size]
 
-        return SimpleNamespace(
-            read=read, imagebase=0, is_relocated_addr=lambda _: False
+        return Mock(
+            spec=Image, read=read, imagebase=0, is_relocated_addr=lambda _: False
         )
 
     comparator = FunctionComparator(
@@ -153,6 +154,25 @@ class VtableLookupTests(unittest.TestCase):
         del memory[ImageId.RECOMP][0x2004]
         install_vtable_lookups(comparator)
         self.assertIsNone(comparator.orig_sanitize.lookup(0x1004, indirect=True))
+
+    def test_unreadable_thunk_destination_is_unresolved(self):
+        comparator, memory = fixture()
+        del memory[ImageId.ORIG][0x4000]
+        install_vtable_lookups(comparator)
+        self.assertIsNone(comparator.orig_sanitize.lookup(0x1004, indirect=True))
+
+    def test_e9_thunk_target_wraps_at_32_bits(self):
+        comparator, memory = fixture()
+        address = 0xFFFFFFF0
+        with comparator.db.batch() as batch:
+            batch.set(ImageId.ORIG, address, size=5)
+        memory[ImageId.ORIG][0x1004] = struct.pack("<I", address)
+        memory[ImageId.ORIG][address] = b"\xe9" + struct.pack("<i", 0x400B)
+        install_vtable_lookups(comparator)
+        self.assertEqual(
+            comparator.orig_sanitize.lookup(0x1004, indirect=True),
+            comparator.recomp_sanitize.lookup(0x2004, indirect=True),
+        )
 
     def test_chained_jumps_are_unresolved(self):
         comparator, memory = fixture()

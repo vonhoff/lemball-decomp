@@ -7,7 +7,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from lib import BUILD, ROOT
+from lib.project import BUILD, ROOT
 
 LOG_PATH = BUILD / "last_build.log"
 MSVC_DIAGNOSTIC = re.compile(

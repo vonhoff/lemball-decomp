@@ -7,8 +7,33 @@ import sys
 
 from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
-from lib import load_engine
-from lib.effective import additional_effective_matches
+from lib.comparison.engine import load_engine
+from lib.comparison.matches import additional_effective_matches
+
+
+def display_comparison(address, comparison, additional, summary):
+    """Show raw and Effective scores without changing the raw result."""
+    if comparison is None:
+        print(f"0x{address:08x}: NOT_FOUND")
+        return
+    if comparison.is_stub:
+        if summary:
+            print(
+                f"0x{address:08x} Raw: 0.00%  Effective: 0.00% STUB {comparison.name}"
+            )
+        else:
+            print_match_oneline(comparison)
+        return
+    effective = replace(
+        comparison,
+        is_effective_match=comparison.is_effective_match or address in additional,
+    )
+    scores = f"Raw: {comparison.accuracy * 100:.2f}%  Effective: {effective.effective_accuracy * 100:.2f}%"
+    if summary:
+        print(f"0x{address:08x} {scores} {comparison.name}")
+    else:
+        print(scores)
+        print_match_verbose(effective)
 
 
 def main() -> int:
@@ -36,31 +61,9 @@ def main() -> int:
             if comparison is not None
         },
     )
-    missing = False
     for address, comparison in zip(args.addrs, comparisons, strict=True):
-        if comparison is None:
-            print(f"0x{address:08x}: NOT_FOUND")
-            missing = True
-        elif comparison.is_stub:
-            if args.summary:
-                print(
-                    f"0x{address:08x} Raw: 0.00%  Effective: 0.00% STUB {comparison.name}"
-                )
-            else:
-                print_match_oneline(comparison)
-        else:
-            effective = replace(
-                comparison,
-                is_effective_match=comparison.is_effective_match
-                or address in additional,
-            )
-            scores = f"Raw: {comparison.accuracy * 100:.2f}%  Effective: {effective.effective_accuracy * 100:.2f}%"
-            if args.summary:
-                print(f"0x{address:08x} {scores} {comparison.name}")
-            else:
-                print(scores)
-                print_match_verbose(effective)
-    return int(missing)
+        display_comparison(address, comparison, additional, args.summary)
+    return int(any(comparison is None for comparison in comparisons))
 
 
 if __name__ == "__main__":

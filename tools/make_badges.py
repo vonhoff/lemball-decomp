@@ -3,8 +3,9 @@
 
 import json
 
-from lib import BUILD, EFFECTIVE_JSON, REPORT_JSON
-from lib.progress import effective_measures, load_progress
+from lib.project import BUILD, EFFECTIVE_JSON, REPORT_JSON
+from lib.progress.metrics import effective_measures
+from lib.progress.snapshot import load_progress
 
 BADGES_DIR = BUILD / "badges"
 

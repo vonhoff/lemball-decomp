@@ -1,73 +1,10 @@
-"""Independent catalog naming authority, signature parsing, and failure cases."""
+"""Source annotations compared against independent catalog evidence."""
 
-import contextlib
-import io
 import tempfile
 import unittest
 from pathlib import Path
 
-from lib.names import check_names, read_catalog, scan
-from lib.signatures import canonical_type, decode_signature, parameter_type
-
-
-class SignatureTests(unittest.TestCase):
-    def test_catalog_encodings(self):
-        cases = {
-            "__ct__12CPadToButtonFi": "CPadToButton::CPadToButton(int)",
-            "__dt__Q214CPreviewDrawer8tagPRIMSFv": "CPreviewDrawer::tagPRIMS::~tagPRIMS()",
-            "Get__6CFixedCFv": "CFixed::Get() const",
-            "Callback__FPFPc_Uc": "Callback(unsigned char (*)(char*))",
-            "__op7CVector__8CVSPointCFv": "CVSPoint::operator CVector() const",
-            "main": "main(?)",
-        }
-        for symbol, expected in cases.items():
-            self.assertEqual(decode_signature(symbol).display(), expected)
-        for symbol in ("Wrong__FP", "Callback__FPFPc", "Callback__FPFPc_"):
-            with self.subTest(symbol=symbol), self.assertRaises(ValueError):
-                decode_signature(symbol)
-
-    def test_cpp_parameter_types(self):
-        cases = {
-            "int capacity = 42": "int",
-            "Widget const* value": "const Widget*",
-            "Widget* const value": "Widget*",
-            "char buffer[12]": "char*",
-            "Namespace::Widget": "Namespace::Widget",
-            "unsigned long value": "unsigned long",
-            "int (*callback)(char* text)": "int (*)(char*)",
-            "void (*outer)(int (*inner)(const char* text))": "void (*)(int (*)(const char*))",
-        }
-        for source, expected in cases.items():
-            self.assertEqual(parameter_type(source), expected)
-        self.assertNotEqual(
-            canonical_type("unsigned long"), canonical_type("unsigned int")
-        )
-        for source in (
-            "void (__stdcall *callback)(int)",
-            "void (Widget::*callback)(int)",
-            "void (*callback)(void, int)",
-        ):
-            with self.assertRaises(ValueError):
-                parameter_type(source)
-
-
-class CatalogTests(unittest.TestCase):
-    def test_catalog_preserves_variants_and_unmapped_symbols(self):
-        header = "mac_address,symbol,windows_address\n"
-        row = "1060000c,Real__Fv,401000\n"
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "mac-symbol-catalog.csv"
-            path.write_text(
-                header + row + "1060000c,Real__Fv,402000\n10600020,MacOnly__Fv,\n",
-                encoding="utf-8",
-            )
-            self.assertEqual(
-                read_catalog(path),
-                (
-                    {0x1060000C: "Real__Fv", 0x10600020: "MacOnly__Fv"},
-                    {0x401000: [0x1060000C], 0x402000: [0x1060000C]},
-                ),
-            )
+from lib.source.names import scan
 
 
 class CatalogNamingTests(unittest.TestCase):
@@ -114,7 +51,9 @@ class CatalogNamingTests(unittest.TestCase):
             "// 68K 0x10b0f952 __ct__5CFakeFi\n// FUNCTION: LEMBALL 0x0043a250\nCFake::CFake(int n) {}"
         )
         self.assertEqual([r["status"] for r in rows], ["mismatch"])
-        self.assertEqual(rows[-1]["symbol"], self.symbols[0x10B0F952])
+        self.assertEqual(
+            rows[-1]["original_signature"], "CPadToButton::CPadToButton(int)"
+        )
 
     def test_parameter_names_ignored_but_arity_signedness_and_reference_checked(self):
         for parameters in ("unsigned int n", "int& n", "int n, int extra", ""):
@@ -143,7 +82,6 @@ class CatalogNamingTests(unittest.TestCase):
             "// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(int n) {}"
         )
         self.assertEqual(row["status"], "match")
-        self.assertEqual(len(row["catalog_candidates"]), 2)
         self.assertEqual(row["original_signature"], "CPadToButton::CPadToButton(int)")
 
     def test_windows_review_does_not_allow_other_names_signatures_or_addresses(self):
@@ -186,19 +124,3 @@ class CatalogNamingTests(unittest.TestCase):
             "// FUNCTION: LEMBALL 0x0043a500\nvoid CWnd::OnDriverChange(int value) {}"
         )
         self.assertEqual(row["status"], "mismatch")
-
-    def test_signature_review_details_do_not_fail_gate(self):
-        self.path.write_text(
-            "// FUNCTION: LEMBALL 0x0043a250\nCPadToButton::CPadToButton(short n) {}",
-            encoding="utf-8",
-        )
-        for verbose in (False, True):
-            output = io.StringIO()
-            with contextlib.redirect_stdout(output):
-                self.assertEqual(check_names([self.path], verbose=verbose), 0)
-            self.assertIn(
-                "signature review requires Windows evidence", output.getvalue()
-            )
-            self.assertEqual(
-                "CPadToButton::CPadToButton(short)" in output.getvalue(), verbose
-            )

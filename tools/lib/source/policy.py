@@ -1,13 +1,11 @@
-"""Narrow source-policy tripwires and functional comment syntax."""
+"""Check source operations and functional comment syntax."""
 
-from itertools import groupby
 import re
+from collections.abc import Iterator
 
-from reccmp import color
 from reccmp.parser.marker import MarkerType, is_marker_exact, match_marker
-from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 
-from . import ROOT, SRC, TOKENS, collect_sources, mask_comments_and_strings
+from .scan import TOKENS, mask_comments_and_strings
 
 BYTE = r"(?:(?:const|unsigned|signed)\s+)*(?:char|BYTE)\s*\*"
 FUNCTION_POINTER = r"[\w:\s]+\(\s*(?:__\w+\s*)?\*\s*\)\s*\([^;{}]*?\)"
@@ -48,7 +46,7 @@ FUNCTIONAL = re.compile(
 )
 
 
-def violations(text):
+def violations(text: str) -> Iterator[tuple[int, str]]:
     code = mask_comments_and_strings(text)
     for pattern, message in RULES:
         for match in re.finditer(pattern, code):
@@ -95,39 +93,3 @@ def violations(text):
             MarkerType.VTABLE,
             MarkerType.LINE,
         )
-
-
-def check_policy(paths=None):
-    files = set(collect_sources(paths))
-    for path in paths or [SRC]:
-        path = ROOT / path
-        files.update(
-            p
-            for p in (path.rglob("*") if path.is_dir() else [path])
-            if p.is_file() and p.suffix.lower() in (".inl", ".rc")
-        )
-    failures = 0
-    for path in sorted(files):
-        text = path.read_text(encoding="utf-8")
-        lines = text.splitlines()
-        for line, message in sorted(violations(text)):
-            print(f"{path}:{line}: {message}\n  {lines[line - 1].strip()}")
-            failures += 1
-    print(f"policy: {failures} violations")
-    return int(bool(failures))
-
-
-def check_annotations(paths=None) -> int:
-    files = tuple(collect_sources(paths))
-    target = DecomplintTarget(files, "LEMBALL", "utf-8")
-    alerts = [
-        alert
-        for alert in lint_all_targets((target,))
-        if alert.target in (None, "LEMBALL")
-    ]
-    alerts.sort(key=lambda alert: str(alert.path).lower())
-    for path, errors in groupby(alerts, key=lambda alert: alert.path):
-        display_errors(errors, path)
-    if alerts:
-        print(color.Style.RESET_ALL, end="")
-    return int(any(alert.is_error() or alert.is_warning() for alert in alerts))
