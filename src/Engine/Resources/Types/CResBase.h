@@ -12,7 +12,7 @@ public:
 	bool Direct(unsigned char*& p_cursor, CResBaseLIST* p_list);
 	bool Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, CResBaseLIST* p_list);
 	virtual ~CResBase();                                                                       // vtable+0x00
-	virtual void OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size); // vtable+0x04
+	virtual void OnRead(unsigned char* p_source, unsigned char** p_data, unsigned long p_size); // vtable+0x04
 	virtual void SetHeader();                                                                  // vtable+0x08
 	virtual bool GetfVramLoaded();                                                             // vtable+0x0c
 	virtual bool GetfVramSwappable();                                                          // vtable+0x10

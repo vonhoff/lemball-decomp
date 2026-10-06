@@ -93,7 +93,7 @@ void CResBase::Initialise()
 }
 
 // FUNCTION: LEMBALL 0x0045d0a0
-void CResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size)
+void CResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned long p_size)
 {
 	if (p_size != 0) {
 		if (m_data == NULL) {

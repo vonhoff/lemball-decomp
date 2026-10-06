@@ -26,7 +26,7 @@ void CResBaseLIST::SetHeader()
 }
 
 // FUNCTION: LEMBALL 0x0045d2b0
-void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned int p_size)
+void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned long p_size)
 {
 	if (p_data == &m_headerData) {
 		if (m_headerData == NULL) {
