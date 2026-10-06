@@ -560,12 +560,13 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 			g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_GAVE_UP;
 			m_gameStatus = GAME_STATUS_FAILURE;
 			break;
-		case GAME_STATE_TIME_EXPIRED:
-			if ((unsigned int) m_gameTime > message.m_levelTime) {
+		case GAME_STATE_TIME_EXPIRED: {
+			unsigned int time = m_gameTime;
+			if (time > message.m_levelTime) {
 				g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_TIME_EXPIRED;
 				m_gameStatus = GAME_STATUS_SUCCESS;
 			}
-			else if ((unsigned int) m_gameTime != message.m_levelTime) {
+			else if (time != message.m_levelTime) {
 				g_pGameStatus->m_skillState = GAME_RESULT_MESSAGE_TIME_EXPIRED;
 				m_gameStatus = GAME_STATUS_FAILURE;
 			}
@@ -585,6 +586,7 @@ void CAI::RemoteGameState(CGameStateMessage* p_message)
 				}
 			}
 			break;
+		}
 		case GAME_STATE_RESTART:
 			m_gameStatus = GAME_STATUS_RESTART;
 			return;
