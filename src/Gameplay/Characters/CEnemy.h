@@ -6,6 +6,12 @@
 #include "Gameplay/Characters/EnemyBehavior.h"
 
 class CAI;
+
+enum eEnemyFiringPhase {
+	ENEMY_FIRE_IDLE = 0,
+	ENEMY_FIRE_REQUESTED = 1,
+	ENEMY_FIRE_FIRED = 2
+};
 // SIZE 0x170
 // VTABLE: LEMBALL 0x00495110
 class CEnemy : public CGameObject {
@@ -65,7 +71,7 @@ private:
 	tEnemyLemmingUnion m_state2Data;   // 0x14c
 	AICOORD m_targetPosition;          // 0x150
 	AICOORD m_fireTarget;              // 0x15c
-	int m_fireState;                   // 0x168
+	eEnemyFiringPhase m_fireState;     // 0x168
 	int m_fireInterval;                // 0x16c
 };
 

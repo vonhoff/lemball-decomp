@@ -39,9 +39,6 @@ enum eEnemyBehaviorStage {
 #define ENEMY_FIRE_RANDOM_MIN_INTERVAL_MS 150
 #define ENEMY_FIRE_RANDOM_INTERVAL_RANGE_MS 1000
 #define ENEMY_MUZZLE_HEIGHT_FIXED 0xc000
-#define ENEMY_FIRE_IDLE 0
-#define ENEMY_FIRE_REQUESTED 1
-#define ENEMY_FIRE_FIRED 2
 
 struct EnemyFacingOffset {
 	int m_dx;
