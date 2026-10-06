@@ -41,7 +41,6 @@ CVSPoint CPanel::GetPausePos()
 CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 {
 	int i;
-	CPanelLemming** lemming;
 	m_game = p_gameView;
 	m_window = (CPVGWnd*) p_gameView->m_display;
 	m_ai = p_gameView->m_ai;
@@ -78,17 +77,15 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 
 	position.m_x = position.m_x + m_pauseSize.m_width;
 	i = 0;
-	lemming = m_lemmings;
 	do {
 		storage = operator new(sizeof(CPanelLemming));
 		if (storage != NULL) {
-			*lemming = new (storage) CPanelLemming(m_ai->m_networkLemmings[i], position, this);
+			m_lemmings[i] = new (storage) CPanelLemming(m_ai->m_networkLemmings[i], position, this);
 		}
 		else {
-			*lemming = NULL;
+			m_lemmings[i] = NULL;
 		}
 		i++;
-		lemming++;
 	} while (i < 4);
 	g_pMasterInputQueue->Attach(this, 0);
 }
