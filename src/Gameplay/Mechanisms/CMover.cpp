@@ -430,13 +430,12 @@ bool CMover::GetOn(CGameObject* p_object)
 	if (IsOn(objectPosition) == 0) {
 		return false;
 	}
-	CGameObject** object;
 	int count = m_objectCount;
 	int i;
 	if (count < 10) {
 		i = 0;
 		if (count > 0) {
-			object = m_objects;
+			CGameObject** object = m_objects;
 			do {
 				if (*object == p_object) {
 					return true;
