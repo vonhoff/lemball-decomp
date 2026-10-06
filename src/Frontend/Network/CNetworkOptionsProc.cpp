@@ -17,6 +17,7 @@
 
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Engine/Time/VsTime.h"
 
 #include <new.h>
 #include <stddef.h>
@@ -105,14 +106,14 @@ void CNetworkOptionsProc::StopBroadcast()
 				g_pNetworkOptionsDrawer->GameNotReady(index);
 			}
 			if (*connections != NULL && *connections != g_pActiveConnection) {
-				startTime = timeGetTime();
+				startTime = CurrentMilliTimer();
 				while (m_rejectMessage->m_pendingSendCount != 0 &&
-					   timeGetTime() - startTime < NETWORK_MESSAGE_SEND_WAIT_TIMEOUT_MS) {
+					   CurrentMilliTimer() - startTime < NETWORK_MESSAGE_SEND_WAIT_TIMEOUT_MS) {
 				}
 				m_rejectMessage->Send(*connections);
-				startTime = timeGetTime();
+				startTime = CurrentMilliTimer();
 				while (m_rejectMessage->m_pendingSendCount != 0 &&
-					   timeGetTime() - startTime < NETWORK_MESSAGE_SEND_WAIT_TIMEOUT_MS) {
+					   CurrentMilliTimer() - startTime < NETWORK_MESSAGE_SEND_WAIT_TIMEOUT_MS) {
 				}
 				(*connections)->Kill();
 			}
