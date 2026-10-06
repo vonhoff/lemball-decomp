@@ -29,7 +29,7 @@ extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_hWnd,
 														   const char* p_lpText,
 														   const char* p_lpCaption,
 														   unsigned int p_uType);
-extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
+extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError();
 extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
 
 #pragma intrinsic(strlen)

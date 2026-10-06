@@ -9,11 +9,11 @@ enum {
 	GLOBAL_ALLOC_FLAG_MOVEABLE = 0x0002
 };
 
-extern "C" __declspec(dllimport) void* __stdcall GlobalAlloc(unsigned int p_flags, unsigned int p_bytes);
+extern "C" __declspec(dllimport) void* __stdcall GlobalAlloc(unsigned int p_flags, unsigned long p_bytes);
 extern "C" __declspec(dllimport) void* __stdcall GlobalLock(void* p_mem);
 extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(void* p_mem);
 extern "C" __declspec(dllimport) void* __stdcall GlobalFree(void* p_mem);
-extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
+extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError();
 
 // GLOBAL: LEMBALL 0x004a2184
 char g_szMasterMainRamArena[24] = "Master Main Ram Arena";
@@ -74,7 +74,7 @@ bool _MEM_Init()
 bool _MEM_Quit()
 {
 	CSmallMemory* smallMemory;
-	unsigned int lastError;
+	unsigned long lastError;
 
 	g_nSmallMemoryEnabled = 0;
 	smallMemory = g_pSmallMemory;
@@ -92,7 +92,7 @@ bool _MEM_Quit()
 	if (GlobalFree(g_pMasterArenaMemory) != NULL) {
 		lastError = GetLastError();
 		*g_pErrorOutput << g_szMasterArenaFreeFailed;
-		*g_pErrorOutput << g_szGetLastErrorEq << (unsigned long) lastError << g_szColonHexPrefix << Hex(lastError)
+		*g_pErrorOutput << g_szGetLastErrorEq << lastError << g_szColonHexPrefix << Hex(lastError)
 						<< g_szGetLastErrorNewline;
 		return false;
 	}

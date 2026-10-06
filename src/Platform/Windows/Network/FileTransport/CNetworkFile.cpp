@@ -38,7 +38,7 @@ extern "C" __declspec(dllimport) int __stdcall UnlockFile(void* p_handle,
 														  unsigned int p_offsetHigh,
 														  unsigned int p_lengthLow,
 														  unsigned int p_lengthHigh);
-extern "C" __declspec(dllimport) unsigned int __stdcall GetLastError();
+extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError();
 extern "C" int __stdcall WSAGetLastError();
 
 enum eSetFilePointerResult {
