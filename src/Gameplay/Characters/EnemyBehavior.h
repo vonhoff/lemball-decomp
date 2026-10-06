@@ -24,11 +24,11 @@ enum eWaypointPatrolMode {
 
 // SIZE 0x14
 struct tagWaypointInformation {
-	unsigned int m_patrolMode;    // 0x00
-	unsigned int m_waypointCount; // 0x04
-	int m_waypointIndex;          // 0x08
-	int m_waypointStep;           // 0x0c
-	unsigned short* m_waypoints;  // 0x10
+	eWaypointPatrolMode m_patrolMode; // 0x00
+	unsigned int m_waypointCount;     // 0x04
+	int m_waypointIndex;              // 0x08
+	int m_waypointStep;               // 0x0c
+	unsigned short* m_waypoints;      // 0x10
 };
 
 // SIZE 0x04

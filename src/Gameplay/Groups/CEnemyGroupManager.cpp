@@ -202,7 +202,7 @@ tagLoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoi
 
 	p_waypointInfo = new tagWaypointInformation;
 	unsigned int waypointCount = data[1];
-	p_waypointInfo->m_patrolMode = data[0];
+	p_waypointInfo->m_patrolMode = (eWaypointPatrolMode) data[0];
 	p_waypointInfo->m_waypointCount = waypointCount;
 	p_waypointInfo->m_waypointIndex = data[2];
 
