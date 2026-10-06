@@ -160,34 +160,5 @@ void CRocket::DoActivate()
 // FUNCTION: LEMBALL 0x004273f0
 void CRocket::GetViewData(CViewData& p_viewData)
 {
-	p_viewData.m_objectId = m_objectId;
-	p_viewData.m_objectType = m_objectType;
-	p_viewData.m_playerIndex = 0;
-	p_viewData.m_positionX = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-	p_viewData.m_positionY = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-	p_viewData.m_positionZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
-	p_viewData.m_facingDirection = m_facingDirection;
-	unsigned int argument = (unsigned short) m_actionArgument;
-	unsigned int timer = m_stateTimer;
-	eAction action = m_action;
-	p_viewData.m_actionArgument = argument;
-	p_viewData.m_action = action;
-	p_viewData.m_stateTimer = timer;
-	p_viewData.m_statusFlags = 0;
-	p_viewData.m_hidden = m_hidden;
-	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
-	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
-	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;
-	p_viewData.m_soundEffect = m_soundEffect;
-	unsigned long timestamp;
-	if (m_isRemoteObject != 0) {
-		timestamp = g_dwNetworkSimulationTimestamp;
-	}
-	else {
-		timestamp = g_dwSimulationTimestamp;
-	}
-	p_viewData.m_animationTime = timestamp;
-	SetSndEffect(SFX_NONE);
-	p_viewData.m_transientFlags = m_transientFlags;
-	m_transientFlags = 0;
+	CGameObject::GetViewData(p_viewData);
 }
