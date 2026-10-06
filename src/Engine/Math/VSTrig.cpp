@@ -63,7 +63,7 @@ VSTrig::VSTrig()
 			int fixedVal = val << FIXED_POINT_FRACTION_BITS;
 			pTable->m_value = fixedVal / 4096;
 			pTable++;
-		} while (pSource < (const int*) &g_dwVSTrigInitialised);
+		} while (pSource < g_nVSTrigSource + TRIG_TABLE_SIZE);
 	}
 	g_dwVSTrigInitialised = 1;
 }
