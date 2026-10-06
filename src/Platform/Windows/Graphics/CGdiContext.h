@@ -5,6 +5,8 @@
 
 #include <stddef.h>
 
+class CDibContext;
+
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x00498770
 class CGdiContext : public CDrawingContext {
@@ -12,7 +14,7 @@ public:
 	CGdiContext(void* p_hDC = NULL)
 	{
 		m_hDC = p_hDC;
-		m_hBitmap = NULL;
+		m_dibContext = NULL;
 	}
 	virtual ~CGdiContext() {}        // vtable+0x00
 	virtual void SetDc(void* p_hDC); // vtable+0x04
@@ -24,8 +26,8 @@ public:
 	friend class CSurface;
 
 private:
-	void* m_hDC;     // 0x04
-	void* m_hBitmap; // 0x08
+	void* m_hDC;               // 0x04
+	CDibContext* m_dibContext; // 0x08
 };
 
 // SYNTHETIC: LEMBALL 0x00458260

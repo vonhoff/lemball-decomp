@@ -93,7 +93,7 @@ CDibContext* CGdiDriver::CreateDibContext(CDrawingContext* p_drawingContext, voi
 	context = new CGdiDibContext(bitmap);
 	context->m_width = info->bmiHeader.biWidth;
 	context->m_bits = (unsigned char*) bits;
-	((CGdiContext*) p_drawingContext)->m_hBitmap = context;
+	((CGdiContext*) p_drawingContext)->m_dibContext = context;
 	return context;
 }
 

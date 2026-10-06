@@ -128,9 +128,9 @@ int CDisplayDibDriver::BitBltContexts(CDrawingContext* p_destination,
 	if (rows * bytes == 0) {
 		return 1;
 	}
-	int stride = ((CDibContext*) ((CGdiContext*) p_source)->m_hBitmap)->GetStride();
+	int stride = ((CGdiContext*) p_source)->m_dibContext->GetStride();
 	unsigned char* destination = m_frameBuffer + clipped.m_y * m_screenSize.m_width + clipped.m_x;
-	unsigned char* source = ((CDibContext*) ((CGdiContext*) p_source)->m_hBitmap)->GetBits();
+	unsigned char* source = ((CGdiContext*) p_source)->m_dibContext->GetBits();
 	source += p_position->m_y * stride + p_position->m_x;
 	int i = 0;
 	while (1) {

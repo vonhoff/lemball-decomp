@@ -94,7 +94,7 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 	if (rows * width == 0) {
 		return 1;
 	}
-	((CDibContext*) ((CGdiContext*) p_source)->m_hBitmap)->GetStride();
+	((CGdiContext*) p_source)->m_dibContext->GetStride();
 	int destinationX = p_rect->m_x;
 	int sourceX = p_position->m_x;
 	int sourceEnd = width - 1 + sourceX;
