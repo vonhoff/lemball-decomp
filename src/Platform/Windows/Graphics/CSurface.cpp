@@ -357,7 +357,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 		}
 	}
 	else {
-		int paletteCount = (int) p_palette->m_entryCount - SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT;
+		int paletteCount = (int) (p_palette->m_entryCount - SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT);
 		if (paletteCount > SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START) {
 			paletteCount = SURFACE_PALETTE_SYSTEM_USABLE_ENTRY_COUNT;
 		}
