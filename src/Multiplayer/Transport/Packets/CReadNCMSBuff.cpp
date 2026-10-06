@@ -58,7 +58,7 @@ CReadMSBuff* CReadNCMSBuff::UpdateSubPacket()
 	}
 
 	packetSequence = g_pNetworkPacketScratch->m_packetSequence;
-	if ((int) m_nextExpectedSequence > (int) (unsigned int) packetSequence) {
+	if (m_nextExpectedSequence > (int) (unsigned int) packetSequence) {
 		return NULL;
 	}
 
