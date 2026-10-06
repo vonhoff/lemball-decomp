@@ -45,9 +45,7 @@ int CPadToButton::ProcessMsg(Message* p_message)
 		if (count > 0) {
 			PadToButtonEntry* entries = m_entries;
 			unsigned int messageCode = (unsigned int) p_message->m_code;
-			unsigned int* padCode = &entries->m_padCode;
-			while (*padCode != messageCode) {
-				padCode += 2;
+			while (entries[index].m_padCode != messageCode) {
 				index++;
 				if (index >= count) {
 					return result;
