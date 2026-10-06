@@ -37,7 +37,7 @@ enum eNetworkOptionsPendingEvent {
 
 #define NETWORK_OPTIONS_ADDRESS_MAX_LENGTH 20
 
-enum eNetworkOptionsEditStage {
+enum eEditingStage {
 	NETWORK_OPTIONS_EDIT_NONE = 0,
 	NETWORK_OPTIONS_EDIT_GAME_NAME = 1,
 	NETWORK_OPTIONS_EDIT_BROADCAST_ADDRESS = 2,
@@ -113,7 +113,7 @@ public:
 	void SetMessage(int p_message);
 	void Start(unsigned int p_mode);
 	void StartBroadcast();
-	void StartEditing(int p_stage, unsigned int p_clear);
+	void StartEditing(eEditingStage p_stage, unsigned int p_clear);
 	void StartMessageTimeout(int p_message, unsigned long p_duration);
 	void Stop();
 	void StopEditing();
@@ -127,8 +127,8 @@ public:
 private:
 	CEditString* m_editor;               // 0x398
 	unsigned int m_editingActive;        // 0x39c
-	int m_editingStage;                  // 0x3a0
-	unsigned int m_pendingStage;         // 0x3a4
+	eEditingStage m_editingStage;        // 0x3a0
+	eEditingStage m_pendingStage;        // 0x3a4
 	int m_message;                       // 0x3a8
 	unsigned int m_drawnMessage;         // 0x3ac
 	unsigned int m_messageStartTime;     // 0x3b0

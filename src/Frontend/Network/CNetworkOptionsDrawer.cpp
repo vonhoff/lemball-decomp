@@ -926,9 +926,9 @@ void CNetworkOptionsDrawer::SetMessage(int p_message)
 }
 
 // FUNCTION: LEMBALL 0x00454690
-void CNetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
+void CNetworkOptionsDrawer::StartEditing(eEditingStage p_stage, unsigned int p_clear)
 {
-	int stage;
+	eEditingStage stage;
 	CEditString* editor;
 
 	stage = p_stage;
@@ -957,7 +957,7 @@ void CNetworkOptionsDrawer::StartEditing(int p_stage, unsigned int p_clear)
 // FUNCTION: LEMBALL 0x00454740
 void CNetworkOptionsDrawer::StopEditing()
 {
-	int stage;
+	eEditingStage stage;
 	char* text;
 
 	stage = m_editingStage;
