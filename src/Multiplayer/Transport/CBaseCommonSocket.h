@@ -48,7 +48,7 @@ public:
 
 private:
 	NetworkErrors m_lastError;   // 0x04
-	int m_socketHandle;          // 0x08
+	unsigned int m_socketHandle; // 0x08
 	unsigned int m_isOpen;       // 0x0c
 	unsigned int m_readReady;    // 0x10
 	unsigned int m_writeReady;   // 0x14
