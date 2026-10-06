@@ -96,15 +96,10 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 // FUNCTION: LEMBALL 0x00443140
 CPanel::~CPanel()
 {
-	CPanelLemming** lemming;
-	int count;
-	lemming = m_lemmings;
 	g_pMasterInputQueue->Detach(this, 0);
-	count = 4;
-	do {
-		delete *lemming;
-		lemming++;
-	} while (--count != 0);
+	for (int i = 0; i < 4; i++) {
+		delete m_lemmings[i];
+	}
 	m_resources[3]->UnLoad();
 	m_resources[2]->UnLoad();
 	m_resources[1]->UnLoad();
