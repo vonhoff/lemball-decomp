@@ -21,7 +21,7 @@ public:
 				  CWnd* p_window);
 	unsigned char GetEffectVolume();
 	unsigned long PrepareEffect(unsigned long p_resourceId);
-	unsigned long PrepareMusic(unsigned long p_resourceId, unsigned int p_flags);
+	void PrepareMusic(unsigned long p_resourceId, unsigned int p_flags);
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	void Background();
 	void Foreground();

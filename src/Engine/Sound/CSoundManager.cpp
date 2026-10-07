@@ -1,60 +1,11 @@
 #include "CSoundManager.h"
 
-#include "VsSound.h"
-#include "Engine/Resources/Types/CResEFFECT.h"
 #include "CBaseSoundDevice.h"
 #include "CPVMusicDevice.h"
+#include "Engine/Resources/Types/CResEFFECT.h"
+#include "VsSound.h"
 
 #include <stddef.h>
-
-struct SoundDeviceDispatch {
-	virtual void Delete(int p_delete) = 0;
-	virtual void Slot04() = 0;
-	virtual void Slot08() = 0;
-	virtual int Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId) = 0;
-	virtual int OpenPrimary(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId) = 0;
-	virtual void Slot14() = 0;
-	virtual void Slot18() = 0;
-	virtual void Slot1c() = 0;
-	virtual void Slot20() = 0;
-	virtual int IsMusicAvailable() = 0;
-	virtual int IsEffectAvailable() = 0;
-	virtual unsigned char Slot2c() = 0;
-	virtual unsigned char GetBuffersPerEffect() = 0;
-	virtual void Slot34() = 0;
-	virtual void Slot38() = 0;
-	virtual void Prepare(unsigned char* p_data, unsigned long* p_handle) = 0;
-	virtual void Slot40() = 0;
-	virtual void Slot44() = 0;
-	virtual void FreeEffect(unsigned long p_effectId) = 0;
-	virtual void Slot4c() = 0;
-	virtual void Slot50() = 0;
-	virtual void Slot54() = 0;
-	virtual void Slot58() = 0;
-	virtual void Slot5c() = 0;
-	virtual void Slot60() = 0;
-	virtual unsigned long QueryVolume() = 0;
-	virtual void Slot68() = 0;
-	virtual void Slot6c() = 0;
-	virtual void Slot70() = 0;
-	virtual void Slot74() = 0;
-	virtual void Slot78() = 0;
-	virtual void Slot7c() = 0;
-	virtual void Slot80() = 0;
-	virtual void Slot84() = 0;
-	virtual void Slot88() = 0;
-	virtual void PlayEffect(unsigned long p_effectId, unsigned long p_volume, unsigned long p_flags) = 0;
-};
-
-struct MusicDeviceDispatch {
-	virtual void Delete(int p_delete) = 0;
-	virtual unsigned long Initialise(unsigned long p_resourceId, unsigned long p_flags) = 0;
-	virtual void Prepare(unsigned long p_handle, unsigned long p_resourceId) = 0;
-	virtual void Slot0c() = 0;
-	virtual void Play(unsigned long p_handle) = 0;
-	virtual void Stop(unsigned long p_handle) = 0;
-	virtual void Pause(unsigned long p_handle) = 0;
-};
 
 // FUNCTION: LEMBALL 0x0045af80
 CSoundManager::CSoundManager(unsigned int p_musicEnabled,
@@ -89,10 +40,10 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 	m_effectOutput = NULL;
 	if (i < m_deviceCount) {
 		do {
-			if (((SoundDeviceDispatch*) m_devices[i])->IsMusicAvailable() == 1) {
+			if (m_devices[i]->IsMusicAvailable() == 1) {
 				m_musicOutput = m_devices[i];
 			}
-			if (((SoundDeviceDispatch*) m_devices[i])->IsEffectAvailable() == 1) {
+			if (m_devices[i]->IsEffectAvailable() == 1) {
 				m_effectOutput = m_devices[i];
 			}
 			++i;
@@ -120,7 +71,7 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 		m_musicRequested = 1;
 		m_musicCapability = 1;
 		if (m_musicOutput != NULL) {
-			m_musicCapability = ((SoundDeviceDispatch*) m_musicOutput)->Slot2c();
+			m_musicCapability = m_musicOutput->Dummy2c();
 		}
 	}
 	else {
@@ -129,7 +80,7 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 	}
 	if (m_effectsAvailable == 1) {
 		m_effectsRequested = 1;
-		m_effectsCapability = ((SoundDeviceDispatch*) m_effectOutput)->GetBuffersPerEffect();
+		m_effectsCapability = m_effectOutput->GetBuffersPerEffect();
 	}
 	else {
 		m_effectsRequested = 0;
@@ -177,7 +128,7 @@ void CSoundManager::SetResId(unsigned long p_resourceId)
 	m_resourceId = p_resourceId;
 	if (m_background == 0) {
 		if (m_effectOutput != NULL) {
-			if (((SoundDeviceDispatch*) m_effectOutput)->OpenPrimary(0, m_requestedEffects, p_resourceId) == 0) {
+			if (m_effectOutput->Dummy10(0, m_requestedEffects, p_resourceId) == 0) {
 				m_requestedEffects = 0;
 			}
 		}
@@ -197,7 +148,7 @@ void CSoundManager::Background()
 			devices = m_devices;
 			do {
 				if (*devices != NULL) {
-					((SoundDeviceDispatch*) *devices)->Slot14();
+					(*devices)->Close();
 				}
 				devices = devices + 1;
 				i = i + 1;
@@ -223,7 +174,7 @@ void CSoundManager::Foreground()
 			m_effectOutput = NULL;
 		}
 		if (m_useMusicCD == 0 && musicOutput != NULL) {
-			if (((SoundDeviceDispatch*) musicOutput)->Open(music, effects, m_resourceId) == 0) {
+			if (musicOutput->Open(music, effects, m_resourceId) == 0) {
 				music = 0;
 				effects = 0;
 			}
@@ -231,7 +182,7 @@ void CSoundManager::Foreground()
 			m_effectsAvailable = effects;
 		}
 		if (m_effectOutput != NULL) {
-			if (((SoundDeviceDispatch*) m_effectOutput)->Open(0, m_requestedEffects, m_resourceId) == 0) {
+			if (m_effectOutput->Open(0, m_requestedEffects, m_resourceId) == 0) {
 				m_requestedEffects = 0;
 			}
 			m_effectsAvailable = m_requestedEffects;
@@ -244,9 +195,9 @@ void CSoundManager::Foreground()
 }
 
 // FUNCTION: LEMBALL 0x0045b2c0
-unsigned long CSoundManager::PrepareMusic(unsigned long p_resourceId, unsigned int p_flags)
+void CSoundManager::PrepareMusic(unsigned long p_resourceId, unsigned int p_flags)
 {
-	return ((MusicDeviceDispatch*) m_musicDevice)->Initialise(p_resourceId, p_flags);
+	m_musicDevice->Initialise(p_resourceId, p_flags);
 }
 
 // FUNCTION: LEMBALL 0x0045b2e0
@@ -260,7 +211,7 @@ unsigned long CSoundManager::PlayMusic(unsigned long p_handle, unsigned long p_u
 		if (m_nextMusicHandle == 0) {
 			m_nextMusicHandle = 1;
 		}
-		((MusicDeviceDispatch*) m_musicDevice)->Prepare(allocated, p_handle);
+		m_musicDevice->Prepare(allocated, p_handle);
 		return allocated;
 	}
 	return 0;
@@ -278,7 +229,7 @@ void CSoundManager::ProcessMusic(unsigned long p_handle)
 	if (m_musicAvailable == 1) {
 		if (p_handle != 0) {
 			if (m_useMusicCD == 1) {
-				((MusicDeviceDispatch*) m_musicDevice)->Play(p_handle);
+				m_musicDevice->Play(p_handle);
 			}
 		}
 	}
@@ -289,7 +240,7 @@ void CSoundManager::StopMusic(unsigned long p_handle)
 {
 	if (m_musicAvailable == 1) {
 		if (m_useMusicCD == 1) {
-			((MusicDeviceDispatch*) m_musicDevice)->Pause(p_handle);
+			m_musicDevice->Pause(p_handle);
 		}
 	}
 }
@@ -307,7 +258,7 @@ void CSoundManager::FreeMusic(unsigned long p_handle)
 {
 	if (m_musicAvailable == 1) {
 		if (m_useMusicCD == 1) {
-			((MusicDeviceDispatch*) m_musicDevice)->Stop(p_handle);
+			m_musicDevice->Stop(p_handle);
 		}
 	}
 }
@@ -337,7 +288,7 @@ unsigned long CSoundManager::PrepareEffect(unsigned long p_resourceId)
 		}
 		effect->m_directUseCount = effect->m_directUseCount + 1;
 		data = effect->GetData();
-		((SoundDeviceDispatch*) m_effectOutput)->Prepare(data, &handle);
+		m_effectOutput->PrepareEffect(data, &handle);
 		effect->m_directUseCount = effect->m_directUseCount - 1;
 		effect->UnLoad();
 		return handle;
@@ -349,8 +300,7 @@ unsigned long CSoundManager::PrepareEffect(unsigned long p_resourceId)
 void CSoundManager::PlayEffect(unsigned long p_effectId)
 {
 	if (m_effectsAvailable == 1) {
-		((SoundDeviceDispatch*) m_effectOutput)
-			->PlayEffect(p_effectId, ((SoundDeviceDispatch*) m_effectOutput)->QueryVolume(), 0);
+		m_effectOutput->EffectPlay(p_effectId, m_effectOutput->GetEffectVolume(), 0);
 	}
 }
 
@@ -358,7 +308,7 @@ void CSoundManager::PlayEffect(unsigned long p_effectId)
 void CSoundManager::PlayEffect(unsigned long p_effectId, unsigned int p_channel)
 {
 	if (m_effectsAvailable == 1) {
-		((SoundDeviceDispatch*) m_effectOutput)->PlayEffect(p_effectId, p_channel, 0);
+		m_effectOutput->EffectPlay(p_effectId, (unsigned char) p_channel, 0);
 	}
 }
 
@@ -366,7 +316,7 @@ void CSoundManager::PlayEffect(unsigned long p_effectId, unsigned int p_channel)
 void CSoundManager::FreeEffect(unsigned long p_effectId)
 {
 	if (m_effectsAvailable == 1) {
-		((SoundDeviceDispatch*) m_effectOutput)->FreeEffect(p_effectId);
+		m_effectOutput->FreeEffect(p_effectId);
 	}
 }
 
