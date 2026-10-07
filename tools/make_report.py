@@ -19,9 +19,7 @@ from reccmp.types import EntityType
 
 from lib.project import BUILD, EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, TARGET_ID
 from lib.comparison.thunks import read_jump_target
-from lib.comparison.matches import (
-    additional_effective_matches,
-)
+from lib.comparison.matches import additional_effective_matches
 from lib.progress.metrics import effective_measures
 from lib.progress.snapshot import EFFECTIVE_POLICY
 
@@ -147,11 +145,7 @@ def effective_addresses(
         if comparison.is_function()
         and comparison.is_matched()
         and not comparison.is_stub
-        and (
-            comparison.accuracy == 1
-            or comparison.is_effective_match
-            or address in additional
-        )
+        and (comparison.effective_accuracy == 1 or address in additional)
     }
 
 

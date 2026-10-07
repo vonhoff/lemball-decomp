@@ -1,6 +1,5 @@
 """Conservative assembly canonicalization for additional Effective matches."""
 
-import heapq
 import re
 
 from capstone import (
@@ -79,27 +78,17 @@ def schedulable(inst):
     )
 
 
-def schedule(lines, instructions):
-    """Canonical topological order, preserving RAW, WAR, WAW and flag hazards."""
-    accesses = [register_access(inst) for inst in instructions]
-    successors = [[] for _ in lines]
-    incoming = [0] * len(lines)
-    for j, (reads_j, writes_j) in enumerate(accesses):
-        for i, (reads_i, writes_i) in enumerate(accesses[:j]):
-            if writes_i & (reads_j | writes_j) or reads_i & writes_j:
-                successors[i].append(j)
-                incoming[j] += 1
-    ready = [(line, i) for i, line in enumerate(lines) if incoming[i] == 0]
-    heapq.heapify(ready)
-    result = []
-    while ready:
-        line, i = heapq.heappop(ready)
-        result.append(line)
-        for j in successors[i]:
-            incoming[j] -= 1
-            if incoming[j] == 0:
-                heapq.heappush(ready, (lines[j], j))
-    return result
+def schedule(items):
+    """Sort a run only when every instruction is independent of every other."""
+    lines = [line for line, _ in items]
+    accesses = [register_access(inst) for _, inst in items]
+    # ponytail: independent runs only; add DAG ordering if mixed runs yield matches.
+    dependent = any(
+        writes_i & (reads_j | writes_j) or reads_i & writes_j
+        for j, (reads_j, writes_j) in enumerate(accesses)
+        for reads_i, writes_i in accesses[:j]
+    )
+    return lines if dependent else sorted(lines)
 
 
 def normalize(assembly, data, start, symbols=()):
@@ -114,32 +103,28 @@ def normalize(assembly, data, start, symbols=()):
     instructions = {}
     table_targets = {}
     entries = set()
-    covered = bytearray(len(data))
+    end = start
     for section in InstructGen(bytes(data), start).sections:
-        if section.type == SectionType.CODE and section.contents:
-            first = section.contents[0][0]
+        if not section.contents:
+            continue
+        first = section.contents[0][0]
+        if data[end - start : first - start].strip(b"\xcc"):
+            return None
+        if section.type == SectionType.CODE:
             last, size, _, _ = section.contents[-1]
-            decoded = list(
-                decoder.disasm(data[first - start : last + size - start], first)
+            end = last + size
+            instructions.update(
+                (i.address, i)
+                for i in decoder.disasm(data[first - start : end - start], first)
             )
-            if [
-                (i.address, i.size, i.mnemonic, i.op_str) for i in decoded
-            ] != section.contents:
-                return None
-            instructions.update((i.address, i) for i in decoded)
             entries.add(first)
-            covered[first - start : last + size - start] = b"\1" * (last + size - first)
-        elif section.type == SectionType.ADDR_TAB:
-            table_targets.update(section.contents)
-            for address, _ in section.contents:
-                covered[address - start : address - start + 4] = b"\1" * 4
-        elif section.type == SectionType.DATA_TAB:
-            for address, _ in section.contents:
-                covered[address - start] = 1
+        else:
+            width = 4 if section.type == SectionType.ADDR_TAB else 1
+            end = section.contents[-1][0] + width
+            if section.type == SectionType.ADDR_TAB:
+                table_targets.update(section.contents)
 
-    if not instructions or any(
-        not seen and byte != 0xCC for seen, byte in zip(covered, data, strict=True)
-    ):
+    if not instructions or data[end - start :].strip(b"\xcc"):
         return None
 
     positions = {
@@ -188,38 +173,20 @@ def normalize(assembly, data, start, symbols=()):
         if address in entries or inst is None:
             zero.clear()
         if inst is not None:
-            operands = inst.operands
-            if (
-                allow_zero_tests
-                and inst.mnemonic == "cmp"
-                and operands[0].type == X86_OP_REG
-            ):
-                left, right = operands
-                if (
-                    right.type == X86_OP_IMM
-                    and right.imm == 0
-                    or right.type == X86_OP_REG
-                    and inst.reg_name(right.reg) in zero
-                ):
-                    reg = inst.reg_name(left.reg)
-                    text = f"test {reg}, {reg}"
             known_zero = None
-            if len(operands) == 2 and operands[0].type == X86_OP_REG:
-                left, right = operands
-                dest = inst.reg_name(left.reg)
-                if dest in GENERAL_REGISTERS and (
+            operands = inst.op_str.split(", ")
+            if len(operands) == 2 and operands[0] in REGISTER_FAMILIES:
+                reg, source = operands
+                is_zero = source == "0" or source in zero
+                if allow_zero_tests and inst.mnemonic == "cmp" and is_zero:
+                    text = f"test {reg}, {reg}"
+                if reg in GENERAL_REGISTERS and (
                     inst.mnemonic in {"xor", "sub"}
-                    and right.type == X86_OP_REG
-                    and left.reg == right.reg
+                    and reg == source
                     or inst.mnemonic == "mov"
-                    and (
-                        right.type == X86_OP_IMM
-                        and right.imm == 0
-                        or right.type == X86_OP_REG
-                        and inst.reg_name(right.reg) in zero
-                    )
+                    and is_zero
                 ):
-                    known_zero = dest
+                    known_zero = reg
             _, writes = register_access(inst)
             zero.difference_update(writes)
             if known_zero is not None:
@@ -232,24 +199,18 @@ def normalize(assembly, data, start, symbols=()):
 
     lines = number_placeholders(lines, symbols)
     result = []
-    pending_lines, pending_instructions = [], []
-
-    def flush():
-        result.extend(schedule(pending_lines, pending_instructions))
-        pending_lines.clear()
-        pending_instructions.clear()
-
+    pending = []
     for (address, _), line in zip(assembly, lines, strict=True):
         inst = instructions.get(address)
-        if address in entries:
-            flush()
-        if inst is not None and schedulable(inst):
-            pending_lines.append(line)
-            pending_instructions.append(inst)
+        movable = inst is not None and schedulable(inst)
+        if address in entries or not movable:
+            result.extend(schedule(pending))
+            pending.clear()
+        if movable:
+            pending.append((line, inst))
         else:
-            flush()
             result.append(line)
-    flush()
+    result.extend(schedule(pending))
     # Keep byte displacements unchanged; also reject changed destination indices.
     # Equal displacements can reach different instructions after a size change.
     edges = tuple(

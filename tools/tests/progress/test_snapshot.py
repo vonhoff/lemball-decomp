@@ -45,12 +45,7 @@ class ProgressSnapshotTests(unittest.TestCase):
             load_progress(self.report_path, self.effective_path)
 
     def test_prior_acceptance_policy_is_rejected(self):
-        for policy in (
-            None,
-            "paired-signatures-v2",
-            "reccmp-with-jump-thunks-v1",
-            "reccmp-with-assembly-normalization-v2",
-        ):
+        for policy in (None, "reccmp-with-assembly-normalization-v3"):
             self.snapshot["policy"] = policy
             self.effective_path.write_text(json.dumps(self.snapshot), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "do not belong"):

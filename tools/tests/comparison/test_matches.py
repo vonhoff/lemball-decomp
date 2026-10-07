@@ -111,10 +111,11 @@ class AdditionalMatchTests(unittest.TestCase):
             (comparator.orig_sanitize, comparator.recomp_sanitize), parsers
         )
 
-    def test_parser_resets_thunk_usage_and_preserves_address_taking(self):
+    def test_parser_resets_symbols_and_preserves_address_taking(self):
         comparator, _ = fixture()
         parser = ThunkParseAsm(comparator.orig_bin, {0x4015}, comparator.orig_sanitize)
-        parser.parse_asm(bytes.fromhex("e8fb2f0000 c3"), 0x1000)
-        self.assertTrue(parser.used_thunk)
-        parser.parse_asm(bytes.fromhex("b800400000 c3"), 0x1000)
-        self.assertFalse(parser.used_thunk)
+        assembly = parser.parse_asm(bytes.fromhex("e8fb2f0000 c3"), 0x1000)
+        self.assertIn("Target", assembly[0][1])
+        assembly = parser.parse_asm(bytes.fromhex("b800400000 c3"), 0x1000)
+        self.assertEqual(assembly[0][1], "mov eax, 0x4000")
+        self.assertEqual(parser.symbols, set())
