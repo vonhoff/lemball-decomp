@@ -10,7 +10,7 @@ from lib.source.scan import collect_sources, mask_comments_and_strings
 class SourceScanTests(unittest.TestCase):
     def test_source_discovery_includes_files_added_between_checks(self):
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
+            root = Path(directory).resolve()
             source = root / "Fixture.cpp"
             source.write_text("", encoding="utf-8")
             self.assertEqual(set(collect_sources([root])), {source})
