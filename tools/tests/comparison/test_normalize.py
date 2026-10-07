@@ -74,7 +74,7 @@ class NormalizationTests(unittest.TestCase):
     def test_block_entries_prevent_cross_branch_moves(self):
         self.assertDifferent("7402 8bc3 8bce c3", "7402 8bce 8bc3 c3")
 
-    def test_zero_checks_and_branch_encoding_jitter(self):
+    def test_zero_checks_with_unchanged_branch_displacements(self):
         self.assertEquivalent("83f800 7401 90 c3", "85c0 0f8401000000 90 c3")
         self.assertEquivalent("31d2 3bfa 7e01 90 c3", "31d2 85ff 7e01 90 c3")
         self.assertEquivalent(
@@ -88,6 +88,14 @@ class NormalizationTests(unittest.TestCase):
         self.assertIsNone(canonical("e800000000 c3"))
         self.assertIsNone(canonical("ffe0"))
         self.assertIsNone(canonical("31d2 cd80 3bc2 c3"))
+
+    def test_branch_displacement_changes_are_not_normalized(self):
+        # Both branches target RET; CMP-to-TEST shortens the skipped code.
+        self.assertDifferent("7404 83f800 90 c3", "7403 85c0 90 c3")
+
+    def test_equal_displacements_cannot_hide_changed_destinations(self):
+        # JE +3 reaches NOP on the left, RET on the right.
+        self.assertDifferent("7403 83f800 90 c3", "7403 85c0 90 c3")
 
     def test_truncated_decoding_is_rejected_and_int3_padding_is_allowed(self):
         for code in ("", "b8", "85c0 b8", "85c0 cc 90"):

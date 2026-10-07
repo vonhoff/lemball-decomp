@@ -103,7 +103,7 @@ def schedule(lines, instructions):
 
 
 def normalize(assembly, data, start, symbols=()):
-    """Normalize identities, branch destinations, zero tests and local scheduling.
+    """Normalize identities, zero tests and local scheduling.
 
     Return None on incomplete decoding. Instruction count and table order stay
     fixed. Unknown instructions, calls, stores and block entries stop scheduling.
@@ -187,10 +187,6 @@ def normalize(assembly, data, start, symbols=()):
         inst = instructions.get(address)
         if address in entries or inst is None:
             zero.clear()
-        if address in branches:
-            text = f"{inst.mnemonic} <LINE{positions[branches[address]]}>"
-        elif address in table_targets and table_targets[address] in instructions:
-            text = f"start + <LINE{positions[table_targets[address]]}>"
         if inst is not None:
             operands = inst.operands
             if (
@@ -254,4 +250,10 @@ def normalize(assembly, data, start, symbols=()):
             flush()
             result.append(line)
     flush()
-    return result
+    # Keep byte displacements unchanged; also reject changed destination indices.
+    # Equal displacements can reach different instructions after a size change.
+    edges = tuple(
+        (positions[source], positions[target])
+        for source, target in sorted((branches | table_targets).items())
+    )
+    return result, edges
