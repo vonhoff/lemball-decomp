@@ -16,24 +16,21 @@ Each function is compared with the original executable using [reccmp](https://gi
 
 In the decomp.dev report, `matched_*` counts non-stub functions with a raw 100%
 reccmp assembly comparison score. Equivalent functions with lower scores retain
-their raw similarity under fuzzy progress. Stubs and unmatched functions score zero.
+their raw similarity under fuzzy progress.
 
 The inventory and byte totals come from the original LEMBALL function-size catalog,
 including original code with no rebuilt counterpart.
 
+Original jump entries and tail forwarders are reconstructed during linking.
+
+[tools/recover_thunks.py](tools/recover_thunks.py) refreshes the recorded routes
+in [tools/data/linker-thunks.json](tools/data/linker-thunks.json).
+`python tools/recover_thunks.py --verify` checks emitted jump destinations and
+caller references against the original executable.
+
 ## Effective Matching
 
-Effective is the union of these checks for non-stub functions:
-
-| Check | Evidence |
-| --- | --- |
-| Exact | Raw 100% reccmp assembly comparison |
-| reccmp equivalent | Upstream reccmp equivalence result |
-| Jump thunk | Direct call/jump through one `E9` to the same paired function |
-
-Existing exact, reccmp, and thunk matches are accepted directly. Raw fuzzy scores
-remain unchanged; Effective affects the badge and console output, not canonical
-progress.
+Effective includes non-stub raw 100% matches and reccmp's own equivalence results.
 
 ## References
 
