@@ -154,7 +154,7 @@ def effective_addresses(
 
 
 def effective_snapshot(
-    report_bytes: bytes, accepted: set[int], additional: Collection[int] = ()
+    report_bytes: bytes, accepted: set[int]
 ) -> dict[str, Any]:
     """Bind accepted addresses to the exact canonical report that produced them."""
     return {
@@ -162,7 +162,6 @@ def effective_snapshot(
         "policy": EFFECTIVE_POLICY,
         "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
         "addresses": sorted(accepted),
-        "additional": sorted(additional),
     }
 
 
@@ -188,7 +187,7 @@ def main() -> int:
     report_bytes = (json.dumps(report, indent=2) + "\n").encode("utf-8")
     REPORT_JSON.write_bytes(report_bytes)
     EFFECTIVE_JSON.write_text(
-        json.dumps(effective_snapshot(report_bytes, accepted, additional), indent=2)
+        json.dumps(effective_snapshot(report_bytes, accepted), indent=2)
         + "\n",
         encoding="utf-8",
     )

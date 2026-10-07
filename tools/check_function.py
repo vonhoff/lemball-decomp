@@ -2,16 +2,14 @@
 """Compare reconstructed functions at original LEMBALL.EXE addresses."""
 
 import argparse
-from dataclasses import replace
 import sys
 
 from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
 from lib.comparison.engine import load_engine
-from lib.comparison.matches import additional_effective_matches
 
 
-def display_comparison(address, comparison, additional, summary):
+def display_comparison(address, comparison, summary):
     """Show raw and Effective scores without changing the raw result."""
     if comparison is None:
         print(f"0x{address:08x}: NOT_FOUND")
@@ -24,16 +22,15 @@ def display_comparison(address, comparison, additional, summary):
         else:
             print_match_oneline(comparison)
         return
-    effective = replace(
-        comparison,
-        is_effective_match=comparison.is_effective_match or address in additional,
+    scores = (
+        f"Raw: {comparison.accuracy * 100:.2f}%  "
+        f"Effective: {comparison.effective_accuracy * 100:.2f}%"
     )
-    scores = f"Raw: {comparison.accuracy * 100:.2f}%  Effective: {effective.effective_accuracy * 100:.2f}%"
     if summary:
         print(f"0x{address:08x} {scores} {comparison.name}")
     else:
         print(scores)
-        print_match_verbose(effective)
+        print_match_verbose(comparison)
 
 
 def main() -> int:
@@ -53,16 +50,8 @@ def main() -> int:
 
     _, engine = load_engine()
     comparisons = [engine.compare_address(address) for address in args.addrs]
-    additional = additional_effective_matches(
-        engine,
-        {
-            comparison.orig_addr: comparison
-            for comparison in comparisons
-            if comparison is not None
-        },
-    )
     for address, comparison in zip(args.addrs, comparisons, strict=True):
-        display_comparison(address, comparison, additional, args.summary)
+        display_comparison(address, comparison, args.summary)
     return int(any(comparison is None for comparison in comparisons))
 
 
