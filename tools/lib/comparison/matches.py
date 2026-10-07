@@ -1,8 +1,7 @@
 """Additional reccmp matches after normalizing direct jump-thunk calls."""
 
-from dataclasses import replace
-
 from reccmp.compare.asm.parse import ParseAsm
+from reccmp.compare.report import ReccmpComparedEntity
 from reccmp.types import EntityType, ImageId
 
 from .thunks import resolve_jump_thunk
@@ -29,39 +28,50 @@ class ThunkParseAsm(ParseAsm):
         return super().parse_asm(data, start_addr)
 
 
-def additional_effective_matches(engine, comparisons: dict) -> set[int]:
+def additional_effective_matches(
+    engine, comparisons: dict[int, ReccmpComparedEntity]
+) -> set[int]:
     """Compare remaining functions with one-hop E9 call/jump normalization."""
-    candidates = [
-        match
-        for match in engine.get_functions()
-        if (comparison := comparisons.get(match.orig_addr)) is not None
-        and comparison.is_function()
-        and comparison.is_matched()
-        and not comparison.is_stub
-        and comparison.accuracy != 1
-        and not comparison.is_effective_match
-    ]
+    candidates = []
+    for match in engine.get_functions():
+        comparison = comparisons.get(match.orig_addr)
+        if comparison is None:
+            continue
+        if (
+            comparison.is_function()
+            and comparison.is_matched()
+            and not comparison.is_stub
+            and comparison.accuracy != 1
+            and not comparison.is_effective_match
+        ):
+            candidates.append(match)
     if not candidates:
         return set()
     upstream = engine.function_comparator
     functions = list(upstream.db.get_matches_by_type(EntityType.FUNCTION))
+    original_sanitize = upstream.orig_sanitize
+    recomp_sanitize = upstream.recomp_sanitize
     original = ThunkParseAsm(
         upstream.orig_bin,
         {function.addr(ImageId.ORIG) for function in functions},
-        upstream.orig_sanitize,
+        original_sanitize,
     )
     rebuilt = ThunkParseAsm(
         upstream.recomp_bin,
         {function.addr(ImageId.RECOMP) for function in functions},
-        upstream.recomp_sanitize,
+        recomp_sanitize,
     )
-    comparator = replace(upstream)
-    comparator.orig_sanitize, comparator.recomp_sanitize = original, rebuilt
     accepted = set()
-    for match in candidates:
-        result = comparator.compare_function(match)
-        if (original.used_thunk or rebuilt.used_thunk) and (
-            result.match_ratio == 1 or result.is_effective_match
-        ):
-            accepted.add(match.orig_addr)
+    try:
+        setattr(upstream, "orig_sanitize", original)
+        setattr(upstream, "recomp_sanitize", rebuilt)
+        for match in candidates:
+            result = upstream.compare_function(match)
+            if (original.used_thunk or rebuilt.used_thunk) and (
+                result.match_ratio == 1 or result.is_effective_match
+            ):
+                accepted.add(match.orig_addr)
+    finally:
+        setattr(upstream, "orig_sanitize", original_sanitize)
+        setattr(upstream, "recomp_sanitize", recomp_sanitize)
     return accepted

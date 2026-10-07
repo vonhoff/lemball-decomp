@@ -55,7 +55,7 @@ class AdditionalMatchTests(unittest.TestCase):
                 comparison = ReccmpComparedEntity(
                     0x1000, "Caller", accuracy, EntityType.FUNCTION, 0x2000, **flags
                 )
-                engine = SimpleNamespace(get_functions=lambda: [match])
+                engine = SimpleNamespace(get_functions=lambda match=match: [match])
                 self.assertEqual(
                     additional_effective_matches(engine, {0x1000: comparison}), set()
                 )

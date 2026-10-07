@@ -6,16 +6,18 @@ import hashlib
 from collections.abc import Collection
 import json
 from collections import defaultdict
-from typing import Any
+from typing import Any, cast
 
+from reccmp.compare import Compare
 from reccmp.compare.csv import csv_parse
 from reccmp.compare.report import serialize_reccmp_report
+from reccmp.formats.pe import PEImage
 from reccmp.project.detect import DetectWhat, detect_project
+from reccmp.project.detect import RecCmpProject
 from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType
 
-from lib.project import EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT
-from lib.comparison.engine import load_engine
+from lib.project import BUILD, EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, TARGET_ID
 from lib.comparison.thunks import read_jump_target
 from lib.comparison.matches import (
     additional_effective_matches,
@@ -153,9 +155,7 @@ def effective_addresses(
     }
 
 
-def effective_snapshot(
-    report_bytes: bytes, accepted: set[int]
-) -> dict[str, Any]:
+def effective_snapshot(report_bytes: bytes, accepted: set[int]) -> dict[str, Any]:
     """Bind accepted addresses to the exact canonical report that produced them."""
     return {
         "version": 1,
@@ -174,10 +174,13 @@ def main() -> int:
         search_path=[ROOT / "data"],
         detect_what=DetectWhat.ORIGINAL,
     )
-    target, engine = load_engine()
+    target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
+    engine = Compare.from_target(target)
     comparisons = engine.to_report(filename=target.original_path.name)
     report = build_report(
-        engine, comparisons, ModuleMap(target.recompiled_pdb, engine.recomp_bin)
+        engine,
+        comparisons,
+        ModuleMap(target.recompiled_pdb, cast(PEImage, engine.recomp_bin)),
     )
     additional = additional_effective_matches(engine, comparisons.entities)
     accepted = effective_addresses(comparisons.entities, additional)
@@ -187,8 +190,7 @@ def main() -> int:
     report_bytes = (json.dumps(report, indent=2) + "\n").encode("utf-8")
     REPORT_JSON.write_bytes(report_bytes)
     EFFECTIVE_JSON.write_text(
-        json.dumps(effective_snapshot(report_bytes, accepted), indent=2)
-        + "\n",
+        json.dumps(effective_snapshot(report_bytes, accepted), indent=2) + "\n",
         encoding="utf-8",
     )
     totals = report["measures"]

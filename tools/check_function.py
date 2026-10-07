@@ -4,9 +4,11 @@
 import argparse
 import sys
 
+from reccmp.compare import Compare
+from reccmp.project.detect import RecCmpProject
 from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
-from lib.comparison.engine import load_engine
+from lib.project import BUILD, TARGET_ID
 
 
 def display_comparison(address, comparison, summary):
@@ -48,7 +50,8 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    _, engine = load_engine()
+    target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
+    engine = Compare.from_target(target)
     comparisons = [engine.compare_address(address) for address in args.addrs]
     for address, comparison in zip(args.addrs, comparisons, strict=True):
         display_comparison(address, comparison, args.summary)

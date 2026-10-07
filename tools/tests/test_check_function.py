@@ -35,7 +35,8 @@ class CheckFunctionTests(unittest.TestCase):
                 "sys.argv",
                 ["check_function.py", "401000", "401020", "401040", "--summary"],
             ),
-            patch("check_function.load_engine", return_value=(None, engine)),
+            patch("check_function.RecCmpProject.from_directory"),
+            patch("check_function.Compare.from_target", return_value=engine),
             patch("check_function.print_match_verbose") as verbose,
             contextlib.redirect_stdout(output),
         ):
@@ -73,13 +74,16 @@ class CheckFunctionTests(unittest.TestCase):
                 "sys.argv",
                 ["check_function.py", *[hex(c.orig_addr) for c in comparisons]],
             ),
-            patch("check_function.load_engine", return_value=(None, engine)),
+            patch("check_function.RecCmpProject.from_directory"),
+            patch("check_function.Compare.from_target", return_value=engine),
             patch("check_function.print_match_verbose") as display,
             contextlib.redirect_stdout(output),
         ):
             self.assertEqual(check_function.main(), 0)
             shown = [call_args.args[0] for call_args in display.call_args_list]
-            self.assertEqual([c.is_effective_match for c in shown], [True, False, False])
+            self.assertEqual(
+                [c.is_effective_match for c in shown], [True, False, False]
+            )
             self.assertEqual([c.accuracy for c in shown], [0.8, 0.75, 0.5])
             self.assertEqual(comparisons, unchanged)
             self.assertEqual(
