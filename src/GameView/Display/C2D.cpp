@@ -365,8 +365,6 @@ enum eScrollOffsetDirection {
 	SCROLL_OFFSET_XY = 3
 };
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 // GLOBAL: LEMBALL 0x0049efcc
 int g_lastDrawnTime = 0;
 
@@ -4994,7 +4992,7 @@ void C2D::Draw(const CVSRect& p_rect)
 	unsigned long groundAnimationFrame = g_dwSimulationTimestamp / 100;
 	m_frameCount++;
 	m_groundAnimationFrame = (short) groundAnimationFrame;
-	unsigned long startTime = timeGetTime();
+	unsigned long startTime = CurrentMilliTimer();
 	m_clipSearchHeight = 0x40;
 
 	CVSRect* displayRect = &m_display->m_rect;
@@ -5097,7 +5095,7 @@ void C2D::Draw(const CVSRect& p_rect)
 		surfaceBackground.Draw(m_gdi);
 	}
 
-	m_frameTime += timeGetTime() - startTime;
+	m_frameTime += CurrentMilliTimer() - startTime;
 }
 
 // FUNCTION: LEMBALL 0x00440400
