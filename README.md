@@ -23,12 +23,58 @@ including original code with no rebuilt counterpart.
 
 ## Effective Matching
 
-Effective counts all non-stub raw 100% matches, reccmp equivalents, and jump-thunk matches.
+Effective counts non-stub raw 100% matches, reccmp equivalents, and additional
+matches accepted by [matches.py](tools/lib/comparison/matches.py). The badge weights
+accepted functions by original code size. Stubs and unmatched functions contribute zero.
 
-[tools/lib/comparison/matches.py](tools/lib/comparison/matches.py) recognizes direct calls or jumps
-through one `E9` thunk to a paired function, then reruns reccmp's comparison.
-Raw 100% and reccmp effective matches count directly. Raw scores remain unchanged;
-Effective results are stored separately from the canonical progress report.
+Raw 100% and reccmp effective matches count directly. For remaining functions,
+the adapter resolves direct calls or jumps through one `E9` thunk to a paired
+function, then reruns reccmp's comparison. A thunk changes the route to the callee;
+the final paired target supplies the comparison name. Address-taking instructions
+keep their original treatment.
+
+If thunk normalization is insufficient, [normalize.py](tools/lib/comparison/normalize.py)
+applies the following rules. Acceptance requires equality of the complete normalized
+instruction/table sequences; a matching fragment is insufficient.
+
+- **Placeholder numbering.** Reccmp's `<OFFSETn>` numbering includes resolved
+  symbols, so asymmetric symbol resolution can shift later numbers. Renumber
+  unknown addresses by first occurrence. Preserve repeated references, distinct
+  identities, and resolved symbol/string text. Collapsing every unknown address
+  to one token would hide changed aliasing.
+- **Branch destinations.** Different instruction encodings can change byte
+  displacements without changing the destination instruction. Replace internal
+  branch and jump-table destinations with instruction-position labels. Preserve
+  branch conditions, table order, and target positions. Unresolved direct branch
+  destinations and jumps into instruction interiors reject this additional pass.
+- **Zero comparisons.** `cmp reg, 0` and `test reg, reg` agree on ZF, SF, PF, CF,
+  and OF. The same applies to `cmp reg, zero_reg` when local register tracking
+  establishes zero. Writes, including partial-register writes, invalidate the
+  fact; control-flow boundaries clear it. Calls invalidate volatile-register
+  facts under the Windows x86 ABI. AF differs, so functions reading AF are excluded
+  from this rule.
+- **Instruction scheduling.** Independent instructions can execute in different
+  orders under MSVC's scheduler. Put supported instructions into a deterministic
+  dependency order. Preserve register read/write dependencies, implicit operands,
+  partial-register overlap, and flag dependencies. Calls, stores, stack operations,
+  unsupported instructions, and block entries stop reordering. This avoids relying
+  on the upstream relocation scan's register-write-only hazard check.
+
+The additional pass rejects incomplete decoding except `INT3` padding, unresolved
+indirect jumps, local subroutine calls, interrupts, and privileged instructions.
+Its scheduling rule assumes ordinary memory loads; it does not establish volatile
+or MMIO semantics or exception ordering. Placeholder correspondence follows
+reccmp's address abstraction and does not prove referenced data contents.
+These rules are bounded comparison heuristics, not a whole-program equivalence proof.
+Stack-frame shifts, combined register-allocation/scheduling changes, and broader
+arithmetic rewrites remain unsupported by this additional pass.
+
+Raw scores and diffs remain unchanged. Effective addresses are saved separately
+in `build-msvc400/effective.json`, bound to the canonical `report.json` hash and
+matching-policy version. [make_report.py](tools/make_report.py) regenerates both;
+[check_function.py](tools/check_function.py) displays raw and Effective scores.
+Acceptance and rejection cases live in
+[test_normalize.py](tools/tests/comparison/test_normalize.py).
 
 ## References
 
