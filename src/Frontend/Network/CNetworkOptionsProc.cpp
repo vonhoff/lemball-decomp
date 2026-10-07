@@ -1,28 +1,26 @@
 #include "CNetworkOptionsProc.h"
 
 #include "Application/CGame.h"
-#include "Multiplayer/CNetworkManager.h"
+#include "CNetworkOptionsDrawer.h"
+#include "Frontend/CBaseFrontendDrawer.h"
 #include "Multiplayer/CGameAcceptMessage.h"
 #include "Multiplayer/CGameRejectMessage.h"
-#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
-#include "Multiplayer/Transport/Packets/CReadPacket.h"
+#include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CBroadcast.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
-#include "Frontend/CBaseFrontendDrawer.h"
-#include "CNetworkOptionsDrawer.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Packets/CReadPacket.h"
 
 #define g_pNetworkOptionsDrawer ((CNetworkOptionsDrawer*) g_pBaseFrontendDrawer)
 
+#include "Engine/Time/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-#include "Engine/Time/VsTime.h"
 
 #include <new.h>
 #include <stddef.h>
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00455050
 CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p_game)
@@ -133,8 +131,8 @@ void CNetworkOptionsProc::Stop()
 		g_pNetworkManager->Stop();
 	}
 	if (g_pBaseNetwork != NULL) {
-		startTime = timeGetTime();
-		while (timeGetTime() - startTime < NETWORK_QUEUE_TRANSITION_TIMEOUT_MS &&
+		startTime = CurrentMilliTimer();
+		while (CurrentMilliTimer() - startTime < NETWORK_QUEUE_TRANSITION_TIMEOUT_MS &&
 			   g_pBaseNetwork->m_queueTransitionPending != 0) {
 		}
 	}
