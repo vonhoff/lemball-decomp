@@ -37,6 +37,10 @@ set_source_files_properties("${LEMBALL_RESOURCE}" PROPERTIES
 )
 
 add_executable(LEMBALL WIN32 ${LEMBALL_SOURCES} ${LEMBALL_RESOURCE})
+set_property(TARGET LEMBALL APPEND PROPERTY LINK_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/tools/link_binary.py"
+    "${CMAKE_CURRENT_SOURCE_DIR}/tools/data/linker-thunks.json"
+)
 target_include_directories(LEMBALL PRIVATE src)
 target_compile_definitions(LEMBALL PRIVATE
     LEMBALL_1996_CXX=1

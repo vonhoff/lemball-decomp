@@ -10,8 +10,7 @@ from reccmp.types import EntityType, ImageId
 from reccmp.formats.exceptions import InvalidVirtualReadError
 
 from make_report import build_report, is_catalogued_jump_thunk, measures
-from lib.comparison import effective_addresses
-from lib.progress import effective_measures
+from lib.progress import effective_addresses, effective_measures
 
 
 class MakeReportTests(unittest.TestCase):
@@ -220,10 +219,8 @@ class MakeReportTests(unittest.TestCase):
         self.assertAlmostEqual(
             effective_measures(
                 result,
-                effective_addresses(
-                    comparisons.entities, {0x401000, 0x401070, 0x4010B0}
-                ),
+                effective_addresses(comparisons.entities),
             )["matched_code_percent"],
-            58 / 95 * 100,
+            38 / 95 * 100,
         )
         self.assertEqual((result, comparisons.entities), unchanged)

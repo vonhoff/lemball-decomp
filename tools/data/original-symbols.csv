@@ -1,0 +1,44 @@
+# Independently verified original x86 routines missing from Ghidra's function list.
+# Extents: original-function-sizes.csv. Names and parameter types unresolved.
+# Nested virtual-base paths lost by reccmp 0.1.7's friendly vtable names.
+# CRwSocket construction establishes CWriteSocket at +0x38, CReadSocket at +0xb0.
+# Its vbtable entries are +8=-0xd0 and +12=-0x58 from +0x108.
+# Derived constructors retain +8=write and +12=read, with their own offsets.
+# Rebuilt PDB symbols preserve both CBaseSocket paths.
+# Bounded original storage evidence; padding is excluded. Rebuilt extents come from PDB.
+# PDB scoped symbols repair MSVC 4 local naming unsupported by upstream static matching.
+address,type,size,symbol,evidence
+0x00419d40,function,,,x86 wrapper: MOV ECX [ESP+8]; MOV EAX [ECX]; JMP [EAX+0x8c]
+0x00481230,function,,,x86 string helper after INT3 alignment; RET at 0x00481262
+0x00498fe0,vtable,,??_7CRwSocket@@6BCBaseSocket@@CReadSocket@@@,
+0x00499008,vtable,,??_7CRwSocket@@6BCBaseSocket@@CWriteSocket@@@,
+0x00499080,vtable,,??_7CBroadcast@@6BCBaseSocket@@CReadSocket@@@,
+0x004990a8,vtable,,??_7CBroadcast@@6BCBaseSocket@@CWriteSocket@@@,
+0x00499140,vtable,,??_7CConnect@@6BCBaseSocket@@CReadSocket@@@,
+0x00499168,vtable,,??_7CConnect@@6BCBaseSocket@@CWriteSocket@@@,
+0x0049a160,vtable,,??_7CTCPIPBroadcast@@6BCBaseSocket@@CReadSocket@@@,
+0x0049a188,vtable,,??_7CTCPIPBroadcast@@6BCBaseSocket@@CWriteSocket@@@,
+0x0049a228,vtable,,??_7CTCPIPRWSocket@@6BCBaseSocket@@CReadSocket@@@,
+0x0049a250,vtable,,??_7CTCPIPRWSocket@@6BCBaseSocket@@CWriteSocket@@@,
+0x0049a370,vtable,,??_7CTCPIPConnect@@6BCBaseSocket@@CReadSocket@@@,
+0x0049a398,vtable,,??_7CTCPIPConnect@@6BCBaseSocket@@CWriteSocket@@@,
+0x0049a7e0,vtable,,??_7CFileRWSocket@@6BCBaseSocket@@CReadSocket@@@,
+0x0049a808,vtable,,??_7CFileRWSocket@@6BCBaseSocket@@CWriteSocket@@@,
+0x0049a970,vtable,,??_7CFileBroadcast@@6BCBaseSocket@@CReadSocket@@@,
+0x0049a998,vtable,,??_7CFileBroadcast@@6BCBaseSocket@@CWriteSocket@@@,
+0x0049aa38,vtable,,??_7CFileOpenManagement@@6BCBaseSocket@@CReadSocket@@@,
+0x0049aa60,vtable,,??_7CFileOpenManagement@@6BCBaseSocket@@CWriteSocket@@@,
+0x0049abb0,vtable,,??_7CFileConnect@@6BCBaseSocket@@CReadSocket@@@,
+0x0049abd8,vtable,,??_7CFileConnect@@6BCBaseSocket@@CWriteSocket@@@,
+0x0049d138,,80,,LEMBALL.EXE 0x00418bf4..0x00418c23: 16-byte rows and four DWORD loads; five initialized rows at 0x0049d138..0x0049d187
+0x0049ee28,,4,g_clipDebug___C2D::DrawClipData,LEMBALL.EXE 0x0043b4b0 CMP DWORD and 0x0043b4b9 store zero; initial DWORD 1
+0x0049efc8,,4,g_visible___C2D::DrawDemo,LEMBALL.EXE 0x0043fd12 CMP DWORD and 0x0043fd1d store toggled value; initial DWORD zero
+0x004a0eb0,,112,,LEMBALL.EXE 0x0045962b ADD EBX 8 and 0x00459632 CMP EBX 0x004a0f20; 14 pointer pairs
+0x004a27a8,,28,,LEMBALL.EXE 0x004727dd MOV EDI 0x004a27a8; 0x004727e2 MOV ECX 7; 0x004727e7 REP MOVSD; initialized seven fields
+0x004a6258,,28,,LEMBALL.EXE 0x00406161 MOV ECX 7; 0x0040616b MOV EDI 0x004a6258; 0x00406172 REP MOVSD
+0x004a7840,,8,,LEMBALL.EXE 0x00423c80..0x00423c9b: four WORD stores at base plus 0/2/4/6
+0x004a786c,,40,,LEMBALL.EXE 0x00432ca5..0x00432cd7: ten DWORD stores at base plus 0..36
+0x004a78c4,,4,g_lastBlink___C2D::DrawDemo,LEMBALL.EXE 0x0043fcfb store timer DWORD; 0x0043fd05 subtract timer DWORD; initial zero
+0x004a78c8,,1,,LEMBALL.EXE 0x0043fce3 TEST BYTE bit 1 and 0x0043fcef OR BYTE bit 1; initialized zero; scoped PDB guard size one
+0x004a7b88,,32,,LEMBALL.EXE 0x00456139 stores length 32 before GlobalMemoryStatus at 0x00456149; MSVC400/include/WINBASE.H:496..505 eight DWORD members; next object 0x004a7ba8
+0x004a818c,,4,,LEMBALL.EXE 0x0045650c DWORD store zero; 0x004565e4 DWORD read; adjacent buffer at 0x004a8190 independently annotated

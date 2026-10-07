@@ -9,10 +9,9 @@ from reccmp.project.detect import RecCmpProject
 from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
 from lib.project import BUILD, TARGET_ID
-from lib.comparison import additional_effective_matches
 
 
-def display_comparison(address, comparison, summary, additional=False):
+def display_comparison(address, comparison, summary):
     """Show raw and Effective scores without changing the raw result."""
     if comparison is None:
         print(f"0x{address:08x}: NOT_FOUND")
@@ -25,10 +24,9 @@ def display_comparison(address, comparison, summary, additional=False):
         else:
             print_match_oneline(comparison)
         return
-    effective_accuracy = 1 if additional else comparison.effective_accuracy
     scores = (
         f"Raw: {comparison.accuracy * 100:.2f}%  "
-        f"Effective: {effective_accuracy * 100:.2f}%"
+        f"Effective: {comparison.effective_accuracy * 100:.2f}%"
     )
     if summary:
         print(f"0x{address:08x} {scores} {comparison.name}")
@@ -55,11 +53,8 @@ def main() -> int:
     target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
     engine = Compare.from_target(target)
     comparisons = [engine.compare_address(address) for address in args.addrs]
-    additional = additional_effective_matches(
-        engine, {c.orig_addr: c for c in comparisons if c is not None}
-    )
     for address, comparison in zip(args.addrs, comparisons, strict=True):
-        display_comparison(address, comparison, args.summary, address in additional)
+        display_comparison(address, comparison, args.summary)
     return int(any(comparison is None for comparison in comparisons))
 
 

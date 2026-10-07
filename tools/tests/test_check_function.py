@@ -1,4 +1,4 @@
-"""Raw and additional Effective comparison display without build coupling."""
+"""Raw and upstream Effective comparison display without build coupling."""
 
 import contextlib
 import copy
@@ -12,7 +12,7 @@ import check_function
 
 
 class CheckFunctionTests(unittest.TestCase):
-    def test_raw_exact_counts_without_additional_checks(self):
+    def test_raw_exact_counts(self):
         comparison = ReccmpComparedEntity(0x401000, "Caller", 1, recomp_addr=0x501000)
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
@@ -23,7 +23,7 @@ class CheckFunctionTests(unittest.TestCase):
     def test_summary_is_compact_and_missing_addresses_fail(self):
         engine = Mock()
         engine.compare_address.side_effect = [
-            ReccmpComparedEntity(0x401000, "Equivalent", 0.8, recomp_addr=0x501000),
+            ReccmpComparedEntity(0x401000, "Equivalent", 0.8, recomp_addr=0x501000, is_effective_match=True),
             ReccmpComparedEntity(
                 0x401020, "Stub", 1.0, recomp_addr=0x501020, is_stub=True
             ),
@@ -37,9 +37,6 @@ class CheckFunctionTests(unittest.TestCase):
             ),
             patch("check_function.RecCmpProject.from_directory"),
             patch("check_function.Compare.from_target", return_value=engine),
-            patch(
-                "check_function.additional_effective_matches", return_value={0x401000}
-            ),
             patch("check_function.print_match_verbose") as verbose,
             contextlib.redirect_stdout(output),
         ):
@@ -64,7 +61,7 @@ class CheckFunctionTests(unittest.TestCase):
                 is_effective_match=True,
             ),
             ReccmpComparedEntity(
-                0x401020, "Extra equivalent", 0.75, recomp_addr=0x501020
+                0x401020, "Thunks differ", 0.75, recomp_addr=0x501020
             ),
             ReccmpComparedEntity(0x401040, "Partial", 0.5, recomp_addr=0x501040),
         ]
@@ -79,9 +76,6 @@ class CheckFunctionTests(unittest.TestCase):
             ),
             patch("check_function.RecCmpProject.from_directory"),
             patch("check_function.Compare.from_target", return_value=engine),
-            patch(
-                "check_function.additional_effective_matches", return_value={0x401020}
-            ),
             patch("check_function.print_match_verbose") as display,
             contextlib.redirect_stdout(output),
         ):
@@ -96,7 +90,7 @@ class CheckFunctionTests(unittest.TestCase):
                 output.getvalue().splitlines(),
                 [
                     "Raw: 80.00%  Effective: 100.00%",
-                    "Raw: 75.00%  Effective: 100.00%",
+                    "Raw: 75.00%  Effective: 75.00%",
                     "Raw: 50.00%  Effective: 50.00%",
                 ],
             )

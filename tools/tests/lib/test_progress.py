@@ -5,7 +5,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lib.progress import effective_measures, effective_snapshot, load_progress
+from reccmp.compare.report import ReccmpComparedEntity
+from reccmp.types import EntityType
+
+from lib.progress import effective_addresses, effective_measures, effective_snapshot, load_progress
 
 
 class ProgressSnapshotTests(unittest.TestCase):
@@ -58,6 +61,21 @@ class ProgressSnapshotTests(unittest.TestCase):
 
 
 class ProgressMetricTests(unittest.TestCase):
+    def test_only_upstream_exact_and_equivalent_implemented_functions_are_accepted(self):
+        comparisons = {
+            address: ReccmpComparedEntity(address, "Fixture", score, kind, rebuilt, **flags)
+            for address, score, kind, rebuilt, flags in (
+                (1, 1.0, EntityType.FUNCTION, 101, {}),
+                (2, 0.8, EntityType.FUNCTION, 102, {"is_effective_match": True}),
+                (3, 0.7, EntityType.FUNCTION, 103, {}),
+                (4, 0.999999999, EntityType.FUNCTION, 104, {}),
+                (5, 1.0, EntityType.FUNCTION, 105, {"is_stub": True}),
+                (6, 1.0, EntityType.FUNCTION, None, {}),
+                (7, 1.0, EntityType.DATA, 107, {}),
+            )
+        }
+        self.assertEqual(effective_addresses(comparisons), {1, 2})
+
     def test_effective_measures_sums_accepted_function_sizes(self):
         report = {
             "measures": {"total_code": "600"},

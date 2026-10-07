@@ -6,6 +6,18 @@ from pathlib import Path
 from typing import Any
 
 
+def effective_addresses(comparisons: dict) -> set[int]:
+    """Accept reccmp's exact and effective results for implemented, paired functions."""
+    return {
+        address
+        for address, comparison in comparisons.items()
+        if comparison.is_function()
+        and comparison.is_matched()
+        and not comparison.is_stub
+        and comparison.effective_accuracy == 1
+    }
+
+
 def effective_measures(report: dict[str, Any], accepted: set[int]) -> dict[str, Any]:
     matched_code = 0
     matched_count = 0

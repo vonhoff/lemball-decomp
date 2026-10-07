@@ -16,12 +16,8 @@ from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType
 
 from lib.project import BUILD, EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, TARGET_ID
-from lib.comparison import (
-    additional_effective_matches,
-    effective_addresses,
-    read_jump_target,
-)
-from lib.progress import effective_measures, effective_snapshot
+from lib.progress import effective_addresses, effective_measures, effective_snapshot
+from link_binary import read_jump_target
 
 REPORT_EXCLUSIONS = ROOT / "tools/data/report-exclusions.csv"
 
@@ -152,8 +148,7 @@ def main() -> int:
         comparisons,
         ModuleMap(target.recompiled_pdb, cast(PEImage, engine.recomp_bin)),
     )
-    additional = additional_effective_matches(engine, comparisons.entities)
-    accepted = effective_addresses(comparisons.entities, additional)
+    accepted = effective_addresses(comparisons.entities)
     RECCMP_JSON.write_text(
         serialize_reccmp_report(comparisons, diff_included=True), encoding="utf-8"
     )
