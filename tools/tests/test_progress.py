@@ -1,12 +1,11 @@
-"""Saved Effective results must belong to the exact canonical report."""
+"""Effective byte accounting and report-bound saved results."""
 
 import json
 import tempfile
 import unittest
 from pathlib import Path
 
-from make_report import effective_snapshot
-from lib.progress.snapshot import load_progress
+from lib.progress import effective_measures, effective_snapshot, load_progress
 
 
 class ProgressSnapshotTests(unittest.TestCase):
@@ -21,6 +20,7 @@ class ProgressSnapshotTests(unittest.TestCase):
         self.effective_path.write_text(json.dumps(self.snapshot), encoding="utf-8")
 
     def test_snapshot_round_trip_sorts_addresses(self):
+        self.assertEqual(set(self.snapshot), {"report_sha256", "addresses"})
         self.assertEqual(self.snapshot["addresses"], [1, 2])
         self.assertEqual(
             load_progress(self.report_path, self.effective_path), (self.report, {1, 2})
@@ -31,25 +31,16 @@ class ProgressSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "do not belong"):
             load_progress(self.report_path, self.effective_path)
 
-    def test_legacy_and_unsupported_snapshot_versions_are_rejected(self):
-        for snapshot in ({"1": ["legacy"]}, {**self.snapshot, "version": 2}):
-            with self.subTest(snapshot=snapshot):
-                self.effective_path.write_text(json.dumps(snapshot), encoding="utf-8")
-                with self.assertRaisesRegex(ValueError, "do not belong"):
-                    load_progress(self.report_path, self.effective_path)
+    def test_snapshot_without_report_hash_is_rejected(self):
+        self.effective_path.write_text(json.dumps({"1": ["legacy"]}), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "Run python tools/make_report.py"):
+            load_progress(self.report_path, self.effective_path)
 
     def test_raw_progress_does_not_require_a_sidecar(self):
         self.effective_path.unlink()
         self.assertEqual(load_progress(self.report_path), (self.report, set()))
         with self.assertRaisesRegex(ValueError, "Run python tools/make_report.py"):
             load_progress(self.report_path, self.effective_path)
-
-    def test_prior_acceptance_policy_is_rejected(self):
-        for policy in (None, "reccmp-with-assembly-normalization-v3"):
-            self.snapshot["policy"] = policy
-            self.effective_path.write_text(json.dumps(self.snapshot), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "do not belong"):
-                load_progress(self.report_path, self.effective_path)
 
     def test_missing_report_and_invalid_json_are_reported(self):
         self.report_path.unlink()
@@ -64,3 +55,34 @@ class ProgressSnapshotTests(unittest.TestCase):
         self.effective_path.write_text(json.dumps(self.snapshot), encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "Run python tools/make_report.py"):
             load_progress(self.report_path, self.effective_path)
+
+
+class ProgressMetricTests(unittest.TestCase):
+    def test_effective_measures_sums_accepted_function_sizes(self):
+        report = {
+            "measures": {"total_code": "600"},
+            "units": [
+                {
+                    "functions": [
+                        {"size": "100", "metadata": {"virtual_address": "1"}},
+                        {"size": "200", "metadata": {"virtual_address": "2"}},
+                    ]
+                },
+                {
+                    "functions": [
+                        {"size": "300", "metadata": {"virtual_address": "3"}},
+                    ]
+                },
+            ],
+        }
+        measures = effective_measures(report, {1, 3, 999})
+        self.assertEqual(measures["matched_code"], 400)
+        self.assertEqual(measures["matched_functions"], 2)
+        self.assertAlmostEqual(measures["matched_code_percent"], 400 / 600 * 100)
+        self.assertEqual(effective_measures(report, set())["matched_code"], 0)
+
+    def test_empty_inventory_has_zero_counts_and_percent(self):
+        self.assertEqual(
+            effective_measures({"measures": {"total_code": "0"}, "units": []}, {1}),
+            {"matched_code": 0, "matched_functions": 0, "matched_code_percent": 0.0},
+        )

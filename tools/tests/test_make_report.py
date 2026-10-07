@@ -10,8 +10,8 @@ from reccmp.types import EntityType, ImageId
 from reccmp.formats.exceptions import InvalidVirtualReadError
 
 from make_report import build_report, is_catalogued_jump_thunk, measures
-from make_report import effective_addresses
-from lib.progress.metrics import effective_measures
+from lib.comparison import effective_addresses
+from lib.progress import effective_measures
 
 
 class MakeReportTests(unittest.TestCase):

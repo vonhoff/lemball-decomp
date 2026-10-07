@@ -3,7 +3,7 @@
 
 import argparse
 from lib.project import EFFECTIVE_JSON, REPORT_JSON
-from lib.progress.snapshot import load_progress
+from lib.progress import load_progress
 
 
 def rank_functions(report, effective=None, min_size=0, sort="score"):

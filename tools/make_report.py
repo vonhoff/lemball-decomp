@@ -2,8 +2,6 @@
 """Generate objdiff progress from raw assembly comparisons."""
 
 import argparse
-import hashlib
-from collections.abc import Collection
 import json
 from collections import defaultdict
 from typing import Any, cast
@@ -18,10 +16,12 @@ from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType
 
 from lib.project import BUILD, EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, TARGET_ID
-from lib.comparison.thunks import read_jump_target
-from lib.comparison.matches import additional_effective_matches
-from lib.progress.metrics import effective_measures
-from lib.progress.snapshot import EFFECTIVE_POLICY
+from lib.comparison import (
+    additional_effective_matches,
+    effective_addresses,
+    read_jump_target,
+)
+from lib.progress import effective_measures, effective_snapshot
 
 REPORT_EXCLUSIONS = ROOT / "tools/data/report-exclusions.csv"
 
@@ -133,30 +133,6 @@ def build_report(engine, comparisons, modules) -> dict[str, Any]:
     ]
     functions = [function for unit in units for function in unit["functions"]]
     return {"version": 2, "units": units, "measures": measures(functions, len(units))}
-
-
-def effective_addresses(
-    comparisons: dict, additional: Collection[int] = ()
-) -> set[int]:
-    """Function addresses counted by the Effective metric."""
-    return {
-        address
-        for address, comparison in comparisons.items()
-        if comparison.is_function()
-        and comparison.is_matched()
-        and not comparison.is_stub
-        and (comparison.effective_accuracy == 1 or address in additional)
-    }
-
-
-def effective_snapshot(report_bytes: bytes, accepted: set[int]) -> dict[str, Any]:
-    """Bind accepted addresses to the exact canonical report that produced them."""
-    return {
-        "version": 1,
-        "policy": EFFECTIVE_POLICY,
-        "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
-        "addresses": sorted(accepted),
-    }
 
 
 def main() -> int:
