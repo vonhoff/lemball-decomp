@@ -27,8 +27,6 @@ enum {
 	SOUND_EFFECT_ATTENUATION_DENOMINATOR = SOUND_EFFECT_ATTENUATION_ARITHMETIC_SCALE * SOUND_EFFECT_FADE_RANGE_PIXELS
 };
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 // GLOBAL: LEMBALL 0x0049eb80
 CSoundView* g_pSoundView = NULL;
 
@@ -193,7 +191,7 @@ void CSoundView::SoundEffect(CViewData* p_viewData, int p_count, AICOORD& p_list
 			m_pendingEffect = SFX_NONE;
 			g_pSoundManager->PlayEffect(m_effectSlots[pendingEffect].m_handle);
 		}
-		now = timeGetTime();
+		now = CurrentMilliTimer();
 		x = p_listener.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		y = p_listener.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		volume = g_pSoundManager->GetEffectVolume();

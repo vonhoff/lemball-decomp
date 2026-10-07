@@ -63,7 +63,6 @@ enum eEventPumpResult {
 	EVENT_PUMP_QUIT = 1
 };
 
-extern "C" unsigned long __stdcall timeGetTime(void);
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_hWnd,
 														   const char* p_lpText,
 														   const char* p_lpCaption,
@@ -459,14 +458,14 @@ void CGame::Process()
 			GAME_FLOW_TIMING_WARMUP_TICKS < (int) m_flowTicks) {
 			timing = 1;
 			stat = m_processingStat;
-			stat->m_timingStart = timeGetTime();
+			stat->m_timingStart = CurrentMilliTimer();
 			stat->m_timingActive = 1;
 		}
 		m_process->Process();
 		if (timing != 0) {
 			stat = m_processingStat;
 			if (stat->m_timingActive != 0) {
-				now = timeGetTime();
+				now = CurrentMilliTimer();
 				stat->Update(now - stat->m_timingStart);
 				stat->m_timingActive = 0;
 			}
@@ -522,7 +521,7 @@ void CGame::RefreshViews()
 		GAME_FLOW_TIMING_WARMUP_TICKS < (int) m_flowTicks) {
 		timing = 1;
 		stat = m_refreshingStat;
-		now = timeGetTime();
+		now = CurrentMilliTimer();
 		stat->m_timingStart = now;
 		stat->m_timingActive = timing;
 	}
@@ -530,7 +529,7 @@ void CGame::RefreshViews()
 	if (timing != 0) {
 		stat = m_refreshingStat;
 		if (stat->m_timingActive != 0) {
-			now = timeGetTime();
+			now = CurrentMilliTimer();
 			stat->Update(now - stat->m_timingStart);
 			stat->m_timingActive = 0;
 		}

@@ -32,8 +32,6 @@ class CRemap;
 
 #pragma intrinsic(strcpy)
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 extern char* g_szBroadcastPeerName;
 
 #define NETWORK_OPTIONS_MODE_LAN 0
@@ -230,8 +228,6 @@ enum {
 
 class CRemap;
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 extern char* g_szBroadcastPeerName;
 
 extern unsigned char* g_apNetworkOptionsRemaps[6];
@@ -240,8 +236,6 @@ extern unsigned char* g_apNetworkOptionsRemaps[6];
 #include "Engine/Math/CVSSize.h"
 
 class CRemap;
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 extern char* g_szBroadcastPeerName;
 
@@ -252,8 +246,6 @@ enum {
 #include "Engine/Strings/CString.h"
 
 class CRemap;
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 extern char* g_szBroadcastPeerName;
 
@@ -920,7 +912,7 @@ void CNetworkOptionsDrawer::SetMessage(eNetOptsMessages p_message)
 	m_message = p_message;
 	m_messageDuration = 0;
 	m_backBufferNeeded = 1;
-	now = timeGetTime();
+	now = CurrentMilliTimer();
 	m_redrawPending = 1;
 	m_lastDrawTime = now;
 }
@@ -1009,11 +1001,11 @@ void CNetworkOptionsDrawer::StartMessageTimeout(eNetOptsMessages p_message, unsi
 	unsigned long now;
 
 	m_message = p_message;
-	now = timeGetTime();
+	now = CurrentMilliTimer();
 	m_backBufferNeeded = 1;
 	m_messageStartTime = now;
 	m_messageDuration = p_duration;
-	now = timeGetTime();
+	now = CurrentMilliTimer();
 	m_redrawPending = 1;
 	m_lastDrawTime = now;
 }

@@ -1,13 +1,12 @@
 #include "CPlayThruAnim.h"
-
-extern "C" unsigned long __stdcall timeGetTime(void);
+#include "Engine/Time/VsTime.h"
 
 // FUNCTION: LEMBALL 0x004671e0
 void CPlayThruAnim::StartAnim(unsigned long p_animTime)
 {
 	m_animTime = p_animTime;
 	if (m_fixedTime == ANIMATION_TIME_REALTIME) {
-		m_frameState = timeGetTime();
+		m_frameState = CurrentMilliTimer();
 		return;
 	}
 	m_frameState = m_fixedTime;
@@ -21,7 +20,7 @@ unsigned int CPlayThruAnim::GetFrameNo()
 	unsigned int frame;
 
 	if (m_fixedTime == ANIMATION_TIME_REALTIME) {
-		elapsed = timeGetTime() - m_frameState;
+		elapsed = CurrentMilliTimer() - m_frameState;
 	}
 	else {
 		elapsed = m_fixedTime - m_frameState;

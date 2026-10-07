@@ -26,7 +26,6 @@
 #include "Frontend/Controls/CHiliteController.h"
 #include "Engine/Animation/AnimationConstants.h"
 #include "Engine/Math/RandomConstants.h"
-extern "C" unsigned long __stdcall timeGetTime(void);
 #include "Multiplayer/CNetworkManager.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Engine/Streams/CVSOStream.h"
@@ -453,7 +452,7 @@ void CBaseFrontendDrawer::_UnLoad()
 void CBaseFrontendDrawer::_DrawAnims()
 {
 	if (m_ambientAnim != NULL) {
-		m_ambientAnim->m_fixedTime = timeGetTime();
+		m_ambientAnim->m_fixedTime = CurrentMilliTimer();
 		CAnimsManager::DrawAnim(m_animPosition, m_ambientAnimId, 0, (CAnimFrameBASE*) m_ambientAnim, NULL);
 	}
 }

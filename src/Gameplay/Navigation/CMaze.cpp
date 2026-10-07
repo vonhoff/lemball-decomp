@@ -5,8 +5,7 @@
 #include "Solution.h"
 
 #include <string.h>
-
-extern "C" unsigned long __stdcall timeGetTime(void);
+#include "Engine/Time/VsTime.h"
 
 extern const int g_mazeNeighborOffsetsX[10];
 extern const int g_mazeNeighborOffsetsY[10];
@@ -40,8 +39,6 @@ const unsigned char g_mazeWalkMasks[32] = {0, 1,  0, 8,   0, 4,  0, 2,  0, 0, 0,
 CMaze* g_pMaze = NULL;
 
 #include <stddef.h>
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 extern const unsigned char g_aChangeBitMasks[8][4];
 
@@ -278,7 +275,7 @@ void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, i
 		m_totalTime = 0;
 		m_solutionCount = 0;
 	}
-	m_startTime = timeGetTime();
+	m_startTime = CurrentMilliTimer();
 	m_radius = 0;
 	m_startX = p_startX;
 	m_startY = p_startY;
@@ -436,7 +433,7 @@ void CMaze::BSolution(int& p_count, Solution* p_solution)
 		}
 	}
 
-	unsigned long elapsed = timeGetTime() - m_startTime;
+	unsigned long elapsed = CurrentMilliTimer() - m_startTime;
 	m_startTime = elapsed;
 	m_totalTime += elapsed;
 	m_solutionCount++;

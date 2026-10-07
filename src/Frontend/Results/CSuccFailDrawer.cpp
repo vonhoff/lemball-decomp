@@ -17,9 +17,6 @@
 #include "GameView/Sound/CSoundView.h"
 #include "Level/CLevelLoader.h"
 #include "Multiplayer/Transport/NetworkMode.h"
-
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 #include "Application/FlowProcesses.h"
 #include "Application/SoundEffects.h"
 #include "CSuccFailAnimWnd.h"
@@ -178,8 +175,6 @@ char g_szPaintballSequence[] = "Paintball Sequence";
 #include "Engine/Time/VsTime.h"
 
 extern char g_szSuccFailMoviePrefix[];
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Multiplayer/CNetworkGameMessage.h"
@@ -479,7 +474,7 @@ void CSuccFailDrawer::DestroyDrawer()
 	if (m_animStarted != 0 && m_animWindow.m_lifecycleRefs == 1) {
 		m_animWindow.Destroy();
 		m_animStarted = 0;
-		m_animStartDeadline = timeGetTime() + 0x28;
+		m_animStartDeadline = CurrentMilliTimer() + 0x28;
 	}
 }
 

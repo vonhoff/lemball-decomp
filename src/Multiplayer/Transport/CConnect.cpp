@@ -14,8 +14,6 @@
 
 #include <string.h>
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 enum {
 	CONNECT_TIMEOUT_MS = 4000
 };
@@ -54,7 +52,7 @@ bool CConnect::CheckConnectTime()
 	unsigned long now;
 
 	if (m_established == 0) {
-		now = timeGetTime();
+		now = CurrentMilliTimer();
 		if (NETWORK_CONNECT_TIMEOUT_MS < now - m_connectTime) {
 			Kill();
 			return false;
@@ -66,7 +64,7 @@ bool CConnect::CheckConnectTime()
 // FUNCTION: LEMBALL 0x00460d10
 void CConnect::SetConnectTime()
 {
-	m_connectTime = timeGetTime();
+	m_connectTime = CurrentMilliTimer();
 }
 
 // FUNCTION: LEMBALL 0x00460d20

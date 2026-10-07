@@ -1,6 +1,5 @@
 #include "CTimedAnim.h"
-
-extern "C" unsigned long __stdcall timeGetTime(void);
+#include "Engine/Time/VsTime.h"
 
 // FUNCTION: LEMBALL 0x00435890
 void CTimedAnim::SetAnimTime(unsigned long p_animTime)
@@ -25,7 +24,7 @@ unsigned int CTimedAnim::GetFrameNo()
 {
 	unsigned long time = m_fixedTime;
 	if (time == ANIMATION_TIME_REALTIME) {
-		time = timeGetTime();
+		time = CurrentMilliTimer();
 	}
 	time -= m_frameState;
 	unsigned long remainder = time % m_animTime;

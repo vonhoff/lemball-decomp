@@ -21,10 +21,9 @@
 #include "Multiplayer/Transport/FileTransport/COpenCount.h"
 
 #include <string.h>
+#include "Engine/Time/VsTime.h"
 
 #pragma intrinsic(memcpy, strcpy, strlen, strcat)
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x0046f4f0
 void CFileBroadcast::Setup(const char* p_peerName, const char* p_path)
@@ -125,13 +124,13 @@ bool CFileBroadcast::Start(const char* p_name)
 		m_readReady = 1;
 		m_writeReady = 0;
 		m_socketFlags = 1;
-		m_lastBroadcastTime = timeGetTime() - NETWORK_BROADCAST_INTERVAL_MS;
+		m_lastBroadcastTime = CurrentMilliTimer() - NETWORK_BROADCAST_INTERVAL_MS;
 
 		Message message;
 		message.m_type = 2;
 		message.m_code = 0;
 		g_pNetworkStatusQueue->Post(message);
-		m_lastProcessTime = timeGetTime();
+		m_lastProcessTime = CurrentMilliTimer();
 	}
 	return created;
 }
@@ -236,12 +235,12 @@ void CFileBroadcast::StopListen()
 // FUNCTION: LEMBALL 0x0047aef0
 void CFileBroadcast::Process()
 {
-	unsigned long currentTime = timeGetTime();
+	unsigned long currentTime = CurrentMilliTimer();
 	if (100 < currentTime - m_lastProcessTime) {
 		if (m_listenEnabled != 0) {
 			CFileReadSocket::Process();
 		}
-		m_lastProcessTime = timeGetTime();
+		m_lastProcessTime = CurrentMilliTimer();
 	}
 	CBroadcast::Process();
 }

@@ -21,8 +21,6 @@
 
 #pragma intrinsic(memcpy, strcat, strcpy, strlen)
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 // GLOBAL: LEMBALL 0x004a1e08
 int g_vsNetMajorVersion = 0;
 
@@ -216,7 +214,7 @@ void CBroadcast::SendFailedInit(NetworkErrors p_error)
 // FUNCTION: LEMBALL 0x00460a20
 void CBroadcast::Run()
 {
-	unsigned long time = timeGetTime();
+	unsigned long time = CurrentMilliTimer();
 	m_runEnabled = 1;
 	m_lastBroadcastTime = time - NETWORK_BROADCAST_INTERVAL_MS;
 }

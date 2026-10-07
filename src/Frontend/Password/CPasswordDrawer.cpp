@@ -28,11 +28,11 @@
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 
 #include <string.h>
+#include "Engine/Time/VsTime.h"
 
 class CAnimFrameBASE;
 class CResBITMAP;
 
-extern "C" unsigned long __stdcall timeGetTime(void);
 extern char g_abPasswordLevelText[24];
 
 #define PASSWORD_BUTTON_MESSAGE_FIRST 0xabcd00b0
@@ -412,7 +412,7 @@ bool CPasswordDrawer::ProcessMessages(Message* p_message)
 void CPasswordDrawer::Processing()
 {
 	if (m_passwordSubmitted != 0) {
-		if (timeGetTime() > m_returnDeadline) {
+		if (CurrentMilliTimer() > m_returnDeadline) {
 			m_quitYet = 1;
 			m_returnState = FLOW_MAIN_OPTIONS_1;
 		}
@@ -528,7 +528,7 @@ void CPasswordDrawer::ButtonNumeric(int p_button)
 		DrawText();
 		g_pGameStatus->GotoLastLevels();
 		g_pSoundView->PlayEffect((eSoundEffect) (0x13 + (m_passwordValid ? 0 : 0x0f)));
-		m_submitTime = timeGetTime();
+		m_submitTime = CurrentMilliTimer();
 		m_passwordSubmitted = 1;
 		m_returnDeadline = m_submitTime + PASSWORD_RETURN_DELAY_MS;
 		break;

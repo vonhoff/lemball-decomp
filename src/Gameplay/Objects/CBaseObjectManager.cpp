@@ -12,8 +12,6 @@
 #include "Multiplayer/Transport/Packets/CWriteCBuff.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
-extern "C" unsigned long __stdcall timeGetTime(void);
-
 // FUNCTION: LEMBALL 0x0040ab70
 void CBaseObjectManager::Restart()
 {
@@ -80,7 +78,7 @@ void CBaseObjectManager::ProcessNetwork()
 	CConnect* connection = g_pActiveConnection;
 	if (connection->m_segmentIndex != NETWORK_SEGMENT_INDEX_INACTIVE ||
 		!connection->CWriteSocket::m_criticalBuffer->IsPacketAvailable(connection->CWriteSocket::m_criticalSequence)) {
-		unsigned long start = timeGetTime();
+		unsigned long start = CurrentMilliTimer();
 		while (1) {
 			connection = g_pActiveConnection;
 			if (connection->m_segmentIndex == NETWORK_SEGMENT_INDEX_INACTIVE &&
@@ -88,7 +86,7 @@ void CBaseObjectManager::ProcessNetwork()
 					connection->CWriteSocket::m_criticalSequence)) {
 				break;
 			}
-			if (timeGetTime() - start >= NETWORK_CRITICAL_PACKET_WAIT_TIMEOUT_MS) {
+			if (CurrentMilliTimer() - start >= NETWORK_CRITICAL_PACKET_WAIT_TIMEOUT_MS) {
 				break;
 			}
 			g_pBaseNetwork->WaitProcess();

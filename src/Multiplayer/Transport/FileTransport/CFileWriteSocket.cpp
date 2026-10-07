@@ -13,10 +13,9 @@
 #include "Multiplayer/Transport/CWriteSocket.h"
 
 #include <string.h>
+#include "Engine/Time/VsTime.h"
 
 #pragma intrinsic(strcpy)
-
-extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x00479e20
 CFileWriteSocket::CFileWriteSocket() : CFileBaseSocket(), CWriteSocket(), CFileCommonSocket()
@@ -38,11 +37,11 @@ int CFileWriteSocket::Write(CNetworkMessage& p_message, int p_keepLock, int p_wa
 	GetFileSize();
 
 	if (p_wait == 0) {
-		unsigned long started = timeGetTime();
+		unsigned long started = CurrentMilliTimer();
 		bool locked;
 		do {
 			locked = CNetworkFile::Lock(offset, length);
-		} while (!locked && timeGetTime() - started < NETWORK_FILE_LOCK_RETRY_TIMEOUT_MS);
+		} while (!locked && CurrentMilliTimer() - started < NETWORK_FILE_LOCK_RETRY_TIMEOUT_MS);
 		if (!locked) {
 			length = 0;
 		}
@@ -99,7 +98,7 @@ bool CFileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 
 	if (error == 0) {
 		m_nextWriteSlot++;
-		CWriteSocket::m_lastSendTime = timeGetTime();
+		CWriteSocket::m_lastSendTime = CurrentMilliTimer();
 	}
 	if (lockLength != 0) {
 		CNetworkFile::UnLock(headerOffset, lockLength);
