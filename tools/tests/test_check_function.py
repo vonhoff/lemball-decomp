@@ -1,4 +1,4 @@
-"""Upstream comparison display without build coupling."""
+"""Raw and additional Effective comparison display without build coupling."""
 
 import contextlib
 import copy
@@ -37,6 +37,9 @@ class CheckFunctionTests(unittest.TestCase):
             ),
             patch("check_function.RecCmpProject.from_directory"),
             patch("check_function.Compare.from_target", return_value=engine),
+            patch(
+                "check_function.additional_effective_matches", return_value={0x401000}
+            ),
             patch("check_function.print_match_verbose") as verbose,
             contextlib.redirect_stdout(output),
         ):
@@ -45,7 +48,7 @@ class CheckFunctionTests(unittest.TestCase):
         self.assertEqual(
             output.getvalue().splitlines(),
             [
-                "0x00401000 Raw: 80.00%  Effective: 80.00% Equivalent",
+                "0x00401000 Raw: 80.00%  Effective: 100.00% Equivalent",
                 "0x00401020 Raw: 0.00%  Effective: 0.00% STUB Stub",
                 "0x00401040: NOT_FOUND",
             ],
@@ -76,6 +79,9 @@ class CheckFunctionTests(unittest.TestCase):
             ),
             patch("check_function.RecCmpProject.from_directory"),
             patch("check_function.Compare.from_target", return_value=engine),
+            patch(
+                "check_function.additional_effective_matches", return_value={0x401020}
+            ),
             patch("check_function.print_match_verbose") as display,
             contextlib.redirect_stdout(output),
         ):
@@ -90,7 +96,7 @@ class CheckFunctionTests(unittest.TestCase):
                 output.getvalue().splitlines(),
                 [
                     "Raw: 80.00%  Effective: 100.00%",
-                    "Raw: 75.00%  Effective: 75.00%",
+                    "Raw: 75.00%  Effective: 100.00%",
                     "Raw: 50.00%  Effective: 50.00%",
                 ],
             )

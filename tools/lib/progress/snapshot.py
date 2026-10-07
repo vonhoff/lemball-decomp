@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-EFFECTIVE_POLICY = "reccmp-with-jump-thunks-v1"
+EFFECTIVE_POLICY = "reccmp-with-assembly-normalization-v2"
 
 
 def load_progress(

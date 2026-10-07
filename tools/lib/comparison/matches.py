@@ -1,10 +1,11 @@
-"""Additional reccmp matches after normalizing direct jump-thunk calls."""
+"""Additional Effective matches without changing raw reccmp comparisons."""
 
 from reccmp.compare.asm.parse import ParseAsm
 from reccmp.compare.report import ReccmpComparedEntity
 from reccmp.types import EntityType, ImageId
 
 from .thunks import resolve_jump_thunk
+from .normalize import normalize
 
 
 class ThunkParseAsm(ParseAsm):
@@ -12,6 +13,7 @@ class ThunkParseAsm(ParseAsm):
         super().__init__(addr_test=upstream.addr_test, name_lookup=upstream.name_lookup)
         self.image, self.targets = image, targets
         self.used_thunk = False
+        self.symbols = set()
 
     def sanitize(self, inst):
         _, _, mnemonic, operands = inst
@@ -23,15 +25,24 @@ class ThunkParseAsm(ParseAsm):
                 return mnemonic, name
         return super().sanitize(inst)
 
+    def lookup(self, addr, exact=False, indirect=False):
+        name = super().lookup(addr, exact=exact, indirect=indirect)
+        if name is not None:
+            self.symbols.add(name)
+        return name
+
     def parse_asm(self, data, start_addr):
         self.used_thunk = False
-        return super().parse_asm(data, start_addr)
+        self.symbols = set()
+        self.data, self.start_addr = data, start_addr
+        self.assembly = super().parse_asm(data, start_addr)
+        return self.assembly
 
 
 def additional_effective_matches(
     engine, comparisons: dict[int, ReccmpComparedEntity]
 ) -> set[int]:
-    """Compare remaining functions with one-hop E9 call/jump normalization."""
+    """Try thunk equivalence, then equality under conservative normalization."""
     candidates = []
     for match in engine.get_functions():
         comparison = comparisons.get(match.orig_addr)
@@ -70,6 +81,15 @@ def additional_effective_matches(
             if (original.used_thunk or rebuilt.used_thunk) and (
                 result.match_ratio == 1 or result.is_effective_match
             ):
+                accepted.add(match.orig_addr)
+                continue
+            orig_normalized = normalize(
+                original.assembly, original.data, original.start_addr, original.symbols
+            )
+            recomp_normalized = normalize(
+                rebuilt.assembly, rebuilt.data, rebuilt.start_addr, rebuilt.symbols
+            )
+            if orig_normalized is not None and orig_normalized == recomp_normalized:
                 accepted.add(match.orig_addr)
     finally:
         setattr(upstream, "orig_sanitize", original_sanitize)

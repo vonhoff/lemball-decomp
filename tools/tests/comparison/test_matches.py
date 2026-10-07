@@ -3,12 +3,13 @@
 import copy
 import unittest
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from reccmp.compare.report import ReccmpComparedEntity
 from reccmp.types import EntityType
 
 from lib.comparison.matches import ThunkParseAsm, additional_effective_matches
-from tests.comparison.fixtures import fixture
+from tests.comparison.fixtures import fixture, patch_body
 
 
 def compare(comparator, match, **flags):
@@ -38,6 +39,26 @@ class AdditionalMatchTests(unittest.TestCase):
 
     def test_other_instruction_differences_remain_partial(self):
         self.assertEqual(compare(*fixture("b801000000 c3", "b802000000 c3")), set())
+
+    def test_normalization_does_not_require_a_jump_thunk(self):
+        comparator, match = fixture("31d2 3bc2 c3", "31d2 85c0 c3")
+        patch_body(comparator.orig_bin, 0x1000, 0, bytes.fromhex("e810300000"))
+        raw = comparator.compare_function(match)
+        self.assertLess(raw.match_ratio, 1)
+        self.assertFalse(raw.is_effective_match)
+        self.assertEqual(compare(comparator, match), {0x1000})
+
+    def test_parser_restoration_on_normalization_failure(self):
+        comparator, match = fixture("31d2 3bc2 c3", "31d2 85c0 c3")
+        parsers = comparator.orig_sanitize, comparator.recomp_sanitize
+        with patch(
+            "lib.comparison.matches.normalize", side_effect=RuntimeError("decode")
+        ):
+            with self.assertRaisesRegex(RuntimeError, "decode"):
+                compare(comparator, match)
+        self.assertEqual(
+            (comparator.orig_sanitize, comparator.recomp_sanitize), parsers
+        )
 
     def test_missing_or_non_e9_thunks_do_not_add_matches(self):
         for thunk in (b"", bytes.fromhex("e91000"), bytes.fromhex("e810000000")):
