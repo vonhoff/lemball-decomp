@@ -2,6 +2,7 @@
 """Generate objdiff progress from raw assembly comparisons."""
 
 import argparse
+import hashlib
 import json
 from collections import defaultdict
 from typing import Any, cast
@@ -15,9 +16,9 @@ from reccmp.project.detect import RecCmpProject
 from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType
 
-from lib.project import BUILD, EFFECTIVE_JSON, RECCMP_JSON, REPORT_JSON, ROOT, TARGET_ID
-from lib.progress import effective_addresses, effective_measures, effective_snapshot
-from link_binary import read_jump_target
+from lib import BUILD, EFFECTIVE_JSON, REPORT_JSON, ROOT, TARGET_ID
+from lib.progress import effective_code_percent
+from link_binary import read_jump_target, thunk_symbol
 
 REPORT_EXCLUSIONS = ROOT / "tools/data/report-exclusions.csv"
 
@@ -51,29 +52,6 @@ def measures(functions, total_units=1):
     }
 
 
-def is_catalogued_jump_thunk(
-    image, address: int, size: int, catalog: dict[int, Any]
-) -> bool:
-    """Recognize a five-byte direct jump that forwards to another inventory entry."""
-    if size != 5:
-        return False
-    target = read_jump_target(image, address)
-    return target is not None and target != address and target in catalog
-
-
-def read_report_exclusions() -> set[int]:
-    """Read unmatched Visual C++ runtime targets excluded from game progress."""
-    return {
-        address
-        for address, _ in csv_parse(REPORT_EXCLUSIONS.read_text(encoding="utf-8"))
-    }
-
-
-def is_visual_cpp_runtime_module(module: str) -> bool:
-    """Recognize functions attributed to the linked Visual C++ runtime library."""
-    return module.replace("/", "\\").casefold().startswith("build\\intel\\mt_obj\\")
-
-
 def build_report(engine, comparisons, modules) -> dict[str, Any]:
     """Map the original code inventory to objdiff functions and PDB units."""
     catalog = dict(
@@ -83,7 +61,10 @@ def build_report(engine, comparisons, modules) -> dict[str, Any]:
             )
         )
     )
-    excluded_addresses = read_report_exclusions()
+    excluded_addresses = {
+        address
+        for address, _ in csv_parse(REPORT_EXCLUSIONS.read_text(encoding="utf-8"))
+    }
     entities = {entity.orig_addr: entity for entity in engine.get_all()}
     groups = defaultdict(list)
     for address, original in catalog.items():
@@ -91,32 +72,31 @@ def build_report(engine, comparisons, modules) -> dict[str, Any]:
             continue
         entity = entities[address]
         comparison = comparisons.entities.get(address)
-        unmatched = entity.recomp_addr is None and not (
-            comparison and comparison.is_matched()
-        )
-        if entity.entity_type == EntityType.IMPORT_THUNK or (
-            unmatched
-            and is_catalogued_jump_thunk(
-                engine.orig_bin, address, original["size"], catalog
-            )
-        ):
+        if entity.entity_type == EntityType.IMPORT_THUNK:
             continue
         module = (
             modules.get_module(entity.recomp_addr)[1]
             if entity.recomp_addr
             else "Unknown"
         )
-        if is_visual_cpp_runtime_module(module):
-            continue
+        name = (
+            comparison.name
+            if comparison and entity.recomp_addr
+            else entity.name or entity.get("symbol") or ""
+        )
+        if not name and original["size"] == 5:
+            destination = read_jump_target(engine.orig_bin, address)
+            if destination != address and destination in catalog:
+                name = thunk_symbol(address)
+        if name.startswith("__lemball_jump_"):
+            module = "Jump thunks"
         groups[module].append(
             {
                 "name": f"0x{address:08x}",
                 "size": str(original["size"]),
                 "metadata": {
                     "virtual_address": str(address),
-                    "demangled_name": comparison.name
-                    if comparison and entity.recomp_addr
-                    else entity.name or "",
+                    "demangled_name": name,
                 },
                 "fuzzy_match_percent": comparison.accuracy * 100
                 if comparison and not comparison.is_stub
@@ -148,22 +128,36 @@ def main() -> int:
         comparisons,
         ModuleMap(target.recompiled_pdb, cast(PEImage, engine.recomp_bin)),
     )
-    accepted = effective_addresses(comparisons.entities)
-    RECCMP_JSON.write_text(
+    accepted = {
+        address
+        for address, comparison in comparisons.entities.items()
+        if comparison.is_function()
+        and comparison.is_matched()
+        and not comparison.is_stub
+        and comparison.effective_accuracy == 1
+    }
+    (BUILD / "reccmp.json").write_text(
         serialize_reccmp_report(comparisons, diff_included=True), encoding="utf-8"
     )
     report_bytes = (json.dumps(report, indent=2) + "\n").encode("utf-8")
     REPORT_JSON.write_bytes(report_bytes)
     EFFECTIVE_JSON.write_text(
-        json.dumps(effective_snapshot(report_bytes, accepted), indent=2) + "\n",
+        json.dumps(
+            {
+                "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
+                "addresses": sorted(accepted),
+            },
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     totals = report["measures"]
-    effective = effective_measures(report, accepted)
+    effective = effective_code_percent(report, accepted)
     print(
         f"Report: {totals['total_functions']:,} functions; "
         f"{totals['matched_code_percent']:.2f}% exact; "
-        f"{effective['matched_code_percent']:.2f}% effective; "
+        f"{effective:.2f}% effective; "
         f"{totals['fuzzy_match_percent']:.2f}% fuzzy"
     )
     return 0

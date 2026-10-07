@@ -8,21 +8,27 @@ from itertools import groupby
 from pathlib import Path
 
 from reccmp import color
+from reccmp.dir import source_code_search
 from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 
-from lib.project import ROOT, SRC, TARGET_ID
-from lib.source.names import scan
-from lib.source.policy import violations
-from lib.source.scan import collect_sources
+from lib import ROOT, TARGET_ID
+from lib.names import scan
+from lib.policy import violations
 
 
+SRC = ROOT / "src"
 CATALOG = ROOT / "tools/data/mac-symbol-catalog.csv"
 
 
-def read_catalog(path=CATALOG):
+def collect_sources(paths=None):
+    """Find C/C++ sources under supplied paths or the configured source root."""
+    return list(source_code_search([ROOT / path for path in paths or (SRC,)]))
+
+
+def read_catalog():
     """Read symbol identities and Windows mappings from the fixed catalog."""
     symbols, by_windows = {}, defaultdict(list)
-    with path.open(newline="", encoding="utf-8-sig") as stream:
+    with CATALOG.open(newline="", encoding="utf-8-sig") as stream:
         rows = csv.reader(stream)
         next(rows)
         for mac, name, win in rows:

@@ -121,25 +121,18 @@ class SymbolDecoder:
         if self.take() != "F":
             raise ValueError("missing function encoding")
         parameters = self.parameters()
-        method = decode_method_name(method)
+        if method.startswith("__op"):
+            conversion = SymbolDecoder(method[4:])
+            method = "operator " + conversion.type()
+            if conversion.peek():
+                raise ValueError("trailing conversion encoding")
+        elif method.startswith("__"):
+            if method not in METHOD_NAMES:
+                raise ValueError("unsupported operator " + method)
+            method = METHOD_NAMES[method]
         if method in ("<constructor>", "<destructor>") and not owner:
             raise ValueError("constructor or destructor without owner")
         return Signature(owner, method, parameters, const)
-
-
-def decode_method_name(method):
-    """Translate CodeWarrior constructors, operators, and conversion names."""
-    if method.startswith("__op"):
-        conversion = SymbolDecoder(method[4:])
-        name = "operator " + conversion.type()
-        if conversion.peek():
-            raise ValueError("trailing conversion encoding")
-        return name
-    if not method.startswith("__"):
-        return method
-    if method not in METHOD_NAMES:
-        raise ValueError("unsupported operator " + method)
-    return METHOD_NAMES[method]
 
 
 def decode_signature(symbol):

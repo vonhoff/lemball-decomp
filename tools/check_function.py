@@ -8,7 +8,7 @@ from reccmp.compare import Compare
 from reccmp.project.detect import RecCmpProject
 from reccmp.tools.asmcmp import print_match_oneline, print_match_verbose
 
-from lib.project import BUILD, TARGET_ID
+from lib import BUILD, TARGET_ID
 
 
 def display_comparison(address, comparison, summary):

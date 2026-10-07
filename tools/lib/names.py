@@ -3,9 +3,30 @@
 import re
 
 from .codewarrior import decode_signature
-from .signatures import adjacent_signature, canonical_type, class_ranges
-from ..project import TARGET_ID, WINDOWS_NAME_REVIEWS
+from .signatures import adjacent_signature, canonical_type, delimiter_ends
+from . import TARGET_ID
 from .scan import TOKENS, mask_comments_and_strings
+
+WINDOWS_NAME_REVIEWS = {
+    (
+        0x0043A500,
+        "OnZoomBox__4CWndFUc",
+        "CWnd::OnDriverChange()",
+    ): "LEMBALL.EXE: CWnd vtable+0x5c at 0x0049942c points through "
+    "0x00401028 to the zero-argument RET at 0x0043a500; CPVWnd's same "
+    "slot points to OnDriverChange at 0x00466340.",
+    (
+        0x0045EDA0,
+        "GetCDDir__FPCc",
+        "CPlatformServices::GetCDDir(const char*)",
+    ): "LEMBALL.EXE: caller 0x00406e60 loads the platform object into ECX "
+    "before CALL 0x0045eda0; the callee returns with RET 4 at 0x0045ee61. "
+    "Windows uses a member function for the catalog's free function.",
+}
+
+TYPE_DEF = re.compile(
+    r"\b(?:class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
+)
 
 WINDOWS_MARK = re.compile(
     rf"//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s*{re.escape(TARGET_ID)}\s+(0x[0-9a-fA-F]+)\b"
@@ -70,20 +91,6 @@ def annotation_blocks(text, code):
         yield block, len(code)
 
 
-def compare_catalog_candidates(address, actual, symbols, candidates):
-    """Compare folded candidates; apply Windows reviews only to exact keys."""
-    actual_signature = actual.display()
-    for mac in candidates:
-        symbol = symbols[mac]
-        comparison = compare_signature(decode_signature(symbol), actual)
-        evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual_signature))
-        if evidence and comparison["status"] != "match":
-            comparison.update(
-                status="windows", signature_status="review", windows_evidence=evidence
-            )
-        yield comparison
-
-
 CANDIDATE_PRIORITY = {
     "match": 0,
     "windows": 1,
@@ -96,7 +103,12 @@ def scan(path, symbols, by_windows):
     """Attach each Windows annotation to its declaration and catalog candidates."""
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
-    ranges = class_ranges(code)
+    ends = delimiter_ends(code, "{", "}")
+    ranges = [
+        (opening, ends[opening], match["name"])
+        for match in TYPE_DEF.finditer(code)
+        if (opening := match.end() - 1) in ends
+    ]
     for block, limit in annotation_blocks(text, code):
         for token in block:
             marker = WINDOWS_MARK.match(token[0])
@@ -124,8 +136,21 @@ def scan(path, symbols, by_windows):
             except ValueError as error:
                 yield dict(row, status="unresolved", reason=str(error))
                 continue
+            comparisons = []
+            actual_signature = actual.display()
+            for mac in candidates:
+                symbol = symbols[mac]
+                comparison = compare_signature(decode_signature(symbol), actual)
+                evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual_signature))
+                if evidence and comparison["status"] != "match":
+                    comparison.update(
+                        status="windows",
+                        signature_status="review",
+                        windows_evidence=evidence,
+                    )
+                comparisons.append(comparison)
             best = min(
-                compare_catalog_candidates(address, actual, symbols, candidates),
+                comparisons,
                 key=lambda candidate: (
                     CANDIDATE_PRIORITY[candidate["status"]],
                     candidate["signature_status"] != "match",

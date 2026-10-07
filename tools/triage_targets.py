@@ -2,7 +2,6 @@
 """Rank unfinished functions from the canonical report."""
 
 import argparse
-from lib.project import EFFECTIVE_JSON, REPORT_JSON
 from lib.progress import load_progress
 
 
@@ -42,9 +41,7 @@ def main() -> int:
     if args.min_size < 0 or args.limit < 0:
         parser.error("--min-size and --limit must not be negative")
     try:
-        report, accepted = load_progress(
-            REPORT_JSON, None if args.exact else EFFECTIVE_JSON
-        )
+        report, accepted = load_progress(exact=args.exact)
     except ValueError as exc:
         parser.error(str(exc))
     functions = rank_functions(

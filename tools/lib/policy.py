@@ -1,4 +1,4 @@
-"""Check source operations and functional comment syntax."""
+"""Check C++ source operations and functional comment syntax."""
 
 import re
 from collections.abc import Iterator

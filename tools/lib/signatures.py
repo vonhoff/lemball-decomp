@@ -22,11 +22,6 @@ class Signature:
         return f"{name}({args})" + (" const" if self.const else "")
 
 
-TYPE_DEF = re.compile(
-    r"\b(?:class|struct)\s+(?P<name>\w+)\s*(?:final\s*)?(?::[^;{}]*)?\{"
-)
-
-
 def delimiter_ends(code: str, opening: str, closing: str) -> dict[int, int]:
     """Map each opening delimiter to its matching closing delimiter."""
     ends, stack = {}, []
@@ -80,21 +75,6 @@ def split_parameters(text, separator=","):
     return parts + [text[start:].strip()]
 
 
-def normalize_integer_words(words):
-    """Normalize optional 'int' and 'signed' without changing integer width."""
-    if words == ["unsigned"]:
-        return ["unsigned", "int"]
-    if words in (["signed"], ["signed", "int"]):
-        return ["int"]
-    if "short" in words or "long" in words:
-        for optional in ("int", "signed"):
-            if optional in words:
-                words.remove(optional)
-    if not words:
-        raise ValueError("missing parameter type")
-    return words
-
-
 def canonical_type(text):
     """Normalize spelling, preserving pointee constness and integer distinctions."""
     text = re.sub(r"\b(?:class|struct|enum|register)\s+", "", text).strip()
@@ -129,7 +109,16 @@ def canonical_type(text):
         if index == len(parts) - 1:
             cv = []
         if index == 0:
-            words = normalize_integer_words(words)
+            if words == ["unsigned"]:
+                words = ["unsigned", "int"]
+            elif words in (["signed"], ["signed", "int"]):
+                words = ["int"]
+            elif "short" in words or "long" in words:
+                for optional in ("int", "signed"):
+                    if optional in words:
+                        words.remove(optional)
+            if not words:
+                raise ValueError("missing parameter type")
         parts[index] = " ".join(cv + words)
     return "".join(parts)
 
@@ -157,15 +146,6 @@ def parameter_type(text):
     if array:
         text += "*"  # A one-dimensional array parameter decays to a pointer.
     return canonical_type(text)
-
-
-def class_ranges(code):
-    ends = delimiter_ends(code, "{", "}")
-    return [
-        (opening, ends[opening], match["name"])
-        for match in TYPE_DEF.finditer(code)
-        if (opening := match.end() - 1) in ends
-    ]
 
 
 def adjacent_signature(code, offset, ranges):

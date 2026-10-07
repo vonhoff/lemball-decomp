@@ -3,8 +3,8 @@
 
 import json
 
-from lib.project import BUILD, EFFECTIVE_JSON, REPORT_JSON
-from lib.progress import effective_measures, load_progress
+from lib import BUILD
+from lib.progress import effective_code_percent, load_progress
 
 BADGES_DIR = BUILD / "badges"
 
@@ -12,7 +12,7 @@ BADGES_DIR = BUILD / "badges"
 def build_badges(report, accepted):
     """Weight accepted functions by the canonical original sizes."""
     values = report["measures"]
-    effective_percent = effective_measures(report, accepted)["matched_code_percent"]
+    effective_percent = effective_code_percent(report, accepted)
     return {
         name: {
             "schemaVersion": 1,
@@ -30,7 +30,7 @@ def build_badges(report, accepted):
 
 def main():
     try:
-        report, accepted = load_progress(REPORT_JSON, EFFECTIVE_JSON)
+        report, accepted = load_progress()
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
     badges = build_badges(report, accepted)

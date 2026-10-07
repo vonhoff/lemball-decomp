@@ -2,56 +2,31 @@
 
 import hashlib
 import json
-from pathlib import Path
 from typing import Any
 
-
-def effective_addresses(comparisons: dict) -> set[int]:
-    """Accept reccmp's exact and effective results for implemented, paired functions."""
-    return {
-        address
-        for address, comparison in comparisons.items()
-        if comparison.is_function()
-        and comparison.is_matched()
-        and not comparison.is_stub
-        and comparison.effective_accuracy == 1
-    }
+from . import EFFECTIVE_JSON, REPORT_JSON
 
 
-def effective_measures(report: dict[str, Any], accepted: set[int]) -> dict[str, Any]:
-    matched_code = 0
-    matched_count = 0
-    for unit in report["units"]:
-        for f in unit["functions"]:
-            if int(f["metadata"]["virtual_address"]) in accepted:
-                matched_code += int(f["size"])
-                matched_count += 1
+def effective_code_percent(report: dict[str, Any], accepted: set[int]) -> float:
+    """Weight accepted functions by their canonical original sizes."""
+    matched_code = sum(
+        int(function["size"])
+        for unit in report["units"]
+        for function in unit["functions"]
+        if int(function["metadata"]["virtual_address"]) in accepted
+    )
     total = int(report["measures"]["total_code"])
-    return {
-        "matched_code": matched_code,
-        "matched_functions": matched_count,
-        "matched_code_percent": (matched_code / total * 100) if total else 0.0,
-    }
+    return matched_code / total * 100 if total else 0.0
 
 
-def effective_snapshot(report_bytes: bytes, accepted: set[int]) -> dict[str, Any]:
-    """Bind accepted addresses to the exact canonical report that produced them."""
-    return {
-        "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
-        "addresses": sorted(accepted),
-    }
-
-
-def load_progress(
-    report_path: Path | str, effective_path: Path | str | None = None
-) -> tuple[dict[str, Any], set[int]]:
+def load_progress(*, exact: bool = False) -> tuple[dict[str, Any], set[int]]:
     """Read a saved batch; reject missing or mismatched sidecars."""
     try:
-        raw = Path(report_path).read_bytes()
+        raw = REPORT_JSON.read_bytes()
         report = json.loads(raw)
         accepted = set()
-        if effective_path is not None:
-            snapshot = json.loads(Path(effective_path).read_bytes())
+        if not exact:
+            snapshot = json.loads(EFFECTIVE_JSON.read_bytes())
             if snapshot["report_sha256"] != hashlib.sha256(raw).hexdigest():
                 raise ValueError("effective results do not belong to this report")
             accepted = {int(address) for address in snapshot["addresses"]}
