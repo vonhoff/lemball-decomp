@@ -263,9 +263,9 @@ bool CMover::Process()
 		}
 		m_currentNode = next;
 		AICOORD oldPosition(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
-		int groundX;
 		int y;
 		int x;
+		int groundX;
 		{
 			const CPt3& position = g_pAI->GetNodePosition(m_startNode + next);
 			m_position.m_xFixed = position.m_x;
@@ -278,7 +278,7 @@ bool CMover::Process()
 		int groundY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		CMap* map = g_pMap;
 		unsigned short z;
-		if (x < 0 || y < 0 || groundX >= g_pMap->m_ground.m_width || g_pMap->m_ground.m_height <= groundY) {
+		if (x < 0 || y < 0 || groundX >= map->m_ground.m_width || g_pMap->m_ground.m_height <= groundY) {
 			z = 0;
 		}
 		else {
