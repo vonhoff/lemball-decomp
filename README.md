@@ -32,14 +32,6 @@ Effective counts non-stub raw 100% matches, reccmp equivalents, and these additi
 | Zero checks | `cmp reg, 0` or proven-zero register versus `test reg, reg` | Track register writes; reject AF readers |
 | Scheduling | Reordered independent instructions | Preserve register/flag dependencies and block boundaries; calls and stores stop reordering |
 
-Additional normalization requires complete sequence equality. Raw scores stay unchanged;
-Effective results live separately in `build-msvc400/effective.json`. The badge weights
-accepted functions by original code size; stubs and unmatched functions contribute zero.
-
-Implementation and limits: [matches.py](tools/lib/comparison/matches.py),
-[normalize.py](tools/lib/comparison/normalize.py). These are comparison heuristics,
-not a whole-program equivalence proof.
-
 ## References
 
 ### Technical Resources
