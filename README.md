@@ -23,14 +23,17 @@ including original code with no rebuilt counterpart.
 
 ## Effective Matching
 
-Effective counts non-stub raw 100% matches, reccmp equivalents, and these additional rules:
+Effective is the union of these checks for non-stub functions:
 
-| Rule | Accepted difference | Guard |
-| --- | --- | --- |
-| Jump thunks | Direct call/jump through one `E9` thunk | Same paired function target |
-| Placeholders | Shifted `<OFFSETn>` numbering | Preserve repeated references and distinct identities |
-| Zero checks | `cmp reg, 0` or proven-zero register versus `test reg, reg` | Track register writes; reject AF readers |
-| Scheduling | Reordered independent instructions | Preserve register/flag dependencies and block boundaries; calls and stores stop reordering |
+| Check | Evidence |
+| --- | --- |
+| Exact | Raw 100% reccmp assembly comparison |
+| reccmp equivalent | Upstream reccmp equivalence result |
+| Jump thunk | Direct call/jump through one `E9` to the same paired function |
+
+Existing exact, reccmp, and thunk matches are accepted directly. Raw fuzzy scores
+remain unchanged; Effective affects the badge and console output, not canonical
+progress.
 
 ## References
 

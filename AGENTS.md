@@ -26,11 +26,11 @@
 | `tools/check_source.py` | Source policy, annotation, and catalog checks; `-v` for review details |
 | `tools/make_report.py` | Canonical reports plus console Effective score |
 | `tools/make_badges.py` | README badges, separate from canonical progress |
-| `python -m unittest discover -s tests` (from `tools/`) | Tool tests |
+| `python -m unittest discover -s tests -t .` (from `tools/`) | Tool tests |
 
 Deep comparison: `reccmp-vtable` / `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
 Canonical progress: exact = non-stub, raw 100% assembly comparison score. Stubs contribute zero.
-Effective accepts non-stub raw 100% and reccmp effective matches directly; one-hop `E9` normalization adds thunk equivalents. No extra per-function proof gate.
+Effective accepts non-stub raw 100% and reccmp effective matches directly; one-hop `E9` normalization adds equivalents. No extra proof gate for existing acceptance paths.
 Effective matches retain raw fuzzy scores. Effective badge includes exact + equivalent code; no effective fields in `report.json`.
 Retain incremental build outputs and saved reports in `build-msvc400`. Remove temporary trial artifacts only; clean builds for stale artifacts, not routine batch cleanup.
 

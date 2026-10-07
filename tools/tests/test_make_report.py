@@ -15,24 +15,6 @@ from lib.progress import effective_measures
 
 
 class MakeReportTests(unittest.TestCase):
-    def test_effective_accepts_raw_upstream_and_additional_matches_directly(self):
-        comparisons = {
-            address: ReccmpComparedEntity(
-                address, "Fixture", score, kind, rebuilt, **flags
-            )
-            for address, score, kind, rebuilt, flags in (
-                (1, 1.0, EntityType.FUNCTION, 101, {}),
-                (2, 0.8, EntityType.FUNCTION, 102, {"is_effective_match": True}),
-                (3, 0.7, EntityType.FUNCTION, 103, {}),
-                (4, 0.999999999, EntityType.FUNCTION, 104, {}),
-                (5, 1.0, EntityType.FUNCTION, 105, {"is_stub": True}),
-                (6, 1.0, EntityType.FUNCTION, None, {}),
-                (7, 1.0, EntityType.DATA, 107, {}),
-            )
-        }
-        self.assertEqual(effective_addresses(comparisons), {1, 2})
-        self.assertEqual(effective_addresses(comparisons, {3, 5, 6, 7}), {1, 2, 3})
-
     def test_catalogued_thunk_requires_complete_e9_to_another_entry(self):
         for instruction, expected in (
             ("e90b000000", True),

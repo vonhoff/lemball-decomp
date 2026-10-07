@@ -1,4 +1,4 @@
-"""Additional Effective matching through reccmp and one-hop IA-32 jump thunks."""
+"""Additional Effective matching through reccmp and IA-32 jump thunks."""
 
 from collections.abc import Collection
 from copy import copy
@@ -49,7 +49,7 @@ class ThunkParseAsm(ParseAsm):
 def additional_effective_matches(
     engine, comparisons: dict[int, ReccmpComparedEntity]
 ) -> set[int]:
-    """Recheck with one-hop E9 resolution using upstream reccmp matching."""
+    """Add thunk/reccmp equivalences while preserving raw results."""
     candidates = [
         match
         for match in engine.get_functions()

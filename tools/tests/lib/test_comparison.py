@@ -18,6 +18,7 @@ from reccmp.types import EntityType, ImageId
 from lib.comparison import (
     ThunkParseAsm,
     additional_effective_matches,
+    effective_addresses,
     resolve_jump_thunk,
 )
 
@@ -96,6 +97,26 @@ def compare(comparator, match, **flags):
     return additional_effective_matches(engine, {match.orig_addr: comparison})
 
 
+class EffectiveAddressTests(unittest.TestCase):
+    def test_effective_accepts_raw_upstream_and_additional_matches_directly(self):
+        comparisons = {
+            address: ReccmpComparedEntity(
+                address, "Fixture", score, kind, rebuilt, **flags
+            )
+            for address, score, kind, rebuilt, flags in (
+                (1, 1.0, EntityType.FUNCTION, 101, {}),
+                (2, 0.8, EntityType.FUNCTION, 102, {"is_effective_match": True}),
+                (3, 0.7, EntityType.FUNCTION, 103, {}),
+                (4, 0.999999999, EntityType.FUNCTION, 104, {}),
+                (5, 1.0, EntityType.FUNCTION, 105, {"is_stub": True}),
+                (6, 1.0, EntityType.FUNCTION, None, {}),
+                (7, 1.0, EntityType.DATA, 107, {}),
+            )
+        }
+        self.assertEqual(effective_addresses(comparisons), {1, 2})
+        self.assertEqual(effective_addresses(comparisons, {3, 5, 6, 7}), {1, 2, 3})
+
+
 class AdditionalMatchTests(unittest.TestCase):
     def test_calls_and_tail_jumps_normalize_to_the_paired_function(self):
         for opcode in ("e8", "e9"):
@@ -150,7 +171,7 @@ class AdditionalMatchTests(unittest.TestCase):
                 comparison = ReccmpComparedEntity(
                     0x1000, "Caller", accuracy, EntityType.FUNCTION, 0x2000, **flags
                 )
-                engine = SimpleNamespace(get_functions=lambda match=match: [match])
+                engine = SimpleNamespace(get_functions=lambda entry=match: [entry])
                 self.assertEqual(
                     additional_effective_matches(engine, {0x1000: comparison}), set()
                 )
