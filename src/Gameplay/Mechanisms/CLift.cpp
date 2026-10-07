@@ -186,10 +186,11 @@ bool CLift::Process()
 		}
 		break;
 	case ACTION_LIFT_START_RISING: {
+		short elapsedTicks = (short) (time - m_stateTimer);
 		int startHeight = m_start.m_z;
 		m_movementStartHeight = startHeight;
 		m_direction = LIFT_DIRECTION_RISING;
-		m_start.m_z = startHeight + time - m_stateTimer;
+		m_start.m_z = elapsedTicks + startHeight;
 		m_active = 1;
 		m_action = ACTION_LIFT_RISING;
 		break;
