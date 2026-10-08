@@ -75,3 +75,8 @@ void CGunControllerNoOp()
 void CHiliteControllerNoOp()
 {
 }
+
+// FUNCTION: LEMBALL 0x004676f0
+void __stdcall NoOpPop4(unsigned int p_argument)
+{
+}

@@ -739,9 +739,14 @@ def recover_thunks(forwarders):
     )
     used = {reference["thunk"] for route in routes for reference in route["references"]}
     if missing := forwarders - used:
-        raise ValueError(
-            f"No verified compiler references for selected forwarders: {sorted(missing)}"
-        )
+        modules, public_addresses = native_context(engine, target)
+        for address in missing:
+            destination = read_jump_target(engine.orig_bin, address)
+            callee = functions[destination]
+            definition = native_definition(callee, modules, public_addresses)
+            thunks[address] = make_thunk(
+                engine, callee, address, definition["symbol"], {}
+            )
     for address in forwarders:
         thunks[address]["kind"] = "tail-forwarder"
     write_recovery(

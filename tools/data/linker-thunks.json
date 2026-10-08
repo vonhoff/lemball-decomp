@@ -15638,6 +15638,14 @@
       "symbol": "__lemball_jump_0046d920",
       "target_symbol": "?SetDefaultCtable@CSurface@@QAEXXZ",
       "kind": "tail-forwarder"
+    },
+    {
+      "address": 4691728,
+      "target": 4691744,
+      "original_bytes": "e90b000000",
+      "symbol": "__lemball_jump_00479710",
+      "target_symbol": "?GetNextHeaderBySequence@CHeaders@@QAEPAVCHeaderMessage@@XZ",
+      "kind": "tail-forwarder"
     }
   ],
   "routes": [
@@ -37435,18 +37443,18 @@
       "fingerprint": "4c56c93df283dc023107d93055e4684559799c9d37eb768a685bdf5d2b723b05",
       "references": [
         {
-          "offset": 686,
-          "original_instruction": 4473597,
-          "original_bytes": "e863effbff",
-          "thunk": 4207205,
-          "source_symbol": "??0CAnim@@QAE@XZ"
-        },
-        {
           "offset": 411,
           "original_instruction": 4473301,
           "original_bytes": "e86ee0fbff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
+        },
+        {
+          "offset": 686,
+          "original_instruction": 4473597,
+          "original_bytes": "e863effbff",
+          "thunk": 4207205,
+          "source_symbol": "??0CAnim@@QAE@XZ"
         }
       ]
     },

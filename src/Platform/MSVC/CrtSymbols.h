@@ -67,6 +67,9 @@
 // LIBRARY: LEMBALL 0x00480760 SYMBOL
 // __flushall
 
+// LIBRARY: LEMBALL 0x00480770 SYMBOL
+// _flsall
+
 // LIBRARY: LEMBALL 0x00480830 SYMBOL
 // _fwrite
 
@@ -115,8 +118,14 @@
 // LIBRARY: LEMBALL 0x00481020 SYMBOL
 // ___crtLCMapStringW
 
+// LIBRARY: LEMBALL 0x00481230 SYMBOL
+// _wcsncnt
+
 // LIBRARY: LEMBALL 0x00481270 SYMBOL
 // ___crtLCMapStringA
+
+// LIBRARY: LEMBALL 0x004814a0 SYMBOL
+// _strncnt
 
 // LIBRARY: LEMBALL 0x004814d0 SYMBOL
 // ___crtGetStringTypeW
@@ -139,11 +148,17 @@
 // LIBRARY: LEMBALL 0x00481840 SYMBOL
 // __c_exit
 
+// LIBRARY: LEMBALL 0x00481850 SYMBOL
+// _doexit
+
 // LIBRARY: LEMBALL 0x004818e0 SYMBOL
 // __lockexit
 
 // LIBRARY: LEMBALL 0x004818f0 SYMBOL
 // __unlockexit
+
+// LIBRARY: LEMBALL 0x00481900 SYMBOL
+// __initterm
 
 // LIBRARY: LEMBALL 0x00481920 SYMBOL
 // _realloc
@@ -174,6 +189,9 @@
 
 // LIBRARY: LEMBALL 0x00481aa0 SYMBOL
 // __XcptFilter
+
+// LIBRARY: LEMBALL 0x00481bf0 SYMBOL
+// _xcptlookup
 
 // LIBRARY: LEMBALL 0x00481c20 SYMBOL
 // __ismbbkalnum
@@ -208,11 +226,17 @@
 // LIBRARY: LEMBALL 0x00481d60 SYMBOL
 // __ismbbkana
 
+// LIBRARY: LEMBALL 0x00481d90 SYMBOL
+// _x_ismbbtype
+
 // LIBRARY: LEMBALL 0x00481dd0 SYMBOL
 // __setenvp
 
 // LIBRARY: LEMBALL 0x00481eb0 SYMBOL
 // __setargv
+
+// LIBRARY: LEMBALL 0x00481f50 SYMBOL
+// _parse_cmdline
 
 // LIBRARY: LEMBALL 0x00482130 SYMBOL
 // ___crtGetEnvironmentStringsW
@@ -222,6 +246,15 @@
 
 // LIBRARY: LEMBALL 0x004824d0 SYMBOL
 // __setmbcp
+
+// LIBRARY: LEMBALL 0x00482700 SYMBOL
+// _getSystemCP
+
+// LIBRARY: LEMBALL 0x00482750 SYMBOL
+// _CPtoLCID
+
+// LIBRARY: LEMBALL 0x004827b0 SYMBOL
+// _setSBCS
 
 // LIBRARY: LEMBALL 0x004827e0 SYMBOL
 // __getmbcp
@@ -400,8 +433,14 @@
 // LIBRARY: LEMBALL 0x00485340 SYMBOL
 // _signal
 
+// LIBRARY: LEMBALL 0x00485520 SYMBOL
+// _ctrlevent_capture@4
+
 // LIBRARY: LEMBALL 0x004855b0 SYMBOL
 // _raise
+
+// LIBRARY: LEMBALL 0x00485790 SYMBOL
+// _siglookup
 
 // LIBRARY: LEMBALL 0x004857d0 SYMBOL
 // ___fpecode
@@ -439,6 +478,24 @@
 // LIBRARY: LEMBALL 0x00485b10 SYMBOL
 // __output
 
+// LIBRARY: LEMBALL 0x004864f0 SYMBOL
+// _write_char
+
+// LIBRARY: LEMBALL 0x00486540 SYMBOL
+// _write_multi_char
+
+// LIBRARY: LEMBALL 0x00486580 SYMBOL
+// _write_string
+
+// LIBRARY: LEMBALL 0x004865c0 SYMBOL
+// _get_int_arg
+
+// LIBRARY: LEMBALL 0x004865d0 SYMBOL
+// _get_int64_arg
+
+// LIBRARY: LEMBALL 0x004865f0 SYMBOL
+// _get_short_arg
+
 // LIBRARY: LEMBALL 0x00486600 SYMBOL
 // _wctomb
 
@@ -474,6 +531,15 @@
 
 // GLOBAL: LEMBALL 0x0049c724 SYMBOL
 // ___xp_z
+
+// GLOBAL: LEMBALL 0x0049c828 SYMBOL
+// ___xt_a
+
+// GLOBAL: LEMBALL 0x0049c92c SYMBOL
+// ___xt_z
+
+// GLOBAL: LEMBALL 0x004a42b0 SYMBOL
+// __ctype
 
 // GLOBAL: LEMBALL 0x004a44c0
 // __aenvptr
@@ -523,6 +589,9 @@
 // GLOBAL: LEMBALL 0x004a4604 SYMBOL
 // __exitflag
 
+// GLOBAL: LEMBALL 0x004a4608 SYMBOL
+// __C_Termination_Done
+
 // GLOBAL: LEMBALL 0x004a460c
 // __NLG_Destination
 
@@ -537,6 +606,9 @@
 
 // GLOBAL: LEMBALL 0x004a46a0 SYMBOL
 // __XcptActTabSize
+
+// GLOBAL: LEMBALL 0x004a46a4 SYMBOL
+// __XcptActTabCount
 
 // GLOBAL: LEMBALL 0x004a46b0
 // __mbctype

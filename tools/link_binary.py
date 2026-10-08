@@ -84,6 +84,14 @@ class CoffObject:
             name = self.symbols[self.weak_defaults[name]][0]
         return name
 
+    def publish_static_functions(self):
+        """Expose existing private function symbols; retain code and relocations."""
+        data = bytearray(self.data)
+        for index, (_, _, section, kind, storage) in self.symbols.items():
+            if section > 0 and kind == 0x20 and storage == 3:
+                data[self.symbol_start + index * SYMBOL_SIZE + 16] = 2
+        return bytes(data)
+
     def definition(self, name):
         matches = [
             value
@@ -218,6 +226,60 @@ class CoffObject:
 
 def thunk_symbol(address):
     return f"__lemball_jump_{address:08x}"
+
+
+def prepare_runtime(linker, build):
+    """Link CRT members with their private function symbols visible to the PDB."""
+    manager = linker.parent / "LIB.EXE"
+    library = linker.parent.parent / "lib/LIBCMT.LIB"
+    members = (
+        "aw_map",
+        "crt0dat",
+        "fflush",
+        "ismbbyte",
+        "mbctype",
+        "output",
+        "stdargv",
+        "winsig",
+        "winxfltr",
+    )
+    output = build / "build/intel/mt_obj"
+    output.mkdir(parents=True, exist_ok=True)
+    objects = []
+    for member in members:
+        name = Path("build/intel/mt_obj") / (member + ".obj")
+        path = build / name
+        subprocess.run(
+            [
+                str(manager),
+                "/nologo",
+                "/extract:" + str(name),
+                "/out:" + str(path),
+                str(library),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            check=True,
+        )
+        obj = CoffObject(path.read_bytes())
+        path.write_bytes(obj.publish_static_functions())
+        objects.append(str(name))
+    runtime = build / "runtime"
+    runtime.mkdir(exist_ok=True)
+    subprocess.run(
+        [
+            str(manager),
+            "/nologo",
+            "/out:" + str(runtime / "LIBCMT.LIB"),
+            *["/remove:" + name for name in objects],
+            str(library),
+            *objects,
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=True,
+    )
+    return runtime
 
 
 def make_thunk_object(thunks):
@@ -367,6 +429,9 @@ def main(args: list[str]) -> int:
             content = rsp_path.read_text(encoding="utf-8")
             # LINK 4.00 limits lines to 16383 characters; multiple response files crash it.
             rsp_path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
+
+    runtime = prepare_runtime(Path(linker), Path.cwd())
+    os.environ["LIB"] = win_short_path(str(runtime)) + ";" + os.environ.get("LIB", "")
 
     manifest = Path(__file__).resolve().parent / "data/linker-thunks.json"
     output = next((arg[5:] for arg in link_args if arg.upper().startswith("/OUT:")), "")

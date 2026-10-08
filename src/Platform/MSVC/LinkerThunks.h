@@ -6235,4 +6235,7 @@
 // SYNTHETIC: LEMBALL 0x0046d920 SYMBOL
 // __lemball_jump_0046d920
 
+// SYNTHETIC: LEMBALL 0x00479710 SYMBOL
+// __lemball_jump_00479710
+
 #endif
