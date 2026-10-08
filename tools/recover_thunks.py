@@ -7,17 +7,21 @@ import json
 import os
 import subprocess
 import sys
+from bisect import bisect_left
 from dataclasses import replace
 from functools import cache
 from typing import cast
 
 from reccmp.compare import Compare
 from reccmp.compare.diff import RawDiffOutput
+from reccmp.compare.ingest import load_cvdump_lines
+from reccmp.compare.lines import LinesDb
 from reccmp.dir import source_code_search
 from reccmp.formats import PEImage
 from reccmp.project.detect import RecCmpProject
+from reccmp.parser.codebase import DecompCodebase
 from reccmp.tools.roadmap import ModuleMap
-from reccmp.types import ImageId
+from reccmp.types import EntityType, ImageId
 
 from link_binary import CoffObject, DIR32, REL32, read_jump_target, thunk_symbol
 from lib import BUILD, ROOT, TARGET_ID
@@ -53,17 +57,31 @@ def thunk_matches(engine, functions, thunk):
 
 
 def reference_matches(engine, functions, caller, reference):
-    """Check that a caller references the saved jump entry."""
+    """Check that a code or data owner references the saved jump entry."""
     instruction = caller.recomp_addr + reference["offset"]
-    original = engine.orig_bin.read(reference["original_instruction"], 5)
-    rebuilt = engine.recomp_bin.read(instruction, 5)
-    original_target = instruction_target(original, reference["original_instruction"])
-    rebuilt_target = instruction_target(rebuilt, instruction)
+    pointer = "original_pointer" in reference
+    length = 4 if pointer else 5
+    original_address = (
+        reference["original_pointer"] if pointer else reference["original_instruction"]
+    )
+    original = engine.orig_bin.read(original_address, length)
+    rebuilt = engine.recomp_bin.read(instruction, length)
+    if pointer:
+        if (
+            original_address != caller.orig_addr + reference["offset"]
+            or original_address not in engine.orig_bin.relocations
+        ):
+            return False
+        original_target = int.from_bytes(original, "little")
+        rebuilt_target = int.from_bytes(rebuilt, "little")
+    else:
+        original_target = instruction_target(original, original_address)
+        rebuilt_target = instruction_target(rebuilt, instruction)
     entry = functions.get(reference["thunk"])
     return not (
         entry is None
         or original.hex() != reference["original_bytes"]
-        or rebuilt[0] != original[0]
+        or (not pointer and rebuilt[0] != original[0])
         or original_target != reference["thunk"]
         or rebuilt_target != entry.recomp_addr
     )
@@ -75,6 +93,9 @@ def verify_thunks():
     target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
     engine = Compare.from_target(target)
     functions = {function.orig_addr: function for function in engine.get_functions()}
+    entities = {
+        entity.orig_addr: entity for entity in engine.get_all() if entity.orig_addr
+    }
     errors = []
     verified_thunks = 0
     verified_references = 0
@@ -94,7 +115,7 @@ def verify_thunks():
         else:
             verified_thunks += 1
     for route in manifest["routes"]:
-        caller = functions.get(route["caller"])
+        caller = entities.get(route["caller"])
         for reference in route["references"]:
             if caller is None:
                 errors.append(
@@ -105,7 +126,9 @@ def verify_thunks():
                 errors.append(
                     {
                         "caller": route["caller"],
-                        "reference": reference["original_instruction"],
+                        "reference": reference.get(
+                            "original_pointer", reference.get("original_instruction")
+                        ),
                         "reason": "Caller does not reference the evidenced jump entry",
                     }
                 )
@@ -247,8 +270,92 @@ def relocation_symbols(
     return source, target
 
 
+def folded_aliases(engine, functions, modules):
+    """Require FOLDED annotations, identical full bodies, and native definitions."""
+    codebase = DecompCodebase(
+        engine.code_files, TARGET_ID, aliases=engine.project_aliases
+    )
+    lines = LinesDb()
+    load_cvdump_lines(engine.cvdump_analysis, lines, engine.recomp_bin)
+    lines.add_local_paths(file.path for file in engine.code_files)
+    rebuilt = {
+        entity.recomp_addr: entity for entity in engine.get_all() if entity.recomp_addr
+    }
+    groups = {}
+    for annotation in codebase.iter_line_functions():
+        if not annotation.is_folded or annotation.should_skip():
+            continue
+        address = lines.find_function(
+            annotation.filename,
+            annotation.line_number,
+            annotation.end_line,
+            folded=True,
+        )
+        entity = rebuilt.get(address)
+        body = functions.get(annotation.offset)
+        if entity is None or body is None or entity.entity_type != EntityType.FUNCTION:
+            continue
+        size = body.size(ImageId.RECOMP)
+        if not size or entity.size(ImageId.RECOMP) != size:
+            continue
+        if engine.recomp_bin.read(address, size) != engine.recomp_bin.read(
+            body.recomp_addr, size
+        ):
+            continue
+        module = modules.get_module(address)
+        if module is None:
+            continue
+        object_name = module[1].replace("\\", "/")
+        if not object_name.startswith("CMakeFiles/LEMBALL.dir/"):
+            continue
+        try:
+            obj = load_object(object_name)
+            symbol = obj.function(entity.get("symbol"))[0]
+            definition = {
+                "object": object_name,
+                "symbol": symbol,
+                "size": size,
+                "fingerprint": obj.fingerprint(symbol, size, include_symbols=True),
+            }
+        except (ValueError, OSError):
+            continue
+        groups.setdefault(annotation.offset, {})[address] = definition
+    return {
+        address: definitions
+        for address, definitions in groups.items()
+        if len(definitions) > 1 and functions[address].recomp_addr in definitions
+    }
+
+
+def make_thunk(engine, callee, entry, target_symbol, aliases):
+    """Choose the paired body and retain evidenced alternate folded symbols."""
+    definitions = aliases.get(callee.orig_addr, {})
+    thunk = {
+        "address": entry,
+        "target": callee.orig_addr,
+        "original_bytes": engine.orig_bin.read(entry, 5).hex(),
+        "symbol": thunk_symbol(entry),
+        "target_symbol": definitions[callee.recomp_addr]["symbol"]
+        if definitions
+        else target_symbol,
+    }
+    if definitions:
+        thunk["folded_aliases"] = sorted(
+            definitions.values(), key=lambda definition: definition["symbol"]
+        )
+    return thunk
+
+
 def recover_references(
-    engine, functions, entries, public_addresses, obj, function, route, previous
+    engine,
+    functions,
+    entries,
+    public_addresses,
+    obj,
+    function,
+    route,
+    previous,
+    aliases,
 ):
     """Recover relocation-backed references to unpaired original jump entries."""
     references = []
@@ -277,19 +384,25 @@ def recover_references(
         if callee is None:
             continue
         rebuilt_target = instruction_target(rebuilt, rebuilt_addr)
+        body_addresses = {callee.recomp_addr} | set(aliases.get(destination, {}))
         if (
-            rebuilt_target != callee.recomp_addr
+            rebuilt_target not in body_addresses
             and read_jump_target(engine.recomp_bin, rebuilt_target)
-            != callee.recomp_addr
+            not in body_addresses
         ):
             continue
+        callee_address = (
+            rebuilt_target
+            if rebuilt_target in body_addresses
+            else read_jump_target(engine.recomp_bin, rebuilt_target)
+        )
         try:
             source_symbol, target_symbol = relocation_symbols(
                 obj,
                 caller_symbol,
-                offset,
+                offset + 1,
                 relocation,
-                callee.recomp_addr,
+                callee_address,
                 public_addresses,
             )
         except ValueError:
@@ -303,18 +416,73 @@ def recover_references(
         }
         references.append(reference)
         seen_offsets.add(offset)
-        thunks[entry] = {
-            "address": entry,
-            "target": destination,
-            "original_bytes": engine.orig_bin.read(entry, 5).hex(),
-            "symbol": thunk_symbol(entry),
-            "target_symbol": target_symbol,
-        }
+        thunks[entry] = make_thunk(engine, callee, entry, target_symbol, aliases)
+    return references, thunks
+
+
+def data_pointer_addresses(owner, original_relocations, size):
+    """Bound original pointer fields by both symbol extents and the next symbol."""
+    original_size = min(
+        size, owner.any_size(ImageId.ORIG), owner.max_size(ImageId.ORIG) or size
+    )
+    first = bisect_left(original_relocations, owner.orig_addr)
+    last = bisect_left(original_relocations, owner.orig_addr + original_size - 3)
+    return original_relocations[first:last]
+
+
+def recover_data_references(
+    engine,
+    functions,
+    entries,
+    public_addresses,
+    obj,
+    owner,
+    route,
+    original_relocations,
+    aliases,
+):
+    """Recover original PE pointers backed by native zero-addend DIR32 relocations."""
+    references, thunks = [], {}
+    for original_address in data_pointer_addresses(
+        owner, original_relocations, route["size"]
+    ):
+        original = engine.orig_bin.read(original_address, 4)
+        entry = int.from_bytes(original, "little")
+        if entry not in entries or entry in functions:
+            continue
+        destination = read_jump_target(engine.orig_bin, entry)
+        callee = functions.get(destination)
+        if callee is None:
+            continue
+        offset = original_address - owner.orig_addr
+        rebuilt_target = int.from_bytes(
+            engine.recomp_bin.read(owner.recomp_addr + offset, 4), "little"
+        )
+        if rebuilt_target not in {callee.recomp_addr} | set(
+            aliases.get(destination, {})
+        ):
+            continue
+        try:
+            source_symbol, target_symbol = relocation_symbols(
+                obj, route["symbol"], offset, DIR32, rebuilt_target, public_addresses
+            )
+        except ValueError:
+            continue
+        references.append(
+            {
+                "offset": offset,
+                "original_pointer": original_address,
+                "original_bytes": original.hex(),
+                "thunk": entry,
+                "source_symbol": source_symbol,
+            }
+        )
+        thunks[entry] = make_thunk(engine, callee, entry, target_symbol, aliases)
     return references, thunks
 
 
 def recover_routes(engine, target, addresses, functions, entries, previous_routes):
-    """Recover caller routes that the native COFF objects can redirect."""
+    """Recover code and data routes that the native COFF objects can redirect."""
     image = cast(PEImage, engine.recomp_bin)
     modules = ModuleMap(target.recompiled_pdb, image)
     public_addresses = {}
@@ -323,12 +491,39 @@ def recover_routes(engine, target, addresses, functions, entries, previous_route
             public_addresses[public.name] = image.get_abs_addr(
                 public.section, public.offset
             )
+    aliases = folded_aliases(engine, functions, modules)
+    entities = {
+        entity.orig_addr: entity for entity in engine.get_all() if entity.orig_addr
+    }
+    data_regions = [
+        section.virtual_range
+        for section in engine.orig_bin.sections
+        if section.name in (".rdata", ".data")
+    ]
+    addresses.update(
+        dict.fromkeys(
+            address
+            for address, entity in entities.items()
+            if entity.recomp_addr
+            and entity.entity_type in (EntityType.DATA, EntityType.VTABLE)
+            and any(address in region for region in data_regions)
+        )
+    )
+    original_relocations = sorted(engine.orig_bin.relocations)
     thunks = {}
     routes = []
     unresolved = []
     for address in addresses:
-        function = functions.get(address)
+        function = entities.get(address)
         if function is None or function.get("stub") or not function.get("symbol"):
+            continue
+        data = function.entity_type in (EntityType.DATA, EntityType.VTABLE)
+        if data and not any(
+            int.from_bytes(engine.orig_bin.read(pointer, 4), "little") in entries
+            for pointer in data_pointer_addresses(
+                function, original_relocations, function.any_size(ImageId.RECOMP)
+            )
+        ):
             continue
         module = modules.get_module(function.recomp_addr)
         if module is None:
@@ -338,7 +533,9 @@ def recover_routes(engine, target, addresses, functions, entries, previous_route
             continue
         try:
             obj = load_object(object_name)
-            caller_symbol = obj.function(function.get("symbol"))[0]
+            caller_symbol = (obj.definition if data else obj.function)(
+                function.get("symbol")
+            )[0]
             if public_addresses.get(caller_symbol) != function.recomp_addr:
                 raise ValueError(
                     "COFF weak default does not match the linked caller address"
@@ -355,34 +552,49 @@ def recover_routes(engine, target, addresses, functions, entries, previous_route
             "size": size,
             "fingerprint": fingerprint,
         }
-        references, found = recover_references(
-            engine,
-            functions,
-            entries,
-            public_addresses,
-            obj,
-            function,
-            route,
-            previous_routes.get(address),
-        )
-        thunks.update(found)
+        if data:
+            route["kind"] = "data"
+            references, found = recover_data_references(
+                engine,
+                functions,
+                entries,
+                public_addresses,
+                obj,
+                function,
+                route,
+                original_relocations,
+                aliases,
+            )
+        else:
+            references, found = recover_references(
+                engine,
+                functions,
+                entries,
+                public_addresses,
+                obj,
+                function,
+                route,
+                previous_routes.get(address),
+                aliases,
+            )
         if not references:
             continue
         route["references"] = references
         try:
-            obj.redirect([route], thunks)
+            obj.redirect([route], thunks | found)
         except (ValueError, KeyError) as error:
             unresolved.append({"caller": address, "reason": str(error)})
             continue
+        thunks.update(found)
         routes.append(route)
     routes.sort(key=lambda caller_route: caller_route["caller"])
     return routes, thunks, unresolved
 
 
 def write_recovery(target, thunks, routes, unresolved):
-    """Save the manifest, matching annotations, and unresolved caller report."""
+    """Save the manifest, matching annotations, and unresolved owner report."""
     manifest = {
-        "version": 2,
+        "version": 3,
         "original_sha256": hashlib.sha256(
             target.original_path.read_bytes()
         ).hexdigest(),
@@ -403,9 +615,9 @@ def write_recovery(target, thunks, routes, unresolved):
     ANNOTATIONS.write_text("\n".join(lines), encoding="utf-8", newline="\n")
     (OUTPUT / "unresolved.json").write_text(json.dumps(unresolved, indent=2) + "\n")
     print(
-        f"recovered {len(thunks)} thunks; {len(routes)} callers; "
+        f"recovered {len(thunks)} thunks; {len(routes)} owners; "
         f"{sum(len(route['references']) for route in routes)} references; "
-        f"{len(unresolved)} unresolved callers"
+        f"{len(unresolved)} unresolved owners"
     )
 
 
