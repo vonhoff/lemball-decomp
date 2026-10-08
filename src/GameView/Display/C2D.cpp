@@ -3568,9 +3568,9 @@ void C2D::DrawDoor(CViewData& p_viewData)
 {
 	int x;
 	int y;
+	int elapsed;
 	eAction action;
 	eObjectType objectType;
-	int elapsed;
 	unsigned long resourceId;
 	int playerIndex;
 	CBaseRemap* remap;
