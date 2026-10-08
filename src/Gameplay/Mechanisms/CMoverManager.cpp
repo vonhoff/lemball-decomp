@@ -128,6 +128,21 @@ int CMoverManager::GetViewData(CViewData* p_viewData)
 	return count;
 }
 
+// FUNCTION: LEMBALL 0x0042f590
+bool CMoverManager::AnyMoverMatches(unsigned int p_arg0, unsigned int p_arg1)
+{
+	int index = 0;
+	if (index < m_count) {
+		do {
+			if (m_movers[index].AlwaysFalse(p_arg0, p_arg1)) {
+				return true;
+			}
+			index++;
+		} while (index < m_count);
+	}
+	return false;
+}
+
 // FUNCTION: LEMBALL 0x0042f5e0
 void CMoverManager::Add(unsigned short p_id,
 						int p_pathId,

@@ -9,8 +9,8 @@
   "reference_scope": "Immediate operands decoded within catalogued original function extents; all PE base-relocated DWORD pointers; optional full-scope Ghidra xrefs. Static analysis cannot prove an entry unused. Ghidra names/comments are hypotheses; original bytes and source layouts supply evidence.",
   "table_entries": 2077,
   "selected_entries": 326,
-  "recovered": 308,
-  "unpaired": 18,
+  "recovered": 310,
+  "unpaired": 16,
   "verification_errors": [],
   "entries": [
     {
@@ -1029,7 +1029,7 @@
       "address": 4199985,
       "target": 4388240,
       "original_bytes": "e95adf0200",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
       "body_size": 72,
@@ -1080,14 +1080,13 @@
           "instruction": "jmp 0x42f590"
         }
       ],
-      "blocker": "No paired native definition with established identity and ABI",
       "evidence": "ECX object: count +0x34, array +0x38, stride 0x1a0; forwards two stack arguments to 0x402c75, tests full EAX, returns 0/1, RET 8. Matches CMoverManager/CMover layout; method name and argument types unresolved.",
       "source": [
         "src/Gameplay/Mechanisms/CMoverManager.h",
         "src/Gameplay/Mechanisms/CMover.h"
       ],
-      "next_step": "Find Windows call or pointer evidence for 0x401631/0x42f590 and the predicate 0x402c75/0x42eec0; establish both argument types before adding declarations.",
-      "prior_trials": "Reconstruction memory records earlier traversal/predicate trials with collateral Effective losses (attempts 1967 and 10890). Current source lacks these methods. Revisit with new evidence and a full collateral audit.",
+      "next_step": "Retain the reconstructed live-count traversal and false predicate; original method names and meanings of the two opaque stack slots remain inferred.",
+      "prior_trials": "Older trials lost Effective bytes. Current-tree trial recovers both slots and one call; net +446 Effective bytes, -677 exact bytes from register allocation changes. Two lost Effective matches inspected: equivalent control flow, calls and cleanup.",
       "ghidra_body_xrefs": [
         {
           "from": "00401631",
@@ -1114,12 +1113,19 @@
         }
       ],
       "followup_review": {
-        "outcome": "evidence_blocker",
-        "evidence": "Original CMoverManager::Initialise at 0x42f220 computes count*0x1a0+4, constructs movers via 0x40256d, and stores array at +0x38 and count at +0x34. This corroborates traversal layout. The traversal forwards two opaque DWORD stack slots and tests full EAX; names, signedness/pointer meaning and source return type remain unresolved.",
-        "prior_trials": "Reviewed reconstruction-memory attempts 1967, 10889/10890, 10891, 11355/11356/11357. Historical retained records do not describe current source; CMover/CMoverManager currently have no such declarations. Pair and helper-only trials recorded collateral raw/Effective losses.",
-        "blocker": "No independent Windows caller or pointer owner for the traversal found; no exact catalog mapping for traversal or predicate. Argument slots cannot distinguish integers, pointers or other DWORD source types.",
-        "next_step": "Resolve the traversal and predicate through independent Windows source/debug/link-map evidence or a caller with concrete argument provenance. Reconstruct together only after that evidence; audit all header-affected functions."
-      }
+        "outcome": "behavior_reconstruction_retained",
+        "identity": "Receiver classes corroborated by original mover array/count/allocation. Method names and unsigned-int argument model inferred; two opaque 32-bit stack slots, no argument interpretation claimed.",
+        "abi": "ECX receiver; two stack values; full EAX boolean result; RET8. Manager preserves array/count reloads, stride0x1a0 and early success.",
+        "raw_percent": 79.41176470588235,
+        "linker_slot_raw_percent": 100,
+        "regressions": "Combined trial: +446 Effective bytes, -677 exact bytes; two prior Effective matches lost to equivalent register/order differences in CAI::SwitchMessage and CMoverManager::Restart. Existing source operations, class layouts, vtables and symbol pairings unchanged."
+      },
+      "name": "CMoverManager::AnyMoverMatches",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMoverManager.cpp.obj",
+        "symbol": "?AnyMoverMatches@CMoverManager@@AAEHII@Z"
+      },
+      "verified": true
     },
     {
       "address": 4200015,
@@ -5727,7 +5733,7 @@
       "address": 4205685,
       "target": 4386496,
       "original_bytes": "e946c20200",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [
         {
           "address": 4388270,
@@ -5761,13 +5767,12 @@
           "instruction": "jmp 0x42eec0"
         }
       ],
-      "blocker": "No paired native definition with established identity and ABI",
       "evidence": "XOR EAX,EAX; RET 8. Original caller 0x42f5ae computes ECX from the manager's mover array and forwards two DWORD stack values through 0x402c75. Constant-zero behavior established; method name, argument meanings and source types unresolved.",
       "source": [
         "src/Gameplay/Mechanisms/CMover.h",
         "src/Gameplay/Mechanisms/CMoverManager.h"
       ],
-      "next_step": "Resolve identity and both forwarded argument types with the traversal at 0x42f590. Earlier helper-only and pair trials lost Effective bytes (attempts 10891 and 10890); require new evidence and a full collateral audit.",
+      "next_step": "Retain the private predicate called by the reconstructed mover traversal. Unsigned int models two opaque 32-bit stack slots; original names and argument meanings remain inferred.",
       "ghidra_body_xrefs": [
         {
           "from": "00402c75",
@@ -5804,12 +5809,19 @@
         }
       ],
       "followup_review": {
-        "outcome": "evidence_blocker",
-        "evidence": "Original CMoverManager::Initialise at 0x42f220 computes count*0x1a0+4, constructs movers via 0x40256d, and stores array at +0x38 and count at +0x34. This corroborates traversal layout. The traversal forwards two opaque DWORD stack slots and tests full EAX; names, signedness/pointer meaning and source return type remain unresolved.",
-        "prior_trials": "Reviewed reconstruction-memory attempts 1967, 10889/10890, 10891, 11355/11356/11357. Historical retained records do not describe current source; CMover/CMoverManager currently have no such declarations. Pair and helper-only trials recorded collateral raw/Effective losses.",
-        "blocker": "No independent Windows caller or pointer owner for the traversal found; no exact catalog mapping for traversal or predicate. Argument slots cannot distinguish integers, pointers or other DWORD source types.",
-        "next_step": "Resolve the traversal and predicate through independent Windows source/debug/link-map evidence or a caller with concrete argument provenance. Reconstruct together only after that evidence; audit all header-affected functions."
-      }
+        "outcome": "behavior_reconstruction_retained",
+        "identity": "Receiver classes corroborated by original mover array/count/allocation. Method names and unsigned-int argument model inferred; two opaque 32-bit stack slots, no argument interpretation claimed.",
+        "abi": "ECX receiver; two stack values; full EAX boolean result; RET8. Manager preserves array/count reloads, stride0x1a0 and early success.",
+        "raw_percent": 100,
+        "linker_slot_raw_percent": 100,
+        "regressions": "Combined trial: +446 Effective bytes, -677 exact bytes; two prior Effective matches lost to equivalent register/order differences in CAI::SwitchMessage and CMoverManager::Restart. Existing source operations, class layouts, vtables and symbol pairings unchanged."
+      },
+      "name": "CMover::AlwaysFalse",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
+        "symbol": "?AlwaysFalse@CMover@@AAEHII@Z"
+      },
+      "verified": true
     },
     {
       "address": 4205690,
@@ -8200,10 +8212,10 @@
     "jump_entries_verified": 2059,
     "recovery_rerun": "Retains all four reviewed original/native positions through unchanged native object fingerprints and raw original/native destination plus COFF REL32 validation.",
     "score_outcome": "Exact 53.67105299558293%; Effective 65.49454552161043%; fuzzy 90.7545546064%. No function raw-score changes or Effective losses versus 781c3657.",
-    "remaining_entries": 18,
+    "remaining_entries": 16,
     "audit_outcomes": {
       "four_calls": "recovered and verified",
-      "mover_pair": "reviewed; identity/type evidence blocker",
+      "mover_pair": "Reconstructed and routed with inferred names/opaque slot types; +446 Effective bytes, -677 exact bytes; comparison tradeoff recorded.",
       "loading_wrapper_and_leaf": "reviewed; identity/ABI evidence blocker",
       "duplicate_primitive": "Inferred CSolidRect scalar pairing retained; body and table slot 100%. CZRLE scalar separately paired at 0x469b60; existing CPrimitive mapping preserved.",
       "other_short_returns": "14 reviewed individually; identity/ABI evidence blockers"
@@ -8326,5 +8338,14 @@
     "verification": "2060 jump entries; 7189 references; zero errors.",
     "progress": "67 additional exact original bytes; no raw regressions or Effective losses. Added previously uncatalogued 31-byte CZRLE scalar extent.",
     "remaining_entries": 18
+  },
+  "mover_recovery": {
+    "thunks_verified": 2062,
+    "references_verified": 7190,
+    "verification_errors": 0,
+    "remaining_entries": 16,
+    "exact_byte_delta": -677,
+    "effective_byte_delta": 446,
+    "identity_scope": "Method names and argument meanings inferred. Existing pairings retained; declaration-induced code generation changes inspected for the two lost Effective matches."
   }
 }

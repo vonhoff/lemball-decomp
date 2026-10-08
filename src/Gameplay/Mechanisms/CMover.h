@@ -37,6 +37,8 @@ public:
 	friend class CMoverManager;
 
 private:
+	bool AlwaysFalse(unsigned int p_arg0, unsigned int p_arg1);
+
 	unsigned int m_active;          // 0x138
 	unsigned int m_moving;          // 0x13c
 	unsigned int m_findOccupants;   // 0x140

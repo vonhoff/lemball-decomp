@@ -37,8 +37,8 @@ BODY_NOTES = {
             "src/Gameplay/Mechanisms/CMoverManager.h",
             "src/Gameplay/Mechanisms/CMover.h",
         ],
-        "next_step": "Find Windows call or pointer evidence for 0x401631/0x42f590 and the predicate 0x402c75/0x42eec0; establish both argument types before adding declarations.",
-        "prior_trials": "Reconstruction memory records earlier traversal/predicate trials with collateral Effective losses (attempts 1967 and 10890). Current source lacks these methods. Revisit with new evidence and a full collateral audit.",
+        "next_step": "Retain the reconstructed live-count traversal and false predicate; original method names and meanings of the two opaque stack slots remain inferred.",
+        "prior_trials": "Older trials lost Effective bytes. Current-tree trial recovers both slots and one call; net +446 Effective bytes, -677 exact bytes from register allocation changes. Two lost Effective matches inspected: equivalent control flow, calls and cleanup.",
     },
     0x42EEC0: {
         "evidence": "XOR EAX,EAX; RET 8. Original caller 0x42f5ae computes ECX from the manager's mover array and forwards two DWORD stack values through 0x402c75. Constant-zero behavior established; method name, argument meanings and source types unresolved.",
@@ -46,7 +46,7 @@ BODY_NOTES = {
             "src/Gameplay/Mechanisms/CMover.h",
             "src/Gameplay/Mechanisms/CMoverManager.h",
         ],
-        "next_step": "Resolve identity and both forwarded argument types with the traversal at 0x42f590. Earlier helper-only and pair trials lost Effective bytes (attempts 10891 and 10890); require new evidence and a full collateral audit.",
+        "next_step": "Retain the private predicate called by the reconstructed mover traversal. Unsigned int models two opaque 32-bit stack slots; original names and argument meanings remain inferred.",
     },
     0x434F50: {
         "evidence": "Loads ECX from incoming ECX+0x78; null check; nonnull tail jump to 0x402d83/0x44b360. CLemmingAnimsManager has CCDLoadAnim* at +0x78; class attribution remains inferred.",

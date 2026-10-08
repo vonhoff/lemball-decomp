@@ -3,6 +3,7 @@
 # Function sizes: Ghidra and original x86; local tables included; trailing padding excluded.
 # Shared tails have disjoint ownership. Import-thunk sizes come from reccmp.
 # Inferred scalar identities: 0x4395f0 CSolidRect (C2D group); 0x469b60 CZRLE (CText group).
+# Inferred mover query names/types: 0x42f590 AnyMoverMatches, 0x42eec0 AlwaysFalse; unsigned int models two opaque 32-bit stack slots.
 # CRwSocket bases: read +0xb0, write +0x38; vbptr +0x108, offsets +8=-0xd0/+12=-0x58.
 # Derived vbtables: +8=write, +12=read. Scoped symbols repair local matching.
 address,type,size,symbol

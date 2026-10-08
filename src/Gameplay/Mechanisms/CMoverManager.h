@@ -24,6 +24,8 @@ public:
 	void RemoveMover(CMover* p_mover);
 
 private:
+	bool AnyMoverMatches(unsigned int p_arg0, unsigned int p_arg1);
+
 	int m_capacity;   // 0x30
 	int m_count;      // 0x34
 	CMover* m_movers; // 0x38

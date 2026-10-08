@@ -369,6 +369,12 @@ void CMover::Switch()
 	m_switchRequested = 1;
 }
 
+// FUNCTION: LEMBALL 0x0042eec0
+bool CMover::AlwaysFalse(unsigned int p_arg0, unsigned int p_arg1)
+{
+	return false;
+}
+
 // FUNCTION: LEMBALL 0x0042eee0
 bool CMover::IsOn(const AICOORD& p_position)
 {
