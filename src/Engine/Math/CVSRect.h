@@ -10,6 +10,7 @@ public:
 	CVSRect() {}
 
 	CVSRect(short p_x, short p_y, short p_width, short p_height) : CVSSize(p_width, p_height), CVSPoint(p_x, p_y) {}
+	CVSRect(const CVSPoint& p_position, const CVSSize& p_size) : CVSSize(p_size), CVSPoint(p_position) {}
 	CVSRect(short p_x, short p_y, CVSSize* p_size);
 	CVSRect(const CVSRect& p_source);
 
