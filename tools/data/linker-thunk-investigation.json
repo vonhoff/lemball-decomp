@@ -7809,11 +7809,13 @@
         }
       ],
       "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "31-byte scalar deleting wrapper: writes CPrimitive vtable 0x496ca8; flags bit 0 conditionally calls delete at 0x45a790; returns this; RET 4. Existing CPrimitive wrapper is mapped at 0x432350. Separate original retained copy; same native symbol cannot be assigned to both bodies.",
+      "evidence": "31-byte scalar deleting wrapper: writes CPrimitive vtable 0x496ca8; flags bit 0 conditionally calls delete at 0x45a790; returns this; RET 4. Empty derived-class wrappers can emit identical bytes and relocations. CPrimitive at 0x432350 is established; class identity at 0x4395f0 remains unresolved. Native CSolidRect and CZRLE scalar wrappers are unpaired candidates.",
       "source": [
-        "src/Engine/Graphics/Primitives/CPrimitive.h"
+        "src/Engine/Graphics/Primitives/CPrimitive.h",
+        "src/Engine/Graphics/Primitives/CSolidRect.h",
+        "src/Engine/Graphics/Primitives/CZRLE.h"
       ],
-      "next_step": "Establish how MSVC retained a second CPrimitive wrapper and reproduce a distinct native COFF definition. Preserve the existing 0x432350 mapping.",
+      "next_step": "Identify the class using independent original Windows caller, pointer-owner or symbol evidence; distinguish 0x4395f0 from the identical unpaired body at 0x469b60. Preserve the existing CPrimitive mapping at 0x432350. See tools/data/primitive-destructor-probe.json.",
       "ghidra_body_xrefs": [
         {
           "from": "0040366b",
@@ -7841,7 +7843,7 @@
       ],
       "followup_review": {
         "outcome": "evidence_blocker",
-        "evidence": "Original 0x432350 and 0x4395f0 have identical 31-byte instruction bodies after zeroing the vtable operand at +8 and delete REL32 operand at +18. Native compiler COFF body has the same normalized SHA256 b0ebb9c650078fce8401adbe0042e9645206a2cdc781be3763c8cddfa3b85f7d. Identity and machine ABI established.",
+        "evidence": "Original 0x432350 and 0x4395f0 have identical normalized 31-byte bodies. Native CPrimitive and empty derived wrappers can emit the same bytes and relocations. Machine behavior established; class identity at 0x4395f0 unresolved. The prior second-CPrimitive attribution is superseded by tools/data/primitive-destructor-probe.json.",
         "native_definition_count": 29,
         "native_definitions": [
           {
@@ -8136,10 +8138,11 @@
           }
         ],
         "selection_evidence": "All 29 definitions are ??_GCPrimitive@@UAEPAXI@Z, size31, external function type0x20, COMDAT section flag0x1000, aux Selection2 (IMAGE_COMDAT_SELECT_ANY in msvc400/include/WINNT.H). Relocations: DIR32 +8 to ??_7CPrimitive@@6B@; REL32 +18 to ??3@YAXPAX@Z. All include-symbol fingerprints agree.",
-        "native_link_evidence": "Current PDB publics ??_ECPrimitive@@UAEPAXI@Z and ??_GCPrimitive@@UAEPAXI@Z both resolve to 0x402fb0; canonical original 0x432350 remains paired there. No distinct linked native definition for the second original body.",
-        "blocker": "Original retention mechanism is unproven. Original image has no COFF symbol table/debug directory; data contains the executable and supporting resource/DLL files, no original Windows objects or link map. Rewriting COMDAT selection or renaming a copy would invent original linker evidence.",
-        "next_step": "Obtain original Windows COFF/link map or independently reproduce the evidenced compiler/linker retention mechanism with two genuine linked definitions. Keep the 0x432350 mapping; do not fold both original bodies onto one native address.",
-        "native_weak_alias_evidence": "Native C2D.cpp.obj records ??_ECPrimitive@@UAEPAXI@Z as weak external storage105, section0; its default resolves to ??_GCPrimitive@@UAEPAXI@Z. Both PDB public names occupy one address, 0x402fb0."
+        "native_link_evidence": "Current CPrimitive vector/scalar PDB names resolve to 0x402fb0, paired with original 0x432350. Native CSolidRect scalar at 0x40e660 and CZRLE scalar at 0x40e110 are separate matching unpaired definitions. Class attribution for 0x4395f0 remains unproven.",
+        "blocker": "Independent original class identity missing. A derived-class scalar deleting wrapper explains identical bytes without another CPrimitive COMDAT. CSolidRect and CZRLE candidate assignments to 0x4395f0 and 0x469b60 remain inferred; code identity and function ordering alone do not distinguish them.",
+        "next_step": "Find original Windows symbol, pointer-owner or caller provenance to distinguish the two bodies before adding scalar annotations. Keep CPrimitive mapped at 0x432350.",
+        "native_weak_alias_evidence": "Native C2D.cpp.obj records ??_ECPrimitive@@UAEPAXI@Z as weak external storage105, section0; its default resolves to ??_GCPrimitive@@UAEPAXI@Z. Both PDB public names occupy one address, 0x402fb0.",
+        "compiler_probe": "tools/data/primitive-destructor-probe.json"
       }
     },
     {
@@ -8490,7 +8493,7 @@
       "four_calls": "recovered and verified",
       "mover_pair": "reviewed; identity/type evidence blocker",
       "loading_wrapper_and_leaf": "reviewed; identity/ABI evidence blocker",
-      "duplicate_primitive": "body/ABI/29 native definitions proven; original retention mechanism unresolved",
+      "duplicate_primitive": "31-byte primitive-family wrapper; second-CPrimitive attribution corrected. Derived-wrapper mechanism reproduced; original class identity unresolved.",
       "other_short_returns": "14 reviewed individually; identity/ABI evidence blockers"
     },
     "static_scan_scope": "Byte-aligned DWORD search in all file-backed PE sections; every-byte E8/E9 candidate scan in executable sections. Candidates may be non-instruction bytes; absence does not exclude computed references or prove unused.",
@@ -8601,5 +8604,14 @@
       "capture_artifact": "build-msvc400/linker-thunks/runtime/balloon-capture.json",
       "cleanup": "Probe removed; CE debugger inactive; bullet-immunity flag restored and reread as zero. Game left open."
     }
+  },
+  "compiler_probe_review": {
+    "evidence": "tools/data/primitive-destructor-probe.json",
+    "command": "python tools/probe_primitive_destructors.py",
+    "compiled_cases": 12,
+    "native_links": 36,
+    "new_pairings": 0,
+    "outcome": "Identical code and CPrimitive vtable do not establish the derived class. Native CSolidRect and CZRLE are candidates; original identity evidence still required.",
+    "remaining_entries": 19
   }
 }

@@ -1,0 +1,1090 @@
+{
+  "version": 1,
+  "original_target": "0x4395f0",
+  "original_table_entry": "0x40366b",
+  "original_sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
+  "canonical_rebuilt_sha256": "c38d3f51167308d269fcf468771e6e8923b43b0be49a5e190ff1c1645bcdbba0",
+  "conclusion": "The vtable write and identical 31-byte scalar-deleting body establish primitive-family destruction behavior, not the class name. An empty derived-class wrapper reproduces both code and relocation targets. A second retained CPrimitive COMDAT is not needed to explain another matching body.",
+  "correction": "Supersedes earlier attribution of 0x4395f0 as a second CPrimitive scalar deleting destructor. No new original/native pair established.",
+  "reproduction": {
+    "command": "python tools/probe_primitive_destructors.py",
+    "artifacts": "build-msvc400/linker-thunks/primitive-probe",
+    "compiler": "msvc400/bin/CL.EXE",
+    "compiler_sha256": "f097e736bb04d38391c8b524945d58809ec4c42e97c056eca6f40bba2de910c3",
+    "linker": "msvc400/bin/LINK.EXE",
+    "linker_sha256": "81109c8cb534debc0c5645db7c3a1b99dd646d982b0fd545070ceb1c77f9cb6c",
+    "compiler_flags": [
+      "/nologo",
+      "/W3",
+      "/WX",
+      "/GX-",
+      "/GR-",
+      "/MT",
+      "/Dbool=int",
+      "/Dtrue=1",
+      "/Dfalse=0",
+      "/O2",
+      "/Ob1",
+      "/Oy",
+      "/G4",
+      "/Z7",
+      "/c"
+    ],
+    "link_flags": [
+      "/nologo",
+      "/DEBUG",
+      "/INCREMENTAL:NO",
+      "/SUBSYSTEM:CONSOLE",
+      "/MAP:<label>.map",
+      "/PDB:<label>.pdb",
+      "/OUT:<label>.exe"
+    ],
+    "link_variants": {
+      "normal": [
+        "a.obj",
+        "b.obj",
+        "main.obj"
+      ],
+      "reversed": [
+        "b.obj",
+        "a.obj",
+        "main.obj"
+      ],
+      "retain": [
+        "a.obj",
+        "b.obj",
+        "main.obj",
+        "/OPT:NOREF"
+      ]
+    },
+    "scope": "12 consistent class-declaration variants, 36 native links. Baseline includes the actual CPrimitive header. No COFF rewriting, symbol renaming, game-source edits or global flag changes. Experiments compile and link; executables are not run."
+  },
+  "normalized_body_sha256": "b0ebb9c650078fce8401adbe0042e9645206a2cdc781be3763c8cddfa3b85f7d",
+  "normalization": "Zero DIR32 operand at +8 and REL32 operand at +18 in the 31-byte body. Verify vtable and delete destinations separately. Hash alone does not establish class identity.",
+  "baseline": {
+    "matching_bodies": [
+      {
+        "address": "0x401040",
+        "symbols": [
+          "??_GCProbe@@UAEPAXI@Z",
+          "??_ECProbe@@UAEPAXI@Z"
+        ],
+        "vtable": "0x406068",
+        "delete_target": "0x401110"
+      },
+      {
+        "address": "0x401060",
+        "symbols": [
+          "??_ECPrimitive@@UAEPAXI@Z",
+          "??_GCPrimitive@@UAEPAXI@Z"
+        ],
+        "vtable": "0x406068",
+        "delete_target": "0x401110"
+      }
+    ],
+    "publics": {
+      "?MakeA@@YAPAVCPrimitive@@XZ": "0x401000",
+      "?Draw@CProbe@@UAEXPAVCGDI@@@Z": "0x401020",
+      "?Render@CProbe@@UAEXPAVCGDI@@@Z": "0x401030",
+      "??_GCProbe@@UAEPAXI@Z": "0x401040",
+      "??_ECProbe@@UAEPAXI@Z": "0x401040",
+      "??_ECPrimitive@@UAEPAXI@Z": "0x401060",
+      "??_GCPrimitive@@UAEPAXI@Z": "0x401060",
+      "?DeleteA@@YAXPAVCPrimitive@@@Z": "0x401080",
+      "?MakeB@@YAPAVCPrimitive@@XZ": "0x401090",
+      "?DeleteB@@YAXPAVCPrimitive@@@Z": "0x4010b0",
+      "??3@YAXPAX@Z": "0x401110",
+      "??_7CProbe@@6B@": "0x406058",
+      "??_7CPrimitive@@6B@": "0x406068"
+    },
+    "native_wrapper_definitions": [
+      {
+        "object": "a.obj",
+        "name": "??_GCProbe@@UAEPAXI@Z",
+        "section": 0,
+        "storage": 2,
+        "kind": 32
+      },
+      {
+        "object": "a.obj",
+        "name": "??_ECProbe@@UAEPAXI@Z",
+        "section": 0,
+        "storage": 105,
+        "kind": 32,
+        "weak_default": "??_GCProbe@@UAEPAXI@Z"
+      },
+      {
+        "object": "a.obj",
+        "name": "??_GCProbe@@UAEPAXI@Z",
+        "section": 13,
+        "storage": 2,
+        "kind": 32,
+        "size": 31,
+        "characteristics": "0x60501020",
+        "selection": [
+          2
+        ],
+        "bytes": "f64424040156c701000000008bf1740956e80000000083c4048bc65ec20400",
+        "fingerprint": "b0ebb9c650078fce8401adbe0042e9645206a2cdc781be3763c8cddfa3b85f7d",
+        "fingerprint_with_symbols": "18b1b7fc2902d2f819238b454a686dc26c84122da0fc69f1956bdf56dc62c877",
+        "original_body_match": true,
+        "relocations": [
+          {
+            "offset": 8,
+            "kind": 6,
+            "symbol": "??_7CPrimitive@@6B@"
+          },
+          {
+            "offset": 18,
+            "kind": 20,
+            "symbol": "??3@YAXPAX@Z"
+          }
+        ]
+      },
+      {
+        "object": "a.obj",
+        "name": "??_GCPrimitive@@UAEPAXI@Z",
+        "section": 0,
+        "storage": 2,
+        "kind": 32
+      },
+      {
+        "object": "a.obj",
+        "name": "??_ECPrimitive@@UAEPAXI@Z",
+        "section": 0,
+        "storage": 105,
+        "kind": 32,
+        "weak_default": "??_GCPrimitive@@UAEPAXI@Z"
+      },
+      {
+        "object": "a.obj",
+        "name": "??_GCPrimitive@@UAEPAXI@Z",
+        "section": 17,
+        "storage": 2,
+        "kind": 32,
+        "size": 31,
+        "characteristics": "0x60501020",
+        "selection": [
+          2
+        ],
+        "bytes": "f64424040156c701000000008bf1740956e80000000083c4048bc65ec20400",
+        "fingerprint": "b0ebb9c650078fce8401adbe0042e9645206a2cdc781be3763c8cddfa3b85f7d",
+        "fingerprint_with_symbols": "18b1b7fc2902d2f819238b454a686dc26c84122da0fc69f1956bdf56dc62c877",
+        "original_body_match": true,
+        "relocations": [
+          {
+            "offset": 8,
+            "kind": 6,
+            "symbol": "??_7CPrimitive@@6B@"
+          },
+          {
+            "offset": 18,
+            "kind": 20,
+            "symbol": "??3@YAXPAX@Z"
+          }
+        ]
+      },
+      {
+        "object": "b.obj",
+        "name": "??_GCProbe@@UAEPAXI@Z",
+        "section": 0,
+        "storage": 2,
+        "kind": 32
+      },
+      {
+        "object": "b.obj",
+        "name": "??_ECProbe@@UAEPAXI@Z",
+        "section": 0,
+        "storage": 105,
+        "kind": 32,
+        "weak_default": "??_GCProbe@@UAEPAXI@Z"
+      },
+      {
+        "object": "b.obj",
+        "name": "??_GCProbe@@UAEPAXI@Z",
+        "section": 13,
+        "storage": 2,
+        "kind": 32,
+        "size": 31,
+        "characteristics": "0x60501020",
+        "selection": [
+          2
+        ],
+        "bytes": "f64424040156c701000000008bf1740956e80000000083c4048bc65ec20400",
+        "fingerprint": "b0ebb9c650078fce8401adbe0042e9645206a2cdc781be3763c8cddfa3b85f7d",
+        "fingerprint_with_symbols": "18b1b7fc2902d2f819238b454a686dc26c84122da0fc69f1956bdf56dc62c877",
+        "original_body_match": true,
+        "relocations": [
+          {
+            "offset": 8,
+            "kind": 6,
+            "symbol": "??_7CPrimitive@@6B@"
+          },
+          {
+            "offset": 18,
+            "kind": 20,
+            "symbol": "??3@YAXPAX@Z"
+          }
+        ]
+      },
+      {
+        "object": "b.obj",
+        "name": "??_GCPrimitive@@UAEPAXI@Z",
+        "section": 0,
+        "storage": 2,
+        "kind": 32
+      },
+      {
+        "object": "b.obj",
+        "name": "??_ECPrimitive@@UAEPAXI@Z",
+        "section": 0,
+        "storage": 105,
+        "kind": 32,
+        "weak_default": "??_GCPrimitive@@UAEPAXI@Z"
+      },
+      {
+        "object": "b.obj",
+        "name": "??_GCPrimitive@@UAEPAXI@Z",
+        "section": 17,
+        "storage": 2,
+        "kind": 32,
+        "size": 31,
+        "characteristics": "0x60501020",
+        "selection": [
+          2
+        ],
+        "bytes": "f64424040156c701000000008bf1740956e80000000083c4048bc65ec20400",
+        "fingerprint": "b0ebb9c650078fce8401adbe0042e9645206a2cdc781be3763c8cddfa3b85f7d",
+        "fingerprint_with_symbols": "18b1b7fc2902d2f819238b454a686dc26c84122da0fc69f1956bdf56dc62c877",
+        "original_body_match": true,
+        "relocations": [
+          {
+            "offset": 8,
+            "kind": 6,
+            "symbol": "??_7CPrimitive@@6B@"
+          },
+          {
+            "offset": 18,
+            "kind": 20,
+            "symbol": "??3@YAXPAX@Z"
+          }
+        ]
+      }
+    ],
+    "result": "The two distinct strong scalar names are CProbe and CPrimitive. Both have COMDAT selection 2 (ANY), identical normalized bytes, and identical named relocation targets. Their vector names are weak aliases to the corresponding scalar names. Reversing object order or explicitly retaining sections keeps two different-class bodies."
+  },
+  "cases": [
+    {
+      "case": "baseline",
+      "source_options": {},
+      "extra_flags": [],
+      "matching_body_counts": {
+        "normal": 2,
+        "reversed": 2,
+        "retain": 2
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "abstract_array_delete",
+      "source_options": {
+        "array_delete": true
+      },
+      "extra_flags": [],
+      "matching_body_counts": {
+        "normal": 2,
+        "reversed": 2,
+        "retain": 2
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "derived_array",
+      "source_options": {
+        "derived_array": true
+      },
+      "extra_flags": [],
+      "matching_body_counts": {
+        "normal": 2,
+        "reversed": 2,
+        "retain": 2
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_ECProbe@@UAEPAXI@Z",
+            "size": 84,
+            "original_body_match": false
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "out_of_line",
+      "source_options": {
+        "dtor": "virtual ~CPrimitive();",
+        "definition": "CPrimitive::~CPrimitive() {}"
+      },
+      "extra_flags": [],
+      "matching_body_counts": {
+        "normal": 0,
+        "reversed": 0,
+        "retain": 0
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 30,
+            "original_body_match": false
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 36,
+            "original_body_match": false
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 36,
+            "original_body_match": false
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "pure_destructor",
+      "source_options": {
+        "dtor": "virtual ~CPrimitive() = 0;",
+        "definition": "CPrimitive::~CPrimitive() {}"
+      },
+      "extra_flags": [],
+      "matching_body_counts": {
+        "normal": 0,
+        "reversed": 0,
+        "retain": 0
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 36,
+            "original_body_match": false
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 36,
+            "original_body_match": false
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "export_class",
+      "source_options": {
+        "export": "__declspec(dllexport)"
+      },
+      "extra_flags": [],
+      "matching_body_counts": {
+        "normal": 2,
+        "reversed": 2,
+        "retain": 2
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_ECPrimitive@@UAEPAXI@Z",
+            "size": 85,
+            "original_body_match": false
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_ECPrimitive@@UAEPAXI@Z",
+            "size": 85,
+            "original_body_match": false
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "main": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_ECPrimitive@@UAEPAXI@Z",
+            "size": 85,
+            "original_body_match": false
+          }
+        ]
+      }
+    },
+    {
+      "case": "export_destructor",
+      "source_options": {
+        "dtor": "__declspec(dllexport) virtual ~CPrimitive() {}"
+      },
+      "extra_flags": [],
+      "matching_body_counts": {
+        "normal": 2,
+        "reversed": 2,
+        "retain": 2
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "main": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ]
+      }
+    },
+    {
+      "case": "no_inline",
+      "source_options": {},
+      "extra_flags": [
+        "/Ob0"
+      ],
+      "matching_body_counts": {
+        "normal": 0,
+        "reversed": 0,
+        "retain": 0
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 30,
+            "original_body_match": false
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 30,
+            "original_body_match": false
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 30,
+            "original_body_match": false
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 30,
+            "original_body_match": false
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "no_function_packaging",
+      "source_options": {},
+      "extra_flags": [
+        "/Gy-"
+      ],
+      "matching_body_counts": {
+        "normal": 2,
+        "reversed": 2,
+        "retain": 2
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "exception_handling",
+      "source_options": {},
+      "extra_flags": [
+        "/GX"
+      ],
+      "matching_body_counts": {
+        "normal": 1,
+        "reversed": 1,
+        "retain": 1
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 103,
+            "original_body_match": false
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 103,
+            "original_body_match": false
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "no_debug_info",
+      "source_options": {},
+      "extra_flags": [
+        "/Zd"
+      ],
+      "matching_body_counts": {
+        "normal": 2,
+        "reversed": 2,
+        "retain": 2
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "main": []
+      }
+    },
+    {
+      "case": "concrete_array",
+      "source_options": {
+        "concrete": true,
+        "array_delete": true
+      },
+      "extra_flags": [],
+      "matching_body_counts": {
+        "normal": 2,
+        "reversed": 2,
+        "retain": 2
+      },
+      "strong_wrappers": {
+        "a": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          }
+        ],
+        "b": [
+          {
+            "symbol": "??_GCProbe@@UAEPAXI@Z",
+            "size": 31,
+            "original_body_match": true
+          },
+          {
+            "symbol": "??_ECPrimitive@@UAEPAXI@Z",
+            "size": 85,
+            "original_body_match": false
+          }
+        ],
+        "main": []
+      }
+    }
+  ],
+  "original_matching_bodies": [
+    "0x432320",
+    "0x432350",
+    "0x432a60",
+    "0x432a90",
+    "0x4395c0",
+    "0x4395f0",
+    "0x439620",
+    "0x439650",
+    "0x439680",
+    "0x4396b0",
+    "0x4396e0",
+    "0x4397a0",
+    "0x4439b0",
+    "0x447170",
+    "0x4471a0",
+    "0x469b60"
+  ],
+  "original_scan_scope": "Every byte offset in executable regions; full 31-byte normalized pattern plus vtable 0x496ca8 and delete target 0x45a790. Sixteen matching bodies. Pattern presence does not identify their classes.",
+  "native_project_matches": [
+    {
+      "symbol": "??_GCPrimitive@@UAEPAXI@Z",
+      "rebuilt": "0x402fb0",
+      "original": "0x432350",
+      "paired_name": "CPrimitive::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 29
+    },
+    {
+      "symbol": "??_GCBigBitmap@@UAEPAXI@Z",
+      "rebuilt": "0x40e5d0",
+      "original": "0x447170",
+      "paired_name": "CBigBitmap::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 6
+    },
+    {
+      "symbol": "??_GCClipRect@@UAEPAXI@Z",
+      "rebuilt": "0x40e620",
+      "original": "0x432a90",
+      "paired_name": "CClipRect::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 9
+    },
+    {
+      "symbol": "??_GCCopyToBackBuff@@UAEPAXI@Z",
+      "rebuilt": "0x41a150",
+      "original": "0x4396e0",
+      "paired_name": "CCopyToBackBuff::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 4
+    },
+    {
+      "symbol": "??_GCDrawingMark@@UAEPAXI@Z",
+      "rebuilt": "0x40e640",
+      "original": "0x432320",
+      "paired_name": "CDrawingMark::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 8
+    },
+    {
+      "symbol": "??_GCSolidRect@@UAEPAXI@Z",
+      "rebuilt": "0x40e660",
+      "original": null,
+      "paired_name": "CSolidRect::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 8
+    },
+    {
+      "symbol": "??_GCPushActive@@UAEPAXI@Z",
+      "rebuilt": "0x404d50",
+      "original": "0x4397a0",
+      "paired_name": "CPushActive::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 3
+    },
+    {
+      "symbol": "??_GCZBuffClear@@UAEPAXI@Z",
+      "rebuilt": "0x41d0e0",
+      "original": "0x4396b0",
+      "paired_name": "CZBuffClear::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 2
+    },
+    {
+      "symbol": "??_GCZRLE@@UAEPAXI@Z",
+      "rebuilt": "0x40e110",
+      "original": null,
+      "paired_name": "CZRLE::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 2
+    },
+    {
+      "symbol": "??_GCScreenScroll@@UAEPAXI@Z",
+      "rebuilt": "0x41d150",
+      "original": "0x439650",
+      "paired_name": "CScreenScroll::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 1
+    },
+    {
+      "symbol": "??_GCZBuffScroll@@UAEPAXI@Z",
+      "rebuilt": "0x41d170",
+      "original": "0x439680",
+      "paired_name": "CZBuffScroll::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 1
+    },
+    {
+      "symbol": "??_GCPopActive@@UAEPAXI@Z",
+      "rebuilt": "0x404d90",
+      "original": "0x4395c0",
+      "paired_name": "CPopActive::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 2
+    },
+    {
+      "symbol": "??_GCBitmap@@UAEPAXI@Z",
+      "rebuilt": "0x426c40",
+      "original": "0x4471a0",
+      "paired_name": "CBitmap::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 1
+    },
+    {
+      "symbol": "??_GCAnim@@UAEPAXI@Z",
+      "rebuilt": "0x402fd0",
+      "original": "0x4439b0",
+      "paired_name": "CAnim::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 1
+    },
+    {
+      "symbol": "??_GCLine@@UAEPAXI@Z",
+      "rebuilt": "0x404b00",
+      "original": "0x432a60",
+      "paired_name": "CLine::`scalar deleting destructor'",
+      "relocations": [
+        {
+          "offset": 8,
+          "kind": 6,
+          "symbol": "??_7CPrimitive@@6B@"
+        },
+        {
+          "offset": 18,
+          "kind": 20,
+          "symbol": "??3@YAXPAX@Z"
+        }
+      ],
+      "object_count": 1
+    }
+  ],
+  "native_scan_scope": "Canonical compiler objects: external scalar-deleting function definitions, 31-byte normalized match, DIR32 +8 to CPrimitive vtable; exact native PDB addresses and current original/native pairing. Fifteen distinct class symbols; CSolidRect and CZRLE unpaired.",
+  "original_vector_evidence": [
+    {
+      "class": "CSolidRect",
+      "address": "0x469930",
+      "array_stride": "0x10",
+      "ordinary_destructor_call": "0x401dde -> 0x439710",
+      "scalar_branch": "0x46996d writes CPrimitive vtable; delete at 0x469978; RET 4",
+      "calls_unpaired_scalar_body": false
+    },
+    {
+      "class": "CZRLE",
+      "address": "0x467b40",
+      "array_stride": "0x18",
+      "ordinary_destructor_call": "0x467ba0",
+      "scalar_branch": "0x467b7b writes CPrimitive vtable; delete at 0x467b86; RET 4",
+      "calls_unpaired_scalar_body": false
+    }
+  ],
+  "candidate_assignment": {
+    "0x4395f0": "CSolidRect scalar deleting destructor; inferred from unpaired native symbol and position near established CSolidRect/primitives functions. Not a verified pairing.",
+    "0x469b60": "CZRLE scalar deleting destructor; inferred from unpaired native symbol and position immediately before CText wrappers; CText contains a CZRLE member. Not a verified pairing."
+  },
+  "limits": "No independent original class-owner evidence for either candidate scalar body. Ghidra xrefs: 0x4395f0 has only linker entry 0x40366b; 0x469b60 has none. Xref absence does not exclude computed references. Tested declaration/options do not exhaust compiler/linker behavior.",
+  "next_step": "Find original Windows symbol, pointer-owner or caller provenance to distinguish the two bodies before adding scalar annotations. Keep CPrimitive mapped at 0x432350."
+}
