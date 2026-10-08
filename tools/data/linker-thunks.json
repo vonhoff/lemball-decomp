@@ -36809,60 +36809,60 @@
       "caller": 4457824,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?DrawObjectsZBuff@C2D@@QAEXXZ",
-      "size": 646,
-      "fingerprint": "cb986dd7229f4b717127757cfc28e52b50430f439cadbda6430ed8055323b9f6",
+      "size": 629,
+      "fingerprint": "badb38beee115e65e1e44ddd0a75b837c6cd3b6b268b6459e63fa9075b79453d",
       "references": [
         {
-          "offset": 228,
+          "offset": 211,
           "original_instruction": 4458035,
           "original_bytes": "e86413fcff",
           "thunk": 4200860,
           "source_symbol": "?GameToScreen@CMap@@QAEXAAH0@Z"
         },
         {
-          "offset": 302,
+          "offset": 285,
           "original_instruction": 4458109,
           "original_bytes": "e8e91bfcff",
           "thunk": 4203115,
           "source_symbol": "?SortViewData@C2D@@QAEXXZ"
         },
         {
-          "offset": 408,
+          "offset": 391,
           "original_instruction": 4458215,
           "original_bytes": "e8c92bfcff",
           "thunk": 4207285,
           "source_symbol": "?CalcZValue_Sprite@C2D@@QAEGH@Z"
         },
         {
-          "offset": 473,
+          "offset": 456,
           "original_instruction": 4458280,
           "original_bytes": "e8702afcff",
           "thunk": 4207005,
           "source_symbol": "?DrawZBuff_Anim@C2D@@QAEXHG@Z"
         },
         {
-          "offset": 503,
+          "offset": 486,
           "original_instruction": 4458310,
           "original_bytes": "e8fb17fcff",
           "thunk": 4202310,
           "source_symbol": "?DrawZBuff_Sprite@C2D@@QAEXHG@Z"
         },
         {
-          "offset": 549,
+          "offset": 532,
           "original_instruction": 4458356,
           "original_bytes": "e83c2bfcff",
           "thunk": 4207285,
           "source_symbol": "?CalcZValue_Sprite@C2D@@QAEGH@Z"
         },
         {
-          "offset": 558,
+          "offset": 541,
           "original_instruction": 4458365,
           "original_bytes": "e8c417fcff",
           "thunk": 4202310,
           "source_symbol": "?DrawZBuff_Sprite@C2D@@QAEXHG@Z"
         },
         {
-          "offset": 625,
+          "offset": 608,
           "original_instruction": 4458432,
           "original_bytes": "e8d829fcff",
           "thunk": 4207005,

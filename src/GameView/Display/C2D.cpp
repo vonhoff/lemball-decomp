@@ -5164,7 +5164,7 @@ void C2D::DrawObjectsZBuff()
 	background.Draw(m_gdi);
 
 	{
-		C3DVector position;
+		CPt3 position;
 		int viewIndex = 0;
 		for (;;) {
 			if ((int) m_viewDataCount <= viewIndex) {
@@ -5174,10 +5174,10 @@ void C2D::DrawObjectsZBuff()
 			viewData->m_gameX = (short) viewData->m_positionX;
 			viewData->m_gameY = (short) viewData->m_positionY;
 			memcpy(&position, &m_viewData[viewIndex].m_positionX, sizeof(position));
-			m_map->GameToScreen(position.m_xFixed, position.m_yFixed);
-			position.m_yFixed -= position.m_zFixed;
-			position.m_xFixed -= m_viewOriginX;
-			position.m_yFixed -= m_viewOriginY;
+			m_map->GameToScreen(position.m_x, position.m_y);
+			position.m_y -= position.m_z;
+			position.m_x -= m_viewOriginX;
+			position.m_y -= m_viewOriginY;
 			memcpy(&m_viewData[viewIndex].m_positionX, &position, sizeof(position));
 			viewIndex++;
 		}
