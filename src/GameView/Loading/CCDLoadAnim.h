@@ -26,6 +26,7 @@ public:
 	void InitialiseScreen();
 	virtual void Draw();
 	virtual void Draw(short p_progress);
+	void NoOp2();
 	~CCDLoadAnim();
 
 	friend class CFrontendResourceLoader;

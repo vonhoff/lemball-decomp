@@ -17,7 +17,6 @@
 #include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/CAI.h"
-#include "Platform/MSVC/InferredCallbacks.h"
 
 #include <stddef.h>
 
@@ -1155,6 +1154,6 @@ void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_firstResourceId, unsi
 void CLemmingAnimsManager::ForwardLoadAnimNoOp()
 {
 	if (m_loadAnim != NULL) {
-		CCDLoadAnimNoOp2(m_loadAnim);
+		m_loadAnim->NoOp2();
 	}
 }

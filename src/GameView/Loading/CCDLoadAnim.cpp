@@ -244,6 +244,11 @@ void CCDLoadAnim::Draw(short p_progress)
 	m_display->RefreshView();
 }
 
+// FUNCTION: LEMBALL 0x0044b360
+void CCDLoadAnim::NoOp2()
+{
+}
+
 // GLOBAL: LEMBALL 0x0049f9b0
 unsigned int g_dwCdLoadAnimCompactPoints[5] = {0x004d0087, 0x0063008f, 0x005b0094, 0x0000000a, 0x00040004};
 

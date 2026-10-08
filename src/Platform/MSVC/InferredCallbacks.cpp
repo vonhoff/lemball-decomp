@@ -1,5 +1,3 @@
-#include "Platform/MSVC/InferredCallbacks.h"
-
 // FUNCTION: LEMBALL 0x00416730
 unsigned int CGameObjectReturnZero()
 {
@@ -65,11 +63,6 @@ void CPanelNoOp()
 
 // FUNCTION: LEMBALL 0x0044b330
 void CCDLoadAnimNoOp1()
-{
-}
-
-// FUNCTION: LEMBALL 0x0044b360
-void __fastcall CCDLoadAnimNoOp2(CCDLoadAnim* p_animation)
 {
 }
 

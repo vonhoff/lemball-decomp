@@ -4,7 +4,8 @@
 # stack_pop_bytes: observed RET immediate; excludes return address. source_prototype: inferred implementation ABI; original signature unconfirmed.
 # demo_address: inferred Windows demo counterpart; source identity unconfirmed.
 # Reccmp consumes name; remaining columns describe the mapping. Implementations preserve observed return/forwarding behavior.
-# Unified TU isolates class-prefixed opaque leaf contracts; owner grouping is provisional, not a recovered member declaration.
+# Unified TU holds opaque leaves; the inferred CCDLoadAnim member is defined in its class TU. Original spellings and full signatures remain qualified.
+# RET 8 leaves retain provisional free-function __stdcall contracts; two four-byte parameters and class membership remain unresolved.
 address,name,target,linker_entry,demo_address,owner_confidence,stack_pop_bytes,abi,basis,source_prototype
 0x004010dc,Thunk of C2D::NoOp1,0x0043bcd0,,0x004010e6,low,,E9 tail jump; no separate argument/return contract,original five-byte jump; demo correspondence inferred,tail jump; inherits inferred target prototype
 0x00401235,Thunk of CPaintGunManager::ReturnZero2,0x0042c580,,0x00401244,low,,E9 tail jump; no separate argument/return contract,original five-byte jump; demo correspondence inferred,tail jump; inherits inferred target prototype
@@ -35,6 +36,6 @@ address,name,target,linker_entry,demo_address,owner_confidence,stack_pop_bytes,a
 0x0043ed10,C2D::NoOp2,,0x00402f40,0x0043e320,low,0,EAX unchanged; calling convention/receiver/arguments/return type unresolved,between43e220 BuildObjectClipData and43ed20 SetOrigin,void C2DNoOp2()
 0x00443350,CPanel::NoOp,,0x004032e2,0x004429a0,low,0,EAX unchanged; calling convention/receiver/arguments/return type unresolved,between4432c0 ProcessMsg and443360 MouseInPanel,void CPanelNoOp()
 0x0044b330,CCDLoadAnim::NoOp1,,0x004019d8,0x0044ada0,low,0,EAX unchanged; calling convention/receiver/arguments/return type unresolved,between44aec0 Draw() and44b340 Draw(short); callback base/receiver adjustment unknown,void CCDLoadAnimNoOp1()
-0x0044b360,CCDLoadAnim::NoOp2,,0x00402d83,0x0044add0,medium,0,EAX unchanged; calling convention/receiver/arguments/return type unresolved,after44b340 Draw(short);434f50 forwards member +0x78 to this leaf,void __fastcall CCDLoadAnimNoOp2(CCDLoadAnim* p_animation)
+0x0044b360,CCDLoadAnim::NoOp2,,0x00402d83,0x0044add0,medium,0,ECX receiver forwarded unchanged; EAX unchanged; stack preserved; zero-argument __thiscall contract inferred; original full signature unresolved,after44b340 Draw(short);434f50 forwards member +0x78 unchanged;432bfd stores complete CCDLoadAnim pointer returned at44ad52,void __thiscall CCDLoadAnim::NoOp2()
 0x0044ded0,CGunController::NoOp,,0x0040194c,0x0044cfb0,low,0,EAX unchanged; calling convention/receiver/arguments/return type unresolved,after44dce0 Process; before CAboutScreen group,void CGunControllerNoOp()
 0x0044fca0,CHiliteController::NoOp,,0x00403715,0x0044eea0,low,0,EAX unchanged; calling convention/receiver/arguments/return type unresolved,after44fc50 UpdateAnimIDs; before resource-service group,void CHiliteControllerNoOp()
