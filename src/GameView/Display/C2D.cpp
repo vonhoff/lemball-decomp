@@ -751,7 +751,7 @@ void C2D::SetUpRemapPalettes()
 	enum {
 		C2D_PALETTE_REMAP_ENTRY_COUNT = 256
 	};
-	unsigned char* mapping = (unsigned char*) operator new(C2D_PALETTE_REMAP_ENTRY_COUNT);
+	unsigned char* mapping = new unsigned char[C2D_PALETTE_REMAP_ENTRY_COUNT];
 	int value;
 	int i = 0;
 	do {
