@@ -1,10 +1,10 @@
 {
   "version": 1,
   "original_sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
-  "native_sha256": "9d1aef7ae85b9bf1f9d091a9b7f9c86142751c1c47f9bdbf9b207a0ec3092745",
-  "rebuilt_sha256": "5e65bab3b325d85707421012cf73ff75838fd5fe5cd5ee8cc50cfdd8d31b7846",
+  "native_sha256": "e616cf93db45e2529122d9e8076fbb917d30036869e99bd339f07cd3e6f24860",
+  "rebuilt_sha256": "12ac715996009b87b16aa6abd66787c33a11ffccf0962c6bfba1c8a2bd36f6e3",
   "baseline_sha256": "85b6c938978407201bda51e6dd2d6759713b98f33a202425d623246b8c92006f",
-  "manifest_sha256": "a9a94efa03c764a49812d617901fefcbf25fc994961ae47e501593b5aefd4140",
+  "manifest_sha256": "399fd25f621c433614f29609d881c14a758c611512046f145b78909e634908a3",
   "ghidra_snapshot_sha256": "c27094db4d3e0755778253abc3e6423ba35249c6c920daebb5e634aa647928ec",
   "reference_scope": "Immediate operands decoded within catalogued original function extents; all PE base-relocated DWORD pointers; optional full-scope Ghidra xrefs. Static analysis cannot prove an entry unused. Ghidra names/comments are hypotheses; original bytes and source layouts supply evidence.",
   "table_entries": 2077,
@@ -204,7 +204,7 @@
       "name": "C2D::NoOp1",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?C2DNoOp1@Inferred@@YAXXZ",
+        "symbol": "?C2DNoOp1@@YAXXZ",
         "size": 1,
         "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
@@ -363,7 +363,7 @@
       "name": "CPaintGunManager::ReturnZero2",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPaintGunManagerReturnZero2@Inferred@@YGIII@Z",
+        "symbol": "?CPaintGunManagerReturnZero2@@YGIII@Z",
         "size": 5,
         "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
@@ -2252,7 +2252,7 @@
       "name": "CGunController::NoOp",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CGunControllerNoOp@Inferred@@YAXXZ",
+        "symbol": "?CGunControllerNoOp@@YAXXZ",
         "size": 1,
         "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
@@ -2406,7 +2406,7 @@
       "name": "CCDLoadAnim::NoOp1",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CCDLoadAnimNoOp1@Inferred@@YAXXZ",
+        "symbol": "?CCDLoadAnimNoOp1@@YAXXZ",
         "size": 1,
         "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
@@ -2640,7 +2640,7 @@
       "name": "CPaintGun::ReturnZero2",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPaintGunReturnZero2@Inferred@@YGIII@Z",
+        "symbol": "?CPaintGunReturnZero2@@YGIII@Z",
         "size": 5,
         "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
@@ -2672,7 +2672,7 @@
       "name": "CPaintGunManager::ReturnZero1",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPaintGunManagerReturnZero1@Inferred@@YGIII@Z",
+        "symbol": "?CPaintGunManagerReturnZero1@@YGIII@Z",
         "size": 5,
         "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
@@ -2736,7 +2736,7 @@
       "name": "CNode::ReturnOne",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CNodeReturnOne@Inferred@@YAIXZ",
+        "symbol": "?CNodeReturnOne@@YAIXZ",
         "size": 6,
         "fingerprint": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67"
       },
@@ -3646,7 +3646,7 @@
       "name": "CMover::ReturnZero",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CMoverReturnZero@Inferred@@YGIII@Z",
+        "symbol": "?CMoverReturnZero@@YGIII@Z",
         "size": 5,
         "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
@@ -4454,7 +4454,7 @@
       "name": "CIce::ReturnZero",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CIceReturnZero@Inferred@@YGIII@Z",
+        "symbol": "?CIceReturnZero@@YGIII@Z",
         "size": 5,
         "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
@@ -5486,7 +5486,7 @@
             "object": "CMakeFiles/LEMBALL.dir/src/GameView/Animation/CLemmingAnimsManager.cpp.obj",
             "symbol": "?ForwardLoadAnimNoOp@CLemmingAnimsManager@@QAEXXZ",
             "offset": 7,
-            "source_symbol": "?CCDLoadAnimNoOp2@Inferred@@YIXPAVCCDLoadAnim@@@Z"
+            "source_symbol": "?CCDLoadAnimNoOp2@@YIXPAVCCDLoadAnim@@@Z"
           }
         }
       ],
@@ -5499,7 +5499,7 @@
       "name": "CCDLoadAnim::NoOp2",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CCDLoadAnimNoOp2@Inferred@@YIXPAVCCDLoadAnim@@@Z",
+        "symbol": "?CCDLoadAnimNoOp2@@YIXPAVCCDLoadAnim@@@Z",
         "size": 1,
         "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
@@ -5797,7 +5797,7 @@
       "name": "C2D::NoOp2",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?C2DNoOp2@Inferred@@YAXXZ",
+        "symbol": "?C2DNoOp2@@YAXXZ",
         "size": 1,
         "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
@@ -6465,7 +6465,7 @@
       "name": "CPanel::NoOp",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPanelNoOp@Inferred@@YAXXZ",
+        "symbol": "?CPanelNoOp@@YAXXZ",
         "size": 1,
         "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
@@ -7024,7 +7024,7 @@
       "name": "CGameObject::ReturnZero",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CGameObjectReturnZero@Inferred@@YAIXZ",
+        "symbol": "?CGameObjectReturnZero@@YAIXZ",
         "size": 3,
         "fingerprint": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e"
       },
@@ -7104,7 +7104,7 @@
       "name": "CHiliteController::NoOp",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CHiliteControllerNoOp@Inferred@@YAXXZ",
+        "symbol": "?CHiliteControllerNoOp@@YAXXZ",
         "size": 1,
         "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
@@ -7120,7 +7120,7 @@
       "name": "CPaintGun::ReturnZero1",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPaintGunReturnZero1@Inferred@@YGIII@Z",
+        "symbol": "?CPaintGunReturnZero1@@YGIII@Z",
         "size": 5,
         "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
@@ -7296,7 +7296,7 @@
     "status": "Implemented and verified; zero selected entries remain unpaired.",
     "source_mapping": "tools/data/inferred-symbols.csv",
     "source_module": "src/Platform/MSVC/InferredCallbacks.cpp",
-    "scope": "15 receiver-independent leaves use isolated opaque contracts; CLemmingAnimsManager forwarding wrapper uses typed member +0x78. Original spellings, full prototypes and low-confidence owners remain inferred.",
+    "scope": "15 receiver-independent leaves use class-prefixed global functions in one isolated translation unit; CLemmingAnimsManager forwarding wrapper uses typed member +0x78. Original spellings, full prototypes and low-confidence owners remain inferred.",
     "new_exact_bodies": 16,
     "new_exact_jump_entries": 16,
     "new_exact_original_bytes": 139,
@@ -7443,6 +7443,22 @@
       ],
       "reverted_trials": "Loading-object typed new changes constructor scheduling; six typed resource arrays lose the 76-byte Effective UnLoadPALETTE match. Both restored; no further variants.",
       "validation": "Incremental build, source policy/catalog/annotation checks, scoped clang-format, nine thunk tests, CRLF-aware git diff --check, 2078 jump entries/7191 references verified without errors. Canonical reports refreshed."
+    },
+    "source_layout_review": {
+      "base_commit": "f4a8c2f3",
+      "retained": "Unified InferredCallbacks.cpp translation unit; removed Inferred namespace. Existing class definitions, inferred owner confidence and machine contracts unchanged.",
+      "reverted_trial": "Class-owner colocation preserved all 16 inferred bodies but changed existing compiler output: -1437 Exact bytes and -161 Effective bytes. Owner companion-file trial also reverted at user request; no report claim for that intermediate layout.",
+      "final_exact_bytes": 232149,
+      "final_effective_bytes": 284087,
+      "exact_byte_delta": 0,
+      "effective_byte_delta": 0,
+      "comparison": "All 5957 original addresses/extents and every raw/Effective score unchanged versus the saved pre-layout report pair.",
+      "new_exact_bodies": 16,
+      "new_exact_jump_entries": 16,
+      "jump_entries_verified": 2078,
+      "references_verified": 7191,
+      "verification_errors": 0,
+      "identity_limit": "Probable owners come from original address grouping; CCDLoadAnim additionally has constructor/member-forwarding evidence. Free-function declarations remain provisional; no virtual slots or recovered member signatures asserted."
     }
   },
   "symbol_review": {

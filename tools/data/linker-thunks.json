@@ -351,10 +351,10 @@
       "target": 4439248,
       "original_bytes": "e9efab0300",
       "symbol": "__lemball_jump_004010dc",
-      "target_symbol": "?C2DNoOp1@Inferred@@YAXXZ",
+      "target_symbol": "?C2DNoOp1@@YAXXZ",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?C2DNoOp1@Inferred@@YAXXZ"
+        "symbol": "?C2DNoOp1@@YAXXZ"
       }
     },
     {
@@ -846,10 +846,10 @@
       "target": 4375936,
       "original_bytes": "e946b30200",
       "symbol": "__lemball_jump_00401235",
-      "target_symbol": "?CPaintGunManagerReturnZero2@Inferred@@YGIII@Z",
+      "target_symbol": "?CPaintGunManagerReturnZero2@@YGIII@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPaintGunManagerReturnZero2@Inferred@@YGIII@Z"
+        "symbol": "?CPaintGunManagerReturnZero2@@YGIII@Z"
       }
     },
     {
@@ -3579,10 +3579,10 @@
       "target": 4513488,
       "original_bytes": "e97fc50400",
       "symbol": "__lemball_jump_0040194c",
-      "target_symbol": "?CGunControllerNoOp@Inferred@@YAXXZ",
+      "target_symbol": "?CGunControllerNoOp@@YAXXZ",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CGunControllerNoOp@Inferred@@YAXXZ"
+        "symbol": "?CGunControllerNoOp@@YAXXZ"
       }
     },
     {
@@ -3795,10 +3795,10 @@
       "target": 4502320,
       "original_bytes": "e953990400",
       "symbol": "__lemball_jump_004019d8",
-      "target_symbol": "?CCDLoadAnimNoOp1@Inferred@@YAXXZ",
+      "target_symbol": "?CCDLoadAnimNoOp1@@YAXXZ",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CCDLoadAnimNoOp1@Inferred@@YAXXZ"
+        "symbol": "?CCDLoadAnimNoOp1@@YAXXZ"
       }
     },
     {
@@ -4297,10 +4297,10 @@
       "target": 4374480,
       "original_bytes": "e9a9a40200",
       "symbol": "__lemball_jump_00401b22",
-      "target_symbol": "?CPaintGunReturnZero2@Inferred@@YGIII@Z",
+      "target_symbol": "?CPaintGunReturnZero2@@YGIII@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPaintGunReturnZero2@Inferred@@YGIII@Z"
+        "symbol": "?CPaintGunReturnZero2@@YGIII@Z"
       }
     },
     {
@@ -4375,10 +4375,10 @@
       "target": 4375744,
       "original_bytes": "e967a90200",
       "symbol": "__lemball_jump_00401b54",
-      "target_symbol": "?CPaintGunManagerReturnZero1@Inferred@@YGIII@Z",
+      "target_symbol": "?CPaintGunManagerReturnZero1@@YGIII@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPaintGunManagerReturnZero1@Inferred@@YGIII@Z"
+        "symbol": "?CPaintGunManagerReturnZero1@@YGIII@Z"
       }
     },
     {
@@ -4454,10 +4454,10 @@
       "target": 4330544,
       "original_bytes": "e9aaf80100",
       "symbol": "__lemball_jump_00401b81",
-      "target_symbol": "?CNodeReturnOne@Inferred@@YAIXZ",
+      "target_symbol": "?CNodeReturnOne@@YAIXZ",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CNodeReturnOne@Inferred@@YAIXZ"
+        "symbol": "?CNodeReturnOne@@YAIXZ"
       }
     },
     {
@@ -6621,10 +6621,10 @@
       "target": 4386512,
       "original_bytes": "e9b9cd0200",
       "symbol": "__lemball_jump_00402112",
-      "target_symbol": "?CMoverReturnZero@Inferred@@YGIII@Z",
+      "target_symbol": "?CMoverReturnZero@@YGIII@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CMoverReturnZero@Inferred@@YGIII@Z"
+        "symbol": "?CMoverReturnZero@@YGIII@Z"
       }
     },
     {
@@ -8457,10 +8457,10 @@
       "target": 4379840,
       "original_bytes": "e9e5ae0200",
       "symbol": "__lemball_jump_004025d6",
-      "target_symbol": "?CIceReturnZero@Inferred@@YGIII@Z",
+      "target_symbol": "?CIceReturnZero@@YGIII@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CIceReturnZero@Inferred@@YGIII@Z"
+        "symbol": "?CIceReturnZero@@YGIII@Z"
       }
     },
     {
@@ -11390,7 +11390,7 @@
       "target": 4502368,
       "original_bytes": "e9d8850400",
       "symbol": "__lemball_jump_00402d83",
-      "target_symbol": "?CCDLoadAnimNoOp2@Inferred@@YIXPAVCCDLoadAnim@@@Z"
+      "target_symbol": "?CCDLoadAnimNoOp2@@YIXPAVCCDLoadAnim@@@Z"
     },
     {
       "address": 4205960,
@@ -12065,10 +12065,10 @@
       "target": 4451600,
       "original_bytes": "e9cbbd0300",
       "symbol": "__lemball_jump_00402f40",
-      "target_symbol": "?C2DNoOp2@Inferred@@YAXXZ",
+      "target_symbol": "?C2DNoOp2@@YAXXZ",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?C2DNoOp2@Inferred@@YAXXZ"
+        "symbol": "?C2DNoOp2@@YAXXZ"
       }
     },
     {
@@ -13455,10 +13455,10 @@
       "target": 4469584,
       "original_bytes": "e969000400",
       "symbol": "__lemball_jump_004032e2",
-      "target_symbol": "?CPanelNoOp@Inferred@@YAXXZ",
+      "target_symbol": "?CPanelNoOp@@YAXXZ",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPanelNoOp@Inferred@@YAXXZ"
+        "symbol": "?CPanelNoOp@@YAXXZ"
       }
     },
     {
@@ -14582,10 +14582,10 @@
       "target": 4286256,
       "original_bytes": "e960310100",
       "symbol": "__lemball_jump_004035cb",
-      "target_symbol": "?CGameObjectReturnZero@Inferred@@YAIXZ",
+      "target_symbol": "?CGameObjectReturnZero@@YAIXZ",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CGameObjectReturnZero@Inferred@@YAIXZ"
+        "symbol": "?CGameObjectReturnZero@@YAIXZ"
       }
     },
     {
@@ -15064,10 +15064,10 @@
       "target": 4521120,
       "original_bytes": "e986c50400",
       "symbol": "__lemball_jump_00403715",
-      "target_symbol": "?CHiliteControllerNoOp@Inferred@@YAXXZ",
+      "target_symbol": "?CHiliteControllerNoOp@@YAXXZ",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CHiliteControllerNoOp@Inferred@@YAXXZ"
+        "symbol": "?CHiliteControllerNoOp@@YAXXZ"
       }
     },
     {
@@ -15131,10 +15131,10 @@
       "target": 4374464,
       "original_bytes": "e979880200",
       "symbol": "__lemball_jump_00403742",
-      "target_symbol": "?CPaintGunReturnZero1@Inferred@@YGIII@Z",
+      "target_symbol": "?CPaintGunReturnZero1@@YGIII@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
-        "symbol": "?CPaintGunReturnZero1@Inferred@@YGIII@Z"
+        "symbol": "?CPaintGunReturnZero1@@YGIII@Z"
       }
     },
     {
@@ -33110,7 +33110,7 @@
           "original_instruction": 4411223,
           "original_bytes": "e927defcff",
           "thunk": 4205955,
-          "source_symbol": "?CCDLoadAnimNoOp2@Inferred@@YIXPAVCCDLoadAnim@@@Z"
+          "source_symbol": "?CCDLoadAnimNoOp2@@YIXPAVCCDLoadAnim@@@Z"
         }
       ]
     },

@@ -1155,6 +1155,6 @@ void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_firstResourceId, unsi
 void CLemmingAnimsManager::ForwardLoadAnimNoOp()
 {
 	if (m_loadAnim != NULL) {
-		Inferred::CCDLoadAnimNoOp2(m_loadAnim);
+		CCDLoadAnimNoOp2(m_loadAnim);
 	}
 }

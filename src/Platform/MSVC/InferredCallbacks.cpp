@@ -1,8 +1,5 @@
 #include "Platform/MSVC/InferredCallbacks.h"
 
-namespace Inferred
-{
-
 // FUNCTION: LEMBALL 0x00416730
 unsigned int CGameObjectReturnZero()
 {
@@ -84,6 +81,4 @@ void CGunControllerNoOp()
 // FUNCTION: LEMBALL 0x0044fca0
 void CHiliteControllerNoOp()
 {
-}
-
 }
