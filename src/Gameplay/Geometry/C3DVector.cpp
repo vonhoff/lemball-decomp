@@ -2,15 +2,6 @@
 
 #include "Engine/Math/CFixed.h"
 
-// FUNCTION: LEMBALL 0x0040c270
-C3DVector& C3DVector::operator=(const C3DVector& p_other)
-{
-	m_xFixed = p_other.m_xFixed;
-	m_yFixed = p_other.m_yFixed;
-	m_zFixed = p_other.m_zFixed;
-	return *this;
-}
-
 // FUNCTION: LEMBALL 0x0042b9e0
 C3DVector::C3DVector(const CFixed& p_x, const CFixed& p_y, const CFixed& p_z)
 {

@@ -7,7 +7,7 @@ enum eLemmingViewStatusFlag {
 };
 
 #include "Application/SoundEffects.h"
-#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/C3DVector.h"
 #include "ObjectActions.h"
 #include "ObjectIds.h"
 #include "ObjectTypes.h"
@@ -59,7 +59,7 @@ private:
 	unsigned short m_playerIndex;  // 0x2e
 	unsigned int m_hidden;         // 0x30
 	unsigned int m_transientFlags; // 0x34
-	AICOORD m_auxiliaryPosition;   // 0x38
+	C3DVector m_auxiliaryPosition; // 0x38
 	eSoundEffect m_soundEffect;    // 0x44
 	unsigned int m_sortZKey;       // 0x48
 };

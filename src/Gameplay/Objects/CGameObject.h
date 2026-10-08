@@ -5,6 +5,7 @@
 #include "CViewData.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Geometry/CRect3.h"
 #include "Gameplay/Movement/CMovementInterpolation.h"
 #include "Gameplay/Simulation/GameTime.h"
@@ -12,7 +13,6 @@
 #include "ObjectIds.h"
 #include "ObjectTypes.h"
 
-class C3DVector;
 class CVSRect;
 
 enum {
@@ -213,7 +213,7 @@ protected:
 	int m_objectActive;                    // 0x38
 	unsigned int m_initiallyActive;        // 0x3c
 	AICOORD m_spawnPosition;               // 0x40
-	AICOORD m_flightVelocity;              // 0x4c
+	C3DVector m_flightVelocity;            // 0x4c
 	unsigned int m_unk0x58;                // 0x58
 	CGameObject* m_activator;              // 0x5c
 	CBaseObjectManager* m_manager;         // 0x60
@@ -242,8 +242,8 @@ protected:
 	unsigned int m_actionDeadline;         // 0xcc
 	unsigned int m_actionPhase1Deadline;   // 0xd0
 	unsigned int m_actionPhase2Deadline;   // 0xd4
-	AICOORD m_flightOrigin;                // 0xd8
-	AICOORD m_auxiliaryPosition;           // 0xe4
+	C3DVector m_flightOrigin;              // 0xd8
+	C3DVector m_auxiliaryPosition;         // 0xe4
 	unsigned int m_isFlying;               // 0xf0
 	AICOORD m_groundPosition;              // 0xf4
 	int m_flightZ;                         // 0x100
