@@ -21,14 +21,14 @@ enum {
 
 // SIZE 0x20
 struct GunControllerJunction {
-	int m_leftX;                 // 0x00
-	int m_y;                     // 0x04
-	int m_rightX;                // 0x08
-	int m_direction;             // 0x0c
-	unsigned int m_leftMessage;  // 0x10
-	unsigned int m_rightMessage; // 0x14
-	void* m_leftBinding;         // 0x18
-	void* m_rightBinding;        // 0x1c
+	int m_leftX;                         // 0x00
+	int m_y;                             // 0x04
+	int m_rightX;                        // 0x08
+	int m_direction;                     // 0x0c
+	unsigned int m_leftMessage;          // 0x10
+	unsigned int m_rightMessage;         // 0x14
+	unsigned long m_leftControlMessage;  // 0x18
+	unsigned long m_rightControlMessage; // 0x1c
 };
 
 class CGWnd;

@@ -325,12 +325,12 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 		m_junctions[junctionIndex].m_direction = GUN_JUNCTION_BOTH;
 		if (side == GUN_SIDE_LEFT) {
 			m_junctions[junctionIndex].m_leftMessage = p_side;
-			m_junctions[junctionIndex].m_leftBinding = (void*) p_message;
+			m_junctions[junctionIndex].m_leftControlMessage = p_message;
 			m_junctions[junctionIndex].m_leftX = p_x;
 			return;
 		}
 		m_junctions[junctionIndex].m_rightMessage = p_side;
-		m_junctions[junctionIndex].m_rightBinding = (void*) p_message;
+		m_junctions[junctionIndex].m_rightControlMessage = p_message;
 		m_junctions[junctionIndex].m_rightX = p_x;
 		return;
 	}
@@ -341,11 +341,11 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 			if (side == GUN_SIDE_LEFT) {
 				m_junctions[j].m_leftMessage = p_side;
 				m_junctions[j].m_leftX = p_x;
-				m_junctions[j].m_leftBinding = (void*) p_message;
+				m_junctions[j].m_leftControlMessage = p_message;
 				return;
 			}
 			m_junctions[j].m_rightMessage = p_side;
-			m_junctions[j].m_rightBinding = (void*) p_message;
+			m_junctions[j].m_rightControlMessage = p_message;
 			m_junctions[j].m_rightX = p_x;
 			return;
 		}
@@ -661,11 +661,11 @@ void CGunController::SelectOption()
 		while (i < 8) {
 			if (m_junctions[i].m_y == m_targetY) {
 				if (m_targetSide == GUN_SIDE_LEFT) {
-					m_selectionMessage.m_code = (int) m_junctions[i].m_leftBinding;
+					m_selectionMessage.m_code = (int) m_junctions[i].m_leftControlMessage;
 					m_selectedMessage = m_junctions[i].m_leftMessage;
 				}
 				else {
-					m_selectionMessage.m_code = (int) m_junctions[i].m_rightBinding;
+					m_selectionMessage.m_code = (int) m_junctions[i].m_rightControlMessage;
 					m_selectedMessage = m_junctions[i].m_rightMessage;
 				}
 				break;
