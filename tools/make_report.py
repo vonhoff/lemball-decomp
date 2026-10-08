@@ -7,6 +7,8 @@ from pathlib import PureWindowsPath
 from typing import Any, cast
 
 from reccmp.compare import Compare
+from reccmp.compare.db import ReccmpMatch
+from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.formats.pe import PEImage
 from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.project.detect import RecCmpProject
@@ -60,6 +62,36 @@ def module_name(path):
     return PureWindowsPath(path.stem).stem or "Unknown"
 
 
+def compare_import_thunks(engine: Compare, comparisons: ReccmpStatusReport):
+    """Score import jumps omitted by reccmp's default comparison inventory."""
+    for entity in engine.get_all():
+        address = entity.orig_addr
+        if (
+            address is None
+            or entity.entity_type != EntityType.IMPORT_THUNK
+            or address in comparisons.entities
+        ):
+            continue
+        result = (
+            engine.function_comparator.compare_function(cast(ReccmpMatch, entity))
+            if entity.matched
+            else None
+        )
+        comparisons.add_match(
+            ReccmpComparedEntity(
+                orig_addr=address,
+                recomp_addr=entity.recomp_addr,
+                name=entity.best_name() or f"0x{address:08x}",
+                type=EntityType.IMPORT_THUNK,
+                accuracy=result.match_ratio if result else 0.0,
+                is_effective_match=result.is_effective_match if result else False,
+                is_stub=entity.get("stub", False),
+                is_library=entity.get("library", False),
+                rdiff=result.diff if result else None,
+            )
+        )
+
+
 def build_report(engine, comparisons, modules: ModuleMap) -> dict[str, Any]:
     """Map the original code inventory to objdiff functions and PDB units."""
     code_regions = [
@@ -85,14 +117,15 @@ def build_report(engine, comparisons, modules: ModuleMap) -> dict[str, Any]:
         ):
             continue
         comparison = comparisons.entities.get(address)
-        module = (
-            modules.get_module(entity.recomp_addr)
-            if entity.recomp_addr is not None
-            else None
-        )
-        unit_name = "Unknown"
-        if module is not None:
-            unit_name = module_name(module[1])
+        if entity.entity_type == EntityType.IMPORT_THUNK:
+            unit_name = "Import Thunks"
+        else:
+            module = (
+                modules.get_module(entity.recomp_addr)
+                if entity.recomp_addr is not None
+                else None
+            )
+            unit_name = module_name(module[1]) if module is not None else "Unknown"
         groups[unit_name].append(
             {
                 "name": f"0x{address:08x}",
@@ -132,6 +165,7 @@ def main() -> int:
     target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
     engine = Compare.from_target(target)
     comparisons = engine.to_report(filename=target.original_path.name)
+    compare_import_thunks(engine, comparisons)
     report = build_report(
         engine,
         comparisons,

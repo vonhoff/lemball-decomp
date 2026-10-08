@@ -9,16 +9,17 @@ from reccmp.compare.report import (
     ReccmpReportDeserializeError,
     serialize_reccmp_report,
 )
+from reccmp.types import EntityType
 
 from . import RECCMP_JSON, REPORT_JSON
 
 
 def accepted_functions(comparisons) -> set[int]:
-    """Accept complete non-stub raw or effective function matches."""
+    """Accept complete non-stub function and import-thunk matches."""
     return {
         address
         for address, comparison in comparisons.entities.items()
-        if comparison.is_function()
+        if (comparison.is_function() or comparison.type == EntityType.IMPORT_THUNK)
         and comparison.is_matched()
         and not comparison.is_stub
         and comparison.effective_accuracy == 1
