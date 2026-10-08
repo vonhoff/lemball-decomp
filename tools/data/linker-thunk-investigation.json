@@ -1,16 +1,16 @@
 {
   "version": 1,
   "original_sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
-  "native_sha256": "69873a818f0fb740e12f2e9f6668b25a6320d1754172eb699d6c44546583745d",
-  "rebuilt_sha256": "2f489400a779f953810692a9c4e955a81820bef8f282f92a33421c7bffafeaa5",
+  "native_sha256": "c0c726626562065fd952fb35f5f09a21c922c8399618f5a95d1a9549c2a635e5",
+  "rebuilt_sha256": "36fccf10b551f73ecc6825eae31562fb797f2f91e627e10ff49de1b551d444e1",
   "baseline_sha256": "85b6c938978407201bda51e6dd2d6759713b98f33a202425d623246b8c92006f",
-  "manifest_sha256": "e7d89e6336d41ec85c8511a2b8c58af83f0d9d9b6fbbb16e518231a308c9046c",
+  "manifest_sha256": "5c1951343456e18315f23f1293bcbb008a9e8e0ea21a0e0fb48c4b6e9ef309a5",
   "ghidra_snapshot_sha256": "c27094db4d3e0755778253abc3e6423ba35249c6c920daebb5e634aa647928ec",
   "reference_scope": "Immediate operands decoded within catalogued original function extents; all PE base-relocated DWORD pointers; optional full-scope Ghidra xrefs. Static analysis cannot prove an entry unused. Ghidra names/comments are hypotheses; original bytes and source layouts supply evidence.",
   "table_entries": 2077,
   "selected_entries": 326,
-  "recovered": 310,
-  "unpaired": 16,
+  "recovered": 326,
+  "unpaired": 0,
   "verification_errors": [],
   "entries": [
     {
@@ -41,7 +41,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/GameView/Input/CCursorMotion.cpp.obj",
         "symbol": "??1CCursorMotion@@QAE@XZ",
         "size": 33,
-        "fingerprint": "162532e75eced81ab2f7fe2b9d2152c975d54b4fe52d6ed6d71ffac3a44fa345"
+        "fingerprint": "6307e419740cbad12ef9eeab652d56e343f2319bdcdc92e700beb137d9846374"
       },
       "verified": true
     },
@@ -198,58 +198,17 @@
       "address": 4198620,
       "target": 4439248,
       "original_bytes": "e9efab0300",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 1,
-      "body_bytes": "c3",
-      "instructions": [
-        "0043bcd0: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4198620,
-          "owner": 4198620,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9efab0300",
-          "instruction": "jmp 0x43bcd0"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "004010dc",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4198620,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "C2D::NoOp1",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?C2DNoOp1@Inferred@@YAXXZ",
+        "size": 1,
+        "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "004010dc",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "RET; EAX left unchanged.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4198630,
@@ -398,59 +357,17 @@
       "address": 4198965,
       "target": 4375936,
       "original_bytes": "e946b30200",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 5,
-      "body_bytes": "33c0c20800",
-      "instructions": [
-        "0042c580: xor eax, eax",
-        "0042c582: ret 8"
-      ],
-      "body_references": [
-        {
-          "address": 4198965,
-          "owner": 4198965,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e946b30200",
-          "instruction": "jmp 0x42c580"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00401235",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4198965,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CPaintGunManager::ReturnZero2",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CPaintGunManagerReturnZero2@Inferred@@YGIII@Z",
+        "size": 5,
+        "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00401235",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "EAX zero; callee cleans eight stack bytes.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4198990,
@@ -877,7 +794,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
         "symbol": "?GetPlayerStartCoordinates@CAI@@QAEXAAH00H@Z",
         "size": 52,
-        "fingerprint": "b8e94d15b8e80017545430b8fd05568912e0624e815f620d540ae7bc208b1773"
+        "fingerprint": "c30becf54e8205d13a4b79ecec57090620d4229f4bc3a31ce5801701cfa81551"
       },
       "verified": true
     },
@@ -988,8 +905,8 @@
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
         "symbol": "?MarkGroundAnimAndLiftBounds@C2D@@QAEXXZ",
-        "size": 1048,
-        "fingerprint": "a65cf52e733a110fb7b9f11698e4a392515492621b1df216ca8467ea39ca3236"
+        "size": 1050,
+        "fingerprint": "4984a5565f1d0061936e2fd8c7a36c9d00d5688361be6caea144ce2740572e88"
       },
       "verified": true
     },
@@ -1032,98 +949,12 @@
       "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 72,
-      "body_bytes": "53565733db395934558bf97e2633ed8b7424148b4424188b4f385003cd56e8c236fdff85c0751581c5a001000043395f347fe033c05d5f5e5bc20800b8010000005d5f5e5bc20800",
-      "instructions": [
-        "0042f590: push ebx",
-        "0042f591: push esi",
-        "0042f592: push edi",
-        "0042f593: xor ebx, ebx",
-        "0042f595: cmp dword ptr [ecx + 0x34], ebx",
-        "0042f598: push ebp",
-        "0042f599: mov edi, ecx",
-        "0042f59b: jle 0x42f5c3",
-        "0042f59d: xor ebp, ebp",
-        "0042f59f: mov esi, dword ptr [esp + 0x14]",
-        "0042f5a3: mov eax, dword ptr [esp + 0x18]",
-        "0042f5a7: mov ecx, dword ptr [edi + 0x38]",
-        "0042f5aa: push eax",
-        "0042f5ab: add ecx, ebp",
-        "0042f5ad: push esi",
-        "0042f5ae: call 0x402c75",
-        "0042f5b3: test eax, eax",
-        "0042f5b5: jne 0x42f5cc",
-        "0042f5b7: add ebp, 0x1a0",
-        "0042f5bd: inc ebx",
-        "0042f5be: cmp dword ptr [edi + 0x34], ebx",
-        "0042f5c1: jg 0x42f5a3",
-        "0042f5c3: xor eax, eax",
-        "0042f5c5: pop ebp",
-        "0042f5c6: pop edi",
-        "0042f5c7: pop esi",
-        "0042f5c8: pop ebx",
-        "0042f5c9: ret 8",
-        "0042f5cc: mov eax, 1",
-        "0042f5d1: pop ebp",
-        "0042f5d2: pop edi",
-        "0042f5d3: pop esi",
-        "0042f5d4: pop ebx",
-        "0042f5d5: ret 8"
-      ],
-      "body_references": [
-        {
-          "address": 4199985,
-          "owner": 4199985,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e95adf0200",
-          "instruction": "jmp 0x42f590"
-        }
-      ],
-      "evidence": "ECX object: count +0x34, array +0x38, stride 0x1a0; forwards two stack arguments to 0x402c75, tests full EAX, returns 0/1, RET 8. Matches CMoverManager/CMover layout; method name and argument types unresolved.",
-      "source": [
-        "src/Gameplay/Mechanisms/CMoverManager.h",
-        "src/Gameplay/Mechanisms/CMover.h"
-      ],
-      "next_step": "Retain the reconstructed live-count traversal and false predicate; original method names and meanings of the two opaque stack slots remain inferred.",
-      "prior_trials": "Older trials lost Effective bytes. Current-tree trial recovers both slots and one call; net +446 Effective bytes, -677 exact bytes from register allocation changes. Two lost Effective matches inspected: equivalent control flow, calls and cleanup.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00401631",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4199985,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
-      },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00401631",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_review": {
-        "outcome": "behavior_reconstruction_retained",
-        "identity": "Receiver classes corroborated by original mover array/count/allocation. Method names and unsigned-int argument model inferred; two opaque 32-bit stack slots, no argument interpretation claimed.",
-        "abi": "ECX receiver; two stack values; full EAX boolean result; RET8. Manager preserves array/count reloads, stride0x1a0 and early success.",
-        "raw_percent": 79.41176470588235,
-        "linker_slot_raw_percent": 100,
-        "regressions": "Combined trial: +446 Effective bytes, -677 exact bytes; two prior Effective matches lost to equivalent register/order differences in CAI::SwitchMessage and CMoverManager::Restart. Existing source operations, class layouts, vtables and symbol pairings unchanged."
-      },
       "name": "CMoverManager::AnyMoverMatches",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMoverManager.cpp.obj",
-        "symbol": "?AnyMoverMatches@CMoverManager@@AAEHII@Z"
+        "symbol": "?AnyMoverMatches@CMoverManager@@AAEHII@Z",
+        "size": 72,
+        "fingerprint": "7de416f16009640fb68eda70f351b88ad26bc37a26b2b83e8bb3f7718477e5e0"
       },
       "verified": true
     },
@@ -1341,7 +1172,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
         "symbol": "?SetOrigin@C2D@@QAEXXZ",
         "size": 610,
-        "fingerprint": "d52140ef348a3160376c8c87f727812c95004f9699e07d26f4d20bf65619685f"
+        "fingerprint": "99a97f45d8a2f1a01a9f391149e04fed43a137a0154984447b0ff58819271db6"
       },
       "verified": true
     },
@@ -1394,7 +1225,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMoverManager.cpp.obj",
         "symbol": "?Initialise@CMoverManager@@QAEXH@Z",
         "size": 158,
-        "fingerprint": "8a9b68ef7a5f30bca80a63ab89d80ee466f98dc39ab3e06a108cd4e8e6c0f600"
+        "fingerprint": "0fb890b29665c2cce49aaf7e477291afc436d8bd5303caf7ad8163250aea6111"
       },
       "verified": true
     },
@@ -2407,7 +2238,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
         "symbol": "?BuildObjectClipData@C2D@@QAEXAAVCViewData@@H@Z",
         "size": 2789,
-        "fingerprint": "df62dc16b89a33c963eac17626e1109db72a324bd389f32e44fb0e9c46f2f806"
+        "fingerprint": "6470b8fc05155215ba412b7aed80fc48377cf02cc50a519b7fc469b24755830f"
       },
       "verified": true
     },
@@ -2415,58 +2246,17 @@
       "address": 4200780,
       "target": 4513488,
       "original_bytes": "e97fc50400",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 1,
-      "body_bytes": "c3",
-      "instructions": [
-        "0044ded0: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4200780,
-          "owner": 4200780,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e97fc50400",
-          "instruction": "jmp 0x44ded0"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "0040194c",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4200780,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CGunController::NoOp",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CGunControllerNoOp@Inferred@@YAXXZ",
+        "size": 1,
+        "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "0040194c",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "RET; EAX left unchanged.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4200785,
@@ -2610,58 +2400,17 @@
       "address": 4200920,
       "target": 4502320,
       "original_bytes": "e953990400",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 1,
-      "body_bytes": "c3",
-      "instructions": [
-        "0044b330: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4200920,
-          "owner": 4200920,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e953990400",
-          "instruction": "jmp 0x44b330"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "004019d8",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4200920,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CCDLoadAnim::NoOp1",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CCDLoadAnimNoOp1@Inferred@@YAXXZ",
+        "size": 1,
+        "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "004019d8",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "RET; EAX left unchanged.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4200930,
@@ -2807,8 +2556,8 @@
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMoverManager.cpp.obj",
         "symbol": "?RemoveMover@CMoverManager@@QAEXPAVCMover@@@Z",
-        "size": 419,
-        "fingerprint": "b817d86ef03ffe45dc9b6389daa947d17aaefe356e6848611b6835d1afe960bb"
+        "size": 420,
+        "fingerprint": "486b4470019f8552848574b5673eb2dec466e27c312adf85ca5a13cb88e4018e"
       },
       "verified": true
     },
@@ -2885,59 +2634,17 @@
       "address": 4201250,
       "target": 4374480,
       "original_bytes": "e9a9a40200",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 5,
-      "body_bytes": "33c0c20800",
-      "instructions": [
-        "0042bfd0: xor eax, eax",
-        "0042bfd2: ret 8"
-      ],
-      "body_references": [
-        {
-          "address": 4201250,
-          "owner": 4201250,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9a9a40200",
-          "instruction": "jmp 0x42bfd0"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00401b22",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4201250,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CPaintGun::ReturnZero2",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CPaintGunReturnZero2@Inferred@@YGIII@Z",
+        "size": 5,
+        "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00401b22",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "EAX zero; callee cleans eight stack bytes.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4201255,
@@ -2959,59 +2666,17 @@
       "address": 4201300,
       "target": 4375744,
       "original_bytes": "e967a90200",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 5,
-      "body_bytes": "33c0c20800",
-      "instructions": [
-        "0042c4c0: xor eax, eax",
-        "0042c4c2: ret 8"
-      ],
-      "body_references": [
-        {
-          "address": 4201300,
-          "owner": 4201300,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e967a90200",
-          "instruction": "jmp 0x42c4c0"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00401b54",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4201300,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CPaintGunManager::ReturnZero1",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CPaintGunManagerReturnZero1@Inferred@@YGIII@Z",
+        "size": 5,
+        "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00401b54",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "EAX zero; callee cleans eight stack bytes.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4201305,
@@ -3065,59 +2730,17 @@
       "address": 4201345,
       "target": 4330544,
       "original_bytes": "e9aaf80100",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 6,
-      "body_bytes": "b801000000c3",
-      "instructions": [
-        "00421430: mov eax, 1",
-        "00421435: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4201345,
-          "owner": 4201345,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9aaf80100",
-          "instruction": "jmp 0x421430"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00401b81",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4201345,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CNode::ReturnOne",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CNodeReturnOne@Inferred@@YAIXZ",
+        "size": 6,
+        "fingerprint": "2db31f4e09597946e56e859813bfdad7046d457c32332c3a882654d1e3ffdf67"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00401b81",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "EAX one; no explicit stack-argument cleanup.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4201400,
@@ -3569,19 +3192,21 @@
           "kind": "code",
           "bytes": "e8f259fcff",
           "instruction": "call 0x401e4c",
-          "route": {
-            "owner": 4440576,
-            "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-            "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z",
-            "offset": 591,
-            "source_symbol": "?DrawLemmingOnBalloon@C2D@@QAEXAAVCViewData@@HH@Z"
-          },
-          "alignment_review": {
-            "action": 16,
-            "original_case": 4441154,
-            "native_offset": 591,
-            "native_case_offset": 572,
-            "evidence": "Both action 16 slots clear body/equipment flags and forward ECX=owner plus remapped formal, zero-extended view-data WORD at +0x1c, and view-data pointer. Source: C2D.cpp ACTION_ON_BALLOON branch; CViewData.h m_actionArgument +0x1c."
+          "route": null,
+          "native_evidence": {
+            "definition": {
+              "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
+              "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z"
+            },
+            "fingerprint": "b6720eb74c263707980c4e8aecbf3f06b2b5b80e810e2aea700dd04f2e11768d",
+            "reason": "Native references exist; no verified instruction alignment and relocation route",
+            "candidates": [
+              {
+                "offset": 591,
+                "bytes": "e84c040000"
+              }
+            ],
+            "next_step": "Compare original/native control flow and argument setup around these candidates; require exact COFF relocation and instruction correspondence before routing."
           }
         }
       ],
@@ -4024,59 +3649,17 @@
       "address": 4202770,
       "target": 4386512,
       "original_bytes": "e9b9cd0200",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 5,
-      "body_bytes": "33c0c20800",
-      "instructions": [
-        "0042eed0: xor eax, eax",
-        "0042eed2: ret 8"
-      ],
-      "body_references": [
-        {
-          "address": 4202770,
-          "owner": 4202770,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9b9cd0200",
-          "instruction": "jmp 0x42eed0"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00402112",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4202770,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CMover::ReturnZero",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CMoverReturnZero@Inferred@@YGIII@Z",
+        "size": 5,
+        "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00402112",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "EAX zero; callee cleans eight stack bytes.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4202780,
@@ -4138,7 +3721,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
         "symbol": "?TransformAndSortViewData@C2D@@QAEXXZ",
         "size": 194,
-        "fingerprint": "a6b2cad8ddfe48897a80e873c8670afdf6df313596892aab0d194562d6fba4dd"
+        "fingerprint": "92296ae528ebaa53d96623f5f054129fa5060a136c742157d84031bb03897434"
       },
       "verified": true
     },
@@ -4377,7 +3960,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
         "symbol": "?VerifyObjects@CMover@@QAEXXZ",
         "size": 170,
-        "fingerprint": "de6552d740d8193f748745e54dbfeb7b57190bea283034c42b358c89ade45389"
+        "fingerprint": "7d2ad15252a9c09df06b77efbe335df48fdafe801626f9095b78d81155461cf4"
       },
       "verified": true
     },
@@ -4494,7 +4077,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
         "symbol": "?FindObjectsOnTopOfMe@CMover@@QAEXXZ",
         "size": 192,
-        "fingerprint": "59b4f0274b24d75f4020385044cb85b58ea6460b503bb61bed12d1c3b00dcac9"
+        "fingerprint": "db011f1a6facead89f3a81ea9b9826f28092f2fac725e699463f3eae9d0dc7fd"
       },
       "verified": true
     },
@@ -4874,59 +4457,17 @@
       "address": 4203990,
       "target": 4379840,
       "original_bytes": "e9e5ae0200",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 5,
-      "body_bytes": "33c0c20800",
-      "instructions": [
-        "0042d4c0: xor eax, eax",
-        "0042d4c2: ret 8"
-      ],
-      "body_references": [
-        {
-          "address": 4203990,
-          "owner": 4203990,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9e5ae0200",
-          "instruction": "jmp 0x42d4c0"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "004025d6",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4203990,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CIce::ReturnZero",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CIceReturnZero@Inferred@@YGIII@Z",
+        "size": 5,
+        "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "004025d6",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "EAX zero; callee cleans eight stack bytes.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4204020,
@@ -5443,7 +4984,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
         "symbol": "?MoveObjects@CMover@@QAEXHHH@Z",
         "size": 81,
-        "fingerprint": "258111972eb412f2f55bae1215eb3ddd002a0da8e38845763a92eddbe875af10"
+        "fingerprint": "762179ba4aceecfd56b023adb88cd07546a77c6d6caa7fb18e281d937e5e5b10"
       },
       "verified": true
     },
@@ -5677,7 +5218,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
         "symbol": "?CollectUnusedObjectIds@@YAFPAGH@Z",
         "size": 90,
-        "fingerprint": "a520c9f7e7f2bf9dc64886c4ac5bcf4ad506d7cd1f40fc76091d0748563bdb33"
+        "fingerprint": "cec92a7fdb3acb95b9142ff7f427006b8d0c7ef3690ba9c6155da89c3c998706"
       },
       "verified": true
     },
@@ -5738,11 +5279,17 @@
         {
           "address": 4388270,
           "owner": 4388240,
-          "owner_name": null,
+          "owner_name": "CMoverManager::AnyMoverMatches",
           "kind": "code",
           "bytes": "e8c236fdff",
           "instruction": "call 0x402c75",
-          "route": null
+          "route": {
+            "owner": 4388240,
+            "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMoverManager.cpp.obj",
+            "symbol": "?AnyMoverMatches@CMoverManager@@AAEHII@Z",
+            "offset": 30,
+            "source_symbol": "?AlwaysFalse@CMover@@AAEHII@Z"
+          }
         }
       ],
       "ghidra_xrefs": [
@@ -5751,75 +5298,12 @@
           "type": "UNCONDITIONAL_CALL"
         }
       ],
-      "body_size": 5,
-      "body_bytes": "33c0c20800",
-      "instructions": [
-        "0042eec0: xor eax, eax",
-        "0042eec2: ret 8"
-      ],
-      "body_references": [
-        {
-          "address": 4205685,
-          "owner": 4205685,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e946c20200",
-          "instruction": "jmp 0x42eec0"
-        }
-      ],
-      "evidence": "XOR EAX,EAX; RET 8. Original caller 0x42f5ae computes ECX from the manager's mover array and forwards two DWORD stack values through 0x402c75. Constant-zero behavior established; method name, argument meanings and source types unresolved.",
-      "source": [
-        "src/Gameplay/Mechanisms/CMover.h",
-        "src/Gameplay/Mechanisms/CMoverManager.h"
-      ],
-      "next_step": "Retain the private predicate called by the reconstructed mover traversal. Unsigned int models two opaque 32-bit stack slots; original names and argument meanings remain inferred.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00402c75",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [
-          {
-            "address": 4388270,
-            "opcode": 232
-          }
-        ],
-        "target_relative_candidates": [
-          {
-            "address": 4205685,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
-      },
-      "fresh_ghidra_xrefs": [
-        {
-          "from": "0042f5ae",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00402c75",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "behavior_reconstruction_retained",
-        "identity": "Receiver classes corroborated by original mover array/count/allocation. Method names and unsigned-int argument model inferred; two opaque 32-bit stack slots, no argument interpretation claimed.",
-        "abi": "ECX receiver; two stack values; full EAX boolean result; RET8. Manager preserves array/count reloads, stride0x1a0 and early success.",
-        "raw_percent": 100,
-        "linker_slot_raw_percent": 100,
-        "regressions": "Combined trial: +446 Effective bytes, -677 exact bytes; two prior Effective matches lost to equivalent register/order differences in CAI::SwitchMessage and CMoverManager::Restart. Existing source operations, class layouts, vtables and symbol pairings unchanged."
-      },
       "name": "CMover::AlwaysFalse",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
-        "symbol": "?AlwaysFalse@CMover@@AAEHII@Z"
+        "symbol": "?AlwaysFalse@CMover@@AAEHII@Z",
+        "size": 5,
+        "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
       "verified": true
     },
@@ -5836,19 +5320,21 @@
           "kind": "code",
           "bytes": "e80a68fcff",
           "instruction": "call 0x402c7a",
-          "route": {
-            "owner": 4440576,
-            "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-            "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z",
-            "offset": 613,
-            "source_symbol": "?DrawLemmingLanding@C2D@@QAEXAAVCViewData@@I@Z"
-          },
-          "alignment_review": {
-            "action": 19,
-            "original_case": 4441183,
-            "native_offset": 613,
-            "native_case_offset": 601,
-            "evidence": "Both action 19 slots clear body/equipment flags and forward ECX=owner plus remapped formal and view-data pointer. Source: C2D.cpp ACTION_LANDING branch; C2D.h DrawLemmingLanding(CViewData&,unsigned int)."
+          "route": null,
+          "native_evidence": {
+            "definition": {
+              "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
+              "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z"
+            },
+            "fingerprint": "b6720eb74c263707980c4e8aecbf3f06b2b5b80e810e2aea700dd04f2e11768d",
+            "reason": "Native references exist; no verified instruction alignment and relocation route",
+            "candidates": [
+              {
+                "offset": 613,
+                "bytes": "e856fbffff"
+              }
+            ],
+            "next_step": "Compare original/native control flow and argument setup around these candidates; require exact COFF relocation and instruction correspondence before routing."
           }
         }
       ],
@@ -6004,16 +5490,22 @@
       "address": 4205955,
       "target": 4502368,
       "original_bytes": "e9d8850400",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [
         {
           "address": 4411223,
           "owner": 4411216,
-          "owner_name": null,
+          "owner_name": "CLemmingAnimsManager::ForwardLoadAnimNoOp",
           "kind": "code",
           "bytes": "e927defcff",
           "instruction": "jmp 0x402d83",
-          "route": null
+          "route": {
+            "owner": 4411216,
+            "object": "CMakeFiles/LEMBALL.dir/src/GameView/Animation/CLemmingAnimsManager.cpp.obj",
+            "symbol": "?ForwardLoadAnimNoOp@CLemmingAnimsManager@@QAEXXZ",
+            "offset": 7,
+            "source_symbol": "?CCDLoadAnimNoOp2@Inferred@@YIXPAVCCDLoadAnim@@@Z"
+          }
         }
       ],
       "ghidra_xrefs": [
@@ -6022,69 +5514,14 @@
           "type": "UNCONDITIONAL_CALL"
         }
       ],
-      "body_size": 1,
-      "body_bytes": "c3",
-      "instructions": [
-        "0044b360: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4205955,
-          "owner": 4205955,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9d8850400",
-          "instruction": "jmp 0x44b360"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Single RET. Original wrapper 0x434f50 loads ECX from object+0x78 and tail-jumps through 0x402d83 when nonnull. CCDLoadAnim ownership is inferred from the wrapper's matching layout; the leaf provides no method identity or complete ABI.",
-      "source": [
-        "src/GameView/Animation/CLemmingAnimsManager.h",
-        "src/GameView/Loading/CCDLoadAnim.h"
-      ],
-      "next_step": "Identify the wrapper's Windows caller or pointer owner and the method intended on member+0x78; preserve existing CCDLoadAnim mappings.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00402d83",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [
-          {
-            "address": 4411223,
-            "opcode": 233
-          }
-        ],
-        "target_relative_candidates": [
-          {
-            "address": 4205955,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CCDLoadAnim::NoOp2",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CCDLoadAnimNoOp2@Inferred@@YIXPAVCCDLoadAnim@@@Z",
+        "size": 1,
+        "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
-      "fresh_ghidra_xrefs": [
-        {
-          "from": "00434f57",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00402d83",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "evidence": "0x434f50 replaces ECX with member+0x78, null-checks, then tail-jumps via 0x402d83 to the RET at 0x44b360. Original CLemmingAnimsManager constructor allocates 0x134 bytes at 0x432bda, calls CCDLoadAnim constructor via 0x4012bc -> 0x44aa80 at 0x432bf8, and stores its result at +0x78 at 0x432bfd. This corroborates the source member type; ownership of the uncalled wrapper remains inferred.",
-        "blocker": "No independent caller or absolute pointer owner for 0x40324c/0x434f50 found. No exact catalog mapping. Tail-call preservation and RET alone cannot identify a source method or complete argument/return ABI.",
-        "next_step": "Find independent Windows source/debug/link-map evidence naming this wrapper and leaf, or a computed caller establishing receiver and argument provenance. Preserve current CLemmingAnimsManager/CCDLoadAnim methods and vtable mappings."
-      }
+      "verified": true
     },
     {
       "address": 4205960,
@@ -6372,58 +5809,17 @@
       "address": 4206400,
       "target": 4451600,
       "original_bytes": "e9cbbd0300",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 1,
-      "body_bytes": "c3",
-      "instructions": [
-        "0043ed10: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4206400,
-          "owner": 4206400,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9cbbd0300",
-          "instruction": "jmp 0x43ed10"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00402f40",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4206400,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "C2D::NoOp2",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?C2DNoOp2@Inferred@@YAXXZ",
+        "size": 1,
+        "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00402f40",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "RET; EAX left unchanged.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4206470,
@@ -6746,7 +6142,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
         "symbol": "?SetUpNextNode@CMover@@QAEXK@Z",
         "size": 292,
-        "fingerprint": "26190002b45fdb405cc1bfb91630ba06917995d26ff56e87c025d762c59c94a8"
+        "fingerprint": "1d62fc6b670fc7000f16e1360993fea33eaff2e64e841011f343397c1f519b06"
       },
       "verified": true
     },
@@ -6924,66 +6320,17 @@
       "address": 4207180,
       "target": 4411216,
       "original_bytes": "e9ff1c0300",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 13,
-      "body_bytes": "8b497885c97405e927defcffc3",
-      "instructions": [
-        "00434f50: mov ecx, dword ptr [ecx + 0x78]",
-        "00434f53: test ecx, ecx",
-        "00434f55: je 0x434f5c",
-        "00434f57: jmp 0x402d83",
-        "00434f5c: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4207180,
-          "owner": 4207180,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9ff1c0300",
-          "instruction": "jmp 0x434f50"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Loads ECX from incoming ECX+0x78; null check; nonnull tail jump to 0x402d83/0x44b360. CLemmingAnimsManager has CCDLoadAnim* at +0x78; class attribution remains inferred.",
-      "source": [
-        "src/GameView/Animation/CLemmingAnimsManager.h",
-        "src/GameView/Loading/CCDLoadAnim.h"
-      ],
-      "next_step": "Identify a Windows caller or pointer owner for 0x40324c/0x434f50; identify the no-op callee before assigning class and method names.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "0040324c",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4207180,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CLemmingAnimsManager::ForwardLoadAnimNoOp",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/GameView/Animation/CLemmingAnimsManager.cpp.obj",
+        "symbol": "?ForwardLoadAnimNoOp@CLemmingAnimsManager@@QAEXXZ",
+        "size": 13,
+        "fingerprint": "743c4d3bfd6b7fe8f99d70802bb5f26736ec898a892de5a246d8cf5c94ab5fe4"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "0040324c",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "evidence": "0x434f50 replaces ECX with member+0x78, null-checks, then tail-jumps via 0x402d83 to the RET at 0x44b360. Original CLemmingAnimsManager constructor allocates 0x134 bytes at 0x432bda, calls CCDLoadAnim constructor via 0x4012bc -> 0x44aa80 at 0x432bf8, and stores its result at +0x78 at 0x432bfd. This corroborates the source member type; ownership of the uncalled wrapper remains inferred.",
-        "blocker": "No independent caller or absolute pointer owner for 0x40324c/0x434f50 found. No exact catalog mapping. Tail-call preservation and RET alone cannot identify a source method or complete argument/return ABI.",
-        "next_step": "Find independent Windows source/debug/link-map evidence naming this wrapper and leaf, or a computed caller establishing receiver and argument provenance. Preserve current CLemmingAnimsManager/CCDLoadAnim methods and vtable mappings."
-      }
+      "verified": true
     },
     {
       "address": 4207220,
@@ -7130,58 +6477,17 @@
       "address": 4207330,
       "target": 4469584,
       "original_bytes": "e969000400",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 1,
-      "body_bytes": "c3",
-      "instructions": [
-        "00443350: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4207330,
-          "owner": 4207330,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e969000400",
-          "instruction": "jmp 0x443350"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "004032e2",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4207330,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CPanel::NoOp",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CPanelNoOp@Inferred@@YAXXZ",
+        "size": 1,
+        "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "004032e2",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "RET; EAX left unchanged.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4207350,
@@ -7202,10 +6508,6 @@
             "symbol": "?LoadLevel@CBallManager@@QAEXPAEHE@Z",
             "offset": 23,
             "source_symbol": "?Initialise@CBallManager@@QAEXH@Z"
-          },
-          "alignment_review": {
-            "native_offset": 23,
-            "evidence": "Both function prologues read the stream WORD count, advance mutable stream formal by 2, zero-extend count, preserve ECX owner, and push count before Initialise. Count/index registers EDI/EBX become EBX/EDI. Source: CBallManager.cpp LoadLevel/Initialise; CBallManager.h capacity argument int."
           }
         }
       ],
@@ -7291,8 +6593,8 @@
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
         "symbol": "?SetPos@CMover@@QAEXXZ",
-        "size": 155,
-        "fingerprint": "d90b58244e3bb18cd0ae9f7d8dc5e4b45f20a2238940e733cce6b65c67dd59fd"
+        "size": 164,
+        "fingerprint": "73a92c828b07c797f5833d9a0888c47a8f55cc0c69d83caa4cd66e7ebcd743a2"
       },
       "verified": true
     },
@@ -7624,8 +6926,8 @@
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
         "symbol": "?DrawClippedRectangle@C2D@@QAEHABVCVSRect@@@Z",
-        "size": 993,
-        "fingerprint": "3e9b57010593da8f2b31241eef32461daa8782a10f03375a0895febf81132eb0"
+        "size": 992,
+        "fingerprint": "f55ead3732263afc93355a9b96d62f13e75f0f14f774ae841c4e1bb05857f2fa"
       },
       "verified": true
     },
@@ -7734,59 +7036,17 @@
       "address": 4208075,
       "target": 4286256,
       "original_bytes": "e960310100",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 3,
-      "body_bytes": "33c0c3",
-      "instructions": [
-        "00416730: xor eax, eax",
-        "00416732: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4208075,
-          "owner": 4208075,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e960310100",
-          "instruction": "jmp 0x416730"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "004035cb",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4208075,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CGameObject::ReturnZero",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CGameObjectReturnZero@Inferred@@YAIXZ",
+        "size": 3,
+        "fingerprint": "4bc724f3b1d0caf4fe369c18cba3102e6c4ea057f63fe1587e3973134a7f755e"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "004035cb",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "EAX zero; no explicit stack-argument cleanup.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4208235,
@@ -7795,77 +7055,12 @@
       "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 31,
-      "body_bytes": "f64424040156c701a86c49008bf1740956e88a11020083c4048bc65ec20400",
-      "instructions": [
-        "004395f0: test byte ptr [esp + 4], 1",
-        "004395f5: push esi",
-        "004395f6: mov dword ptr [ecx], 0x496ca8",
-        "004395fc: mov esi, ecx",
-        "004395fe: je 0x439609",
-        "00439600: push esi",
-        "00439601: call 0x45a790",
-        "00439606: add esp, 4",
-        "00439609: mov eax, esi",
-        "0043960b: pop esi",
-        "0043960c: ret 4"
-      ],
-      "body_references": [
-        {
-          "address": 4208235,
-          "owner": 4208235,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e9805f0300",
-          "instruction": "jmp 0x4395f0"
-        }
-      ],
-      "evidence": "31-byte scalar deleting wrapper: CPrimitive vtable 0x496ca8, conditional delete 0x45a790, returns this, RET 4. CSolidRect class name inferred from the surrounding C2D primitive constructor/destructor group; body and linker slot match 100%. CZRLE scalar at 0x469b60 is inferred from the CText group. Identical bytes alone do not establish either class name.",
-      "source": [
-        "src/Engine/Graphics/Primitives/CPrimitive.h",
-        "src/Engine/Graphics/Primitives/CSolidRect.h",
-        "src/Engine/Graphics/Primitives/CZRLE.h"
-      ],
-      "next_step": "Retain inferred scalar annotations and the established CPrimitive mapping at 0x432350; revise class names if independent original identity evidence contradicts the generated-function groups.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "0040366b",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4208235,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
-      },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "0040366b",
-          "type": "UNCONDITIONAL_CALL"
-        }
-      ],
-      "followup_review": {
-        "outcome": "inferred_pairing_retained",
-        "identity": "CSolidRect inferred from the original C2D primitive group, not from identical wrapper bytes. Original 0x4394c0 constructor writes CSolidRect vtable 0x496d38; ordinary destructor at 0x439710. Native C2D COFF emits its scalar alongside the other matched primitive wrappers.",
-        "paired_original": "0x4395f0",
-        "native_symbol": "??_GCSolidRect@@UAEPAXI@Z",
-        "raw_percent": 100,
-        "machine_abi": "Flags bit0; base vptr; conditional delete; return this; RET4.",
-        "related_pairing": "CZRLE scalar 0x469b60 inferred from the CText group: original 0x469a00 constructs member+0x2c with CZRLE vtable 0x499628. Native CTextButton COFF emits CZRLE scalar between CPrimitive scalar and CText vector destructor; existing CZRLE vector at 0x467b40 preserved.",
-        "limit": "Both class names inferred. Machine-byte matches validate the source hypothesis; they do not independently identify the class."
-      },
       "name": "CSolidRect::`scalar deleting destructor'",
       "native_definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Frontend/About/CAboutScreen.cpp.obj",
-        "symbol": "??_GCSolidRect@@UAEPAXI@Z"
+        "symbol": "??_GCSolidRect@@UAEPAXI@Z",
+        "size": 31,
+        "fingerprint": "b0ebb9c650078fce8401adbe0042e9645206a2cdc781be3763c8cddfa3b85f7d"
       },
       "verified": true
     },
@@ -7921,116 +7116,33 @@
       "address": 4208405,
       "target": 4521120,
       "original_bytes": "e986c50400",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 1,
-      "body_bytes": "c3",
-      "instructions": [
-        "0044fca0: ret"
-      ],
-      "body_references": [
-        {
-          "address": 4208405,
-          "owner": 4208405,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e986c50400",
-          "instruction": "jmp 0x44fca0"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00403715",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4208405,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CHiliteController::NoOp",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CHiliteControllerNoOp@Inferred@@YAXXZ",
+        "size": 1,
+        "fingerprint": "ae3f4619b0413d70d3004b9131c3752153074e45725be13b9a148978895e359e"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00403715",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "RET; EAX left unchanged.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4208450,
       "target": 4374464,
       "original_bytes": "e979880200",
-      "status": "unpaired_body",
+      "status": "recovered",
       "references": [],
       "ghidra_xrefs": [],
-      "body_size": 5,
-      "body_bytes": "33c0c20800",
-      "instructions": [
-        "0042bfc0: xor eax, eax",
-        "0042bfc2: ret 8"
-      ],
-      "body_references": [
-        {
-          "address": 4208450,
-          "owner": 4208450,
-          "owner_name": null,
-          "kind": "code",
-          "bytes": "e979880200",
-          "instruction": "jmp 0x42bfc0"
-        }
-      ],
-      "blocker": "No paired native definition with established identity and ABI",
-      "evidence": "Exact body bytes and decoded instructions below. Short return body cannot establish class, method identity or complete prototype. RET 8 proves eight-byte callee cleanup, not member-function identity; RET alone does not establish calling convention.",
-      "next_step": "Find a Windows caller, vtable/pointer owner, or independent symbol mapping; derive argument and return types before adding a source declaration.",
-      "ghidra_body_xrefs": [
-        {
-          "from": "00403742",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_static_scan": {
-        "address_absolute_pointer_occurrences": [],
-        "target_absolute_pointer_occurrences": [],
-        "address_relative_candidates": [],
-        "target_relative_candidates": [
-          {
-            "address": 4208450,
-            "opcode": 233
-          }
-        ],
-        "exact_mac_windows_mappings": []
+      "name": "CPaintGun::ReturnZero1",
+      "native_definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Platform/MSVC/InferredCallbacks.cpp.obj",
+        "symbol": "?CPaintGunReturnZero1@Inferred@@YGIII@Z",
+        "size": 5,
+        "fingerprint": "3df6af1ec778d46a61b8d7160523ba89fe1af814222acb1175be5a7b1748e06b"
       },
-      "fresh_ghidra_xrefs": [],
-      "fresh_ghidra_body_xrefs": [
-        {
-          "from": "00403742",
-          "type": "UNCONDITIONAL_JUMP"
-        }
-      ],
-      "followup_review": {
-        "outcome": "evidence_blocker",
-        "behavior": "EAX zero; callee cleans eight stack bytes.",
-        "blocker": "No independent caller, pointer owner or exact Mac-to-Windows symbol mapping found. Tiny return bytes do not establish receiver, method identity, argument types or complete calling convention. Original image has no COFF symbol table or debug directory.",
-        "next_step": "Obtain independent Windows symbol/source/object evidence or identify a computed caller with concrete argument and receiver provenance; then derive a prototype. Do not replay a declaration based only on matching return bytes."
-      }
+      "verified": true
     },
     {
       "address": 4208460,
@@ -8045,19 +7157,21 @@
           "kind": "code",
           "bytes": "e85173fcff",
           "instruction": "call 0x40374c",
-          "route": {
-            "owner": 4440576,
-            "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-            "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z",
-            "offset": 496,
-            "source_symbol": "?DrawLemmingFall@C2D@@QAEXAAVCViewData@@I@Z"
-          },
-          "alignment_review": {
-            "action": 11,
-            "original_case": 4441066,
-            "native_offset": 496,
-            "native_case_offset": 484,
-            "evidence": "Both action 11 dispatch slots lead to ECX=owner and pushes remapped formal, view-data pointer; the two flags are cleared in different schedules. Original owner/view registers ESI/EBX become native EDI/ESI. Source: C2D.cpp ACTION_FALLING branch; C2D.h DrawLemmingFall(CViewData&,unsigned int)."
+          "route": null,
+          "native_evidence": {
+            "definition": {
+              "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
+              "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z"
+            },
+            "fingerprint": "b6720eb74c263707980c4e8aecbf3f06b2b5b80e810e2aea700dd04f2e11768d",
+            "reason": "Native references exist; no verified instruction alignment and relocation route",
+            "candidates": [
+              {
+                "offset": 496,
+                "bytes": "e87bfcffff"
+              }
+            ],
+            "next_step": "Compare original/native control flow and argument setup around these candidates; require exact COFF relocation and instruction correspondence before routing."
           }
         }
       ],
@@ -8205,289 +7319,54 @@
       "verified": true
     }
   ],
-  "followup": {
-    "baseline_commit": "781c3657",
-    "retained_routes": 4,
-    "references_verified": 7189,
-    "jump_entries_verified": 2059,
-    "recovery_rerun": "Retains all four reviewed original/native positions through unchanged native object fingerprints and raw original/native destination plus COFF REL32 validation.",
-    "score_outcome": "Exact 53.67105299558293%; Effective 65.49454552161043%; fuzzy 90.7545546064%. No function raw-score changes or Effective losses versus 781c3657.",
-    "remaining_entries": 16,
-    "audit_outcomes": {
-      "four_calls": "recovered and verified",
-      "mover_pair": "Reconstructed and routed with inferred names/opaque slot types; +446 Effective bytes, -677 exact bytes; comparison tradeoff recorded.",
-      "loading_wrapper_and_leaf": "reviewed; identity/ABI evidence blocker",
-      "duplicate_primitive": "Inferred CSolidRect scalar pairing retained; body and table slot 100%. CZRLE scalar separately paired at 0x469b60; existing CPrimitive mapping preserved.",
-      "other_short_returns": "14 reviewed individually; identity/ABI evidence blockers"
-    },
-    "static_scan_scope": "Byte-aligned DWORD search in all file-backed PE sections; every-byte E8/E9 candidate scan in executable sections. Candidates may be non-instruction bytes; absence does not exclude computed references or prove unused.",
-    "original_debug_evidence": {
-      "coff_symbol_table_pointer": 0,
-      "coff_symbol_count": 0,
-      "debug_directory_rva": 0,
-      "debug_directory_size": 0,
-      "export_directory_rva": 0,
-      "export_directory_size": 0
-    },
-    "fresh_ghidra_scope_addresses": 38,
-    "fresh_ghidra_total_references": 21,
-    "inspection_limitations": "Static reference absence is not proof of unused code. Ghidra names/comments are hypotheses. Mac symbols support identity only when independently mapped; Windows ABI still requires Windows evidence.",
-    "remaining_short_return_entries": 14
-  },
-  "runtime_review": {
-    "status": "runtime capture verified on rebuilt image only",
-    "captured_at_utc": "2026-10-08 12:56:15 UTC",
-    "startup_checks": false,
-    "arguments": [
-      "/NOEFFECTS",
-      "/NOMUSIC",
-      "/NOANIM",
-      "/DEBUGFILE",
-      "/NOWAIT"
-    ],
-    "cwd": "C:\\Dev\\lemball-decomp\\build-msvc400\\linker-thunks\\runtime\\game",
-    "files": {
-      "LEMBALL.EXE": "eb07684cfbe1783c6087f866c7f9a8d20990503213121793336bee596c0b73b5",
-      "LEMBALL.pdb": "717f607d8d9814754922fe419127b5ce4b7dd68ccf49c55bc3e2ada06ab8ac6a",
-      "DSPDIB16.DLL": "16f87ee764be39a5c4dbbe93c2382c59d7007569f74f4f231473774b82671940",
-      "DSPDIB32.DLL": "d54eb780c20be6cf1dd8a3fb55f88a33e750f23aaf76ffb553559e88f9c67e7a",
-      "PBAIMOG.VSR": "e1943b1b577059c4a302af23c3dc1f7c0ea66055b0091e32c825c645a5345359"
-    },
-    "support_files_match_data": true,
-    "native_debug_api": {
-      "probes": 9,
-      "captured": [
-        "VSmain",
-        "CGame::CGame",
-        "CCDLoadAnim::CCDLoadAnim",
-        "CGame::Run",
-        "CGame::Process",
-        "CBallManager::LoadLevel",
-        "CMoverManager::Initialise",
-        "C2D::DrawLemming"
-      ],
-      "detached": true
-    },
-    "cheatengine": {
-      "hit_counts_at_capture": {
-        "calibration": 161,
-        "thunk-runtime-fall": 1179,
-        "thunk-runtime-landing": 705,
-        "thunk-runtime-balloon": 0,
-        "thunk-runtime-ball-init": 14,
-        "thunk-runtime-primitive-delete": 0,
-        "thunk-runtime-mover-init": 11
-      },
-      "fall_and_landing_action_values": [
-        11,
-        19
-      ],
-      "mover_initialise_capacity_values": [
-        0
-      ]
-    },
-    "scope": "All 19 unpaired original bodies remain unpaired. Captures corroborate rebuilt execution only; no original identity, argument-type, or retention-mechanism recovery. No-hit probes do not prove unused code. CE stack samples omit the DWORD at ESP.",
-    "cleanup": "Own breakpoints removed; native debugger detached; CE debug_isDebugging() confirmed false. Staged game left open. Normal startup checks restored for the canonical build.",
-    "canonical_verification": {
-      "original_sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
-      "rebuilt_sha256": "c38d3f51167308d269fcf468771e6e8923b43b0be49a5e190ff1c1645bcdbba0",
-      "thunks_verified": 2059,
-      "references_verified": 7189,
-      "errors": []
-    },
-    "artifacts": [
-      "build-msvc400/linker-thunks/runtime/events.jsonl",
-      "build-msvc400/linker-thunks/runtime/cheatengine-samples.json",
-      "build-msvc400/linker-thunks/runtime/addresses.json",
-      "build-msvc400/linker-thunks/runtime/route-addresses.json"
-    ],
-    "balloon_followup": {
-      "status": "captured; probe removed",
-      "process_id": 11220,
-      "breakpoint_id": "thunk-runtime-balloon-followup",
-      "rebuilt_entry": "0x470044",
-      "original_entry": "0x401e4c",
-      "original_body": "0x43c8a0",
-      "name": "C2D::DrawLemmingOnBalloon",
-      "runtime_image_sha256": "eb07684cfbe1783c6087f866c7f9a8d20990503213121793336bee596c0b73b5",
-      "scope": "Rebuilt recovered route; no evidence for the 19 unpaired original bodies.",
-      "temporary_bullet_immunity": {
-        "address": "0x26aed0c",
-        "original": 0,
-        "enabled": 1,
-        "restored": 0,
-        "restoration_verified": true,
-        "restored_at_utc": "2026-10-08T13:02:16.226103+00:00"
-      },
-      "captured_at_utc": "2026-10-08T13:02:51.638304+00:00",
-      "hit_count_at_capture": 1374,
-      "sample_count": 25,
-      "action_register_values": [
-        16
-      ],
-      "capture_artifact": "build-msvc400/linker-thunks/runtime/balloon-capture.json",
-      "cleanup": "Probe removed; CE debugger inactive; bullet-immunity flag restored and reread as zero. Game left open."
-    }
-  },
-  "compiler_probe_review": {
-    "compiled_cases": 12,
-    "native_links": 36,
-    "new_pairings": 2,
-    "recovered_table_entry": "0x40366b",
-    "identity_scope": "CSolidRect/CZRLE inferred from original generated-function groups; byte matches alone do not prove class names.",
-    "verification": "2060 jump entries; 7189 references; zero errors.",
-    "progress": "67 additional exact original bytes; no raw regressions or Effective losses. Added previously uncatalogued 31-byte CZRLE scalar extent.",
-    "remaining_entries": 18
-  },
-  "mover_recovery": {
-    "thunks_verified": 2062,
-    "references_verified": 7190,
+  "inferred_recovery": {
+    "status": "Implemented and verified; zero selected entries remain unpaired.",
+    "source_mapping": "tools/data/inferred-symbols.csv",
+    "source_module": "src/Platform/MSVC/InferredCallbacks.cpp",
+    "scope": "15 receiver-independent leaves use isolated opaque contracts; CLemmingAnimsManager forwarding wrapper uses typed member +0x78. Original spellings, full prototypes and low-confidence owners remain inferred.",
+    "new_exact_bodies": 16,
+    "new_exact_jump_entries": 16,
+    "new_exact_original_bytes": 139,
+    "jump_entries_verified": 2078,
+    "references_verified": 7188,
     "verification_errors": 0,
-    "remaining_entries": 16,
-    "exact_byte_delta": -677,
-    "effective_byte_delta": 446,
-    "identity_scope": "Method names and argument meanings inferred. Existing pairings retained; declaration-induced code generation changes inspected for the two lost Effective matches."
-  },
-  "demo_review": {
-    "program": "/Evidence/demo-lemball.exe",
-    "text_sha256": "eea1239cfbc514d9fa0a283046e27b7a2e01fc7ad6fd1170861deae44da6a83d",
-    "original_table_entries": 2077,
-    "demo_table_entries": 2074,
-    "alignment": "455 ordered anchors from 475 unique normalized prefixes of at most ten instructions. Counterparts inferred from nearby table/body sequences; same return bodies or wrapper shape corroborate positions. No original method names or complete ABIs recovered.",
-    "counterpart_columns": [
-      "original_entry",
-      "demo_entry",
-      "demo_body"
-    ],
-    "counterparts": [
-      [
-        "4010dc",
-        "4010e6",
-        "43b2c0"
-      ],
-      [
-        "401235",
-        "401244",
-        "42bc70"
-      ],
-      [
-        "40194c",
-        "401942",
-        "44cfb0"
-      ],
-      [
-        "4019d8",
-        "4019ce",
-        "44ada0"
-      ],
-      [
-        "401b22",
-        "401b13",
-        "42b770"
-      ],
-      [
-        "401b54",
-        "401b45",
-        "42bbb0"
-      ],
-      [
-        "401b81",
-        "401b7c",
-        "421180"
-      ],
-      [
-        "402112",
-        "40207c",
-        "42e460"
-      ],
-      [
-        "4025d6",
-        "40253b",
-        "42cb60"
-      ],
-      [
-        "402d83",
-        "402d01",
-        "44add0"
-      ],
-      [
-        "402f40",
-        "402ec3",
-        "43e320"
-      ],
-      [
-        "40324c",
-        "4031c5",
-        "434630"
-      ],
-      [
-        "4032e2",
-        "40325b",
-        "4429a0"
-      ],
-      [
-        "4035cb",
-        "40353a",
-        "416410"
-      ],
-      [
-        "403715",
-        "403689",
-        "44eea0"
-      ],
-      [
-        "403742",
-        "4036b6",
-        "42b760"
-      ]
-    ],
-    "reference_scan": "Every-byte E8/E9 candidate scan in the complete demo executable section; byte-aligned DWORD scan across all initialized blocks for the 32 entries/bodies. Only own linker jumps and the loading-wrapper tail jump found. No absolute pointers. Absence does not prove unused code.",
-    "debug": "Demo PE COFF symbol count and debug-directory RVA/size are zero.",
-    "outcome": "All 16 counterparts retain the same short-return or forwarding behavior. No additional caller/type evidence; original entries remain unpaired."
-  },
-  "original_runtime_review": {
-    "image_sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
-    "support_files": "DSPDIB16.DLL, DSPDIB32.DLL and PBAIMOG.VSR copied from data; hashes checked.",
-    "arguments": "/NOEFFECTS /NOMUSIC /NOANIM /DEBUGFILE /NOWAIT /TESTALLLEVELS",
-    "unpaired_entry_and_body_probes": 32,
-    "unpaired_hits": 0,
-    "logged_skill_level_pairs": 101,
-    "logged_pairs_per_skill": {
-      "0": 25,
-      "1": 26,
-      "2": 29,
-      "3": 21
+    "progress": {
+      "exact_percent": 53.425402774992335,
+      "effective_percent": 65.30498866997232,
+      "exact_byte_delta": -439,
+      "effective_byte_delta": -1315
     },
-    "calibration_hits": [
-      "C2D::DrawLemming",
-      "CBallManager::LoadLevel",
-      "CCDLoadAnim::CCDLoadAnim",
-      "CGame::CGame",
-      "CGame::Process",
-      "CGame::Run",
-      "CMoverManager::Initialise",
-      "VSmain"
-    ],
-    "scope": "Reference-image startup, automatic level sweep and graceful shutdown. Logged level pairs do not establish gameplay/action coverage; no-hit probes do not prove entries unused.",
-    "graphics": "Legacy DisplayDib entry-point failure; accepted the original GDI fallback warning. Original lemming rendering calibrated after fallback.",
-    "cleanup": "All 41 byte ranges restored and debugger detachment verified before final shutdown trace; original process exited 0. CE remained on rebuilt PID 11220, debugger inactive.",
-    "remaining_entries": 16,
-    "recorded_demo": {
-      "scope": "Reference recorded demo resource20; skill3 level8; packet index reached1514. Partial gameplay coverage.",
-      "trigger": "Set main-menu return flow19 and quit flag1 at448800; original stores448860-44889f corroborate offsets374/378. Default resource playback; no TESTALLLEVELS.",
-      "calibration": "CDemo::SendNextPacket, CAI::Start, C2D::Process and CPlayerLemming::Process hit; playback cursor advanced.",
-      "unpaired_probes": "32 entry/body probes validated before arming; all32 confirmed armed live; zero hits.",
-      "cleanup": "Owned reference process exited0 after WM_CLOSE; temporary staging and trace files removed. User rebuilt process untouched.",
-      "outcome": "No additional caller or prototype evidence; 16 entries remain unpaired. No-hit tracing does not prove unused code."
+    "regression_review": {
+      "0x00434f00": "UnLoadAnimation: same inclusive resource traversal, signed tests, delete/clear/unload calls and RET 8; register roles and compare direction changed.",
+      "0x00438210": "OnButtonDown: coordinate loads, short additions and saved locals rescheduled; same call arguments, branching and RET 8.",
+      "0x0043bce0": "LemmingFly: view-data/output/height register roles and temporary slots changed; same bounds, calls, integer arithmetic, clamp limits and RET 8.",
+      "0x0043c940": "DrawBalloon: receiver and coordinate register roles changed; same drawing arguments, calls and RET 8.",
+      "0x0043cd50": "DrawPaintGun: receiver/coordinate registers and load scheduling changed; same frame tests, drawing arguments, calls and RET 4.",
+      "0x0043d590": "DrawDoor: action and elapsed-time registers exchanged; same switch cases, arithmetic, drawing calls and RET 4.",
+      "0x0043fd80": "DrawTime: equality CMP operands exchanged; still 100% Effective.",
+      "0x0043c200": "DrawLemming: register assignment/scheduling changed. Three saved routes (DrawLemmingFall, DrawLemmingOnBalloon, DrawLemmingLanding) no longer align conservatively; direct native calls and corresponding case arguments remain present. Existing body and jump pairings retained."
     }
   },
-  "remaining_source_review": {
-    "mac_candidates": "SetActive on CGunController/CHiliteController uses receiver plus explicit byte argument and writes state; CurrentMomentum copies three DWORDs; UseChangingCursor returns 0 or 1. These do not establish identities/prototypes for the Windows bare-RET/short-return entries.",
-    "mac_citations": "68K 10804a50,10805bac,1011b58c,1011afe0,1011cbba. Windows RET leaves 44ded0,44fca0; constant leaf416730; C2D RET leaves43bcd0,43ed10.",
-    "ppc": "None of the nine queried candidate class names appeared in PPC symbols or printable strings. Mac resource forks have no separate debug-symbol resource type.",
-    "pe": "Original section COFF line-table pointers/counts zero; no file overlay.",
-    "archived_windows_sha256": "5901f3b56b64aabbc969085647f21476cba92b93a832fea66d0631bdbe9e0d58",
-    "archived_windows_difference": "Only two bytes differ: archive JNZ opcodes 75 at406e38/406e6d become reference JMP opcodes EB. Remaining entries and reference operands identical. No COFF/debug symbols in either image.",
-    "outcome": "Stack cleanup and leaf behavior known. No additional source identity or argument provenance; preserve 16 unpaired statuses."
+  "symbol_review": {
+    "research_root": "C:\\Research",
+    "classes_reviewed": [
+      "CGameObject",
+      "CNode",
+      "CPaintGun",
+      "CPaintGunManager",
+      "CIce",
+      "CMover",
+      "CLemmingAnimsManager",
+      "C2D",
+      "CPanel",
+      "CCDLoadAnim",
+      "CGunController",
+      "CHiliteController"
+    ],
+    "catalog": "tools/data/mac-symbol-catalog.csv",
+    "mac_68k_function_export": "Mapping/Lemmings_Paintball__68K_.functions.tsv: all candidate class method names already cataloged.",
+    "mac_68k_live_symbols": "Ghidra symbol iterator: 11848 total symbols, 462 candidate names, zero missing catalog names.",
+    "mac_68k_raw_resource": "Installations/LEMBALL-MAC-EXTRACTED/Lemmings Paintball (68K).rsrc: independent Pascal MacsBug marker scan, 462 candidate names, zero missing catalog names. Four apparent ASCII-only discoveries were leading Pascal length bytes.",
+    "outcome": "No additional candidate 68K symbol identities recovered for these 16 Windows bodies. No original Mac symbol assigned from identical short-return behavior alone."
   }
 }

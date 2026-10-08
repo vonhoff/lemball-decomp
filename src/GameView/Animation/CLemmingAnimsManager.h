@@ -85,6 +85,9 @@ private:
 	unsigned int m_drawFlags;      // 0xac
 	short m_drawOffsetX;           // 0xb0
 	short m_drawOffsetY;           // 0xb2
+
+public:
+	void ForwardLoadAnimNoOp();
 };
 
 #endif

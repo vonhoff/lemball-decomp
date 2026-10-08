@@ -17,6 +17,7 @@
 #include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/CAI.h"
+#include "Platform/MSVC/InferredCallbacks.h"
 
 #include <stddef.h>
 
@@ -1147,5 +1148,13 @@ void CLemmingAnimsManager::UnLoadAnimation(unsigned long p_firstResourceId, unsi
 			m_animFrames[m_resourceSlots[resourceId]] = NULL;
 		}
 		UnLoadAnims(resourceId);
+	}
+}
+
+// FUNCTION: LEMBALL 0x00434f50
+void CLemmingAnimsManager::ForwardLoadAnimNoOp()
+{
+	if (m_loadAnim != NULL) {
+		Inferred::CCDLoadAnimNoOp2(m_loadAnim);
 	}
 }
