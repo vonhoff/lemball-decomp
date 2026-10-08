@@ -41,7 +41,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_effectCapacity = p_effectCapacity;
 	m_platform.m_buffersPerEffect = p_buffersPerEffect;
 	m_platform.m_nativeWindow = NULL;
-	m_platform.m_effects = (CDirectSoundEffect**) operator new((p_effectCapacity + 1) * sizeof(*m_platform.m_effects));
+	m_platform.m_effects = new CDirectSoundEffect*[p_effectCapacity + 1];
 	m_platform.m_open = 0;
 	m_platform.m_musicAvailable = 0;
 	m_platform.m_available = 0;
@@ -107,7 +107,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 // FUNCTION: LEMBALL 0x0047dfc0
 CDirectSoundDevice::~CDirectSoundDevice()
 {
-	operator delete(m_platform.m_effects);
+	delete[] m_platform.m_effects;
 	if (m_platform.m_library != NULL) {
 		FreeLibrary((HMODULE) m_platform.m_library);
 		m_platform.m_library = NULL;
