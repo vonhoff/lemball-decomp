@@ -263,11 +263,11 @@ private:
 	ObjectClipGrid* m_objectClipGrid;            // 0x934
 	CVSPoint m_spriteGroundTranslationPoint;     // 0x938
 	CVSPoint m_cursorGamePoint;                  // 0x93c
-	CVSPoint m_viewSize;                         // 0x940
+	CVSSize m_viewSize;                          // 0x940
 	AICOORD m_originPosition;                    // 0x944
 	int m_clipOffsetX;                           // 0x950
 	int m_clipOffsetY;                           // 0x954
-	CVSPoint m_clipSize;                         // 0x958
+	CVSSize m_clipSize;                          // 0x958
 	CViewData* m_viewData;                       // 0x95c
 	unsigned char* m_zBuffer;                    // 0x960
 	unsigned short m_viewDataCount;              // 0x964

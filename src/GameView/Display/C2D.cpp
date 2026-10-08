@@ -503,13 +503,13 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	m_pad0x8cc = 0;
 	m_groundWidth = (unsigned short) m_map->m_ground.m_width;
 	m_groundHeight = (unsigned short) m_map->m_ground.m_height;
-	m_viewSize.m_x = p_rect.m_width;
-	m_viewSize.m_y = p_rect.m_height;
+	m_viewSize.m_width = p_rect.m_width;
+	m_viewSize.m_height = p_rect.m_height;
 	m_zoom = (unsigned short) m_display->m_zoom;
-	m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) (unsigned int) m_zoom);
-	m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) (unsigned int) m_zoom);
-	m_clipSize.m_x = m_viewSize.m_x;
-	m_clipSize.m_y = m_viewSize.m_y;
+	m_viewSize.m_width = (short) ((int) m_viewSize.m_width / (int) (unsigned int) m_zoom);
+	m_viewSize.m_height = (short) ((int) m_viewSize.m_height / (int) (unsigned int) m_zoom);
+	m_clipSize.m_width = m_viewSize.m_width;
+	m_clipSize.m_height = m_viewSize.m_height;
 	m_scoreTimestamp = g_dwGameTick;
 	{
 		int score = m_ai->m_score;
@@ -673,14 +673,14 @@ void C2D::OnLoaded()
 	m_zoom = (unsigned short) zoom;
 	zoomDivisor = (unsigned short) zoom;
 	CVSRect* displayRect = &m_display->m_rect;
-	m_viewSize.m_x = displayRect->m_width;
-	m_viewSize.m_y = displayRect->m_height;
-	m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) zoomDivisor);
-	m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) zoomDivisor);
+	m_viewSize.m_width = displayRect->m_width;
+	m_viewSize.m_height = displayRect->m_height;
+	m_viewSize.m_width = (short) ((int) m_viewSize.m_width / (int) zoomDivisor);
+	m_viewSize.m_height = (short) ((int) m_viewSize.m_height / (int) zoomDivisor);
 	SetClipSize();
 
-	if (m_viewSize.m_x != m_clipSize.m_x || m_viewSize.m_y != m_clipSize.m_y) {
-		CVSRect innerRect((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
+	if (m_viewSize.m_width != m_clipSize.m_width || m_viewSize.m_height != m_clipSize.m_height) {
+		CVSRect innerRect((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_width, m_clipSize.m_height);
 		m_display->SetInnerWindow(innerRect);
 	}
 
@@ -732,11 +732,11 @@ void C2D::OnSize(const CVSRect& p_rect)
 		}
 	}
 	else if (m_display->IsWindowValid()) {
-		m_viewSize.m_x = p_rect.m_width;
-		m_viewSize.m_y = p_rect.m_height;
+		m_viewSize.m_width = p_rect.m_width;
+		m_viewSize.m_height = p_rect.m_height;
 		zoomDivisor = m_zoom;
-		m_viewSize.m_x = (short) ((int) m_viewSize.m_x / (int) zoomDivisor);
-		m_viewSize.m_y = (short) ((int) m_viewSize.m_y / (int) zoomDivisor);
+		m_viewSize.m_width = (short) ((int) m_viewSize.m_width / (int) zoomDivisor);
+		m_viewSize.m_height = (short) ((int) m_viewSize.m_height / (int) zoomDivisor);
 		DoButtons();
 		m_redrawPending = 1;
 		if (m_panel != NULL) {
@@ -803,7 +803,7 @@ void C2D::Restart()
 CVSRect* C2D::GetClipRectangle()
 {
 	static CVSRect g_clipRectangle;
-	CVSRect rectangle((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_x, m_clipSize.m_y);
+	CVSRect rectangle((short) m_clipOffsetX, (short) m_clipOffsetY, m_clipSize.m_width, m_clipSize.m_height);
 	CVSRect* source = &rectangle;
 	g_clipRectangle.m_width = source->m_width;
 	g_clipRectangle.m_height = source->m_height;
@@ -1791,14 +1791,14 @@ void C2D::OnDriverChange()
 		}
 		m_zoom = (unsigned short) zoom;
 		unsigned int zoomDivisor = m_zoom;
-		m_viewSize.m_x = (short) ((int) useRect.m_width / (int) zoomDivisor);
-		m_viewSize.m_y = (short) ((int) useRect.m_height / (int) zoomDivisor);
+		m_viewSize.m_width = (short) ((int) useRect.m_width / (int) zoomDivisor);
+		m_viewSize.m_height = (short) ((int) useRect.m_height / (int) zoomDivisor);
 		SetClipSize();
 
 		CVSRect innerRect;
-		short clipSizeX = m_clipSize.m_x;
-		if (m_viewSize.m_x != clipSizeX || m_clipSize.m_y != m_viewSize.m_y) {
-			CVSRect clipRect((short) m_clipOffsetX, (short) m_clipOffsetY, clipSizeX, m_clipSize.m_y);
+		short clipSizeX = m_clipSize.m_width;
+		if (m_viewSize.m_width != clipSizeX || m_clipSize.m_height != m_viewSize.m_height) {
+			CVSRect clipRect((short) m_clipOffsetX, (short) m_clipOffsetY, clipSizeX, m_clipSize.m_height);
 			const CVSRect& source = clipRect;
 			memcpy(&innerRect.m_width, &clipRect.m_width, sizeof(short));
 			memcpy(&innerRect.m_height, &clipRect.m_height, sizeof(short));
@@ -1824,14 +1824,14 @@ void C2D::SetClipSize()
 	short translatedX;
 
 	if (g_nZoomEnabled != 0 && g_nCompactPrimaryContextLayout == 0) {
-		m_clipSize.m_x = 0x140;
-		m_clipSize.m_y = 0xf0;
+		m_clipSize.m_width = 0x140;
+		m_clipSize.m_height = 0xf0;
 		m_clipOffsetX = 0xa0;
 		m_clipOffsetY = 0x78;
 	}
 	else {
-		m_clipSize.m_x = m_viewSize.m_x;
-		m_clipSize.m_y = m_viewSize.m_y;
+		m_clipSize.m_width = m_viewSize.m_width;
+		m_clipSize.m_height = m_viewSize.m_height;
 		m_clipOffsetX = 0;
 		m_clipOffsetY = 0;
 	}
@@ -1843,8 +1843,8 @@ void C2D::SetClipSize()
 	}
 	lookup = m_spriteGroundLookup;
 	if (lookup != NULL) {
-		width = (m_clipSize.m_x + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
-		height = (m_clipSize.m_y + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
+		width = (m_clipSize.m_width + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
+		height = (m_clipSize.m_height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
 		if (lookup->m_width != width || lookup->m_height != height) {
 			if (lookup->m_maskA != NULL) {
 				operator delete(lookup->m_maskA);
@@ -1866,7 +1866,7 @@ void C2D::SetClipSize()
 		count = (int) lookup->m_width * (int) lookup->m_height;
 		memset(lookup->m_maskB, 1, count);
 	}
-	clipSizeX = m_clipSize.m_x;
+	clipSizeX = m_clipSize.m_width;
 	m_spriteGroundLookupRectA.m_width = 0x33;
 	translatedX = clipSizeX - 0x43;
 	m_clipConfigured = 1;
@@ -1877,12 +1877,12 @@ void C2D::SetClipSize()
 	m_spriteGroundLookupRectA.m_y = 8;
 	m_spriteGroundLookupRectB.m_height = 0x20;
 	m_spriteGroundLookupRectB.m_y = 8;
-	g_nLevelViewportHorizontalRemainder = m_viewSize.m_x - clipSizeX;
-	g_nLevelViewportVerticalRemainder = m_viewSize.m_y - m_clipSize.m_y;
+	g_nLevelViewportHorizontalRemainder = m_viewSize.m_width - clipSizeX;
+	g_nLevelViewportVerticalRemainder = m_viewSize.m_height - m_clipSize.m_height;
 	m_redrawPending = 1;
 	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
 		font = m_textManager->GetFont(0xf8);
-		short remainingWidth = m_clipSize.m_x;
+		short remainingWidth = m_clipSize.m_width;
 		remainingWidth -= font->GetSize(g_demoText, TEXT_ADVANCE_X_POSITIVE).m_width;
 		m_demoTextRect.m_y = 0;
 		m_demoTextRect.m_x = remainingWidth / 2;
@@ -2361,11 +2361,11 @@ int C2D::DrawClippedRectangle(const CVSRect& p_rect)
 	height = p_rect.m_height;
 	x = p_rect.m_x;
 	y = p_rect.m_y;
-	if (x + width > m_clipSize.m_x) {
-		width = m_clipSize.m_x - x;
+	if (x + width > m_clipSize.m_width) {
+		width = m_clipSize.m_width - x;
 	}
-	if (y + height > m_clipSize.m_y) {
-		height = m_clipSize.m_y - y;
+	if (y + height > m_clipSize.m_height) {
+		height = m_clipSize.m_height - y;
 	}
 
 	clippedRect.m_width = (short) width;
@@ -2389,12 +2389,12 @@ int C2D::DrawClippedRectangle(const CVSRect& p_rect)
 		y = -0x18;
 	}
 	right = left + width + 0x20;
-	if (right > m_clipSize.m_x) {
-		right = m_clipSize.m_x;
+	if (right > m_clipSize.m_width) {
+		right = m_clipSize.m_width;
 	}
 	bottom = y + height + 0x30;
-	if (bottom > m_clipSize.m_y) {
-		bottom = m_clipSize.m_y;
+	if (bottom > m_clipSize.m_height) {
+		bottom = m_clipSize.m_height;
 	}
 	width = right / 0x20 - left / 0x20 + 3;
 
@@ -4047,7 +4047,7 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 	eObjectType objectType = p_viewData.m_objectType;
 	int screenX = p_viewData.m_positionX;
 	int screenY = p_viewData.m_positionY;
-	if (screenX > -40 && screenY > -40 && screenX < m_clipSize.m_x + 40 && screenY < m_clipSize.m_y + 40) {
+	if (screenX > -40 && screenY > -40 && screenX < m_clipSize.m_width + 40 && screenY < m_clipSize.m_height + 40) {
 		{
 			const int& gameX = (int) (unsigned short) p_viewData.m_gameX;
 			const int& gameY = (int) (unsigned short) p_viewData.m_gameY;
@@ -4457,8 +4457,8 @@ void C2D::SetOrigin()
 	origin.m_zFixed = (int) z << FIXED_POINT_FRACTION_BITS;
 
 	if (m_ai->m_gameStatus == GAME_STATUS_NOT_STARTED || m_ai->m_gameStatus == GAME_STATUS_RUNNING) {
-		int marginX = m_clipSize.m_x * 2 / 5;
-		int marginY = m_clipSize.m_y * 2 / 5;
+		int marginX = m_clipSize.m_width * 2 / 5;
+		int marginY = m_clipSize.m_height * 2 / 5;
 		m_originPosition = origin;
 
 		{
@@ -4483,13 +4483,13 @@ void C2D::SetOrigin()
 			changed = 1;
 			m_viewOriginY = projectedY - marginY;
 		}
-		if (m_clipSize.m_x - marginX < differenceX) {
+		if (m_clipSize.m_width - marginX < differenceX) {
 			changed = 1;
-			m_viewOriginX = projectedX - m_clipSize.m_x + marginX;
+			m_viewOriginX = projectedX - m_clipSize.m_width + marginX;
 		}
-		if (m_clipSize.m_y - marginY < differenceY) {
+		if (m_clipSize.m_height - marginY < differenceY) {
 			changed = 1;
-			m_viewOriginY = projectedY - m_clipSize.m_y + marginY;
+			m_viewOriginY = projectedY - m_clipSize.m_height + marginY;
 		}
 		if (changed != 0) {
 			SendCursorMsg();
@@ -4723,8 +4723,8 @@ void C2D::DrawObjects()
 	int scrollY = abs((int) owner.m_scrollDeltaY);
 	CVSRect borders[4];
 
-	if (owner.m_scrollPending != 0 && owner.m_redrawPending == 0 && scrollX < owner.m_clipSize.m_x &&
-		scrollY < owner.m_clipSize.m_y) {
+	if (owner.m_scrollPending != 0 && owner.m_redrawPending == 0 && scrollX < owner.m_clipSize.m_width &&
+		scrollY < owner.m_clipSize.m_height) {
 		unsigned char direction = (unsigned char) ((owner.m_scrollDeltaX < 0 ? SCROLL_OFFSET_X : 0) |
 												   (owner.m_scrollDeltaY < 0 ? SCROLL_OFFSET_Y : 0));
 		CVSRect exposed[2];
@@ -4735,13 +4735,13 @@ void C2D::DrawObjects()
 		case SCROLL_OFFSET_NONE:
 			retained = CVSRect((short) scrollX,
 							   (short) scrollY,
-							   owner.m_clipSize.m_x - (short) scrollX,
-							   owner.m_clipSize.m_y - (short) scrollY);
+							   owner.m_clipSize.m_width - (short) scrollX,
+							   owner.m_clipSize.m_height - (short) scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_x, (short) scrollY);
+				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_width, (short) scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(0, (short) scrollY, (short) scrollX, owner.m_clipSize.m_y - (short) scrollY);
+				exposed[1] = CVSRect(0, (short) scrollY, (short) scrollX, owner.m_clipSize.m_height - (short) scrollY);
 			}
 			break;
 		case SCROLL_OFFSET_X:
@@ -4749,25 +4749,25 @@ void C2D::DrawObjects()
 			destinationY = 0;
 			retained = CVSRect(0,
 							   (short) scrollY,
-							   owner.m_clipSize.m_x - (short) scrollX,
-							   owner.m_clipSize.m_y - (short) scrollY);
+							   owner.m_clipSize.m_width - (short) scrollX,
+							   owner.m_clipSize.m_height - (short) scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_x, (short) scrollY);
+				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_width, (short) scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(owner.m_clipSize.m_x - (short) scrollX,
+				exposed[1] = CVSRect(owner.m_clipSize.m_width - (short) scrollX,
 									 (short) scrollY,
 									 (short) scrollX,
-									 owner.m_clipSize.m_y - (short) scrollY);
+									 owner.m_clipSize.m_height - (short) scrollY);
 			}
 			if (owner.m_clipOffsetX > 0 || owner.m_clipOffsetY > 0) {
 				borders[0] = CVSRect((short) owner.m_clipOffsetX - (short) scrollX,
 									 (short) owner.m_clipOffsetY,
 									 (short) scrollX,
-									 owner.m_clipSize.m_y + (short) scrollY);
+									 owner.m_clipSize.m_height + (short) scrollY);
 				borders[1] = CVSRect((short) owner.m_clipOffsetX,
-									 owner.m_clipSize.m_y + (short) owner.m_clipOffsetY,
-									 owner.m_clipSize.m_x,
+									 owner.m_clipSize.m_height + (short) owner.m_clipOffsetY,
+									 owner.m_clipSize.m_width,
 									 (short) scrollY);
 			}
 			break;
@@ -4776,27 +4776,30 @@ void C2D::DrawObjects()
 			destinationX = 0;
 			retained = CVSRect((short) scrollX,
 							   0,
-							   owner.m_clipSize.m_x - (short) scrollX,
-							   owner.m_clipSize.m_y - (short) scrollY);
+							   owner.m_clipSize.m_width - (short) scrollX,
+							   owner.m_clipSize.m_height - (short) scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, owner.m_clipSize.m_y - (short) scrollY, owner.m_clipSize.m_x, (short) scrollY);
+				exposed[0] =
+					CVSRect(0, owner.m_clipSize.m_height - (short) scrollY, owner.m_clipSize.m_width, (short) scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(0, 0, (short) scrollX, owner.m_clipSize.m_y - (short) scrollY);
+				exposed[1] = CVSRect(0, 0, (short) scrollX, owner.m_clipSize.m_height - (short) scrollY);
 			}
 			break;
 		case SCROLL_OFFSET_XY:
 			destinationX = (short) scrollX;
 			destinationY = (short) scrollY;
-			retained = CVSRect(0, 0, owner.m_clipSize.m_x - (short) scrollX, owner.m_clipSize.m_y - (short) scrollY);
+			retained =
+				CVSRect(0, 0, owner.m_clipSize.m_width - (short) scrollX, owner.m_clipSize.m_height - (short) scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, owner.m_clipSize.m_y - (short) scrollY, owner.m_clipSize.m_x, (short) scrollY);
+				exposed[0] =
+					CVSRect(0, owner.m_clipSize.m_height - (short) scrollY, owner.m_clipSize.m_width, (short) scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(owner.m_clipSize.m_x - (short) scrollX,
+				exposed[1] = CVSRect(owner.m_clipSize.m_width - (short) scrollX,
 									 0,
 									 (short) scrollX,
-									 owner.m_clipSize.m_y - (short) scrollY);
+									 owner.m_clipSize.m_height - (short) scrollY);
 			}
 			break;
 		}
@@ -4818,14 +4821,14 @@ void C2D::DrawObjects()
 	}
 	else if (owner.m_scrollPending != 0 || owner.m_redrawPending != 0) {
 		owner.m_gdi->m_renderTarget->ResetScroll();
-		CVSRect fullRect(0, 0, (CVSSize*) &owner.m_clipSize);
+		CVSRect fullRect(0, 0, &owner.m_clipSize);
 		if (owner.m_redrawPending != 0) {
-			fullRect = CVSRect(0, 0, owner.m_clipSize.m_x, owner.m_clipSize.m_y);
+			fullRect = CVSRect(0, 0, owner.m_clipSize.m_width, owner.m_clipSize.m_height);
 		}
 		owner.m_depthClear.m_bounds = fullRect;
 		owner.m_depthClear.m_depth = 0;
 		owner.m_depthClear.Draw(owner.m_gdi);
-		DrawClippedRectangle(CVSRect(0, 0, owner.m_clipSize.m_x, owner.m_clipSize.m_y));
+		DrawClippedRectangle(CVSRect(0, 0, owner.m_clipSize.m_width, owner.m_clipSize.m_height));
 		owner.m_redrawPending = 0;
 	}
 	owner.m_scrollPending = 0;
@@ -4980,7 +4983,7 @@ void C2D::SortViewData()
 // FUNCTION: LEMBALL 0x00440000
 void C2D::Draw(const CVSRect& p_rect)
 {
-	if (m_gdi == NULL || m_clipSize.m_x <= 0 || m_clipSize.m_y <= 0) {
+	if (m_gdi == NULL || m_clipSize.m_width <= 0 || m_clipSize.m_height <= 0) {
 		return;
 	}
 	if (m_lemmingAnims->m_loaded == 0) {
@@ -5010,8 +5013,8 @@ void C2D::Draw(const CVSRect& p_rect)
 		int top = m_clipOffsetY + m_spriteGroundTranslatedPointRect.m_y;
 		int right = m_spriteGroundTranslatedPointRect.m_width + left;
 		int bottom = height + top;
-		int clipBottom = m_clipOffsetY + m_clipSize.m_y;
-		int clipRight = m_clipOffsetX + m_clipSize.m_x;
+		int clipBottom = m_clipOffsetY + m_clipSize.m_height;
+		int clipRight = m_clipOffsetX + m_clipSize.m_width;
 		if (left < m_clipOffsetX || top < m_clipOffsetY || clipRight <= right || bottom >= clipBottom) {
 			CVSRect translatedBounds;
 			CVSSize& translatedSize = translatedBounds;
@@ -5036,14 +5039,14 @@ void C2D::Draw(const CVSRect& p_rect)
 		int primitiveIndex = m_primitiveCount++;
 		CClipRect& background = m_clipRects[primitiveIndex];
 		if (m_clipConfigured == 0 && m_redrawPending == 0) {
-			backgroundBounds.m_width = m_clipSize.m_x;
-			backgroundBounds.m_height = m_clipSize.m_y;
+			backgroundBounds.m_width = m_clipSize.m_width;
+			backgroundBounds.m_height = m_clipSize.m_height;
 			backgroundBounds.m_x = 0;
 			backgroundBounds.m_y = 0;
 		}
 		else {
-			backgroundBounds.m_width = m_clipSize.m_x;
-			backgroundBounds.m_height = m_clipSize.m_y;
+			backgroundBounds.m_width = m_clipSize.m_width;
+			backgroundBounds.m_height = m_clipSize.m_height;
 			backgroundBounds.m_x = 0;
 			backgroundBounds.m_y = 0;
 		}
@@ -5056,8 +5059,8 @@ void C2D::Draw(const CVSRect& p_rect)
 	if (m_clipConfigured != 0 || m_redrawPending != 0) {
 		CVSRect translatedBounds;
 		m_clipConfigured = 0;
-		translatedBounds.m_width = m_clipSize.m_x;
-		translatedBounds.m_height = m_clipSize.m_y;
+		translatedBounds.m_width = m_clipSize.m_width;
+		translatedBounds.m_height = m_clipSize.m_height;
 		translatedBounds.m_x = 0;
 		translatedBounds.m_y = 0;
 		m_lineAt998.m_bounds = translatedBounds;
@@ -5150,8 +5153,8 @@ void C2D::DrawZBuff_Anim(int p_index, unsigned short p_z)
 void C2D::DrawObjectsZBuff()
 {
 	CVSRect backgroundBounds;
-	backgroundBounds.m_width = m_clipSize.m_x;
-	backgroundBounds.m_height = m_clipSize.m_y;
+	backgroundBounds.m_width = m_clipSize.m_width;
+	backgroundBounds.m_height = m_clipSize.m_height;
 	backgroundBounds.m_y = 0;
 	backgroundBounds.m_x = 0;
 	int primitiveIndex = m_primitiveCount++;

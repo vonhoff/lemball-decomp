@@ -33286,7 +33286,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "??0C2D@@QAE@PAVCMain2DDisplay@@PAVCAI@@PAVCGDI@@PAVCMap@@ABVCVSRect@@@Z",
       "size": 1906,
-      "fingerprint": "363854d1a7eb03f8ffd1ef738669c35b060e025761e3a1e297e75af007c8be25",
+      "fingerprint": "d086b9b4a8436571c62991540c5c2e730f05946349dbbd672fc6d864d6fd8e0a",
       "references": [
         {
           "offset": 538,
@@ -33400,7 +33400,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "??1C2D@@UAE@XZ",
       "size": 333,
-      "fingerprint": "837e59f8b302ba074660262fcb899a5f36d1b2fb0edcb4aaf0e4b5be49b391fa",
+      "fingerprint": "4ed7bbadec267a3018aab12a4150bc104ed0a5204e42ce2e4c18955b4ce70b0f",
       "references": [
         {
           "offset": 76,
@@ -36664,7 +36664,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?Draw@C2D@@UAEXABVCVSRect@@@Z",
       "size": 1023,
-      "fingerprint": "d72b1ff6982c345a9fdf1fd38d55efa4a0138621ec8784cfd3558d9c1df29d7d",
+      "fingerprint": "b7b46e163e41b05cef867b3380e122e68493a186e718059f1d075a55e3b22876",
       "references": [
         {
           "offset": 65,
@@ -36874,11 +36874,11 @@
       "caller": 4458464,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?CalcZValue_Sprite@C2D@@QAEGH@Z",
-      "size": 74,
-      "fingerprint": "c4fb998613947f71b13a2505dd6fddc5ff7df346bf32b37c5dcf8917cae5378b",
+      "size": 73,
+      "fingerprint": "522d539d5167c52c1cb6c88c40a21e1b3c460facbee785de5901af377f27dda4",
       "references": [
         {
-          "offset": 59,
+          "offset": 58,
           "original_instruction": 4458537,
           "original_bytes": "e85c19fcff",
           "thunk": 4202890,
@@ -36890,25 +36890,18 @@
       "caller": 4458560,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?CalcGroundCode@C2D@@QAEGW4eObjectType@@HHG@Z",
-      "size": 953,
-      "fingerprint": "774ad3231fb317e6837eba1b804d7b8b03c760df51e1221cafa33887877cf178",
+      "size": 949,
+      "fingerprint": "d6dec413dd6c893d0ba3a8511c2981df510171f9f6ab1653bc5c7824a0f2d8c6",
       "references": [
         {
-          "offset": 282,
+          "offset": 384,
           "original_instruction": 4458834,
           "original_bytes": "e84e20fcff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 385,
-          "original_instruction": 4458930,
-          "original_bytes": "e8ee1ffcff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        },
-        {
-          "offset": 466,
+          "offset": 465,
           "original_instruction": 4459013,
           "original_bytes": "e89b1ffcff",
           "thunk": 4204965,
