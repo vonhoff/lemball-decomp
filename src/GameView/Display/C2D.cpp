@@ -554,8 +554,8 @@ void C2D::ShutDown()
 	}
 	spriteGroundLookup = m_spriteGroundLookup;
 	if (spriteGroundLookup != NULL) {
-		operator delete(spriteGroundLookup->m_maskA);
-		operator delete(spriteGroundLookup->m_maskB);
+		delete[] spriteGroundLookup->m_maskA;
+		delete[] spriteGroundLookup->m_maskB;
 		operator delete(spriteGroundLookup);
 	}
 	if (m_padToButton != NULL) {
@@ -1847,19 +1847,17 @@ void C2D::SetClipSize()
 		height = (m_clipSize.m_height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
 		if (lookup->m_width != width || lookup->m_height != height) {
 			if (lookup->m_maskA != NULL) {
-				operator delete(lookup->m_maskA);
+				delete[] lookup->m_maskA;
 				lookup->m_maskA = NULL;
 			}
 			if (lookup->m_maskB != NULL) {
-				operator delete(lookup->m_maskB);
+				delete[] lookup->m_maskB;
 				lookup->m_maskB = NULL;
 			}
 			lookup->m_width = (short) width;
 			lookup->m_height = (short) height;
-			lookup->m_maskA =
-				(unsigned char*) operator new((unsigned int) lookup->m_width*(unsigned int) lookup->m_height);
-			lookup->m_maskB =
-				(unsigned char*) operator new((unsigned int) lookup->m_width*(unsigned int) lookup->m_height);
+			lookup->m_maskA = new unsigned char[(unsigned int) lookup->m_width * (unsigned int) lookup->m_height];
+			lookup->m_maskB = new unsigned char[(unsigned int) lookup->m_width * (unsigned int) lookup->m_height];
 		}
 		count = (int) lookup->m_width * (int) lookup->m_height;
 		memset(lookup->m_maskA, 1, count);
