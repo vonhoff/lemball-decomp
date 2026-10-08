@@ -623,18 +623,11 @@ void CSurface::Blit(class CClipRect* p_clipRect)
 	short clipRight;
 
 	if ((p_clipRect->m_flags & CClipRect::CLIP_EXPAND_BOUNDS) == 0) {
-		const short* coords;
-
 		clip->m_width = p_clipRect->m_bounds.m_width;
 		clip->m_height = p_clipRect->m_bounds.m_height;
-		if (&p_clipRect->m_bounds.m_width != NULL) {
-			coords = &p_clipRect->m_bounds.m_x;
-		}
-		else {
-			coords = NULL;
-		}
-		clip->m_x = *coords;
-		clip->m_y = coords[1];
+		const CVSPoint* point = &p_clipRect->m_bounds;
+		clip->m_x = point->m_x;
+		clip->m_y = point->m_y;
 	}
 	else if ((int) p_clipRect->m_bounds.m_width * (int) p_clipRect->m_bounds.m_height != 0) {
 		clipRight = clip->m_x;
