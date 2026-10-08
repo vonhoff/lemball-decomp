@@ -1,10 +1,10 @@
 {
   "version": 1,
   "original_sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
-  "native_sha256": "c0c726626562065fd952fb35f5f09a21c922c8399618f5a95d1a9549c2a635e5",
-  "rebuilt_sha256": "36fccf10b551f73ecc6825eae31562fb797f2f91e627e10ff49de1b551d444e1",
+  "native_sha256": "9d1aef7ae85b9bf1f9d091a9b7f9c86142751c1c47f9bdbf9b207a0ec3092745",
+  "rebuilt_sha256": "5e65bab3b325d85707421012cf73ff75838fd5fe5cd5ee8cc50cfdd8d31b7846",
   "baseline_sha256": "85b6c938978407201bda51e6dd2d6759713b98f33a202425d623246b8c92006f",
-  "manifest_sha256": "5c1951343456e18315f23f1293bcbb008a9e8e0ea21a0e0fb48c4b6e9ef309a5",
+  "manifest_sha256": "a9a94efa03c764a49812d617901fefcbf25fc994961ae47e501593b5aefd4140",
   "ghidra_snapshot_sha256": "c27094db4d3e0755778253abc3e6423ba35249c6c920daebb5e634aa647928ec",
   "reference_scope": "Immediate operands decoded within catalogued original function extents; all PE base-relocated DWORD pointers; optional full-scope Ghidra xrefs. Static analysis cannot prove an entry unused. Ghidra names/comments are hypotheses; original bytes and source layouts supply evidence.",
   "table_entries": 2077,
@@ -906,7 +906,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
         "symbol": "?MarkGroundAnimAndLiftBounds@C2D@@QAEXXZ",
         "size": 1050,
-        "fingerprint": "4984a5565f1d0061936e2fd8c7a36c9d00d5688361be6caea144ce2740572e88"
+        "fingerprint": "4e7b64e84f2263eca22fc19ef58fe0c8df9996d95c99a82208fdfc7ae8283cd3"
       },
       "verified": true
     },
@@ -2238,7 +2238,7 @@
         "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
         "symbol": "?BuildObjectClipData@C2D@@QAEXAAVCViewData@@H@Z",
         "size": 2789,
-        "fingerprint": "6470b8fc05155215ba412b7aed80fc48377cf02cc50a519b7fc469b24755830f"
+        "fingerprint": "df62dc16b89a33c963eac17626e1109db72a324bd389f32e44fb0e9c46f2f806"
       },
       "verified": true
     },
@@ -3192,21 +3192,12 @@
           "kind": "code",
           "bytes": "e8f259fcff",
           "instruction": "call 0x401e4c",
-          "route": null,
-          "native_evidence": {
-            "definition": {
-              "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-              "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z"
-            },
-            "fingerprint": "b6720eb74c263707980c4e8aecbf3f06b2b5b80e810e2aea700dd04f2e11768d",
-            "reason": "Native references exist; no verified instruction alignment and relocation route",
-            "candidates": [
-              {
-                "offset": 591,
-                "bytes": "e84c040000"
-              }
-            ],
-            "next_step": "Compare original/native control flow and argument setup around these candidates; require exact COFF relocation and instruction correspondence before routing."
+          "route": {
+            "owner": 4440576,
+            "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
+            "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z",
+            "offset": 591,
+            "source_symbol": "?DrawLemmingOnBalloon@C2D@@QAEXAAVCViewData@@HH@Z"
           }
         }
       ],
@@ -5320,21 +5311,12 @@
           "kind": "code",
           "bytes": "e80a68fcff",
           "instruction": "call 0x402c7a",
-          "route": null,
-          "native_evidence": {
-            "definition": {
-              "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-              "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z"
-            },
-            "fingerprint": "b6720eb74c263707980c4e8aecbf3f06b2b5b80e810e2aea700dd04f2e11768d",
-            "reason": "Native references exist; no verified instruction alignment and relocation route",
-            "candidates": [
-              {
-                "offset": 613,
-                "bytes": "e856fbffff"
-              }
-            ],
-            "next_step": "Compare original/native control flow and argument setup around these candidates; require exact COFF relocation and instruction correspondence before routing."
+          "route": {
+            "owner": 4440576,
+            "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
+            "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z",
+            "offset": 613,
+            "source_symbol": "?DrawLemmingLanding@C2D@@QAEXAAVCViewData@@I@Z"
           }
         }
       ],
@@ -7157,21 +7139,12 @@
           "kind": "code",
           "bytes": "e85173fcff",
           "instruction": "call 0x40374c",
-          "route": null,
-          "native_evidence": {
-            "definition": {
-              "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-              "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z"
-            },
-            "fingerprint": "b6720eb74c263707980c4e8aecbf3f06b2b5b80e810e2aea700dd04f2e11768d",
-            "reason": "Native references exist; no verified instruction alignment and relocation route",
-            "candidates": [
-              {
-                "offset": 496,
-                "bytes": "e87bfcffff"
-              }
-            ],
-            "next_step": "Compare original/native control flow and argument setup around these candidates; require exact COFF relocation and instruction correspondence before routing."
+          "route": {
+            "owner": 4440576,
+            "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
+            "symbol": "?DrawLemming@C2D@@QAEXAAVCViewData@@HI@Z",
+            "offset": 496,
+            "source_symbol": "?DrawLemmingFall@C2D@@QAEXAAVCViewData@@I@Z"
           }
         }
       ],
@@ -7328,23 +7301,148 @@
     "new_exact_jump_entries": 16,
     "new_exact_original_bytes": 139,
     "jump_entries_verified": 2078,
-    "references_verified": 7188,
+    "references_verified": 7191,
     "verification_errors": 0,
     "progress": {
-      "exact_percent": 53.425402774992335,
-      "effective_percent": 65.30498866997232,
-      "exact_byte_delta": -439,
-      "effective_byte_delta": -1315
+      "exact_percent": 53.51484429568261,
+      "effective_percent": 65.4875600214844,
+      "exact_byte_delta": -51,
+      "effective_byte_delta": -523
     },
     "regression_review": {
       "0x00434f00": "UnLoadAnimation: same inclusive resource traversal, signed tests, delete/clear/unload calls and RET 8; register roles and compare direction changed.",
       "0x00438210": "OnButtonDown: coordinate loads, short additions and saved locals rescheduled; same call arguments, branching and RET 8.",
       "0x0043bce0": "LemmingFly: view-data/output/height register roles and temporary slots changed; same bounds, calls, integer arithmetic, clamp limits and RET 8.",
       "0x0043c940": "DrawBalloon: receiver and coordinate register roles changed; same drawing arguments, calls and RET 8.",
-      "0x0043cd50": "DrawPaintGun: receiver/coordinate registers and load scheduling changed; same frame tests, drawing arguments, calls and RET 4.",
-      "0x0043d590": "DrawDoor: action and elapsed-time registers exchanged; same switch cases, arithmetic, drawing calls and RET 4.",
+      "0x0043cd50": "Recovered: 100% raw/Effective after removing the redundant DrawBalloon receiver alias and refreshing relocation routes; no DrawPaintGun body change.",
+      "0x0043d590": "Recovered: 100% raw/Effective with action/objectType declarations before elapsed, matching original action EDX/elapsed EAX live values; assignments and rendering unchanged.",
       "0x0043fd80": "DrawTime: equality CMP operands exchanged; still 100% Effective.",
-      "0x0043c200": "DrawLemming: register assignment/scheduling changed. Three saved routes (DrawLemmingFall, DrawLemmingOnBalloon, DrawLemmingLanding) no longer align conservatively; direct native calls and corresponding case arguments remain present. Existing body and jump pairings retained."
+      "0x0043c200": "Register assignment/scheduling differences remain; raw 63.48228043143297%. Three lost routes restored from action-table/argument/COFF evidence at offsets 496, 591, 613. Recovery rerun retains all three; jump/body pairings unchanged."
+    },
+    "regression_recovery": {
+      "start_commit": "2a5365d3",
+      "saved_baseline": "build-msvc400/linker-thunks/pre-inferred-implementations/",
+      "total_original_bytes": 433803,
+      "pre_implementations": {
+        "exact_bytes": 232200,
+        "effective_bytes": 284610
+      },
+      "start": {
+        "exact_bytes": 231761,
+        "effective_bytes": 283295
+      },
+      "current": {
+        "exact_bytes": 232149,
+        "effective_bytes": 284087
+      },
+      "net_from_start": {
+        "exact_bytes": 388,
+        "effective_bytes": 792
+      },
+      "net_from_pre_implementations": {
+        "exact_bytes": -51,
+        "effective_bytes": -523
+      },
+      "inventory_extents_start_metadata_unchanged": true,
+      "inferred_bodies_and_entries_still_exact": 32,
+      "review": "Saved baseline EXE decoded at addresses from its reccmp.json; compared with original and current x86. Existing bodies were unchanged by 2a5365d3; allocation/scheduling changes are consistent with declaration/context sensitivity. Exact MSVC allocator mechanism not established. Current batch loses 404 Exact bytes in DrawSlinky (ESI/EDI exchange); Effective remains 100%. Other changed rows remain partial; source bodies unchanged. No new Effective loss.",
+      "remaining_effective_losses_from_pre_implementations": [
+        "0x00434f00",
+        "0x00438210",
+        "0x0043bce0",
+        "0x0043c940"
+      ],
+      "remaining_exact_losses_from_pre_implementations": [
+        "0x00438210",
+        "0x0043bce0",
+        "0x0043c940",
+        "0x0043fd80"
+      ],
+      "changed_rows": [
+        {
+          "address": "0x004358d0",
+          "name": "C2D::C2D",
+          "original_bytes": 1906,
+          "raw_before": 94.80198019801979,
+          "raw_after": 93.06930693069307,
+          "effective_before": false,
+          "effective_after": false
+        },
+        {
+          "address": "0x0043cbb0",
+          "name": "C2D::DrawSlinky",
+          "original_bytes": 404,
+          "raw_before": 100.0,
+          "raw_after": 88.31168831168831,
+          "effective_before": true,
+          "effective_after": true
+        },
+        {
+          "address": "0x0043cd50",
+          "name": "C2D::DrawPaintGun",
+          "original_bytes": 212,
+          "raw_before": 83.33333333333334,
+          "raw_after": 100.0,
+          "effective_before": false,
+          "effective_after": true
+        },
+        {
+          "address": "0x0043d590",
+          "name": "C2D::DrawDoor",
+          "original_bytes": 580,
+          "raw_before": 95.75471698113208,
+          "raw_after": 100.0,
+          "effective_before": false,
+          "effective_after": true
+        },
+        {
+          "address": "0x0043df30",
+          "name": "C2D::AddViewIndexToObjectClipGrid",
+          "original_bytes": 741,
+          "raw_before": 65.59356136820925,
+          "raw_after": 62.776659959758554,
+          "effective_before": false,
+          "effective_after": false
+        },
+        {
+          "address": "0x0043e220",
+          "name": "C2D::BuildObjectClipData",
+          "original_bytes": 2789,
+          "raw_before": 93.80315917375455,
+          "raw_after": 94.04617253948967,
+          "effective_before": false,
+          "effective_after": false
+        },
+        {
+          "address": "0x0043f060",
+          "name": "C2D::MarkGroundAnimAndLiftBounds",
+          "original_bytes": 1048,
+          "raw_before": 75.642965204236,
+          "raw_after": 76.55068078668684,
+          "effective_before": false,
+          "effective_after": false
+        },
+        {
+          "address": "0x0043f620",
+          "name": "C2D::DrawObjects",
+          "original_bytes": 1728,
+          "raw_before": 37.94871794871795,
+          "raw_after": 26.153846153846157,
+          "effective_before": false,
+          "effective_after": false
+        },
+        {
+          "address": "0x00440840",
+          "name": "C2D::CalcGroundCode",
+          "original_bytes": 957,
+          "raw_before": 49.923896499238964,
+          "raw_after": 42.6179604261796,
+          "effective_before": false,
+          "effective_after": false
+        }
+      ],
+      "reverted_trials": "Loading-object typed new changes constructor scheduling; six typed resource arrays lose the 76-byte Effective UnLoadPALETTE match. Both restored; no further variants.",
+      "validation": "Incremental build, source policy/catalog/annotation checks, scoped clang-format, nine thunk tests, CRLF-aware git diff --check, 2078 jump entries/7191 references verified without errors. Canonical reports refreshed."
     }
   },
   "symbol_review": {
@@ -7368,5 +7466,35 @@
     "mac_68k_live_symbols": "Ghidra symbol iterator: 11848 total symbols, 462 candidate names, zero missing catalog names.",
     "mac_68k_raw_resource": "Installations/LEMBALL-MAC-EXTRACTED/Lemmings Paintball (68K).rsrc: independent Pascal MacsBug marker scan, 462 candidate names, zero missing catalog names. Four apparent ASCII-only discoveries were leading Pascal length bytes.",
     "outcome": "No additional candidate 68K symbol identities recovered for these 16 Windows bodies. No original Mac symbol assigned from identical short-return behavior alone."
+  },
+  "alignment_review": {
+    "owner": "0x0043c200",
+    "native_fingerprint": "b6720eb74c263707980c4e8aecbf3f06b2b5b80e810e2aea700dd04f2e11768d",
+    "original_dispatch": "MOV AL,[EDX+0x43c5e4]; JMP [EAX*4+0x43c590]",
+    "native_dispatch": "MOV AL,[EDX+0x421280]; JMP [EAX*4+0x42122c]",
+    "routes": [
+      {
+        "action": 11,
+        "table_index": 10,
+        "original_call": "0x0043c3f6",
+        "native_offset": 496,
+        "callee": "DrawLemmingFall"
+      },
+      {
+        "action": 16,
+        "table_index": 15,
+        "original_call": "0x0043c455",
+        "native_offset": 591,
+        "callee": "DrawLemmingOnBalloon"
+      },
+      {
+        "action": 19,
+        "table_index": 16,
+        "original_call": "0x0043c46b",
+        "native_offset": 613,
+        "callee": "DrawLemmingLanding"
+      }
+    ],
+    "evidence": "Same action blocks and joins; ECX this, view-data/remapped forwarding, balloon argument zero-extends WORD+0x1c. Exact native COFF REL32 symbols and linked targets checked. Restored routes survive recover_thunks rerun; source and ABI unchanged."
   }
 }

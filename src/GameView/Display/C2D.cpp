@@ -3030,7 +3030,6 @@ void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_r
 // FUNCTION: LEMBALL 0x0043c940
 void C2D::DrawBalloon(CViewData& p_viewData, int p_playerIndex)
 {
-	C2D* view = this;
 	CBaseRemap* remap;
 	int x = p_viewData.m_positionX;
 	int y = p_viewData.m_positionY;
@@ -3052,14 +3051,14 @@ void C2D::DrawBalloon(CViewData& p_viewData, int p_playerIndex)
 	}
 
 	if (p_playerIndex < 4) {
-		remap = view->m_remaps[p_playerIndex];
+		remap = m_remaps[p_playerIndex];
 	}
 	else {
 		remap = NULL;
 	}
 
-	view->m_lemmingAnims->DrawAnim(x + xOffset - 16, y + yOffset / 4 - 64, RES_GAME_BALLOON, 0, 0, (CRemap*) remap);
-	view->m_lemmingAnims->DrawAnim(x + xOffset - 9, y + yOffset / 4 - 9, RES_GAME_BALLOON_SHADOW, 0, 0, NULL);
+	m_lemmingAnims->DrawAnim(x + xOffset - 16, y + yOffset / 4 - 64, RES_GAME_BALLOON, 0, 0, (CRemap*) remap);
+	m_lemmingAnims->DrawAnim(x + xOffset - 9, y + yOffset / 4 - 9, RES_GAME_BALLOON_SHADOW, 0, 0, NULL);
 }
 
 // FUNCTION: LEMBALL 0x0043c9f0
@@ -3571,9 +3570,9 @@ void C2D::DrawDoor(CViewData& p_viewData)
 {
 	int x;
 	int y;
-	int elapsed;
 	eAction action;
 	eObjectType objectType;
+	int elapsed;
 	unsigned long resourceId;
 	int playerIndex;
 	CBaseRemap* remap;
