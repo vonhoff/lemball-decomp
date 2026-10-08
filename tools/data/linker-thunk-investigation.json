@@ -8573,6 +8573,33 @@
       "build-msvc400/linker-thunks/runtime/cheatengine-samples.json",
       "build-msvc400/linker-thunks/runtime/addresses.json",
       "build-msvc400/linker-thunks/runtime/route-addresses.json"
-    ]
+    ],
+    "balloon_followup": {
+      "status": "captured; probe removed",
+      "process_id": 11220,
+      "breakpoint_id": "thunk-runtime-balloon-followup",
+      "rebuilt_entry": "0x470044",
+      "original_entry": "0x401e4c",
+      "original_body": "0x43c8a0",
+      "name": "C2D::DrawLemmingOnBalloon",
+      "runtime_image_sha256": "eb07684cfbe1783c6087f866c7f9a8d20990503213121793336bee596c0b73b5",
+      "scope": "Rebuilt recovered route; no evidence for the 19 unpaired original bodies.",
+      "temporary_bullet_immunity": {
+        "address": "0x26aed0c",
+        "original": 0,
+        "enabled": 1,
+        "restored": 0,
+        "restoration_verified": true,
+        "restored_at_utc": "2026-10-08T13:02:16.226103+00:00"
+      },
+      "captured_at_utc": "2026-10-08T13:02:51.638304+00:00",
+      "hit_count_at_capture": 1374,
+      "sample_count": 25,
+      "action_register_values": [
+        16
+      ],
+      "capture_artifact": "build-msvc400/linker-thunks/runtime/balloon-capture.json",
+      "cleanup": "Probe removed; CE debugger inactive; bullet-immunity flag restored and reread as zero. Game left open."
+    }
   }
 }
