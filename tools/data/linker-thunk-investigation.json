@@ -8506,5 +8506,73 @@
     "fresh_ghidra_total_references": 21,
     "inspection_limitations": "Static reference absence is not proof of unused code. Ghidra names/comments are hypotheses. Mac symbols support identity only when independently mapped; Windows ABI still requires Windows evidence.",
     "remaining_short_return_entries": 14
+  },
+  "runtime_review": {
+    "status": "runtime capture verified on rebuilt image only",
+    "captured_at_utc": "2026-10-08 12:56:15 UTC",
+    "startup_checks": false,
+    "arguments": [
+      "/NOEFFECTS",
+      "/NOMUSIC",
+      "/NOANIM",
+      "/DEBUGFILE",
+      "/NOWAIT"
+    ],
+    "cwd": "C:\\Dev\\lemball-decomp\\build-msvc400\\linker-thunks\\runtime\\game",
+    "files": {
+      "LEMBALL.EXE": "eb07684cfbe1783c6087f866c7f9a8d20990503213121793336bee596c0b73b5",
+      "LEMBALL.pdb": "717f607d8d9814754922fe419127b5ce4b7dd68ccf49c55bc3e2ada06ab8ac6a",
+      "DSPDIB16.DLL": "16f87ee764be39a5c4dbbe93c2382c59d7007569f74f4f231473774b82671940",
+      "DSPDIB32.DLL": "d54eb780c20be6cf1dd8a3fb55f88a33e750f23aaf76ffb553559e88f9c67e7a",
+      "PBAIMOG.VSR": "e1943b1b577059c4a302af23c3dc1f7c0ea66055b0091e32c825c645a5345359"
+    },
+    "support_files_match_data": true,
+    "native_debug_api": {
+      "probes": 9,
+      "captured": [
+        "VSmain",
+        "CGame::CGame",
+        "CCDLoadAnim::CCDLoadAnim",
+        "CGame::Run",
+        "CGame::Process",
+        "CBallManager::LoadLevel",
+        "CMoverManager::Initialise",
+        "C2D::DrawLemming"
+      ],
+      "detached": true
+    },
+    "cheatengine": {
+      "hit_counts_at_capture": {
+        "calibration": 161,
+        "thunk-runtime-fall": 1179,
+        "thunk-runtime-landing": 705,
+        "thunk-runtime-balloon": 0,
+        "thunk-runtime-ball-init": 14,
+        "thunk-runtime-primitive-delete": 0,
+        "thunk-runtime-mover-init": 11
+      },
+      "fall_and_landing_action_values": [
+        11,
+        19
+      ],
+      "mover_initialise_capacity_values": [
+        0
+      ]
+    },
+    "scope": "All 19 unpaired original bodies remain unpaired. Captures corroborate rebuilt execution only; no original identity, argument-type, or retention-mechanism recovery. No-hit probes do not prove unused code. CE stack samples omit the DWORD at ESP.",
+    "cleanup": "Own breakpoints removed; native debugger detached; CE debug_isDebugging() confirmed false. Staged game left open. Normal startup checks restored for the canonical build.",
+    "canonical_verification": {
+      "original_sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
+      "rebuilt_sha256": "c38d3f51167308d269fcf468771e6e8923b43b0be49a5e190ff1c1645bcdbba0",
+      "thunks_verified": 2059,
+      "references_verified": 7189,
+      "errors": []
+    },
+    "artifacts": [
+      "build-msvc400/linker-thunks/runtime/events.jsonl",
+      "build-msvc400/linker-thunks/runtime/cheatengine-samples.json",
+      "build-msvc400/linker-thunks/runtime/addresses.json",
+      "build-msvc400/linker-thunks/runtime/route-addresses.json"
+    ]
   }
 }
