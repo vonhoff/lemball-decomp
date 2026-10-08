@@ -608,7 +608,7 @@ void C2D::RegisterRemaps()
 	paletteSize = (int) palette->m_entryCount;
 	remapIndex = 0;
 	do {
-		m_remapTables[remapIndex] = (unsigned char*) operator new(paletteSize);
+		m_remapTables[remapIndex] = new unsigned char[paletteSize];
 		int i = 0;
 		if (paletteSize > 0) {
 			do {

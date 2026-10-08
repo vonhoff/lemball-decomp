@@ -25,7 +25,7 @@ CBaseRemap::CBaseRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePa
 CBaseRemap::~CBaseRemap()
 {
 	if (m_remap != NULL) {
-		operator delete(m_remap);
+		delete[] m_remap;
 	}
 	if (m_paletteResource != NULL) {
 		m_paletteResource->UnLoad();
@@ -116,7 +116,7 @@ void CBaseRemap::CalculateGreyScale()
 		m_remap[paletteIndex] = (unsigned char) bestIndex;
 	}
 
-	operator delete(greyIndices);
+	delete[] greyIndices;
 	--m_paletteResource->m_directUseCount;
 }
 

@@ -735,7 +735,7 @@ void CPreviewDrawer::RegisterRemaps()
 	int i;
 
 	palette = CResPALETTE::Load(RES_PALETTES_TITLEPALETTE);
-	m_remapTable = (unsigned char*) operator new(0x100);
+	m_remapTable = new unsigned char[0x100];
 	i = 0;
 	do {
 		m_remapTable[i] = (unsigned char) i;
