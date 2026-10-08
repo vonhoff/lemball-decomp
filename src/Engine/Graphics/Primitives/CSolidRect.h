@@ -29,6 +29,9 @@ public:
 	unsigned int m_colour; // 0x0c
 };
 
+// SYNTHETIC: LEMBALL 0x004395f0
+// CSolidRect::`scalar deleting destructor'
+
 // SYNTHETIC: LEMBALL 0x00469930
 // CSolidRect::`vector deleting destructor'
 

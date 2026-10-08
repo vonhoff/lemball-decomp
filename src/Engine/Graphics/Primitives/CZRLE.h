@@ -49,4 +49,7 @@ public:
 // SYNTHETIC: LEMBALL 0x00467ba0
 // CZRLE::~CZRLE
 
+// SYNTHETIC: LEMBALL 0x00469b60
+// CZRLE::`scalar deleting destructor'
+
 #endif

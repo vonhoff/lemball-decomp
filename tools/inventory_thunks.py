@@ -65,13 +65,13 @@ BODY_NOTES = {
         "next_step": "Identify the wrapper's Windows caller or pointer owner and the method intended on member+0x78; preserve existing CCDLoadAnim mappings.",
     },
     0x4395F0: {
-        "evidence": "31-byte scalar deleting wrapper: writes CPrimitive vtable 0x496ca8; flags bit 0 conditionally calls delete at 0x45a790; returns this; RET 4. Empty derived-class wrappers can emit identical bytes and relocations. CPrimitive at 0x432350 is established; class identity at 0x4395f0 remains unresolved. Native CSolidRect and CZRLE scalar wrappers are unpaired candidates.",
+        "evidence": "31-byte scalar deleting wrapper: CPrimitive vtable 0x496ca8, conditional delete 0x45a790, returns this, RET 4. CSolidRect class name inferred from the surrounding C2D primitive constructor/destructor group; body and linker slot match 100%. CZRLE scalar at 0x469b60 is inferred from the CText group. Identical bytes alone do not establish either class name.",
         "source": [
             "src/Engine/Graphics/Primitives/CPrimitive.h",
             "src/Engine/Graphics/Primitives/CSolidRect.h",
             "src/Engine/Graphics/Primitives/CZRLE.h",
         ],
-        "next_step": "Identify the class using independent original Windows caller, pointer-owner or symbol evidence; distinguish 0x4395f0 from the identical unpaired body at 0x469b60. Preserve the existing CPrimitive mapping at 0x432350. See tools/data/primitive-destructor-probe.json.",
+        "next_step": "Retain inferred scalar annotations and the established CPrimitive mapping at 0x432350; revise class names if independent original identity evidence contradicts the generated-function groups.",
     },
 }
 

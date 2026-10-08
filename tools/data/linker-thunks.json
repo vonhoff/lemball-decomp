@@ -14638,6 +14638,17 @@
       "target_symbol": "?GetViewData@CTrapDoor@@UAEXAAVCViewData@@@Z"
     },
     {
+      "address": 4208235,
+      "target": 4429296,
+      "original_bytes": "e9805f0300",
+      "symbol": "__lemball_jump_0040366b",
+      "target_symbol": "??_GCSolidRect@@UAEPAXI@Z",
+      "definition": {
+        "object": "CMakeFiles/LEMBALL.dir/src/Frontend/About/CAboutScreen.cpp.obj",
+        "symbol": "??_GCSolidRect@@UAEPAXI@Z"
+      }
+    },
+    {
       "address": 4208240,
       "target": 4429664,
       "original_bytes": "e9eb600300",
