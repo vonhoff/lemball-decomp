@@ -28,6 +28,7 @@ public:
 	virtual void Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title); // vtable+0x04
 	virtual void Destroy();                                                      // vtable+0x74
 	virtual void Move(const CVSPoint& p_point);                                  // vtable+0x38
+	virtual void Resize(CVSSize p_size);                                         // vtable+0x88
 	virtual void MoveAbsolute(const CVSPoint& p_point);                          // vtable+0x8c
 	virtual void SetFocusWindow();                                               // vtable+0x90
 	virtual void Dummy94();                                                      // vtable+0x94

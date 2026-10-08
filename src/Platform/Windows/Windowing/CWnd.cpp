@@ -1000,6 +1000,11 @@ void CWnd::_SetRelTL(const CVSPoint& p_point)
 	_SetRect(rect);
 }
 
+// FUNCTION: LEMBALL 0x00465a40
+void CWnd::Resize(CVSSize p_size)
+{
+}
+
 // FUNCTION: LEMBALL 0x00465a90
 unsigned int CWnd::GetStyle()
 {
