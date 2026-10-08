@@ -346,6 +346,76 @@ def make_thunk(engine, callee, entry, target_symbol, aliases):
     return thunk
 
 
+def name_jump_destinations(engine, functions, entries):
+    """Use decoded E9 destinations for recovery alignment, keeping raw route checks."""
+    parser = engine.function_comparator.orig_sanitize
+    lookup = parser.name_lookup
+    destinations = {
+        entry: destination
+        for entry in entries
+        if (destination := read_jump_target(engine.orig_bin, entry)) in functions
+    }
+
+    def lookup_jump(address, exact=False, indirect=False):
+        if not indirect and address in destinations:
+            return lookup(destinations[address], exact=True)
+        return lookup(address, exact=exact, indirect=indirect)
+
+    parser.name_lookup = lookup_jump
+
+
+def native_context(engine, target):
+    """Locate native objects and exact public addresses in the unrouted image."""
+    image = cast(PEImage, engine.recomp_bin)
+    modules = ModuleMap(target.recompiled_pdb, image)
+    public_addresses = {}
+    for public in engine.cvdump_analysis.parser.publics:
+        if image.is_valid_section(public.section):
+            public_addresses[public.name] = image.get_abs_addr(
+                public.section, public.offset
+            )
+    return modules, public_addresses
+
+
+def native_definition(callee, modules, public_addresses):
+    """Require a real project COFF function at its exact PDB public address."""
+    if not callee.get("symbol"):
+        raise ValueError("No paired native symbol")
+    module = modules.get_module(callee.recomp_addr)
+    if module is None:
+        raise ValueError("No native object module")
+    object_name = module[1].replace("\\", "/")
+    if not object_name.startswith("CMakeFiles/LEMBALL.dir/"):
+        raise ValueError("Definition is outside the project objects")
+    definition = load_object(object_name).function(callee.get("symbol"))
+    symbol = definition[0]
+    if definition[4] != 2:
+        raise ValueError("Definition is not external")
+    if public_addresses.get(symbol) != callee.recomp_addr:
+        raise ValueError("Definition public address differs from the paired body")
+    return {"object": object_name, "symbol": symbol}
+
+
+def recover_table_entries(
+    engine, addresses, functions, entries, thunks, modules, public_addresses, aliases
+):
+    """Recover real E9 table slots from paired native external definitions."""
+    for address in addresses:
+        if address not in entries or address in thunks:
+            continue
+        destination = read_jump_target(engine.orig_bin, address)
+        callee = functions.get(destination)
+        if callee is None or not callee.get("symbol"):
+            continue
+        try:
+            definition = native_definition(callee, modules, public_addresses)
+        except (ValueError, OSError):
+            continue
+        thunk = make_thunk(engine, callee, address, definition["symbol"], aliases)
+        thunk["definition"] = definition
+        thunks[address] = thunk
+
+
 def recover_references(
     engine,
     functions,
@@ -483,15 +553,9 @@ def recover_data_references(
 
 def recover_routes(engine, target, addresses, functions, entries, previous_routes):
     """Recover code and data routes that the native COFF objects can redirect."""
-    image = cast(PEImage, engine.recomp_bin)
-    modules = ModuleMap(target.recompiled_pdb, image)
-    public_addresses = {}
-    for public in engine.cvdump_analysis.parser.publics:
-        if image.is_valid_section(public.section):
-            public_addresses[public.name] = image.get_abs_addr(
-                public.section, public.offset
-            )
+    modules, public_addresses = native_context(engine, target)
     aliases = folded_aliases(engine, functions, modules)
+    name_jump_destinations(engine, functions, entries)
     entities = {
         entity.orig_addr: entity for entity in engine.get_all() if entity.orig_addr
     }
@@ -587,6 +651,16 @@ def recover_routes(engine, target, addresses, functions, entries, previous_route
             continue
         thunks.update(found)
         routes.append(route)
+    recover_table_entries(
+        engine,
+        addresses,
+        functions,
+        entries,
+        thunks,
+        modules,
+        public_addresses,
+        aliases,
+    )
     routes.sort(key=lambda caller_route: caller_route["caller"])
     return routes, thunks, unresolved
 
@@ -643,6 +717,13 @@ def recover_thunks(forwarders):
             if thunk.get("kind") == "tail-forwarder"
         )
         addresses.update(dict.fromkeys(route["caller"] for route in previous["routes"]))
+        addresses.update(
+            dict.fromkeys(
+                thunk["address"]
+                for thunk in previous["thunks"]
+                if thunk.get("kind") != "tail-forwarder"
+            )
+        )
     target = link_unrouted(RecCmpProject.from_directory(BUILD).get(TARGET_ID))
     paths = tuple(
         path
@@ -664,7 +745,7 @@ def recover_thunks(forwarders):
     for address in forwarders:
         thunks[address]["kind"] = "tail-forwarder"
     write_recovery(
-        target, [thunks[address] for address in sorted(used)], routes, unresolved
+        target, [thunks[address] for address in sorted(thunks)], routes, unresolved
     )
     return 0
 

@@ -7,9 +7,13 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
+from reccmp.types import EntityType
+
+from inventory_thunks import references
 from link_binary import CoffObject, DIR32, REL32, prepare_link, thunk_symbol
-from recover_thunks import reference_matches
+from recover_thunks import name_jump_destinations, native_definition, reference_matches
 
 
 def object_bytes(*, data_kind=DIR32, data_target=2, addend=0):
@@ -94,6 +98,96 @@ def thunk():
 
 
 class RelocationOverlayTests(unittest.TestCase):
+    def test_inventory_includes_unpaired_catalogued_code_and_relocated_pointers(self):
+        code_address = 0x410010
+        target = 0x401000
+        call = b"\xe8" + struct.pack("<i", target - code_address - 5) + b"\xc3"
+        image = SimpleNamespace(
+            get_code_regions=lambda: [SimpleNamespace(addr=0x410000, data=bytes(32))],
+            relocations={0x490000},
+            read=lambda address, size: {
+                0x410000: b"\xc3",
+                code_address: call,
+                0x490000: struct.pack("<I", target),
+            }[address][:size],
+        )
+        owner = SimpleNamespace(
+            orig_addr=0x410000,
+            entity_type=EntityType.FUNCTION,
+            size=lambda image: 1,
+            get=lambda key: "paired_owner",
+        )
+        engine = SimpleNamespace(orig_bin=image, get_all=lambda: [owner])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tools/data").mkdir(parents=True)
+            (root / "tools/data/original-symbols.csv").write_text(
+                "# original extents\naddress,type,size,symbol\n0x00410010,,6,\n"
+            )
+            with patch("inventory_thunks.ROOT", root):
+                found = references(engine, {target})[target]
+        self.assertEqual([item["address"] for item in found], [code_address, 0x490000])
+        self.assertIsNone(found[0]["owner_name"])
+        self.assertEqual(found[1]["kind"], "pointer")
+
+    def test_jump_names_require_exact_direct_entries_with_paired_bodies(self):
+        parser = SimpleNamespace(
+            name_lookup=lambda address, exact=False, indirect=False: (
+                address,
+                exact,
+                indirect,
+            )
+        )
+        engine = SimpleNamespace(
+            function_comparator=SimpleNamespace(orig_sanitize=parser),
+            orig_bin=SimpleNamespace(
+                read=lambda address, size: bytes.fromhex("e9fb1f0000")
+            ),
+        )
+        name_jump_destinations(engine, {0x403000: object()}, {0x401000, 0x401005})
+        self.assertEqual(parser.name_lookup(0x401000), (0x403000, True, False))
+        for address in (0x401001, 0x401005, 0x404000):
+            self.assertEqual(parser.name_lookup(address), (address, False, False))
+        self.assertEqual(
+            parser.name_lookup(0x401000, indirect=True), (0x401000, False, True)
+        )
+
+    def test_table_definition_requires_external_function_and_exact_public(self):
+        class Callee:
+            recomp_addr = 0x503000
+
+            def get(self, key):
+                return self.symbol if key == "symbol" else None
+
+        callee = Callee()
+        callee.symbol = "_body"
+        modules = SimpleNamespace(
+            get_module=lambda address: ("native", "CMakeFiles/LEMBALL.dir/native.obj")
+        )
+        publics = {"_body": callee.recomp_addr}
+        native = object_bytes()
+        with patch("recover_thunks.load_object", return_value=CoffObject(native)):
+            self.assertEqual(
+                native_definition(callee, modules, publics),
+                {"object": "CMakeFiles/LEMBALL.dir/native.obj", "symbol": "_body"},
+            )
+            for symbol in ("_data", "_other", "_missing"):
+                callee.symbol = symbol
+                with self.subTest(symbol=symbol), self.assertRaises(ValueError):
+                    native_definition(callee, modules, publics)
+            callee.symbol = "_body"
+            with self.assertRaises(ValueError):
+                native_definition(callee, modules, {"_body": callee.recomp_addr + 1})
+        local = bytearray(native)
+        local[140 + 2 * 18 + 16] = 3
+        with patch("recover_thunks.load_object", return_value=CoffObject(local)):
+            with self.assertRaises(ValueError):
+                native_definition(callee, modules, publics)
+        for module in (None, ("runtime", "msvcrt.lib")):
+            modules.get_module = lambda address, module=module: module
+            with self.subTest(module=module), self.assertRaises(ValueError):
+                native_definition(callee, modules, publics)
+
     def test_pointer_verification_requires_original_relocation_and_routed_target(self):
         reference = routes(CoffObject(object_bytes()))[1]["references"][0]
         original = SimpleNamespace(
