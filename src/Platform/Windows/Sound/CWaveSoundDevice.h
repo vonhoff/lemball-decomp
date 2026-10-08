@@ -64,10 +64,10 @@ private:
 	UINT m_deviceId;                  // 0x88
 	HWAVEOUT m_waveOut;               // 0x8c
 	WAVEFORMATEX m_waveFormat;        // 0x90
-	unsigned int m_nextHandle;        // 0xa4
+	unsigned long m_nextHandle;       // 0xa4
 	CWaveEffect** m_effects;          // 0xa8
 	unsigned int* m_effectUsed;       // 0xac
-	unsigned int* m_effectHandles;    // 0xb0
+	unsigned long* m_effectHandles;   // 0xb0
 	DWORD m_savedVolume;              // 0xb4
 };
 

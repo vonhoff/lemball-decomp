@@ -27,7 +27,7 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 
 	m_channelCount = (unsigned int) p_channelCount;
 	m_effects = new CWaveEffect*[p_channelCount];
-	m_effectHandles = new unsigned int[p_channelCount];
+	m_effectHandles = new unsigned long[p_channelCount];
 	m_effectUsed = new unsigned int[p_channelCount];
 	m_musicDevice = 0;
 	m_available = 0;
