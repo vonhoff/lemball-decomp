@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CBASECURSOR_H
 #define LEMBALL_VISOS_GRAPHICS_CBASECURSOR_H
 
-#include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSRect.h"
 #include "Engine/Graphics/Primitives/CPopActive.h"
 #include "Engine/Graphics/Primitives/CPushActive.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 
 class CGWnd;
 class CZRLE;

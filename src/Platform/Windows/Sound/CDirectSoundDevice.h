@@ -13,7 +13,6 @@
 
 class IDirectSound;
 class CDirectSoundEffect;
-class CWnd;
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x0049acd8

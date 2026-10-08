@@ -1,12 +1,15 @@
+#include "CGDIDevice.h"
+#include "CGraphicsDriver.h"
+#include "CGraphicsState.h"
+#include "CSurface.h"
 #include "Engine/Startup/PreInit.h"
 #include "Engine/Startup/VsInit.h"
 #include "Platform/Windows/Input/CCursor.h"
-#include "CGDIDevice.h"
-#include "CSurface.h"
-#include "CGraphicsDriver.h"
-#include "CGraphicsState.h"
 
 #include <new.h>
+#include <stddef.h>
+
+class GrafPort;
 
 // FUNCTION: LEMBALL 0x0046ba80
 bool _GDI_Init()

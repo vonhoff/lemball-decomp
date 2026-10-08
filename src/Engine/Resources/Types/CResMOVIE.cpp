@@ -1,11 +1,11 @@
 #include "CResMOVIE.h"
-#include "Engine/Resources/ResourceChunkTypes.h"
 
-#include "Engine/Resources/Archive/CMogRes.h"
-#include "Engine/Resources/ResourceTypeList.h"
 #include "CResBaseLIST.h"
 #include "CResINT.h"
 #include "CResSTRING.h"
+#include "Engine/Resources/Archive/CMogRes.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
+#include "Engine/Resources/ResourceTypeList.h"
 
 #include <stddef.h>
 

@@ -1,22 +1,25 @@
 #include "Engine/Input/CBaseCursor.h"
 
-#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Graphics/Primitives/CPushActive.h"
+#include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Input/CMasterInput.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
 #include "Engine/Math/CVector.h"
-#include "Engine/Time/VsTime.h"
+#include "Engine/Math/FixedPoint.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Queues/Message.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Resources/Types/CResZRLE.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Windowing/CGWnd.h"
+#include "Engine/Time/VsTime.h"
 #include "Platform/Windows/Graphics/CSurface.h"
-#include "Engine/Graphics/Primitives/CZRLE.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSRect.h"
-#include "Engine/Math/FixedPoint.h"
-#include "Engine/Queues/Message.h"
-#include "Engine/Graphics/Primitives/CPushActive.h"
+#include "Platform/Windows/Windowing/CGWnd.h"
+
+#include <stddef.h>
 
 enum {
 	CURSOR_FRAME_UNSELECTED = -1,

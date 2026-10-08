@@ -1,10 +1,12 @@
 #include "CGDIDevice.h"
 
-#include "Engine/Statistics/CTimeStat.h"
-#include "Engine/Diagnostics/CDebugOStream.h"
-#include "Engine/Time/VsTime.h"
 #include "CSurface.h"
+#include "Engine/Diagnostics/CDebugOStream.h"
+#include "Engine/Statistics/CTimeStat.h"
 #include "Engine/Streams/CVSOStream.h"
+#include "Engine/Time/VsTime.h"
+
+#include <stddef.h>
 
 enum {
 	GDI_SURFACE_SLOT_NOT_FOUND = -1

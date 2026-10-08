@@ -1,8 +1,8 @@
 #include "CResBase.h"
 
-#include "Engine/Resources/Archive/CVSRange.h"
-#include "Engine/Resources/Archive/CMogRes.h"
 #include "CResBaseLIST.h"
+#include "Engine/Resources/Archive/CMogRes.h"
+#include "Engine/Resources/Archive/CVSRange.h"
 
 #include <string.h>
 

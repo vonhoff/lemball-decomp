@@ -1,13 +1,14 @@
 #include "CCatapult.h"
 
 #include "Application/GameMain.h"
-
-#include "Gameplay/Simulation/GameTime.h"
+#include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/RandomConstants.h"
+#include "Gameplay/Objects/CViewData.h"
+#include "Gameplay/Objects/ObjectInteractionStates.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Objects/ObjectInteractionStates.h"
-#include "Gameplay/Objects/CViewData.h"
-#include "Engine/Math/RandomConstants.h"
+#include "Gameplay/Simulation/GameTime.h"
+
 // FUNCTION: LEMBALL 0x0041c3f0
 int CCatapult::Usage()
 {
@@ -21,7 +22,7 @@ void CCatapult::Restart()
 	m_actionArgument = REMOTE_PALETTE_REMAP_DISABLED;
 }
 
-#include "Map/CMap.h"
+#include "Application/SoundEffects.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
@@ -29,7 +30,7 @@ void CCatapult::Restart()
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Application/SoundEffects.h"
+#include "Map/CMap.h"
 
 #include <stddef.h>
 

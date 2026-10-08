@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CLINE_H
 #define LEMBALL_VISOS_GRAPHICS_CLINE_H
 
-#include "Engine/Math/CVSPoint.h"
 #include "CPrimitive.h"
+#include "Engine/Math/CVSPoint.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496cc8

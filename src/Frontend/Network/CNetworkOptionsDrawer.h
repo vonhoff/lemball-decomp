@@ -121,33 +121,33 @@ public:
 	friend class CNetworkOptionsProc;
 
 private:
-	CEditString* m_editor;               // 0x398
-	unsigned int m_editingActive;        // 0x39c
-	eEditingStage m_editingStage;        // 0x3a0
-	eEditingStage m_pendingStage;        // 0x3a4
-	eNetOptsMessages m_message;          // 0x3a8
-	eNetOptsMessages m_drawnMessage;     // 0x3ac
-	unsigned int m_messageStartTime;     // 0x3b0
-	unsigned long m_messageDuration;     // 0x3b4
-	unsigned int m_broadcasting;         // 0x3b8
-	unsigned int m_networkMode;          // 0x3bc
-	unsigned int m_redrawPending;        // 0x3c0
+	CEditString* m_editor;                      // 0x398
+	unsigned int m_editingActive;               // 0x39c
+	eEditingStage m_editingStage;               // 0x3a0
+	eEditingStage m_pendingStage;               // 0x3a4
+	eNetOptsMessages m_message;                 // 0x3a8
+	eNetOptsMessages m_drawnMessage;            // 0x3ac
+	unsigned int m_messageStartTime;            // 0x3b0
+	unsigned long m_messageDuration;            // 0x3b4
+	unsigned int m_broadcasting;                // 0x3b8
+	unsigned int m_networkMode;                 // 0x3bc
+	unsigned int m_redrawPending;               // 0x3c0
 	eNetworkOptionsHandlerState m_networkState; // 0x3c4
-	unsigned int m_lastDrawTime;         // 0x3c8
-	CEntryHandler* m_playerEntries;      // 0x3cc
-	int m_acceptedPlayer;                // 0x3d0
-	int m_highlightedPlayer;             // 0x3d4
-	int m_visibleEntryCount;             // 0x3d8
-	unsigned int m_locked;               // 0x3dc
-	unsigned int m_startPending;         // 0x3e0
-	char* m_localAddressText;            // 0x3e4
-	char* m_localComputerName;           // 0x3e8
-	CBigBitmap m_bitmap;                 // 0x3ec
-	unsigned int m_unknown410;           // 0x410
-	CBaseRemap* m_remaps[6];             // 0x414
-	NetworkOptionsLayout* m_layoutTable; // 0x42c
-	eNetOptsMessages m_pendingEvent;     // 0x430
-	unsigned int m_handlerCount;         // 0x434
+	unsigned int m_lastDrawTime;                // 0x3c8
+	CEntryHandler* m_playerEntries;             // 0x3cc
+	int m_acceptedPlayer;                       // 0x3d0
+	int m_highlightedPlayer;                    // 0x3d4
+	int m_visibleEntryCount;                    // 0x3d8
+	unsigned int m_locked;                      // 0x3dc
+	unsigned int m_startPending;                // 0x3e0
+	char* m_localAddressText;                   // 0x3e4
+	char* m_localComputerName;                  // 0x3e8
+	CBigBitmap m_bitmap;                        // 0x3ec
+	unsigned int m_unknown410;                  // 0x410
+	CBaseRemap* m_remaps[6];                    // 0x414
+	NetworkOptionsLayout* m_layoutTable;        // 0x42c
+	eNetOptsMessages m_pendingEvent;            // 0x430
+	unsigned int m_handlerCount;                // 0x434
 };
 
 // SYNTHETIC: LEMBALL 0x00455de0

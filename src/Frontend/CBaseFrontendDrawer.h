@@ -1,17 +1,15 @@
 #ifndef LEMBALL_FRONTEND_BASE_CBASEFRONTENDDRAWER_H
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDDRAWER_H
 
-#include "FrontendLayoutMode.h"
-
+#include "Application/FlowProcesses.h"
+#include "CUserActionMessage.h"
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Animation/CStaticAnim.h"
-#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Math/CVSPoint.h"
-#include "tagPRIMS.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
-#include "CUserActionMessage.h"
-#include "CoordPair.h"
-#include "Application/FlowProcesses.h"
+#include "tagPRIMS.h"
 
 class CGDI;
 class CGunController;
@@ -22,6 +20,8 @@ class CResBITMAP;
 class CTextManager;
 class CVSRect;
 struct Message;
+struct CoordPair;
+
 // SIZE 0x398
 // VTABLE: LEMBALL 0x004978a8 CDrawer
 // VTABLE: LEMBALL 0x00497898 CBaseQueueHandler

@@ -1,9 +1,9 @@
 #include "CNetworkOptionsProc.h"
 
-#include "Application/CGame.h"
 #include "CNetworkOptionsDrawer.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Multiplayer/CGameAcceptMessage.h"
+#include "Multiplayer/CGameFlaggedMessage.h"
 #include "Multiplayer/CGameRejectMessage.h"
 #include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"

@@ -1,19 +1,19 @@
 #include "CTrackWindow.h"
 
-#include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Time/VsTime.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Graphics/Primitives/CLine.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Input/CHotAreaList.h"
-#include "Platform/Windows/Graphics/CSurface.h"
-#include "Platform/Windows/Windowing/CWnd.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
+#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-#include "Engine/Input/CHotAreaHandler.h"
-#include "Engine/Graphics/Primitives/CLine.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-#include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Platform/Windows/Windowing/CWnd.h"
 
 enum {
 	TRACK_WINDOW_CONTEXT_ID_UNASSIGNED = -1

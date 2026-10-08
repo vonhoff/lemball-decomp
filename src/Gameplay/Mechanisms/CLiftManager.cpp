@@ -1,12 +1,15 @@
 #include "CLiftManager.h"
 
-#include "Gameplay/Geometry/tCoord3d.h"
-#include "Gameplay/Simulation/CAI.h"
 #include "CLift.h"
-#include "LiftEndpointRecord.h"
-#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectIds.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "LiftEndpointRecord.h"
 #include "SwitchEntry.h"
+
+#include <stddef.h>
 
 enum {
 	LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS = 48
@@ -16,8 +19,6 @@ enum {
 unsigned short g_wMovingLiftCount = 0;
 
 #include "Level/LevelFormat.h"
-
-#include "Gameplay/Geometry/AICOORD.h"
 
 // FUNCTION: LEMBALL 0x00425680
 CLiftManager::CLiftManager(CAI* p_ai, int p_capacity)

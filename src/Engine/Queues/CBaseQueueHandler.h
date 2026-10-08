@@ -1,10 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CBASEQUEUEHANDLER_H
 #define LEMBALL_VISOS_FOUNDATION_CBASEQUEUEHANDLER_H
 
-#include "Message.h"
-
 class CBaseQueue;
 class CVSOStream;
+struct Message;
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493110

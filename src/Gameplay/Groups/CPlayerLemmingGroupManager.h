@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_GROUPS_CPLAYERLEMMINGGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_CPLAYERLEMMINGGROUPMANAGER_H
 
-#include "Gameplay/Objects/CBaseObjectManager.h"
 #include "CGenericGroupManager.h"
+#include "Gameplay/Objects/CBaseObjectManager.h"
 
 class CAI;
 class AICOORD;
@@ -10,7 +10,9 @@ class CFormationManager;
 class CObjectManager;
 class CPlayerLemming;
 class CPlayerLemmingGroup;
-class CViewData;
+class CGameObject;
+class CGenericGroup;
+
 // SIZE 0x150
 // VTABLE: LEMBALL 0x00494068 CGenericGroupManager
 // VTABLE: LEMBALL 0x00494038 CBaseObjectManager

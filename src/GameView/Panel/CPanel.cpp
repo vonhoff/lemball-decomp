@@ -1,22 +1,23 @@
 #include "CPanel.h"
 
-#include "Gameplay/Simulation/CAI.h"
-#include "Engine/Queues/CBaseQueue.h"
-#include "Platform/Windows/Windowing/CPVGWnd.h"
-#include "Engine/Resources/Types/CResANIM.h"
 #include "../Display/C2D.h"
-#include "GameView/Sound/CSoundView.h"
+#include "Application/SoundEffects.h"
 #include "CPanelLemming.h"
 #include "CPanelPauseButton.h"
-#include "Application/SoundEffects.h"
-#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Resources/Types/CResZRLE.h"
 #include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/Types/CResANIM.h"
+#include "Engine/Resources/Types/CResZRLE.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Platform/Windows/Windowing/CPVGWnd.h"
 
 #include <new.h>
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00442f00
 CVSPoint CPanel::GetPausePos()

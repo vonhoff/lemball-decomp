@@ -1,8 +1,8 @@
 #include "CBonus.h"
 
+#include "Application/SoundEffects.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
-#include "Application/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x00422c40
 int CBonus::Collected()

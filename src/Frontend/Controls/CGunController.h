@@ -3,9 +3,9 @@
 
 #include "../../Engine/Animation/CAnimsManager.h"
 #include "../../Engine/Animation/CStaticAnim.h"
+#include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Graphics/Primitives/CClipRect.h"
 #define GUN_SIDE_LEFT 0
 #define GUN_SIDE_RIGHT 1
 #define GUN_JUNCTION_LEFT GUN_SIDE_LEFT

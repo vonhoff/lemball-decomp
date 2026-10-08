@@ -1,9 +1,10 @@
 #include "CObjectPosMess.h"
 
-#include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Geometry/AICOORD.h"
 #include "CGameObjectMess.h"
+#include "Engine/Math/FixedPoint.h"
 #include "GameMessageIds.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
 
 // FUNCTION: LEMBALL 0x00416bb0
 CObjectPosMess::CObjectPosMess() : CGameObjectMess(MESSAGE_OBJECT_POS)

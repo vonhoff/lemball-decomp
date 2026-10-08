@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_NAVIGATION_CMOVER_H
 #define LEMBALL_AI_NAVIGATION_CMOVER_H
 
-#include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Movement/CMove3d.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
 
 class AICOORD;
 class CGameObject;

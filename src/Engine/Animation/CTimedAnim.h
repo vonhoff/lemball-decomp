@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CTIMEDANIM_H
 #define LEMBALL_VISOS_ANIMATION_CTIMEDANIM_H
 
-#include "CAnimFrameBASE.h"
 #include "AnimationConstants.h"
+#include "CAnimFrameBASE.h"
 
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00496d08
@@ -29,7 +29,7 @@ public:
 private:
 	unsigned long m_animTime;  // 0x10
 	unsigned long m_fixedTime; // 0x14
-	int m_direction;          // 0x18
+	int m_direction;           // 0x18
 };
 
 #endif

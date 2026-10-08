@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CBASESTAT_H
 #define LEMBALL_VISOS_ANIMATION_CBASESTAT_H
 
-#include "Engine/Strings/CString.h"
 #include "Engine/Memory/CArenaBase.h"
+#include "Engine/Strings/CString.h"
 
 // SIZE 0x20
 // VTABLE: LEMBALL 0x00498960

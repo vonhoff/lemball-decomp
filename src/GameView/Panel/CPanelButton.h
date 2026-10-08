@@ -1,29 +1,31 @@
 #ifndef LEMBALL_VIEWS_PANEL_CPANELBUTTON_H
 #define LEMBALL_VIEWS_PANEL_CPANELBUTTON_H
 
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "../../Engine/Animation/CAnim.h"
-#include "Engine/Math/CVSRect.h"
-#include "Platform/Windows/Windowing/CDepressedButton.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/Message.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Platform/Windows/Windowing/CDepressedButton.h"
 
 class CPanelLemming;
 class CPVGWnd;
+
 // SIZE 0x1b8
 // VTABLE: LEMBALL 0x00497508 CGWnd
 // VTABLE: LEMBALL 0x004974e0 CHotAreaHandler
 class CPanelButton : public CDepressedButton {
 public:
 	CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVGWnd* p_parent);
-	virtual void OnPaint(const CVSRect& p_rect);                           // vtable+0xa8
-	virtual void DrawButton();                                             // vtable+0xbc
-	virtual void OnEnterButton();                                          // vtable+0xc8
-	virtual void OnExitButton();                                           // vtable+0xcc
+	virtual void OnPaint(const CVSRect& p_rect);                                         // vtable+0xa8
+	virtual void DrawButton();                                                           // vtable+0xbc
+	virtual void OnEnterButton();                                                        // vtable+0xc8
+	virtual void OnExitButton();                                                         // vtable+0xcc
 	virtual void OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x0c
-	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
-	virtual void OnPressed(eMouseButtonIndex p_flags);                     // vtable+0xc4
-	virtual void OnReleased(eMouseButtonIndex p_flags);                    // vtable+0xc0
-	virtual ~CPanelButton();                                               // vtable+0x00
+	virtual void OnInside(const CVSPoint& p_point);                                      // vtable+0x18
+	virtual void OnPressed(eMouseButtonIndex p_flags);                                   // vtable+0xc4
+	virtual void OnReleased(eMouseButtonIndex p_flags);                                  // vtable+0xc0
+	virtual ~CPanelButton();                                                             // vtable+0x00
 
 private:
 	unsigned int m_pressedInside;   // 0x10c

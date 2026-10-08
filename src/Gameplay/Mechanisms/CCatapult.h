@@ -1,9 +1,10 @@
 #ifndef LEMBALL_AI_OBJECTS_CCATAPULT_H
 #define LEMBALL_AI_OBJECTS_CCATAPULT_H
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/ObjectTypes.h"
+
+class AICOORD;
 
 // MINIMUM SIZE 0x144
 // VTABLE: LEMBALL 0x00494640

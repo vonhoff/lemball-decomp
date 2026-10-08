@@ -5,6 +5,8 @@
 #include "CSmallMemory.h"
 #include "Engine/Diagnostics/VsDebug.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045a6b0
 void* InternalNew(unsigned long p_size)
 {

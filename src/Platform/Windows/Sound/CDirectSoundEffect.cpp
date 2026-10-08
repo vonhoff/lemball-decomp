@@ -4,11 +4,10 @@ enum {
 	SOUND_EFFECT_NO_BUFFER_INDEX = -1
 };
 
-#include "Engine/Streams/CVSOStream.h"
-#include "Engine/Strings/VsString.h"
 #include "DirectSound.h"
 #include "Engine/Sound/EffectFormat.h"
-
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Strings/VsString.h"
 #include "Platform/Windows/DirectX/DirectSound.h"
 
 #include <string.h>

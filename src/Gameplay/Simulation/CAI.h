@@ -3,15 +3,13 @@
 
 #include "Application/CBaseProcess.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-#include "Multiplayer/Transport/NetworkMode.h"
-#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/CRect3.h"
-#include "Gameplay/Messages/CGameStateMessage.h"
-#include "Gameplay/Projectiles/CBullet.h"
 #include "Gameplay/Mechanisms/SwitchEntry.h"
+#include "Gameplay/Messages/CGameStateMessage.h"
 #include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Projectiles/CBullet.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 class CAICursor;
 class CAnimSpecial;
@@ -54,6 +52,8 @@ class CViewData;
 class CVSRect;
 struct tCoord3d;
 struct LiftEndpointRecord;
+class AICOORD;
+
 enum eAIQueueMessage {
 	AI_MESSAGE_CURSOR_POSITION = 1,
 	AI_MESSAGE_MOVE_GROUP = 2,

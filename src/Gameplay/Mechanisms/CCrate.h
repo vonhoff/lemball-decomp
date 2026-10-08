@@ -1,11 +1,12 @@
 #ifndef LEMBALL_AI_OBJECTS_CCRATE_H
 #define LEMBALL_AI_OBJECTS_CCRATE_H
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 
 class CGlobalGameObject;
+class AICOORD;
+
 // MINIMUM SIZE 0x150
 // VTABLE: LEMBALL 0x004948d0
 class CCrate : public CBaseGlobalObject {

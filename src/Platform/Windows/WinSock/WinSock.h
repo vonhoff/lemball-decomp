@@ -60,10 +60,6 @@ typedef WSAData WSADATA;
 #define WSANO_RECOVERY (WSABASEERR + 1003)
 #define WSANO_DATA (WSABASEERR + 1004)
 
-struct in_addr;
-struct TcpIpSocketAddress;
-struct WSAData;
-
 extern "C" unsigned long __stdcall inet_addr(const char* p_text);
 extern "C" char* __stdcall inet_ntoa(in_addr p_address);
 extern "C" int __stdcall gethostname(char* p_name, int p_nameSize);

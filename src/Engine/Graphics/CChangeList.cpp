@@ -1,8 +1,8 @@
 #include "Engine/Graphics/CChangeList.h"
 
+#include "Engine/Graphics/ChangeListItem.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Graphics/ChangeListItem.h"
 
 #include <string.h>
 

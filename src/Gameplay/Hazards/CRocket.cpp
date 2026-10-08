@@ -1,8 +1,9 @@
 #include "CRocket.h"
 
-#include "Map/CMap.h"
-#include "Map/CGround.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/Facing.h"
+#include "Map/CGround.h"
+#include "Map/CMap.h"
 
 #include <stddef.h>
 
@@ -131,8 +132,8 @@ int CRocket::StepOn(const AICOORD& p_position, CGameObject* p_object)
 	return 0;
 }
 
-#include "Multiplayer/Transport/CConnect.h"
 #include "Gameplay/Messages/CObjectPosMess.h"
+#include "Multiplayer/Transport/CConnect.h"
 
 // FUNCTION: LEMBALL 0x00426a60
 void CRocket::DoActivate()
@@ -147,15 +148,13 @@ void CRocket::DoActivate()
 	}
 }
 
+#include "Application/SoundEffects.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
-#include "Gameplay/Objects/CViewData.h"
-#include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Application/SoundEffects.h"
 
 // FUNCTION: LEMBALL 0x004273f0
 void CRocket::GetViewData(CViewData& p_viewData)

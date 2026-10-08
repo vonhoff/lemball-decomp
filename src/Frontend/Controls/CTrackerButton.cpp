@@ -1,11 +1,11 @@
 #include "CTrackerButton.h"
 
 #include "CTrackWindow.h"
+#include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
-#include "Engine/Input/CHotAreaHandler.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 
 #include <stddef.h>

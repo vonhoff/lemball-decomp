@@ -1,7 +1,7 @@
 #include "CPushActive.h"
 
-#include "Engine/Graphics/CChangeList.h"
 #include "CGDI.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00439760

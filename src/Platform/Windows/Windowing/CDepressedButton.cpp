@@ -2,8 +2,8 @@
 
 #include "Engine/Graphics/CChangeList.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Queues/Message.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x0043a620 FOLDED
 void CDepressedButton::OnReleased(eMouseButtonIndex p_flags)

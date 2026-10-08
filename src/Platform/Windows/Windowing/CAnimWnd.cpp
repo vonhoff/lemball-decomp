@@ -1,19 +1,21 @@
 #include "CAnimWnd.h"
 
-#include "Platform/Windows/Entry.h"
-#include "Engine/Streams/CVSIOs.h"
+#include "CGWnd.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Resources/Types/CResMOVIE.h"
-#include "Platform/Windows/Graphics/WinGDraw.h"
 #include "Platform/Windows/CPlatformServices.h"
-#include "CGWnd.h"
+#include "Platform/Windows/Entry.h"
+#include "Platform/Windows/Graphics/WinGDraw.h"
 
 #define WIN32_LEAN_AND_MEAN
+// clang-format off
+#include <windows.h>
+#include <mmsystem.h>
+#include <stddef.h>
+
 #include "Engine/Strings/CString.h"
 #include "Engine/Resources/Types/CResSTRING.h"
 
-// clang-format off
-#include <windows.h>
 #define NOAVIFILE
 #include <vfw.h>
 #include <digitalv.h>

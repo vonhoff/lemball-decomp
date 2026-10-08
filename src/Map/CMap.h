@@ -1,11 +1,13 @@
 #ifndef LEMBALL_MAP_BASE_CMAP_H
 #define LEMBALL_MAP_BASE_CMAP_H
 
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "CGroundArray.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Map/CGround.h"
 
 class CAI;
 class CMover;
+
 enum {
 	MAP_COORDINATE_MAX = 1024
 };
@@ -28,6 +30,7 @@ enum {
 struct tagLoadGroundName;
 struct tagLoadGroundSurfaceData;
 struct tagLoadDefaultBlox;
+
 // SIZE 0x58
 class CMap {
 public:

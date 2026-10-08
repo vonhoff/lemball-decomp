@@ -1,8 +1,10 @@
 #include "CCrate.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-#include "Gameplay/Simulation/CAI.h"
+#include "Engine/Math/FixedPoint.h"
+#include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Gameplay/Simulation/GameTime.h"
 
 #include <stddef.h>
 
@@ -45,15 +47,15 @@ void CCrate::Restart()
 	m_pendingAction = ACTION_READY;
 }
 
-#include "Map/CMap.h"
-#include "Gameplay/Objects/CObjectManager.h"
+#include "Application/SoundEffects.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Application/SoundEffects.h"
+#include "Map/CMap.h"
 
 // FUNCTION: LEMBALL 0x0041ccc0
 void CCrate::TriggerContents()

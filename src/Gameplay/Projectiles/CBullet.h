@@ -1,10 +1,11 @@
 #ifndef LEMBALL_AI_OBJECTS_CBULLET_H
 #define LEMBALL_AI_OBJECTS_CBULLET_H
 
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Movement/CMove3d.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+
+class AICOORD;
 
 enum eBulletType {
 	BULLET_TYPE_DEFAULT = 0

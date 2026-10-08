@@ -1,7 +1,7 @@
 #include "CStatManager.h"
 
-#include "Engine/Streams/CVSOStream.h"
 #include "CBaseStat.h"
+#include "Engine/Streams/CVSOStream.h"
 
 #include <stddef.h>
 

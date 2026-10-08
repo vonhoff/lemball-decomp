@@ -1,7 +1,7 @@
 #ifndef LEMBALL_MAP_GROUND_CGROUNDARRAY_H
 #define LEMBALL_MAP_GROUND_CGROUNDARRAY_H
 
-#include "CGround.h"
+class CGround;
 
 // SIZE 0x10
 class CGroundArray {

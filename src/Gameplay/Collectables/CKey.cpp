@@ -1,15 +1,16 @@
 #include "CKey.h"
 
-#include "Map/CMap.h"
-#include "Gameplay/Simulation/AIScoreConstants.h"
-#include "Gameplay/Simulation/CAI.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
+#include "Gameplay/Simulation/AIScoreConstants.h"
+#include "Gameplay/Simulation/CAI.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Application/SoundEffects.h"
+#include "Map/CMap.h"
 
 enum {
 	KEY_ACTIVATION_POSITION_X_OFFSET_FIXED = -8 * FIXED_POINT_ONE

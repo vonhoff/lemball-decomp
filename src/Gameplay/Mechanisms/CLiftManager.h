@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_MANAGERS_CLIFTMANAGER_H
 #define LEMBALL_AI_MANAGERS_CLIFTMANAGER_H
 
-#include "SwitchEntry.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
+#include "SwitchEntry.h"
 
 class CAI;
 class AICOORD;

@@ -1,9 +1,11 @@
 #include "CWaveEffect.h"
 
-#include "Engine/Streams/CVSOStream.h"
 #include "Engine/Sound/EffectFormat.h"
+#include "Engine/Streams/CVSOStream.h"
 
+#include <mmsystem.h>
 #include <string.h>
+#include <windows.h>
 
 inline CVSOStream& operator<<(CVSOStream& p_stream, unsigned short p_value)
 {

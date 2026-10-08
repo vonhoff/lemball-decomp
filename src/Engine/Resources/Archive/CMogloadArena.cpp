@@ -3,6 +3,8 @@
 #include "Engine/Memory/CArena.h"
 #include "Engine/Memory/CSmallMemory.h"
 
+#include <stddef.h>
+
 // GLOBAL: LEMBALL 0x004a1d54
 CArena* g_pMogloadArena = NULL;
 

@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILEWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILEWRITESOCKET_H
 
+#include "Multiplayer/Transport/CWriteSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileBaseSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
-#include "Multiplayer/Transport/CWriteSocket.h"
 
 class CNetworkMessage;
 

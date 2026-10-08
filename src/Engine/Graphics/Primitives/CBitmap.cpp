@@ -1,7 +1,7 @@
 #include "CBitmap.h"
 
-#include "Engine/Resources/Types/CResBITMAP.h"
 #include "CGDI.h"
+#include "Engine/Resources/Types/CResBITMAP.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00447300

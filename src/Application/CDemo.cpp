@@ -1,11 +1,13 @@
 #include "CDemo.h"
 
+struct _Filet;
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Time/VsTime.h"
-#include "Platform/Windows/Windowing/CPVWnd.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResBIN.h"
+#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/Windowing/CPVWnd.h"
 
 #include <stddef.h>
 
@@ -176,11 +178,8 @@ bool CDemo::LoadBuffer()
 
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Queues/Message.h"
 
 #include <string.h>
-
-struct _Filet;
 
 // FUNCTION: LEMBALL 0x00409560
 void CDemo::GetUserPacket(unsigned char* p_data, unsigned long& p_size)

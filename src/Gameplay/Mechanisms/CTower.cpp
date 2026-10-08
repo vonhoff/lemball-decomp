@@ -1,10 +1,11 @@
 #include "CTower.h"
 
-#include "Map/CMap.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
+#include "Map/CMap.h"
 
 enum {
 	TOWER_ACTIVATION_POSITION_X_OFFSET_FIXED = -48 * FIXED_POINT_ONE,

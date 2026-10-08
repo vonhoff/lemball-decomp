@@ -1,7 +1,7 @@
 #include "CPopActive.h"
 
-#include "Engine/Graphics/CChangeList.h"
 #include "CGDI.h"
+#include "Engine/Graphics/CChangeList.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x004397d0

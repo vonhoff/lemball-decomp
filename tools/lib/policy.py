@@ -12,6 +12,7 @@ FUNCTION_POINTER = r"[\w:\s]+\(\s*(?:__\w+\s*)?\*\s*\)\s*\([^;{}]*?\)"
 POINTER = rf"(?:[\w:\s]+\*+\s*|{FUNCTION_POINTER})"
 LITERAL = r"(?:0[xX][0-9a-fA-F]+|[0-9]+)(?:[uUlL]+)?\b"
 RULES = (
+    (r"\bvolatile\b", "volatile: use ordinary typed accesses"),
     (
         r"\b(?:__asm__|__asm|_asm|asm|_emit|__emit)\b",
         "assembly: express the operation in C++",

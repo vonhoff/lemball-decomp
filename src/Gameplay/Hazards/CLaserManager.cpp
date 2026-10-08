@@ -1,8 +1,12 @@
 #include "CLaserManager.h"
 
 #include "CLaser.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Objects/CViewData.h"
+#include "Gameplay/Objects/ObjectIds.h"
 #include "Level/LevelFormat.h"
+
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00429320
 CLaserManager::CLaserManager(CAI* p_ai, int p_capacity)
@@ -127,12 +131,12 @@ void CLaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectT
 	}
 }
 
-#include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
-#include "Gameplay/Objects/CBaseObjectManager.h"
+#include "Gameplay/Simulation/CAI.h"
 
 // FUNCTION: LEMBALL 0x00429950
 void CLaserManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)

@@ -1,7 +1,7 @@
 #include "CWritePacketBuff.h"
 
-#include "CWritePacket.h"
 #include "CBasePacketBuff.h"
+#include "CWritePacket.h"
 
 #include <stddef.h>
 

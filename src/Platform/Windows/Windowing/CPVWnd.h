@@ -3,10 +3,10 @@
 
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVSSize.h"
-struct MenuList;
 
+struct MenuList;
 class CHotAreaList;
+struct CVSSize;
 
 // SIZE 0x0c
 struct WindowOwnerNode {

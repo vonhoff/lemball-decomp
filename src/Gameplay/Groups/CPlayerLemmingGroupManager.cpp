@@ -1,18 +1,28 @@
 #include "CPlayerLemmingGroupManager.h"
 
+#include <stddef.h>
+
 enum {
 	LEMMING_COUNTS_USE_DEFAULTS = -1
 };
 
-#include "Map/CMap.h"
-#include "Map/CGround.h"
-#include "Multiplayer/Transport/CConnect.h"
-#include "Gameplay/Objects/CObjectManager.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Characters/CPlayerLemming.h"
-#include "Gameplay/Objects/CViewData.h"
 #include "CFormationManager.h"
 #include "CPlayerLemmingGroup.h"
+#include "Engine/Math/FixedPoint.h"
+#include "Gameplay/Characters/CPlayerLemming.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Groups/CGenericGroup.h"
+#include "Gameplay/Groups/CGenericGroupManager.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/CObjectManager.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Gameplay/Simulation/GameTime.h"
+#include "Map/CGround.h"
+#include "Map/CGroundArray.h"
+#include "Map/CMap.h"
+#include "Multiplayer/Transport/CConnect.h"
 
 enum {
 	DEFAULT_PLAYER_START_X_MAP_COORDINATE = 0x112,

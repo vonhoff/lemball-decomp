@@ -1,22 +1,25 @@
 #include "VsInit.h"
 
 #include "Application/GameMain.h"
-#include "PreInit.h"
-#include "Engine/Resources/Archive/CMogloadStat.h"
-#include "Engine/Statistics/CStatManager.h"
+#include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Memory/CArena.h"
 #include "Engine/Memory/CSmallMemory.h"
-#include "Engine/Diagnostics/CVSDebugStreambuf.h"
+#include "Engine/Memory/SmallMemoryConstants.h"
+#include "Engine/Resources/Archive/CMogloadStat.h"
+#include "Engine/Statistics/CStatManager.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "VisosVersion.h"
-#include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Strings/VsString.h"
 #include "Platform/Windows/CPlatformServices.h"
+#include "PreInit.h"
+#include "VisosVersion.h"
 
 #include <ctype.h>
 #include <new.h>
+#include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
+
+class CBaseStat;
 
 enum ePreInitDisplayMode {
 	PREINIT_DISPLAY_MODE_WING = 0,

@@ -1,14 +1,13 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CMOGRES_H
 #define LEMBALL_VISOS_RESOURCES_CMOGRES_H
 
-#include "Chunk.h"
-#include "ChunkInfo.h"
 #include "CRawRead.h"
 
 class CResBase;
 class CMogDir;
 class CBaseStat;
 struct CVSRange;
+struct Chunk;
 
 #define RESOURCE_HANDLE_COUNT 0x400
 

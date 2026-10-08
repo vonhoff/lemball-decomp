@@ -1,10 +1,12 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CGUNBUTTON_H
 #define LEMBALL_FRONTEND_CONTROLS_CGUNBUTTON_H
 
+#include "Engine/Queues/Message.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 
 class CPVGWnd;
 struct CVSPoint;
+
 // SIZE 0x130
 // VTABLE: LEMBALL 0x00497d30 CGWnd
 // VTABLE: LEMBALL 0x00497d08 CHotAreaHandler
@@ -14,7 +16,7 @@ public:
 		: CGraphicButton(p_position, p_parent, p_animId, p_flags)
 	{
 	}
-	virtual void OnPressed(eMouseButtonIndex p_flags); // vtable+0xc4
+	virtual void OnPressed(eMouseButtonIndex p_flags);  // vtable+0xc4
 	virtual void OnReleased(eMouseButtonIndex p_flags); // vtable+0xc0
 };
 

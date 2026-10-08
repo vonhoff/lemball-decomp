@@ -1,6 +1,10 @@
 #include "CStateTextButton.h"
 
 #include "Engine/Queues/CBaseQueue.h"
+#include "Platform/Windows/Windowing/CTextButton.h"
+
+class CPVGWnd;
+class CVSRect;
 
 // FUNCTION: LEMBALL 0x004695d0
 CStateTextButton::CStateTextButton(unsigned int p_controlMessage,

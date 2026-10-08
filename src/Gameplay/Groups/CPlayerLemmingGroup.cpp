@@ -1,16 +1,19 @@
 #include "CPlayerLemmingGroup.h"
 
-#include "Gameplay/Geometry/Facing.h"
-#include "Multiplayer/Transport/CConnect.h"
-#include "Gameplay/Objects/CObjectManager.h"
-#include "Gameplay/Navigation/CAiDestinationEntry.h"
-#include "Gameplay/Navigation/CAiDestinationList.h"
+#include "CGenericGroup.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
 #include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/Facing.h"
+#include "Gameplay/Navigation/CAiDestinationEntry.h"
+#include "Gameplay/Navigation/CAiDestinationList.h"
 #include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
-#include "CGenericGroup.h"
+#include "Multiplayer/Transport/CConnect.h"
+
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00414010
 CPlayerLemmingGroup::CPlayerLemmingGroup(CAI* p_ai,

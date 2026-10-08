@@ -1,9 +1,9 @@
 #include "CReadCBuff.h"
 
-#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "BasePacketHeader.h"
 #include "CReadPacket.h"
 #include "CReadPacketBuff.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 
 #include <stddef.h>
 

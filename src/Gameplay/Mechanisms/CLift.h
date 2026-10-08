@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CLIFT_H
 #define LEMBALL_AI_OBJECTS_CLIFT_H
 
-#include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Geometry/tCoord3d.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
 
 class AICOORD;
 class CGameObject;

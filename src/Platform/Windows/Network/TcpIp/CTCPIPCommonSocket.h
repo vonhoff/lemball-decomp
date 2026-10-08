@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPCOMMONSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPCOMMONSOCKET_H
 
-#include "Platform/Windows/Network/CNetworkWnd.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Platform/Windows/Network/CNetworkWnd.h"
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x0049a060 CNetworkWnd

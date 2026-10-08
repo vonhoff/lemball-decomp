@@ -1,10 +1,12 @@
 #include "CGDI.h"
 
+#include "CPrimitive.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Memory/VsMem.h"
 #include "Platform/Windows/Graphics/CGDIDevice.h"
-#include "CPrimitive.h"
 #include "Platform/Windows/Graphics/CSurface.h"
+
+#include <stddef.h>
 
 // GLOBAL: LEMBALL 0x004a1ff4
 CPrimitive* g_pCurrentPrimitive = NULL;

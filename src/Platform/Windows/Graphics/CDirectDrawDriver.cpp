@@ -1,25 +1,27 @@
 #include "CDirectDrawDriver.h"
 
-#include "Platform/Windows/Entry.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/Windowing/CWnd.h"
 #include "CDirectDrawContext.h"
 #include "CDirectDrawSurface.h"
 #include "DirectDrawError.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/DirectX/DirectDraw.h"
+#include "Platform/Windows/Entry.h"
+#include "Platform/Windows/Graphics/CGraphicsDriver.h"
+#include "Platform/Windows/Windowing/CWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
 
+#include "CDibContext.h"
+#include "CDrawingContext.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "CDibContext.h"
-#include "CDrawingContext.h"
 
 enum {
 	DIRECTDRAW_DISPLAY_COLOR_DEPTH_BITS = 8
 };
 
+#include <stddef.h>
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x00457410

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_GROUPS_CENEMYGROUPMANAGER_H
 #define LEMBALL_AI_GROUPS_CENEMYGROUPMANAGER_H
 
-#include "Gameplay/Characters/EnemyBehavior.h"
 #include "CGenericGroupManager.h"
+#include "Gameplay/Characters/EnemyBehavior.h"
 
 class CAI;
 class CFormationManager;
@@ -10,7 +10,7 @@ class CEnemyGroup;
 class CObjectManager;
 struct tagLoadEnemyData;
 struct tagLoadEnemyDataAdditionalAction;
-struct tagWaypointInformation;
+
 // SIZE 0xb0
 // VTABLE: LEMBALL 0x004953f8
 class CEnemyGroupManager : public CGenericGroupManager {

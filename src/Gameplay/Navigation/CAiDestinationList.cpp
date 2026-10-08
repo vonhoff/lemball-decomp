@@ -1,7 +1,7 @@
 #include "CAiDestinationList.h"
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "CAiDestinationEntry.h"
+#include "Gameplay/Geometry/AICOORD.h"
 
 // FUNCTION: LEMBALL 0x00414cd0
 void CAiDestinationList::RemoveFirst()

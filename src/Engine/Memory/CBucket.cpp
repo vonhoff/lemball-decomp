@@ -2,6 +2,7 @@
 
 #include "CArena.h"
 #include "CSmallMemory.h"
+#include "Engine/Memory/SmallMemoryConstants.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/CCritical.h"
 

@@ -1,12 +1,12 @@
 #ifndef LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 #define LEMBALL_AI_OBJECTS_CPLAYERLEMMING_H
 
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Application/SoundEffects.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
-#include "Application/SoundEffects.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 class CGameObject;
 class CIce;

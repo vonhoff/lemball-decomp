@@ -1,8 +1,6 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS1DRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CMAINOPTIONS1DRAWER_H
 
-#include "Application/CBaseProcess.h"
-#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Time/VsTime.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 
@@ -19,6 +17,7 @@ enum {
 class CGDI;
 class CMain2DDisplay;
 class CVSRect;
+
 // SIZE 0x3bc
 // VTABLE: LEMBALL 0x00497af0 CDrawer
 // VTABLE: LEMBALL 0x00497ae0 CBaseQueueHandler

@@ -3,8 +3,9 @@
 
 #include "CTextButton.h"
 
-class CGWnd;
-class CHotAreaHandler;
+class CPVGWnd;
+class CVSRect;
+
 // MINIMUM SIZE 0x150
 // VTABLE: LEMBALL 0x00497108 CGWnd
 // VTABLE: LEMBALL 0x004970e0 CHotAreaHandler

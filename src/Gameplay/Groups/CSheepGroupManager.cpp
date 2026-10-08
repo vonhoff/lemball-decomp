@@ -1,14 +1,16 @@
 #include "CSheepGroupManager.h"
 
-#include "Level/LevelFormat.h"
-#include "Gameplay/Objects/CObjectManager.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Characters/CSheep.h"
-#include "Gameplay/Objects/CGameObject.h"
-#include "CGenericGroupManager.h"
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
+#include "CGenericGroupManager.h"
 #include "CSheepGroup.h"
+#include "Gameplay/Characters/CSheep.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/CObjectManager.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Level/LevelFormat.h"
+
+#include <stddef.h>
 
 #define SHEEP_INITIAL_SPACING 20
 

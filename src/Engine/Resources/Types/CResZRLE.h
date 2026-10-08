@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESZRLE_H
 #define LEMBALL_VISOS_RESOURCES_CRESZRLE_H
 
-#include "CResBITMAP.h"
 #include "CResRaster.h"
 
 enum eZrleRunMarker {

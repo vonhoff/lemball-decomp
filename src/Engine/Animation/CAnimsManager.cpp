@@ -1,27 +1,27 @@
 #include "CAnimsManager.h"
 
-#include "Engine/Math/CVSPoint.h"
+#include "CAnim.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Graphics/CSurface.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Resources/Types/CResBaseLIST.h"
 #include "Engine/Resources/Types/CResZRLE.h"
-#include "../Resources/ResourceChunkTypes.h"
-#include "CAnim.h"
-#include "Engine/Animation/CAnimFrameBASE.h"
-#include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVSSize.h"
-#include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+
+#include <stddef.h>
 
 enum eAnimationBufferHalf {
 	ANIMATION_BUFFER_HALF_FIRST = 0,
 	ANIMATION_BUFFER_HALF_ALTERNATE = 1
 };
 
-#include "Engine/Resources/ResourceChunkTypes.h"
 #include "CAnimFrameBASE.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
 
 // FUNCTION: LEMBALL 0x004358c0
 void CAnimsManager::FreeVram()

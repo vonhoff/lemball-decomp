@@ -1,20 +1,19 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPConnect.h"
 
 #include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
-#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Engine/Time/VsTime.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy, strlen)
-
-#include "Platform/Windows/WinSock/WinSock.h"
 
 // FUNCTION: LEMBALL 0x00470dd0
 bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)

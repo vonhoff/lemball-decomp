@@ -1,10 +1,13 @@
-#include "Platform/Windows/Thread.h"
 #include "Engine/Diagnostics/VsDebug.h"
-#include "Engine/Startup/ProcessExitCodes.h"
 #include "Engine/Files/VsFile.h"
+#include "Engine/Startup/ProcessExitCodes.h"
 #include "Engine/Startup/VsInit.h"
+#include "Platform/Windows/Thread.h"
 
+#include <setjmp.h>
 #include <stddef.h>
+
+struct _Filet;
 
 extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,

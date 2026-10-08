@@ -3,7 +3,6 @@
 
 #include "CDrawingContext.h"
 
-class CDirectDrawDriver;
 // SIZE 0x08
 // VTABLE: LEMBALL 0x00498820
 class CDirectDrawContext : public CDrawingContext {

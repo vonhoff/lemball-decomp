@@ -1,15 +1,17 @@
 #include "CPanelLemming.h"
 
-#include "Gameplay/Groups/CPlayerLemmingGroupManager.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Characters/CPlayerLemming.h"
 #include "../Display/C2D.h"
 #include "../Display/CMain2DDisplay.h"
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "CPanel.h"
 #include "CPanelButton.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Gameplay/Characters/CPlayerLemming.h"
+#include "Gameplay/Groups/CPlayerLemmingGroupManager.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/CAI.h"
 
 class CPlayerLemmingGroup;
 

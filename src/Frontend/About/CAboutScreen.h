@@ -1,14 +1,13 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_CABOUTSCREEN_H
 #define LEMBALL_FRONTEND_SUPPORT_CABOUTSCREEN_H
 
-#include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVSSize.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
-#include "Platform/Windows/Windowing/CDrawer.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Platform/Windows/Windowing/CDrawer.h"
 
 class CGDI;
 class CMain2DDisplay;
@@ -16,6 +15,8 @@ class CPVButton;
 class CResBITMAP;
 class CResSTRING;
 class CTextManager;
+class CVSRect;
+
 // SIZE 0x9c
 // VTABLE: LEMBALL 0x00497cb0 CDrawer
 // VTABLE: LEMBALL 0x00497ca0 CBaseQueueHandler

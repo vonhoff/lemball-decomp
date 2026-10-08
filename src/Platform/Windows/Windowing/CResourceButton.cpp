@@ -1,5 +1,7 @@
 #include "CResourceButton.h"
 
+#include "CPVButton.h"
+
 // FUNCTION: LEMBALL 0x00468ec0
 CResourceButton::~CResourceButton()
 {

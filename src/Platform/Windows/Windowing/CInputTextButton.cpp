@@ -2,8 +2,12 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Resources/Manifest.h"
+#include "Platform/Windows/Windowing/CTextButton.h"
 
 #include <string.h>
+
+class CPVGWnd;
+class CVSRect;
 
 // FUNCTION: LEMBALL 0x0043a130
 CInputTextButton::CInputTextButton(const CVSRect& p_rect,

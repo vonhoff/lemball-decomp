@@ -1,9 +1,11 @@
-#include "Engine/Startup/PreInit.h"
 #include "Engine/Memory/CArena.h"
 #include "Engine/Memory/CRAMArena.h"
 #include "Engine/Memory/CSmallMemory.h"
-#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Startup/PreInit.h"
 #include "Engine/Startup/VsInit.h"
+#include "Engine/Streams/CVSOStream.h"
+
+#include <stddef.h>
 
 enum {
 	GLOBAL_ALLOC_FLAG_MOVEABLE = 0x0002

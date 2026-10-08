@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CANIMWND_H
 #define LEMBALL_VISOS_GRAPHICS_CANIMWND_H
 
-#include "Engine/Strings/CString.h"
 #include "CPVAnimWnd.h"
+#include "Engine/Strings/CString.h"
 
 // SIZE 0xbc
 // VTABLE: LEMBALL 0x00499f30

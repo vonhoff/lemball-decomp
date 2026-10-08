@@ -1,7 +1,7 @@
 #include "CResBool.h"
-#include "Engine/Resources/ResourceChunkTypes.h"
 
 #include "Engine/Resources/Archive/CMogRes.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
 
 #include <stddef.h>
 

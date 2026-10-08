@@ -1,18 +1,18 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
 
 #include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
-#include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 
 #include <string.h>
 
 #pragma intrinsic(strcpy)
 
-#include "Platform/Windows/WinSock/WinSock.h"
 #include "Engine/Time/VsTime.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 
 extern unsigned int g_tcpIpBytesReceived;
 

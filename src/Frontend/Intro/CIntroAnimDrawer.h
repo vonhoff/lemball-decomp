@@ -1,9 +1,9 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CINTROANIMDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CINTROANIMDRAWER_H
 
+#include "CIntroAnimAnimWindow.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "CIntroAnimAnimWindow.h"
 
 class CGDI;
 class CMain2DDisplay;

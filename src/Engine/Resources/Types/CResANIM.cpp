@@ -1,8 +1,10 @@
 #include "CResANIM.h"
+
+#include "CResZRLE.h"
+#include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
 
-#include "Engine/Resources/Archive/CMogRes.h"
-#include "CResZRLE.h"
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045d610
 CResANIM* CResANIM::Load(unsigned long p_resourceId)

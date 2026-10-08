@@ -1,13 +1,14 @@
 #include "CText.h"
 
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Graphics/CSurface.h"
+#include "Engine/Graphics/Primitives/CZRLE.h"
+#include "Engine/Math/CVSPoint.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Math/CVSPoint.h"
 #include "Engine/Strings/CString.h"
-#include "Engine/Graphics/Primitives/CZRLE.h"
+#include "Engine/Text/TextAdvanceFlags.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 #include <stddef.h>
 

@@ -2,7 +2,6 @@
 #define LEMBALL_VISOS_GRAPHICS_CPVSURFACE_H
 
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVSSize.h"
 
 class CZRLE;
 class CResZRLE;
@@ -19,6 +18,7 @@ class CScreenScroll;
 class CResPALETTE;
 class CSurface;
 struct CVSPoint;
+struct CVSSize;
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00499508

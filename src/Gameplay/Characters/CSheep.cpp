@@ -1,12 +1,13 @@
 #include "CSheep.h"
 
-#include "Gameplay/Simulation/AIScoreConstants.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Behavior/StateMachine.h"
-#include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/AIScoreConstants.h"
+#include "Gameplay/Simulation/CAI.h"
 
 #include <string.h>
 

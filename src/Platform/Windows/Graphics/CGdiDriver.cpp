@@ -3,15 +3,17 @@
 
 #include "CGdiContext.h"
 #include "CGdiDibContext.h"
+#include "Platform/Windows/Graphics/CGraphicsDriver.h"
 
 #include <new.h>
+#include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
+#include "CDibContext.h"
+#include "CDrawingContext.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "CDibContext.h"
-#include "CDrawingContext.h"
 
 #include <windows.h>
 

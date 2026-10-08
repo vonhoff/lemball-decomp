@@ -1,10 +1,9 @@
 #include "StateMachine.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Gameplay/Simulation/GameTime.h"
 
 // SIZE 0x10
 struct StateEntry {

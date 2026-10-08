@@ -4,6 +4,7 @@
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/CCritical.h"
 
+#include <stddef.h>
 #include <string.h>
 
 // GLOBAL: LEMBALL 0x004a117c

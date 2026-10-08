@@ -1,22 +1,22 @@
 #include "CWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Engine/Startup/PreInit.h"
-#include "Platform/Windows/Entry.h"
-#include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Streams/CVSOStream.h"
+#include "CPVWnd.h"
 #include "Engine/Diagnostics/VsDebug.h"
-#include "Engine/Time/VsTime.h"
-#include "Engine/Queues/PackParam.h"
-#include "Platform/Windows/Graphics/CGraphicsDriver.h"
-#include "Platform/Windows/Graphics/CGraphicsState.h"
-#include "Platform/Windows/CPlatformServices.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
+#include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
-#include "CPVWnd.h"
+#include "Engine/Queues/PackParam.h"
+#include "Engine/Startup/PreInit.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Time/VsTime.h"
 #include "MenuList.h"
+#include "Platform/Windows/CPlatformServices.h"
+#include "Platform/Windows/Entry.h"
+#include "Platform/Windows/Graphics/CGraphicsDriver.h"
+#include "Platform/Windows/Graphics/CGraphicsState.h"
 
 #include <conio.h>
 #include <string.h>

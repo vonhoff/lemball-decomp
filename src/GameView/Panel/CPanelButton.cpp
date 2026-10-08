@@ -1,32 +1,34 @@
 #include "CPanelButton.h"
 
-#include "Gameplay/Groups/CPlayerLemmingGroup.h"
-#include "Gameplay/Groups/CPlayerLemmingGroupManager.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Characters/CPlayerLemming.h"
-#include "Engine/Graphics/Palettes/CBaseRemap.h"
-#include "Platform/Windows/Input/CCursor.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Input/CHotAreaList.h"
-#include "Platform/Windows/Graphics/CSurface.h"
-#include "../Display/C2D.h"
-#include "GameView/Sound/CSoundView.h"
-#include "Gameplay/Objects/ObjectActions.h"
-#include "Gameplay/Objects/ObjectTypes.h"
+#include "Application/SoundEffects.h"
 #include "CPanel.h"
 #include "CPanelLemming.h"
-#include "Application/SoundEffects.h"
 #include "Engine/Animation/CAnim.h"
+#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Input/CBaseCursor.h"
+#include "Engine/Input/CHotAreaList.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Input/CBaseCursor.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Gameplay/Characters/CPlayerLemming.h"
+#include "Gameplay/Groups/CPlayerLemmingGroup.h"
+#include "Gameplay/Groups/CPlayerLemmingGroupManager.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+#include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CDepressedButton.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-#include "Engine/Graphics/Primitives/CSolidRect.h"
+
+#include <stddef.h>
 
 class CRemap;
 class CResANIM;
+class CHotAreaHandler;
 
 extern char g_szButton[];
 
@@ -37,9 +39,6 @@ enum {
 
 #include "GameView/Display/C2D.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-
-class CRemap;
-class CResANIM;
 
 extern char g_szButton[];
 

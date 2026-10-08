@@ -2,6 +2,8 @@
 
 #include "Engine/Streams/CVSOStream.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0045a540
 CMBlock::CMBlock(CArena* p_arena, CMBlock* p_previous, char* p_description, unsigned long p_size)
 {

@@ -1,4 +1,6 @@
 #include "CTimedAnim.h"
+
+#include "Engine/Animation/AnimationConstants.h"
 #include "Engine/Time/VsTime.h"
 
 // FUNCTION: LEMBALL 0x00435890

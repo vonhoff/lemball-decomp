@@ -1,30 +1,31 @@
 #include "CNetworkOptionsDrawer.h"
 
 #include "Application/CGameStatus.h"
-#include "Multiplayer/CNetworkManager.h"
-#include "Multiplayer/CNetworkGameMessage.h"
-#include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
-#include "Engine/Text/CTextManager.h"
-#include "Engine/Time/VsTime.h"
-#include "Engine/Graphics/Palettes/CBasePalManager.h"
-#include "Platform/Windows/Windowing/CGWnd.h"
-#include "Engine/Input/CHotAreaList.h"
-#include "Multiplayer/Transport/CConnect.h"
-#include "Engine/Resources/Manifest.h"
-#include "Frontend/Controls/CHiliteController.h"
-#include "CNetworkOptionsProc.h"
-#include "CEditString.h"
-#include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CBaseFrontendProcess.h"
 #include "Application/FlowProcesses.h"
-#include "Frontend/FrontendLayoutMode.h"
-#include "CEntryHandler.h"
 #include "Application/SoundEffects.h"
+#include "CEditString.h"
+#include "CEntryHandler.h"
+#include "CNetworkOptionsProc.h"
+#include "Engine/Graphics/Palettes/CBasePalManager.h"
+#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Input/CHotAreaList.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Resources/Manifest.h"
+#include "Engine/Text/CTextManager.h"
+#include "Engine/Text/TextAdvanceFlags.h"
+#include "Engine/Time/VsTime.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/CBaseFrontendProcess.h"
+#include "Frontend/Controls/CHiliteController.h"
+#include "Frontend/FrontendLayoutMode.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Multiplayer/CNetworkGameMessage.h"
+#include "Multiplayer/CNetworkManager.h"
+#include "Multiplayer/Transport/CConnect.h"
+#include "Platform/Windows/Windowing/CGWnd.h"
 
 #include <string.h>
 
@@ -218,24 +219,18 @@ int g_nNetworkOptionsCapsOrShift = 0;
 
 #include "Multiplayer/Transport/CNetworkAddress.h"
 
-#include <stddef.h>
-
 extern char* g_szBroadcastPeerName;
 
 enum {
 	NETWORK_OPTIONS_REDRAW_INTERVAL_MS = 500
 };
 
-class CRemap;
-
 extern char* g_szBroadcastPeerName;
 
 extern unsigned char* g_apNetworkOptionsRemaps[6];
 
-#include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Math/CVSSize.h"
-
-class CRemap;
+#include "Engine/Resources/Types/CResFONT.h"
 
 extern char* g_szBroadcastPeerName;
 
@@ -244,8 +239,6 @@ enum {
 };
 
 #include "Engine/Strings/CString.h"
-
-class CRemap;
 
 extern char* g_szBroadcastPeerName;
 

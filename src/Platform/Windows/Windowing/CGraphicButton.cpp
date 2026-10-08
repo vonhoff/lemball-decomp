@@ -5,7 +5,6 @@
 #include "CPVGWnd.h"
 #include "Engine/Animation/CAnim.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Graphics/Primitives/CPrimitive.h"
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Input/CHotAreaList.h"
 #include "Engine/Math/CVSPoint.h"
@@ -13,6 +12,8 @@
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Platform/Windows/Graphics/CSurface.h"
+
+#include <stddef.h>
 
 enum {
 	GRAPHIC_BUTTON_ALIGN_HORIZONTAL_CENTER = 0x04,

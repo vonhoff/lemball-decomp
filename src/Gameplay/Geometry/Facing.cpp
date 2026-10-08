@@ -1,8 +1,8 @@
 #include "Facing.h"
 
-#include "Application/GameMain.h"
-
 #include "AICOORD.h"
+#include "Application/GameMain.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/FixedPoint.h"
 
 #include <stdlib.h>

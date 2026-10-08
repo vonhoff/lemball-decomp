@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_BASE_CBASEGLOBALOBJECT_H
 #define LEMBALL_AI_BASE_CBASEGLOBALOBJECT_H
 
-#include "ObjectTypes.h"
-#include "Gameplay/Geometry/AICOORD.h"
 #include "CGlobalGameObject.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "ObjectTypes.h"
 
 // SIZE 0x144
 // VTABLE: LEMBALL 0x00493580

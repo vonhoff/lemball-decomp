@@ -2,8 +2,9 @@
 #define LEMBALL_VISOS_RESOURCES_CRESMOVIE_H
 
 #include "CResBaseLIST.h"
-#include "CResINT.h"
-#include "CResSTRING.h"
+
+class CResINT;
+class CResSTRING;
 
 // SIZE 0x80
 // VTABLE: LEMBALL 0x00498c88
@@ -16,9 +17,9 @@ public:
 	virtual bool DirectResources(unsigned long p_index, unsigned char*& p_cursor); // vtable+0x50
 	virtual bool DirectResources(unsigned long p_index,
 								 unsigned char*& p_headerCursor,
-								 unsigned char*& p_dataCursor);               // vtable+0x4c
+								 unsigned char*& p_dataCursor);                // vtable+0x4c
 	virtual void UnLoadResources(unsigned long p_index, unsigned int p_force); // vtable+0x54
-	virtual ~CResMOVIE();                                                     // vtable+0x00
+	virtual ~CResMOVIE();                                                      // vtable+0x00
 
 	friend class CAnimWnd;
 

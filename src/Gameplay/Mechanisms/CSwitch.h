@@ -1,9 +1,10 @@
 #ifndef LEMBALL_AI_OBJECTS_CSWITCH_H
 #define LEMBALL_AI_OBJECTS_CSWITCH_H
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "SwitchEntry.h"
+
+class AICOORD;
 
 enum {
 	SWITCH_ENTRY_CAPACITY = 32

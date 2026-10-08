@@ -1,11 +1,12 @@
 #include "CMaze.h"
 
-#include "Map/CMap.h"
+#include "Engine/Time/VsTime.h"
 #include "Map/CGround.h"
+#include "Map/CGroundArray.h"
+#include "Map/CMap.h"
 #include "Solution.h"
 
 #include <string.h>
-#include "Engine/Time/VsTime.h"
 
 extern const int g_mazeNeighborOffsetsX[10];
 extern const int g_mazeNeighborOffsetsY[10];
@@ -37,8 +38,6 @@ const unsigned char g_mazeWalkMasks[32] = {0, 1,  0, 8,   0, 4,  0, 2,  0, 0, 0,
 
 // GLOBAL: LEMBALL 0x0049cf58
 CMaze* g_pMaze = NULL;
-
-#include <stddef.h>
 
 extern const unsigned char g_aChangeBitMasks[8][4];
 

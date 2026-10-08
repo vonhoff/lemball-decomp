@@ -2,6 +2,8 @@
 #define LEMBALL_VISOS_GRAPHICS_CTOGGLEBUTTON_H
 
 #include "CGraphicButton.h"
+#include "Engine/Queues/Message.h"
+
 class CPVGWnd;
 struct CVSPoint;
 
@@ -15,9 +17,9 @@ public:
 	{
 		m_toggled = 0;
 	}
-	virtual void OnEnterButton();         // vtable+0xc8
-	virtual void OnExitButton();          // vtable+0xcc
-	virtual void OnPressed(eMouseButtonIndex p_flags); // vtable+0xc4
+	virtual void OnEnterButton();                       // vtable+0xc8
+	virtual void OnExitButton();                        // vtable+0xcc
+	virtual void OnPressed(eMouseButtonIndex p_flags);  // vtable+0xc4
 	virtual void OnReleased(eMouseButtonIndex p_flags); // vtable+0xc0
 	friend class CPanel;
 	friend class CPanelPauseButton;

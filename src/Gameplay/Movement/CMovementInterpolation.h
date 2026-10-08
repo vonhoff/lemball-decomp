@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_BASE_CMOVEMENTINTERPOLATION_H
 #define LEMBALL_AI_BASE_CMOVEMENTINTERPOLATION_H
 
-#include "Engine/Math/CVector.h"
 #include "Engine/Diagnostics/VsDebug.h"
+#include "Engine/Math/CVector.h"
 
 class CMovementInterpolation {
 public:

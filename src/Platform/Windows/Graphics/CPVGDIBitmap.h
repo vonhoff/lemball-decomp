@@ -1,9 +1,10 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVGDIBITMAP_H
 #define LEMBALL_VISOS_GRAPHICS_CPVGDIBITMAP_H
 
-#include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
+
+struct CVSPoint;
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x0049a470

@@ -2,8 +2,8 @@
 #define LEMBALL_VISOS_NETWORK_CTCPIPWRITESOCKET_H
 
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 #include "Platform/Windows/WinSock/WinSock.h"
 
 // SIZE 0xdc

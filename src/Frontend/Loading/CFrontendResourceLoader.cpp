@@ -1,21 +1,21 @@
 #include "CFrontendResourceLoader.h"
 
 #include "Application/GameMain.h"
-#include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
 #include "Engine/Resources/Archive/CMogRes.h"
+#include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResMOVIE.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/Types/CResSTRING.h"
-#include "Engine/Resources/Manifest.h"
+#include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/Loading/CCDLoadAnim.h"
+#include "GameView/Sound/CSoundView.h"
 
 #include <new.h>
+
 class CCdLoadAnimDraw;
-class CLoadUpdate;
 
 // GLOBAL: LEMBALL 0x0049f1c0
 unsigned int g_dwFrontendCompactAnimIds[68] = {RES_NEWFRONT_ANIMS_LORES_BULLET_LEFT,

@@ -8,17 +8,17 @@ enum {
 	RESOURCE_INDEX_NONE = -1
 };
 
-#include "Engine/Statistics/CStatManager.h"
-#include "Engine/Memory/CArena.h"
+#include "CMogDir.h"
+#include "CMogloadArena.h"
+#include "CRawRead.h"
 #include "CVSRange.h"
 #include "Chunk.h"
 #include "ChunkInfo.h"
 #include "Engine/Files/VsFile.h"
-#include "CMogDir.h"
-#include "CMogloadArena.h"
-#include "CRawRead.h"
-#include "Engine/Resources/Types/CResBase.h"
+#include "Engine/Memory/CArena.h"
 #include "Engine/Resources/Archive/CMogloadStat.h"
+#include "Engine/Resources/Types/CResBase.h"
+#include "Engine/Statistics/CStatManager.h"
 #include "Engine/Time/VsTime.h"
 
 #define RESOURCE_PATH_SEPARATOR '/'

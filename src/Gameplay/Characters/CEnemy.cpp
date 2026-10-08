@@ -1,33 +1,35 @@
 #include "CEnemy.h"
 
 #include "Application/GameMain.h"
-
-#include "Gameplay/Simulation/GameTime.h"
-#include "Map/CMap.h"
-#include "Gameplay/Geometry/Facing.h"
-#include "Gameplay/Simulation/AIScoreConstants.h"
-#include "Gameplay/Behavior/StateMachine.h"
-#include "Gameplay/Characters/EnemyBehavior.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Geometry/C3DVector.h"
-#include "Gameplay/Objects/CGameObject.h"
-#include "Gameplay/Geometry/CPt3.h"
-#include "Gameplay/Objects/ObjectActions.h"
-#include "Gameplay/Objects/ObjectTypes.h"
-#include "Gameplay/Projectiles/CBullet.h"
-#include "Map/CGround.h"
-#include "Map/CGroundArray.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/RandomConstants.h"
+#include "Gameplay/Behavior/StateMachine.h"
+#include "Gameplay/Characters/EnemyBehavior.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/C3DVector.h"
+#include "Gameplay/Geometry/CPt3.h"
+#include "Gameplay/Geometry/Facing.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Projectiles/CBullet.h"
+#include "Gameplay/Simulation/AIScoreConstants.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Gameplay/Simulation/GameTime.h"
+#include "Map/CGround.h"
+#include "Map/CGroundArray.h"
+#include "Map/CMap.h"
 
 enum {
 	ENEMY_HIT_RESPONSE_DELAY_TICKS = 60
 };
 
 #include <stddef.h>
+
 enum eEnemyBehaviorStage {
 	ENEMY_BEHAVIOR_STAGE_FIRST = 0,
 	ENEMY_BEHAVIOR_STAGE_SECOND = 1,

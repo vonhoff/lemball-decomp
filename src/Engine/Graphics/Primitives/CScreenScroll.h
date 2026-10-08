@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CSCREENSCROLL_H
 #define LEMBALL_VISOS_GRAPHICS_CSCREENSCROLL_H
 
+#include "CPrimitive.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include "CPrimitive.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496e40

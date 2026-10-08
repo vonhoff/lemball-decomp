@@ -4,6 +4,7 @@
 #include "Application/FlowProcesses.h"
 #include "Application/GameMain.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
@@ -55,8 +56,6 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 													RES_NEWFRONT_ICONS_LORES_FULLSCREEN};
 
 #include "Engine/Queues/Message.h"
-
-class CGWnd;
 
 // FUNCTION: LEMBALL 0x00448200
 CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)

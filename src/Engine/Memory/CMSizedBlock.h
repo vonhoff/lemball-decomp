@@ -3,6 +3,8 @@
 
 #include "CMBlock.h"
 
+class CArena;
+
 // MINIMUM SIZE 0x28
 // VTABLE: LEMBALL 0x00498950
 class CMSizedBlock : public CMBlock {

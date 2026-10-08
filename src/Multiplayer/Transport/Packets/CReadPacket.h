@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CREADPACKET_H
 #define LEMBALL_VISOS_MESSAGING_CREADPACKET_H
 
-#include "Platform/Windows/CCritical.h"
 #include "CBasePacket.h"
+#include "Platform/Windows/CCritical.h"
 
 // SIZE 0x2c
 // VTABLE: LEMBALL 0x004991c0 CCritical

@@ -3,6 +3,7 @@
 #include "CBaseSoundDevice.h"
 #include "CPVMusicDevice.h"
 #include "Engine/Resources/Types/CResEFFECT.h"
+#include "Engine/Strings/CString.h"
 #include "VsSound.h"
 
 #include <stddef.h>

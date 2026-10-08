@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILEREADSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILEREADSOCKET_H
 
+#include "Multiplayer/Transport/CReadSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileBaseSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
-#include "Multiplayer/Transport/CReadSocket.h"
 
 class CNetworkMessage;
 

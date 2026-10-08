@@ -1,7 +1,7 @@
 #include "CGlobalGameObject.h"
 
-#include "Gameplay/Messages/CTransportObjectMess.h"
-#include "Multiplayer/Transport/CConnect.h"
+#include "CGameObject.h"
+#include "Gameplay/Messages/CGameObjectMess.h"
 #include "Gameplay/Messages/CObjectChangeStateMess.h"
 #include "Gameplay/Messages/CObjectDiesMess.h"
 #include "Gameplay/Messages/CObjectHitMess.h"
@@ -10,12 +10,13 @@
 #include "Gameplay/Messages/CRequestActionMess.h"
 #include "Gameplay/Messages/CRequestCancelMess.h"
 #include "Gameplay/Messages/CRequestReplyMess.h"
-#include "CGameObject.h"
-#include "ObjectActions.h"
-#include "Gameplay/Messages/CGameObjectMess.h"
+#include "Gameplay/Messages/CTransportObjectMess.h"
 #include "Gameplay/Messages/GameMessageIds.h"
-#include "ObjectInteractionStates.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "ObjectActions.h"
+#include "ObjectInteractionStates.h"
 
 #include <stddef.h>
 

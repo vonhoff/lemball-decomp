@@ -1,10 +1,10 @@
 #include "CReadNCBuff.h"
 
-#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "BasePacketHeader.h"
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "CReadPacket.h"
 #include "CReadPacketBuff.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 #include <stddef.h>
 

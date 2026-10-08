@@ -1,10 +1,10 @@
 #ifndef LEMBALL_AI_OBJECTS_CGROUNDANIM_H
 #define LEMBALL_AI_OBJECTS_CGROUNDANIM_H
 
-#include "Map/CGround.h"
 #include "Gameplay/Geometry/tCoord3d.h"
 
-class CMap;
+class CGround;
+
 // SIZE 0x18
 struct GroundAnimEntry {
 	tCoord3d m_coordinate;             // 0x00
@@ -16,8 +16,6 @@ struct GroundAnimEntry {
 	short m_direction;                 // 0x12
 	unsigned int m_active;             // 0x14
 };
-
-struct tCoord3d;
 
 enum {
 	GROUND_ANIM_ENTRY_CAPACITY = 200,

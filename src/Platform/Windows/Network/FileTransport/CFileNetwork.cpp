@@ -1,16 +1,17 @@
 #include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
 
 #include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Multiplayer/Transport/FileTransport/CFileBroadcast.h"
 #include "Multiplayer/Transport/FileTransport/CFileConnect.h"
 #include "Multiplayer/Transport/FileTransport/CFileNetworkAddress.h"
-#include "Engine/Queues/CBaseQueueHandler.h"
-#include "Platform/Windows/ThreadConstants.h"
-#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/CNetworkWnd.h"
+#include "Platform/Windows/ThreadConstants.h"
 
 #include <new.h>
+#include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

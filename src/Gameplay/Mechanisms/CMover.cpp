@@ -1,18 +1,20 @@
 #include "CMover.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-#include "Map/CMap.h"
-#include "Gameplay/Geometry/Facing.h"
-#include "Multiplayer/Transport/CConnect.h"
-#include "Gameplay/Groups/CPlayerLemmingGroup.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
 #include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/CPt3.h"
+#include "Gameplay/Geometry/Facing.h"
+#include "Gameplay/Groups/CPlayerLemmingGroup.h"
+#include "Gameplay/Movement/CMove3d.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Movement/CMove3d.h"
-#include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/GameTime.h"
+#include "Map/CMap.h"
+#include "Multiplayer/Transport/CConnect.h"
 
 enum {
 	AUTOMATIC_MOVER_TURNING_DELAY_TICKS = 20

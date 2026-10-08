@@ -3,9 +3,8 @@
 
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/Message.h"
-struct CVSPoint;
 
-struct Message;
+struct CVSPoint;
 class CHotAreaList;
 
 // SIZE 0x38
@@ -15,14 +14,14 @@ public:
 	CHotAreaHandler();
 	CHotAreaHandler(const CVSRect& p_bounds);
 	void ProcessArea(Message* p_message, const CVSPoint& p_point, class CHotAreaHandler* p_currentHandler);
-	virtual ~CHotAreaHandler() {}                                          // vtable+0x00
+	virtual ~CHotAreaHandler() {}                                                        // vtable+0x00
 	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags);       // vtable+0x04
 	virtual void OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags);         // vtable+0x08
 	virtual void OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x0c
-	virtual void OnEnter();                                                // vtable+0x10
-	virtual void OnExit();                                                 // vtable+0x14
-	virtual void OnInside(const CVSPoint& p_point);                        // vtable+0x18
-	virtual bool InArea(const CVSPoint& p_point);                          // vtable+0x1c
+	virtual void OnEnter();                                                              // vtable+0x10
+	virtual void OnExit();                                                               // vtable+0x14
+	virtual void OnInside(const CVSPoint& p_point);                                      // vtable+0x18
+	virtual bool InArea(const CVSPoint& p_point);                                        // vtable+0x1c
 	void Initialise();
 	void Reset();
 	void SetActive(unsigned int p_active);

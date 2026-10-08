@@ -1,8 +1,8 @@
 #include "CMove3d.h"
 
 #include "Application/GameMain.h"
-
 #include "Engine/Math/CVSMath.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/CPt3.h"
 
 #define MOVE3D_MAX_NORMALIZED_COMPONENT 100

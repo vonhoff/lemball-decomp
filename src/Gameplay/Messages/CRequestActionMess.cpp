@@ -1,9 +1,9 @@
 #include "CRequestActionMess.h"
 
-#include "Gameplay/Objects/CGlobalGameObject.h"
 #include "CGameObjectMess.h"
-#include "GameMessageIds.h"
 #include "CRequestReplyMess.h"
+#include "GameMessageIds.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
 
 // FUNCTION: LEMBALL 0x00416a10
 CRequestActionMess::CRequestActionMess() : CGameObjectMess(MESSAGE_REQUEST_ACTION)

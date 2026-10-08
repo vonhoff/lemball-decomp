@@ -1,22 +1,22 @@
 #include "CGWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Platform/Windows/Graphics/CGraphicsDriver.h"
-#include "Platform/Windows/Graphics/CGraphicsState.h"
-#include "Platform/Windows/Input/CCursor.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Graphics/CGDIDevice.h"
-#include "Platform/Windows/Graphics/CSurface.h"
-
-#include <windows.h>
-
 #include "CPVGWnd.inl"
+#include "CPVWnd.h"
+#include "CWnd.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
+#include "Platform/Windows/Graphics/CGDIDevice.h"
+#include "Platform/Windows/Graphics/CGraphicsDriver.h"
+#include "Platform/Windows/Graphics/CGraphicsState.h"
 #include "Platform/Windows/Graphics/CPVSurface.h"
-#include "CPVWnd.h"
-#include "CWnd.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+#include "Platform/Windows/Input/CCursor.h"
+
+#include <stddef.h>
+#include <windows.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include "Engine/Resources/Types/CResPALETTE.h"

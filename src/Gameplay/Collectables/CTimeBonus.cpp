@@ -1,8 +1,8 @@
 #include "CTimeBonus.h"
 
+#include "Application/SoundEffects.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
-#include "Application/SoundEffects.h"
 
 enum {
 	TIME_BONUS_ADDED_SECONDS = 30

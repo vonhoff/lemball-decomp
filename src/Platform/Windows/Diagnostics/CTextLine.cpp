@@ -1,5 +1,7 @@
 #include "CTextLine.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x004564c0
 CTextLine::~CTextLine()
 {

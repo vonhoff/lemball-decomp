@@ -2,7 +2,9 @@
 #define LEMBALL_VISOS_GRAPHICS_CWND_H
 
 #include "CPVWnd.h"
+
 struct CVSPoint;
+struct MenuList;
 
 enum eWindowStyleFlags {
 	WINDOW_STYLE_SHOW_ON_CREATE = 0x00000001,

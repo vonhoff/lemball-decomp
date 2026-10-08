@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILENETWORK_H
 #define LEMBALL_VISOS_NETWORK_CFILENETWORK_H
 
-#include "Platform/Windows/Network/CNetworkWnd.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Platform/Windows/Network/CNetworkWnd.h"
 
 #define FILE_NETWORK_MESSAGE_FORCE_PROCESS 0x444
 #define FILE_NETWORK_TIMER_ID 0x12345679

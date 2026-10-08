@@ -1,25 +1,24 @@
 #include "GameView/Animation/CLemmingAnimsManager.h"
 
-#include "Gameplay/Simulation/CAI.h"
-#include "GameView/Loading/CCDLoadAnim.h"
+#include "Engine/Animation/CAnimFrameBASE.h"
+#include "Engine/Animation/CAnimsManager.h"
+#include "Engine/Animation/CFrames.h"
 #include "Engine/Animation/CPlayThruAnim.h"
 #include "Engine/Animation/CRepeatAnim.h"
 #include "Engine/Animation/CStaticAnim.h"
-#include "Engine/Resources/Archive/CMogRes.h"
-#include "Engine/Resources/Types/CResFONT.h"
-#include "Engine/Resources/Manifest.h"
-#include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
-#include "Gameplay/Objects/ObjectTypes.h"
-#include "Engine/Animation/CAnimsManager.h"
-#include "Engine/Animation/CFrames.h"
 #include "Engine/Animation/CTimedAnim.h"
 #include "Engine/Math/CVSPoint.h"
+#include "Engine/Resources/Archive/CMogRes.h"
+#include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/ResourceLimits.h"
+#include "Engine/Resources/Types/CResFONT.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "GameView/Loading/CCDLoadAnim.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/CAI.h"
 
 #include <stddef.h>
-
-class CLoadUpdate;
 
 enum {
 	LEMMING_WALK_STAND_CYCLE_DURATION_MS = 1000,

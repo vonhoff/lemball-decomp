@@ -3,11 +3,11 @@
 #include "CGdiContext.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include "CDibContext.h"
+#include "CGraphicsDriver.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "CDibContext.h"
-#include "CGraphicsDriver.h"
 
 #include <conio.h>
 #include <string.h>

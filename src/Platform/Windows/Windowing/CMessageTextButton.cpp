@@ -1,6 +1,10 @@
 #include "CMessageTextButton.h"
 
 #include "Engine/Queues/CBaseQueue.h"
+#include "Platform/Windows/Windowing/CTextButton.h"
+
+class CPVGWnd;
+class CVSRect;
 
 // FUNCTION: LEMBALL 0x004697c0
 CMessageTextButton::CMessageTextButton(unsigned int p_controlMessage,

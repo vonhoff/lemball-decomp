@@ -1,42 +1,44 @@
 #include "CSurface.h"
 
-#include "Engine/Graphics/CChangeList.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Diagnostics/VsDebug.h"
-#include "Engine/Resources/Types/CResBITMAP.h"
-#include "Engine/Resources/Types/CResPALETTE.h"
-#include "Engine/Resources/Types/CResZRLE.h"
 #include "CDibContext.h"
 #include "CDrawingContext.h"
+#include "CGDIDevice.h"
 #include "CGdiContext.h"
 #include "CGraphicsDriver.h"
+#include "CPVBackBuffSurface.h"
+#include "CPVGDIBitmap.h"
+#include "CPVScrollableSurface.h"
+#include "CPVZBuffSurface.h"
+#include "Engine/Diagnostics/VsDebug.h"
+#include "Engine/Graphics/CChangeList.h"
+#include "Engine/Graphics/ChangeListItem.h"
+#include "Engine/Graphics/Palettes/CRemap.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Graphics/Primitives/CCircle.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
 #include "Engine/Graphics/Primitives/CFilledCircle.h"
-#include "CGDIDevice.h"
 #include "Engine/Graphics/Primitives/CLine.h"
 #include "Engine/Graphics/Primitives/CPoint.h"
-#include "Engine/Graphics/Palettes/CRemap.h"
 #include "Engine/Graphics/Primitives/CScreenScroll.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Graphics/Primitives/CZBuffClear.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
-#include <stdlib.h>
-#include <string.h>
+#include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Graphics/ChangeListItem.h"
-#include "CPVBackBuffSurface.h"
-#include "CPVGDIBitmap.h"
-#include "CPVScrollableSurface.h"
-#include "CPVZBuffSurface.h"
+#include "Engine/Resources/Types/CResBITMAP.h"
+#include "Engine/Resources/Types/CResPALETTE.h"
+#include "Engine/Resources/Types/CResZRLE.h"
+#include "Engine/Streams/CVSOStream.h"
+
+#include <stdlib.h>
+#include <string.h>
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include "Engine/Graphics/Primitives/CCopyColourToBackBuff.h"
+
+#include <windows.h>
 
 extern "C" __declspec(dllimport) int __stdcall GdiFlush();
 

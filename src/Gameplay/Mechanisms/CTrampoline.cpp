@@ -1,17 +1,19 @@
 #include "CTrampoline.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-#include "Map/CMap.h"
-#include "Gameplay/Geometry/Facing.h"
-#include "Gameplay/Simulation/CAI.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Diagnostics/VsDebug.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Application/SoundEffects.h"
+#include "Map/CMap.h"
 
 enum {
 	TRAMPOLINE_ACTIVATION_RADIUS_PIXELS = 32,

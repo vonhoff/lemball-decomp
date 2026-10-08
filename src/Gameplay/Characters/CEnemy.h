@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_OBJECTS_CENEMY_H
 #define LEMBALL_AI_OBJECTS_CENEMY_H
 
+#include "Gameplay/Characters/EnemyBehavior.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
-#include "Gameplay/Characters/EnemyBehavior.h"
 
 class CAI;
 

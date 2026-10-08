@@ -2,15 +2,15 @@
 #define LEMBALL_VISOS_TARGET_UI_CTEXTBUTTON_H
 
 #include "CFramedButton.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSSize.h"
 
-class CGWnd;
-class CHotAreaHandler;
 class CRemap;
 class CResFONT;
 class CText;
 class CVSRect;
-struct CVSPoint;
-struct CVSSize;
+class CPVGWnd;
+
 enum eTextButtonAlignmentFlags {
 	TEXT_BUTTON_ALIGN_HORIZONTAL_CENTER = 0x04,
 	TEXT_BUTTON_ALIGN_VERTICAL_CENTER = 0x08,

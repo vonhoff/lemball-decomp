@@ -17,6 +17,7 @@ BraceWrapping:
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 EmptyLineBeforeAccessModifier: Always
+FixNamespaceComments: false
 IncludeBlocks: Regroup
 IndentAccessModifiers: false
 IndentWidth: 4

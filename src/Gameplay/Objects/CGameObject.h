@@ -1,17 +1,19 @@
 #ifndef LEMBALL_AI_BASE_CGAMEOBJECT_H
 #define LEMBALL_AI_BASE_CGAMEOBJECT_H
 
-#include "Gameplay/Simulation/GameTime.h"
-#include "Engine/Math/CVSRect.h"
+#include "Application/SoundEffects.h"
 #include "CViewData.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Geometry/C3DVector.h"
-#include "Gameplay/Movement/CMovementInterpolation.h"
 #include "Gameplay/Geometry/CRect3.h"
+#include "Gameplay/Movement/CMovementInterpolation.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "ObjectActions.h"
 #include "ObjectIds.h"
 #include "ObjectTypes.h"
-#include "Application/SoundEffects.h"
+
+class C3DVector;
+class CVSRect;
 
 enum {
 	GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS = 4000,
@@ -30,6 +32,7 @@ class Info;
 struct tCoord3d;
 struct CPt3;
 struct StateEntry;
+
 #define GAME_OBJECT_COLLISION_AFFECT_ROUTE_ON_BLOCK 0x01
 #define GAME_OBJECT_COLLISION_ALLOW_JUMP 0x02
 #define GAME_OBJECT_COLLISION_ALLOW_FALL 0x04

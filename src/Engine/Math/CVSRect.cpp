@@ -1,7 +1,6 @@
 #include "CVSRect.h"
 
 #include "CVSPoint.h"
-#include "CVSSize.h"
 
 // FUNCTION: LEMBALL 0x00442190
 CVSRect& CVSRect::operator=(const CVSRect& p_source)

@@ -1,7 +1,7 @@
 #include "CGameObjectMess.h"
 
-#include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00416850

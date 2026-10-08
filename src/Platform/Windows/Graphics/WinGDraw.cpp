@@ -1,12 +1,10 @@
 #include "WinGDraw.h"
 
+#include "CSurface.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
-#include "CSurface.h"
-class CSurface;
-class CGWnd;
 
 // SIZE 0x474
 struct WinGDrawState {
@@ -32,10 +30,11 @@ struct WinGDrawState {
 };
 
 #include <string.h>
-
 #define WIN32_LEAN_AND_MEAN
 // clang-format off
 #include <windows.h>
+#include <mmsystem.h>
+
 #define NOAVIFILE
 #include <vfw.h>
 // clang-format on
@@ -48,6 +47,7 @@ enum {
 #define WING_DRAW_TEXT_CAPACITY 256
 
 class CAnimWnd;
+
 extern CAnimWnd* g_pAnimWnd;
 WinGDrawState* __stdcall WinGDrawOpen(void* p_openInfo);
 int __stdcall WinGDrawClose(WinGDrawState* p_state);

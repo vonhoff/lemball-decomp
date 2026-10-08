@@ -1,25 +1,25 @@
 
 #include "CGraphicsState.h"
 
-#include "Engine/Strings/CString.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Engine/Startup/VsInit.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Windowing/CPVWnd.h"
-#include "CSurface.h"
-#include "Platform/Windows/Windowing/CWnd.h"
 #include "CDirectDrawDriver.h"
 #include "CDisplayDibDriver.h"
 #include "CGdiDriver.h"
 #include "CPlanarDibDriver.h"
+#include "CSurface.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Startup/VsInit.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Strings/CString.h"
+#include "Platform/Windows/Windowing/CPVWnd.h"
+#include "Platform/Windows/Windowing/CWnd.h"
 
 #include <new.h>
+#include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
+#include "CGraphicsDriver.h"
 #include "Engine/Math/CVSSize.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-#include "Platform/Windows/Windowing/CWnd.h"
-#include "CGraphicsDriver.h"
 
 #include <windows.h>
 

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CCONNECT_H
 #define LEMBALL_VISOS_NETWORK_CCONNECT_H
 
-#include "CRwSocket.h"
 #include "CBaseCommonSocket.h"
+#include "CRwSocket.h"
 
 class CNetworkAddress;
 enum eNetworkRole {

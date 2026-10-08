@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CGUNBUTTONS_H
 #define LEMBALL_FRONTEND_CONTROLS_CGUNBUTTONS_H
 
-#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 
 class CGWnd;
 class CGDI;

@@ -3,8 +3,6 @@
 
 #include "CFramedButton.h"
 
-class CGWnd;
-class CHotAreaHandler;
 class CVSRect;
 // MINIMUM SIZE 0x11c
 // VTABLE: LEMBALL 0x00499928 CGWnd

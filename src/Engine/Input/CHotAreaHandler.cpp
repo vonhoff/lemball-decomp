@@ -1,9 +1,9 @@
 #include "CHotAreaHandler.h"
 
+#include "CHotAreaList.h"
 #include "CMasterInput.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include "CHotAreaList.h"
 #include "Engine/Queues/Message.h"
 
 #include <stddef.h>

@@ -1,53 +1,50 @@
 #include "CMain2DDisplay.h"
 
-#include "Platform/Windows/Windowing/MenuList.h"
-
-#include "Gameplay/Simulation/CAI.h"
+#include "../../Engine/Resources/Manifest.h"
+#include "../../Platform/Windows/Entry.h"
 #include "Application/CGame.h"
 #include "Application/GameMain.h"
-#include "Level/CLevelLoader.h"
-#include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/Intro/CIntroAnimDrawer.h"
-#include "Frontend/Options/CMainOptions1Drawer.h"
-#include "Frontend/Options/CMainOptions2Drawer.h"
-#include "Frontend/Network/CNetworkOptionsDrawer.h"
-#include "Frontend/Password/CPasswordDrawer.h"
-#include "Frontend/Preview/CPreviewDrawer.h"
-#include "Frontend/Results/CSuccFailDrawer.h"
-#include "Platform/Windows/Windowing/AboutDialog.h"
-#include "Frontend/About/CAboutScreen.h"
-#include "../../Platform/Windows/Entry.h"
-#include "Engine/Queues/CBaseQueue.h"
+#include "C2D.h"
+#include "DisplayQuitState.h"
 #include "Engine/Graphics/CChangeList.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/Input/CCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Graphics/CSurface.h"
+#include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/Types/CResZRLE.h"
-#include "../../Engine/Resources/Manifest.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Frontend/About/CAboutScreen.h"
+#include "Frontend/Intro/CIntroAnimDrawer.h"
+#include "Frontend/Network/CNetworkOptionsDrawer.h"
+#include "Frontend/Options/CMainOptions1Drawer.h"
+#include "Frontend/Options/CMainOptions2Drawer.h"
+#include "Frontend/Password/CPasswordDrawer.h"
+#include "Frontend/Preview/CPreviewDrawer.h"
+#include "Frontend/Results/CSuccFailDrawer.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Level/CLevelLoader.h"
+#include "Platform/Windows/CPlatformServices.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "Platform/Windows/Graphics/CGraphicsState.h"
-#include "Platform/Windows/CPlatformServices.h"
-#include "C2D.h"
-#include "DisplayQuitState.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+#include "Platform/Windows/Input/CCursor.h"
+#include "Platform/Windows/Windowing/AboutDialog.h"
+#include "Platform/Windows/Windowing/MenuList.h"
 
 #include <new.h>
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include "Application/FlowProcesses.h"
-#include "GameView/Loading/LoadAnimCallbacks.h"
+#include "Engine/Input/CBaseCursor.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Input/CBaseCursor.h"
+#include "GameView/Loading/LoadAnimCallbacks.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
 
 #include <windows.h>
 
-class CBaseQueueHandler;
 class CMap;
 
 #pragma intrinsic(strcpy, strcat)

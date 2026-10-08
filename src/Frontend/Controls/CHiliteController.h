@@ -3,9 +3,9 @@
 
 #include "../../Engine/Animation/CAnimsManager.h"
 #include "../../Engine/Animation/CStaticAnim.h"
+#include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Graphics/Primitives/CClipRect.h"
 // SIZE 0x10
 struct HiliteControllerJunction {
 	unsigned int m_present;        // 0x00

@@ -1,21 +1,23 @@
 #include "CGunButtons.h"
-#include "CGunController.h"
-#include "Frontend/Controls/ControlMessages.h"
 
-#include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Time/VsTime.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Windowing/CGraphicButton.h"
-#include "Platform/Windows/Graphics/CSurface.h"
-#include "Engine/Resources/Types/CResANIM.h"
-#include "CTrackWindow.h"
 #include "CGunButton.h"
+#include "CGunController.h"
+#include "CTrackWindow.h"
 #include "CTrackerButton.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
-#include "Platform/Windows/Windowing/CGWnd.h"
+#include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBase.h"
+#include "Engine/Time/VsTime.h"
+#include "Frontend/Controls/ControlMessages.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+#include "Platform/Windows/Windowing/CGWnd.h"
+#include "Platform/Windows/Windowing/CGraphicButton.h"
+
+#include <stddef.h>
 
 class CPVGWnd;
 

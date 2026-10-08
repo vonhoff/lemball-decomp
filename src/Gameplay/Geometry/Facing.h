@@ -1,8 +1,7 @@
 #ifndef LEMBALL_GAMEPLAY_GEOMETRY_FACING_H
 #define LEMBALL_GAMEPLAY_GEOMETRY_FACING_H
 
-#include "AICOORD.h"
-#include "Engine/Math/CVSMath.h"
+class AICOORD;
 
 enum {
 	FACING_DIRECTION_COUNT = 8,

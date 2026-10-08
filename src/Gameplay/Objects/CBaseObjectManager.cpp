@@ -12,6 +12,8 @@
 #include "Multiplayer/Transport/Packets/CWriteCBuff.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0040ab70
 void CBaseObjectManager::Restart()
 {

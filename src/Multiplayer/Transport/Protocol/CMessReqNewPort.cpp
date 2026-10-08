@@ -1,7 +1,9 @@
 #include "CMessReqNewPort.h"
 
-#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "CMessReqConnect.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045f490
 CMessReqNewPort::CMessReqNewPort(const char* p_header) : CMessReqConnect(p_header)

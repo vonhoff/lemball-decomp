@@ -1,10 +1,11 @@
 #ifndef LEMBALL_AI_OBJECTS_CDUPLICATOR_H
 #define LEMBALL_AI_OBJECTS_CDUPLICATOR_H
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 
 class CGameObject;
+class AICOORD;
+
 // SIZE 0x144
 // VTABLE: LEMBALL 0x00496050
 class CDuplicator : public CGlobalGameObject {

@@ -1,14 +1,13 @@
 #ifndef LEMBALL_AI_OBJECTS_CICE_H
 #define LEMBALL_AI_OBJECTS_CICE_H
 
-#include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Geometry/tCoord3d.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
 
 class AICOORD;
 class CGameObject;
-class CIceManager;
 class CPlayerLemming;
-class CSwitch;
+
 // SIZE 0x188
 // VTABLE: LEMBALL 0x004968b8
 class CIce : public CGlobalGameObject {

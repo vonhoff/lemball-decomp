@@ -1,9 +1,9 @@
 #include "CBaseGlobalObject.h"
 
-#include "Multiplayer/Transport/CConnect.h"
-#include "Gameplay/Messages/CObjectPosMess.h"
-#include "Gameplay/Geometry/AICOORD.h"
 #include "CGlobalGameObject.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Messages/CObjectPosMess.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "ObjectActions.h"
 
 #include <stddef.h>

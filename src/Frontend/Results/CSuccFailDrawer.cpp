@@ -1,33 +1,37 @@
 #include "CSuccFailDrawer.h"
 
 #include "Application/CGameStatus.h"
+#include "Application/FlowProcesses.h"
 #include "Application/GameMain.h"
+#include "Application/SoundEffects.h"
+#include "CSuccFailAnimWnd.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBitmap.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
 #include "Engine/Memory/CArena.h"
+#include "Engine/Queues/Message.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Statistics/CStatManager.h"
 #include "Engine/Streams/CVSOStream.h"
+#include "Engine/Strings/CString.h"
 #include "Engine/Text/CTextManager.h"
+#include "Engine/Text/TextAdvanceFlags.h"
 #include "Engine/Time/VsTime.h"
-#include "Frontend/CBaseFrontendProcess.h"
+#include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/Controls/CHiliteController.h"
+#include "Frontend/CoordPair.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/tagPRIMS.h"
 #include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Level/CLevelLoader.h"
 #include "Multiplayer/Transport/NetworkMode.h"
-#include "Application/FlowProcesses.h"
-#include "Application/SoundEffects.h"
-#include "CSuccFailAnimWnd.h"
-#include "Engine/Graphics/Primitives/CBigBitmap.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVSSize.h"
-#include "Engine/Queues/Message.h"
-#include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CoordPair.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
+
+#include <stddef.h>
 
 class CGWnd;
 
@@ -172,8 +176,6 @@ unsigned long g_dwSuccFailSuccessBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SU
 // GLOBAL: LEMBALL 0x0049fe18
 char g_szPaintballSequence[] = "Paintball Sequence";
 
-#include "Engine/Time/VsTime.h"
-
 extern char g_szSuccFailMoviePrefix[];
 
 #include "Engine/Resources/Types/CResFONT.h"
@@ -182,8 +184,6 @@ extern char g_szSuccFailMoviePrefix[];
 #include "Multiplayer/Transport/CConnect.h"
 
 #include <string.h>
-
-class CGWnd;
 
 #pragma intrinsic(strcpy, strlen)
 

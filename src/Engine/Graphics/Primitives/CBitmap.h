@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CBITMAP_H
 #define LEMBALL_VISOS_GRAPHICS_CBITMAP_H
 
-#include "Engine/Math/CVSRect.h"
 #include "CPrimitive.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
 
 class CResBITMAP;
 class CRemap;

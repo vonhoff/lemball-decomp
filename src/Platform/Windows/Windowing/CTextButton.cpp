@@ -1,12 +1,16 @@
 #include "CTextButton.h"
 
-#include "Engine/Graphics/CChangeList.h"
-#include "Engine/Text/CText.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Input/CHotAreaList.h"
 #include "CPVGWnd.h"
-#include "Platform/Windows/Graphics/CSurface.h"
+#include "Engine/Graphics/CChangeList.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Input/CHotAreaHandler.h"
+#include "Engine/Input/CHotAreaList.h"
+#include "Engine/Math/CVSRect.h"
 #include "Engine/Resources/Types/CResFONT.h"
+#include "Engine/Text/CText.h"
+#include "Engine/Text/TextAdvanceFlags.h"
+#include "Platform/Windows/Graphics/CSurface.h"
+#include "Platform/Windows/Windowing/CFramedButton.h"
 
 #include <stddef.h>
 

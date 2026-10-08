@@ -1,13 +1,14 @@
 #ifndef LEMBALL_AI_MANAGERS_CMINEMANAGER_H
 #define LEMBALL_AI_MANAGERS_CMINEMANAGER_H
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 
 class CAI;
 class CGameObject;
 class CMine;
 struct tCoord3d;
+class AICOORD;
+
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00495d30
 class CMineManager : public CBaseObjectManager {

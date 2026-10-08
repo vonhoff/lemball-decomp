@@ -1,7 +1,7 @@
 #include "SpriteGroundLookup.h"
 
-#include "Map/CGround.h"
 #include "Engine/Math/CVSRect.h"
+#include "Map/CGround.h"
 
 #include <string.h>
 

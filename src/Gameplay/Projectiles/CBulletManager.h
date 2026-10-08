@@ -1,11 +1,12 @@
 #ifndef LEMBALL_AI_MANAGERS_CBULLETMANAGER_H
 #define LEMBALL_AI_MANAGERS_CBULLETMANAGER_H
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "CBullet.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 
 class CVSRect;
+class AICOORD;
+
 enum {
 	BULLET_ACTIVE_LIST_CAPACITY = 40,
 	BULLET_OBJECT_POOL_PARTITION_CAPACITY = BULLET_ACTIVE_LIST_CAPACITY / 2,

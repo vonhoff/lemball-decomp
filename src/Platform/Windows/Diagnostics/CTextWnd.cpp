@@ -1,14 +1,13 @@
 #include "CTextWnd.h"
 
-#include "Platform/Windows/Entry.h"
-#include "Engine/Diagnostics/VsDebug.h"
-#include "CTextLine.h"
-#include "CTextLineBuffer.h"
-
 #include <stdlib.h>
 #include <string.h>
-
 #define WIN32_LEAN_AND_MEAN
+#include "CTextLine.h"
+#include "CTextLineBuffer.h"
+#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Entry.h"
+
 #include <windows.h>
 
 #define TEXT_WINDOW_APPEND_MESSAGE (WM_USER + 32)

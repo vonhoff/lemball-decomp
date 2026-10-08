@@ -1,12 +1,12 @@
 #ifndef LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 #define LEMBALL_FRONTEND_DRAWERS_CSUCCFAILDRAWER_H
 
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Graphics/Primitives/CBigBitmap.h"
-#include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CoordPair.h"
 #include "CSuccFailAnimWnd.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CUserActionMessage.h"
+#include "Frontend/CoordPair.h"
 
 class CGDI;
 class CMain2DDisplay;

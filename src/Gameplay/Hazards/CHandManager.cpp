@@ -1,11 +1,15 @@
 #include "CHandManager.h"
 
-#include "Gameplay/Simulation/CAI.h"
 #include "CHand.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Objects/CGameObject.h"
-#include "Level/LevelFormat.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectIds.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Level/LevelFormat.h"
+
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00427e60
 CHandManager::CHandManager(CAI* p_ai, int p_capacity)

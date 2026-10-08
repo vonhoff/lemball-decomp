@@ -2,6 +2,7 @@
 #define LEMBALL_FRONTEND_SUPPORT_CENTRYHANDLER_H
 
 #include "Engine/Input/CHotAreaHandler.h"
+#include "Engine/Queues/Message.h"
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x004986b0
@@ -9,8 +10,8 @@ class CEntryHandler : public CHotAreaHandler {
 public:
 	CEntryHandler();
 	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x04
-	virtual void OnEnter();                                          // vtable+0x10
-	virtual void OnExit();                                           // vtable+0x14
+	virtual void OnEnter();                                                        // vtable+0x10
+	virtual void OnExit();                                                         // vtable+0x14
 	void Reset();
 
 	friend class CNetworkOptionsDrawer;

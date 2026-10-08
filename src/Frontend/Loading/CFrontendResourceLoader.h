@@ -2,7 +2,6 @@
 #define LEMBALL_FRONTEND_RESOURCES_CFRONTENDRESOURCELOADER_H
 
 #include "GameView/Loading/CLoadUpdate.h"
-#include "GameView/Sound/CSoundView.h"
 
 class CCDLoadAnim;
 class CMain2DDisplay;
@@ -12,6 +11,7 @@ class CResFONT;
 class CResMOVIE;
 class CResPALETTE;
 class CResSTRING;
+
 // SIZE 0x58
 // VTABLE: LEMBALL 0x00497ad4
 class CFrontendResourceLoader : public CLoadUpdate {

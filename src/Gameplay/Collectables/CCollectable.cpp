@@ -1,16 +1,17 @@
 #include "CCollectable.h"
 
-#include "Map/CMap.h"
-#include "Multiplayer/Transport/CConnect.h"
-#include "Gameplay/Simulation/CAI.h"
+#include "Engine/Math/CFixed.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Simulation/CAI.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Engine/Math/CFixed.h"
+#include "Map/CMap.h"
+#include "Multiplayer/Transport/CConnect.h"
 
 #include <stddef.h>
 

@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_MANAGERS_CCOLLECTABLEMANAGER_H
 #define LEMBALL_AI_MANAGERS_CCOLLECTABLEMANAGER_H
 
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 class CAI;
 class CCollectable;

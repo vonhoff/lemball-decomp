@@ -1,8 +1,8 @@
 #include "CPVZBuffSurface.h"
 
+#include "CPVGDIBitmap.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "CPVGDIBitmap.h"
 
 #include <stddef.h>
 

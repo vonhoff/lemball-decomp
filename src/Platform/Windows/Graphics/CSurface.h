@@ -1,10 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CSURFACE_H
 #define LEMBALL_VISOS_GRAPHICS_CSURFACE_H
 
-#include "Engine/Math/CVSRect.h"
 #include "CPVBackBuffSurface.h"
 #include "CPVScrollableSurface.h"
-#include "CPVSurface.h"
 #include "CPVZBuffSurface.h"
 
 class GrafPort;
@@ -12,6 +10,7 @@ class CChangeList;
 class CResZRLE;
 class CRemap;
 struct CVSPoint;
+class CVSRect;
 
 enum {
 	SURFACE_STEP_BACKWARD = -1

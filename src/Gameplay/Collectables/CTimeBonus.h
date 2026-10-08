@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CTIMEBONUS_H
 #define LEMBALL_AI_OBJECTS_CTIMEBONUS_H
 
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "CCollectable.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 // SIZE 0x13c
 // VTABLE: LEMBALL 0x004955d0

@@ -1,16 +1,17 @@
 #include "CHand.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-#include "Map/CMap.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Gameplay/Objects/CViewData.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
-#include "Gameplay/Objects/CViewData.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Application/SoundEffects.h"
+#include "Map/CMap.h"
 
 #define HAND_PLAYER_TRIGGER_HALF_WIDTH 16
 #define HAND_PLAYER_TRIGGER_DOWNWARD_RANGE 48

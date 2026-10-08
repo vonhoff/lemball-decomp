@@ -1,17 +1,17 @@
 #include "CFramedButton.h"
 
-#include "Engine/Graphics/CChangeList.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Input/CHotAreaList.h"
-#include "Engine/Graphics/Primitives/CLine.h"
-#include "Engine/Graphics/Primitives/CSolidRect.h"
-#include "Platform/Windows/Graphics/CSurface.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSRect.h"
 #include "CDepressedButton.h"
 #include "CGWnd.h"
-#include "Engine/Input/CHotAreaHandler.h"
 #include "CPVGWnd.h"
+#include "Engine/Graphics/CChangeList.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Graphics/Primitives/CLine.h"
+#include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Input/CHotAreaHandler.h"
+#include "Engine/Input/CHotAreaList.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 enum {
 	BUTTON_FRAME_LIGHT_SHADE_PALETTE_INDEX = 0xf8,

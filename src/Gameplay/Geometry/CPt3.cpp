@@ -1,6 +1,7 @@
 #include "CPt3.h"
 
 #include "AICOORD.h"
+#include "Engine/Math/FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x00429e50
 void CPt3::InitializeFromAiCoord(const AICOORD& p_coordinate)

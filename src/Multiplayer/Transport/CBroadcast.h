@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_NETWORK_CBROADCAST_H
 #define LEMBALL_VISOS_NETWORK_CBROADCAST_H
 
-#include "CRwSocket.h"
 #include "CBaseCommonSocket.h"
+#include "CRwSocket.h"
 
 #define BROADCAST_ADDRESS_SPECIFIC 2
 

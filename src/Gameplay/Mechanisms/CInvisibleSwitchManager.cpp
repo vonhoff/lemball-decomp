@@ -4,6 +4,8 @@
 #include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0040a210
 CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* p_ai, int p_capacity)
 	: CBaseObjectManager(NETWORK_OBJECT_MANAGER_MESSAGE_ID_BASE + OBJECT_MANAGER_TRANSPORT_INVISIBLE_SWITCHES,

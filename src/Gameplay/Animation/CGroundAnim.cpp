@@ -1,13 +1,12 @@
 #include "CGroundAnim.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-
-#include "Map/CMap.h"
-#include "Gameplay/Objects/ObjectTypes.h"
-#include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Animation/CGroundAnim.h"
+#include "Gameplay/Geometry/tCoord3d.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
+#include "Map/CMap.h"
 
 enum eFrameDirection {
 	FRAME_DIRECTION_BACKWARD = -1,

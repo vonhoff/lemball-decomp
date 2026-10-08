@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILERWSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILERWSOCKET_H
 
+#include "Multiplayer/Transport/CRwSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
-#include "Multiplayer/Transport/CRwSocket.h"
 
 // SIZE 0x154
 // VTABLE: LEMBALL 0x0049a79c CFileCommonSocket

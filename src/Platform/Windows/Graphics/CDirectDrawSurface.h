@@ -4,8 +4,6 @@
 #include "CDibContext.h"
 #include "Platform/Windows/DirectX/DirectDraw.h"
 
-struct IDirectDrawSurface;
-
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x00498828
 class CDirectDrawSurface : public CDibContext {

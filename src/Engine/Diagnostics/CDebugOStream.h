@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_FOUNDATION_CDEBUGOSTREAM_H
 
 #include "CVSDebugStreambuf.h"
+#include "Engine/Streams/CVSIOs.h"
 #include "Engine/Streams/CVSOStream.h"
 
 #include <stddef.h>

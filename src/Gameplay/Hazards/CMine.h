@@ -1,11 +1,12 @@
 #ifndef LEMBALL_AI_OBJECTS_CMINE_H
 #define LEMBALL_AI_OBJECTS_CMINE_H
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 
 class CGameObject;
+class AICOORD;
+
 // SIZE 0x150
 // VTABLE: LEMBALL 0x00495be8
 class CMine : public CGlobalGameObject {

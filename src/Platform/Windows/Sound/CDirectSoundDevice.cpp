@@ -6,6 +6,7 @@
 #include "Platform/Windows/DirectX/DirectSound.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 
+#include <stddef.h>
 #include <string.h>
 
 #define WIN32_LEAN_AND_MEAN

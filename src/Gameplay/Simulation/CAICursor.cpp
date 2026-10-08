@@ -1,8 +1,8 @@
 #include "Gameplay/Simulation/CAICursor.h"
 
 #include "Engine/Queues/CBaseQueue.h"
-#include "Gameplay/Simulation/CAI.h"
 #include "Engine/Queues/Message.h"
+#include "Gameplay/Simulation/CAI.h"
 
 // FUNCTION: LEMBALL 0x00414da0
 CAICursor::CAICursor(CAI* p_ai, int p_maximumX, int p_maximumY)

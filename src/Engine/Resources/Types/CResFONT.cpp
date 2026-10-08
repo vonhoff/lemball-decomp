@@ -1,13 +1,15 @@
 #include "CResFONT.h"
 
-#include "Engine/Resources/Types/CFontTable.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
 #include "Engine/Resources/ResourceTypeList.h"
+#include "Engine/Resources/Types/CFontTable.h"
+#include "Engine/Resources/Types/CResBaseLIST.h"
+#include "Engine/Resources/Types/CResINT.h"
+#include "Engine/Resources/Types/CResZRLE.h"
+#include "Engine/Text/TextAdvanceFlags.h"
 
 #include <stddef.h>
-
-#include "Engine/Text/CText.h"
 
 // FUNCTION: LEMBALL 0x0045d760
 CResFONT::CResFONT() : CResBaseLIST((ResListHeader*) g_pResourceTypes)

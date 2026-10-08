@@ -1,8 +1,8 @@
 #include "CGunButton.h"
 
-#include "GameView/Sound/CSoundView.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Queues/Message.h"
+#include "GameView/Sound/CSoundView.h"
 
 // FUNCTION: LEMBALL 0x0044c200
 void CGunButton::OnReleased(eMouseButtonIndex p_flags)

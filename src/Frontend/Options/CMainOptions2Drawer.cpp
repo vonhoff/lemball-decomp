@@ -1,21 +1,19 @@
 #include "CMainOptions2Drawer.h"
 
-#include "Application/GameMain.h"
-#include "Frontend/FrontendLayoutMode.h"
-
-#include "Frontend/CBaseFrontendProcess.h"
-#include "Frontend/Controls/CGunController.h"
-#include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Engine/Resources/Types/CResBITMAP.h"
-#include "Engine/Resources/Manifest.h"
-#include "Frontend/tagPRIMS.h"
 #include "Application/FlowProcesses.h"
+#include "Application/GameMain.h"
+#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/Message.h"
-
-#include "Engine/Graphics/Primitives/CBigBitmap.h"
+#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/Types/CResBITMAP.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Frontend/Controls/CGunController.h"
+#include "Frontend/FrontendLayoutMode.h"
+#include "Frontend/tagPRIMS.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "GameView/Sound/CSoundView.h"
 
 #include <new.h>
 #include <stddef.h>

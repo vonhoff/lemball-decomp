@@ -1,10 +1,11 @@
 #include "CTextManager.h"
 
-#include "Engine/Resources/Types/CResFONT.h"
 #include "CCopyText.h"
 #include "CText.h"
 #include "Engine/Math/CVSSize.h"
+#include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Strings/CString.h"
+#include "Engine/Text/TextAdvanceFlags.h"
 
 #include <stddef.h>
 

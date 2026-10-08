@@ -1,13 +1,15 @@
 #ifndef LEMBALL_AI_MANAGERS_COBJECTMANAGER_H
 #define LEMBALL_AI_MANAGERS_COBJECTMANAGER_H
 
-#include "CGlobalGameObject.h"
-#include "ObjectTypes.h"
 #include "CBaseObjectManager.h"
+#include "ObjectTypes.h"
 
 class AICOORD;
 class CAI;
 class CSwitch;
+class CGameObject;
+class CGlobalGameObject;
+class CVSRect;
 
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00494238

@@ -1,15 +1,21 @@
 #include "CGodManager.h"
 
-#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
-#include "Multiplayer/Transport/Packets/CReadPacket.h"
-#include "Multiplayer/Transport/CBaseNetwork.h"
-#include "Multiplayer/Transport/CConnect.h"
-#include "Gameplay/Objects/CGlobalGameObject.h"
+#include "CAI.h"
+#include "Engine/Queues/Message.h"
 #include "Gameplay/Messages/CGameStateMessage.h"
 #include "Gameplay/Messages/GameMessageIds.h"
-#include "CAI.h"
-#include "Gameplay/Objects/CViewData.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Gameplay/Objects/CViewData.h"
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/CConnect.h"
+#include "Multiplayer/Transport/NetworkMode.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Packets/CReadPacket.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+
+#include <stddef.h>
 
 enum {
 	OBJECT_TRANSPORT_MAP_CAPACITY = OBJECT_MANAGER_TRANSPORT_PLAYER_LEMMING_GROUPS + 1,

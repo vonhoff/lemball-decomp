@@ -1,8 +1,13 @@
 #include "CBaseNetwork.h"
 
-#include "Multiplayer/CNetworkManager.h"
+#include "CBroadcast.h"
+#include "CConnect.h"
+#include "CNetworkAddress.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/Time/VsTime.h"
+#include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/Transport/Protocol/CAckMessage.h"
 #include "Multiplayer/Transport/Protocol/CMessFAILEDConnect.h"
 #include "Multiplayer/Transport/Protocol/CMessGOConnect.h"
@@ -11,12 +16,9 @@
 #include "Multiplayer/Transport/Protocol/CMessReqNewPort.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "Multiplayer/Transport/Protocol/CPulseMessage.h"
-#include "CBroadcast.h"
-#include "CConnect.h"
-#include "CNetworkAddress.h"
 #include "NetworkConstants.h"
-#include "Engine/Queues/Message.h"
-#include "Engine/Time/VsTime.h"
+
+#include <stddef.h>
 
 struct BasePacketHeader;
 
@@ -167,16 +169,12 @@ CBaseNetwork::~CBaseNetwork()
 	CBaseQueue* queue;
 
 	DetachMessageQueue();
-	queue = *(CBaseQueue* volatile*) &g_pNetworkPacketQueue;
-	if (queue != NULL) {
-		delete queue;
-	}
+	queue = g_pNetworkPacketQueue;
+	delete queue;
 	g_pNetworkPacketQueue = NULL;
 	g_pNetworkStatusQueue->Detach(this, NETWORK_QUEUE_PRIORITY);
-	queue = *(CBaseQueue* volatile*) &g_pNetworkStatusQueue;
-	if (queue != NULL) {
-		delete queue;
-	}
+	queue = g_pNetworkStatusQueue;
+	delete queue;
 	g_pNetworkStatusQueue = NULL;
 }
 
@@ -222,40 +220,26 @@ void CBaseNetwork::ShutDown()
 			delete g_pBroadcastReceiveAddress;
 		}
 		g_pBroadcastReceiveAddress = NULL;
-		message = *(CNetworkMessage* volatile*) &g_pAckMessage;
-		if (message != NULL) {
-			delete message;
-		}
+		message = g_pAckMessage;
+		delete message;
 		g_pAckMessage = NULL;
-		message = *(CNetworkMessage* volatile*) &g_pPulseMessage;
-		if (message != NULL) {
-			delete message;
-		}
+		message = g_pPulseMessage;
+		delete message;
 		g_pPulseMessage = NULL;
-		message = *(CNetworkMessage* volatile*) &g_pMessReqConnect;
-		if (message != NULL) {
-			delete message;
-		}
+		message = g_pMessReqConnect;
+		delete message;
 		g_pMessReqConnect = NULL;
-		message = *(CNetworkMessage* volatile*) &g_pMessReqNewPort;
-		if (message != NULL) {
-			delete message;
-		}
+		message = g_pMessReqNewPort;
+		delete message;
 		g_pMessReqNewPort = NULL;
-		message = *(CNetworkMessage* volatile*) &g_pMessOKConnect;
-		if (message != NULL) {
-			delete message;
-		}
+		message = g_pMessOKConnect;
+		delete message;
 		g_pMessOKConnect = NULL;
-		message = *(CNetworkMessage* volatile*) &g_pMessGOConnect;
-		if (message != NULL) {
-			delete message;
-		}
+		message = g_pMessGOConnect;
+		delete message;
 		g_pMessGOConnect = NULL;
-		message = *(CNetworkMessage* volatile*) &g_pMessFAILEDConnect;
-		if (message != NULL) {
-			delete message;
-		}
+		message = g_pMessFAILEDConnect;
+		delete message;
 		g_pMessFAILEDConnect = NULL;
 		UnInitialise();
 	}

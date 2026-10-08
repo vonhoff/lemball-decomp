@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CZBUFFCLEAR_H
 #define LEMBALL_VISOS_GRAPHICS_CZBUFFCLEAR_H
 
-#include "Engine/Math/CVSRect.h"
 #include "CPrimitive.h"
+#include "Engine/Math/CVSRect.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00496da0

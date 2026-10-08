@@ -1,13 +1,14 @@
 #include "CBalloonPost.h"
 
-#include "Map/CMap.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "CTheBalloonPost.h"
+#include "Engine/Math/CFixed.h"
+#include "Engine/Math/FixedPoint.h"
+#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CViewData.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Engine/Math/CFixed.h"
+#include "Map/CMap.h"
 
 enum {
 	BALLOON_POST_BALLOON_1_ACTIVE_MASK = 0x01,

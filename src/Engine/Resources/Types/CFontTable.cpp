@@ -1,8 +1,9 @@
 #include "Engine/Resources/Types/CFontTable.h"
 
-#include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResBaseLIST.h"
+#include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResINT.h"
+#include "Engine/Resources/Types/CResZRLE.h"
 
 #include <stddef.h>
 

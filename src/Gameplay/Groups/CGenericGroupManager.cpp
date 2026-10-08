@@ -1,13 +1,13 @@
 #include "CGenericGroupManager.h"
 
-#include "Gameplay/Geometry/Rect.h"
-#include "Gameplay/Objects/CObjectManager.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Objects/CViewData.h"
-#include "Gameplay/Objects/CGameObject.h"
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
 #include "Engine/Math/CVSRect.h"
+#include "Gameplay/Geometry/Rect.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/CObjectManager.h"
+#include "Gameplay/Objects/CViewData.h"
+#include "Gameplay/Simulation/CAI.h"
 
 #include <string.h>
 

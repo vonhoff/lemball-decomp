@@ -1,14 +1,12 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPNETWORK_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPNETWORK_H
 
-#include "Platform/Windows/Network/CNetworkWnd.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Platform/Windows/Network/CNetworkWnd.h"
 
 #define TCPIP_MESSAGE_FORCE_PROCESS 0x444
 #define TCPIP_TIMER_ID 0x12345678
 #define TCPIP_TIMER_INTERVAL_MS 10
-
-struct BasePacketHeader;
 
 // SIZE 0x78
 // VTABLE: LEMBALL 0x0049a2dc CNetworkWnd

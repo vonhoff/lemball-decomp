@@ -1,13 +1,14 @@
 #include "CIntroAnimDrawer.h"
 
-#include "GameView/Display/CMain2DDisplay.h"
-#include "GameView/Sound/CSoundView.h"
-#include "Engine/Strings/CString.h"
-#include "Frontend/CBaseFrontendDrawer.h"
 #include "Application/FlowProcesses.h"
 #include "CIntroAnimAnimWindow.h"
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/Message.h"
+#include "Engine/Strings/CString.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "GameView/Display/CMain2DDisplay.h"
+#include "GameView/Sound/CSoundView.h"
 
 #include <stddef.h>
 

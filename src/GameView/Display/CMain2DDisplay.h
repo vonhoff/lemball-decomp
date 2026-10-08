@@ -2,9 +2,10 @@
 #define LEMBALL_VIEWS_DISPLAY_CMAIN2DDISPLAY_H
 
 #include "Application/FlowProcesses.h"
-#include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Math/CVSRect.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 
 enum {
@@ -14,6 +15,7 @@ enum {
 class CGame;
 class CCdLoadAnimDraw;
 class CResPALETTE;
+
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8 CGWnd
 // VTABLE: LEMBALL 0x00496ba8 CBaseQueueHandler

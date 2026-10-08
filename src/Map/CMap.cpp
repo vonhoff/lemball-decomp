@@ -1,10 +1,10 @@
 #include "CMap.h"
 
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Objects/ObjectTypes.h"
-#include "Level/LevelFormat.h"
 #include "CGround.h"
 #include "CGroundArray.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Level/LevelFormat.h"
 
 #include <stddef.h>
 

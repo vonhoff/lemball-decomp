@@ -1,12 +1,14 @@
 #include "CBulletManager.h"
 
-#include "Multiplayer/Transport/CConnect.h"
-#include "Gameplay/Objects/CGameObject.h"
 #include "CBullet.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Objects/CBaseObjectManager.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Multiplayer/Transport/CConnect.h"
+
+#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00417d80
 CBulletManager::CBulletManager()

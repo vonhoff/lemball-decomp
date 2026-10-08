@@ -1,9 +1,9 @@
 #include "CAnim.h"
 
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Graphics/CSurface.h"
 #include "Engine/Resources/Types/CResANIM.h"
-class CResZRLE;
+#include "Engine/Resources/Types/CResZRLE.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00443990
 CAnim::CAnim()

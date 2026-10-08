@@ -1,11 +1,12 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CMOGDIR_H
 #define LEMBALL_VISOS_RESOURCES_CMOGDIR_H
-#include "Chunk.h"
-#include "ChunkInfo.h"
 #include "CMogloadArena.h"
 #include "CRawRead.h"
+#include "Chunk.h"
 
 #include <stddef.h>
+
+struct ChunkInfo;
 
 #define RESOURCE_CHUNK_DIRECTORY 0x44495243
 #define RESOURCE_CHUNK_ANY_TYPE 0xffffffff

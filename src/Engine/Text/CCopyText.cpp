@@ -1,6 +1,7 @@
 #include "CCopyText.h"
 
 #include "Engine/Math/CVSPoint.h"
+#include "Engine/Strings/CString.h"
 
 #include <string.h>
 

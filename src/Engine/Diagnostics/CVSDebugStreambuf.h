@@ -3,8 +3,6 @@
 
 #include "Engine/Streams/CVSStreambuf.h"
 
-struct FILE;
-
 // SIZE 0x1c
 // VTABLE: LEMBALL 0x00498968
 class CVSDebugStreambuf : public CVSStreambuf {

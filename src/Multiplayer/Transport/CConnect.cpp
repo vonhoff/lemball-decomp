@@ -1,16 +1,17 @@
 #include "CConnect.h"
 
-#include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Time/VsTime.h"
 #include "CBaseNetwork.h"
-#include "NetworkConstants.h"
 #include "CBroadcast.h"
-#include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "CReadSocket.h"
 #include "CRwSocket.h"
 #include "CWriteSocket.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/Time/VsTime.h"
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "NetworkConstants.h"
 
 #include <string.h>
 

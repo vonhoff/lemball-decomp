@@ -1,42 +1,41 @@
 #include "CLevelLoader.h"
 
-#include "Level/LevelFormat.h"
+#include "Engine/Files/VsFile.h"
+#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/Types/CResBIN.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Gameplay/Animation/CGroundAnim.h"
+#include "Gameplay/Collectables/CCollectableManager.h"
 #include "Gameplay/Groups/CEnemyGroupManager.h"
 #include "Gameplay/Groups/CPlayerLemmingGroupManager.h"
 #include "Gameplay/Groups/CSheepGroupManager.h"
-#include "Gameplay/Projectiles/CBallManager.h"
-#include "Gameplay/Collectables/CCollectableManager.h"
-#include "Gameplay/Mechanisms/CDoorManager.h"
 #include "Gameplay/Hazards/CHandManager.h"
-#include "Gameplay/Mechanisms/CIceManager.h"
-#include "Gameplay/Mechanisms/CInvisibleSwitchManager.h"
 #include "Gameplay/Hazards/CLaserManager.h"
-#include "Gameplay/Mechanisms/CLiftManager.h"
 #include "Gameplay/Hazards/CMineManager.h"
-#include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Hazards/CPaintGunManager.h"
 #include "Gameplay/Hazards/CRocketManager.h"
 #include "Gameplay/Hazards/CSlinkyManager.h"
+#include "Gameplay/Mechanisms/CBalloonPost.h"
+#include "Gameplay/Mechanisms/CDoorManager.h"
+#include "Gameplay/Mechanisms/CIceManager.h"
+#include "Gameplay/Mechanisms/CInvisibleSwitchManager.h"
+#include "Gameplay/Mechanisms/CLiftManager.h"
+#include "Gameplay/Mechanisms/CMoverManager.h"
 #include "Gameplay/Mechanisms/CTrampolineManager.h"
 #include "Gameplay/Mechanisms/CTrapDoorManager.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Mechanisms/CMoverManager.h"
 #include "Gameplay/Navigation/CNodeManager.h"
-#include "Gameplay/Mechanisms/CBalloonPost.h"
-#include "Gameplay/Animation/CGroundAnim.h"
+#include "Gameplay/Objects/CObjectManager.h"
+#include "Gameplay/Projectiles/CBallManager.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Level/LevelFormat.h"
 #include "Map/CMap.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Engine/Files/VsFile.h"
 #include "Multiplayer/Transport/CConnect.h"
-#include "Engine/Resources/Types/CResBIN.h"
-#include "Engine/Resources/Manifest.h"
+#include "Multiplayer/Transport/NetworkMode.h"
 #include "tPreviewData.h"
 
 #include <string.h>
-struct tagLoadEnemyData;
+
 struct tagLoadGroundName;
-struct tagLoadGroundSurfaceData;
-struct tagLoadSheepData;
 struct _Filet;
 
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,

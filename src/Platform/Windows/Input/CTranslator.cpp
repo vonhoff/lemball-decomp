@@ -1,6 +1,5 @@
 #include "CTranslator.h"
 
-#include "Platform/Windows/CPlatformServices.h"
 #include "Engine/Queues/CBaseQueue.h"
 
 #define WIN32_LEAN_AND_MEAN

@@ -3,7 +3,6 @@
 
 #include "CDibContext.h"
 
-class CGdiDriver;
 // SIZE 0x14
 // VTABLE: LEMBALL 0x00498798
 class CGdiDibContext : public CDibContext {

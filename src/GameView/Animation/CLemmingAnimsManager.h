@@ -3,7 +3,6 @@
 
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
-#include "Engine/Graphics/Primitives/CPrimitive.h"
 #include "GameView/Loading/CLoadUpdate.h"
 
 class CAI;
@@ -13,6 +12,7 @@ class CGDI;
 class CMain2DDisplay;
 class CRemap;
 class CResFONT;
+
 extern unsigned int g_dwGroundStyleResourceId;
 extern unsigned int g_anGroundStyleResourceIds[10];
 extern unsigned int g_groundBlox1ResourceId;

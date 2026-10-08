@@ -1,8 +1,8 @@
 #ifndef LEMBALL_AI_OBJECTS_CINVISIBLESWITCH_H
 #define LEMBALL_AI_OBJECTS_CINVISIBLESWITCH_H
 
-#include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Geometry/tCoord3d.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
 // SIZE 0x08
 struct InvisibleSwitchTarget {
 	unsigned int m_message;    // 0x00

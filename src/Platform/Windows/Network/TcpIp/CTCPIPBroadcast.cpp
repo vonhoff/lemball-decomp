@@ -2,24 +2,23 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
-#include "Multiplayer/Transport/NetworkConstants.h"
 #include "Engine/Queues/Message.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CBroadcast.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/WinSock/WinSock.h"
 
 #include <new.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy, strlen)
-
-#include "Platform/Windows/WinSock/WinSock.h"
 
 // FUNCTION: LEMBALL 0x00470270
 CTCPIPBroadcast::CTCPIPBroadcast()

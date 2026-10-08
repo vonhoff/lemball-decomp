@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CHOTAREALIST_H
 #define LEMBALL_VISOS_GRAPHICS_CHOTAREALIST_H
 
-#include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Math/CVSPoint.h"
 #include "CHotAreaHandler.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 
 class CVSRect;
 struct Message;

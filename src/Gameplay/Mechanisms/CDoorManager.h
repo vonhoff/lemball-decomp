@@ -1,16 +1,18 @@
 #ifndef LEMBALL_AI_MANAGERS_CDOORMANAGER_H
 #define LEMBALL_AI_MANAGERS_CDOORMANAGER_H
 
-#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "SwitchEntry.h"
-#include "Gameplay/Objects/CBaseObjectManager.h"
+
+class AICOORD;
 
 #define INVALID_DOOR_INDEX 0xffff
 
 class CAI;
 class CDoor;
 class CGameObject;
+
 // SIZE 0x40
 // VTABLE: LEMBALL 0x00493840
 class CDoorManager : public CBaseObjectManager {

@@ -1,7 +1,7 @@
 #include "CResPALETTE.h"
-#include "Engine/Resources/ResourceChunkTypes.h"
 
 #include "Engine/Resources/Archive/CMogRes.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
 
 #include <new.h>
 #include <stddef.h>

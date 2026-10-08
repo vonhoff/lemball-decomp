@@ -10,6 +10,7 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include <stddef.h>
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x0046f210

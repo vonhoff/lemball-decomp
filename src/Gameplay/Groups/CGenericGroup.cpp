@@ -1,11 +1,15 @@
 #include "CGenericGroup.h"
 
-#include "Gameplay/Geometry/Facing.h"
-#include "Engine/Math/VSTrig.h"
-#include "Gameplay/Navigation/CAiDestinationList.h"
 #include "CFormationManager.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/VSTrig.h"
+#include "Gameplay/Geometry/Facing.h"
+#include "Gameplay/Navigation/CAiDestinationList.h"
 
 #include <string.h>
+
 #define GENERIC_GROUP_ELEMENT_CAPACITY 10
 #pragma intrinsic(memset)
 
@@ -273,12 +277,12 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 	m_bounds.m_height = (short) maxY;
 }
 
-#include "Gameplay/Navigation/CAiDestinationEntry.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Objects/CGameObject.h"
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVector.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Navigation/CAiDestinationEntry.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 // FUNCTION: LEMBALL 0x0041e290
 void CGenericGroup::AddNewWaypoint(AICOORD p_coordinate, CFormationManager* p_formationManager)

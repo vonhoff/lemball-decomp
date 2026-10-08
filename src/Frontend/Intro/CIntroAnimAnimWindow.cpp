@@ -1,9 +1,9 @@
 #include "CIntroAnimAnimWindow.h"
 
 #include "Application/CGameStatus.h"
-#include "Level/CLevelLoader.h"
-#include "Engine/Resources/Manifest.h"
 #include "CIntroAnimDrawer.h"
+#include "Engine/Resources/Manifest.h"
+#include "Level/CLevelLoader.h"
 #include "Platform/Windows/Windowing/CAnimWnd.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 

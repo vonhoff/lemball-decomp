@@ -1,6 +1,6 @@
 #include "CStatManager.h"
-#include "Engine/Streams/CVSOStream.h"
 #include "Engine/Startup/VsInit.h"
+#include "Engine/Streams/CVSOStream.h"
 
 #include <new.h>
 #include <stddef.h>

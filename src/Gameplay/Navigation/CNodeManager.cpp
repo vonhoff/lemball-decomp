@@ -1,7 +1,7 @@
 #include "CNodeManager.h"
 
-#include "Gameplay/Geometry/CPt3.h"
 #include "CNode.h"
+#include "Gameplay/Geometry/CPt3.h"
 
 #include <stddef.h>
 

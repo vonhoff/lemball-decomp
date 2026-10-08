@@ -1,13 +1,13 @@
 #include "CEnemyGroupManager.h"
 
-#include "Level/LevelFormat.h"
-#include "Gameplay/Characters/EnemyBehavior.h"
-#include "Gameplay/Simulation/CAI.h"
-#include "Gameplay/Characters/CEnemy.h"
-#include "Gameplay/Objects/CGameObject.h"
+#include "CEnemyGroup.h"
 #include "CGenericGroup.h"
 #include "CGenericGroupManager.h"
-#include "CEnemyGroup.h"
+#include "Gameplay/Characters/CEnemy.h"
+#include "Gameplay/Characters/EnemyBehavior.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Level/LevelFormat.h"
 
 #include <stddef.h>
 

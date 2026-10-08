@@ -1,9 +1,9 @@
 #include "Multiplayer/CPBNetworkGame.h"
 
+#include "Gameplay/Characters/CPlayerLemming.h"
+#include "Gameplay/Messages/GameMessageIds.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Simulation/GameTime.h"
-#include "Gameplay/Messages/GameMessageIds.h"
-#include "Gameplay/Characters/CPlayerLemming.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00452fe0

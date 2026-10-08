@@ -1,11 +1,12 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESFONT_H
 #define LEMBALL_VISOS_RESOURCES_CRESFONT_H
 
-#include "Engine/Math/CVSSize.h"
-#include "Engine/Text/TextAdvanceFlags.h"
 #include "CResBaseLIST.h"
-#include "CResINT.h"
-#include "CResZRLE.h"
+#include "Engine/Math/CVSSize.h"
+
+class CFontTable;
+class CResINT;
+class CResZRLE;
 
 // SIZE 0x84
 // VTABLE: LEMBALL 0x00498af0
@@ -25,9 +26,9 @@ public:
 	virtual bool DirectResources(unsigned long p_index, unsigned char*& p_cursor); // vtable+0x50
 	virtual bool DirectResources(unsigned long p_index,
 								 unsigned char*& p_headerCursor,
-								 unsigned char*& p_dataCursor);               // vtable+0x4c
+								 unsigned char*& p_dataCursor);                // vtable+0x4c
 	virtual void UnLoadResources(unsigned long p_index, unsigned int p_force); // vtable+0x54
-	virtual ~CResFONT();                                                      // vtable+0x00
+	virtual ~CResFONT();                                                       // vtable+0x00
 
 	friend class CFontTable;
 	friend class CText;

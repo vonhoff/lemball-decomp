@@ -1,17 +1,17 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "CDibContext.h"
-#include "CDrawingContext.h"
 
 #include <stddef.h>
 
 class CPVGDIBitmap;
 class CResPALETTE;
 struct CGraphicsState;
+class CDibContext;
+class CDrawingContext;
+class CVSRect;
+struct CVSPoint;
 
 enum {
 	DIB_INITIAL_TOP_DOWN_HEIGHT = -1
@@ -87,7 +87,6 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 							 CResPALETTE* p_palette,
 							 void* p_unused,
 							 unsigned int* p_fallbackEntries);
-#include "WinGDraw.h"
 // SYNTHETIC: LEMBALL 0x00458210
 // CGraphicsDriver::`scalar deleting destructor'
 

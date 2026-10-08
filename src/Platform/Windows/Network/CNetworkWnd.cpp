@@ -1,10 +1,11 @@
 #include "CNetworkWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Platform/Windows/Entry.h"
-#include "Engine/Streams/CVSOStream.h"
 #include "Engine/Diagnostics/VsDebug.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Platform/Windows/Entry.h"
 
+#include <stddef.h>
 #include <windows.h>
 
 extern unsigned int g_windowDispatchDisabled;

@@ -2,19 +2,20 @@
 #define LEMBALL_FRONTEND_RESOURCES_CCDLOADANIM_H
 
 #include "Engine/Animation/CAnimsManager.h"
-#include "Engine/Animation/CRepeatAnim.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CLine.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Math/CVSPoint.h"
 #include "GameView/Loading/LoadAnimCallbacks.h"
 
 class CGDI;
 class CMain2DDisplay;
 class CResBITMAP;
-struct CVSPoint;
+class CRepeatAnim;
+
 // SIZE 0x134
 // VTABLE: LEMBALL 0x00497c90 CAnimsManager
 // VTABLE: LEMBALL 0x00497c8c CCdLoadAnimProgress

@@ -1,12 +1,13 @@
 #ifndef LEMBALL_AI_GROUPS_CSHEEPGROUP_H
 #define LEMBALL_AI_GROUPS_CSHEEPGROUP_H
 
-#include "Gameplay/Geometry/AICOORD.h"
 #include "CGenericGroup.h"
 
 class CAI;
 class CFormationManager;
 class CObjectManager;
+class AICOORD;
+
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x00494dd8
 class CSheepGroup : public CGenericGroup {

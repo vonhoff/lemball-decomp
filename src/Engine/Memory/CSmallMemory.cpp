@@ -1,7 +1,8 @@
 #include "CSmallMemory.h"
 
-#include "Engine/Startup/PreInit.h"
 #include "CBucket.h"
+#include "Engine/Memory/SmallMemoryConstants.h"
+#include "Engine/Startup/PreInit.h"
 
 #include <string.h>
 

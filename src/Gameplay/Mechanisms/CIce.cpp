@@ -1,11 +1,18 @@
 #include "CIce.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-
-#include "Map/CMap.h"
-#include "Map/CGround.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Math/FixedPoint.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Geometry/tCoord3d.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/CAI.h"
+#include "Gameplay/Simulation/GameTime.h"
+#include "Map/CGround.h"
+#include "Map/CGroundArray.h"
+#include "Map/CMap.h"
 
 #include <stdlib.h>
 

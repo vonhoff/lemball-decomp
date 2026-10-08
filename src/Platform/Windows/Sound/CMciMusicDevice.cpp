@@ -1,13 +1,14 @@
 #include "CMciMusicDevice.h"
 
-#include "Platform/Windows/Entry.h"
-#include "Engine/Strings/CString.h"
-#include "Engine/Streams/CVSIOs.h"
-#include "Engine/Streams/CVSOStream.h"
 #include "Engine/Resources/Types/CResSTRING.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Strings/CString.h"
 #include "Platform/Windows/CPlatformServices.h"
+#include "Platform/Windows/Entry.h"
 
+#include <mmsystem.h>
 #include <string.h>
+#include <windows.h>
 
 #define MCI_ERROR_TEXT_CAPACITY 128
 

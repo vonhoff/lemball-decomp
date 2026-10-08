@@ -1,19 +1,20 @@
 #include "CGameObject.h"
 
 #include "Application/GameMain.h"
-
-#include "Gameplay/Simulation/GameTime.h"
-#include "Map/CMap.h"
+#include "Engine/Math/CVector.h"
+#include "Engine/Math/RandomConstants.h"
+#include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Gameplay/Simulation/CAI.h"
+#include "Gameplay/Mechanisms/CMover.h"
 #include "Gameplay/Navigation/CAiDestinationEntry.h"
 #include "Gameplay/Navigation/CAiDestinationList.h"
 #include "Gameplay/Navigation/CMaze.h"
-#include "Gameplay/Mechanisms/CMover.h"
-#include "Gameplay/Geometry/CPt3.h"
-#include "ObjectInteractionStates.h"
 #include "Gameplay/Navigation/Solution.h"
-#include "Engine/Math/RandomConstants.h"
+#include "Gameplay/Objects/ObjectIds.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Gameplay/Simulation/GameTime.h"
+#include "Map/CMap.h"
+#include "ObjectInteractionStates.h"
 
 #include <string.h>
 
@@ -22,15 +23,15 @@
 #define PLAYER_ONE_RUNTIME_FLAGS 0x200
 #define PLAYER_TWO_RUNTIME_FLAGS 0x100
 
+#include "Engine/Math/CVSRect.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Geometry/CRect3.h"
-#include "ObjectActions.h"
-#include "ObjectTypes.h"
+#include "Gameplay/Geometry/tCoord3d.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Engine/Math/CVSRect.h"
-#include "Gameplay/Geometry/tCoord3d.h"
+#include "ObjectActions.h"
+#include "ObjectTypes.h"
 
 // GLOBAL: LEMBALL 0x0049cf4c
 unsigned short g_wNetworkLemmingIndex = 0;

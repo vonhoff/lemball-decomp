@@ -1,8 +1,9 @@
 #include "CSlinkyManager.h"
 
-#include "Gameplay/Simulation/CAI.h"
 #include "CSlinky.h"
 #include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectIds.h"
+#include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
 
 #include <stddef.h>

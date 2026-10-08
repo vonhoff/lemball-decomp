@@ -4,7 +4,6 @@
 #include "Engine/Graphics/Primitives/CPrimitive.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Strings/CString.h"
-#include "TextAdvanceFlags.h"
 
 class CRemap;
 class CResFONT;

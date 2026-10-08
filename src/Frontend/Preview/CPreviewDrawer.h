@@ -3,8 +3,8 @@
 
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CoordPair.h"
 #include "Frontend/CUserActionMessage.h"
+#include "Frontend/CoordPair.h"
 
 #define PREVIEW_LEVEL_NAME_LINE_COUNT 3
 #define PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES 32

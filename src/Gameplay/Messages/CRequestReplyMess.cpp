@@ -1,10 +1,10 @@
 #include "CRequestReplyMess.h"
 
+#include "CGameObjectMess.h"
+#include "GameMessageIds.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
-#include "CGameObjectMess.h"
-#include "GameMessageIds.h"
 
 // FUNCTION: LEMBALL 0x00416ac0
 CRequestReplyMess::CRequestReplyMess() : CGameObjectMess(MESSAGE_REQUEST_REPLY)

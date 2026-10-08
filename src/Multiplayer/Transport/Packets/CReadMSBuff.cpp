@@ -1,7 +1,7 @@
 #include "CReadMSBuff.h"
 
-#include "Multiplayer/Transport/CBaseNetwork.h"
 #include "BasePacketHeader.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 
 #include <string.h>
 

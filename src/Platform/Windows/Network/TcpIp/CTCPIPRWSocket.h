@@ -1,13 +1,13 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPRWSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPRWSOCKET_H
 
-#include "Multiplayer/Transport/CRwSocket.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPWriteSocket.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CReadSocket.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
+#include "Multiplayer/Transport/CRwSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPWriteSocket.h"
 
 // SIZE 0x144
 // VTABLE: LEMBALL 0x0049a220 CNetworkWnd

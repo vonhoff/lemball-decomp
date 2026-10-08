@@ -1,10 +1,10 @@
 #include "CObjectChangeStateMess.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-#include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Objects/ObjectActions.h"
 #include "CGameObjectMess.h"
 #include "GameMessageIds.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Simulation/GameTime.h"
 
 // FUNCTION: LEMBALL 0x004168d0
 CObjectChangeStateMess::CObjectChangeStateMess() : CGameObjectMess(MESSAGE_OBJECT_CHANGE_STATE)

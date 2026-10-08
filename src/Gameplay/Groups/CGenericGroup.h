@@ -2,8 +2,9 @@
 #define LEMBALL_AI_GROUPS_CGENERICGROUP_H
 
 #include "Engine/Math/CVSRect.h"
-#include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
+
+class AICOORD;
 
 enum {
 	GROUP_BOUNDING_BOX_RADIUS_PIXELS = 24
@@ -13,6 +14,7 @@ class CAI;
 class CFormationManager;
 class CObjectManager;
 class CViewData;
+
 enum eGroupState {
 	GROUP_STATE_IDLE = 0,
 	GROUP_STATE_MOVING = 1,

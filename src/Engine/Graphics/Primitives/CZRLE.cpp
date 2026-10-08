@@ -1,8 +1,8 @@
 #include "CZRLE.h"
 
+#include "CGDI.h"
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Resources/Types/CResZRLE.h"
-#include "CGDI.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00467ae0

@@ -1,19 +1,20 @@
 #include "CHiliteButtons.h"
 
-#include "GameView/Sound/CSoundView.h"
-#include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Input/CMasterInput.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Time/VsTime.h"
-#include "Engine/Graphics/Primitives/CGDI.h"
-#include "Platform/Windows/Windowing/CGraphicButton.h"
-#include "Platform/Windows/Graphics/CSurface.h"
-#include "Engine/Resources/Types/CResANIM.h"
-#include "CHiliteController.h"
-#include "Frontend/Controls/ControlMessages.h"
 #include "Application/SoundEffects.h"
+#include "CHiliteController.h"
+#include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
+#include "Engine/Resources/Types/CResANIM.h"
+#include "Engine/Time/VsTime.h"
+#include "Frontend/Controls/ControlMessages.h"
+#include "GameView/Sound/CSoundView.h"
+#include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
+#include "Platform/Windows/Windowing/CGraphicButton.h"
+
+#include <stddef.h>
 
 class CPVGWnd;
 

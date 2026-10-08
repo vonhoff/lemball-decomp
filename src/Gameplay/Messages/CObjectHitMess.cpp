@@ -1,10 +1,10 @@
 #include "CObjectHitMess.h"
 
-#include "Gameplay/Simulation/AIScoreConstants.h"
-#include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Simulation/CAI.h"
 #include "CGameObjectMess.h"
 #include "GameMessageIds.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Gameplay/Simulation/AIScoreConstants.h"
+#include "Gameplay/Simulation/CAI.h"
 
 // FUNCTION: LEMBALL 0x00416c80
 CObjectHitMess::CObjectHitMess() : CGameObjectMess(MESSAGE_OBJECT_HIT)

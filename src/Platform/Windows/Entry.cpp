@@ -1,16 +1,17 @@
 #include "Entry.h"
 
+#include "CPlatformServices.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
+#include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Startup/VsInit.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CWnd.h"
-#include "Multiplayer/Transport/CBaseNetwork.h"
-#include "Engine/Resources/Archive/CMogRes.h"
-#include "Platform/Windows/Graphics/CGraphicsDriver.h"
-#include "CPlatformServices.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include <stddef.h>
 #include <windows.h>
 
 void* g_hApplicationIcon = NULL;

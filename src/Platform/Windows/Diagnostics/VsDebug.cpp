@@ -2,12 +2,11 @@
 
 #include "CTextWnd.h"
 #include "Engine/Diagnostics/CDebugOStream.h"
-#include "Engine/Strings/CString.h"
-#include "Engine/Diagnostics/CVSDebugStreambuf.h"
-#include "Engine/Startup/ProcessExitCodes.h"
-#include "Engine/Streams/CVSOStream.h"
 #include "Engine/Files/VsFile.h"
+#include "Engine/Startup/ProcessExitCodes.h"
 #include "Engine/Startup/VsInit.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Engine/Strings/CString.h"
 #include "Engine/Strings/VsString.h"
 
 #include <setjmp.h>

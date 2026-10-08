@@ -1,11 +1,11 @@
 #include "CHotAreaList.h"
 
-#include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Math/CVSRect.h"
-#include "Engine/Queues/PackParam.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Queues/Message.h"
 #include "CHotAreaHandler.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Queues/Message.h"
+#include "Engine/Queues/PackParam.h"
 
 #include <stddef.h>
 
@@ -15,8 +15,6 @@ struct CHotAreaElement {
 	CHotAreaElement* m_previous; // 0x04
 	CHotAreaElement* m_next;     // 0x08
 };
-
-class CBaseQueueHandler;
 
 // GLOBAL: LEMBALL 0x004a1ff8
 CVSPoint* g_pHotAreaCursor = NULL;

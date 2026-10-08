@@ -1,8 +1,8 @@
 #ifndef LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 
-#include "CUserActionMessage.h"
 #include "Application/CBaseProcess.h"
+#include "CUserActionMessage.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 class CConnect;
 

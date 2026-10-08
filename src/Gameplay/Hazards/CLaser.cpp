@@ -1,18 +1,20 @@
 #include "CLaser.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-#include "Map/CMap.h"
-#include "Gameplay/Geometry/Facing.h"
-#include "Multiplayer/Transport/CConnect.h"
+#include "Application/SoundEffects.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/C3DVector.h"
+#include "Gameplay/Geometry/CPt3.h"
+#include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Geometry/CPt3.h"
-#include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/CViewData.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Simulation/GameTime.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Application/SoundEffects.h"
+#include "Map/CMap.h"
+#include "Multiplayer/Transport/CConnect.h"
 
 enum {
 	LASER_REACTIVATION_DELAY_TICKS = 60,

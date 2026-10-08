@@ -1,8 +1,8 @@
 #include "CReadPacketBuff.h"
 
-#include "Multiplayer/Transport/CBaseNetwork.h"
-#include "CReadPacket.h"
 #include "CBasePacketBuff.h"
+#include "CReadPacket.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 
 #include <stddef.h>
 

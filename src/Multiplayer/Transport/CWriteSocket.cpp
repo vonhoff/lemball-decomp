@@ -1,21 +1,21 @@
 #include "CWriteSocket.h"
 
-#include "Multiplayer/Transport/Protocol/CAckMessage.h"
-#include "Multiplayer/Transport/Protocol/CPulseMessage.h"
+#include "CBaseNetwork.h"
+#include "CNetworkAddress.h"
+#include "Engine/Time/VsTime.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Packets/CBasePacketBuff.h"
 #include "Multiplayer/Transport/Packets/CWriteCBuff.h"
 #include "Multiplayer/Transport/Packets/CWriteNcBuff.h"
 #include "Multiplayer/Transport/Packets/CWritePacket.h"
-#include "CBaseNetwork.h"
-#include "CNetworkAddress.h"
-#include "CBaseNetwork.h"
-#include "NetworkConstants.h"
-#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
-#include "Multiplayer/Transport/Packets/CBasePacketBuff.h"
+#include "Multiplayer/Transport/Protocol/CAckMessage.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-#include "Engine/Time/VsTime.h"
+#include "Multiplayer/Transport/Protocol/CPulseMessage.h"
+#include "NetworkConstants.h"
 
 #include <new.h>
 #include <string.h>
+
 #pragma intrinsic(memcpy)
 
 extern "C" unsigned long __stdcall timeGetTime(void);

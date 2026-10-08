@@ -1,22 +1,19 @@
 #include "GameView/Sound/CSoundView.h"
 
-#include "Gameplay/Simulation/GameTime.h"
-
-#include "Application/GameMain.h"
-
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Objects/CViewData.h"
 #include "Application/CDemo.h"
-#include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CBaseFrontendProcess.h"
-#include "Gameplay/Geometry/Facing.h"
-#include "Engine/Resources/Manifest.h"
-#include "Engine/Sound/CSoundManager.h"
-#include "GameView/Loading/CLoadUpdate.h"
+#include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
-#include "Engine/Time/VsTime.h"
 #include "Engine/Math/RandomConstants.h"
+#include "Engine/Resources/Manifest.h"
+#include "Engine/Sound/CSoundManager.h"
+#include "Engine/Time/VsTime.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "GameView/Loading/CLoadUpdate.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/Facing.h"
+#include "Gameplay/Objects/CViewData.h"
+#include "Gameplay/Simulation/GameTime.h"
 
 #include <stddef.h>
 

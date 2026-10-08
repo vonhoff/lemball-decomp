@@ -2,14 +2,14 @@
 #define LEMBALL_VISOS_NETWORK_CBASENETWORK_H
 
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "CConnect.h"
+
+class CConnect;
 
 #define NETWORK_QUEUE_SEND_ONE 0x0b
 #define NETWORK_QUEUE_SEND_ALL 0x0c
 #define NETWORK_QUEUE_SEND_REQUESTED 1
 
 struct BasePacketHeader;
-
 class CBroadcast;
 class CNetworkAddress;
 class CNetworkMessage;
@@ -19,18 +19,18 @@ class CNetworkMessage;
 class CBaseNetwork : public CBaseQueueHandler {
 public:
 	CBaseNetwork();
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
-	virtual void Initialise() = 0;              // vtable+0x0c
-	virtual void UnInitialise() = 0;            // vtable+0x10
-	virtual void Process();                     // vtable+0x14
-	virtual void BeforeDestroyConnections();    // vtable+0x18
-	virtual void AfterDestroyConnections();     // vtable+0x1c
-	virtual void ForceProcess() = 0;            // vtable+0x20
-	virtual void* GetNewConnect() = 0;          // vtable+0x24
-	virtual void* GetNewBroadcast() = 0;        // vtable+0x28
+	virtual int ProcessMsg(Message* p_message);          // vtable+0x08
+	virtual void Initialise() = 0;                       // vtable+0x0c
+	virtual void UnInitialise() = 0;                     // vtable+0x10
+	virtual void Process();                              // vtable+0x14
+	virtual void BeforeDestroyConnections();             // vtable+0x18
+	virtual void AfterDestroyConnections();              // vtable+0x1c
+	virtual void ForceProcess() = 0;                     // vtable+0x20
+	virtual void* GetNewConnect() = 0;                   // vtable+0x24
+	virtual void* GetNewBroadcast() = 0;                 // vtable+0x28
 	virtual CNetworkAddress* GetNewNetworkAddress() = 0; // vtable+0x2c
-	virtual void WaitProcess();                 // vtable+0x30
-	virtual ~CBaseNetwork();                    // vtable+0x04
+	virtual void WaitProcess();                          // vtable+0x30
+	virtual ~CBaseNetwork();                             // vtable+0x04
 	CConnect* NewConnect();
 	bool DoInitialise();
 	bool Exists(CConnect* p_connection);

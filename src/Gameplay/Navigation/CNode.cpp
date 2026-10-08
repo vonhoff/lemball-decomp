@@ -1,6 +1,6 @@
 #include "CNode.h"
 
-#include "Gameplay/Geometry/AICOORD.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/CPt3.h"
 
 #include <stddef.h>

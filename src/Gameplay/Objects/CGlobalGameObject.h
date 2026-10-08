@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_BASE_CGLOBALGAMEOBJECT_H
 #define LEMBALL_AI_BASE_CGLOBALGAMEOBJECT_H
 
+#include "CGameObject.h"
 #include "ObjectActions.h"
 #include "ObjectTypes.h"
-#include "CGameObject.h"
 
 class CNetworkMessage;
 class CObjectChangeStateMess;

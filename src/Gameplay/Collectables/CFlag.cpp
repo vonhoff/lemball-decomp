@@ -1,5 +1,6 @@
 #include "CFlag.h"
 
+#include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
 
@@ -9,14 +10,14 @@ void CFlag::SetSFX()
 	SetSndEffect(SFX_YIPPEE);
 }
 
-#include "Map/CMap.h"
+#include "Application/SoundEffects.h"
+#include "CCollectable.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
-#include "CCollectable.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include "Application/SoundEffects.h"
+#include "Map/CMap.h"
 
 // FUNCTION: LEMBALL 0x00422b40
 bool CFlag::Process()

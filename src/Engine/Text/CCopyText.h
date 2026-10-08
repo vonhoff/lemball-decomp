@@ -1,7 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CCOPYTEXT_H
 #define LEMBALL_VISOS_FOUNDATION_CCOPYTEXT_H
 
-#include "Engine/Strings/CString.h"
 #include "CText.h"
 
 // SIZE 0x4c

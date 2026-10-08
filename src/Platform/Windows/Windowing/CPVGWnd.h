@@ -1,15 +1,15 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 #define LEMBALL_VISOS_GRAPHICS_CPVGWND_H
 
-#include "Engine/Math/CVSRect.h"
+#include "CWnd.h"
 #include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
-#include "CWnd.h"
 #include "Engine/Graphics/Primitives/CZBuffClear.h"
+
 class CGDI;
 class CPVWnd;
-
 struct WinGDrawState;
+class CVSRect;
 
 enum {
 	WINDOW_CLEAR_DEFAULT_COLOUR = -1

@@ -3,6 +3,7 @@
 
 #include "CReadSocket.h"
 #include "CWriteSocket.h"
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
 
 // SIZE 0x108
 // VTABLE: LEMBALL 0x00498fe0 CBaseSocket's `CReadSocket

@@ -1,10 +1,14 @@
 #include "CWaveSoundDevice.h"
 
-#include "Engine/Streams/CVSOStream.h"
 #include "CWaveEffect.h"
 #include "Engine/Sound/CBaseSoundDevice.h"
+#include "Engine/Streams/CVSOStream.h"
 
+#include <mmsystem.h>
 #include <new.h>
+#include <stddef.h>
+#include <windows.h>
+
 #define WAVE_SOUND_TRACKED_CHANNEL_COUNT 8
 #define WAVE_LOW_SAMPLE_RATE 11025
 #define WAVE_HIGH_SAMPLE_RATE 22050

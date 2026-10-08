@@ -1,7 +1,7 @@
 #include "CVector.h"
 
-#include "FixedPoint.h"
 #include "Engine/Diagnostics/VsDebug.h"
+#include "FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x0041a3c0
 CVector::CVector() : m_xFixed(DEBUG_SENTINEL), m_yFixed(DEBUG_SENTINEL)

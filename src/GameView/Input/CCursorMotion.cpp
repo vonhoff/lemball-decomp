@@ -1,16 +1,16 @@
 #include "CCursorMotion.h"
 
-#include "Gameplay/Simulation/CAI.h"
-#include "Map/CMap.h"
-#include "Engine/Queues/CBaseQueue.h"
+#include "../../Engine/Resources/Manifest.h"
+#include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Math/CFixed.h"
 #include "Engine/Math/CVSPoint.h"
-#include "Engine/Time/VsTime.h"
-#include "../../Engine/Resources/Manifest.h"
-#include "GameView/Animation/CLemmingAnimsManager.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/Message.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Engine/Time/VsTime.h"
+#include "GameView/Animation/CLemmingAnimsManager.h"
+#include "Gameplay/Simulation/CAI.h"
+#include "Map/CMap.h"
 
 #include <string.h>
 

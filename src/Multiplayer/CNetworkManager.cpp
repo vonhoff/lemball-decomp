@@ -1,19 +1,21 @@
 #include "CNetworkManager.h"
 
 #include "Engine/Queues/CBaseQueue.h"
+#include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Startup/VsInit.h"
 #include "Engine/Time/VsTime.h"
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-#include "Multiplayer/Transport/CBaseNetwork.h"
-#include "Multiplayer/Transport/CBroadcast.h"
-#include "Multiplayer/Transport/CConnect.h"
-#include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
+#include "Multiplayer/CGameFlaggedMessage.h"
 #include "Multiplayer/CGameRejectMessage.h"
 #include "Multiplayer/CNetworkGameMessage.h"
 #include "Multiplayer/CNetworkGameStage.h"
-#include "Engine/Queues/CBaseQueueHandler.h"
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
+#include "Multiplayer/Transport/CBroadcast.h"
+#include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/CReadSocket.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+#include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
 
 #include <stddef.h>
 
@@ -121,10 +123,10 @@ void CNetworkManager::Stop()
 	}
 }
 
+#include "Engine/Queues/Message.h"
+#include "Engine/Streams/CVSOStream.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/Network/CNetworkOptionsProc.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Engine/Queues/Message.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Packets/CReadPacket.h"
 
