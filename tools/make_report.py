@@ -2,25 +2,19 @@
 """Generate objdiff progress from raw assembly comparisons."""
 
 import argparse
-import hashlib
-import json
 from collections import defaultdict
+from pathlib import PureWindowsPath
 from typing import Any, cast
 
 from reccmp.compare import Compare
-from reccmp.compare.csv import csv_parse
-from reccmp.compare.report import serialize_reccmp_report
 from reccmp.formats.pe import PEImage
 from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.project.detect import RecCmpProject
 from reccmp.tools.roadmap import ModuleMap
-from reccmp.types import EntityType
+from reccmp.types import EntityType, ImageId
 
-from lib import BUILD, EFFECTIVE_JSON, REPORT_JSON, ROOT, TARGET_ID
-from lib.progress import effective_code_percent
-from link_binary import read_jump_target, thunk_symbol
-
-REPORT_EXCLUSIONS = ROOT / "tools/data/report-exclusions.csv"
+from lib import BUILD, ROOT, TARGET_ID
+from lib.progress import accepted_functions, effective_code_percent, save_progress
 
 
 def measures(functions, total_units=1):
@@ -29,7 +23,9 @@ def measures(functions, total_units=1):
     exact_code = 0
     exact_count = 0
     fuzzy_weighted = 0.0
+    total_functions = 0
     for f in functions:
+        total_functions += 1
         size = int(f["size"])
         total_code += size
         score = f["fuzzy_match_percent"]
@@ -37,7 +33,6 @@ def measures(functions, total_units=1):
         if score == 100:
             exact_code += size
             exact_count += 1
-    total_functions = len(functions)
     return {
         "total_units": total_units,
         "total_code": str(total_code),
@@ -52,62 +47,76 @@ def measures(functions, total_units=1):
     }
 
 
-def build_report(engine, comparisons, modules) -> dict[str, Any]:
+def module_name(path):
+    """Group runtime and generated entries; use source stems for other modules."""
+    path = PureWindowsPath(path)
+    if path.parent == PureWindowsPath("build/intel/mt_obj"):
+        return "MSVC Runtime"
+    if path in (
+        PureWindowsPath("linker-thunks/entries.obj"),
+        PureWindowsPath("linker-thunks/terminal-entry.obj"),
+    ):
+        return "Linker Thunks"
+    return PureWindowsPath(path.stem).stem or "Unknown"
+
+
+def build_report(engine, comparisons, modules: ModuleMap) -> dict[str, Any]:
     """Map the original code inventory to objdiff functions and PDB units."""
-    catalog = dict(
-        csv_parse(
-            (ROOT / "tools/data/original-function-sizes.csv").read_text(
-                encoding="utf-8"
-            )
-        )
-    )
-    excluded_addresses = {
-        address
-        for address, _ in csv_parse(REPORT_EXCLUSIONS.read_text(encoding="utf-8"))
-    }
-    entities = {entity.orig_addr: entity for entity in engine.get_all()}
+    code_regions = [
+        range(region.addr, region.addr + len(region.data))
+        for region in engine.orig_bin.get_code_regions()
+    ]
     groups = defaultdict(list)
-    for address, original in catalog.items():
-        if address in excluded_addresses:
+    for entity in engine.get_all():
+        address = entity.orig_addr
+        size = entity.size(ImageId.ORIG)
+        if (
+            address is None
+            or size is None
+            or entity.entity_type
+            not in (
+                None,
+                EntityType.FUNCTION,
+                EntityType.VTORDISP,
+                EntityType.THUNK,
+                EntityType.IMPORT_THUNK,
+            )
+            or not any(address in region for region in code_regions)
+        ):
             continue
-        entity = entities[address]
         comparison = comparisons.entities.get(address)
-        if entity.entity_type == EntityType.IMPORT_THUNK:
-            continue
         module = (
-            modules.get_module(entity.recomp_addr)[1]
-            if entity.recomp_addr
-            else "Unknown"
+            modules.get_module(entity.recomp_addr)
+            if entity.recomp_addr is not None
+            else None
         )
-        name = (
-            comparison.name
-            if comparison and entity.recomp_addr
-            else entity.name or entity.get("symbol") or ""
-        )
-        if not name and original["size"] == 5:
-            destination = read_jump_target(engine.orig_bin, address)
-            if destination != address and destination in catalog:
-                name = thunk_symbol(address)
-        if name.startswith("__lemball_jump_"):
-            module = "Jump thunks"
-        groups[module].append(
+        unit_name = "Unknown"
+        if module is not None:
+            unit_name = module_name(module[1])
+        groups[unit_name].append(
             {
                 "name": f"0x{address:08x}",
-                "size": str(original["size"]),
+                "size": str(size),
                 "metadata": {
                     "virtual_address": str(address),
-                    "demangled_name": name,
+                    "demangled_name": entity.best_name()
+                    or entity.get("symbol")
+                    or f"0x{address:08x}",
                 },
                 "fuzzy_match_percent": comparison.accuracy * 100
-                if comparison and not comparison.is_stub
+                if comparison and comparison.is_matched() and not comparison.is_stub
                 else 0.0,
             }
         )
     units = [
-        {"name": name, "measures": measures(functions), "functions": functions}
+        {
+            "name": name,
+            "measures": measures(functions),
+            "functions": functions,
+        }
         for name, functions in sorted(groups.items())
     ]
-    functions = [function for unit in units for function in unit["functions"]]
+    functions = (function for unit in units for function in unit["functions"])
     return {"version": 2, "units": units, "measures": measures(functions, len(units))}
 
 
@@ -128,30 +137,8 @@ def main() -> int:
         comparisons,
         ModuleMap(target.recompiled_pdb, cast(PEImage, engine.recomp_bin)),
     )
-    accepted = {
-        address
-        for address, comparison in comparisons.entities.items()
-        if comparison.is_function()
-        and comparison.is_matched()
-        and not comparison.is_stub
-        and comparison.effective_accuracy == 1
-    }
-    (BUILD / "reccmp.json").write_text(
-        serialize_reccmp_report(comparisons, diff_included=True), encoding="utf-8"
-    )
-    report_bytes = (json.dumps(report, indent=2) + "\n").encode("utf-8")
-    REPORT_JSON.write_bytes(report_bytes)
-    EFFECTIVE_JSON.write_text(
-        json.dumps(
-            {
-                "report_sha256": hashlib.sha256(report_bytes).hexdigest(),
-                "addresses": sorted(accepted),
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
+    accepted = accepted_functions(comparisons)
+    save_progress(report, comparisons)
     totals = report["measures"]
     effective = effective_code_percent(report, accepted)
     print(

@@ -12,7 +12,6 @@ from functools import cache
 from typing import cast
 
 from reccmp.compare import Compare
-from reccmp.compare.csv import csv_parse
 from reccmp.compare.diff import RawDiffOutput
 from reccmp.dir import source_code_search
 from reccmp.formats import PEImage
@@ -173,17 +172,15 @@ def jump_entries(engine, functions, forwarders):
             if region.data[offset] != 0xE9:
                 break
             table_entries.add(region.addr + offset)
-    catalog = dict(
-        csv_parse((ROOT / "tools/data/original-function-sizes.csv").read_text())
-    )
+    originals = {entity.orig_addr: entity for entity in engine.get_all()}
     for address in forwarders:
-        original = catalog.get(address)
+        original = originals.get(address)
         destination = read_jump_target(engine.orig_bin, address)
         if (
             address in table_entries
             or address in functions
             or original is None
-            or original["size"] != 5
+            or original.size(ImageId.ORIG) != 5
             or destination not in functions
         ):
             raise ValueError(

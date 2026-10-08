@@ -85,7 +85,6 @@ jobs:
           path: |
             build-msvc400/report.json
             build-msvc400/reccmp.json
-            build-msvc400/effective.json
 
       - name: Publish progress badges
         if: github.ref == 'refs/heads/main'

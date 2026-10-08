@@ -11,6 +11,7 @@
 
 - `data/LEMBALL.EXE` and original x86: behavior and ABI evidence. Ghidra: analysis; PDB: rebuilt symbols.
 - Structural source exploration: codebase-memory skill; verify against source.
+- `tools/data/original-symbols.csv`: original extents and matching overrides; reccmp supplies import-thunk sizes.
 - `tools/data/mac-symbol-catalog.csv`: Mac symbols with optional Windows mappings. Naming/type evidence; Windows ABI differences require Windows evidence.
 - Matching: validation of a source hypothesis. Qualify inferred names, types, layouts; no score-only source tricks.
 - `README.md`, `Manifest.h`, reference hashes, compiler flags: edit only when asked.
@@ -26,12 +27,10 @@
 | `tools/check_source.py` | Source policy, annotation, and catalog checks; `-v` for review details |
 | `tools/make_report.py` | Canonical reports plus console Effective score |
 | `tools/make_badges.py` | README badges, separate from canonical progress |
-| `python -m unittest discover -s tests -t .` (from `tools/`) | Tool tests |
 
 Deep comparison: `reccmp-vtable` / `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
-Canonical progress: exact = non-stub, raw 100% assembly comparison score. Stubs contribute zero.
-Effective accepts non-stub raw 100% and reccmp effective matches directly; one-hop `E9` normalization adds equivalents. No extra proof gate for existing acceptance paths.
-Effective matches retain raw fuzzy scores. Effective badge includes exact + equivalent code; no effective fields in `report.json`.
+Progress uses original bytes. Exact: non-stub raw 100%; Effective: non-stub raw 100% or reccmp equivalence. Stubs contribute zero; fuzzy retains raw scores.
+`report.json`: objdiff progress. `reccmp.json`: compact native results and report hash. Badges and triage consume this pair.
 Retain incremental build outputs and saved reports in `build-msvc400`. Remove temporary trial artifacts only; clean builds for stale artifacts, not routine batch cleanup.
 
 ## Documentation changes

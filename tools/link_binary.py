@@ -11,7 +11,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-from reccmp.formats.exceptions import InvalidVirtualAddressError, InvalidVirtualReadError
+from reccmp.formats.exceptions import (
+    InvalidVirtualAddressError,
+    InvalidVirtualReadError,
+)
 
 MSVC_WARNING = re.compile(r"\bwarning\s+[A-Z]*\d+\s*:", re.IGNORECASE)
 
@@ -65,8 +68,9 @@ class CoffObject:
                 name = name.split(b"\0", 1)[0]
             self.symbols[index] = (name.decode("ascii"), value, section, kind, storage)
             if storage == 105 and aux == 1:
-                target, search = struct.unpack_from("<II", data,
-                                                   self.symbol_start + (index + 1) * SYMBOL_SIZE)
+                target, search = struct.unpack_from(
+                    "<II", data, self.symbol_start + (index + 1) * SYMBOL_SIZE
+                )
                 if search in (1, 2, 3):
                     self.weak_defaults[name.decode("ascii")] = target
             index += aux + 1
@@ -81,8 +85,11 @@ class CoffObject:
         return name
 
     def function(self, name):
-        matches = [value for value in self.symbols.values()
-                   if value[0] == name and value[2] > 0 and value[3] == 0x20]
+        matches = [
+            value
+            for value in self.symbols.values()
+            if value[0] == name and value[2] > 0 and value[3] == 0x20
+        ]
         if not matches and name in self.weak_defaults:
             return self.function(self.canonical_name(name))
         if len(matches) != 1:
@@ -91,8 +98,11 @@ class CoffObject:
 
     def reference_target(self, name, offset, relocation):
         _, value, section, _, _ = self.function(name)
-        matches = [index for _, (address, index, kind) in self.relocations(section)
-                   if address == value + offset + 1 and kind == relocation]
+        matches = [
+            index
+            for _, (address, index, kind) in self.relocations(section)
+            if address == value + offset + 1 and kind == relocation
+        ]
         if len(matches) != 1:
             raise ValueError("Missing or ambiguous COFF call relocation")
         return self.symbols[matches[0]][0]
@@ -127,8 +137,10 @@ class CoffObject:
                 raise ValueError(f"Stale linker-thunk routes: {route['symbol']}")
             _, value, section, _, _ = self.function(route["symbol"])
             descriptor = self.sections[section - 1]
-            relocations = {address: (location, index, kind)
-                           for location, (address, index, kind) in self.relocations(section)}
+            relocations = {
+                address: (location, index, kind)
+                for location, (address, index, kind) in self.relocations(section)
+            }
             for ref in route["references"]:
                 thunk = thunks[ref["thunk"]]
                 original = bytes.fromhex(ref["original_bytes"])
@@ -138,14 +150,20 @@ class CoffObject:
                 instruction = value + ref["offset"]
                 location, index, kind = relocations[instruction + 1]
                 raw_offset = descriptor[4] + instruction
-                allowed = ((kind == REL32 and opcode in (0xE8, 0xE9))
-                           or (kind == DIR32 and (opcode == 0x68 or 0xB8 <= opcode <= 0xBF)))
-                if (data[raw_offset] != opcode
-                        or not allowed
-                        or data[raw_offset + 1 : raw_offset + 5] != bytes(4)
-                        or self.symbols[index][0] != ref["source_symbol"]
-                        or thunk["target_symbol"] not in (
-                            ref["source_symbol"], self.canonical_name(ref["source_symbol"]))):
+                allowed = (kind == REL32 and opcode in (0xE8, 0xE9)) or (
+                    kind == DIR32 and (opcode == 0x68 or 0xB8 <= opcode <= 0xBF)
+                )
+                if (
+                    data[raw_offset] != opcode
+                    or not allowed
+                    or data[raw_offset + 1 : raw_offset + 5] != bytes(4)
+                    or self.symbols[index][0] != ref["source_symbol"]
+                    or thunk["target_symbol"]
+                    not in (
+                        ref["source_symbol"],
+                        self.canonical_name(ref["source_symbol"]),
+                    )
+                ):
                     raise ValueError(f"Unverified linker-thunk call: {route['symbol']}")
                 symbol = thunk["symbol"]
                 if symbol not in added:
@@ -157,7 +175,7 @@ class CoffObject:
         struct.pack_into("<I", strings, 0, len(strings))
         struct.pack_into("<I", data, 12, self.symbol_count + len(added))
         tail = data[self.string_start + len(self.strings) :]
-        return bytes(data[:self.string_start] + symbols + strings + tail)
+        return bytes(data[: self.string_start] + symbols + strings + tail)
 
 
 def thunk_symbol(address):
@@ -189,11 +207,20 @@ def make_thunk_object(thunks):
         contents += b"\xe9" + bytes(4)
         relocation = start + len(contents)
         contents += struct.pack("<IIH", 1, targets[target], REL32)
-        sections += struct.pack("<8sIIIIIIHHI", b".text$lt", 0, 0, 5, raw,
-                                relocation, 0, 1, 0, 0x60100020)
+        sections += struct.pack(
+            "<8sIIIIIIHHI", b".text$lt", 0, 0, 5, raw, relocation, 0, 1, 0, 0x60100020
+        )
     struct.pack_into("<I", strings, 0, len(strings))
-    header = struct.pack("<HHIIIHH", I386, len(thunks), 0,
-                         start + len(contents), len(symbols) // SYMBOL_SIZE, 0, 0)
+    header = struct.pack(
+        "<HHIIIHH",
+        I386,
+        len(thunks),
+        0,
+        start + len(contents),
+        len(symbols) // SYMBOL_SIZE,
+        0,
+        0,
+    )
     return bytes(header + sections + contents + symbols + strings)
 
 
@@ -211,13 +238,15 @@ def prepare_link(objects, build, manifest_path):
     output.mkdir(parents=True, exist_ok=True)
     grouped = {}
     for route in manifest["routes"]:
-        grouped.setdefault(route["object"].replace("\\", "/").casefold(), []).append(route)
+        grouped.setdefault(route["object"].replace("\\", "/").casefold(), []).append(
+            route
+        )
     linked = []
     applied = 0
     skipped = []
     for name in objects:
         key = name.replace("\\", "/").casefold()
-        routes = grouped.get(key)
+        routes = grouped.get(key, [])
         if not routes:
             linked.append(name)
             continue
@@ -226,7 +255,10 @@ def prepare_link(objects, build, manifest_path):
         current = []
         for route in routes:
             try:
-                valid = obj.fingerprint(route["symbol"], route["size"]) == route["fingerprint"]
+                valid = (
+                    obj.fingerprint(route["symbol"], route["size"])
+                    == route["fingerprint"]
+                )
             except ValueError:
                 valid = False
             if valid:
@@ -242,8 +274,10 @@ def prepare_link(objects, build, manifest_path):
         else:
             linked.append(name)
     # A separate final contribution gives LINK's PDB an exact five-byte extent.
-    groups = (("entries.obj", manifest["thunks"][:-1]),
-              ("terminal-entry.obj", manifest["thunks"][-1:]))
+    groups = (
+        ("entries.obj", manifest["thunks"][:-1]),
+        ("terminal-entry.obj", manifest["thunks"][-1:]),
+    )
     for name, thunks in groups:
         if thunks:
             thunk_object = output / name
@@ -252,8 +286,10 @@ def prepare_link(objects, build, manifest_path):
     (output / "applied.json").write_text(
         json.dumps({"references": applied, "skipped": skipped}, indent=2) + "\n"
     )
-    print(f"linker thunks: {len(manifest['thunks'])} entries; {applied} references; "
-          f"{len(skipped)} stale functions")
+    print(
+        f"linker thunks: {len(manifest['thunks'])} entries; {applied} references; "
+        f"{len(skipped)} stale functions"
+    )
     return linked
 
 
