@@ -6,6 +6,12 @@
 
 #include <string.h>
 
+// SIZE 0x08
+struct ResourceEntryHeader {
+	unsigned int m_chunkType;
+	unsigned int m_dataSize;
+};
+
 enum eResourceCheckDisposition {
 	RESOURCE_CHECK_DISCARD_INVALID_RESOURCE = 1,
 	RESOURCE_CHECK_PRESERVE_RESOURCE = 2
@@ -43,18 +49,18 @@ bool CResBase::Direct(unsigned char*& p_cursor, CResBaseLIST* p_list)
 // FUNCTION: LEMBALL 0x0045cfb0
 bool CResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, CResBaseLIST* p_list)
 {
-	unsigned int* entry;
+	ResourceEntryHeader* entry;
 
 	m_externalList = p_list;
-	entry = (unsigned int*) p_headerCursor;
-	if (m_chunkType != entry[0]) {
+	entry = (ResourceEntryHeader*) p_headerCursor;
+	if (m_chunkType != entry->m_chunkType) {
 		m_error = RESOURCE_CHECK_DISCARD_INVALID_RESOURCE;
 		return true;
 	}
-	m_dataSize = entry[1];
-	m_name = (char*) &entry[2];
+	m_dataSize = entry->m_dataSize;
+	m_name = (char*) (entry + 1);
 	SetHeader();
-	p_headerCursor = (unsigned char*) &entry[2] + m_headerSkip;
+	p_headerCursor = (unsigned char*) (entry + 1) + m_headerSkip;
 	m_data = p_dataCursor;
 	p_dataCursor += m_dataSize;
 	++m_referenceCount;
