@@ -5471,11 +5471,7 @@
       "target": 4442272,
       "original_bytes": "e94faa0300",
       "symbol": "__lemball_jump_00401e4c",
-      "target_symbol": "?DrawLemmingOnBalloon@C2D@@QAEXAAVCViewData@@HH@Z",
-      "definition": {
-        "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-        "symbol": "?DrawLemmingOnBalloon@C2D@@QAEXAAVCViewData@@HH@Z"
-      }
+      "target_symbol": "?DrawLemmingOnBalloon@C2D@@QAEXAAVCViewData@@HH@Z"
     },
     {
       "address": 4202065,
@@ -10882,11 +10878,7 @@
       "target": 4440000,
       "original_bytes": "e941930300",
       "symbol": "__lemball_jump_00402c7a",
-      "target_symbol": "?DrawLemmingLanding@C2D@@QAEXAAVCViewData@@I@Z",
-      "definition": {
-        "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-        "symbol": "?DrawLemmingLanding@C2D@@QAEXAAVCViewData@@I@Z"
-      }
+      "target_symbol": "?DrawLemmingLanding@C2D@@QAEXAAVCViewData@@I@Z"
     },
     {
       "address": 4205695,
@@ -13338,11 +13330,7 @@
       "target": 4333296,
       "original_bytes": "e9f5eb0100",
       "symbol": "__lemball_jump_004032f6",
-      "target_symbol": "?Initialise@CBallManager@@QAEXH@Z",
-      "definition": {
-        "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Projectiles/CBallManager.cpp.obj",
-        "symbol": "?Initialise@CBallManager@@QAEXH@Z"
-      }
+      "target_symbol": "?Initialise@CBallManager@@QAEXH@Z"
     },
     {
       "address": 4207355,
@@ -14960,11 +14948,7 @@
       "target": 4440176,
       "original_bytes": "e91f890300",
       "symbol": "__lemball_jump_0040374c",
-      "target_symbol": "?DrawLemmingFall@C2D@@QAEXAAVCViewData@@I@Z",
-      "definition": {
-        "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-        "symbol": "?DrawLemmingFall@C2D@@QAEXAAVCViewData@@I@Z"
-      }
+      "target_symbol": "?DrawLemmingFall@C2D@@QAEXAAVCViewData@@I@Z"
     },
     {
       "address": 4208465,
@@ -26248,6 +26232,13 @@
           "original_bytes": "e8960ffeff",
           "thunk": 4206640,
           "source_symbol": "?LoadLevel@CBall@@QAEXAAPAE@Z"
+        },
+        {
+          "offset": 23,
+          "original_instruction": 4333687,
+          "original_bytes": "e87a12feff",
+          "thunk": 4207350,
+          "source_symbol": "?Initialise@CBallManager@@QAEXH@Z"
         }
       ]
     },
@@ -34809,6 +34800,27 @@
           "original_bytes": "e82451fcff",
           "thunk": 4200105,
           "source_symbol": "?DrawAnim@CLemmingAnimsManager@@QAEXFFKKKPAVCRemap@@@Z"
+        },
+        {
+          "offset": 496,
+          "original_instruction": 4441078,
+          "original_bytes": "e85173fcff",
+          "thunk": 4208460,
+          "source_symbol": "?DrawLemmingFall@C2D@@QAEXAAVCViewData@@I@Z"
+        },
+        {
+          "offset": 591,
+          "original_instruction": 4441173,
+          "original_bytes": "e8f259fcff",
+          "thunk": 4202060,
+          "source_symbol": "?DrawLemmingOnBalloon@C2D@@QAEXAAVCViewData@@HH@Z"
+        },
+        {
+          "offset": 613,
+          "original_instruction": 4441195,
+          "original_bytes": "e80a68fcff",
+          "thunk": 4205690,
+          "source_symbol": "?DrawLemmingLanding@C2D@@QAEXAAVCViewData@@I@Z"
         }
       ]
     },
