@@ -8471,7 +8471,15 @@
     "scope": "Reference-image startup, automatic level sweep and graceful shutdown. Logged level pairs do not establish gameplay/action coverage; no-hit probes do not prove entries unused.",
     "graphics": "Legacy DisplayDib entry-point failure; accepted the original GDI fallback warning. Original lemming rendering calibrated after fallback.",
     "cleanup": "All 41 byte ranges restored and debugger detachment verified before final shutdown trace; original process exited 0. CE remained on rebuilt PID 11220, debugger inactive.",
-    "remaining_entries": 16
+    "remaining_entries": 16,
+    "recorded_demo": {
+      "scope": "Reference recorded demo resource20; skill3 level8; packet index reached1514. Partial gameplay coverage.",
+      "trigger": "Set main-menu return flow19 and quit flag1 at448800; original stores448860-44889f corroborate offsets374/378. Default resource playback; no TESTALLLEVELS.",
+      "calibration": "CDemo::SendNextPacket, CAI::Start, C2D::Process and CPlayerLemming::Process hit; playback cursor advanced.",
+      "unpaired_probes": "32 entry/body probes validated before arming; all32 confirmed armed live; zero hits.",
+      "cleanup": "Owned reference process exited0 after WM_CLOSE; temporary staging and trace files removed. User rebuilt process untouched.",
+      "outcome": "No additional caller or prototype evidence; 16 entries remain unpaired. No-hit tracing does not prove unused code."
+    }
   },
   "remaining_source_review": {
     "mac_candidates": "SetActive on CGunController/CHiliteController uses receiver plus explicit byte argument and writes state; CurrentMomentum copies three DWORDs; UseChangingCursor returns 0 or 1. These do not establish identities/prototypes for the Windows bare-RET/short-return entries.",
