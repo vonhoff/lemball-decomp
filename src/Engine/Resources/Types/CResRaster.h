@@ -2,16 +2,13 @@
 #define LEMBALL_VISOS_RESOURCES_CRESRASTER_H
 
 #include "CResBase.h"
+#include "Engine/Math/CVSPoint.h"
 
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00498ab0
 class CResRaster : public CResBase {
 public:
-	inline CResRaster()
-	{
-		m_y = 0;
-		m_x = 0;
-	}
+	inline CResRaster() {}
 
 	friend class CBaseFrontendDrawer;
 	friend class CMainOptions1Drawer;
@@ -23,8 +20,7 @@ public:
 	friend class CAboutScreen;
 
 protected:
-	short m_x; // 0x48
-	short m_y; // 0x4a
+	CVSPoint m_rasterPoint; // 0x48
 };
 
 // SYNTHETIC: LEMBALL 0x0045e820

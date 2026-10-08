@@ -3455,7 +3455,7 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 		{
 			CVSRect dest((short) primitiveX, (short) primitiveY, &p_zrle->m_size);
 			if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
-				((CVSPoint*) &dest.m_x)->AddInPlace((CVSPoint*) &p_zrle->m_x);
+				static_cast<CVSPoint&>(dest).AddInPlace(&p_zrle->m_rasterPoint);
 			}
 			{
 				CVSRect clipped;
@@ -3568,11 +3568,11 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 	short y = p_primitive->m_y;
 	CVSRect sourceRect(p_primitive->m_sourceRect);
 	if (sourceRect.m_height == 0 && sourceRect.m_width == 0) {
-		sourceRect.m_width = p_bitmap->m_x;
-		sourceRect.m_height = p_bitmap->m_y;
+		sourceRect.m_width = p_bitmap->m_rasterPoint.m_x;
+		sourceRect.m_height = p_bitmap->m_rasterPoint.m_y;
 	}
 	unsigned int flags = p_primitive->m_flags;
-	if ((int) p_bitmap->m_y * (int) p_bitmap->m_x != 0) {
+	if ((int) p_bitmap->m_rasterPoint.m_y * (int) p_bitmap->m_rasterPoint.m_x != 0) {
 		CVSRect dest(sourceRect);
 		dest.m_x = x;
 		dest.m_y = y;
@@ -3593,7 +3593,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 			yStep = SURFACE_STEP_BACKWARD;
 			destY += dest.m_height - 1;
 		}
-		int bitmapWidth = (int) p_bitmap->m_x;
+		int bitmapWidth = (int) p_bitmap->m_rasterPoint.m_x;
 		unsigned char* source = p_bitmap->GetData() + ((int) sourceRect.m_y + (int) clip.m_y) * bitmapWidth +
 								(int) sourceRect.m_x + (int) clip.m_x;
 		if ((flags & CBitmap::BITMAP_TRANSPARENT_ZERO) != 0) {
@@ -3660,8 +3660,8 @@ void CSurface::BlitZRLE(int p_x,
 	flags = p_flags;
 	CVSRect* dest = &destination;
 	if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
-		dest->m_x = (short) (dest->m_x + resource->m_x);
-		dest->m_y = (short) (dest->m_y + resource->m_y);
+		dest->m_x = (short) (dest->m_x + resource->m_rasterPoint.m_x);
+		dest->m_y = (short) (dest->m_y + resource->m_rasterPoint.m_y);
 	}
 	CVSRect clip;
 	CVSRect* clipped = &clip;

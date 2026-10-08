@@ -340,7 +340,7 @@ void CBaseFrontendDrawer::_DrawBackGround()
 {
 	CBigBitmap* rec;
 	if (m_drawFrame != 0) {
-		const CVSSize& tileSize = *(const CVSSize*) &m_tileBitmap->m_x;
+		const CVSPoint& tilePoint = m_tileBitmap->m_rasterPoint;
 		CVSRect tiles;
 		tiles.m_width = m_size.m_width;
 		tiles.m_height = m_size.m_height;
@@ -350,11 +350,11 @@ void CBaseFrontendDrawer::_DrawBackGround()
 			BACKGROUND_ROW_PARITY_EVEN = 0,
 			BACKGROUND_ROW_PARITY_TOGGLE_MASK = 1
 		};
-		short height = (short) (tiles.m_height + tileSize.m_height - 1) / tileSize.m_height;
-		tiles.m_width = (short) (tiles.m_width + tileSize.m_width - 1) / tileSize.m_width;
+		short height = (short) (tiles.m_height + tilePoint.m_y - 1) / tilePoint.m_y;
+		tiles.m_width = (short) (tiles.m_width + tilePoint.m_x - 1) / tilePoint.m_x;
 		tiles.m_height = height;
-		tiles.m_y /= tileSize.m_height;
-		tiles.m_x /= tileSize.m_width;
+		tiles.m_y /= tilePoint.m_y;
+		tiles.m_x /= tilePoint.m_x;
 		tiles.m_height -= tiles.m_y;
 		tiles.m_width -= tiles.m_x;
 		unsigned int oddRow = BACKGROUND_ROW_PARITY_EVEN;
@@ -364,8 +364,8 @@ void CBaseFrontendDrawer::_DrawBackGround()
 			for (int col = start.m_x; (int) ((short) (start.m_x + count.m_width) + oddRow) > col; col++) {
 				CResBITMAP* bitmap = m_tileBitmap;
 				rec = &m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
-				int y = tileSize.m_height * row;
-				rec->m_x = col * tileSize.m_width - (tileSize.m_width / 2) * oddRow;
+				int y = tilePoint.m_y * row;
+				rec->m_x = col * tilePoint.m_x - (tilePoint.m_x / 2) * oddRow;
 				rec->m_y = y;
 				rec->m_resource = bitmap;
 				rec->m_flags = 0;

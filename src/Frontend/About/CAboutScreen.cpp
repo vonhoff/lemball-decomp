@@ -243,8 +243,8 @@ void CAboutScreen::DrawChangedRegion()
 			m_line.m_bounds.m_x = 0;
 			m_line.m_bounds.m_y = 0;
 			m_line.Draw(m_gdi);
-			int centreedY = ((int) m_size.m_height - (int) bitmap->m_y) / 2;
-			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) bitmap->m_x) / 2);
+			int centreedY = ((int) m_size.m_height - (int) bitmap->m_rasterPoint.m_y) / 2;
+			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) bitmap->m_rasterPoint.m_x) / 2);
 			m_bitmap.m_y = (short) centreedY;
 			m_bitmap.m_resource = m_backgroundBitmap;
 			m_bitmap.m_remap = NULL;

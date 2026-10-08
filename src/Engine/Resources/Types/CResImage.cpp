@@ -37,8 +37,8 @@ void CResImage::SetHeader()
 	ImageResourceHeader* header = (ImageResourceHeader*) m_name;
 	unsigned int width = header->m_width;
 	unsigned short height = header->m_height;
-	m_x = (short) width;
-	m_y = (short) height;
+	m_rasterPoint.m_x = (short) width;
+	m_rasterPoint.m_y = (short) height;
 	m_depth = header->m_depth;
 	m_flags = header->m_flags;
 	m_imageState = header->m_imageState;

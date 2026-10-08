@@ -26,8 +26,8 @@ void CResBITMAP::SetHeader()
 	BitmapHeader* header = (BitmapHeader*) m_name;
 	unsigned short height = header->m_height;
 	unsigned int width = header->m_width;
-	m_x = (unsigned short) width;
-	m_y = height;
+	m_rasterPoint.m_x = (unsigned short) width;
+	m_rasterPoint.m_y = height;
 	m_depth = header->m_depth;
 	m_flags = header->m_flags;
 }

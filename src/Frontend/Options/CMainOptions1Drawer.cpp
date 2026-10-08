@@ -123,7 +123,8 @@ void CMainOptions1Drawer::Load()
 	}
 	for (i = 0; i < 1; i++) {
 		CResBITMAP* bitmap = m_backgroundBitmap;
-		m_primitiveBundle[i].m_primitive.m_x = (short) (((int) m_display->m_rect.m_width - (int) bitmap->m_x) / 2);
+		m_primitiveBundle[i].m_primitive.m_x =
+			(short) (((int) m_display->m_rect.m_width - (int) bitmap->m_rasterPoint.m_x) / 2);
 		m_primitiveBundle[i].m_primitive.m_y = 0;
 		m_primitiveBundle[i].m_primitive.m_resource = bitmap;
 		m_primitiveBundle[i].m_primitive.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;

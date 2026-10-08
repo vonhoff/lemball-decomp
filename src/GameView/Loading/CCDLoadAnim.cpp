@@ -72,8 +72,8 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager
 	p_display->AttachPalette(RES_FRONTEND_LOADING_LORES_PALETTE);
 	palette->UnLoad();
 	CVSRect& windowRect = m_display->m_rect;
-	CVSPoint centre((short) ((short) (windowRect.m_width - m_backgroundBitmap->m_x) / 2),
-					(short) ((short) (windowRect.m_height - m_backgroundBitmap->m_y) / 2));
+	CVSPoint centre((short) ((short) (windowRect.m_width - m_backgroundBitmap->m_rasterPoint.m_x) / 2),
+					(short) ((short) (windowRect.m_height - m_backgroundBitmap->m_rasterPoint.m_y) / 2));
 	m_centre.m_x = centre.m_x;
 	m_centre.m_y = centre.m_y;
 	index = 0;

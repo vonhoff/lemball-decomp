@@ -38051,18 +38051,18 @@
       "caller": 4480016,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?_DrawBackGround@CBaseFrontendDrawer@@QAEXXZ",
-      "size": 604,
-      "fingerprint": "975082822fac0e4f5c5c946b2d44c9f839ec2a0896b5dd0f586ba218b3f853bc",
+      "size": 601,
+      "fingerprint": "f7d583eb455d17d19451a5f74d81de7dc7fb6ad73bbb621c2d28f5449b36e5fe",
       "references": [
         {
-          "offset": 533,
+          "offset": 530,
           "original_instruction": 4480544,
           "original_bytes": "e8a6b4fbff",
           "thunk": 4199115,
           "source_symbol": "?DrawButtons@CGunController@@QAEXHH@Z"
         },
         {
-          "offset": 550,
+          "offset": 547,
           "original_instruction": 4480561,
           "original_bytes": "e8a8d8fbff",
           "thunk": 4208350,
@@ -42832,20 +42832,13 @@
       "caller": 4687856,
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Graphics/CSurface.cpp.obj",
       "symbol": "?Blit@CSurface@@UAEXPAVCBitmap@@PAVCResBITMAP@@@Z",
-      "size": 582,
-      "fingerprint": "4b4748085100251c11dce054d42c688d9c42251b2f3e5df8442c6461fb276188",
+      "size": 597,
+      "fingerprint": "871892ae21a0c40074e9a8bf9260940ff6a2ec995207389eb736e4362ba2a4c1",
       "references": [
         {
           "offset": 258,
           "original_instruction": 4688104,
           "original_bytes": "e85b99f8ff",
-          "thunk": 4203080,
-          "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
-        },
-        {
-          "offset": 272,
-          "original_instruction": 4688118,
-          "original_bytes": "e84d99f8ff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         }

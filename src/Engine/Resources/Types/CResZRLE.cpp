@@ -26,8 +26,8 @@ void CResZRLE::SetHeader()
 	ZrleHeader* header = (ZrleHeader*) m_name;
 	short y = header->m_y;
 	short x = header->m_x;
-	m_x = x;
-	m_y = y;
+	m_rasterPoint.m_x = x;
+	m_rasterPoint.m_y = y;
 	y = header->m_height;
 	x = header->m_width;
 	m_size.m_width = x;

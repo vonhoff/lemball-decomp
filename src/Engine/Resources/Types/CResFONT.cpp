@@ -157,21 +157,21 @@ CVSSize CResFONT::GetSize(const char* p_text, unsigned long p_flags) const
 				}
 			}
 			CVSSize* glyphDimensions = &glyph->m_size;
-			short* glyphOrigin = &glyph->m_x;
+			CVSPoint* glyphOrigin = &glyph->m_rasterPoint;
 			if ((p_flags & TEXT_ADVANCE_HORIZONTAL_MASK) != 0) {
 				size.m_width += glyphDimensions->m_width + 1;
 			}
 			else {
-				if (glyphOrigin[0] + glyphDimensions->m_width > size.m_width) {
-					size.m_width = glyphOrigin[0] + glyphDimensions->m_width;
+				if (glyphOrigin->m_x + glyphDimensions->m_width > size.m_width) {
+					size.m_width = glyphOrigin->m_x + glyphDimensions->m_width;
 				}
 			}
 			if ((p_flags & TEXT_ADVANCE_VERTICAL_MASK) != 0) {
 				size.m_height += glyphDimensions->m_height + 1;
 			}
 			else {
-				if (glyphOrigin[1] + glyphDimensions->m_height > size.m_height) {
-					size.m_height = glyphDimensions->m_height + glyphOrigin[1];
+				if (glyphOrigin->m_y + glyphDimensions->m_height > size.m_height) {
+					size.m_height = glyphDimensions->m_height + glyphOrigin->m_y;
 				}
 			}
 			textIndex++;
