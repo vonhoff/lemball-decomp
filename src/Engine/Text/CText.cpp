@@ -81,8 +81,8 @@ void CText::NextPos()
 		stepY = m_advanceY;
 	}
 	else {
-		stepY = m_glyph->m_height + 1;
-		stepX = m_glyph->m_width + 1;
+		stepY = m_glyph->m_size.m_height + 1;
+		stepX = m_glyph->m_size.m_width + 1;
 	}
 	unsigned int flags = m_flags;
 	if ((flags & TEXT_ADVANCE_USE_CUSTOM_OFFSETS) != 0) {

@@ -189,19 +189,12 @@ unsigned long CAnimsManager::GetnAnims(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x00467570
 CVSSize CAnimsManager::GetAnimSize(unsigned long p_resourceId, unsigned long p_animIndex)
 {
-	CVSSize size;
 	CResBase* resource = m_resources[m_resourceSlots[p_resourceId]];
 	if (resource->m_chunkType != RESOURCE_CHUNK_ZRLE) {
-		CResZRLE* entry = ((CResANIM*) resource)->m_animationEntries + p_animIndex;
-		size.m_width = entry->m_width;
-		size.m_height = entry->m_height;
+		CVSSize* size = &((CResANIM*) resource)->m_animationEntries[p_animIndex].m_size;
+		return *size;
 	}
-	else {
-		CResZRLE* entry = (CResZRLE*) resource;
-		size.m_width = entry->m_width;
-		size.m_height = entry->m_height;
-	}
-	return size;
+	return ((CResZRLE*) resource)->m_size;
 }
 
 // FUNCTION: LEMBALL 0x004675d0
@@ -341,7 +334,7 @@ CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 		anim->m_remap = p_remap;
 		anim->Draw(m_gdi);
 	}
-	return CVSRect(sizeSource->m_x, sizeSource->m_y, sizeSource->m_width, sizeSource->m_height);
+	return CVSRect(sizeSource->m_x, sizeSource->m_y, sizeSource->m_size.m_width, sizeSource->m_size.m_height);
 }
 
 // FUNCTION: LEMBALL 0x004678c0

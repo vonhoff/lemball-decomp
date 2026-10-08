@@ -293,9 +293,9 @@ CVSRect CPauseWindow::CalculateWindow()
 	short parentHeight;
 	short horizontalWidth;
 	short verticalHeight;
-	short* horizontalBorder;
-	short* verticalBorder;
-	short* verticalCorner;
+	CVSSize* horizontalBorder;
+	CVSSize* verticalBorder;
+	CVSSize* verticalCorner;
 	int lowResolution;
 	int itemCount;
 	int i;
@@ -357,11 +357,11 @@ CVSRect CPauseWindow::CalculateWindow()
 	windowSize = paddedTextSize;
 	positionY = (short) (parentHeight - paddedTextSize.m_height) / 2;
 
-	verticalCorner = &m_verticalBorderAnim->m_animationEntries[2].m_width;
-	verticalHeight = verticalCorner[1];
-	verticalBorder = &m_verticalBorderAnim->m_animationEntries[0].m_width;
-	horizontalWidth = verticalBorder[0];
-	horizontalBorder = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
+	verticalCorner = &m_verticalBorderAnim->m_animationEntries[2].m_size;
+	verticalHeight = verticalCorner->m_height;
+	verticalBorder = &m_verticalBorderAnim->m_animationEntries[0].m_size;
+	horizontalWidth = verticalBorder->m_width;
+	horizontalBorder = &m_horizontalBorderAnim->m_animationEntries[0].m_size;
 	windowSize.m_width = (short) (((int) windowSize.m_width + horizontalWidth - 1) / horizontalWidth);
 	windowSize.m_width = (short) (windowSize.m_width * horizontalWidth);
 	windowSize.m_height = (short) (((int) windowSize.m_height + verticalHeight - 1) / verticalHeight);
@@ -384,9 +384,9 @@ CVSRect CPauseWindow::CalculateWindow()
 	}
 
 	CVSRect cornerBounds(0, 0, windowSize.m_width, windowSize.m_height);
-	short* cornerSize = &m_horizontalBorderAnim->m_animationEntries[0].m_width;
-	cornerBounds.m_width = (short) (cornerBounds.m_width - cornerSize[0]);
-	cornerBounds.m_height = (short) (cornerBounds.m_height - cornerSize[1]);
+	CVSSize* cornerSize = &m_horizontalBorderAnim->m_animationEntries[0].m_size;
+	cornerBounds.m_width = (short) (cornerBounds.m_width - cornerSize->m_width);
+	cornerBounds.m_height = (short) (cornerBounds.m_height - cornerSize->m_height);
 	{
 		int cornerBatchCount = 1;
 		CAnim* corners = m_cornerAnims;
@@ -421,10 +421,10 @@ CVSRect CPauseWindow::CalculateWindow()
 
 	CVSPoint firstPositionValue(0, 0);
 	CVSPoint& firstBorderPosition = firstPositionValue;
-	firstBorderPosition.m_x = horizontalBorder[0];
+	firstBorderPosition.m_x = horizontalBorder->m_width;
 	CVSPoint secondPositionValue(firstBorderPosition);
 	CVSPoint& secondBorderPosition = secondPositionValue;
-	secondBorderPosition.m_y += (short) (windowSize.m_height - verticalBorder[1]);
+	secondBorderPosition.m_y += (short) (windowSize.m_height - verticalBorder->m_height);
 	for (i = 0; i < m_borderTiles.m_width; i++) {
 		int pair = 0;
 		int opposite = 1;
@@ -448,16 +448,16 @@ CVSRect CPauseWindow::CalculateWindow()
 			pair++;
 			opposite += 2;
 		} while (opposite < 3);
-		firstBorderPosition.m_x = (short) (firstBorderPosition.m_x + verticalBorder[0]);
-		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + verticalBorder[0]);
+		firstBorderPosition.m_x = (short) (firstBorderPosition.m_x + verticalBorder->m_width);
+		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + verticalBorder->m_width);
 	}
 
 	firstBorderPosition.m_x = cornerBounds.m_x;
 	firstBorderPosition.m_y = cornerBounds.m_y;
-	firstBorderPosition.m_y += horizontalBorder[1];
+	firstBorderPosition.m_y += horizontalBorder->m_height;
 	secondBorderPosition.m_x = firstBorderPosition.m_x;
 	secondBorderPosition.m_y = firstBorderPosition.m_y;
-	secondBorderPosition.m_x += (short) (windowSize.m_width - verticalCorner[0]);
+	secondBorderPosition.m_x += (short) (windowSize.m_width - verticalCorner->m_width);
 	for (i = 0; i < m_borderTiles.m_height; i++) {
 		for (int pair = 0, opposite = 1; opposite < 3; pair++, opposite += 2) {
 			CResANIM* firstResource = m_verticalBorderAnim;
@@ -477,8 +477,8 @@ CVSRect CPauseWindow::CalculateWindow()
 			secondBorder.m_flags = 0;
 			secondBorder.m_remap = NULL;
 		}
-		firstBorderPosition.m_y = (short) (firstBorderPosition.m_y + verticalCorner[1]);
-		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner[1]);
+		firstBorderPosition.m_y = (short) (firstBorderPosition.m_y + verticalCorner->m_height);
+		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner->m_height);
 	}
 
 	return CVSRect(positionX, positionY, &windowSize);

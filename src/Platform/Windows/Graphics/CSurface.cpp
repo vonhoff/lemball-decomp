@@ -2041,7 +2041,7 @@ void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZR
 	if (p_reverse != 0) {
 		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
-		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
+		int skipRows = (p_zrle->m_size.m_height - p_clip.m_y) - p_rect.m_height;
 		if (skipRows > 0) {
 			do {
 				unsigned char run;
@@ -2426,8 +2426,8 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
 {
 	unsigned char* src = p_zrle->GetData();
-	short sourceWidth = p_zrle->m_width;
-	short sourceHeight = p_zrle->m_height;
+	short sourceWidth = p_zrle->m_size.m_width;
+	short sourceHeight = p_zrle->m_size.m_height;
 	int x = p_rect.m_x;
 	int step = 1;
 	int y = p_rect.m_y;
@@ -2813,7 +2813,7 @@ void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 	if (p_reverse != 0) {
 		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
-		int skipRows = (p_zrle->m_height - p_clip.m_y) - p_rect.m_height;
+		int skipRows = (p_zrle->m_size.m_height - p_clip.m_y) - p_rect.m_height;
 		if (skipRows > 0) {
 			do {
 				unsigned char run;
@@ -3219,8 +3219,8 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 	int y = p_rect.m_y;
 	int step = 1;
 	unsigned char* src = p_zrle->GetData();
-	short zrleWidth = p_zrle->m_width;
-	short zrleHeight = p_zrle->m_height;
+	short zrleWidth = p_zrle->m_size.m_width;
+	short zrleHeight = p_zrle->m_size.m_height;
 	if (p_reverse != 0) {
 		step = SURFACE_STEP_BACKWARD;
 		y += p_rect.m_height - 1;
@@ -3449,11 +3449,11 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 		int primitiveY = (int) p_primitive->m_y;
 		int primitiveX = (int) p_primitive->m_x;
 
-		if ((int) p_zrle->m_height * (int) p_zrle->m_width == 0) {
+		if ((int) p_zrle->m_size.m_height * (int) p_zrle->m_size.m_width == 0) {
 			return;
 		}
 		{
-			CVSRect dest((short) primitiveX, (short) primitiveY, (CVSSize*) &p_zrle->m_width);
+			CVSRect dest((short) primitiveX, (short) primitiveY, &p_zrle->m_size);
 			if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
 				((CVSPoint*) &dest.m_x)->AddInPlace((CVSPoint*) &p_zrle->m_x);
 			}
@@ -3650,8 +3650,8 @@ void CSurface::BlitZRLE(int p_x,
 	int width;
 
 	resource = p_zrle;
-	zWidth = resource->m_width;
-	zHeight = resource->m_height;
+	zWidth = resource->m_size.m_width;
+	zHeight = resource->m_size.m_height;
 	width = (int) zWidth;
 	if ((int) zHeight * width == 0) {
 		return;

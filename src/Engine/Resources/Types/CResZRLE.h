@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_RESOURCES_CRESZRLE_H
 
 #include "CResRaster.h"
+#include "Engine/Math/CVSSize.h"
 
 enum eZrleRunMarker {
 	ZRLE_ROW_END_MARKER = 0x80,
@@ -26,10 +27,7 @@ struct ZrleHeader {
 // VTABLE: LEMBALL 0x00498a70
 class CResZRLE : public CResRaster {
 public:
-	inline CResZRLE(unsigned int p_resourceId) : m_height(0), m_width(0), m_originY(0), m_originX(0)
-	{
-		DoLoad(p_resourceId);
-	}
+	inline CResZRLE(unsigned int p_resourceId) : m_size(), m_originY(0), m_originX(0) { DoLoad(p_resourceId); }
 	CResZRLE();
 	static CResZRLE* Load(unsigned long p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
@@ -45,8 +43,7 @@ public:
 	friend class CGraphicButton;
 
 private:
-	short m_width;   // 0x4c
-	short m_height;  // 0x4e
+	CVSSize m_size;  // 0x4c
 	short m_originX; // 0x50
 	short m_originY; // 0x52
 };

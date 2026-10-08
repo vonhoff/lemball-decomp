@@ -30,8 +30,8 @@ void CResZRLE::SetHeader()
 	m_y = y;
 	y = header->m_height;
 	x = header->m_width;
-	m_width = x;
-	m_height = y;
+	m_size.m_width = x;
+	m_size.m_height = y;
 	y = header->m_originY;
 	x = header->m_originX;
 	m_originX = x;
@@ -41,8 +41,6 @@ void CResZRLE::SetHeader()
 // FUNCTION: LEMBALL 0x0045e7e0
 CResZRLE::CResZRLE()
 {
-	m_height = 0;
-	m_width = 0;
 	m_originY = 0;
 	m_originX = 0;
 	Initialise();

@@ -75,12 +75,12 @@ void CGraphicButton::Initialise()
 	animation->m_directUseCount++;
 	entries = m_animation->m_animationEntries;
 	unsigned short& graphicHeight = m_graphicHeight;
-	short firstWidth = entries->m_width;
+	short firstWidth = entries->m_size.m_width;
 	CResZRLE* second = entries + 1;
 	m_graphicWidth = (unsigned short) firstWidth;
-	graphicHeight = (unsigned short) entries->m_height;
-	short width = second->m_width;
-	short height = second->m_height;
+	graphicHeight = (unsigned short) entries->m_size.m_height;
+	short width = second->m_size.m_width;
+	short height = second->m_size.m_height;
 	if (firstWidth < width) {
 		m_graphicWidth = (unsigned short) width;
 	}

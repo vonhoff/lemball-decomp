@@ -50,13 +50,13 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_resources[2] = CResANIM::Load(RES_GAME_BUTLEMMING);
 	m_resources[3] = CResANIM::Load(RES_GAME_BUTBALLOON);
 
-	CVSSize* size = (CVSSize*) &m_resources[1]->m_animationEntries[0].m_width;
+	CVSSize* size = &m_resources[1]->m_animationEntries[0].m_size;
 	m_ammoButtonSize.m_width = size->m_width;
 	m_ammoButtonSize.m_height = size->m_height;
-	size = (CVSSize*) &m_resources[2]->m_animationEntries[0].m_width;
+	size = &m_resources[2]->m_animationEntries[0].m_size;
 	m_lemmingButtonSize.m_width = size->m_width;
 	m_lemmingButtonSize.m_height = size->m_height;
-	size = (CVSSize*) &m_resources[0]->m_animationEntries[0].m_width;
+	size = &m_resources[0]->m_animationEntries[0].m_size;
 	m_pauseSize.m_width = size->m_width;
 	m_pauseSize.m_height = size->m_height;
 	m_panelSize.m_width = m_pauseSize.m_width;
