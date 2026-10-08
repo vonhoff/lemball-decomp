@@ -46,7 +46,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 		unsigned int count;
 		unsigned int directed;
 		unsigned char* dataCursor;
-		count = m_totalSize / m_listHeader->m_headerSize;
+		count = m_totalSize / m_listHeader->m_capacity;
 		directed = 0;
 		dataCursor = m_data;
 		if (m_vramReady == 0) {
@@ -79,7 +79,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 		}
 		m_loaded = 1;
 		OnLoad();
-		m_listHeader->m_totalSize = RESOURCE_LIST_HEADER_UNSET;
+		m_listHeader->m_currentIndex = RESOURCE_LIST_HEADER_UNSET;
 	}
 }
 
@@ -88,12 +88,12 @@ void CResBaseLIST::LoadData()
 {
 	if (m_loaded == 0) {
 		if (!GetfVramLoaded()) {
-			unsigned int headerTotal = m_listHeader->m_totalSize;
+			unsigned int headerTotal = m_listHeader->m_currentIndex;
 			unsigned int count;
 			if (headerTotal != RESOURCE_LIST_HEADER_UNSET && m_totalSize != headerTotal) {
 				return;
 			}
-			count = m_totalSize / m_listHeader->m_headerSize;
+			count = m_totalSize / m_listHeader->m_capacity;
 			if (m_vramReady == 0) {
 				AllocateResources(count);
 				CVSRange headerRange;
@@ -119,13 +119,13 @@ bool CResBaseLIST::ForceLoadVram()
 {
 	if (!GetfVramLoaded()) {
 		unsigned int i = 0;
-		if (m_totalSize / m_listHeader->m_headerSize != 0) {
+		if (m_totalSize / m_listHeader->m_capacity != 0) {
 			do {
 				if (!ForceLoadVram(i)) {
 					return false;
 				}
 				i++;
-			} while (i < m_totalSize / m_listHeader->m_headerSize);
+			} while (i < m_totalSize / m_listHeader->m_capacity);
 		}
 	}
 	return GetfVramLoaded();
@@ -147,11 +147,11 @@ void CResBaseLIST::UnLoadData(unsigned int p_force)
 	m_data = NULL;
 unload_entries:
 	unsigned int i = 0;
-	if (m_totalSize / m_listHeader->m_headerSize != 0) {
+	if (m_totalSize / m_listHeader->m_capacity != 0) {
 		do {
 			UnLoadResources(i, p_force);
 			i++;
-		} while (i < m_totalSize / m_listHeader->m_headerSize);
+		} while (i < m_totalSize / m_listHeader->m_capacity);
 	}
 	OnUnLoad();
 }
@@ -160,7 +160,7 @@ unload_entries:
 void CResBaseLIST::UnLoadVramData(unsigned int p_force)
 {
 	if (GetfAnyVramLoaded()) {
-		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_headerSize; i++) {
+		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_capacity; i++) {
 			UnLoadVramData(i, p_force);
 		}
 	}

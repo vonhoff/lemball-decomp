@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_RESOURCES_CRESBASELIST_H
 
 #include "CResBase.h"
+#include "Engine/Resources/ResourceTypeList.h"
 
 // SIZE 0x0c
 struct ResListHeader {
@@ -15,7 +16,7 @@ struct ResListHeader {
 class CResBaseLIST : public CResBase {
 public:
 	inline CResBaseLIST() {}
-	inline CResBaseLIST(ResListHeader* p_header)
+	inline CResBaseLIST(ResourceTypeList* p_header)
 	{
 		m_listHeader = p_header;
 		m_bodyLoaded = 0;
@@ -50,7 +51,7 @@ public:
 	friend class CGraphicButton;
 
 private:
-	ResListHeader* m_listHeader;    // 0x48
+	ResourceTypeList* m_listHeader; // 0x48
 	unsigned char* m_headerData;    // 0x4c
 	unsigned int m_unk0x50;         // 0x50
 	unsigned int m_vramReady;       // 0x54

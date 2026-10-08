@@ -25,7 +25,7 @@ CFontTable::CFontTable(CResFONT* p_font)
 	} while (offset < FONT_GLYPH_COUNT);
 
 	index = 0;
-	if (p_font->m_totalSize / p_font->m_listHeader->m_headerSize != 0) {
+	if (p_font->m_totalSize / p_font->m_listHeader->m_capacity != 0) {
 		do {
 			if (p_font->m_fontEntries == NULL) {
 				glyphIndex = p_font->m_fontTable->GetChar(&p_font->m_animationEntries[index]);
@@ -35,7 +35,7 @@ CFontTable::CFontTable(CResFONT* p_font)
 			}
 			m_glyphs[glyphIndex] = &p_font->m_animationEntries[index];
 			index++;
-		} while (index < p_font->m_totalSize / p_font->m_listHeader->m_headerSize);
+		} while (index < p_font->m_totalSize / p_font->m_listHeader->m_capacity);
 	}
 }
 

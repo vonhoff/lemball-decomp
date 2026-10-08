@@ -12,7 +12,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045d760
-CResFONT::CResFONT() : CResBaseLIST((ResListHeader*) g_pResourceTypes)
+CResFONT::CResFONT() : CResBaseLIST(g_pResourceTypes)
 {
 	m_animationEntries = NULL;
 	m_fontEntries = NULL;
@@ -22,7 +22,7 @@ CResFONT::CResFONT() : CResBaseLIST((ResListHeader*) g_pResourceTypes)
 }
 
 // FUNCTION: LEMBALL 0x0045d7b0
-CResFONT::CResFONT(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g_pResourceTypes)
+CResFONT::CResFONT(unsigned long p_resourceId) : CResBaseLIST(g_pResourceTypes)
 {
 	m_animationEntries = NULL;
 	m_fontEntries = NULL;

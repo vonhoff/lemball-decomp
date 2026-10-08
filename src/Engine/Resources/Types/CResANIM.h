@@ -11,7 +11,7 @@
 // VTABLE: LEMBALL 0x00498a18
 class CResANIM : public CResBaseLIST {
 public:
-	inline CResANIM(unsigned long p_resourceId) : CResBaseLIST((ResListHeader*) g_pCompressedResourceTypes)
+	inline CResANIM(unsigned long p_resourceId) : CResBaseLIST(g_pCompressedResourceTypes)
 	{
 		m_animationEntries = NULL;
 		DoLoad(p_resourceId);
