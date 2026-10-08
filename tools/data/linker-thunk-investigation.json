@@ -8347,5 +8347,102 @@
     "exact_byte_delta": -677,
     "effective_byte_delta": 446,
     "identity_scope": "Method names and argument meanings inferred. Existing pairings retained; declaration-induced code generation changes inspected for the two lost Effective matches."
+  },
+  "demo_review": {
+    "program": "/Evidence/demo-lemball.exe",
+    "text_sha256": "eea1239cfbc514d9fa0a283046e27b7a2e01fc7ad6fd1170861deae44da6a83d",
+    "original_table_entries": 2077,
+    "demo_table_entries": 2074,
+    "alignment": "455 ordered anchors from 475 unique normalized prefixes of at most ten instructions. Counterparts inferred from nearby table/body sequences; same return bodies or wrapper shape corroborate positions. No original method names or complete ABIs recovered.",
+    "counterpart_columns": [
+      "original_entry",
+      "demo_entry",
+      "demo_body"
+    ],
+    "counterparts": [
+      [
+        "4010dc",
+        "4010e6",
+        "43b2c0"
+      ],
+      [
+        "401235",
+        "401244",
+        "42bc70"
+      ],
+      [
+        "40194c",
+        "401942",
+        "44cfb0"
+      ],
+      [
+        "4019d8",
+        "4019ce",
+        "44ada0"
+      ],
+      [
+        "401b22",
+        "401b13",
+        "42b770"
+      ],
+      [
+        "401b54",
+        "401b45",
+        "42bbb0"
+      ],
+      [
+        "401b81",
+        "401b7c",
+        "421180"
+      ],
+      [
+        "402112",
+        "40207c",
+        "42e460"
+      ],
+      [
+        "4025d6",
+        "40253b",
+        "42cb60"
+      ],
+      [
+        "402d83",
+        "402d01",
+        "44add0"
+      ],
+      [
+        "402f40",
+        "402ec3",
+        "43e320"
+      ],
+      [
+        "40324c",
+        "4031c5",
+        "434630"
+      ],
+      [
+        "4032e2",
+        "40325b",
+        "4429a0"
+      ],
+      [
+        "4035cb",
+        "40353a",
+        "416410"
+      ],
+      [
+        "403715",
+        "403689",
+        "44eea0"
+      ],
+      [
+        "403742",
+        "4036b6",
+        "42b760"
+      ]
+    ],
+    "reference_scan": "Every-byte E8/E9 candidate scan in the complete demo executable section; byte-aligned DWORD scan across all initialized blocks for the 32 entries/bodies. Only own linker jumps and the loading-wrapper tail jump found. No absolute pointers. Absence does not prove unused code.",
+    "debug": "Demo PE COFF symbol count and debug-directory RVA/size are zero.",
+    "outcome": "All 16 counterparts retain the same short-return or forwarding behavior. No additional caller/type evidence; original entries remain unpaired."
   }
 }
