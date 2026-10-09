@@ -93,7 +93,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	EffWaveHeader waveHeader;
 	unsigned char* wave;
 	unsigned char* source;
-	unsigned int result;
+	long result;
 	int index;
 
 	m_unknown04 = 0;
@@ -221,7 +221,7 @@ int CDirectSoundEffect::FindIdleBuffer()
 	int i;
 	unsigned long status;
 	for (i = 0; i < m_bufferCount; i++) {
-		unsigned int result = m_buffers[i]->GetStatus(&status);
+		long result = m_buffers[i]->GetStatus(&status);
 		if (result != 0) {
 			*g_pErrorOutput << "Effect Buffer Status Request failed: "
 							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
@@ -239,7 +239,7 @@ bool CDirectSoundEffect::IsPlaying()
 {
 	unsigned long status;
 	for (int i = 0; i < m_bufferCount; i++) {
-		unsigned int result = m_buffers[i]->GetStatus(&status);
+		long result = m_buffers[i]->GetStatus(&status);
 		if (result != 0) {
 			*g_pErrorOutput << "Effect Buffer Status Request failed: "
 							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
@@ -258,7 +258,7 @@ int CDirectSoundEffect::Play(int p_loop)
 	m_looping = p_loop;
 	int index = FindIdleBuffer();
 	if (index != SOUND_EFFECT_NO_BUFFER_INDEX) {
-		unsigned int result = m_buffers[index]->SetCurrentPosition(0);
+		long result = m_buffers[index]->SetCurrentPosition(0);
 		if (result != 0) {
 			*g_pErrorOutput << "Effect Set Current Position failed: "
 							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
@@ -275,7 +275,7 @@ int CDirectSoundEffect::PlayWithVolume(int p_volume, int p_loop)
 	m_looping = p_loop;
 	int index = FindIdleBuffer();
 	if (index != SOUND_EFFECT_NO_BUFFER_INDEX) {
-		unsigned int result = m_buffers[index]->SetCurrentPosition(0);
+		long result = m_buffers[index]->SetCurrentPosition(0);
 		if (result != 0) {
 			*g_pErrorOutput << "Effect Set Current Position failed: "
 							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
@@ -290,7 +290,7 @@ int CDirectSoundEffect::PlayWithVolume(int p_volume, int p_loop)
 // FUNCTION: LEMBALL 0x0047da20
 void CDirectSoundEffect::PlayBuffer(int p_index)
 {
-	unsigned int result = m_buffers[p_index]->Play(0, 0, m_looping != 0);
+	long result = m_buffers[p_index]->Play(0, 0, m_looping != 0);
 	if (result != 0) {
 		*g_pErrorOutput << "Effect Play failed: " << DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK)
 						<< "\n";
@@ -303,7 +303,7 @@ void CDirectSoundEffect::Stop()
 	int i = 0;
 	while (i < m_bufferCount) {
 		IDirectSoundBuffer** slot = &m_buffers[i];
-		unsigned int result = (*slot)->Stop();
+		long result = (*slot)->Stop();
 		if (result != 0) {
 			*g_pErrorOutput << "Effect Stop failed: " << DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK)
 							<< "\n";
@@ -317,7 +317,7 @@ void CDirectSoundEffect::Stop()
 bool CDirectSoundEffect::SetBufferVolume(int p_index, int p_volume)
 {
 	IDirectSoundBuffer*& buffer = m_buffers[p_index];
-	unsigned int result = buffer->SetVolume(p_volume);
+	long result = buffer->SetVolume(p_volume);
 	if (result != 0) {
 		*g_pErrorOutput << "Effect Buffer Set Volume Request failed: "
 						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";

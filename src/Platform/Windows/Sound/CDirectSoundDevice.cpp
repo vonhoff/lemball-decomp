@@ -124,7 +124,7 @@ char* CDirectSoundDevice::GetInfo()
 int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
 	DSBUFFERDESC description;
-	unsigned int result;
+	long result;
 
 	result = m_platform.m_createDirectSound(NULL, &g_directSound, NULL);
 	if (result != 0) {
@@ -222,7 +222,7 @@ int CDirectSoundDevice::IsAvailable()
 int CDirectSoundDevice::Close()
 {
 	if (g_primarySoundBuffer != NULL) {
-		unsigned int result = g_primarySoundBuffer->Release();
+		unsigned long result = g_primarySoundBuffer->Release();
 		if (result != 0) {
 			*g_pErrorOutput << "Primary Sound Buffer Release: "
 							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
@@ -231,7 +231,7 @@ int CDirectSoundDevice::Close()
 		g_primarySoundBuffer = NULL;
 	}
 	if (g_directSound != NULL) {
-		unsigned int result = g_directSound->Release();
+		unsigned long result = g_directSound->Release();
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Sound Release failed: "
 							<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
