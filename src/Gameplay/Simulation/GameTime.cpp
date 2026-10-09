@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 // GLOBAL: LEMBALL 0x0049ce04
-unsigned int g_dwGameTick = 0;
+unsigned long g_dwGameTick = 0;
 
 // FUNCTION: LEMBALL 0x00408080
 void ClockEditMode(unsigned int p_enabled)
@@ -35,8 +35,8 @@ void SetGameTime()
 		return;
 	}
 	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
-		unsigned int nextElapsed = g_dwLastElapsedMilli + DEMO_FRAME_DURATION_MILLISECONDS;
-		unsigned int elapsed;
+		unsigned long nextElapsed = g_dwLastElapsedMilli + DEMO_FRAME_DURATION_MILLISECONDS;
+		unsigned long elapsed;
 		do {
 			elapsed = CurrentMilliTimer() - g_dwCurrentMilli;
 		} while (elapsed < nextElapsed);
@@ -47,7 +47,7 @@ void SetGameTime()
 		return;
 	}
 
-	unsigned int gameTick = CurrentMilliTimer() / GAME_TICK_MILLISECONDS - g_dwGameTimeTick;
+	unsigned long gameTick = CurrentMilliTimer() / GAME_TICK_MILLISECONDS - g_dwGameTimeTick;
 	if (gameTick > g_dwLastElapsedMilli + MAX_GAME_TICKS_PER_UPDATE) {
 		g_dwGameTimeTick += gameTick - g_dwLastElapsedMilli - MAX_GAME_TICKS_PER_UPDATE;
 		gameTick = g_dwLastElapsedMilli + MAX_GAME_TICKS_PER_UPDATE;

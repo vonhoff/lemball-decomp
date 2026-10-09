@@ -234,7 +234,7 @@ void CBullet::AddData()
 	Add((unsigned short) (m_destination.m_zFixed >> FIXED_POINT_FRACTION_BITS));
 	Add((unsigned short) m_facingDirection);
 	Add((unsigned long) m_soundEffect);
-	Add((unsigned long) m_lastMovementTick);
+	Add(m_lastMovementTick);
 	Add((unsigned long) m_bulletType);
 	Add((unsigned long) m_owner);
 	Add(m_sourceObjectId);

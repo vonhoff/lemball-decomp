@@ -238,10 +238,10 @@ protected:
 	short m_actionArgument;                // 0xbc
 	unsigned int m_hidden;                 // 0xc0
 	short m_unk0xc4;                       // 0xc4
-	unsigned int m_lastMovementTick;       // 0xc8
-	unsigned int m_actionDeadline;         // 0xcc
-	unsigned int m_actionPhase1Deadline;   // 0xd0
-	unsigned int m_actionPhase2Deadline;   // 0xd4
+	unsigned long m_lastMovementTick;      // 0xc8
+	unsigned long m_actionDeadline;        // 0xcc
+	unsigned long m_actionPhase1Deadline;  // 0xd0
+	unsigned long m_actionPhase2Deadline;  // 0xd4
 	C3DVector m_flightOrigin;              // 0xd8
 	C3DVector m_auxiliaryPosition;         // 0xe4
 	unsigned int m_isFlying;               // 0xf0
