@@ -67,7 +67,7 @@ private:
 	unsigned int m_isHost;        // 0x1c
 	unsigned int m_killRequested; // 0x20
 	unsigned int m_established;   // 0x24
-	unsigned int m_connectTime;   // 0x28
+	unsigned long m_connectTime;  // 0x28
 };
 
 extern CConnect* g_pActiveConnection;

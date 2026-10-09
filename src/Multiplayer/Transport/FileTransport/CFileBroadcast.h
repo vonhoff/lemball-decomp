@@ -32,8 +32,8 @@ public:
 	~CFileBroadcast();
 
 private:
-	unsigned int m_portInfoLocked;  // 0x54
-	unsigned int m_lastProcessTime; // 0x58
+	unsigned int m_portInfoLocked;   // 0x54
+	unsigned long m_lastProcessTime; // 0x58
 };
 #pragma warning(default : 4250)
 

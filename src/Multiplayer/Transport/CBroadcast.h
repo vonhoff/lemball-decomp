@@ -45,7 +45,7 @@ protected:
 	unsigned int m_addressMode;         // 0x0c
 	unsigned char* m_connectionData;    // 0x10
 	unsigned int m_listenEnabled;       // 0x14
-	unsigned int m_lastBroadcastTime;   // 0x18
+	unsigned long m_lastBroadcastTime;  // 0x18
 	CNetworkAddress* m_specificAddress; // 0x1c
 };
 
