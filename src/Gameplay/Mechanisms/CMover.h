@@ -18,7 +18,7 @@ public:
 	CMover();
 	bool GetOn(CGameObject* p_object);
 	bool IsAt(int p_x, int p_y, int& p_height);
-	bool IsOn(const AICOORD& p_position);
+	bool IsOn(AICOORD& p_position);
 	void FindObjectsOnTopOfMe();
 	virtual bool Process();    // vtable+0x14
 	virtual void DoActivate(); // vtable+0x10c

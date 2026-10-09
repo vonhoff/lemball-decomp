@@ -376,7 +376,7 @@ bool CMover::AlwaysFalse(unsigned int p_arg0, unsigned int p_arg1)
 }
 
 // FUNCTION: LEMBALL 0x0042eee0
-bool CMover::IsOn(const AICOORD& p_position)
+bool CMover::IsOn(AICOORD& p_position)
 {
 	int minX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 	int maxX = minX + 15;

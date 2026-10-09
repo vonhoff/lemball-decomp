@@ -1163,7 +1163,7 @@
       "target": 4386528,
       "original_bytes": "e9cfdb0200",
       "symbol": "__lemball_jump_0040130c",
-      "target_symbol": "?IsOn@CMover@@QAEHABVAICOORD@@@Z"
+      "target_symbol": "?IsOn@CMover@@QAEHAAVAICOORD@@@Z"
     },
     {
       "address": 4199185,
@@ -30545,7 +30545,7 @@
           "original_instruction": 4386884,
           "original_bytes": "e8c322fdff",
           "thunk": 4199180,
-          "source_symbol": "?IsOn@CMover@@QAEHABVAICOORD@@@Z"
+          "source_symbol": "?IsOn@CMover@@QAEHAAVAICOORD@@@Z"
         },
         {
           "offset": 167,
