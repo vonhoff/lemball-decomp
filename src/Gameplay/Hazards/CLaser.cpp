@@ -147,14 +147,11 @@ bool CLaser::CheckHits()
 		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 		unsigned short groundZ;
 		if (x >= 0 && y >= 0) {
-			int cellYValue;
-			int widthValue = map->m_ground.m_width;
-			const int& width = widthValue;
+			int width = map->m_ground.m_width;
 			if (blockX < width && map->m_ground.m_height > blockY) {
 				int cellX = x & GROUND_BLOCK_PIXEL_MASK;
-				cellYValue = y;
-				const int& cellY = cellYValue;
-				cellYValue &= 15;
+				int cellY = y;
+				cellY &= GROUND_BLOCK_PIXEL_MASK;
 				groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(cellX, cellY);
 			}
 			else {

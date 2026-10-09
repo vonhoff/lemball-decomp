@@ -28679,11 +28679,11 @@
       "caller": 4360880,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaser.cpp.obj",
       "symbol": "?CheckHits@CLaser@@QAEHXZ",
-      "size": 556,
-      "fingerprint": "0166acf48f1e5d4eb96b04d9af0a5b6e472ee488de0c2bba4fb4ce696579dd93",
+      "size": 564,
+      "fingerprint": "3c873dff2c2d06dea75c4db873227437ff017ae8c061dca9defc0ad9708e03a4",
       "references": [
         {
-          "offset": 221,
+          "offset": 228,
           "original_instruction": 4361111,
           "original_bytes": "e8099efdff",
           "thunk": 4204965,
