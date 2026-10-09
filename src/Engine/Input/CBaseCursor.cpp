@@ -372,43 +372,38 @@ void CBaseCursor::Draw(CGWnd* p_window)
 		return;
 	}
 	CVSRect bounds(p_window->m_rect);
-	short& width = bounds.m_width;
-	short& height = bounds.m_height;
-	short& x = bounds.m_x;
-	short& y = bounds.m_y;
 	{
 		CVSSize innerSize(p_window->m_innerRect);
-		short& innerWidth = innerSize.m_width;
 		innerHeight = innerSize.m_height;
 		innerXY = &p_window->m_innerRect;
 		clipX = innerXY->m_x;
 		clipY = innerXY->m_y;
-		if ((int) innerHeight * (int) innerWidth != 0) {
-			clipX = (short) (clipX + x);
-			clipY = (short) (clipY + y);
-			if (x < clipX) {
-				width = (short) (width + (x - clipX));
-				x = clipX;
+		if ((int) innerHeight * (int) innerSize.m_width != 0) {
+			clipX = (short) (clipX + bounds.m_x);
+			clipY = (short) (clipY + bounds.m_y);
+			if (bounds.m_x < clipX) {
+				bounds.m_width = (short) (bounds.m_width + (bounds.m_x - clipX));
+				bounds.m_x = clipX;
 			}
-			if ((short) (innerWidth + clipX) < (short) (x + width)) {
-				clipX = (short) (clipX - x);
-				clipX = (short) (clipX + innerWidth);
-				width = clipX;
+			if ((short) (innerSize.m_width + clipX) < (short) (bounds.m_x + bounds.m_width)) {
+				clipX = (short) (clipX - bounds.m_x);
+				clipX = (short) (clipX + innerSize.m_width);
+				bounds.m_width = clipX;
 			}
-			if (y < clipY) {
-				height = (short) (height + (y - clipY));
-				y = clipY;
+			if (bounds.m_y < clipY) {
+				bounds.m_height = (short) (bounds.m_height + (bounds.m_y - clipY));
+				bounds.m_y = clipY;
 			}
-			if ((short) (clipY + innerHeight) < (short) (height + y)) {
-				innerHeight = (short) (innerHeight - y);
+			if ((short) (clipY + innerHeight) < (short) (bounds.m_height + bounds.m_y)) {
+				innerHeight = (short) (innerHeight - bounds.m_y);
 				innerHeight = (short) (innerHeight + clipY);
-				height = innerHeight;
+				bounds.m_height = innerHeight;
 			}
-			if (width <= 0 || height <= 0) {
-				height = 0;
-				width = 0;
-				y = 0;
-				x = 0;
+			if (bounds.m_width <= 0 || bounds.m_height <= 0) {
+				bounds.m_height = 0;
+				bounds.m_width = 0;
+				bounds.m_y = 0;
+				bounds.m_x = 0;
 			}
 		}
 	}
