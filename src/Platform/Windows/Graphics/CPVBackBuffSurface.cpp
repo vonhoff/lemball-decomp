@@ -35,7 +35,7 @@ bool CPVBackBuffSurface::HasBackBuff()
 void CPVBackBuffSurface::FreeBackBuff()
 {
 	if (m_buffer != NULL) {
-		operator delete(m_buffer);
+		delete[] m_buffer;
 		m_buffer = NULL;
 		m_allocatedHeight = 0;
 		m_allocatedWidth = 0;
@@ -65,8 +65,8 @@ void CPVBackBuffSurface::AllocateBackBuff()
 		if (m_buffer == NULL) {
 			m_allocatedWidth = (unsigned short) size.m_width;
 			m_allocatedHeight = (unsigned short) size.m_height;
-			m_buffer = (unsigned char*) operator new(
-				(unsigned int) (unsigned short) size.m_height*(unsigned int) (unsigned short) size.m_width);
+			m_buffer = new unsigned char[(unsigned int) (unsigned short) size.m_height *
+										 (unsigned int) (unsigned short) size.m_width];
 		}
 		if (m_buffer == NULL) {
 			m_enabled = 0;
