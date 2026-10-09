@@ -8,7 +8,7 @@
 // VTABLE: LEMBALL 0x0049a158 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a160 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x0049a188 CBaseSocket's `CWriteSocket
-// VTABLE: LEMBALL 0x0049a1b8 CRwSocket
+// VTABLE: LEMBALL 0x0049a1b8 CRWSocket
 // VTABLE: LEMBALL 0x0049a1c8 CBroadcast
 #pragma warning(disable : 4250)
 class CTCPIPBroadcast : public CBroadcast, public CTCPIPRWSocket {
@@ -53,7 +53,7 @@ private:
 // CTCPIPBroadcast::`vbtable'{for `CTCPIPCommonSocket'}
 
 // GLOBAL: LEMBALL 0x0049a0f8
-// CTCPIPBroadcast::`vbtable'{for `CRwSocket'}
+// CTCPIPBroadcast::`vbtable'{for `CRWSocket'}
 
 // GLOBAL: LEMBALL 0x0049a108
 // CTCPIPBroadcast::`vbtable'{for `CReadSocket'}

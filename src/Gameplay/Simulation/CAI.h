@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_NAVIGATION_CAI_H
 #define LEMBALL_AI_NAVIGATION_CAI_H
 
-#include "Application/CBaseProcess.h"
+#include "Application/CProcess.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/CRect3.h"
@@ -79,9 +79,9 @@ enum eGameStatus {
 
 // SIZE 0x1f0
 // VTABLE: LEMBALL 0x00493a50 CBaseQueueHandler
-// VTABLE: LEMBALL 0x00493a40 CBaseProcess
+// VTABLE: LEMBALL 0x00493a40 CProcess
 // VTABLE: LEMBALL 0x00493a20 CNetworkMessage
-class CAI : public CBaseQueueHandler, public CBaseProcess, public CNetworkMessage {
+class CAI : public CBaseQueueHandler, public CProcess, public CNetworkMessage {
 public:
 	CAI(CGame* p_game);
 	CGame* LevelName();

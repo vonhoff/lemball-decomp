@@ -155,7 +155,14 @@ def adjacent_signature(code, offset, ranges):
     end = re.search(r"[;{}#]", declaration)
     if end:
         declaration = declaration[: end.start()]
-    match = FUNCTION.search(declaration)
+    match = next(
+        (
+            match
+            for match in FUNCTION.finditer(declaration)
+            if match["method"] not in WORDS
+        ),
+        None,
+    )
     if not match:
         raise ValueError("no adjacent function declaration")
     owner = match["owner"] or "::".join(r[2] for r in ranges if r[0] < start < r[1])

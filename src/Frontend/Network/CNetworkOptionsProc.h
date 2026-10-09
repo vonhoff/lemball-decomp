@@ -11,7 +11,7 @@ class CGameAcceptMessage;
 class CGameRejectMessage;
 // SIZE 0x38
 // VTABLE: LEMBALL 0x004986d8 CBaseQueueHandler
-// VTABLE: LEMBALL 0x004986e8 CBaseProcess
+// VTABLE: LEMBALL 0x004986e8 CProcess
 class CNetworkOptionsProc : public CBaseFrontendProcess {
 public:
 	CNetworkOptionsProc(CGame* p_game);

@@ -7,7 +7,7 @@ class CGame;
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x004930b0 CBaseQueueHandler
-// VTABLE: LEMBALL 0x004930c0 CBaseProcess
+// VTABLE: LEMBALL 0x004930c0 CProcess
 class CMainOptions2 : public CBaseFrontendProcess {
 public:
 	CMainOptions2(CGame* p_game) : CBaseFrontendProcess(p_game) {}

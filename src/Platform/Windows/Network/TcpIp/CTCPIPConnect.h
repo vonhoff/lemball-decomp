@@ -3,8 +3,8 @@
 
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CConnect.h"
+#include "Multiplayer/Transport/CRWSocket.h"
 #include "Multiplayer/Transport/CReadSocket.h"
-#include "Multiplayer/Transport/CRwSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
@@ -15,7 +15,7 @@
 // VTABLE: LEMBALL 0x0049a368 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a370 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x0049a398 CBaseSocket's `CWriteSocket
-// VTABLE: LEMBALL 0x0049a3c8 CRwSocket
+// VTABLE: LEMBALL 0x0049a3c8 CRWSocket
 // VTABLE: LEMBALL 0x0049a3d8 CConnect
 #pragma warning(disable : 4250)
 class CTCPIPConnect : public CConnect, public CTCPIPRWSocket {
@@ -48,7 +48,7 @@ public:
 // CTCPIPConnect::`vbtable'{for `CTCPIPCommonSocket'}
 
 // GLOBAL: LEMBALL 0x0049a308
-// CTCPIPConnect::`vbtable'{for `CRwSocket'}
+// CTCPIPConnect::`vbtable'{for `CRWSocket'}
 
 // GLOBAL: LEMBALL 0x0049a318
 // CTCPIPConnect::`vbtable'{for `CReadSocket'}

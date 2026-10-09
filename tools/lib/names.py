@@ -2,12 +2,22 @@
 
 import re
 
+from reccmp.cvdump.demangler import msvc_demangle
+
 from .codewarrior import decode_signature
-from .signatures import adjacent_signature, canonical_type, delimiter_ends
+from .signatures import Signature, adjacent_signature, canonical_type, delimiter_ends
 from . import TARGET_ID
 from .scan import TOKENS, mask_comments_and_strings
 
 WINDOWS_NAME_REVIEWS = {
+    (
+        0x00471AF0,
+        "SysCloseSocket__14CTCPIPRWSocketFv",
+        "CTCPIPCommonSocket::SysCloseSocket()",
+    ): "LEMBALL.EXE: 0x00471af0 adds 0x128 to ECX and jumps to "
+    "CTCPIPCommonSocket::SysCloseSocket at 0x00471a60. Mac 0x1010d04c "
+    "is a CTCPIPRWSocket wrapper forwarding to the same common-base method. "
+    "The Windows symbol names the defining base of the compiler adjustor.",
     (
         0x0043A500,
         "OnZoomBox__4CWndFUc",
@@ -29,7 +39,7 @@ TYPE_DEF = re.compile(
 )
 
 WINDOWS_MARK = re.compile(
-    rf"//\s*(?:FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s*{re.escape(TARGET_ID)}\s+(0x[0-9a-fA-F]+)\b"
+    rf"//\s*(?P<kind>FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s*{re.escape(TARGET_ID)}\s+(?P<address>0x[0-9a-fA-F]+)\b"
 )
 
 
@@ -99,7 +109,43 @@ CANDIDATE_PRIORITY = {
 }
 
 
-def scan(path, symbols, by_windows):
+def annotated_signature(code, block, token, limit, ranges):
+    """Resolve ordinary declarations, explicit SYMBOLs, and compiler descriptors."""
+    following = next((item for item in block if item.start() > token.start()), None)
+    label = following[0][2:].strip() if following is not None else ""
+    if following is not None and WINDOWS_MARK.match(following[0]):
+        label = ""
+    if "SYMBOL" in token[0] or label.startswith("?"):
+        if not label:
+            raise ValueError("missing explicit SYMBOL name")
+        if not label.startswith("?"):
+            return Signature("", label, None)
+        declaration = msvc_demangle(label)
+        declaration = re.sub(r"`(?:adjustor|vtordisp)\{[^}]*\}'", "", declaration)
+        destructor = re.search(
+            r"(?P<owner>[\w:]+)::`(?:scalar|vector) deleting (?:dtor|destructor)'",
+            declaration,
+        )
+        if destructor:
+            return Signature(destructor["owner"], "<destructor>", None)
+        return adjacent_signature(declaration, 0, [])
+    if "LIBRARY:" in token[0]:
+        if not label:
+            raise ValueError("missing library symbol name")
+        return Signature("", label, None)
+    if "SYNTHETIC:" in token[0]:
+        if re.fullmatch(r"\$E\d+", label):
+            return Signature("", label, None)
+        label = re.sub(r"`(?:adjustor|vtordisp)\{[^}]*\}'", "", label)
+        owner, method = label.rsplit("::", 1)
+        if method in ("`scalar deleting destructor'", "`vector deleting destructor'"):
+            method = "~" + owner.split("::")[-1]
+        signature = adjacent_signature(f"{owner}::{method}()", 0, [])
+        return Signature(signature.owner, signature.method, None)
+    return adjacent_signature(code[:limit], block[-1].end(), ranges)
+
+
+def scan(path, symbols, by_windows, inferences=None):
     """Attach each Windows annotation to its declaration and catalog candidates."""
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
@@ -114,33 +160,52 @@ def scan(path, symbols, by_windows):
             marker = WINDOWS_MARK.match(token[0])
             if marker is None:
                 continue
-            address = int(marker[1], 16)
+            address = int(marker["address"], 16)
             row = {
                 "path": str(path),
                 "line": text.count("\n", 0, token.start()) + 1,
                 "windows_address": f"0x{address:08x}",
+                "kind": marker["kind"],
             }
             candidates = by_windows.get(address)
-            if not candidates:
-                yield dict(row, status="unmapped")
+            try:
+                actual = annotated_signature(code, block, token, limit, ranges)
+            except ValueError as error:
+                yield dict(
+                    row,
+                    status="unresolved" if candidates else "unmapped",
+                    reason=f"{error}; no verified source identity",
+                )
                 continue
-            if "SYNTHETIC:" in token[0]:
+            actual_signature = actual.display()
+            row["actual_signature"] = actual_signature
+            if not candidates:
+                evidence = (inferences or {}).get(address)
+                if (
+                    evidence
+                    and evidence["signature"] == actual_signature
+                    and evidence["basis"].strip()
+                ):
+                    yield dict(row, status="inferred", reason=evidence["basis"])
+                else:
+                    reason = f"{actual_signature}: no Windows catalog mapping or documented inference"
+                    if evidence:
+                        reason += f"; recorded inference is {evidence['signature']}"
+                    yield dict(row, status="unmapped", reason=reason)
+                continue
+            if actual.method == f"__lemball_jump_{address:08x}":
                 yield dict(
                     row,
                     status="synthetic",
-                    reason="compiler-emitted function; no C++ signature",
+                    reason="address-derived linker label; mapped target has no separate C++ declaration",
                 )
                 continue
-            try:
-                actual = adjacent_signature(code[:limit], block[-1].end(), ranges)
-            except ValueError as error:
-                yield dict(row, status="unresolved", reason=str(error))
-                continue
             comparisons = []
-            actual_signature = actual.display()
             for mac in candidates:
                 symbol = symbols[mac]
                 comparison = compare_signature(decode_signature(symbol), actual)
+                if marker["kind"] == "SYNTHETIC":
+                    comparison["signature_status"] = "unencoded"
                 evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual_signature))
                 if evidence and comparison["status"] != "match":
                     comparison.update(

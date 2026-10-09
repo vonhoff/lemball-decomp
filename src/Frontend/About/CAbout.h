@@ -1,12 +1,12 @@
 #ifndef LEMBALL_FRONTEND_PROCESSES_CABOUT_H
 #define LEMBALL_FRONTEND_PROCESSES_CABOUT_H
 
-#include "Application/CBaseProcess.h"
+#include "Application/CProcess.h"
 
 class CGame;
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493090
-class CAbout : public CBaseProcess {
+class CAbout : public CProcess {
 public:
 	CAbout(CGame* p_game) { m_game = p_game; }
 	virtual ~CAbout() {}    // vtable+0x00

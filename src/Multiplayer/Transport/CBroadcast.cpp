@@ -2,7 +2,7 @@
 
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
-#include "CRwSocket.h"
+#include "CRWSocket.h"
 #include "CWriteSocket.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
@@ -105,8 +105,8 @@ void CBroadcast::SetSpecificAddr(const char* p_address)
 // FUNCTION: LEMBALL 0x00460650
 void CBroadcast::Initialise(const char* p_networkName)
 {
-	CRwSocket::SetNCBuffers(3, 3, 0);
-	CRwSocket::SetCBuffers(1, 0);
+	CRWSocket::SetNCBuffers(3, 3, 0);
+	CRWSocket::SetCBuffers(1, 0);
 	if (g_pBroadcastPacketTemplate == NULL) {
 		char* payload;
 
@@ -166,7 +166,7 @@ void CBroadcast::AddToMessage(CBroadcastMessage& p_message)
 void CBroadcast::Process()
 {
 	if (m_readReady != 0) {
-		CRwSocket::Process();
+		CRWSocket::Process();
 		if (m_runEnabled != 0) {
 			unsigned long time;
 

@@ -53,7 +53,7 @@ public:
 // CFileConnect::`vbtable'{for `CFileCommonSocket'}
 
 // GLOBAL: LEMBALL 0x0049ab08
-// CFileConnect::`vbtable'{for `CRwSocket'}
+// CFileConnect::`vbtable'{for `CRWSocket'}
 
 // GLOBAL: LEMBALL 0x0049ab18
 // CFileConnect::`vbtable'{for `CReadSocket'}

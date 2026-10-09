@@ -276,9 +276,9 @@ mac_address,symbol,windows_address
 10107448,GetData__11CAckMessageFv,462b60
 10107490,__dt__11CAckMessageFv,462b80
 101074e2,SetPort__12CWriteSocketFs,462970
-10107514,Closed__9CRWSocketFUc,
-10107544,ReceiveAcknowledgement__9CRWSocketFv,
-10107580,SendAcknowledgement__9CRWSocketFv,
+10107514,Closed__9CRWSocketFUc,462d00
+10107544,ReceiveAcknowledgement__9CRWSocketFv,462c50
+10107580,SendAcknowledgement__9CRWSocketFv,462c30
 101075ba,Closed__16CTCPIPReadSocketFUc,471e40
 101075e2,SocketError__18CTCPIPCommonSocketFv,471ad0
 10107624,AddData__13CPortsMessageFv,47b870

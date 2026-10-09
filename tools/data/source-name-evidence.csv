@@ -1,0 +1,305 @@
+address,signature,basis
+0x00407e40,CVSOStream::~CVSOStream(?),MSVC compiler helper; Mac 0x10213dc6
+0x00408040,CPasswordProc::~CPasswordProc(?),MSVC compiler helper; Mac 0x1011bb38
+0x00408050,CMainOptions2::~CMainOptions2(?),MSVC compiler helper; Mac 0x1011b9ae
+0x00408060,CMainOptions1::~CMainOptions1(?),MSVC compiler helper; Mac 0x1011b94e
+0x00408070,CIntroAnim::~CIntroAnim(?),MSVC compiler helper; Mac 0x1011b8f0
+0x004098b0,CDemo::~CDemo(?),MSVC compiler helper; Mac 0x10700b20
+0x00410b70,CPlayerLemming::~CPlayerLemming(?),MSVC compiler helper; Mac 0x1061c15c
+0x00413e60,CAI::~CAI(?),MSVC compiler helper; Mac 0x10600d02
+0x00413e70,CAI::~CAI(?),MSVC compiler helper; Mac 0x10600d02
+0x00417b00,"CVMovePos::SetEndpoints(CVector, CVector)",Inferred method spelling. LEMBALL.EXE 0x00417b00-0x00417b21 stores start at +0/+4 and end-minus-start at +8/+12; RET 16. Class identity follows Mac Pos__9CVMovePosFii at 0x101194ec: start vector plus CVMove displacement at +8; the same arithmetic is inlined in Windows CGameObject::Move at 0x00415a30. Mac Pos is a query and has no demonstrated standalone Windows counterpart.
+0x004183d0,CBullet::~CBullet(?),MSVC compiler helper; Mac 0x10119804
+0x00419970,CPlayerLemmingGroupManager::GetViewData(CViewData*),MSVC compiler helper; Mac 0x10610cc6
+0x0041af10,CBullet::~CBullet(?),MSVC compiler helper; Mac 0x10119804
+0x0041af50,CBullet::~CBullet(?),MSVC compiler helper; Mac 0x10119804
+0x004215e0,CNode::~CNode(?),MSVC compiler helper; Mac 0x10618700
+0x004267a0,CVMovePos::operator=(const CVMovePos&),Inferred source identity. LEMBALL.EXE 0x004267a0-0x004267bc copies four dwords at +0/+4/+8/+12 from one argument into ECX; returns ECX; RET 4. Class identity shares the evidenced 16-byte CVMovePos layout; original assignment symbol unavailable.
+0x00439490,C2D::~C2D(?),MSVC compiler helper; Mac 0x10b06e3e
+0x004395f0,CSolidRect::~CSolidRect(?),MSVC compiler helper; Mac 0x10100c60
+0x00439840,C2D::~C2D(?),MSVC compiler helper; Mac 0x10b06e3e
+0x00439850,C2D::~C2D(?),MSVC compiler helper; Mac 0x10b06e3e
+0x00443950,CPanelButton::~CPanelButton(?),MSVC compiler helper; Mac 0x10b0cb74
+0x004439b0,CAnim::~CAnim(?),MSVC compiler helper; Mac 0x10101896
+0x004439f0,CPanel::~CPanel(?),MSVC compiler helper; Mac 0x10b0dc46
+0x00443ab0,CDepressedButton::~CDepressedButton(?),MSVC compiler helper; Mac 0x101171d4
+0x00445350,CPauseWindow::~CPauseWindow(?),MSVC compiler helper; Mac 0x10b0f02a
+0x00445390,CPauseWindow::~CPauseWindow(?),MSVC compiler helper; Mac 0x10b0f02a
+0x004472e0,CBaseFrontendProcess::~CBaseFrontendProcess(?),MSVC compiler helper; Mac 0x10801a0a
+0x004472f0,CBaseFrontendDrawer::~CBaseFrontendDrawer(?),MSVC compiler helper; Mac 0x1080048c
+0x004479d0,CIntroAnimDrawer::~CIntroAnimDrawer(?),MSVC compiler helper; Mac 0x10805dda
+0x00448aa0,CMainOptions1Drawer::~CMainOptions1Drawer(?),MSVC compiler helper; Mac 0x1080a33c
+0x004491a0,CMainOptions2Drawer::~CMainOptions2Drawer(?),MSVC compiler helper; Mac 0x1080ab4a
+0x0044aa00,CPreview::~CPreview(?),MSVC compiler helper; Mac 0x1011ba0e
+0x0044aa10,CPreviewDrawer::~CPreviewDrawer(?),MSVC compiler helper; Mac 0x1080b3d6
+0x004511f0,CSuccFail::~CSuccFail(?),MSVC compiler helper; Mac 0x1011ba68
+0x00451200,CSuccFailDrawer::~CSuccFailDrawer(?),MSVC compiler helper; Mac 0x108098f2
+0x004523a0,CPasswordDrawer::~CPasswordDrawer(?),MSVC compiler helper; Mac 0x1080c8ce
+0x00452fd0,CNetworkGameMessage::~CNetworkGameMessage(?),MSVC compiler helper; Mac 0x1011c6f0
+0x00455e90,CEntryHandler::~CEntryHandler(?),MSVC compiler helper; Mac 0x1011c36e
+0x00455ee0,CNetworkOptionsDrawer::~CNetworkOptionsDrawer(?),MSVC compiler helper; Mac 0x10806800
+0x00455ef0,CNetworkOptionsProc::~CNetworkOptionsProc(?),MSVC compiler helper; Mac 0x10808a36
+0x0045a8d0,CArena::~CArena(?),MSVC compiler helper; Mac 0x102148f6
+0x0045a8e0,CRAMArena::~CRAMArena(?),MSVC compiler helper; Mac 0x102157b6
+0x0045a8f0,CMBlock::~CMBlock(?),MSVC compiler helper; Mac 0x1021599a
+0x0045e660,CResBase::~CResBase(?),MSVC compiler helper; Mac 0x10202bb6
+0x0045e8c0,CResZRLE::~CResZRLE(?),MSVC compiler helper; Mac 0x10115f3c
+0x0045e8d0,CResFONT::~CResFONT(?),MSVC compiler helper; Mac 0x102039d2
+0x0045e9a0,CResINT::~CResINT(?),MSVC compiler helper; Mac 0x10100e7a
+0x0045ea80,CResMOVIE::~CResMOVIE(?),MSVC compiler helper; Mac 0x1020425c
+0x0045eb30,CResSTRING::~CResSTRING(?),MSVC compiler helper; Mac 0x10100fdc
+0x004628e0,CBaseCommonSocket::~CBaseCommonSocket(?),MSVC compiler helper; Mac 0x1020b25a
+0x00462940,CReadSocket::~CReadSocket(?),MSVC compiler helper; Mac 0x1020b56e
+0x00462990,CWriteSocket::~CWriteSocket(?),MSVC compiler helper; Mac 0x1020bd2c
+0x00462a00,CReadPacket::~CReadPacket(?),MSVC compiler helper; Mac 0x1020d7a0
+0x00462a20,CWritePacket::~CWritePacket(?),MSVC compiler helper; Mac 0x1020d8d4
+0x00462a40,CReadMSBuff::~CReadMSBuff(?),MSVC compiler helper; Mac 0x1020dd1a
+0x00462a60,CReadNCMSBuff::~CReadNCMSBuff(?),MSVC compiler helper; Mac 0x1020e0a4
+0x00462a80,CReadCMSBuff::~CReadCMSBuff(?),MSVC compiler helper; Mac 0x1020e402
+0x00462ad0,CBaseNetwork::~CBaseNetwork(?),MSVC compiler helper; Mac 0x1020ea84
+0x00462ba0,CReadSocket::~CReadSocket(?),MSVC compiler helper; Mac 0x1020b56e
+0x00462bb0,CBroadcast::~CBroadcast(?),MSVC compiler helper; Mac 0x1020c7ac
+0x00462bc0,CBroadcast::~CBroadcast(?),MSVC compiler helper; Mac 0x1020c7ac
+0x00462c10,CBroadcast::~CBroadcast(?),MSVC compiler helper; Mac 0x1020c7ac
+0x00462c20,CRWSocket::SendAcknowledgement(),MSVC compiler helper; Mac 0x10107580
+0x00462c40,CRWSocket::ReceiveAcknowledgement(),MSVC compiler helper; Mac 0x10107544
+0x00462c60,CBroadcast::~CBroadcast(?),MSVC compiler helper; Mac 0x1020c7ac
+0x00462c70,CRWSocket::SendAcknowledgement(),MSVC compiler helper; Mac 0x10107580
+0x00462c80,CRWSocket::ReceiveAcknowledgement(),MSVC compiler helper; Mac 0x10107544
+0x00462cb0,CRWSocket::~CRWSocket(?),MSVC compiler helper; Mac 0x101061ee
+0x00462cf0,CRWSocket::Closed(int),MSVC compiler helper; Mac 0x10107514
+0x00462d20,CRWSocket::~CRWSocket(?),MSVC compiler helper; Mac 0x101061ee
+0x00462d30,CRWSocket::SendAcknowledgement(),MSVC compiler helper; Mac 0x10107580
+0x00462d40,CRWSocket::ReceiveAcknowledgement(),MSVC compiler helper; Mac 0x10107544
+0x00462d50,CRWSocket::~CRWSocket(?),MSVC compiler helper; Mac 0x101061ee
+0x00462d60,CRWSocket::SendAcknowledgement(),MSVC compiler helper; Mac 0x10107580
+0x00462d70,CRWSocket::ReceiveAcknowledgement(),MSVC compiler helper; Mac 0x10107544
+0x00462d80,CWriteSocket::~CWriteSocket(?),MSVC compiler helper; Mac 0x1020bd2c
+0x00462da0,CConnect::~CConnect(?),MSVC compiler helper; Mac 0x1020d0c6
+0x00462db0,CConnect::~CConnect(?),MSVC compiler helper; Mac 0x1020d0c6
+0x00462e00,CConnect::~CConnect(?),MSVC compiler helper; Mac 0x1020d0c6
+0x00462e20,CConnect::~CConnect(?),MSVC compiler helper; Mac 0x1020d0c6
+0x004698f0,CPushActive::~CPushActive(?),MSVC compiler helper; Mac 0x10100cae
+0x00469b60,CZRLE::~CZRLE(?),MSVC compiler helper; Mac 0x10100a7a
+0x0046aa70,CHotAreaList::~CHotAreaList(?),MSVC compiler helper; Mac 0x1021221e
+0x0046dc90,CPVBackBuffSurface::HasBackBuff(),MSVC compiler helper; Mac 0x10215fb6
+0x0046dca0,CPVZBuffSurface::HasZBuff(),MSVC compiler helper; Mac 0x10101386
+0x0046dcb0,CPVScrollableSurface::SetWorldWidth(int),MSVC compiler helper; Mac 0x102165a8
+0x0046dcc0,CPVScrollableSurface::GetWorldWidth(),MSVC compiler helper; Mac 0x10105d8e
+0x00471b60,CTCPIPCommonSocket::SocketError(),MSVC compiler helper; Mac 0x101075e2
+0x00471bf0,CTCPIPWriteSocket::SetDestAddr(CNetworkAddress*),MSVC compiler helper; Mac 0x1010cc62
+0x00471c00,"CTCPIPWriteSocket::SendPacket(const unsigned char*, int)",MSVC compiler helper; Mac 0x1010ccfe
+0x00471c10,CTCPIPWriteSocket::SetPort(short),MSVC compiler helper; Mac 0x1010dcd0
+0x00471c60,CTCPIPConnect::~CTCPIPConnect(?),MSVC compiler helper; Mac 0x1010e6a6
+0x00471d90,CTCPIPRWSocket::~CTCPIPRWSocket(?),MSVC compiler helper; Mac 0x101063e4
+0x00471dc0,CTCPIPCommonSocket::SysCloseSocket(),MSVC compiler helper; Mac 0x1010c820
+0x00471e20,CTCPIPCommonSocket::SocketError(),MSVC compiler helper; Mac 0x101075e2
+0x00471e50,CTCPIPReadSocket::~CTCPIPReadSocket(?),MSVC compiler helper; Mac 0x1010633a
+0x00471e60,CTCPIPCommonSocket::SysCloseSocket(),MSVC compiler helper; Mac 0x1010c820
+0x00471ec0,CTCPIPCommonSocket::SocketError(),MSVC compiler helper; Mac 0x101075e2
+0x00472000,CTCPIPBroadcast::~CTCPIPBroadcast(?),MSVC compiler helper; Mac 0x1010d556
+0x00472010,CTCPIPRWSocket::SendAcknowledgement(),MSVC compiler helper; Mac 0x1010e9d8
+0x00472020,CTCPIPRWSocket::ReceiveAcknowledgement(),MSVC compiler helper; Mac 0x1010e638
+0x0047b860,CHeaderMessage::~CHeaderMessage(?),MSVC compiler helper; Mac 0x1011667c
+0x0047ba40,CFileCommonSocket::SocketError(),MSVC compiler helper; Mac 0x101078e2
+0x0047baf0,CFileWriteSocket::SetDestAddr(CNetworkAddress*),MSVC compiler helper; Mac 0x10207bba
+0x0047bb10,CFileOpenManagement::~CFileOpenManagement(?),MSVC compiler helper; Mac 0x10106a58
+0x0047bbd0,CFileCommonSocket::SocketError(),MSVC compiler helper; Mac 0x101078e2
+0x0047bc30,CFileWriteSocket::SetDestAddr(CNetworkAddress*),MSVC compiler helper; Mac 0x10207bba
+0x0047bc50,CFileBroadcast::~CFileBroadcast(?),MSVC compiler helper; Mac 0x102088cc
+0x0047bc80,"CBroadcast::PostRead(NetworkEvents, CBasePacket*)",MSVC compiler helper; Mac 0x1020cba0
+0x0047bca0,CFileCommonSocket::SysCloseSocket(),MSVC compiler helper; Mac 0x10207138
+0x0047bd10,CFileCommonSocket::SocketError(),MSVC compiler helper; Mac 0x101078e2
+0x0047bd60,CFileWriteSocket::SetDestAddr(CNetworkAddress*),MSVC compiler helper; Mac 0x10207bba
+0x0047bd80,CFileCommonSocket::SysCloseSocket(),MSVC compiler helper; Mac 0x10207138
+0x0047bdf0,CFileCommonSocket::SocketError(),MSVC compiler helper; Mac 0x101078e2
+0x0047be20,CFileReadSocket::~CFileReadSocket(?),MSVC compiler helper; Mac 0x1010669c
+0x0047be30,CFileCommonSocket::SysCloseSocket(),MSVC compiler helper; Mac 0x10207138
+0x0047bf00,CFileRWSocket::~CFileRWSocket(?),MSVC compiler helper; Mac 0x1010681e
+0x0047c000,CFileConnect::~CFileConnect(?),MSVC compiler helper; Mac 0x10209a58
+0x0047c010,CConnect::FirstReceive(),MSVC compiler helper; Mac 0x1020d348
+0x0047c030,"CConnect::PostRead(NetworkEvents, CBasePacket*)",MSVC compiler helper; Mac 0x1020d63a
+0x0047fab0,__toupper(?),MSVC 4.00 LIBCMT.LIB: __toupper
+0x0047fac0,_toupper(?),MSVC 4.00 LIBCMT.LIB: _toupper
+0x0047fb10,__toupper_lk(?),MSVC 4.00 LIBCMT.LIB: __toupper_lk
+0x0047fc00,__isctype(?),MSVC 4.00 LIBCMT.LIB: __isctype
+0x0047fca0,__purecall(?),MSVC 4.00 LIBCMT.LIB: __purecall
+0x0047fcb0,__onexit(?),MSVC 4.00 LIBCMT.LIB: __onexit
+0x0047fd40,_atexit(?),MSVC 4.00 LIBCMT.LIB: _atexit
+0x0047fd60,___onexitinit(?),MSVC 4.00 LIBCMT.LIB: ___onexitinit
+0x0047fda0,_strrchr(?),MSVC 4.00 LIBCMT.LIB: _strrchr
+0x0047fdd0,_strncpy(?),MSVC 4.00 LIBCMT.LIB: _strncpy
+0x0047fe00,_strchr(?),MSVC 4.00 LIBCMT.LIB: _strchr
+0x0047ffc0,__amsg_exit(?),MSVC 4.00 LIBCMT.LIB: __amsg_exit
+0x0047fff0,_free(?),MSVC 4.00 LIBCMT.LIB: _free
+0x00480010,_strncmp(?),MSVC 4.00 LIBCMT.LIB: _strncmp
+0x00480050,__tolower(?),MSVC 4.00 LIBCMT.LIB: __tolower
+0x00480060,_tolower(?),MSVC 4.00 LIBCMT.LIB: _tolower
+0x004800b0,__tolower_lk(?),MSVC 4.00 LIBCMT.LIB: __tolower_lk
+0x00480198,__setjmp3(?),MSVC 4.00 LIBCMT.LIB: __setjmp3
+0x00480214,_longjmp(?),MSVC 4.00 LIBCMT.LIB: _longjmp
+0x00480290,_memmove(?),MSVC 4.00 LIBCMT.LIB: _memmove
+0x004803e0,__fsopen(?),MSVC 4.00 LIBCMT.LIB: __fsopen
+0x00480420,_fopen(?),MSVC 4.00 LIBCMT.LIB: _fopen
+0x00480440,_fclose(?),MSVC 4.00 LIBCMT.LIB: _fclose
+0x00480480,__fclose_lk(?),MSVC 4.00 LIBCMT.LIB: __fclose_lk
+0x004804e0,_fread(?),MSVC 4.00 LIBCMT.LIB: _fread
+0x00480520,__fread_lk(?),MSVC 4.00 LIBCMT.LIB: __fread_lk
+0x00480670,_fflush(?),MSVC 4.00 LIBCMT.LIB: _fflush
+0x004806b0,__fflush_lk(?),MSVC 4.00 LIBCMT.LIB: __fflush_lk
+0x004806f0,__flush(?),MSVC 4.00 LIBCMT.LIB: __flush
+0x00480760,__flushall(?),MSVC 4.00 LIBCMT.LIB: __flushall
+0x00480770,_flsall(?),MSVC 4.00 LIBCMT.LIB: _flsall
+0x00480830,_fwrite(?),MSVC 4.00 LIBCMT.LIB: _fwrite
+0x00480870,__fwrite_lk(?),MSVC 4.00 LIBCMT.LIB: __fwrite_lk
+0x004809f0,_ftell(?),MSVC 4.00 LIBCMT.LIB: _ftell
+0x00480a20,__ftell_lk(?),MSVC 4.00 LIBCMT.LIB: __ftell_lk
+0x00480bd0,_fseek(?),MSVC 4.00 LIBCMT.LIB: _fseek
+0x00480c10,__fseek_lk(?),MSVC 4.00 LIBCMT.LIB: __fseek_lk
+0x00480cb0,_atol(?),MSVC 4.00 LIBCMT.LIB: _atol
+0x00480d60,_atoi(?),MSVC 4.00 LIBCMT.LIB: _atoi
+0x00480d70,_malloc(?),MSVC 4.00 LIBCMT.LIB: _malloc
+0x00480d90,__nh_malloc(?),MSVC 4.00 LIBCMT.LIB: __nh_malloc
+0x00480dd0,__heap_alloc(?),MSVC 4.00 LIBCMT.LIB: __heap_alloc
+0x00480df0,__mtinitlocks(?),MSVC 4.00 LIBCMT.LIB: __mtinitlocks
+0x00480e20,__mtdeletelocks(?),MSVC 4.00 LIBCMT.LIB: __mtdeletelocks
+0x00480e90,__lock(?),MSVC 4.00 LIBCMT.LIB: __lock
+0x00480f00,__unlock(?),MSVC 4.00 LIBCMT.LIB: __unlock
+0x00480f20,__lock_file(?),MSVC 4.00 LIBCMT.LIB: __lock_file
+0x00480f60,__lock_file2(?),MSVC 4.00 LIBCMT.LIB: __lock_file2
+0x00480f90,__unlock_file(?),MSVC 4.00 LIBCMT.LIB: __unlock_file
+0x00480fd0,__unlock_file2(?),MSVC 4.00 LIBCMT.LIB: __unlock_file2
+0x00481000,__lockerr_exit(?),MSVC 4.00 LIBCMT.LIB: __lockerr_exit
+0x00481020,___crtLCMapStringW(?),MSVC 4.00 LIBCMT.LIB: ___crtLCMapStringW
+0x00481230,_wcsncnt(?),MSVC 4.00 LIBCMT.LIB: _wcsncnt
+0x00481270,___crtLCMapStringA(?),MSVC 4.00 LIBCMT.LIB: ___crtLCMapStringA
+0x004814a0,_strncnt(?),MSVC 4.00 LIBCMT.LIB: _strncnt
+0x004814d0,___crtGetStringTypeW(?),MSVC 4.00 LIBCMT.LIB: ___crtGetStringTypeW
+0x00481690,___crtGetStringTypeA(?),MSVC 4.00 LIBCMT.LIB: ___crtGetStringTypeA
+0x004817c0,__cinit(?),MSVC 4.00 LIBCMT.LIB: __cinit
+0x004817f0,_exit(?),MSVC 4.00 LIBCMT.LIB: _exit
+0x00481810,__exit(?),MSVC 4.00 LIBCMT.LIB: __exit
+0x00481830,__cexit(?),MSVC 4.00 LIBCMT.LIB: __cexit
+0x00481840,__c_exit(?),MSVC 4.00 LIBCMT.LIB: __c_exit
+0x00481850,_doexit(?),MSVC 4.00 LIBCMT.LIB: _doexit
+0x004818e0,__lockexit(?),MSVC 4.00 LIBCMT.LIB: __lockexit
+0x004818f0,__unlockexit(?),MSVC 4.00 LIBCMT.LIB: __unlockexit
+0x00481900,__initterm(?),MSVC 4.00 LIBCMT.LIB: __initterm
+0x00481920,_realloc(?),MSVC 4.00 LIBCMT.LIB: _realloc
+0x00481990,__msize(?),MSVC 4.00 LIBCMT.LIB: __msize
+0x004819a8,__global_unwind2(?),MSVC 4.00 LIBCMT.LIB: __global_unwind2
+0x004819ea,__local_unwind2(?),MSVC 4.00 LIBCMT.LIB: __local_unwind2
+0x00481a42,__NLG_Return2(?),MSVC 4.00 LIBCMT.LIB: __NLG_Return2
+0x00481a52,__abnormal_termination(?),MSVC 4.00 LIBCMT.LIB: __abnormal_termination
+0x00481a75,__NLG_Notify1(?),MSVC 4.00 LIBCMT.LIB: __NLG_Notify1
+0x00481a7e,__NLG_Notify(?),MSVC 4.00 LIBCMT.LIB: __NLG_Notify
+0x00481a91,__NLG_Dispatch(?),MSVC 4.00 LIBCMT.LIB: __NLG_Dispatch
+0x00481aa0,__XcptFilter(?),MSVC 4.00 LIBCMT.LIB: __XcptFilter
+0x00481bf0,_xcptlookup(?),MSVC 4.00 LIBCMT.LIB: _xcptlookup
+0x00481c20,__ismbbkalnum(?),MSVC 4.00 LIBCMT.LIB: __ismbbkalnum
+0x00481c40,__ismbbkprint(?),MSVC 4.00 LIBCMT.LIB: __ismbbkprint
+0x00481c60,__ismbbkpunct(?),MSVC 4.00 LIBCMT.LIB: __ismbbkpunct
+0x00481c80,__ismbbalnum(?),MSVC 4.00 LIBCMT.LIB: __ismbbalnum
+0x00481ca0,__ismbbalpha(?),MSVC 4.00 LIBCMT.LIB: __ismbbalpha
+0x00481cc0,__ismbbgraph(?),MSVC 4.00 LIBCMT.LIB: __ismbbgraph
+0x00481ce0,__ismbbprint(?),MSVC 4.00 LIBCMT.LIB: __ismbbprint
+0x00481d00,__ismbbpunct(?),MSVC 4.00 LIBCMT.LIB: __ismbbpunct
+0x00481d20,__ismbblead(?),MSVC 4.00 LIBCMT.LIB: __ismbblead
+0x00481d40,__ismbbtrail(?),MSVC 4.00 LIBCMT.LIB: __ismbbtrail
+0x00481d60,__ismbbkana(?),MSVC 4.00 LIBCMT.LIB: __ismbbkana
+0x00481d90,_x_ismbbtype(?),MSVC 4.00 LIBCMT.LIB: _x_ismbbtype
+0x00481dd0,__setenvp(?),MSVC 4.00 LIBCMT.LIB: __setenvp
+0x00481eb0,__setargv(?),MSVC 4.00 LIBCMT.LIB: __setargv
+0x00481f50,_parse_cmdline(?),MSVC 4.00 LIBCMT.LIB: _parse_cmdline
+0x00482130,___crtGetEnvironmentStringsW(?),MSVC 4.00 LIBCMT.LIB: ___crtGetEnvironmentStringsW
+0x00482330,___crtGetEnvironmentStringsA(?),MSVC 4.00 LIBCMT.LIB: ___crtGetEnvironmentStringsA
+0x004824d0,__setmbcp(?),MSVC 4.00 LIBCMT.LIB: __setmbcp
+0x00482700,_getSystemCP(?),MSVC 4.00 LIBCMT.LIB: _getSystemCP
+0x00482750,_CPtoLCID(?),MSVC 4.00 LIBCMT.LIB: _CPtoLCID
+0x004827b0,_setSBCS(?),MSVC 4.00 LIBCMT.LIB: _setSBCS
+0x004827e0,__getmbcp(?),MSVC 4.00 LIBCMT.LIB: __getmbcp
+0x004827f0,___initmbctable(?),MSVC 4.00 LIBCMT.LIB: ___initmbctable
+0x00482800,__ioinit(?),MSVC 4.00 LIBCMT.LIB: __ioinit
+0x004829e0,__ioterm(?),MSVC 4.00 LIBCMT.LIB: __ioterm
+0x00482a40,__mtinit(?),MSVC 4.00 LIBCMT.LIB: __mtinit
+0x00482aa0,__mtterm(?),MSVC 4.00 LIBCMT.LIB: __mtterm
+0x00482ad0,__initptd(?),MSVC 4.00 LIBCMT.LIB: __initptd
+0x00482af0,__getptd(?),MSVC 4.00 LIBCMT.LIB: __getptd
+0x00482b60,__freeptd(?),MSVC 4.00 LIBCMT.LIB: __freeptd
+0x00482c30,__heap_init(?),MSVC 4.00 LIBCMT.LIB: __heap_init
+0x00482c50,__heap_term(?),MSVC 4.00 LIBCMT.LIB: __heap_term
+0x00482c68,__except_handler3(?),MSVC 4.00 LIBCMT.LIB: __except_handler3
+0x00482d25,__seh_longjmp_unwind@4(?),MSVC 4.00 LIBCMT.LIB: __seh_longjmp_unwind@4
+0x00482d40,__FF_MSGBANNER(?),MSVC 4.00 LIBCMT.LIB: __FF_MSGBANNER
+0x00482d80,__NMSG_WRITE(?),MSVC 4.00 LIBCMT.LIB: __NMSG_WRITE
+0x00482f70,__GET_RTERRMSG(?),MSVC 4.00 LIBCMT.LIB: __GET_RTERRMSG
+0x00482fb0,__rt_probe_read4@4(?),MSVC 4.00 LIBCMT.LIB: __rt_probe_read4@4
+0x00483030,__openfile(?),MSVC 4.00 LIBCMT.LIB: __openfile
+0x00483240,__getstream(?),MSVC 4.00 LIBCMT.LIB: __getstream
+0x00483330,__close(?),MSVC 4.00 LIBCMT.LIB: __close
+0x004833a0,__close_lk(?),MSVC 4.00 LIBCMT.LIB: __close_lk
+0x00483430,__freebuf(?),MSVC 4.00 LIBCMT.LIB: __freebuf
+0x00483470,__filbuf(?),MSVC 4.00 LIBCMT.LIB: __filbuf
+0x00483570,__read(?),MSVC 4.00 LIBCMT.LIB: __read
+0x004835f0,__read_lk(?),MSVC 4.00 LIBCMT.LIB: __read_lk
+0x00483820,__commit(?),MSVC 4.00 LIBCMT.LIB: __commit
+0x004838d0,__write(?),MSVC 4.00 LIBCMT.LIB: __write
+0x00483950,__write_lk(?),MSVC 4.00 LIBCMT.LIB: __write_lk
+0x00483c40,__flsbuf(?),MSVC 4.00 LIBCMT.LIB: __flsbuf
+0x00483d90,__lseek(?),MSVC 4.00 LIBCMT.LIB: __lseek
+0x00483e10,__lseek_lk(?),MSVC 4.00 LIBCMT.LIB: __lseek_lk
+0x00483ea0,__dosmaperr(?),MSVC 4.00 LIBCMT.LIB: __dosmaperr
+0x00483f20,__errno(?),MSVC 4.00 LIBCMT.LIB: __errno
+0x00483f30,___doserrno(?),MSVC 4.00 LIBCMT.LIB: ___doserrno
+0x00483f40,_set_new_handler(?),MSVC 4.00 LIBCMT.LIB: ?_set_new_handler@@YAP6AHI@ZP6AHI@Z@Z
+0x00483f70,_query_new_handler(),MSVC 4.00 LIBCMT.LIB: ?_query_new_handler@@YAP6AHI@ZXZ
+0x00483f80,set_new_handler(?),MSVC 4.00 LIBCMT.LIB: ?set_new_handler@@YAP6AXXZP6AXXZ@Z
+0x00483fb0,__callnewh(?),MSVC 4.00 LIBCMT.LIB: __callnewh
+0x00483ff0,_calloc(?),MSVC 4.00 LIBCMT.LIB: _calloc
+0x00484050,_wcslen(?),MSVC 4.00 LIBCMT.LIB: _wcslen
+0x00484070,___crtMessageBoxA(?),MSVC 4.00 LIBCMT.LIB: ___crtMessageBoxA
+0x00484110,__open(?),MSVC 4.00 LIBCMT.LIB: __open
+0x00484130,__sopen(?),MSVC 4.00 LIBCMT.LIB: __sopen
+0x00484590,__alloc_osfhnd(?),MSVC 4.00 LIBCMT.LIB: __alloc_osfhnd
+0x004846e0,__set_osfhnd(?),MSVC 4.00 LIBCMT.LIB: __set_osfhnd
+0x00484790,__free_osfhnd(?),MSVC 4.00 LIBCMT.LIB: __free_osfhnd
+0x00484830,__get_osfhandle(?),MSVC 4.00 LIBCMT.LIB: __get_osfhandle
+0x00484880,__open_osfhandle(?),MSVC 4.00 LIBCMT.LIB: __open_osfhandle
+0x00484940,__lock_fhandle(?),MSVC 4.00 LIBCMT.LIB: __lock_fhandle
+0x004849b0,__unlock_fhandle(?),MSVC 4.00 LIBCMT.LIB: __unlock_fhandle
+0x004849e0,__getbuf(?),MSVC 4.00 LIBCMT.LIB: __getbuf
+0x00484a30,__fcloseall(?),MSVC 4.00 LIBCMT.LIB: __fcloseall
+0x00484ad0,__isatty(?),MSVC 4.00 LIBCMT.LIB: __isatty
+0x00484b00,__assert(?),MSVC 4.00 LIBCMT.LIB: __assert
+0x00485050,__chsize(?),MSVC 4.00 LIBCMT.LIB: __chsize
+0x004850c0,__chsize_lk(?),MSVC 4.00 LIBCMT.LIB: __chsize_lk
+0x00485200,_abort(?),MSVC 4.00 LIBCMT.LIB: _abort
+0x00485220,_fprintf(?),MSVC 4.00 LIBCMT.LIB: _fprintf
+0x00485270,_setvbuf(?),MSVC 4.00 LIBCMT.LIB: _setvbuf
+0x00485340,_signal(?),MSVC 4.00 LIBCMT.LIB: _signal
+0x00485520,_ctrlevent_capture@4(?),MSVC 4.00 LIBCMT.LIB: _ctrlevent_capture@4
+0x004855b0,_raise(?),MSVC 4.00 LIBCMT.LIB: _raise
+0x00485790,_siglookup(?),MSVC 4.00 LIBCMT.LIB: _siglookup
+0x004857d0,___fpecode(?),MSVC 4.00 LIBCMT.LIB: ___fpecode
+0x004857e0,___pxcptinfoptrs(?),MSVC 4.00 LIBCMT.LIB: ___pxcptinfoptrs
+0x004857f0,_strncat(?),MSVC 4.00 LIBCMT.LIB: _strncat
+0x00485830,__itoa(?),MSVC 4.00 LIBCMT.LIB: __itoa
+0x004858d0,__ltoa(?),MSVC 4.00 LIBCMT.LIB: __ltoa
+0x00485900,__ultoa(?),MSVC 4.00 LIBCMT.LIB: __ultoa
+0x00485920,__setmode(?),MSVC 4.00 LIBCMT.LIB: __setmode
+0x00485990,__setmode_lk(?),MSVC 4.00 LIBCMT.LIB: __setmode_lk
+0x00485a00,__chkstk(?),MSVC 4.00 LIBCMT.LIB: __chkstk
+0x00485a30,__stbuf(?),MSVC 4.00 LIBCMT.LIB: __stbuf
+0x00485ad0,__ftbuf(?),MSVC 4.00 LIBCMT.LIB: __ftbuf
+0x00485b10,__output(?),MSVC 4.00 LIBCMT.LIB: __output
+0x004864f0,_write_char(?),MSVC 4.00 LIBCMT.LIB: _write_char
+0x00486540,_write_multi_char(?),MSVC 4.00 LIBCMT.LIB: _write_multi_char
+0x00486580,_write_string(?),MSVC 4.00 LIBCMT.LIB: _write_string
+0x004865c0,_get_int_arg(?),MSVC 4.00 LIBCMT.LIB: _get_int_arg
+0x004865d0,_get_int64_arg(?),MSVC 4.00 LIBCMT.LIB: _get_int64_arg
+0x004865f0,_get_short_arg(?),MSVC 4.00 LIBCMT.LIB: _get_short_arg
+0x00486600,_wctomb(?),MSVC 4.00 LIBCMT.LIB: _wctomb
+0x00486630,__wctomb_lk(?),MSVC 4.00 LIBCMT.LIB: __wctomb_lk
+0x004866d0,__aulldiv(?),MSVC 4.00 LIBCMT.LIB: __aulldiv
+0x00486740,__aullrem(?),MSVC 4.00 LIBCMT.LIB: __aullrem
+0x004867c0,__fptrap(?),MSVC 4.00 LIBCMT.LIB: __fptrap

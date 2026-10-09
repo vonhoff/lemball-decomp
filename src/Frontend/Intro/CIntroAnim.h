@@ -7,7 +7,7 @@ class CGame;
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00493040 CBaseQueueHandler
-// VTABLE: LEMBALL 0x00493050 CBaseProcess
+// VTABLE: LEMBALL 0x00493050 CProcess
 class CIntroAnim : public CBaseFrontendProcess {
 public:
 	CIntroAnim(CGame* p_game) : CBaseFrontendProcess(p_game) {}

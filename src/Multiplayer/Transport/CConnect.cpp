@@ -2,8 +2,8 @@
 
 #include "CBaseNetwork.h"
 #include "CBroadcast.h"
+#include "CRWSocket.h"
 #include "CReadSocket.h"
-#include "CRwSocket.h"
 #include "CWriteSocket.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
@@ -145,7 +145,7 @@ void CConnect::Closed(int p_notifyPeer)
 	tagMESSAGE message;
 
 	m_killRequested = 1;
-	CRwSocket::Closed(p_notifyPeer);
+	CRWSocket::Closed(p_notifyPeer);
 	if (p_notifyPeer != 0) {
 		message.m_type = CONNECT_QUEUE_CLOSED;
 		message.m_code = 0;

@@ -1,6 +1,6 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
 
-#include "Multiplayer/Transport/CRwSocket.h"
+#include "Multiplayer/Transport/CRWSocket.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPWriteSocket.h"
@@ -20,17 +20,17 @@ int CTCPIPRWSocket::Process(unsigned int p_message, unsigned int p_wParam, long 
 // FUNCTION: LEMBALL 0x00471bb0
 void CTCPIPRWSocket::SendAcknowledgement()
 {
-	CRwSocket::SendAcknowledgement();
+	CRWSocket::SendAcknowledgement();
 }
 
 // FUNCTION: LEMBALL 0x00471d30
 void CTCPIPRWSocket::Closed(int p_notifyPeer)
 {
-	CRwSocket::Closed(p_notifyPeer);
+	CRWSocket::Closed(p_notifyPeer);
 }
 
 // FUNCTION: LEMBALL 0x00471d70
 CNetworkMessage* CTCPIPRWSocket::ReceiveAcknowledgement()
 {
-	return CRwSocket::ReceiveAcknowledgement();
+	return CRWSocket::ReceiveAcknowledgement();
 }

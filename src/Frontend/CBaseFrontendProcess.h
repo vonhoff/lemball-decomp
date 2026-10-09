@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 
-#include "Application/CBaseProcess.h"
+#include "Application/CProcess.h"
 #include "CUserActionMessage.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 class CConnect;
@@ -11,8 +11,8 @@ class CReadPacket;
 struct tagMESSAGE;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497938 CBaseQueueHandler
-// VTABLE: LEMBALL 0x00497948 CBaseProcess
-class CBaseFrontendProcess : public CBaseProcess, public CBaseQueueHandler {
+// VTABLE: LEMBALL 0x00497948 CProcess
+class CBaseFrontendProcess : public CProcess, public CBaseQueueHandler {
 public:
 	CBaseFrontendProcess(CGame* p_game);
 	virtual ~CBaseFrontendProcess();                                                                 // vtable+0x00

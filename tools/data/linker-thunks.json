@@ -6123,10 +6123,10 @@
       "target": 4226800,
       "original_bytes": "e9235f0000",
       "symbol": "__lemball_jump_00401fc8",
-      "target_symbol": "??_GCBaseProcess@@UAEPAXI@Z",
+      "target_symbol": "??_GCProcess@@UAEPAXI@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
-        "symbol": "??_GCBaseProcess@@UAEPAXI@Z"
+        "symbol": "??_GCProcess@@UAEPAXI@Z"
       }
     },
     {
@@ -13248,7 +13248,7 @@
       "target": 4226800,
       "original_bytes": "e99a4c0000",
       "symbol": "__lemball_jump_00403251",
-      "target_symbol": "??_GCBaseProcess@@UAEPAXI@Z"
+      "target_symbol": "??_GCProcess@@UAEPAXI@Z"
     },
     {
       "address": 4207190,
@@ -42894,7 +42894,7 @@
     {
       "caller": 4796496,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
-      "symbol": "??_7CIntroAnim@@6BCBaseProcess@@@",
+      "symbol": "??_7CIntroAnim@@6BCProcess@@@",
       "size": 20,
       "fingerprint": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90",
       "kind": "data",
@@ -42963,7 +42963,7 @@
     {
       "caller": 4796536,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
-      "symbol": "??_7CMainOptions1@@6BCBaseProcess@@@",
+      "symbol": "??_7CMainOptions1@@6BCProcess@@@",
       "size": 20,
       "fingerprint": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90",
       "kind": "data",
@@ -43032,7 +43032,7 @@
     {
       "caller": 4796576,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
-      "symbol": "??_7CBaseProcess@@6B@",
+      "symbol": "??_7CProcess@@6B@",
       "size": 8,
       "fingerprint": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
       "kind": "data",
@@ -43042,7 +43042,7 @@
           "original_pointer": 4796576,
           "original_bytes": "51324000",
           "thunk": 4207185,
-          "source_symbol": "??_ECBaseProcess@@UAEPAXI@Z"
+          "source_symbol": "??_ECProcess@@UAEPAXI@Z"
         }
       ]
     },
@@ -43073,7 +43073,7 @@
     {
       "caller": 4796608,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
-      "symbol": "??_7CMainOptions2@@6BCBaseProcess@@@",
+      "symbol": "??_7CMainOptions2@@6BCProcess@@@",
       "size": 20,
       "fingerprint": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90",
       "kind": "data",
@@ -43142,7 +43142,7 @@
     {
       "caller": 4796648,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
-      "symbol": "??_7CPasswordProc@@6BCBaseProcess@@@",
+      "symbol": "??_7CPasswordProc@@6BCProcess@@@",
       "size": 20,
       "fingerprint": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90",
       "kind": "data",
@@ -46654,7 +46654,7 @@
     {
       "caller": 4799040,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
-      "symbol": "??_7CAI@@6BCBaseProcess@@@",
+      "symbol": "??_7CAI@@6BCProcess@@@",
       "size": 8,
       "fingerprint": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
       "kind": "data",
@@ -68048,7 +68048,7 @@
     {
       "caller": 4815176,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendProcess.cpp.obj",
-      "symbol": "??_7CBaseFrontendProcess@@6BCBaseProcess@@@",
+      "symbol": "??_7CBaseFrontendProcess@@6BCProcess@@@",
       "size": 20,
       "fingerprint": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90",
       "kind": "data",
@@ -69146,7 +69146,7 @@
     {
       "caller": 4815984,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Preview/CPreview.cpp.obj",
-      "symbol": "??_7CPreview@@6BCBaseProcess@@@",
+      "symbol": "??_7CPreview@@6BCProcess@@@",
       "size": 20,
       "fingerprint": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90",
       "kind": "data",
@@ -70964,7 +70964,7 @@
     {
       "caller": 4817880,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Results/CSuccFail.cpp.obj",
-      "symbol": "??_7CSuccFail@@6BCBaseProcess@@@",
+      "symbol": "??_7CSuccFail@@6BCProcess@@@",
       "size": 20,
       "fingerprint": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90",
       "kind": "data",
@@ -72016,7 +72016,7 @@
     {
       "caller": 4818664,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsProc.cpp.obj",
-      "symbol": "??_7CNetworkOptionsProc@@6BCBaseProcess@@@",
+      "symbol": "??_7CNetworkOptionsProc@@6BCProcess@@@",
       "size": 20,
       "fingerprint": "de47c9b27eb8d300dbb5f2c353e632c393262cf06340c4fa7f1b40c4cbd36f90",
       "kind": "data",
@@ -72256,7 +72256,7 @@
     {
       "caller": 4820960,
       "object": "CMakeFiles/LEMBALL.dir/src/Multiplayer/Transport/CBroadcast.cpp.obj",
-      "symbol": "??_7CRwSocket@@6BCBaseSocket@@CReadSocket@@@",
+      "symbol": "??_7CRWSocket@@6BCBaseSocket@@CReadSocket@@@",
       "size": 40,
       "fingerprint": "2c34ce1df23b838c5abf2a7f6437cca3d3067ed509ff25f11df6b11b582b51eb",
       "kind": "data",
@@ -72287,7 +72287,7 @@
     {
       "caller": 4821000,
       "object": "CMakeFiles/LEMBALL.dir/src/Multiplayer/Transport/CBroadcast.cpp.obj",
-      "symbol": "??_7CRwSocket@@6BCBaseSocket@@CWriteSocket@@@",
+      "symbol": "??_7CRWSocket@@6BCBaseSocket@@CWriteSocket@@@",
       "size": 44,
       "fingerprint": "85759b3811ff7dc47b03792ac85317be51431a3f9e01dcafce317ed736a391b0",
       "kind": "data",

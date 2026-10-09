@@ -1,5 +1,5 @@
-#ifndef LEMBALL_VISOS_FOUNDATION_CBASEPROCESS_H
-#define LEMBALL_VISOS_FOUNDATION_CBASEPROCESS_H
+#ifndef LEMBALL_VISOS_FOUNDATION_CPROCESS_H
+#define LEMBALL_VISOS_FOUNDATION_CPROCESS_H
 
 enum eProcessResult {
 	PROCESS_RESULT_CONTINUE = 0,
@@ -13,14 +13,14 @@ enum eProcessReturnState {
 
 // SIZE 0x0c
 // VTABLE: LEMBALL 0x004930a0
-class CBaseProcess {
+class CProcess {
 public:
-	CBaseProcess()
+	CProcess()
 	{
 		m_processState = PROCESS_RESULT_CONTINUE;
 		m_returnState = PROCESS_RETURN_STATE_NONE;
 	}
-	virtual ~CBaseProcess() {}  // vtable+0x00
+	virtual ~CProcess() {}      // vtable+0x00
 	virtual void Process() = 0; // vtable+0x04
 
 	friend class CGame;
@@ -34,6 +34,6 @@ private:
 };
 
 // SYNTHETIC: LEMBALL 0x00407ef0
-// CBaseProcess::`scalar deleting destructor'
+// CProcess::`scalar deleting destructor'
 
 #endif

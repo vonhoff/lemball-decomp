@@ -1,12 +1,12 @@
 #include "Multiplayer/Transport/FileTransport/CFileRWSocket.h"
 
-#include "Multiplayer/Transport/CRwSocket.h"
+#include "Multiplayer/Transport/CRWSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
 
 // FUNCTION: LEMBALL 0x0047a220
-CFileRWSocket::CFileRWSocket() : CRwSocket(), CFileReadSocket(), CFileWriteSocket()
+CFileRWSocket::CFileRWSocket() : CRWSocket(), CFileReadSocket(), CFileWriteSocket()
 {
 }
 
@@ -23,17 +23,17 @@ bool CFileRWSocket::SendPacket(const unsigned char* p_data, int p_size)
 // FUNCTION: LEMBALL 0x0047ba60
 void CFileRWSocket::Closed(int p_notifyPeer)
 {
-	CRwSocket::Closed(p_notifyPeer);
+	CRWSocket::Closed(p_notifyPeer);
 }
 
 // FUNCTION: LEMBALL 0x0047baa0
 void CFileRWSocket::SendAcknowledgement()
 {
-	CRwSocket::SendAcknowledgement();
+	CRWSocket::SendAcknowledgement();
 }
 
 // FUNCTION: LEMBALL 0x0047bad0
 CNetworkMessage* CFileRWSocket::ReceiveAcknowledgement()
 {
-	return CRwSocket::ReceiveAcknowledgement();
+	return CRWSocket::ReceiveAcknowledgement();
 }

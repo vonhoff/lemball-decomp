@@ -8,10 +8,10 @@
 // SIZE 0x108
 // VTABLE: LEMBALL 0x00498fe0 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x00499008 CBaseSocket's `CWriteSocket
-// VTABLE: LEMBALL 0x00499038 CRwSocket
-class CRwSocket : public virtual CBaseCommonSocket, public virtual CWriteSocket, public virtual CReadSocket {
+// VTABLE: LEMBALL 0x00499038 CRWSocket
+class CRWSocket : public virtual CBaseCommonSocket, public virtual CWriteSocket, public virtual CReadSocket {
 public:
-	CRwSocket() {}
+	CRWSocket() {}
 
 	void SendAcknowledgement() { CWriteSocket::SendAcknowledgement(); }
 
@@ -39,42 +39,42 @@ public:
 };
 
 // FUNCTION: LEMBALL 0x00462c30 SYMBOL
-// ?SendAcknowledgement@CRwSocket@@UAEXXZ
+// ?SendAcknowledgement@CRWSocket@@UAEXXZ
 
 // FUNCTION: LEMBALL 0x00462c50 SYMBOL
-// ?ReceiveAcknowledgement@CRwSocket@@UAEPAVCNetworkMessage@@XZ
+// ?ReceiveAcknowledgement@CRWSocket@@UAEPAVCNetworkMessage@@XZ
 
 // SYNTHETIC: LEMBALL 0x00462c70 SYMBOL
-// ?SendAcknowledgement@CRwSocket@@$4PPPPPPPM@PPPPPPHA@AEXXZ
+// ?SendAcknowledgement@CRWSocket@@$4PPPPPPPM@PPPPPPHA@AEXXZ
 
 // SYNTHETIC: LEMBALL 0x00462c80 SYMBOL
-// ?ReceiveAcknowledgement@CRwSocket@@$4PPPPPPPM@PPPPPPHA@AEPAVCNetworkMessage@@XZ
+// ?ReceiveAcknowledgement@CRWSocket@@$4PPPPPPPM@PPPPPPHA@AEPAVCNetworkMessage@@XZ
 
 // SYNTHETIC: LEMBALL 0x00462cb0
-// CRwSocket::`scalar deleting destructor'
+// CRWSocket::`scalar deleting destructor'
 
 // SYNTHETIC: LEMBALL 0x00462cf0 SYMBOL
-// ?Closed@CRwSocket@@$4PPPPPPPM@A@AEXH@Z
+// ?Closed@CRWSocket@@$4PPPPPPPM@A@AEXH@Z
 
 // FUNCTION: LEMBALL 0x00462d00 SYMBOL
-// ?Closed@CRwSocket@@UAEXH@Z
+// ?Closed@CRWSocket@@UAEXH@Z
 
 // SYNTHETIC: LEMBALL 0x00462d20 SYMBOL
-// ??_ECRwSocket@@$4PPPPPPPM@DA@AEPAXI@Z
+// ??_ECRWSocket@@$4PPPPPPPM@DA@AEPAXI@Z
 
 // SYNTHETIC: LEMBALL 0x00462d30 SYMBOL
-// ?SendAcknowledgement@CRwSocket@@$4PPPPPPPM@A@AEXXZ
+// ?SendAcknowledgement@CRWSocket@@$4PPPPPPPM@A@AEXXZ
 
 // SYNTHETIC: LEMBALL 0x00462d40 SYMBOL
-// ?ReceiveAcknowledgement@CRwSocket@@$4PPPPPPPM@A@AEPAVCNetworkMessage@@XZ
+// ?ReceiveAcknowledgement@CRWSocket@@$4PPPPPPPM@A@AEPAVCNetworkMessage@@XZ
 
 // SYNTHETIC: LEMBALL 0x00462d50 SYMBOL
-// ??_ECRwSocket@@$4PPPPPPPM@KI@AEPAXI@Z
+// ??_ECRWSocket@@$4PPPPPPPM@KI@AEPAXI@Z
 
 // SYNTHETIC: LEMBALL 0x00462d60 SYMBOL
-// ?SendAcknowledgement@CRwSocket@@$4PPPPPPPM@HI@AEXXZ
+// ?SendAcknowledgement@CRWSocket@@$4PPPPPPPM@HI@AEXXZ
 
 // SYNTHETIC: LEMBALL 0x00462d70 SYMBOL
-// ?ReceiveAcknowledgement@CRwSocket@@$4PPPPPPPM@HI@AEPAVCNetworkMessage@@XZ
+// ?ReceiveAcknowledgement@CRWSocket@@$4PPPPPPPM@HI@AEPAVCNetworkMessage@@XZ
 
 #endif

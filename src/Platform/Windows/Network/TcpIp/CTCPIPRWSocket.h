@@ -2,8 +2,8 @@
 #define LEMBALL_VISOS_NETWORK_CTCPIPRWSOCKET_H
 
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/CRWSocket.h"
 #include "Multiplayer/Transport/CReadSocket.h"
-#include "Multiplayer/Transport/CRwSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
@@ -15,7 +15,7 @@
 // VTABLE: LEMBALL 0x0049a250 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a280 CTCPIPRWSocket
 #pragma warning(disable : 4250)
-class CTCPIPRWSocket : public virtual CRwSocket, public virtual CTCPIPReadSocket, public virtual CTCPIPWriteSocket {
+class CTCPIPRWSocket : public virtual CRWSocket, public virtual CTCPIPReadSocket, public virtual CTCPIPWriteSocket {
 public:
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
 	virtual void Closed(int p_notifyPeer);                                             // vtable+0x0c
@@ -49,7 +49,7 @@ public:
 // CTCPIPRWSocket::`vbtable'{for `CTCPIPCommonSocket'}
 
 // GLOBAL: LEMBALL 0x0049a418
-// CTCPIPRWSocket::`vbtable'{for `CRwSocket'}
+// CTCPIPRWSocket::`vbtable'{for `CRWSocket'}
 
 // GLOBAL: LEMBALL 0x0049a428
 // CTCPIPRWSocket::`vbtable'{for `CReadSocket'}

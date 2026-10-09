@@ -3,6 +3,7 @@
 
 import argparse
 import csv
+import json
 from collections import Counter, defaultdict
 from itertools import groupby
 from pathlib import Path
@@ -14,6 +15,7 @@ from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_t
 from lib import ROOT, TARGET_ID
 from lib.names import scan
 from lib.policy import violations
+from lib.signatures import Signature, adjacent_signature
 
 
 SRC = ROOT / "src"
@@ -39,6 +41,34 @@ def read_catalog():
     for candidates in by_windows.values():
         candidates.sort()
     return symbols, by_windows
+
+
+def read_inferences():
+    """Read explicit source hypotheses and address-derived linker labels."""
+    with (CATALOG.parent / "source-name-evidence.csv").open(
+        newline="", encoding="utf-8-sig"
+    ) as stream:
+        inferences = {int(row["address"], 16): row for row in csv.DictReader(stream)}
+    with (CATALOG.parent / "inferred-symbols.csv").open(
+        newline="", encoding="utf-8-sig"
+    ) as stream:
+        rows = csv.DictReader(line for line in stream if not line.startswith("#"))
+        for row in rows:
+            prototype = row["source_prototype"]
+            if prototype.startswith("tail jump;"):
+                continue
+            inferences[int(row["address"], 16)] = {
+                "signature": adjacent_signature(prototype, 0, []).display(),
+                "basis": row["basis"],
+            }
+    thunks = json.loads((CATALOG.parent / "linker-thunks.json").read_text())
+    for thunk in thunks["thunks"]:
+        inferences[thunk["address"]] = {
+            "signature": Signature("", thunk["symbol"], None).display(),
+            "basis": f"intentional address-derived label; original E9 {thunk['original_bytes']} "
+            f"targets 0x{thunk['target']:08x}; original source name unknown",
+        }
+    return inferences
 
 
 def check_policy(paths=None):
@@ -78,18 +108,25 @@ def check_annotations(paths=None) -> int:
 
 
 def check_names(paths: list[Path | str] | None = None, verbose=False):
-    """Fail on unresolved identities or name mismatches; keep ABI reviews informational."""
+    """Require mapped or explicitly inferred names; keep ABI reviews informational."""
     symbols, mappings = read_catalog()
+    inferences = read_inferences()
     files = collect_sources(paths)
-    rows = [row for path in files for row in scan(path, symbols, mappings)]
+    rows = [row for path in files for row in scan(path, symbols, mappings, inferences)]
     counts = Counter(row["status"] for row in rows)
     signatures = Counter(
         row["signature_status"] for row in rows if "signature_status" in row
     )
     for row in rows:
-        required = row["status"] in ("mismatch", "unresolved", "windows")
+        required = row["status"] in (
+            "mismatch",
+            "case",
+            "unresolved",
+            "unmapped",
+            "windows",
+        )
         requested = verbose and (
-            row["status"] == "case"
+            row["status"] == "inferred"
             or row.get("signature_status") in ("review", "unresolved")
         )
         if required or requested:
@@ -102,7 +139,11 @@ def check_names(paths: list[Path | str] | None = None, verbose=False):
             )
             if row.get("windows_evidence"):
                 print(f"  Windows evidence: {row['windows_evidence']}")
-    print(f"names: {len(files)} files, {len(rows)} entries from CSV: {dict(counts)}")
+    print(f"names: {len(files)} files, {len(rows)} annotated entries: {dict(counts)}")
+    print(
+        "names: unmapped kinds: "
+        f"{dict(Counter(row['kind'] for row in rows if row['status'] == 'unmapped'))}"
+    )
     print(f"names: parameter/const comparisons: {dict(signatures)}")
     if signatures["review"] or signatures["unresolved"]:
         print(
@@ -111,7 +152,7 @@ def check_names(paths: list[Path | str] | None = None, verbose=False):
         )
     if counts["unresolved"]:
         return 2
-    return int(bool(counts["mismatch"]))
+    return int(bool(counts["mismatch"] or counts["case"] or counts["unmapped"]))
 
 
 def main() -> int:

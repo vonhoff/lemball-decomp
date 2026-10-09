@@ -1,9 +1,9 @@
 #include "CGame.h"
 
 #include "Application/FlowProcesses.h"
-#include "CBaseProcess.h"
 #include "CDemo.h"
 #include "CGameStatus.h"
+#include "CProcess.h"
 #include "Engine/Diagnostics/CDebugOStream.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Resources/Archive/CMogRes.h"

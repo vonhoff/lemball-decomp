@@ -59,7 +59,7 @@ extern char* g_pFileBroadcastData;
 // CFileBroadcast::`vbtable'{for `CFileCommonSocket'}
 
 // GLOBAL: LEMBALL 0x0049a8c8
-// CFileBroadcast::`vbtable'{for `CRwSocket'}
+// CFileBroadcast::`vbtable'{for `CRWSocket'}
 
 // GLOBAL: LEMBALL 0x0049a8d8
 // CFileBroadcast::`vbtable'{for `CReadSocket'}

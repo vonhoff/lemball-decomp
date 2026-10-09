@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CBROADCAST_H
 
 #include "CBaseCommonSocket.h"
-#include "CRwSocket.h"
+#include "CRWSocket.h"
 
 #define BROADCAST_ADDRESS_SPECIFIC 2
 
@@ -12,9 +12,9 @@ class CNetworkAddress;
 // SIZE 0x128
 // VTABLE: LEMBALL 0x00499080 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x004990a8 CBaseSocket's `CWriteSocket
-// VTABLE: LEMBALL 0x004990d8 CRwSocket
+// VTABLE: LEMBALL 0x004990d8 CRWSocket
 // VTABLE: LEMBALL 0x004990e8 CBroadcast
-class CBroadcast : public virtual CRwSocket {
+class CBroadcast : public virtual CRWSocket {
 public:
 	CBroadcast();
 	virtual short FindPort(const unsigned char* p_peerPortUsage); // vtable+0x00
@@ -59,10 +59,10 @@ protected:
 // ??_ECBroadcast@@$4PPPPPPPM@DA@AEPAXI@Z
 
 // SYNTHETIC: LEMBALL 0x00462c20 SYMBOL
-// ?SendAcknowledgement@CRwSocket@@$4PPPPPPPM@PPPPPOPI@AEXXZ
+// ?SendAcknowledgement@CRWSocket@@$4PPPPPPPM@PPPPPOPI@AEXXZ
 
 // SYNTHETIC: LEMBALL 0x00462c40 SYMBOL
-// ?ReceiveAcknowledgement@CRwSocket@@$4PPPPPPPM@PPPPPOPI@AEPAVCNetworkMessage@@XZ
+// ?ReceiveAcknowledgement@CRWSocket@@$4PPPPPPPM@PPPPPOPI@AEPAVCNetworkMessage@@XZ
 
 // SYNTHETIC: LEMBALL 0x00462c60 SYMBOL
 // ??_ECBroadcast@@$4PPPPPPPM@KI@AEPAXI@Z
@@ -71,7 +71,7 @@ protected:
 // ?PostRead@CBroadcast@@WDM@AEXW4NetworkEvents@@PAVCBasePacket@@@Z
 
 // GLOBAL: LEMBALL 0x00499048
-// CBroadcast::`vbtable'{for `CRwSocket'}
+// CBroadcast::`vbtable'{for `CRWSocket'}
 
 // GLOBAL: LEMBALL 0x00499058
 // CBroadcast::`vbtable'{for `CReadSocket'}

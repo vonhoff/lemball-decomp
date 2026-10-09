@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CCONNECT_H
 
 #include "CBaseCommonSocket.h"
-#include "CRwSocket.h"
+#include "CRWSocket.h"
 
 class CNetworkAddress;
 enum eNetworkRole {
@@ -22,9 +22,9 @@ class CNetworkMessage;
 // SIZE 0x15c
 // VTABLE: LEMBALL 0x00499140 CBaseSocket's `CReadSocket
 // VTABLE: LEMBALL 0x00499168 CBaseSocket's `CWriteSocket
-// VTABLE: LEMBALL 0x00499198 CRwSocket
+// VTABLE: LEMBALL 0x00499198 CRWSocket
 // VTABLE: LEMBALL 0x004991a8 CConnect
-class CConnect : public virtual CRwSocket {
+class CConnect : public virtual CRWSocket {
 public:
 	CConnect();
 	virtual bool Start(const char* p_localName, const char* p_remoteName) = 0; // vtable+0x00
@@ -91,7 +91,7 @@ extern CConnect* g_pActiveConnection;
 // ?PostRead@CConnect@@WDE@AEXW4NetworkEvents@@PAVCBasePacket@@@Z
 
 // GLOBAL: LEMBALL 0x00499108
-// CConnect::`vbtable'{for `CRwSocket'}
+// CConnect::`vbtable'{for `CRWSocket'}
 
 // GLOBAL: LEMBALL 0x00499118
 // CConnect::`vbtable'{for `CReadSocket'}

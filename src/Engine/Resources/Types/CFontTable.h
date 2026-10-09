@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CFONTTABLE_H
 #define LEMBALL_VISOS_RESOURCES_CFONTTABLE_H
 
-#include "Engine/Resources/Types/CPvFontTable.h"
+#include "Engine/Resources/Types/CPVFontTable.h"
 
 class CResFONT;
 class CResZRLE;
@@ -12,7 +12,7 @@ enum {
 
 // SIZE 0x08
 // VTABLE: LEMBALL 0x0049a480
-class CFontTable : public CPvFontTable {
+class CFontTable : public CPVFontTable {
 public:
 	CFontTable(CResFONT* p_font);
 	virtual CResZRLE* GetZRLE(int p_character) const; // vtable+0x04

@@ -6,7 +6,7 @@
 class CGame;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x004930d8 CBaseQueueHandler
-// VTABLE: LEMBALL 0x004930e8 CBaseProcess
+// VTABLE: LEMBALL 0x004930e8 CProcess
 class CPasswordProc : public CBaseFrontendProcess {
 public:
 	CPasswordProc(CGame* p_game) : CBaseFrontendProcess(p_game) {}

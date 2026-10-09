@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VISOS_NETWORK_CFILERWSOCKET_H
 #define LEMBALL_VISOS_NETWORK_CFILERWSOCKET_H
 
-#include "Multiplayer/Transport/CRwSocket.h"
+#include "Multiplayer/Transport/CRWSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
 
@@ -12,7 +12,7 @@
 // VTABLE: LEMBALL 0x0049a808 CBaseSocket's `CWriteSocket
 // VTABLE: LEMBALL 0x0049a838 CFileRWSocket
 #pragma warning(disable : 4250)
-class CFileRWSocket : public virtual CRwSocket, public virtual CFileReadSocket, public virtual CFileWriteSocket {
+class CFileRWSocket : public virtual CRWSocket, public virtual CFileReadSocket, public virtual CFileWriteSocket {
 public:
 	CFileRWSocket();
 	virtual bool SendPacket(const unsigned char* p_data, int p_size); // vtable+0x24
@@ -47,7 +47,7 @@ public:
 // CFileRWSocket::`vbtable'{for `CFileCommonSocket'}
 
 // GLOBAL: LEMBALL 0x0049a758
-// CFileRWSocket::`vbtable'{for `CRwSocket'}
+// CFileRWSocket::`vbtable'{for `CRWSocket'}
 
 // GLOBAL: LEMBALL 0x0049a768
 // CFileRWSocket::`vbtable'{for `CReadSocket'}

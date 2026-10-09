@@ -5,12 +5,12 @@
 
 // SIZE 0x04
 // VTABLE: LEMBALL 0x0049a490
-class CPvFontTable : public CMogloadArena {
+class CPVFontTable : public CMogloadArena {
 public:
-	virtual ~CPvFontTable() {} // vtable+0x00
+	virtual ~CPVFontTable() {} // vtable+0x00
 };
 
 // SYNTHETIC: LEMBALL 0x00473770
-// CPvFontTable::`scalar deleting destructor'
+// CPVFontTable::`scalar deleting destructor'
 
 #endif

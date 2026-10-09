@@ -6,7 +6,7 @@
 class CGame;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497c60 CBaseQueueHandler
-// VTABLE: LEMBALL 0x00497c70 CBaseProcess
+// VTABLE: LEMBALL 0x00497c70 CProcess
 class CPreview : public CBaseFrontendProcess {
 public:
 	CPreview(CGame* p_game);

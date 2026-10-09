@@ -6,7 +6,7 @@
 class CGame;
 // SIZE 0x2c
 // VTABLE: LEMBALL 0x004983c8 CBaseQueueHandler
-// VTABLE: LEMBALL 0x004983d8 CBaseProcess
+// VTABLE: LEMBALL 0x004983d8 CProcess
 class CSuccFail : public CBaseFrontendProcess {
 public:
 	CSuccFail(CGame* p_game, unsigned int p_success);
