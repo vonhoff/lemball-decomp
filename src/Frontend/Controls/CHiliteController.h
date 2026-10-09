@@ -80,8 +80,8 @@ private:
 	unsigned int m_layoutMode;               // 0x130
 	unsigned int m_horizontalMode;           // 0x134
 	unsigned int m_animationSet;             // 0x138
-	unsigned int m_transitionStart;          // 0x13c
-	unsigned int m_transitionEnd;            // 0x140
+	unsigned long m_transitionStart;         // 0x13c
+	unsigned long m_transitionEnd;           // 0x140
 	unsigned int m_active;                   // 0x144
 	unsigned int m_buttonsActive;            // 0x148
 };

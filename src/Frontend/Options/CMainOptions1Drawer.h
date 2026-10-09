@@ -33,7 +33,7 @@ public:
 	virtual ~CMainOptions1Drawer();                   // vtable+0x00
 
 private:
-	unsigned int m_idleDeadline;           // 0x398
+	unsigned long m_idleDeadline;          // 0x398
 	int* m_buttonLayout;                   // 0x39c
 	unsigned int m_previousModeButton;     // 0x3a0
 	unsigned int m_nextModeButton;         // 0x3a4
