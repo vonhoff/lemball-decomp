@@ -28,12 +28,9 @@ void CReadPacketBuff::FillPacket(int p_index)
 // FUNCTION: LEMBALL 0x00461310
 void CReadPacketBuff::UnUseAll()
 {
-	int offset;
 	int index = 0;
 	if (m_packetCount > 0) {
-		offset = 0;
 		do {
-			offset += sizeof(CReadPacket*);
 			index++;
 			((CReadPacket*) m_packets[index - 1])->m_used = 0;
 		} while (index < m_packetCount);

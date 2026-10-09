@@ -30,7 +30,7 @@ CReadPacket* CReadNCBuff::UpdatePacket()
 	packet = (CReadPacket*) m_packets[index];
 	BasePacketHeader* packetHeader = (BasePacketHeader*) packet->m_data;
 	if (messageId < NETWORK_MESSAGE_SEQUENCE_TRACKING_START_ID ||
-		(int) g_pNetworkPacketScratch->m_packetSequence - (int) packetHeader->m_packetSequence > 0) {
+		g_pNetworkPacketScratch->m_packetSequence - packetHeader->m_packetSequence > 0) {
 		isNew = packet->m_used == 0;
 		FillPacket(index);
 	}
