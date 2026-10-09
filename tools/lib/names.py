@@ -30,7 +30,7 @@ FUNCTION = re.compile(
 
 def windows_identity(symbol):
     declaration = msvc_demangle(symbol)
-    declaration = re.sub(r"`(?:adjustor|vtordisp)\{[^}]*\}'", "", declaration)
+    declaration = re.sub(r"`(?:adjustor|vtordisp)\{[^}]*}'", "", declaration)
     destructor = re.search(
         r"(?P<owner>[\w:]+)::`(?:scalar|vector) deleting (?:dtor|destructor)'",
         declaration,

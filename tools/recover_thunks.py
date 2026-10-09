@@ -211,7 +211,7 @@ def aligned_instructions(diff: RawDiffOutput, route, previous, rebuilt_address):
 
 
 @cache
-def load_object(name):
+def load_object(name) -> CoffObject:
     """Read each native compiler object once in this process."""
     return CoffObject((BUILD / name).read_bytes())
 
@@ -302,7 +302,7 @@ def folded_aliases(engine, functions, modules):
     }
 
 
-def make_thunk(engine, callee, entry, target_symbol, aliases):
+def make_thunk(callee, entry, target_symbol, aliases):
     """Choose the paired body and retain evidenced alternate folded symbols."""
     definitions = aliases.get(callee.orig_addr, {})
     thunk = {
@@ -384,7 +384,7 @@ def recover_table_entries(
             target_symbol = native_definition(callee, modules, public_addresses)
         except (ValueError, OSError):
             continue
-        thunks[address] = make_thunk(engine, callee, address, target_symbol, aliases)
+        thunks[address] = make_thunk(callee, address, target_symbol, aliases)
 
 
 def recover_references(
@@ -457,7 +457,7 @@ def recover_references(
         }
         references.append(reference)
         seen_offsets.add(offset)
-        thunks[entry] = make_thunk(engine, callee, entry, target_symbol, aliases)
+        thunks[entry] = make_thunk(callee, entry, target_symbol, aliases)
     return references, thunks
 
 
@@ -518,11 +518,13 @@ def recover_data_references(
                 "source_symbol": source_symbol,
             }
         )
-        thunks[entry] = make_thunk(engine, callee, entry, target_symbol, aliases)
+        thunks[entry] = make_thunk(callee, entry, target_symbol, aliases)
     return references, thunks
 
 
-def recover_routes(engine, target, addresses, functions, entries, previous_routes):
+def recover_routes(
+    engine: Compare, target, addresses, functions, entries, previous_routes
+):
     """Recover code and data routes that the native COFF objects can redirect."""
     modules, public_addresses = native_context(engine, target)
     aliases = folded_aliases(engine, functions, modules)
@@ -544,13 +546,16 @@ def recover_routes(engine, target, addresses, functions, entries, previous_route
             and any(address in region for region in data_regions)
         )
     )
-    original_relocations = sorted(engine.orig_bin.relocations)
+    original_relocations = sorted(cast(PEImage, engine.orig_bin).relocations)
     thunks = {}
     routes = []
     unresolved = []
     for address in addresses:
         function = entities.get(address)
         if function is None or function.get("stub") or not function.get("symbol"):
+            continue
+        recomp_address = function.recomp_addr
+        if recomp_address is None:
             continue
         data = function.entity_type in (EntityType.DATA, EntityType.VTABLE)
         if data and not any(
@@ -560,7 +565,7 @@ def recover_routes(engine, target, addresses, functions, entries, previous_route
             )
         ):
             continue
-        module = modules.get_module(function.recomp_addr)
+        module = modules.get_module(recomp_address)
         if module is None:
             continue
         object_name = module[1].replace("\\", "/")
@@ -568,8 +573,10 @@ def recover_routes(engine, target, addresses, functions, entries, previous_route
             continue
         try:
             obj = load_object(object_name)
-            caller_symbol = (obj.definition if data else obj.function)(
-                function.get("symbol")
+            caller_symbol = (
+                obj.definition(function.get("symbol"))
+                if data
+                else obj.function(function.get("symbol"))
             )[0]
             if public_addresses.get(caller_symbol) != function.recomp_addr:
                 raise ValueError(
@@ -707,10 +714,10 @@ def recover_thunks(forwarders):
     if missing := forwarders - used:
         modules, public_addresses = native_context(engine, target)
         for address in missing:
-            destination = read_jump_target(engine.orig_bin, address)
+            destination = cast(int, read_jump_target(engine.orig_bin, address))
             callee = functions[destination]
             target_symbol = native_definition(callee, modules, public_addresses)
-            thunks[address] = make_thunk(engine, callee, address, target_symbol, {})
+            thunks[address] = make_thunk(callee, address, target_symbol, {})
     for address in forwarders:
         thunks[address]["kind"] = "tail-forwarder"
     write_recovery(

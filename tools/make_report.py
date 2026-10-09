@@ -60,7 +60,9 @@ def module_name(path):
     return PureWindowsPath(path.stem).stem or "Unknown"
 
 
-def build_report(engine, modules: ModuleMap) -> tuple[dict[str, Any], set[int]]:
+def build_report(
+    engine: Compare, modules: ModuleMap
+) -> tuple[dict[str, Any], set[int]]:
     """Map the original code inventory to objdiff functions and PDB units."""
     code_regions = [
         range(region.addr, region.addr + len(region.data))
@@ -82,14 +84,19 @@ def build_report(engine, modules: ModuleMap) -> tuple[dict[str, Any], set[int]]:
             if entity.matched and size and not entity.get("stub")
             else None
         )
-        if comparison and comparison.match_ratio != 1 and comparison.is_effective_match:
+        if (
+            comparison is not None
+            and comparison.match_ratio != 1
+            and comparison.is_effective_match
+        ):
             accepted.add(address)
         if entity.entity_type == EntityType.IMPORT_THUNK:
             unit_name = "Import Thunks"
         else:
+            recomp_address = entity.recomp_addr
             module = (
-                modules.get_module(entity.recomp_addr)
-                if entity.recomp_addr is not None
+                modules.get_module(recomp_address)
+                if recomp_address is not None
                 else None
             )
             unit_name = module_name(module[1]) if module is not None else "Unknown"
@@ -104,7 +111,7 @@ def build_report(engine, modules: ModuleMap) -> tuple[dict[str, Any], set[int]]:
                     or f"0x{address:08x}",
                 },
                 "fuzzy_match_percent": comparison.match_ratio * 100
-                if comparison
+                if comparison is not None
                 else 0.0,
             }
         )
