@@ -25,9 +25,6 @@ int CKey::Usage()
 // FUNCTION: LEMBALL 0x0041d480
 bool CKey::Process()
 {
-	enum {
-	};
-
 	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
