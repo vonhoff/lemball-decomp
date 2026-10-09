@@ -17,16 +17,15 @@ see [lemball-portable](https://github.com/vonhoff/lemball-portable).
 
 ## Reconstruction
 
-The original function and class names were recovered from the classic Macintosh 68000 release. The executable code
-resources retained Metrowerks' and MacsBug's inline symbol trailers. This yielded over 2,800 original function names and
-demangled C++ class hierarchies across the game and engine subsystems.
+The original function and class names were recovered from the Macintosh 68000 version, which preserved debugging symbols
+from Metrowerks and MacsBug. These provided over 2,800 original function names and revealed C++ class hierarchies
+throughout the game and engine.
 
-As the Windows binary was stripped and targeted x86, the functions were correlated across architectures using structural
-anchors. These mappings were established by matching string literals, distinctive constants, shared algorithms (e.g.,
-fixed-point math and state machines), virtual table layouts, object member strides, and call-graph topology.
+Since the Windows executable had its symbols removed, functions were matched between the two versions using strings,
+constants, algorithms, virtual tables, object layouts, and call relationships.
 
-The reconstruction uses these mapped symbols and layout evidence to recreate the original C++ classes. Each function is
-iteratively refined and verified against the target Windows binary until matching machine code is achieved.
+These findings are used to reconstruct the original C++ classes and functions. Each function is then refined and
+compared against the Windows executable to reproduce its machine code as closely as possible.
 
 ## Building
 
