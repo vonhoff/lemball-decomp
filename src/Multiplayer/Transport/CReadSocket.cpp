@@ -78,49 +78,18 @@ void CReadSocket::SetNCBuffers(unsigned long p_lastSinglePacketMessageId,
 							   unsigned long p_lastMessageId,
 							   int p_messageCapacity)
 {
-	void* storage;
-
 	DeleteNCBuffers();
-	storage = operator new(sizeof(CReadNCBuff));
-	if (storage == NULL) {
-		m_nonCriticalBuffer = NULL;
-	}
-	else {
-		m_nonCriticalBuffer =
-			new (storage) CReadNCBuff(p_lastSinglePacketMessageId, (unsigned short) g_networkPacketSize);
-	}
-	storage = operator new(sizeof(CReadNCMSBuff));
-	if (storage != NULL) {
-		m_nonCriticalMultiBuffer = new (storage) CReadNCMSBuff(p_lastSinglePacketMessageId + 1,
-															   p_lastMessageId,
-															   p_messageCapacity,
-															   (unsigned short) g_networkPacketSize);
-		return;
-	}
-	m_nonCriticalMultiBuffer = NULL;
+	m_nonCriticalBuffer = new CReadNCBuff(p_lastSinglePacketMessageId, g_networkPacketSize);
+	m_nonCriticalMultiBuffer =
+		new CReadNCMSBuff(p_lastSinglePacketMessageId + 1, p_lastMessageId, p_messageCapacity, g_networkPacketSize);
 }
 
 // FUNCTION: LEMBALL 0x0045f9b0
 void CReadSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 {
-	void* storage;
-
 	DeleteCBuffers();
-	storage = operator new(sizeof(CReadCBuff));
-	if (storage == NULL) {
-		m_criticalBuffer = NULL;
-	}
-	else {
-		m_criticalBuffer = new (storage) CReadCBuff(p_packetCount, (unsigned short) g_networkPacketSize);
-	}
-	storage = operator new(sizeof(CReadCMSBuff));
-	if (storage == NULL) {
-		m_criticalMultiBuffer = NULL;
-	}
-	else {
-		m_criticalMultiBuffer =
-			new (storage) CReadCMSBuff(p_packetCount, p_messageCapacity, (unsigned short) g_networkPacketSize);
-	}
+	m_criticalBuffer = new CReadCBuff(p_packetCount, g_networkPacketSize);
+	m_criticalMultiBuffer = new CReadCMSBuff(p_packetCount, p_messageCapacity, g_networkPacketSize);
 	if (g_pNetworkPacketScratch == NULL) {
 		g_pNetworkPacketScratch = (BasePacketHeader*) operator new(g_networkPacketSize);
 	}
@@ -178,7 +147,7 @@ bool CReadSocket::ProcessPacket()
 	else {
 		unsigned short packetSequence = packetHeader->m_packetSequence;
 
-		if (m_criticalBuffer->m_nextSequence >= (int) (unsigned int) packetSequence) {
+		if (m_criticalBuffer->m_nextSequence >= packetSequence) {
 			CAckMessage* acknowledgement = g_pAckMessage;
 
 			acknowledgement->m_packetSequence = packetSequence;
