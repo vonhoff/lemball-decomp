@@ -56,22 +56,22 @@ void CPVBackBuffSurface::AllocateBackBuff()
 	const CVSSize& actualSize = m_bitmap.SetSize(size, m_reserved40);
 	size.m_width = actualSize.m_width;
 	size.m_height = actualSize.m_height;
-	allocatedArea = (int) m_allocatedWidth * (int) m_allocatedHeight;
-	neededArea = (int) size.m_height * (int) size.m_width;
+	allocatedArea = (unsigned int) m_allocatedWidth * m_allocatedHeight;
+	neededArea = size.m_height * size.m_width;
 	if (allocatedArea < neededArea) {
 		FreeBackBuff();
 	}
-	if ((int) m_windowRect.m_width * (int) m_windowRect.m_height != 0) {
+	if (m_windowRect.m_width * m_windowRect.m_height != 0) {
 		if (m_buffer == NULL) {
-			m_allocatedWidth = (unsigned short) size.m_width;
-			m_allocatedHeight = (unsigned short) size.m_height;
+			m_allocatedWidth = size.m_width;
+			m_allocatedHeight = size.m_height;
 			m_buffer = new unsigned char[(unsigned int) (unsigned short) size.m_height *
 										 (unsigned int) (unsigned short) size.m_width];
 		}
 		if (m_buffer == NULL) {
 			m_enabled = 0;
 		}
-		m_bitmap.SetBitsBase(m_buffer, (int) size.m_width);
+		m_bitmap.SetBitsBase(m_buffer, size.m_width);
 	}
 }
 
