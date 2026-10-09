@@ -312,9 +312,6 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 	else if (p_x > centreX) {
 		side = GUN_SIDE_RIGHT;
 	}
-	else {
-		side = p_side;
-	}
 	int junctionIndex = GUN_JUNCTION_INDEX_NOT_FOUND;
 	for (int i = 0; i < 8; i++) {
 		if (m_junctions[i].m_direction != GUN_JUNCTION_UNASSIGNED && m_junctions[i].m_y == p_y) {
