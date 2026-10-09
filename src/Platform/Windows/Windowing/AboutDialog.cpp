@@ -43,7 +43,7 @@ char g_szStringFileInfoPrefix[28] = "\\StringFileInfo\\080904e4\\";
 MEMORYSTATUS g_memoryStatus;
 
 // GLOBAL: LEMBALL 0x004a7ba8
-HFONT g_hAboutFont = NULL;
+HFONT g_hAboutFont;
 
 // GLOBAL: LEMBALL 0x004a7bb0
 char g_szAboutSystemInfo[ABOUT_SYSTEM_INFO_BUFFER_SIZE];

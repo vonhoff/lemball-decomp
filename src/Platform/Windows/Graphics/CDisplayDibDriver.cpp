@@ -24,7 +24,7 @@ enum {
 typedef int(__stdcall* DisplayDibProc)(void*, void*, unsigned short);
 
 // GLOBAL: LEMBALL 0x004a8290
-DisplayDibProc g_pDisplayDib = NULL;
+DisplayDibProc g_pDisplayDib;
 
 // FUNCTION: LEMBALL 0x00456d70
 CDisplayDibDriver::CDisplayDibDriver(const CVSSize& p_size)

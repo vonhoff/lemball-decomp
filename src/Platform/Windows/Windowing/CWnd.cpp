@@ -71,7 +71,7 @@ int g_nNativeWindowCount = 0;
 WindowOwnerList* g_pWindowOwnerList = NULL;
 
 // GLOBAL: LEMBALL 0x004a8188
-void* g_pApplicationInstance = NULL;
+void* g_pApplicationInstance;
 
 // GLOBAL: LEMBALL 0x004a1f7c
 char g_szVsBaseWindowClass[24] = "VS_Base_Window_Class";
@@ -92,10 +92,10 @@ char g_szQuitting[12] = "Quitting\n";
 char g_szFQuit[8] = "fQuit\n";
 
 // GLOBAL: LEMBALL 0x004a9bd8
-int g_nSavedScreenSaverActive = 0;
+int g_nSavedScreenSaverActive;
 
 // GLOBAL: LEMBALL 0x004a9be0
-int g_savedMouseParameters[3] = {0, 0, 0};
+int g_savedMouseParameters[3];
 
 static bool RegisterBaseWindowClass();
 unsigned int ConvertWindowStyleFlags(unsigned int p_style);
