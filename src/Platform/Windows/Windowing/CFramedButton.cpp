@@ -100,7 +100,7 @@ void CFramedButton::DrawButton()
 		right = m_bounds.m_width - 1;
 		edge->m_start.m_x = 0;
 		edge->m_start.m_y = 0;
-		edge->m_end.m_x = (short) right;
+		edge->m_end.m_x = right;
 		edge->m_end.m_y = 0;
 		edge->m_colour = light;
 	}
@@ -112,19 +112,19 @@ void CFramedButton::DrawButton()
 		edge[FRAMED_BUTTON_EDGE_LEFT].m_start.m_y = 0;
 		edge++;
 		edge->m_end.m_x = 0;
-		edge->m_end.m_y = (short) bottom;
+		edge->m_end.m_y = bottom;
 		edge->m_colour = light;
 	}
 	{
 		CLine* edge = m_frameEdges;
-		short left = (short) (m_bounds.m_width - 1);
+		short left = (m_bounds.m_width - 1);
 		edge += FRAMED_BUTTON_EDGE_RIGHT;
 		int right = m_bounds.m_width - 1;
 		int bottom = m_bounds.m_height - 1;
 		edge->m_start.m_x = left;
 		edge->m_start.m_y = 0;
-		edge->m_end.m_x = (short) right;
-		edge->m_end.m_y = (short) bottom;
+		edge->m_end.m_x = right;
+		edge->m_end.m_y = bottom;
 		edge->m_colour = dark;
 	}
 	{
@@ -134,10 +134,10 @@ void CFramedButton::DrawButton()
 		bottom = m_bounds.m_height - 1;
 		right = m_bounds.m_width - 1;
 		edge[FRAMED_BUTTON_EDGE_BOTTOM].m_start.m_x = 0;
-		edge[FRAMED_BUTTON_EDGE_BOTTOM].m_start.m_y = (short) bottom;
-		edge[FRAMED_BUTTON_EDGE_BOTTOM].m_end.m_x = (short) right;
+		edge[FRAMED_BUTTON_EDGE_BOTTOM].m_start.m_y = bottom;
+		edge[FRAMED_BUTTON_EDGE_BOTTOM].m_end.m_x = right;
 		edge += FRAMED_BUTTON_EDGE_BOTTOM;
-		edge->m_end.m_y = (short) bottom;
+		edge->m_end.m_y = bottom;
 		edge->m_colour = dark;
 	}
 	i = 0;
