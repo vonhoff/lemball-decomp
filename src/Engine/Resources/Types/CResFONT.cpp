@@ -111,7 +111,7 @@ void CResFONT::UnLoadResources(unsigned long p_index, unsigned int p_force)
 }
 
 // FUNCTION: LEMBALL 0x0045da90
-void CResFONT::UnLoadVramData(unsigned int p_index, unsigned int p_force)
+void CResFONT::UnLoadVramData(unsigned long p_index, unsigned int p_force)
 {
 	m_animationEntries[p_index].UnLoadVramData(p_force);
 }

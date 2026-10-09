@@ -27,7 +27,7 @@ void CResANIM::AllocateResources(unsigned long p_count)
 }
 
 // FUNCTION: LEMBALL 0x0045d700
-void CResANIM::UnLoadVramData(unsigned int p_index, unsigned int p_force)
+void CResANIM::UnLoadVramData(unsigned long p_index, unsigned int p_force)
 {
 	m_animationEntries[p_index].UnLoadVramData(p_force);
 }

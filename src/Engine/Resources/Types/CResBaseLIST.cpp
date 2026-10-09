@@ -204,7 +204,7 @@ unsigned int CResBaseLIST::GetnVramEntries()
 }
 
 // FUNCTION: LEMBALL 0x0045e6e0
-void CResBaseLIST::UnLoadVramData(unsigned int p_index, unsigned int p_force)
+void CResBaseLIST::UnLoadVramData(unsigned long p_index, unsigned int p_force)
 {
 }
 
