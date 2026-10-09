@@ -18,7 +18,7 @@ CReadMSBuff::CReadMSBuff(int p_messageSlots, int p_messageCapacity, unsigned sho
 	payloadSize = p_packetSize - sizeof(BasePacketHeader);
 	m_subpacketPayloadSize = payloadSize;
 	if (p_messageSlots != 0 && payloadSize != 0) {
-		m_data = (unsigned char*) operator new(p_messageCapacity + sizeof(BasePacketHeader));
+		m_data = new unsigned char[p_messageCapacity + sizeof(BasePacketHeader)];
 		((BasePacketHeader*) m_data)->m_packetSequence = 0;
 	}
 	else {
@@ -30,7 +30,7 @@ CReadMSBuff::CReadMSBuff(int p_messageSlots, int p_messageCapacity, unsigned sho
 CReadMSBuff::~CReadMSBuff()
 {
 	if (m_data != NULL) {
-		operator delete(m_data);
+		delete[] m_data;
 	}
 }
 

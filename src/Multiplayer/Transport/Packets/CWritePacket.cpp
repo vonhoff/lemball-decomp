@@ -7,7 +7,7 @@
 // FUNCTION: LEMBALL 0x00461190
 CWritePacket::CWritePacket(unsigned short p_capacity)
 {
-	m_data = (unsigned char*) operator new(p_capacity);
+	m_data = new unsigned char[p_capacity];
 	m_available = 1;
 	m_retryCount = 0;
 }
@@ -15,7 +15,7 @@ CWritePacket::CWritePacket(unsigned short p_capacity)
 // FUNCTION: LEMBALL 0x004611c0
 CWritePacket::~CWritePacket()
 {
-	operator delete(m_data);
+	delete[] m_data;
 }
 
 // FUNCTION: LEMBALL 0x004611e0

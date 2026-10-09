@@ -7,7 +7,7 @@
 // FUNCTION: LEMBALL 0x00461090
 CReadPacket::CReadPacket(unsigned short p_capacity)
 {
-	m_data = (unsigned char*) operator new(p_capacity);
+	m_data = new unsigned char[p_capacity];
 	m_ready = 1;
 	m_used = 0;
 	((BasePacketHeader*) m_data)->m_packetSequence = 0;
@@ -16,7 +16,7 @@ CReadPacket::CReadPacket(unsigned short p_capacity)
 // FUNCTION: LEMBALL 0x004610f0
 CReadPacket::~CReadPacket()
 {
-	operator delete(m_data);
+	delete[] m_data;
 }
 
 // FUNCTION: LEMBALL 0x00461140
