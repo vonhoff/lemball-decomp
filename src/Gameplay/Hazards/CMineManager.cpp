@@ -109,8 +109,9 @@ void CMineManager::Trigger(int p_index, int p_delay)
 				int dx = position->m_x - x;
 				int dy = position->m_y - y;
 				int dz = position->m_z - z;
-				if (dz * dz + dy * dy + dx * dx <= CHAIN_TRIGGER_DISTANCE_SQUARED) {
-					m_mines[i].Trigger(p_delay + CHAIN_TRIGGER_DELAY);
+				if ((int) ((unsigned int) dz * dz + (unsigned int) dy * dy + (unsigned int) dx * dx) <=
+					CHAIN_TRIGGER_DISTANCE_SQUARED) {
+					m_mines[i].Trigger((unsigned int) p_delay + CHAIN_TRIGGER_DELAY);
 				}
 			}
 			positionOffset++;

@@ -22022,7 +22022,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CMineManager.cpp.obj",
       "symbol": "?StepOn@CMineManager@@QAEXABVAICOORD@@PAVCGameObject@@@Z",
       "size": 219,
-      "fingerprint": "6ab3e930ee32d03f349150900d0c18f2cdef343ff0ece0df6e80ad9b2da2871b",
+      "fingerprint": "c50ab5bfaf2d4d7f18451bf78f7e71df922e58e8ab8610438aa5ec1cf5a793de",
       "references": [
         {
           "offset": 194,
@@ -22091,7 +22091,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CMineManager.cpp.obj",
       "symbol": "?LoadLevel@CMineManager@@QAEXPAEHE@Z",
       "size": 147,
-      "fingerprint": "5e21208b2708063f0cdd544a9f45eea7f61e43cbb104e8a1d2ec8c5e195b1aeb",
+      "fingerprint": "02719bd6094a941147f7e9afe5689a47cc082216f41e5cb5d1d9ad23287699af",
       "references": [
         {
           "offset": 23,
