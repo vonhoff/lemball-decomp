@@ -1,10 +1,10 @@
-#ifndef LEMBALL_CONTROL_SUPPORT_PREINIT_H
-#define LEMBALL_CONTROL_SUPPORT_PREINIT_H
+#ifndef LEMBALL_CONTROL_SUPPORT_TAGPRE_INIT_H
+#define LEMBALL_CONTROL_SUPPORT_TAGPRE_INIT_H
 
 #include "Engine/Memory/SmallMemoryConstants.h"
 
 // SIZE 0x1c
-struct PreInit {
+struct tagPRE_INIT {
 	unsigned int m_flags;         // 0x00
 	unsigned int m_memoryBudget;  // 0x04
 	int m_startBucket;            // 0x08
@@ -15,6 +15,6 @@ struct PreInit {
 };
 
 extern unsigned int g_anPreInitCapabilities[SMALL_MEMORY_BUCKET_COUNT];
-extern PreInit g_preInitActive;
-extern PreInit g_preInit;
+extern tagPRE_INIT g_preInitActive;
+extern tagPRE_INIT g_preInit;
 #endif

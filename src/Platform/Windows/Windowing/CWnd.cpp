@@ -9,7 +9,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
-#include "Engine/Startup/PreInit.h"
+#include "Engine/Startup/tagPRE_INIT.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Time/VsTime.h"
 #include "tagMenuList.h"

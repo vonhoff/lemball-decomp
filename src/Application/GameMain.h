@@ -5,8 +5,8 @@
 #define LEMBALL_ENFORCE_STARTUP_CHECKS 1
 #endif
 
-struct PreInit;
-PreInit* VSPreInit(PreInit* p_preInit);
+struct tagPRE_INIT;
+tagPRE_INIT* VSPreInit(tagPRE_INIT* p_preInit);
 void SetGameDefaults();
 void DisplayHelp();
 int VSmain(int p_argc, char** p_argv);

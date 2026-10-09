@@ -10,7 +10,7 @@
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/VsString.h"
 #include "Platform/Windows/CPlatformServices.h"
-#include "PreInit.h"
+#include "tagPRE_INIT.h"
 #include "VisosVersion.h"
 
 #include <ctype.h>
@@ -408,7 +408,7 @@ void INIT_PreInit()
 {
 	unsigned int* capability;
 	int i;
-	PreInit* result;
+	tagPRE_INIT* result;
 	int displayMode;
 
 	capability = g_anPreInitCapabilities;

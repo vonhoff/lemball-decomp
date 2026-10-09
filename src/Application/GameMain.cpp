@@ -4,7 +4,7 @@
 #include "CGame.h"
 #include "Engine/Math/VSTrig.h"
 #include "Engine/Memory/SmallMemoryConstants.h"
-#include "Engine/Startup/PreInit.h"
+#include "Engine/Startup/tagPRE_INIT.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/VsString.h"
 #include "Frontend/CBaseFrontendDrawer.h"
@@ -58,7 +58,7 @@ int g_nDisplayMode = 0;
 int* g_pRandomSeed = NULL;
 
 // FUNCTION: LEMBALL 0x00406160
-PreInit* VSPreInit(PreInit* p_preInit)
+tagPRE_INIT* VSPreInit(tagPRE_INIT* p_preInit)
 {
 	memcpy(&g_preInit, p_preInit, sizeof(g_preInit));
 	g_preInit.m_flags = GAME_GDI_SURFACE_SLOT_CAPACITY;

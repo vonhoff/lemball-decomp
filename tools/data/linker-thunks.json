@@ -14206,7 +14206,7 @@
       "target": 4219232,
       "original_bytes": "e9942c0000",
       "symbol": "__lemball_jump_004034c7",
-      "target_symbol": "?VSPreInit@@YAPAUPreInit@@PAU1@@Z"
+      "target_symbol": "?VSPreInit@@YAPAUtagPRE_INIT@@PAU1@@Z"
     },
     {
       "address": 4207820,
@@ -42710,7 +42710,7 @@
           "original_instruction": 4663247,
           "original_bytes": "e8f30cf9ff",
           "thunk": 4207815,
-          "source_symbol": "?VSPreInit@@YAPAUPreInit@@PAU1@@Z"
+          "source_symbol": "?VSPreInit@@YAPAUtagPRE_INIT@@PAU1@@Z"
         }
       ]
     },

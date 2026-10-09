@@ -2,7 +2,7 @@
 #include "CGraphicsDriver.h"
 #include "CGraphicsState.h"
 #include "CSurface.h"
-#include "Engine/Startup/PreInit.h"
+#include "Engine/Startup/tagPRE_INIT.h"
 #include "Engine/Startup/VsInit.h"
 #include "Platform/Windows/Input/CCursor.h"
 

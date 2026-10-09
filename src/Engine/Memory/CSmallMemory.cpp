@@ -2,7 +2,7 @@
 
 #include "CBucket.h"
 #include "Engine/Memory/SmallMemoryConstants.h"
-#include "Engine/Startup/PreInit.h"
+#include "Engine/Startup/tagPRE_INIT.h"
 
 #include <string.h>
 
