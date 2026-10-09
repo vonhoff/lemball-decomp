@@ -256,6 +256,12 @@ void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 	m_activeMask = *reinterpret_cast<unsigned short*>(p_data);
 	p_data += 2;
 
+	struct SerializedPosition {
+		unsigned short x;
+		unsigned short y;
+		unsigned short z;
+	};
+
 	int count = BALLOON_POST_COUNT;
 	AICOORD* position = m_positions;
 	CTheBalloonPost** post = m_posts;
@@ -263,12 +269,11 @@ void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 	unsigned short x;
 	unsigned short y;
 	do {
-		x = *reinterpret_cast<unsigned short*>(p_data);
-		p_data += 2;
-		y = *reinterpret_cast<unsigned short*>(p_data);
-		p_data += 2;
-		z = *reinterpret_cast<unsigned short*>(p_data);
-		p_data += 2;
+		const SerializedPosition* data = reinterpret_cast<const SerializedPosition*>(p_data);
+		x = data->x;
+		y = data->y;
+		z = data->z;
+		p_data += sizeof(*data);
 
 		position->m_xFixed = (unsigned int) x << FIXED_POINT_FRACTION_BITS;
 		position->m_yFixed = (unsigned int) y << FIXED_POINT_FRACTION_BITS;
