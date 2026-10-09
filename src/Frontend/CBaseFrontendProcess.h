@@ -27,9 +27,9 @@ public:
 	friend class CNetworkOptionsProc;
 
 private:
-	unsigned int m_networkWasActive; // 0x1c
-	void* m_userActionMessage;       // 0x20
-	CGame* m_game;                   // 0x24
+	unsigned int m_networkWasActive;         // 0x1c
+	CUserActionMessage* m_userActionMessage; // 0x20
+	CGame* m_game;                           // 0x24
 };
 
 extern int g_nFrontendAutoFlowToggle;

@@ -59,7 +59,7 @@ CBaseFrontendProcess::~CBaseFrontendProcess()
 		g_pBaseNetwork->DetachMessageQueue();
 	}
 	if (m_userActionMessage != NULL) {
-		delete (CUserActionMessage*) m_userActionMessage;
+		delete m_userActionMessage;
 	}
 }
 
@@ -78,9 +78,9 @@ void CBaseFrontendProcess::Action(eUserActions p_action, eUserActionStages p_sta
 	unsigned long started;
 	unsigned long now;
 
-	if (((CUserActionMessage*) m_userActionMessage)->m_pendingSendCount != 0) {
+	if (m_userActionMessage->m_pendingSendCount != 0) {
 		started = CurrentMilliTimer();
-		while (((CUserActionMessage*) m_userActionMessage)->m_pendingSendCount != 0) {
+		while (m_userActionMessage->m_pendingSendCount != 0) {
 			now = CurrentMilliTimer();
 			if (now - started >= NETWORK_PENDING_SEND_TIMEOUT_MS) {
 				break;
@@ -88,9 +88,9 @@ void CBaseFrontendProcess::Action(eUserActions p_action, eUserActionStages p_sta
 			g_pBaseNetwork->WaitProcess();
 		}
 	}
-	((CUserActionMessage*) m_userActionMessage)->m_action = p_action;
-	((CUserActionMessage*) m_userActionMessage)->m_stage = p_stage;
-	((CUserActionMessage*) m_userActionMessage)->Send(g_pActiveConnection);
+	m_userActionMessage->m_action = p_action;
+	m_userActionMessage->m_stage = p_stage;
+	m_userActionMessage->Send(g_pActiveConnection);
 }
 
 // FUNCTION: LEMBALL 0x004468d0
@@ -117,10 +117,9 @@ int CBaseFrontendProcess::ProcessMsg(Message* p_message)
 			if (id != GAME_MESSAGE_USER_ACTION) {
 				return ReceiveCritical(id, packet, connection);
 			}
-			((CUserActionMessage*) m_userActionMessage)->Set(packet->m_data + sizeof(BasePacketHeader));
+			m_userActionMessage->Set(packet->m_data + sizeof(BasePacketHeader));
 			packet->m_used = 0;
-			g_pBaseFrontendDrawer->RemoteAction(((CUserActionMessage*) m_userActionMessage)->m_action,
-												((CUserActionMessage*) m_userActionMessage)->m_stage);
+			g_pBaseFrontendDrawer->RemoteAction(m_userActionMessage->m_action, m_userActionMessage->m_stage);
 			return 1;
 		default:
 			return 0;
