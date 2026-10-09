@@ -37,9 +37,9 @@ void CFileNetwork::UnInitialise()
 }
 
 // FUNCTION: LEMBALL 0x0046f740
-void CFileNetwork::ResetTimer(unsigned int p_interval)
+void CFileNetwork::ResetTimer(unsigned long p_interval)
 {
-	*g_pDebugOutput << "Setting next timer event to " << (unsigned long) p_interval << "ms from now\n";
+	*g_pDebugOutput << "Setting next timer event to " << p_interval << "ms from now\n";
 
 	KillTimer((HWND) m_windowHandle, m_timerId);
 	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, p_interval, NULL);
