@@ -474,12 +474,12 @@ void CBaseCursor::Process()
 		}
 	}
 	CVSPoint oldPosition(m_position);
-	int x = m_velocityX + m_fixedX;
-	int y = m_velocityY + m_fixedY;
+	int x = (unsigned int) m_velocityX + m_fixedX;
+	int y = (unsigned int) m_velocityY + m_fixedY;
 	m_fixedX = x;
 	m_fixedY = y;
-	m_position.m_x = (short) (x >> FIXED_POINT_FRACTION_BITS);
-	m_position.m_y = (short) (y >> FIXED_POINT_FRACTION_BITS);
+	m_position.m_x = x >> FIXED_POINT_FRACTION_BITS;
+	m_position.m_y = y >> FIXED_POINT_FRACTION_BITS;
 	if (m_keyboardInput != 0 && !m_position.Equals(oldPosition)) {
 		tagMESSAGE posted;
 		posted.m_type = MESSAGE_CURSOR_MOVED;
@@ -489,7 +489,7 @@ void CBaseCursor::Process()
 		posted.m_source = NULL;
 		g_pMasterInputQueue->Post(posted);
 	}
-	if ((int) m_bounds.m_width * (int) m_bounds.m_height != 0) {
+	if (m_bounds.m_width * m_bounds.m_height != 0) {
 		if (m_position.m_x < m_bounds.m_x || (short) (m_bounds.m_width + m_bounds.m_x) <= m_position.m_x ||
 			m_bounds.m_y > m_position.m_y || (short) (m_bounds.m_y + m_bounds.m_height) <= m_position.m_y) {
 			CVSPoint* minimum = &m_bounds;
@@ -499,8 +499,8 @@ void CBaseCursor::Process()
 			if (m_position.m_y < minimum->m_y) {
 				m_position.m_y = minimum->m_y;
 			}
-			boundRight = (short) (m_bounds.m_width + m_bounds.m_x - 1);
-			boundBottom = (short) (m_bounds.m_y + m_bounds.m_height - 1);
+			boundRight = m_bounds.m_width + m_bounds.m_x - 1;
+			boundBottom = m_bounds.m_y + m_bounds.m_height - 1;
 			if (boundRight < m_position.m_x) {
 				m_position.m_x = boundRight;
 			}
