@@ -24,7 +24,7 @@
 | `tools/link_binary.py` | CMake toolchain MSVC 4.00 linker adapter |
 | `tools/check_function.py 0xADDR` | Compare/diff function against target; `--summary` to omit diffs |
 | `tools/triage_targets.py` | Select unfinished functions; `--exact` for raw, `--min-size N --sort size` for larger targets |
-| `tools/check_source.py` | Source policy, annotation, and catalog checks; `-v` for review details |
+| `tools/check_source.py` | Source policy, annotation, and mapped catalog identity checks |
 | `tools/make_report.py` | Canonical reports plus console Effective score |
 | `tools/make_badges.py` | README badges, separate from canonical progress |
 
@@ -56,4 +56,4 @@ The source reconstruction workflow below applies to C/C++ source changes. Tool c
 - Calling conventions: arguments, forwarding, cleanup; zero-argument `RET` alone insufficient. Qualified base calls require direct-dispatch evidence.
 - Constants: evidenced meaning; verify resource IDs against Manifest/RC. Preserve original assertion filenames when renaming files.
 - Reccmp annotations: original Windows addresses; STUB promotion only when substantially implemented.
-- `check_source.py -v`: catalog review details by Windows address; parameter names ignored, types/constness checked. ABI differences need Windows evidence; normal pass leaves reviews open.
+- Catalog checks: mapped Windows addresses and class/method names. Windows ABI and behavior follow x86; unmapped names do not block.

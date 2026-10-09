@@ -1,4 +1,4 @@
-"""Audit source signatures against independent symbol catalog evidence."""
+"""Check source class and method identities at catalog-mapped Windows addresses."""
 
 import csv
 import re
@@ -7,33 +7,29 @@ from collections import defaultdict
 from reccmp.cvdump.demangler import msvc_demangle
 
 from .codewarrior import decode_signature
-from .signatures import Signature, adjacent_signature, canonical_type, delimiter_ends
+from .signatures import Signature, adjacent_signature, delimiter_ends
 from . import TARGET_ID
 from .scan import TOKENS, mask_comments_and_strings
 
-WINDOWS_NAME_REVIEWS = {
+WINDOWS_NAMES = {
     (
         0x00471AF0,
         "SysCloseSocket__14CTCPIPRWSocketFv",
-        "CTCPIPCommonSocket::SysCloseSocket()",
-    ): "LEMBALL.EXE: 0x00471af0 adds 0x128 to ECX and jumps to "
-    "CTCPIPCommonSocket::SysCloseSocket at 0x00471a60. Mac 0x1010d04c "
-    "is a CTCPIPRWSocket wrapper forwarding to the same common-base method. "
-    "The Windows symbol names the defining base of the compiler adjustor.",
+        "CTCPIPCommonSocket",
+        "SysCloseSocket",
+    ),
     (
         0x0043A500,
         "OnZoomBox__4CWndFUc",
-        "CWnd::OnDriverChange()",
-    ): "LEMBALL.EXE: CWnd vtable+0x5c at 0x0049942c points through "
-    "0x00401028 to the zero-argument RET at 0x0043a500; CPVWnd's same "
-    "slot points to OnDriverChange at 0x00466340.",
+        "CWnd",
+        "OnDriverChange",
+    ),
     (
         0x0045EDA0,
         "GetCDDir__FPCc",
-        "CPlatformServices::GetCDDir(const char*)",
-    ): "LEMBALL.EXE: caller 0x00406e60 loads the platform object into ECX "
-    "before CALL 0x0045eda0; the callee returns with RET 4 at 0x0045ee61. "
-    "Windows uses a member function for the catalog's free function.",
+        "CPlatformServices",
+        "GetCDDir",
+    ),
 }
 
 TYPE_DEF = re.compile(
@@ -61,46 +57,6 @@ def read_catalog(path):
     return symbols, by_windows
 
 
-def compare_signature(expected, actual):
-    """Compare names, parameter types, and constness; ABI differences need review."""
-    differences = []
-    for part, wanted, found in (
-        ("class", expected.owner, actual.owner),
-        ("method", expected.method, actual.method),
-    ):
-        if wanted != found:
-            kind = "case" if wanted.lower() == found.lower() else "name"
-            differences.append(f"{part}-{kind}")
-    status = "match"
-    if any(difference.endswith("-name") for difference in differences):
-        status = "mismatch"
-    elif differences:
-        status = "case"
-
-    signature_status = "match"
-    if expected.parameters is None:
-        signature_status = "unencoded"
-    elif actual.parameters is None:
-        signature_status = "unresolved"
-    else:
-        try:
-            wanted = tuple(
-                canonical_type(parameter) for parameter in expected.parameters
-            )
-            found = tuple(canonical_type(parameter) for parameter in actual.parameters)
-            if wanted != found or expected.const != actual.const:
-                signature_status = "review"
-        except ValueError:
-            signature_status = "unresolved"
-    return {
-        "status": status,
-        "differences": differences,
-        "signature_status": signature_status,
-        "original_signature": expected.display(),
-        "actual_signature": actual.display(),
-    }
-
-
 def annotation_blocks(text, code):
     """Yield line-comment blocks and the next block's offset to bound declarations."""
     block = []
@@ -117,14 +73,6 @@ def annotation_blocks(text, code):
         block.append(token)
     if block:
         yield block, len(code)
-
-
-CANDIDATE_PRIORITY = {
-    "match": 0,
-    "windows": 1,
-    "case": 2,
-    "mismatch": 3,
-}
 
 
 def annotated_signature(code, block, token, limit, ranges):
@@ -163,7 +111,7 @@ def annotated_signature(code, block, token, limit, ranges):
     return adjacent_signature(code[:limit], block[-1].end(), ranges)
 
 
-def scan(path, symbols, by_windows, inferences=None):
+def scan(path, symbols, by_windows, thunks):
     """Attach each Windows annotation to its declaration and catalog candidates."""
     text = path.read_text(encoding="utf-8")
     code = mask_comments_and_strings(text)
@@ -179,73 +127,39 @@ def scan(path, symbols, by_windows, inferences=None):
             if marker is None:
                 continue
             address = int(marker["address"], 16)
+            candidates = by_windows.get(address)
+            if not candidates:
+                continue
             row = {
                 "path": str(path),
                 "line": text.count("\n", 0, token.start()) + 1,
                 "windows_address": f"0x{address:08x}",
                 "kind": marker["kind"],
             }
-            candidates = by_windows.get(address)
             try:
                 actual = annotated_signature(code, block, token, limit, ranges)
             except ValueError as error:
                 yield dict(
                     row,
                     status="unresolved",
-                    reason=f"{error}; no verified source identity",
+                    reason=str(error),
                 )
-                continue
-            actual_signature = actual.display()
-            row["actual_signature"] = actual_signature
-            if not candidates:
-                inferred_signature = (inferences or {}).get(address)
-                if inferred_signature == actual_signature:
-                    yield dict(
-                        row, status="inferred", reason="explicit source inference"
-                    )
-                elif inferred_signature:
-                    yield dict(
-                        row,
-                        status="mismatch",
-                        reason=f"recorded Windows inference {inferred_signature} -> {actual_signature}",
-                    )
-                else:
-                    yield dict(
-                        row,
-                        status="unmapped",
-                        reason=f"{actual_signature}: no Windows catalog mapping or explicit inference",
-                    )
                 continue
             if (
                 marker["kind"] == "SYNTHETIC"
-                and actual.method == f"__lemball_jump_{address:08x}"
-                and (inferences or {}).get(address) == actual_signature
+                and not actual.owner
+                and actual.method == thunks.get(address)
             ):
-                yield dict(
-                    row,
-                    status="synthetic",
-                    reason="address-derived linker label; mapped target has no separate C++ declaration",
-                )
+                yield dict(row, status="match")
                 continue
-            comparisons = []
-            for mac in candidates:
-                symbol = symbols[mac]
-                comparison = compare_signature(decode_signature(symbol), actual)
-                if marker["kind"] == "SYNTHETIC":
-                    comparison["signature_status"] = "unencoded"
-                evidence = WINDOWS_NAME_REVIEWS.get((address, symbol, actual_signature))
-                if evidence and comparison["status"] != "match":
-                    comparison.update(
-                        status="windows",
-                        signature_status="review",
-                        windows_evidence=evidence,
-                    )
-                comparisons.append(comparison)
-            best = min(
-                comparisons,
-                key=lambda candidate: (
-                    CANDIDATE_PRIORITY[candidate["status"]],
-                    candidate["signature_status"] != "match",
-                ),
+            expected = [decode_signature(symbols[mac]) for mac in candidates]
+            matches = any(
+                (wanted.owner, wanted.method) == (actual.owner, actual.method)
+                or (address, symbols[mac], actual.owner, actual.method) in WINDOWS_NAMES
+                for mac, wanted in zip(candidates, expected, strict=True)
             )
-            yield dict(row, **best)
+            yield dict(
+                row,
+                status="match" if matches else "mismatch",
+                reason=f"{'; '.join(wanted.display() for wanted in expected)} -> {actual.display()}",
+            )

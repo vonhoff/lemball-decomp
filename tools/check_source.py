@@ -2,9 +2,8 @@
 """Check source policy, annotations, and catalog identities."""
 
 import argparse
-import csv
 import json
-from collections import Counter, defaultdict
+from collections import defaultdict
 from itertools import groupby
 from pathlib import Path
 
@@ -16,7 +15,6 @@ from lib import ROOT, TARGET_ID
 from lib.codewarrior import decode_signature
 from lib.names import read_catalog, scan
 from lib.policy import violations
-from lib.signatures import Signature
 
 
 SRC = ROOT / "src"
@@ -26,22 +24,6 @@ CATALOG = ROOT / "tools/data/mac-symbol-catalog.csv"
 def collect_sources(paths=None):
     """Find C/C++ sources under supplied paths or the configured source root."""
     return list(source_code_search([ROOT / path for path in paths or (SRC,)]))
-
-
-def read_inferences():
-    """Read explicit source hypotheses and address-derived linker labels."""
-    with (CATALOG.parent / "inferred-symbols.csv").open(
-        newline="", encoding="utf-8-sig"
-    ) as stream:
-        inferences = {
-            int(row["address"], 16): row["signature"]
-            for row in csv.DictReader(stream)
-            if row["signature"]
-        }
-    thunks = json.loads((CATALOG.parent / "linker-thunks.json").read_text())
-    for thunk in thunks["thunks"]:
-        inferences[thunk["address"]] = Signature("", thunk["symbol"], None).display()
-    return inferences
 
 
 def check_policy(paths=None):
@@ -80,16 +62,17 @@ def check_annotations(paths=None) -> int:
     return int(any(alert.is_error() or alert.is_warning() for alert in alerts))
 
 
-def check_names(paths: list[Path | str] | None = None, verbose=False):
+def check_names(paths: list[Path | str] | None = None):
     """Check source identities and coverage of all mapped Windows addresses."""
     symbols, mappings = read_catalog(CATALOG)
-    inferences = read_inferences()
+    thunks = {
+        thunk["address"]: thunk["symbol"]
+        for thunk in json.loads((CATALOG.parent / "linker-thunks.json").read_text())[
+            "thunks"
+        ]
+    }
     files = collect_sources(paths)
-    rows = [row for path in files for row in scan(path, symbols, mappings, inferences)]
-    counts = Counter(row["status"] for row in rows)
-    signatures = Counter(
-        row["signature_status"] for row in rows if "signature_status" in row
-    )
+    rows = [row for path in files for row in scan(path, symbols, mappings, thunks)]
     missing, stubs = set(), set()
     if not paths:
         kinds = defaultdict(set)
@@ -107,70 +90,26 @@ def check_names(paths: list[Path | str] | None = None, verbose=False):
             f"catalog: source coverage {len(mappings) - len(missing) - len(stubs)}/{len(mappings)} "
             f"mapped Windows addresses; {len(missing)} missing, {len(stubs)} stub-only"
         )
-    for row in rows:
-        required = row["status"] in (
-            "mismatch",
-            "case",
-            "unresolved",
+    failures = [row for row in rows if row["status"] != "match"]
+    for row in failures:
+        print(
+            f"{row['path']}:{row['line']}: {row['reason']} [{row['windows_address']}]"
         )
-        requested = verbose and (
-            row["status"] in ("inferred", "unmapped", "windows")
-            or row.get("signature_status") in ("review", "unresolved")
-        )
-        if required or requested:
-            detail = row.get("reason") or (
-                f"{row['original_signature']} -> {row['actual_signature']}"
-                f" ({', '.join(row['differences']) or row['signature_status']})"
-            )
-            print(
-                f"{row['path']}:{row['line']}: {row['status']}: {detail} [{row['windows_address']}]"
-            )
-            if row.get("windows_evidence"):
-                print(f"  Windows evidence: {row['windows_evidence']}")
-    print(f"names: {len(files)} files, {len(rows)} annotated entries: {dict(counts)}")
     print(
-        "names: unmapped kinds: "
-        f"{dict(Counter(row['kind'] for row in rows if row['status'] == 'unmapped'))}"
+        f"catalog: {len(rows)} mapped source entries; {len(failures)} identity errors"
     )
-    print(f"names: parameter/const comparisons: {dict(signatures)}")
-    if counts["unmapped"]:
-        print(
-            f"names: {counts['unmapped']} unsupported identities "
-            "(no catalog mapping or accepted Windows inference); --verbose lists entries"
-        )
-    if signatures["review"] or signatures["unresolved"]:
-        print(
-            "names: signature review requires Windows evidence; "
-            "check_source.py --verbose lists items."
-        )
-    if counts["unresolved"]:
-        return 2
-    return int(
-        bool(
-            missing
-            or stubs
-            or counts["mismatch"]
-            or counts["case"]
-            or counts["unmapped"]
-        )
-    )
+    return int(bool(missing or stubs or failures))
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--path", action="append", dest="paths")
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        action="store_true",
-        help="show catalog review details and signatures",
-    )
     args = parser.parse_args()
     if code := check_policy(args.paths):
         return code
     if code := check_annotations(args.paths):
         return code
-    return check_names(args.paths, verbose=args.verbose)
+    return check_names(args.paths)
 
 
 if __name__ == "__main__":

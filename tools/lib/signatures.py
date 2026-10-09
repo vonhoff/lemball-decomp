@@ -1,4 +1,4 @@
-"""Parse C++ declarations into normalized function signatures."""
+"""Parse C++ function identities and display decoded catalog signatures."""
 
 import re
 from dataclasses import dataclass
@@ -52,104 +52,10 @@ WORDS = {
     "volatile",
     "wchar_t",
 }
-FUNCTION_PARAMETER = re.compile(
-    r"(?P<result>.+?)\s*\(\s*(?P<indirection>[*&])\s*(?:[A-Za-z_]\w*)?\s*\)\s*"
-    r"\((?P<parameters>.*)\)",
-    re.DOTALL,
-)
-
-
-def split_parameters(text, separator=","):
-    parts, stack, start = [], [], 0
-    closing = {"(": ")", "[": "]", "<": ">", "{": "}"}
-    for index, char in enumerate(text):
-        if char in closing:
-            stack.append(closing[char])
-        elif stack and char == stack[-1]:
-            stack.pop()
-        elif char == separator and not stack:
-            parts.append(text[start:index].strip())
-            start = index + 1
-    if stack:
-        raise ValueError("unbalanced parameter declaration")
-    return parts + [text[start:].strip()]
-
-
-def canonical_type(text):
-    """Normalize spelling, preserving pointee constness and integer distinctions."""
-    text = re.sub(r"\b(?:class|struct|enum|register)\s+", "", text).strip()
-    if match := FUNCTION_PARAMETER.fullmatch(text):
-        if re.search(
-            r"\b__(?:cdecl|stdcall|fastcall|thiscall|vectorcall)\b", match["result"]
-        ):
-            raise ValueError("callback calling convention needs review")
-        result = canonical_type(match["result"])
-        raw = match["parameters"].strip()
-        parameters = (
-            ()
-            if raw in ("", "void")
-            else tuple(parameter_type(p) for p in split_parameters(raw))
-        )
-        if "void" in parameters or "..." in parameters[:-1]:
-            raise ValueError("invalid callback parameter sequence")
-        return f"{result} ({match['indirection']})({', '.join(parameters)})"
-    # Complex declarators require a real type resolver. Never claim equivalence.
-    if any(char in text for char in "()[]<>"):
-        raise ValueError("complex parameter declarator needs review")
-    if text == "...":
-        return text
-    if not re.fullmatch(r"[A-Za-z_][\w\s:*&]*", text):
-        raise ValueError("unsupported parameter type")
-    parts = re.split(r"([*&])", text)
-    for index in range(0, len(parts), 2):
-        words = parts[index].split()
-        cv = [word for word in ("const", "volatile") if word in words]
-        words = [word for word in words if word not in cv]
-        # Top-level parameter cv does not participate in a C++ function type.
-        if index == len(parts) - 1:
-            cv = []
-        if index == 0:
-            if words == ["unsigned"]:
-                words = ["unsigned", "int"]
-            elif words in (["signed"], ["signed", "int"]):
-                words = ["int"]
-            elif "short" in words or "long" in words:
-                for optional in ("int", "signed"):
-                    if optional in words:
-                        words.remove(optional)
-            if not words:
-                raise ValueError("missing parameter type")
-        parts[index] = " ".join(cv + words)
-    return "".join(parts)
-
-
-def parameter_type(text):
-    # Defaults and parameter identifiers are not signature evidence.
-    text = split_parameters(text, "=")[0]
-    if FUNCTION_PARAMETER.fullmatch(text):
-        return canonical_type(text)
-    array = re.search(r"\s*\[(?:\d+)?]\s*$", text)
-    if array:
-        text = text[: array.start()]
-    tail = re.search(r"\b([A-Za-z_]\w*)\s*$", text)
-    if tail and tail[1] not in WORDS:
-        prefix = text[: tail.start()].rstrip()
-        if (
-            prefix
-            and not prefix.endswith("::")
-            and any(
-                word not in {"const", "volatile", "struct", "class", "enum", "register"}
-                for word in re.findall(r"[A-Za-z_]\w*|[*&]", prefix)
-            )
-        ):
-            text = prefix
-    if array:
-        text += "*"  # A one-dimensional array parameter decays to a pointer.
-    return canonical_type(text)
 
 
 def adjacent_signature(code, offset, ranges):
-    """Parse the declaration after an annotation; unsupported parameters stay unresolved."""
+    """Read the class and method from the declaration after an annotation."""
     declaration = code[offset:].lstrip()
     start = len(code) - len(declaration)
     end = re.search(r"[;{}#]", declaration)
@@ -175,14 +81,4 @@ def adjacent_signature(code, offset, ranges):
     closing = delimiter_ends(declaration, "(", ")").get(match.end() - 1)
     if closing is None:
         raise ValueError("unclosed function parameters")
-    raw = declaration[match.end() : closing].strip()
-    const = bool(re.match(r"\s*const\b", declaration[closing + 1 :]))
-    try:
-        parameters = (
-            ()
-            if raw in ("", "void")
-            else tuple(parameter_type(p) for p in split_parameters(raw))
-        )
-    except ValueError:
-        parameters = None
-    return Signature(owner, method, parameters, const)
+    return Signature(owner, method, None)
