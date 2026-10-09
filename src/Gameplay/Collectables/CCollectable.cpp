@@ -1,6 +1,5 @@
 #include "CCollectable.h"
 
-#include "Engine/Math/CFixed.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
@@ -14,12 +13,6 @@
 #include "Multiplayer/Transport/CConnect.h"
 
 #include <stddef.h>
-
-inline static CFixed FixedGroundHeight(unsigned short p_height)
-{
-	CFixed height((int) p_height << FIXED_POINT_FRACTION_BITS);
-	return height;
-}
 
 // FUNCTION: LEMBALL 0x00422870
 CCollectable::CCollectable(int p_x, int p_y, int p_z, eObjectType p_objectType) : CGlobalGameObject(p_objectType, 0, 0)
@@ -84,7 +77,7 @@ bool CCollectable::Process()
 					else {
 						z = 0;
 					}
-					m_position.m_zFixed = FixedGroundHeight(z).m_value;
+					m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 				}
 				CPt3 pt;
 				pt.m_x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;

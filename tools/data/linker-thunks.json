@@ -21410,18 +21410,18 @@
       "caller": 4335872,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Collectables/CCollectable.cpp.obj",
       "symbol": "?Process@CCollectable@@UAEHXZ",
-      "size": 551,
-      "fingerprint": "dcce2994e3aa24d4fd97ae8f1d32a7148d35b361ab1320a995114d11333010ac",
+      "size": 537,
+      "fingerprint": "054ac4ff3fb86bb072e31276e1695b1931ad5974ff528a6eefc6dca18e93fee9",
       "references": [
         {
-          "offset": 269,
+          "offset": 255,
           "original_instruction": 4336141,
           "original_bytes": "e893fffdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 482,
+          "offset": 468,
           "original_instruction": 4336354,
           "original_bytes": "e855f4fdff",
           "thunk": 4202300,
