@@ -71,8 +71,8 @@ private:
 	int m_velocityY;                    // 0x60
 	int m_directionX;                   // 0x64
 	int m_directionY;                   // 0x68
-	unsigned int m_lastInputX;          // 0x6c
-	unsigned int m_lastInputY;          // 0x70
+	unsigned long m_lastInputX;         // 0x6c
+	unsigned long m_lastInputY;         // 0x70
 	CVSRect m_bounds;                   // 0x74
 	int m_keys[7];                      // 0x7c
 	unsigned int m_reserved98;          // 0x98
