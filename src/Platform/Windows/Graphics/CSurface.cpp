@@ -545,42 +545,36 @@ void CSurface::SetLinePtrs()
 	int parentStride;
 	unsigned char* bits;
 
-	if (CPVScrollableSurface::m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
-		parentStride = CPVScrollableSurface::m_parentSurface->m_stride;
+	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
+		parentStride = m_parentSurface->m_stride;
 		m_stride = parentStride;
-		bits = (unsigned char*)
-				   CPVScrollableSurface::m_parentSurface->m_lines[(int) CPVScrollableSurface::m_windowRect.m_y] +
-			   (int) CPVScrollableSurface::m_windowRect.m_x;
+		bits = (unsigned char*) m_parentSurface->m_lines[(int) m_windowRect.m_y] + (int) m_windowRect.m_x;
 		m_bitsBase = bits;
 		m_bits = bits;
 		m_xOffset = 0;
 		m_firstLine = 0;
-		if (CPVScrollableSurface::m_parentSurface->CPVBackBuffSurface::m_enabled != 0) {
-			CPVBackBuffSurface::m_enabled = CPVScrollableSurface::m_parentSurface->CPVBackBuffSurface::m_enabled;
-			CPVBackBuffSurface::m_buffer = CPVScrollableSurface::m_parentSurface->CPVBackBuffSurface::m_buffer +
-										   (int) CPVScrollableSurface::m_windowRect.m_y * parentStride +
-										   (int) CPVScrollableSurface::m_windowRect.m_x;
+		if (m_parentSurface->CPVBackBuffSurface::m_enabled != 0) {
+			CPVBackBuffSurface::m_enabled = m_parentSurface->CPVBackBuffSurface::m_enabled;
+			CPVBackBuffSurface::m_buffer = m_parentSurface->CPVBackBuffSurface::m_buffer +
+										   (int) m_windowRect.m_y * parentStride + (int) m_windowRect.m_x;
 		}
 		else {
 			CPVBackBuffSurface::m_enabled = 0;
 		}
-		if (CPVScrollableSurface::m_parentSurface->CPVZBuffSurface::m_enabled != 0) {
-			CPVZBuffSurface::m_enabled = CPVScrollableSurface::m_parentSurface->CPVZBuffSurface::m_enabled;
+		if (m_parentSurface->CPVZBuffSurface::m_enabled != 0) {
+			CPVZBuffSurface::m_enabled = m_parentSurface->CPVZBuffSurface::m_enabled;
 			CPVZBuffSurface::m_buffer =
-				(unsigned short*) ((int) CPVScrollableSurface::m_parentSurface->CPVZBuffSurface::m_buffer +
-								   ((int) CPVScrollableSurface::m_windowRect.m_y * parentStride +
-									(int) CPVScrollableSurface::m_windowRect.m_x) *
-									   2);
+				(unsigned short*) ((int) m_parentSurface->CPVZBuffSurface::m_buffer +
+								   ((int) m_windowRect.m_y * parentStride + (int) m_windowRect.m_x) * 2);
 		}
 		else {
 			CPVZBuffSurface::m_enabled = 0;
 		}
-		parentY = (int) CPVScrollableSurface::m_windowRect.m_y;
+		parentY = (int) m_windowRect.m_y;
 		y = 0;
 		if (0 < m_size.m_height) {
 			do {
-				m_lines[y] = (void*) ((int) CPVScrollableSurface::m_parentSurface->m_lines[parentY] +
-									  (int) CPVScrollableSurface::m_windowRect.m_x);
+				m_lines[y] = (void*) ((int) m_parentSurface->m_lines[parentY] + (int) m_windowRect.m_x);
 				y = y + 1;
 				parentY = parentY + 1;
 			} while (y < m_size.m_height);
@@ -599,16 +593,15 @@ void CSurface::AddToChangeList(const CVSRect& p_rect)
 	short originX;
 	short originY;
 
-	parent = (CSurface*) CPVScrollableSurface::m_parentSurface;
-	if (parent != (CSurface*) g_pGdiHelperTarget && CPVScrollableSurface::m_flag74 != 0 &&
-		CPVScrollableSurface::m_flag70 != 0) {
-		origin = &this->CPVScrollableSurface::m_surfaceRect;
+	parent = (CSurface*) m_parentSurface;
+	if (parent != (CSurface*) g_pGdiHelperTarget && m_flag74 != 0 && m_flag70 != 0) {
+		origin = &this->m_surfaceRect;
 		originX = origin->m_x;
 		originY = origin->m_y;
 		CVSRect translated(p_rect);
 		translated.m_x += originX;
 		translated.m_y += originY;
-		((CSurface*) CPVScrollableSurface::m_parentSurface)->AddToChangeList(translated);
+		((CSurface*) m_parentSurface)->AddToChangeList(translated);
 		return;
 	}
 	m_changeList->Add(p_rect);
@@ -1799,13 +1792,13 @@ int CSurface::ClipCirclePoint(int p_x, int p_y)
 	int clipY;
 	int clipBottom;
 
-	clipX = CPVScrollableSurface::m_clipRect.m_x;
+	clipX = m_clipRect.m_x;
 	if (clipX <= p_x) {
-		clipRight = CPVScrollableSurface::m_clipRect.m_width + clipX - 1;
+		clipRight = m_clipRect.m_width + clipX - 1;
 		if (p_x <= clipRight) {
-			clipY = CPVScrollableSurface::m_clipRect.m_y;
+			clipY = m_clipRect.m_y;
 			if (clipY <= p_y) {
-				clipBottom = CPVScrollableSurface::m_clipRect.m_height + clipY - 1;
+				clipBottom = m_clipRect.m_height + clipY - 1;
 				if (p_y <= clipBottom) {
 					return 1;
 				}
