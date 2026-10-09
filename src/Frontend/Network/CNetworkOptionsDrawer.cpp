@@ -206,10 +206,10 @@ enum {
 };
 
 // GLOBAL: LEMBALL 0x004a0368
-char g_szNetworkGameName[16];
+char g_szNetworkGameName[16] = {0};
 
 // GLOBAL: LEMBALL 0x004a0378
-char g_szNetworkBroadcastAddress[NETWORK_OPTIONS_ADDRESS_MAX_LENGTH + 1];
+char g_szNetworkBroadcastAddress[NETWORK_OPTIONS_ADDRESS_MAX_LENGTH + 1] = {0};
 
 // GLOBAL: LEMBALL 0x004a0390
 int g_nNetworkOptionsShiftHeld = 0;
