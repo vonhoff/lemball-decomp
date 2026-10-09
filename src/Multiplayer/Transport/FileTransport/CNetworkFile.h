@@ -17,7 +17,7 @@ public:
 	virtual bool Write(const unsigned char* p_data, int p_size);                   // vtable+0x18
 	virtual bool Read(unsigned char* p_data, int p_size);                          // vtable+0x1c
 	virtual bool Seek(int p_position);                                             // vtable+0x20
-	virtual unsigned int GetFileSize();                                            // vtable+0x24
+	virtual unsigned long GetFileSize();                                           // vtable+0x24
 	virtual int Tell();                                                            // vtable+0x28
 	virtual bool Lock(unsigned long p_offset, unsigned long p_length);             // vtable+0x2c
 	virtual bool UnLock(unsigned long p_offset, unsigned long p_length);           // vtable+0x30

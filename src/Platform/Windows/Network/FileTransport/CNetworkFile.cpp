@@ -163,8 +163,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 	m_position += got;
 	if (got != (unsigned int) p_size) {
 		*g_pErrorOutput << "Read error: " << (unsigned long) got << " bytes read instead of " << p_size << "\n";
-		*g_pErrorOutput << "in file " << m_filename << " which is " << (unsigned long) GetFileSize()
-						<< " bytes long.\n";
+		*g_pErrorOutput << "in file " << m_filename << " which is " << GetFileSize() << " bytes long.\n";
 		return false;
 	}
 	return true;
@@ -199,7 +198,7 @@ bool CNetworkFile::Close()
 }
 
 // FUNCTION: LEMBALL 0x0047f8f0
-unsigned int CNetworkFile::GetFileSize()
+unsigned long CNetworkFile::GetFileSize()
 {
 	return ::GetFileSize(m_handle, NULL);
 }
