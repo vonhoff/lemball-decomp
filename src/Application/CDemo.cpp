@@ -71,14 +71,7 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	if (*m_readCursor != (p_packetIndex & DEMO_PACKET_INDEX_BYTE_MASK)) {
 		return false;
 	}
-	struct {
-		unsigned short m_type;
-		unsigned short m_reserved;
-		unsigned int m_time;
-		int m_code;
-		unsigned int m_payload;
-		unsigned int m_source;
-	} message;
+	Message message;
 	message.m_time = CurrentQueueTimer();
 	m_readCursor++;
 	message.m_type = m_readCursor[0];
@@ -89,15 +82,17 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	message.m_code |= (unsigned int) m_readCursor[2] << 16;
 	message.m_code |= (unsigned int) m_readCursor[3] << 24;
 	m_readCursor += 4;
-	message.m_payload = m_readCursor[0];
-	message.m_payload |= (unsigned int) m_readCursor[1] << 8;
-	message.m_payload |= (unsigned int) m_readCursor[2] << 16;
-	message.m_payload |= (unsigned int) m_readCursor[3] << 24;
+	unsigned int payload = m_readCursor[0];
+	payload |= (unsigned int) m_readCursor[1] << 8;
+	payload |= (unsigned int) m_readCursor[2] << 16;
+	payload |= (unsigned int) m_readCursor[3] << 24;
+	message.m_payload = (void*) payload;
 	m_readCursor += 4;
-	message.m_source = m_readCursor[0];
-	message.m_source |= (unsigned int) m_readCursor[1] << 8;
-	message.m_source |= (unsigned int) m_readCursor[2] << 16;
-	message.m_source |= (unsigned int) m_readCursor[3] << 24;
+	unsigned int source = m_readCursor[0];
+	source |= (unsigned int) m_readCursor[1] << 8;
+	source |= (unsigned int) m_readCursor[2] << 16;
+	source |= (unsigned int) m_readCursor[3] << 24;
+	message.m_source = (void*) source;
 	m_readCursor += 4;
 	if (m_window == NULL) {
 		return false;
@@ -128,7 +123,7 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	}
 	}
 	message.m_type |= DEMO_MESSAGE_RECORDED_FLAG;
-	g_pMasterInputQueue->Post((Message&) message);
+	g_pMasterInputQueue->Post(message);
 	return true;
 }
 
