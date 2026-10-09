@@ -25,7 +25,7 @@ void CPVWnd::SetSizeStatus(unsigned int p_status)
 }
 
 // FUNCTION: LEMBALL 0x004323d0
-void CPVWnd::AddChild(class CPVWnd* p_child)
+void CPVWnd::AddChild(CPVWnd* p_child)
 {
 	void** node;
 
@@ -50,7 +50,7 @@ void CPVWnd::AddChild(class CPVWnd* p_child)
 }
 
 // FUNCTION: LEMBALL 0x00432430
-void CPVWnd::RemoveChild(class CPVWnd* p_child)
+void CPVWnd::RemoveChild(CPVWnd* p_child)
 {
 	void** node;
 	void** nextNode;

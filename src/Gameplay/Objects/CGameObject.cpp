@@ -66,7 +66,7 @@ void CGameObject::ForgetObjectLink(unsigned short p_arg0)
 }
 
 // FUNCTION: LEMBALL 0x0040a800
-bool CGameObject::Activate(class CGameObject* p_object)
+bool CGameObject::Activate(CGameObject* p_object)
 {
 	return true;
 }
@@ -242,7 +242,7 @@ bool CGameObject::HasObject(eObjectType p_objectType)
 }
 
 // FUNCTION: LEMBALL 0x0040aa70
-bool CGameObject::AddObject(eObjectType p_objectType, class CGameObject* p_object)
+bool CGameObject::AddObject(eObjectType p_objectType, CGameObject* p_object)
 {
 	return false;
 }

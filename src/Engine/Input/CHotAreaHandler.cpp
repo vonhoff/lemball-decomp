@@ -135,9 +135,7 @@ void CHotAreaHandler::Reset()
 }
 
 // FUNCTION: LEMBALL 0x0046a380
-void CHotAreaHandler::ProcessArea(tagMESSAGE* p_message,
-								  const CVSPoint& p_point,
-								  class CHotAreaHandler* p_currentHandler)
+void CHotAreaHandler::ProcessArea(tagMESSAGE* p_message, const CVSPoint& p_point, CHotAreaHandler* p_currentHandler)
 {
 	unsigned short type;
 	BUTTON_FLAGS button;

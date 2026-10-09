@@ -584,7 +584,7 @@ void CPauseWindow::OnPaint(const CVSRect& p_rect)
 								 m_fontId,
 								 m_menuLabels[i],
 								 TEXT_ADVANCE_X_POSITIVE,
-								 (class CRemap*) Remap(i));
+								 (CRemap*) Remap(i));
 	}
 	CTextManager::ResetPrimitives();
 }

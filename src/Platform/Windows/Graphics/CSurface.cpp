@@ -134,7 +134,7 @@ inline unsigned int CSurface::ClipCode(int p_x, int p_y)
 }
 
 // FUNCTION: LEMBALL 0x0046c050
-CSurface::CSurface(const CVSRect& p_rect, class CSurface* p_parentSurface)
+CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 	: m_presentX(m_presentY = 0), m_childSurfaceHead(NULL), m_childSurfaceTail(NULL), m_childSurfaceCount(0)
 {
 	SurfaceListHead* head;
@@ -621,7 +621,7 @@ CChangeList* CSurface::GetChangeList()
 }
 
 // FUNCTION: LEMBALL 0x0046cbe0
-void CSurface::Blit(class CClipRect* p_clipRect)
+void CSurface::Blit(CClipRect* p_clipRect)
 {
 	CVSRect* clip = &m_clipRect;
 	short clipRight;
@@ -700,7 +700,7 @@ void CSurface::Blit(class CClipRect* p_clipRect)
 }
 
 // FUNCTION: LEMBALL 0x0046cda0
-void CSurface::ToScreen(class CSurface* p_destinationSurface)
+void CSurface::ToScreen(CSurface* p_destinationSurface)
 {
 	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
 		if (m_flag74 == 0) {

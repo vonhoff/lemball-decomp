@@ -20,8 +20,7 @@ enum {
 };
 
 // FUNCTION: LEMBALL 0x004599f0
-CArena::CArena(unsigned long p_arenaSize, char* p_description, class CArena* p_parentArena, class CArena* p_arenaLink)
-	: CCritical()
+CArena::CArena(unsigned long p_arenaSize, char* p_description, CArena* p_parentArena, CArena* p_arenaLink) : CCritical()
 {
 	m_parentArena = p_parentArena;
 	m_arenaLinkB = p_arenaLink;
@@ -116,7 +115,7 @@ bool CArena::AddToBlockList(CMBlock* p_block, CMBlock* p_previous)
 }
 
 // FUNCTION: LEMBALL 0x00459c40
-bool CArena::AddToArenaList(class CArena* p_arena)
+bool CArena::AddToArenaList(CArena* p_arena)
 {
 	CArena* current = m_nextArena;
 	CArena* previous = NULL;
@@ -175,7 +174,7 @@ bool CArena::RemoveFromBlockList(CMBlock* p_block)
 }
 
 // FUNCTION: LEMBALL 0x00459ce0
-bool CArena::RemoveFromArenaList(class CArena* p_arena)
+bool CArena::RemoveFromArenaList(CArena* p_arena)
 {
 	CArena* current = m_nextArena;
 	CArena* previous = NULL;
@@ -327,7 +326,7 @@ bool CArena::AllocateArena(CArena** p_arena, unsigned long p_size, char* p_descr
 }
 
 // FUNCTION: LEMBALL 0x0045a0a0
-bool CArena::FreeArena(class CArena* p_arena)
+bool CArena::FreeArena(CArena* p_arena)
 {
 	EnterCritical();
 	if (!RemoveFromArenaList(p_arena)) {
