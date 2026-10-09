@@ -29,8 +29,8 @@ public:
 	virtual bool Seek(int p_position) = 0;                                             // vtable+0x20
 	virtual unsigned int GetFileSize() = 0;                                            // vtable+0x24
 	virtual int Tell() = 0;                                                            // vtable+0x28
-	virtual bool Lock(unsigned int p_offset, unsigned int p_length) = 0;               // vtable+0x2c
-	virtual bool UnLock(unsigned int p_offset, unsigned int p_length) = 0;             // vtable+0x30
+	virtual bool Lock(unsigned long p_offset, unsigned long p_length) = 0;             // vtable+0x2c
+	virtual bool UnLock(unsigned long p_offset, unsigned long p_length) = 0;           // vtable+0x30
 	virtual int GetLastError() = 0;                                                    // vtable+0x34
 	virtual char* GetFilename() = 0;                                                   // vtable+0x38
 

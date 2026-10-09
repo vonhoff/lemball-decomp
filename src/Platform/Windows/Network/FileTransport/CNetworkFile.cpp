@@ -29,15 +29,15 @@ extern "C" __declspec(dllimport) unsigned int __stdcall SetFilePointer(void* p_h
 																	   unsigned int p_method);
 extern "C" __declspec(dllimport) unsigned int __stdcall GetFileSize(void* p_handle, unsigned int* p_sizeHigh);
 extern "C" __declspec(dllimport) int __stdcall LockFile(void* p_handle,
-														unsigned int p_offsetLow,
-														unsigned int p_offsetHigh,
-														unsigned int p_lengthLow,
-														unsigned int p_lengthHigh);
+														unsigned long p_offsetLow,
+														unsigned long p_offsetHigh,
+														unsigned long p_lengthLow,
+														unsigned long p_lengthHigh);
 extern "C" __declspec(dllimport) int __stdcall UnlockFile(void* p_handle,
-														  unsigned int p_offsetLow,
-														  unsigned int p_offsetHigh,
-														  unsigned int p_lengthLow,
-														  unsigned int p_lengthHigh);
+														  unsigned long p_offsetLow,
+														  unsigned long p_offsetHigh,
+														  unsigned long p_lengthLow,
+														  unsigned long p_lengthHigh);
 extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError();
 extern "C" int __stdcall WSAGetLastError();
 
@@ -205,13 +205,13 @@ unsigned int CNetworkFile::GetFileSize()
 }
 
 // FUNCTION: LEMBALL 0x0047f900
-bool CNetworkFile::Lock(unsigned int p_offset, unsigned int p_length)
+bool CNetworkFile::Lock(unsigned long p_offset, unsigned long p_length)
 {
 	return LockFile(m_handle, p_offset, 0, p_length, 0);
 }
 
 // FUNCTION: LEMBALL 0x0047f920
-bool CNetworkFile::UnLock(unsigned int p_offset, unsigned int p_length)
+bool CNetworkFile::UnLock(unsigned long p_offset, unsigned long p_length)
 {
 	return UnlockFile(m_handle, p_offset, 0, p_length, 0);
 }
