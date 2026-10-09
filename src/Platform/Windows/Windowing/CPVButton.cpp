@@ -242,13 +242,11 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_
 	unsigned int* state;
 
 	CVSPoint relativeValue(m_relativeTopLeft);
-	const CVSPoint& relative = relativeValue;
 	CVSPoint originValue(m_relativeTopLeft);
-	const CVSPoint& origin = originValue;
-	relativeValue.m_y = (short) (p_point.m_y - origin.m_y);
-	relativeValue.m_x = (short) (p_point.m_x - origin.m_x);
-	m_clickPosition.m_x = relative.m_x;
-	m_clickPosition.m_y = relative.m_y;
+	relativeValue.m_y = (short) (p_point.m_y - originValue.m_y);
+	relativeValue.m_x = (short) (p_point.m_x - originValue.m_x);
+	m_clickPosition.m_x = relativeValue.m_x;
+	m_clickPosition.m_y = relativeValue.m_y;
 	state = m_buttonState;
 	i = 6;
 	while (i != 0) {
