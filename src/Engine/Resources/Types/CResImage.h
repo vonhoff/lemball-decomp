@@ -7,8 +7,8 @@
 // VTABLE: LEMBALL 0x00498ce0
 class CResImage : public CResRaster {
 public:
-	CResImage(unsigned int p_resourceId) { DoLoad(p_resourceId); }
-	static CResImage* Load(unsigned int p_resourceId);
+	CResImage(unsigned long p_resourceId) { DoLoad(p_resourceId); }
+	static CResImage* Load(unsigned long p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
 

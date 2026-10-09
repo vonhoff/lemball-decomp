@@ -281,7 +281,7 @@ CResBase* CMogRes::Find(unsigned long p_resourceId)
 	register int remaining = count;
 
 	if (count > i) {
-		unsigned int resourceId = p_resourceId;
+		unsigned long resourceId = p_resourceId;
 		do {
 			if (m_resources[i] == NULL) {
 				CResBase** slot = &m_resources[i];
@@ -319,7 +319,7 @@ bool CMogRes::Load(CResBase* p_resource, tagCHUNK p_chunk)
 }
 
 // FUNCTION: LEMBALL 0x0045cb80
-bool CMogRes::Load(unsigned int p_resourceId, CResBase* p_resource, RECURSE p_recurse)
+bool CMogRes::Load(unsigned long p_resourceId, CResBase* p_resource, RECURSE p_recurse)
 {
 	tagCHUNK chunk;
 	int handle;

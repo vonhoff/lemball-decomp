@@ -13,8 +13,8 @@ struct IntPayload {
 class CResINT : public CResBase {
 public:
 	CResINT();
-	CResINT(unsigned int p_resourceId);
-	static CResINT* Load(unsigned int p_resourceId);
+	CResINT(unsigned long p_resourceId);
+	static CResINT* Load(unsigned long p_resourceId);
 	virtual void OnLoad();  // vtable+0x2c
 	virtual void SetType(); // vtable+0x34
 
@@ -24,7 +24,7 @@ private:
 	int m_value; // 0x48
 };
 
-inline CResINT::CResINT(unsigned int p_resourceId)
+inline CResINT::CResINT(unsigned long p_resourceId)
 {
 	DoLoad(p_resourceId);
 }

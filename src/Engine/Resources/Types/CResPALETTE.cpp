@@ -7,11 +7,11 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045dd90
-CResPALETTE* CResPALETTE::Load(unsigned int p_resourceId)
+CResPALETTE* CResPALETTE::Load(unsigned long p_resourceId)
 {
 	void* storage;
 	CResPALETTE* res;
-	register unsigned int id = p_resourceId;
+	register unsigned long id = p_resourceId;
 	res = (CResPALETTE*) g_pActiveMogRes->Find(id);
 	if (res == NULL) {
 		storage = operator new(sizeof(CResPALETTE));

@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498d60
 class CResEFFECT : public CResBase {
 public:
-	inline CResEFFECT(unsigned int p_resourceId) { DoLoad(p_resourceId); }
+	inline CResEFFECT(unsigned long p_resourceId) { DoLoad(p_resourceId); }
 	static CResEFFECT* Load(unsigned long p_resourceId);
 	virtual void SetType(); // vtable+0x34
 };

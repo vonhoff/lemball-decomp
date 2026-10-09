@@ -7,8 +7,8 @@
 // VTABLE: LEMBALL 0x00498e60
 class CResBIN : public CResBase {
 public:
-	inline CResBIN(unsigned int p_resourceId) { DoLoad(p_resourceId); }
-	static CResBIN* Load(unsigned int p_resourceId);
+	inline CResBIN(unsigned long p_resourceId) { DoLoad(p_resourceId); }
+	static CResBIN* Load(unsigned long p_resourceId);
 	virtual void SetType(); // vtable+0x34
 };
 

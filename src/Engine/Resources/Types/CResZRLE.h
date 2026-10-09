@@ -27,7 +27,7 @@ struct ZrleHeader {
 // VTABLE: LEMBALL 0x00498a70
 class CResZRLE : public CResRaster {
 public:
-	inline CResZRLE(unsigned int p_resourceId) : m_size(), m_originY(0), m_originX(0) { DoLoad(p_resourceId); }
+	inline CResZRLE(unsigned long p_resourceId) : m_size(), m_originY(0), m_originX(0) { DoLoad(p_resourceId); }
 	CResZRLE();
 	static CResZRLE* Load(unsigned long p_resourceId);
 	virtual void SetHeader(); // vtable+0x08

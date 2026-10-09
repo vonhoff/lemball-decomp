@@ -7,8 +7,8 @@
 // VTABLE: LEMBALL 0x00498b88
 class CResBool : public CResBase {
 public:
-	CResBool(unsigned int p_resourceId);
-	static CResBool* Load(unsigned int p_resourceId);
+	CResBool(unsigned long p_resourceId);
+	static CResBool* Load(unsigned long p_resourceId);
 	virtual void OnLoad();  // vtable+0x2c
 	virtual void SetType(); // vtable+0x34
 
@@ -16,7 +16,7 @@ private:
 	unsigned int m_value; // 0x48
 };
 
-inline CResBool::CResBool(unsigned int p_resourceId)
+inline CResBool::CResBool(unsigned long p_resourceId)
 {
 	DoLoad(p_resourceId);
 }

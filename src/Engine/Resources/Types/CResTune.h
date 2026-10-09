@@ -9,8 +9,8 @@
 // VTABLE: LEMBALL 0x00498de0
 class CResTune : public CResBase {
 public:
-	inline CResTune(unsigned int p_resourceId) { DoLoad(p_resourceId); }
-	static CResTune* Load(unsigned int p_resourceId);
+	inline CResTune(unsigned long p_resourceId) { DoLoad(p_resourceId); }
+	static CResTune* Load(unsigned long p_resourceId);
 	virtual void SetType(); // vtable+0x34
 };
 

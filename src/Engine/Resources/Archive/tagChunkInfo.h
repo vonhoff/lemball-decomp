@@ -9,7 +9,7 @@ class CMogDir;
 struct tagChunkInfo {
 	unsigned char* m_data;     // 0x00
 	unsigned int m_type;       // 0x04
-	unsigned int m_id;         // 0x08
+	unsigned long m_id;        // 0x08
 	unsigned int m_fileOffset; // 0x0c
 	unsigned int m_size;       // 0x10
 	tagCHUNK m_next;           // 0x14

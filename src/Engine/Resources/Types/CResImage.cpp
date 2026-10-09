@@ -17,9 +17,9 @@ struct ImageResourceHeader {
 };
 
 // FUNCTION: LEMBALL 0x0045e160
-CResImage* CResImage::Load(unsigned int p_resourceId)
+CResImage* CResImage::Load(unsigned long p_resourceId)
 {
-	register unsigned int id = p_resourceId;
+	register unsigned long id = p_resourceId;
 	CResImage* res = (CResImage*) g_pActiveMogRes->Find(id);
 	if (res == NULL) {
 		return (CResImage*) (new CResImage(id))->CheckError();

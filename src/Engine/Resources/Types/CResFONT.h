@@ -17,7 +17,7 @@ public:
 	CResZRLE* ASCIItoZRLE(unsigned long p_ascii) const;
 	CVSSize GetSize(const char* p_text, unsigned long p_flags) const;
 
-	static CResFONT* Load(unsigned int p_resourceId);
+	static CResFONT* Load(unsigned long p_resourceId);
 	virtual void OnLoad();                                                         // vtable+0x2c
 	virtual bool ForceLoadVram(unsigned int p_index);                              // vtable+0x3c
 	virtual void UnLoadVramData(unsigned int p_index, unsigned int p_force);       // vtable+0x40

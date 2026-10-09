@@ -18,7 +18,7 @@ public:
 	CResBase* Find(unsigned long p_resourceId);
 	bool CheckAllUnloaded();
 	bool Load(const CVSRange& p_range, unsigned char*& p_data, CResBase* p_resource);
-	bool Load(unsigned int p_resourceId, CResBase* p_resource, RECURSE p_recurse);
+	bool Load(unsigned long p_resourceId, CResBase* p_resource, RECURSE p_recurse);
 	bool Load(CResBase* p_resource, tagCHUNK p_chunk);
 	bool SetWD(char* p_path);
 	int GetFreeHandle();

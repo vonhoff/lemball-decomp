@@ -5,7 +5,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e3f0
-CResPatch* CResPatch::Load(unsigned int p_resourceId)
+CResPatch* CResPatch::Load(unsigned long p_resourceId)
 {
 	CResPatch* res = (CResPatch*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {

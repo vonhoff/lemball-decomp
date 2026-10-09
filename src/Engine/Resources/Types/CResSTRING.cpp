@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045de00
-CResSTRING* CResSTRING::Load(unsigned int p_resourceId)
+CResSTRING* CResSTRING::Load(unsigned long p_resourceId)
 {
 	CResSTRING* res = (CResSTRING*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {

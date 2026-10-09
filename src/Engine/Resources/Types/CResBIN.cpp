@@ -7,7 +7,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e540
-CResBIN* CResBIN::Load(unsigned int p_resourceId)
+CResBIN* CResBIN::Load(unsigned long p_resourceId)
 {
 	void* storage;
 	CResBIN* res;

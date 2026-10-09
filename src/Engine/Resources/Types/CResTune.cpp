@@ -5,7 +5,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e460
-CResTune* CResTune::Load(unsigned int p_resourceId)
+CResTune* CResTune::Load(unsigned long p_resourceId)
 {
 	CResTune* res = (CResTune*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {

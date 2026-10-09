@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e4d0
-CResPres* CResPres::Load(unsigned int p_resourceId)
+CResPres* CResPres::Load(unsigned long p_resourceId)
 {
 	void* storage;
 	CResPres* res;

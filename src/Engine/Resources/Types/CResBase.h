@@ -26,7 +26,7 @@ public:
 	virtual void OnUnLoad();                                                                    // vtable+0x30
 	virtual void SetType();                                                                     // vtable+0x34
 	virtual unsigned int GetSizeUsed();                                                         // vtable+0x38
-	void DoLoad(unsigned int p_resourceId);
+	void DoLoad(unsigned long p_resourceId);
 	void Initialise();
 	void UnLoad();
 	void UnLoadExtData(unsigned int p_force);
@@ -66,7 +66,7 @@ protected:
 	unsigned int m_age;            // 0x24
 	unsigned int m_dataSize;       // 0x28
 	unsigned int m_fileOffset;     // 0x2c
-	unsigned int m_resourceId;     // 0x30
+	unsigned long m_resourceId;    // 0x30
 	char* m_name;                  // 0x34
 	unsigned char* m_data;         // 0x38
 	unsigned int m_headerSkip;     // 0x3c

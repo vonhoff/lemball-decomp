@@ -10,7 +10,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045de70
-CResMOVIE* CResMOVIE::Load(unsigned int p_resourceId)
+CResMOVIE* CResMOVIE::Load(unsigned long p_resourceId)
 {
 	CResMOVIE* res = (CResMOVIE*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {

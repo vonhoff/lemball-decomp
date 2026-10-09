@@ -46,7 +46,7 @@ CResFONT::~CResFONT()
 }
 
 // FUNCTION: LEMBALL 0x0045d850
-CResFONT* CResFONT::Load(unsigned int p_resourceId)
+CResFONT* CResFONT::Load(unsigned long p_resourceId)
 {
 	CResFONT* res = (CResFONT*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {

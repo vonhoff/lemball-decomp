@@ -16,7 +16,7 @@ struct BitmapHeader {
 // VTABLE: LEMBALL 0x00498d20
 class CResBITMAP : public CResRaster {
 public:
-	inline CResBITMAP(unsigned int p_resourceId) { DoLoad(p_resourceId); }
+	inline CResBITMAP(unsigned long p_resourceId) { DoLoad(p_resourceId); }
 	inline CResBITMAP() {}
 	static CResBITMAP* Load(unsigned long p_resourceId);
 	virtual void SetHeader(); // vtable+0x08

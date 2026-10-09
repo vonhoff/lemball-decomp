@@ -9,8 +9,8 @@
 // VTABLE: LEMBALL 0x00498bc8
 class CResCol : public CResBase {
 public:
-	inline CResCol(unsigned int p_resourceId) { DoLoad(p_resourceId); }
-	static CResCol* Load(unsigned int p_resourceId);
+	inline CResCol(unsigned long p_resourceId) { DoLoad(p_resourceId); }
+	static CResCol* Load(unsigned long p_resourceId);
 	virtual void OnLoad();  // vtable+0x2c
 	virtual void SetType(); // vtable+0x34
 

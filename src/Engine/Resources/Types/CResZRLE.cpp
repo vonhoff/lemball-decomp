@@ -8,7 +8,7 @@
 // FUNCTION: LEMBALL 0x0045e2b0
 CResZRLE* CResZRLE::Load(unsigned long p_resourceId)
 {
-	register unsigned int id = p_resourceId;
+	register unsigned long id = p_resourceId;
 	CResZRLE* res = (CResZRLE*) g_pActiveMogRes->Find(id);
 	if (res == NULL) {
 		return (CResZRLE*) (new CResZRLE(id))->CheckError();

@@ -19,7 +19,7 @@ enum eResourceCheckDisposition {
 };
 
 // FUNCTION: LEMBALL 0x0045cf20
-void CResBase::DoLoad(unsigned int p_resourceId)
+void CResBase::DoLoad(unsigned long p_resourceId)
 {
 	Initialise();
 	if (g_pActiveMogRes->Load(p_resourceId, this, RESOURCE_SEARCH_RECURSIVE) != 0) {
