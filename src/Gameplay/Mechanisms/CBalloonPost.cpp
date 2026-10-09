@@ -209,13 +209,13 @@ void CBalloonPost::ActivatePostAtPosition(int p_x, int p_y, int p_z, eObjectType
 		return;
 	}
 	m_activeMask |= mask;
-	m_positions[index].m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
-	m_positions[index].m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
-	m_positions[index].m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
+	m_positions[index].m_xFixed = (unsigned int) p_x << FIXED_POINT_FRACTION_BITS;
+	m_positions[index].m_yFixed = (unsigned int) p_y << FIXED_POINT_FRACTION_BITS;
+	m_positions[index].m_zFixed = (unsigned int) p_z << FIXED_POINT_FRACTION_BITS;
 	CTheBalloonPost* post = m_posts[index];
-	post->m_position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
-	post->m_position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
-	post->m_position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
+	post->m_position.m_xFixed = (unsigned int) p_x << FIXED_POINT_FRACTION_BITS;
+	post->m_position.m_yFixed = (unsigned int) p_y << FIXED_POINT_FRACTION_BITS;
+	post->m_position.m_zFixed = (unsigned int) p_z << FIXED_POINT_FRACTION_BITS;
 	m_posts[index]->m_active = 1;
 }
 
