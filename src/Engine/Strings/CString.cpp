@@ -28,7 +28,7 @@ CString::CString(const char* p_text)
 }
 
 // FUNCTION: LEMBALL 0x0046e480
-CString::CString(const CString& p_other)
+CString::CString(CString& p_other)
 {
 	m_capacity = p_other.m_capacity;
 	m_text = new char[m_capacity];
@@ -42,7 +42,7 @@ CString::~CString()
 }
 
 // FUNCTION: LEMBALL 0x0046e510
-CString& CString::operator=(const CString& p_other)
+CString& CString::operator=(CString& p_other)
 {
 	delete[] m_text;
 	m_text = new char[p_other.m_capacity];

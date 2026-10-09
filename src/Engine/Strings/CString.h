@@ -6,10 +6,10 @@ class CString {
 public:
 	CString();
 	CString(const char* p_text);
-	CString(const CString& p_other);
+	CString(CString& p_other);
 	~CString();
 
-	CString& operator=(const CString& p_other);
+	CString& operator=(CString& p_other);
 	CString& operator=(const char* p_text);
 	CString operator+=(CString& p_other);
 	CString operator+=(const char* p_text);
