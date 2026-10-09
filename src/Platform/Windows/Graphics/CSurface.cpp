@@ -3569,7 +3569,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 		sourceRect.m_height = p_bitmap->m_rasterPoint.m_y;
 	}
 	unsigned int flags = p_primitive->m_flags;
-	if ((int) p_bitmap->m_rasterPoint.m_y * (int) p_bitmap->m_rasterPoint.m_x != 0) {
+	if (p_bitmap->m_rasterPoint.m_y * p_bitmap->m_rasterPoint.m_x != 0) {
 		CVSRect dest(sourceRect);
 		dest.m_x = x;
 		dest.m_y = y;
@@ -3590,9 +3590,9 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 			yStep = SURFACE_STEP_BACKWARD;
 			destY += dest.m_height - 1;
 		}
-		int bitmapWidth = (int) p_bitmap->m_rasterPoint.m_x;
-		unsigned char* source = p_bitmap->GetData() + ((int) sourceRect.m_y + (int) clip.m_y) * bitmapWidth +
-								(int) sourceRect.m_x + (int) clip.m_x;
+		int bitmapWidth = p_bitmap->m_rasterPoint.m_x;
+		unsigned char* source =
+			p_bitmap->GetData() + (sourceRect.m_y + clip.m_y) * bitmapWidth + sourceRect.m_x + clip.m_x;
 		if ((flags & CBitmap::BITMAP_TRANSPARENT_ZERO) != 0) {
 			int sourceSkip = bitmapWidth - dest.m_width;
 			int i = 0;
