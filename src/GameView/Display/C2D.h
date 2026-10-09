@@ -230,11 +230,11 @@ private:
 	int m_clipScreenY;                           // 0x188
 	unsigned int m_mouseButtonDown;              // 0x18c
 	unsigned int m_frameCount;                   // 0x190
-	unsigned int m_frameTime;                    // 0x194
+	unsigned long m_frameTime;                   // 0x194
 	unsigned int m_levelTestFrame;               // 0x198
 	char m_pad0x19c[8];                          // 0x19c
 	eC2DCursorState m_cursorState;               // 0x1a4
-	unsigned int m_cursorTimestamp;              // 0x1a8
+	unsigned long m_cursorTimestamp;             // 0x1a8
 	unsigned short m_cursorBlinkPhase;           // 0x1ac
 	char m_groundClipScratch[0x71a];             // 0x1ae
 	unsigned int m_pad0x8c8;                     // 0x8c8
@@ -247,7 +247,7 @@ private:
 	unsigned int m_zBufferEnabled;               // 0x8ec
 	int m_score;                                 // 0x8f0
 	int m_levelScore;                            // 0x8f4
-	unsigned int m_scoreTimestamp;               // 0x8f8
+	unsigned long m_scoreTimestamp;              // 0x8f8
 	int m_returnState;                           // 0x8fc
 	CPushActive m_pushActive;                    // 0x900
 	CPopActive m_popActive;                      // 0x908
@@ -298,7 +298,7 @@ private:
 	unsigned int m_paused;                       // 0xa7c
 	unsigned int m_pauser;                       // 0xa80
 	unsigned int m_connectionTimeoutActive;      // 0xa84
-	unsigned int m_connectionTimeoutStart;       // 0xa88
+	unsigned long m_connectionTimeoutStart;      // 0xa88
 	char m_pad0xa8c[0x204];                      // 0xa8c
 	unsigned int m_unk0xc90;                     // 0xc90
 	char m_pad0xc94[0x7d0];                      // 0xc94
