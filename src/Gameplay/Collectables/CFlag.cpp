@@ -34,14 +34,14 @@ bool CFlag::Process()
 			blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
 
 			if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-				int cellX = x & GROUND_BLOCK_PIXEL_MASK;
-				int cellY = y & GROUND_BLOCK_PIXEL_MASK;
-				z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
+				x &= GROUND_BLOCK_PIXEL_MASK;
+				y &= GROUND_BLOCK_PIXEL_MASK;
+				z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 			}
 			else {
 				z = 0;
 			}
-			const int height = (int) z << FIXED_POINT_FRACTION_BITS;
+			const int height = z << FIXED_POINT_FRACTION_BITS;
 			m_position.m_zFixed = height;
 		}
 		return true;
