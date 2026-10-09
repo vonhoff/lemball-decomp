@@ -219,9 +219,7 @@ bool CIce::Process()
 		else if (groundZ < z) {
 			z -= elapsed * (GROUND_BLOCK_PIXEL_SIZE / 4);
 			if (z < groundZ) {
-				const int& floorZ = groundZ;
-				int& fallingZ = z;
-				fallingZ = floorZ;
+				z = groundZ;
 			}
 			position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 		}
