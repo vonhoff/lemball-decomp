@@ -117,18 +117,18 @@ enum eLineClipRegionFlag {
 
 inline unsigned int CSurface::ClipCode(int p_x, int p_y)
 {
-	unsigned int code = 0;
+	unsigned int code = LINE_CLIP_REGION_INSIDE;
 	if (p_x < m_clipRect.m_x) {
-		code |= 1;
+		code |= LINE_CLIP_REGION_LEFT;
 	}
 	else if (p_x > m_clipRect.m_x + m_clipRect.m_width - 1) {
-		code |= 2;
+		code |= LINE_CLIP_REGION_RIGHT;
 	}
 	if (p_y < m_clipRect.m_y) {
-		code |= 4;
+		code |= LINE_CLIP_REGION_TOP;
 	}
 	else if (p_y > m_clipRect.m_y + m_clipRect.m_height - 1) {
-		code |= 8;
+		code |= LINE_CLIP_REGION_BOTTOM;
 	}
 	return code;
 }
