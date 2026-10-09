@@ -42,7 +42,7 @@ private:
 	int m_topLine;                 // 0x38
 	int m_lineHeight;              // 0x3c
 	int m_clientWidth;             // 0x40
-	int m_selecting;               // 0x44
+	bool m_selecting;              // 0x44
 	int m_dragLine;                // 0x48
 	int m_selectionAnchor;         // 0x4c
 	int m_selectionStart;          // 0x50

@@ -83,7 +83,7 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 		g_nTargetTextWindowClassRegistered = 1;
 		g_nTargetTextWindowActive = 1;
 	}
-	m_selecting = 0;
+	m_selecting = false;
 	m_windowHandle = CreateWindowExA(0,
 									 g_textWindowClassName,
 									 p_title,
@@ -129,7 +129,7 @@ CTextWnd::~CTextWnd()
 {
 	if (m_selecting != 0) {
 		ReleaseCapture();
-		m_selecting = 0;
+		m_selecting = false;
 	}
 	delete m_lineBuffer;
 	g_nTargetTextWindowActive = 0;
@@ -392,7 +392,7 @@ void CTextWnd::BeginSelection(int p_x, int p_y, unsigned int p_mouseFlags)
 		return;
 	}
 	SetCapture((HWND) m_windowHandle);
-	m_selecting = 1;
+	m_selecting = true;
 	SetSelectionHighlight(0);
 	m_selectionEnd = m_dragLine;
 	m_selectionStart = m_dragLine;
@@ -407,7 +407,7 @@ void CTextWnd::EndSelection(unsigned int p_x, unsigned int p_y, unsigned int p_m
 	EnterCritical();
 	if (m_selecting != 0) {
 		ReleaseCapture();
-		m_selecting = 0;
+		m_selecting = false;
 	}
 	LeaveCritical();
 }
