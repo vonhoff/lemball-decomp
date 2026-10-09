@@ -162,14 +162,12 @@ CGame::CGame(char* p_runtimeFileName)
 #endif
 
 	g_pGameStatus = new CGameStatus();
-	CTimeStat*& processingStat = m_processingStat;
-	processingStat = new CTimeStat(g_szProcessing);
-	CTimeStat*& refreshingStat = m_refreshingStat;
-	refreshingStat = new CTimeStat(g_szRefreshing);
+	m_processingStat = new CTimeStat(g_szProcessing);
+	m_refreshingStat = new CTimeStat(g_szRefreshing);
 
 	m_flowTicks = 0;
-	g_pStatManager->Register(processingStat);
-	g_pStatManager->Register(refreshingStat);
+	g_pStatManager->Register(m_processingStat);
+	g_pStatManager->Register(m_refreshingStat);
 
 	storage = CMogloadArena::operator new(sizeof(CMogRes));
 	if (storage != NULL) {
