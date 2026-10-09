@@ -59,25 +59,25 @@ char g_szSuccFailGaveUpNet[] = "# gave up!";
 // GLOBAL: LEMBALL 0x0049fd48
 char g_szSuccFailAllLemmingsEliminated[] = "All your lemmings have been eliminated!";
 
-// GLOBAL: LEMBALL 0x0049fd74
+// GLOBAL: LEMBALL 0x0049fd70
 char g_szSuccFailRanOutOfTimeSingle[] = "You ran out of time!";
 
-// GLOBAL: LEMBALL 0x0049fd8c
+// GLOBAL: LEMBALL 0x0049fd88
 char g_szSuccFailGaveUpSingle[] = "You gave up!";
 
-// GLOBAL: LEMBALL 0x0049fd9c
+// GLOBAL: LEMBALL 0x0049fd98
 char g_szSuccFailOpponentBeatScore[] = "# beat your score!";
 
-// GLOBAL: LEMBALL 0x0049fdb4
+// GLOBAL: LEMBALL 0x0049fdac
 char g_szSuccFailOpponentCollectedFlags[] = "# collected all the flags!";
 
-// GLOBAL: LEMBALL 0x0049fdcc
+// GLOBAL: LEMBALL 0x0049fdc8
 char g_szSuccFailOpponentSplattedLemmings[] = "# splatted all your lemmings!";
 
-// GLOBAL: LEMBALL 0x0049fdec
+// GLOBAL: LEMBALL 0x0049fde8
 char g_szSuccFailRanOutOfTimeLose[] = "You ran out of time!";
 
-// GLOBAL: LEMBALL 0x0049fe04
+// GLOBAL: LEMBALL 0x0049fe00
 char g_szSuccFailGaveUpLose[] = "You gave up!";
 
 // GLOBAL: LEMBALL 0x0049fe10
@@ -147,7 +147,7 @@ SuccFailLayout g_succFailLayoutCompact = {{46, 190},
 										  {0, 153}};
 
 // GLOBAL: LEMBALL 0x0049fc88
-char g_szPasswordLabel[] = "Password: ";
+char g_szPasswordLabel[] = "Password:";
 
 // GLOBAL: LEMBALL 0x0049fc94
 unsigned long g_dwSuccFailReturnAnimIdsFull = RES_NEWFRONT_ICONS_HIRES_RETURN;

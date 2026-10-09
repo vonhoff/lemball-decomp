@@ -24,7 +24,7 @@ enum {
 #define RESOURCE_PATH_SEPARATOR '/'
 
 // GLOBAL: LEMBALL 0x004a1d80
-char g_mogRootPath[4];
+char g_mogRootPath[4] = " ";
 
 // GLOBAL: LEMBALL 0x004a1d60
 CBaseStat* g_pMogloadStat = NULL;

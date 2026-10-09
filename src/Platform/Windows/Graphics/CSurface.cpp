@@ -87,13 +87,13 @@ static const unsigned char g_anReservedOutputColours[2][3] = {{0xff, 0xff, 0xff}
 char g_szClippingHeightTo[] = "Clipping height to ";
 
 // GLOBAL: LEMBALL 0x004a2d64
-char g_szClippingDotNewline[] = ".\r\n";
+char g_szClippingDotNewline[] = ".\n";
 
 // GLOBAL: LEMBALL 0x004a2d68
 char g_szClippingWidthTo[] = "Clipping width to ";
 
 // GLOBAL: LEMBALL 0x004a2d7c
-char g_szClippingHighNewline[] = " high.\r\n";
+char g_szClippingHighNewline[] = " high.\n";
 
 // GLOBAL: LEMBALL 0x004a2d84
 char g_szClippingWideAnd[] = " wide and ";

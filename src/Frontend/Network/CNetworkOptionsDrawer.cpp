@@ -171,10 +171,10 @@ char g_szNetworkOptionsHeaderIp[] = "I.P. Address";
 char g_szNetworkOptionsHeaderComputer[] = "Computer";
 
 // GLOBAL: LEMBALL 0x004a04e4
-char g_szNetworkOptionsDividerIp[] = "__________________________________";
+char g_szNetworkOptionsDividerIp[] = "________________________________";
 
 // GLOBAL: LEMBALL 0x004a0508
-char g_szNetworkOptionsDividerLocal[] = "__________________________________";
+char g_szNetworkOptionsDividerLocal[] = "_________________________________";
 
 // GLOBAL: LEMBALL 0x004a052c
 char g_szNetworkOptionsCursor[] = "_";

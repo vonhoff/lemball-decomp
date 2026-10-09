@@ -89,7 +89,7 @@ char g_szUnableToCreateWindow[24] = "Unable to create window";
 char g_szQuitting[12] = "Quitting\n";
 
 // GLOBAL: LEMBALL 0x004a1fa0
-char g_szFQuit[8] = "fQuit";
+char g_szFQuit[8] = "fQuit\n";
 
 // GLOBAL: LEMBALL 0x004a9bd8
 int g_nSavedScreenSaverActive = 0;
