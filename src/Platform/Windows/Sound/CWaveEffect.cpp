@@ -31,7 +31,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	memcpy(&patchHeader, p_patch, sizeof(patchHeader));
 	patchHeader.m_formatVersion = SwapBytes16(patchHeader.m_formatVersion);
 	patchHeader.m_waveCount = SwapBytes16(patchHeader.m_waveCount);
-	m_prepared = 0;
+	m_prepared = false;
 	m_waveOut = p_waveOut;
 	if (patchHeader.m_waveCount != EFFECT_PATCH_SUPPORTED_WAVE_COUNT) {
 		*g_pErrorOutput << "Warning! Effect Patch " << ((EffPatchHeader*) p_patch)->m_name << " has more than ";
@@ -180,7 +180,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 		*g_pErrorOutput << work.m_errorText << "\n";
 		return;
 	}
-	m_prepared = 1;
+	m_prepared = true;
 }
 
 // FUNCTION: LEMBALL 0x0047c820

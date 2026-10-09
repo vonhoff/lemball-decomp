@@ -19,7 +19,7 @@ public:
 private:
 	friend class CWaveSoundDevice;
 
-	unsigned int m_prepared;     // 0x00
+	bool m_prepared;             // 0x00
 	HGLOBAL m_sampleHandle;      // 0x04
 	HGLOBAL m_headerHandle;      // 0x08
 	unsigned char* m_sampleData; // 0x0c

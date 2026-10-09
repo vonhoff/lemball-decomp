@@ -106,7 +106,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	memcpy(&patchHeader, p_patch, sizeof(patchHeader));
 	patchHeader.m_formatVersion = SwapBytes16(patchHeader.m_formatVersion);
 	patchHeader.m_waveCount = SwapBytes16(patchHeader.m_waveCount);
-	m_prepared = 0;
+	m_prepared = false;
 	m_unknown04 = 0;
 	if (patchHeader.m_waveCount != EFFECT_PATCH_SUPPORTED_WAVE_COUNT) {
 		// STRING: LEMBALL 0x004a34dc
@@ -201,7 +201,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 			return;
 		}
 	}
-	m_prepared = 1;
+	m_prepared = true;
 }
 
 // FUNCTION: LEMBALL 0x0047d6e0

@@ -25,7 +25,7 @@ private:
 	int FindIdleBuffer();
 	void PlayBuffer(int p_index);
 
-	unsigned int m_prepared;        // 0x00
+	bool m_prepared;                // 0x00
 	unsigned int m_unknown04;       // 0x04
 	IDirectSoundBuffer** m_buffers; // 0x08
 	unsigned int m_looping;         // 0x0c
