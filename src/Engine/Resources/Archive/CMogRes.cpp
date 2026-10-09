@@ -98,9 +98,9 @@ CMogRes::~CMogRes()
 // FUNCTION: LEMBALL 0x0045c810
 bool CMogRes::SetWD(char* p_path)
 {
-	register char* path = p_path;
-	register char* copy;
-	register char* cursor;
+	char* path = p_path;
+	char* copy;
+	char* cursor;
 	CMogDir* dir;
 	char* oldPath;
 
@@ -165,9 +165,9 @@ int CMogRes::KillLeastResource(unsigned long p_requiredSize)
 	enum eResourceEvictionInitialBound {
 		RESOURCE_REFERENCE_COUNT_INITIAL_UPPER_BOUND = 0xffffffffUL
 	};
-	register int scanned = 0;
-	register int i = 0;
-	register unsigned int bestRefs = RESOURCE_REFERENCE_COUNT_INITIAL_UPPER_BOUND;
+	int scanned = 0;
+	int i = 0;
+	unsigned int bestRefs = RESOURCE_REFERENCE_COUNT_INITIAL_UPPER_BOUND;
 	int bestIndex = RESOURCE_INDEX_NONE;
 	unsigned int bestSize = 0;
 
@@ -237,8 +237,8 @@ int CMogRes::GetFreeHandle()
 // FUNCTION: LEMBALL 0x0045ca30
 unsigned char* CMogRes::AllocateMainMem(unsigned long p_size)
 {
-	register unsigned char* memory;
-	register unsigned int size = p_size;
+	unsigned char* memory;
+	unsigned int size = p_size;
 
 	do {
 		memory = (unsigned char*) CMogloadArena::operator new(size);
@@ -276,9 +276,9 @@ unsigned char* CMogRes::AllocateMainMem(unsigned long p_size)
 // FUNCTION: LEMBALL 0x0045cab0
 CResBase* CMogRes::Find(unsigned long p_resourceId)
 {
-	register int i = 0;
-	register int count = m_resourceCount;
-	register int remaining = count;
+	int i = 0;
+	int count = m_resourceCount;
+	int remaining = count;
 
 	if (count > i) {
 		unsigned long resourceId = p_resourceId;
