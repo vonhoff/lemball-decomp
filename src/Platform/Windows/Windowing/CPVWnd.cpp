@@ -193,7 +193,7 @@ void CPVWnd::SetRectInnerZoom(const CVSRect& p_rect, const CVSRect& p_innerRect,
 	}
 	m_innerRect.m_width = p_innerRect.m_width;
 	m_innerRect.m_height = p_innerRect.m_height;
-	innerXY = (const CVSPoint*) &p_innerRect;
+	innerXY = &p_innerRect;
 	m_innerRect.m_x = innerXY->m_x;
 	m_innerRect.m_y = innerXY->m_y;
 	_SetRect(p_rect);
@@ -208,13 +208,13 @@ void CPVWnd::InitHotAreaList()
 	style = GetStyle();
 	if ((style & CPVWND_INIT_HOT_AREA_LIST_STYLE) != 0 && m_hotAreaList == NULL) {
 		CVSRect listRect;
-		if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
+		if (m_innerRect.m_width * m_innerRect.m_height != 0) {
 			listRect.m_width = m_innerRect.m_width;
 			listRect.m_height = m_innerRect.m_height;
-			CVSPoint* innerPoint = static_cast<CVSPoint*>(&m_innerRect);
+			CVSPoint* innerPoint = &m_innerRect;
 			listRect.m_x = innerPoint->m_x;
 			listRect.m_y = innerPoint->m_y;
-			CVSPoint* rectPoint = static_cast<CVSPoint*>(&m_rect);
+			CVSPoint* rectPoint = &m_rect;
 			short y = rectPoint->m_y;
 			listRect.m_x += rectPoint->m_x;
 			listRect.m_y += y;
@@ -222,7 +222,7 @@ void CPVWnd::InitHotAreaList()
 		else {
 			listRect.m_width = m_rect.m_width;
 			listRect.m_height = m_rect.m_height;
-			CVSPoint* rectPoint = static_cast<CVSPoint*>(&m_rect);
+			CVSPoint* rectPoint = &m_rect;
 			listRect.m_x = rectPoint->m_x;
 			listRect.m_y = rectPoint->m_y;
 		}
@@ -326,7 +326,7 @@ void CPVWnd::_OnSize()
 	}
 	area.m_y = 0;
 	area.m_x = 0;
-	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
+	if (m_innerRect.m_width * m_innerRect.m_height != 0) {
 		area.m_width = m_innerRect.m_width;
 		area.m_height = m_innerRect.m_height;
 		innerXY = &m_innerRect;
@@ -334,8 +334,8 @@ void CPVWnd::_OnSize()
 		area.m_y = innerXY->m_y;
 		rectXY = &m_rect;
 		short y = rectXY->m_y;
-		area.m_x = (short) (area.m_x + rectXY->m_x);
-		area.m_y = (short) (area.m_y + y);
+		area.m_x = area.m_x + rectXY->m_x;
+		area.m_y = area.m_y + y;
 	}
 	else {
 		area.m_width = m_rect.m_width;
@@ -365,7 +365,7 @@ void CPVWnd::_OnMove()
 		return;
 	}
 	CVSRect area;
-	if ((int) m_innerRect.m_height * (int) m_innerRect.m_width != 0) {
+	if (m_innerRect.m_height * m_innerRect.m_width != 0) {
 		area.m_width = m_innerRect.m_width;
 		area.m_height = m_innerRect.m_height;
 		innerXY = &m_innerRect;
@@ -374,8 +374,8 @@ void CPVWnd::_OnMove()
 		rectXY = &m_rect;
 		short y = rectXY->m_y;
 		short x = rectXY->m_x;
-		area.m_x = (short) (area.m_x + x);
-		area.m_y = (short) (area.m_y + y);
+		area.m_x = area.m_x + x;
+		area.m_y = area.m_y + y;
 	}
 	else {
 		area.m_width = m_rect.m_width;
@@ -396,8 +396,8 @@ void CPVWnd::_OnMove()
 // FUNCTION: LEMBALL 0x00466260
 void CPVWnd::_OnMove(CVSPoint p_point)
 {
-	m_rect.m_x = (short) (m_rect.m_x + p_point.m_x);
-	m_rect.m_y = (short) (m_rect.m_y + p_point.m_y);
+	m_rect.m_x = m_rect.m_x + p_point.m_x;
+	m_rect.m_y = m_rect.m_y + p_point.m_y;
 	_OnMove();
 }
 

@@ -72,7 +72,7 @@ unsigned int CGameStatus::JiggleLevelData()
 		unsigned int value;
 
 		result = result << PASSWORD_LEVEL_DATA_CHUNK_BITS;
-		perm = (unsigned int) g_anPasswordPermutation[i];
+		perm = g_anPasswordPermutation[i];
 		value = chunks[perm] ^ perm;
 		result = result | value;
 		mixed[i] = value;
