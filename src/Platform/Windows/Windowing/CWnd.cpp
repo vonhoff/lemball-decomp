@@ -185,23 +185,23 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	int menuAction;
 
 	if (g_windowDispatchDisabled != 0 && (p_message != WM_ACTIVATEAPP || p_wParam != 0)) {
-		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+		return DefWindowProcA(p_hwnd, p_message, p_wParam, p_lParam);
 	}
 
 	posted.m_time = GetMessageTime();
-	window = (CWnd*) GetWindowLongA((HWND) p_hwnd, GWL_USERDATA);
+	window = (CWnd*) GetWindowLongA(p_hwnd, GWL_USERDATA);
 	if (g_pTargetGraphicsDriver == NULL) {
-		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+		return DefWindowProcA(p_hwnd, p_message, p_wParam, p_lParam);
 	}
 	if (g_pTargetGraphicsDriver->m_window != p_hwnd) {
 		if (window == NULL && p_message != WM_CREATE) {
-			return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+			return DefWindowProcA(p_hwnd, p_message, p_wParam, p_lParam);
 		}
 	}
 	else {
 		window = (CWnd*) g_pTargetGraphicsSystem->m_targetWindow;
 		if (window == NULL) {
-			return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+			return DefWindowProcA(p_hwnd, p_message, p_wParam, p_lParam);
 		}
 	}
 
@@ -210,11 +210,11 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		POINT position;
 		create = (CREATESTRUCTA*) p_lParam;
 		window = (CWnd*) create->lpCreateParams;
-		SetWindowLongA((HWND) p_hwnd, GWL_USERDATA, (LONG) window);
+		SetWindowLongA(p_hwnd, GWL_USERDATA, (LONG) window);
 		window->m_nativeWindow = p_hwnd;
 		position.x = 0;
 		position.y = 0;
-		ClientToScreen((HWND) p_hwnd, &position);
+		ClientToScreen(p_hwnd, &position);
 		mouseX = (short) position.x;
 		mouseY = (short) position.y;
 		if ((window->GetStyle() & WS_CHILD) != 0 && g_pTargetGraphicsSystem->IsFullscreenDriver()) {
@@ -249,7 +249,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			return 1;
 		}
 	defaultWindowMessage:
-		return DefWindowProcA((HWND) p_hwnd, p_message, p_wParam, p_lParam);
+		return DefWindowProcA(p_hwnd, p_message, p_wParam, p_lParam);
 	}
 	case WM_QUIT: {
 		*g_pDebugOutput << g_szQuitting;
@@ -261,7 +261,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			POINT position;
 			position.x = 0;
 			position.y = 0;
-			ClientToScreen((HWND) p_hwnd, &position);
+			ClientToScreen(p_hwnd, &position);
 			CVSPoint point((short) position.x, (short) position.y);
 			window->MoveAbsolute(point);
 		}
@@ -322,13 +322,13 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		case GFX_MODE_GDI:
 			g_dwFullScreenGdi = 1;
 			g_nDisplayDibActive = 0;
-			InvalidateRect((HWND) p_hwnd, NULL, 0);
+			InvalidateRect(p_hwnd, NULL, 0);
 			break;
 		case GFX_MODE_VGA_320X200:
 		case GFX_MODE_VGA_320X240:
 			if (p_wParam != 0) {
 				if (window->GetSizeStatus() == 0) {
-					SendMessageA((HWND) p_hwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+					SendMessageA(p_hwnd, WM_SYSCOMMAND, SC_RESTORE, 0);
 				}
 				unsigned short flags = g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240
 										   ? DISPLAYDIB_MODE_320X240_8BIT_INITIAL
@@ -340,13 +340,13 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 				g_nDisplayDibActive = 1;
 				_outpw(0x3d4, 0xc);
 				_outpw(0x3d4, 0xd);
-				InvalidateRect((HWND) p_hwnd, NULL, 0);
+				InvalidateRect(p_hwnd, NULL, 0);
 			}
 			else {
 				g_pDisplayDib(NULL, NULL, DISPLAYDIB_DEACTIVATE_COMMAND);
 				g_nDisplayDibActive = 0;
 				g_dwFullScreenGdi = 1;
-				SendMessageA((HWND) p_hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+				SendMessageA(p_hwnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 			}
 			break;
 		}
@@ -451,7 +451,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		posted.m_source = NULL;
 		g_pMasterInputQueue->Post(posted);
 		if (g_nMouseCaptureCount++ == 0) {
-			SetCapture((HWND) p_hwnd);
+			SetCapture(p_hwnd);
 		}
 		return 0;
 	}
@@ -541,7 +541,7 @@ void CWnd::Move(const CVSPoint& p_point)
 	_OnMove();
 	OnMove();
 	if (m_nativeWindow != NULL) {
-		SetWindowPos((HWND) m_nativeWindow, NULL, p_point.m_x, p_point.m_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowPos(m_nativeWindow, NULL, p_point.m_x, p_point.m_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 }
 
@@ -576,18 +576,18 @@ static bool RegisterBaseWindowClass()
 	ATOM atom;
 
 	windowClass.style = 0xb;
-	windowClass.lpfnWndProc = (WNDPROC) CWnd::ProcessMessage;
+	windowClass.lpfnWndProc = CWnd::ProcessMessage;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 4;
-	windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
+	windowClass.hInstance = g_pApplicationInstance;
 	if (g_preInitActive.m_icon == NULL) {
 		windowClass.hIcon = LoadIconA(NULL, (LPCSTR) 0x7f00);
 	}
 	else {
-		windowClass.hIcon = (HICON) g_preInitActive.m_icon;
+		windowClass.hIcon = g_preInitActive.m_icon;
 	}
 	windowClass.hCursor = NULL;
-	windowClass.hbrBackground = (HBRUSH) GetStockObject(4);
+	windowClass.hbrBackground = GetStockObject(4);
 	windowClass.lpszMenuName = NULL;
 	windowClass.lpszClassName = g_pszVsBaseWindowClass;
 	cursor = LoadCursorA(NULL, (LPCSTR) 0x7f00);
@@ -632,7 +632,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 			const CVSRect& parentRect = m_parent->m_rect;
 			screenPoint.x = (LONG) ((int) parentRect.m_x + (int) p_rect.m_x);
 			screenPoint.y = (LONG) ((int) parentRect.m_y + (int) p_rect.m_y);
-			ClientToScreen((HWND) ((CWnd*) m_parent)->m_nativeWindow, &screenPoint);
+			ClientToScreen(((CWnd*) m_parent)->m_nativeWindow, &screenPoint);
 			m_rect.m_x = (short) screenPoint.x;
 			m_rect.m_y = (short) screenPoint.y;
 			const CVSPoint* relativeOrigin = &p_rect;
@@ -676,7 +676,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		if (GetMenu(menuResourceId, &menuLists) != 0) {
 			m_menuResourceId = (unsigned int) menuResourceId;
 			m_menuLists = menuLists;
-			menu = LoadMenuA((HINSTANCE) g_pApplicationInstance, (LPCSTR) (unsigned short) m_menuResourceId);
+			menu = LoadMenuA(g_pApplicationInstance, (LPCSTR) (unsigned short) m_menuResourceId);
 			hasMenu = 1;
 		}
 
@@ -687,7 +687,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 			parentWindow = NULL;
 		}
 		else {
-			parentWindow = (HWND) ((CWnd*) p_parent)->m_nativeWindow;
+			parentWindow = ((CWnd*) p_parent)->m_nativeWindow;
 		}
 		HWND hwnd = CreateWindowExA(0,
 									g_pszVsBaseWindowClass,
@@ -699,7 +699,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 									windowRect.bottom,
 									parentWindow,
 									menu,
-									(HINSTANCE) g_pApplicationInstance,
+									g_pApplicationInstance,
 									this);
 		m_nativeWindow = hwnd;
 		if (menu != NULL) {
@@ -710,9 +710,9 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		}
 		styleFlags = GetStyle();
 		if ((styleFlags & WINDOW_STYLE_SHOW_ON_CREATE) != 0) {
-			UpdateWindow((HWND) m_nativeWindow);
-			ShowWindow((HWND) m_nativeWindow, SW_SHOW);
-			SetForegroundWindow((HWND) m_nativeWindow);
+			UpdateWindow(m_nativeWindow);
+			ShowWindow(m_nativeWindow, SW_SHOW);
+			SetForegroundWindow(m_nativeWindow);
 			return;
 		}
 		break;
@@ -813,7 +813,7 @@ void CWnd::Destroy()
 		if ((g_pTargetGraphicsSystem->m_driverMode < GFX_MODE_DD_FS_640X480 ||
 			 g_pTargetGraphicsSystem->m_driverMode > GFX_MODE_DD_FS_320X200) &&
 			m_nativeWindow != NULL) {
-			DestroyWindow((HWND) m_nativeWindow);
+			DestroyWindow(m_nativeWindow);
 		}
 	}
 }
@@ -833,19 +833,19 @@ void CWnd::Refresh(CVSRect* p_rect)
 		rect.right = (LONG) p_rect->m_width;
 		rect.bottom = (LONG) p_rect->m_height;
 	}
-	InvalidateRect((HWND) m_nativeWindow, &rect, 0);
+	InvalidateRect(m_nativeWindow, &rect, 0);
 }
 
 // FUNCTION: LEMBALL 0x00465640
 int CWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
 {
-	return DefWindowProcA((HWND) m_nativeWindow, p_message, p_wParam, p_lParam);
+	return DefWindowProcA(m_nativeWindow, p_message, p_wParam, p_lParam);
 }
 
 // FUNCTION: LEMBALL 0x00465660
 void CWnd::ReSetMenu()
 {
-	HMENU menu = ::GetMenu((HWND) m_nativeWindow);
+	HMENU menu = ::GetMenu(m_nativeWindow);
 	tagMenuList** lists = m_menuLists;
 	if (*lists != NULL) {
 		BOOL(WINAPI * enableMenuItem)(HMENU, UINT, UINT) = EnableMenuItem;
@@ -879,13 +879,13 @@ void CWnd::SetMenu(int& p_menuResourceId, tagMenuList** p_menuLists)
 	HMENU newMenu;
 	unsigned int resourceId;
 
-	currentMenu = ::GetMenu((HWND) m_nativeWindow);
+	currentMenu = ::GetMenu(m_nativeWindow);
 	resourceId = p_menuResourceId;
 	m_menuResourceId = resourceId;
 	m_menuLists = p_menuLists;
 	if (p_menuLists != NULL) {
-		newMenu = LoadMenuA((HINSTANCE) g_pApplicationInstance, (LPCSTR) (unsigned short) resourceId);
-		::SetMenu((HWND) m_nativeWindow, newMenu);
+		newMenu = LoadMenuA(g_pApplicationInstance, (LPCSTR) (unsigned short) resourceId);
+		::SetMenu(m_nativeWindow, newMenu);
 		ReSetMenu();
 	}
 	if (currentMenu != NULL) {
@@ -924,15 +924,15 @@ void CWnd::_OnZoom(int p_oldZoom)
 
 	CPVWnd::_OnZoom(p_oldZoom);
 	if (m_nativeWindow != NULL && g_pTargetGraphicsDriver->m_window != m_nativeWindow) {
-		GetWindowRect((HWND) m_nativeWindow, &windowRect);
-		GetClientRect((HWND) m_nativeWindow, &clientRect);
+		GetWindowRect(m_nativeWindow, &windowRect);
+		GetClientRect(m_nativeWindow, &clientRect);
 		windowRect.right -= windowRect.left;
 		windowRect.bottom -= windowRect.top;
 		windowRect.right -= clientRect.right;
 		windowRect.bottom -= clientRect.bottom;
 		windowRect.right += clientRect.right;
 		windowRect.bottom += clientRect.bottom;
-		SetWindowPos((HWND) m_nativeWindow, NULL, 0, 0, windowRect.right, windowRect.bottom, SWP_NOMOVE | SWP_NOZORDER);
+		SetWindowPos(m_nativeWindow, NULL, 0, 0, windowRect.right, windowRect.bottom, SWP_NOMOVE | SWP_NOZORDER);
 	}
 }
 
@@ -955,23 +955,17 @@ void CWnd::_SetRect(const CVSRect& p_rect)
 		adjusted.top = origin->m_y;
 		adjusted.right = (short) (origin->m_x + size->m_width);
 		adjusted.bottom = (short) (size->m_height + origin->m_y);
-		GetWindowRect((HWND) m_nativeWindow, &window);
+		GetWindowRect(m_nativeWindow, &window);
 		client.x = 0;
 		client.y = 0;
-		ClientToScreen((HWND) m_nativeWindow, &client);
+		ClientToScreen(m_nativeWindow, &client);
 		window.left += origin->m_x - client.x;
 		window.top += origin->m_y - client.y;
 		unsigned int style = ConvertWindowStyleFlags(GetStyle());
 		AdjustWindowRect(&adjusted, style, m_menuLists != NULL);
 		adjusted.right -= adjusted.left;
 		adjusted.bottom -= adjusted.top;
-		SetWindowPos((HWND) m_nativeWindow,
-					 NULL,
-					 window.left,
-					 window.top,
-					 adjusted.right,
-					 adjusted.bottom,
-					 SWP_NOZORDER);
+		SetWindowPos(m_nativeWindow, NULL, window.left, window.top, adjusted.right, adjusted.bottom, SWP_NOZORDER);
 		return;
 	}
 	const CVSRect* parentRect = &m_parent->m_rect;
@@ -979,7 +973,7 @@ void CWnd::_SetRect(const CVSRect& p_rect)
 	int top = (short) (position->m_y + origin->m_y);
 	window.left = (short) (position->m_x + origin->m_x);
 	window.top = top;
-	ClientToScreen((HWND) ((CWnd*) m_parent)->m_nativeWindow, (POINT*) &window);
+	ClientToScreen(((CWnd*) m_parent)->m_nativeWindow, (POINT*) &window);
 	short& windowX = m_rect.m_x;
 	windowX = (short) window.left;
 	m_rect.m_y = (short) window.top;
