@@ -12,8 +12,21 @@ The goal is to reconstruct the game's codebase using semantic, maintainable C++ 
 as closely as possible. The resulting codebase will serve as a faithful reference and foundation for ports.
 
 > [!NOTE]
-> This repository is dedicated to reconstructing the original game. For a modern version with support for other
-platforms and the Web, see [lemball-portable](https://github.com/vonhoff/lemball-portable).
+> For a modern version with support for other platforms,
+see [lemball-portable](https://github.com/vonhoff/lemball-portable).
+
+## Reconstruction
+
+The original function and class names were recovered from the classic Macintosh 68000 release. The executable code
+resources retained Metrowerks' and MacsBug's inline symbol trailers. This yielded over 2,800 original function names and
+demangled C++ class hierarchies across the game and engine subsystems.
+
+As the Windows binary was stripped and targeted x86, the functions were correlated across architectures using structural
+anchors. These mappings were established by matching string literals, distinctive constants, shared algorithms (e.g.,
+fixed-point math and state machines), virtual table layouts, object member strides, and call-graph topology.
+
+The reconstruction uses these mapped symbols and layout evidence to recreate the original C++ classes. Each function is
+iteratively refined and verified against the target Windows binary until matching machine code is achieved.
 
 ## Building
 
@@ -52,6 +65,11 @@ Each function is compared against the original executable using [reccmp](https:/
 
 The [decomp.dev report](https://decomp.dev/vonhoff/lemball-decomp) only includes exact and fuzzy matches.
 
+## AI Disclosure
+
+This project uses AI for tooling, research, and code reconstruction. All code is linted, formatted, and manually
+reviewed for correctness and maintainability.
+
 ## References
 
 ### Technical Resources
@@ -67,11 +85,8 @@ The [decomp.dev report](https://decomp.dev/vonhoff/lemball-decomp) only includes
 
 ## Legal
 
-This is an unofficial reverse-engineering project intended to preserve *Lemmings Paintball*. It is not affiliated with
-or endorsed by the original rights holders.
+This is an unofficial reverse-engineering project not affiliated with or endorsed by the original rights holders.
+Original game assets remain the property of their respective owners and are not included in this repository.
 
-The original game and its assets remain the property of their respective rights holders. The original game assets are
-not included in this repository.
-
-The reconstructed game code is not offered under a license. The independently developed code is licensed under
+The reconstructed game code is not offered under a license. Independently developed code is licensed under
 the [GNU General Public License v3.0](LICENSE).
