@@ -191,31 +191,31 @@ void CGlobalGameObject::DeleteMessages()
 }
 
 // GLOBAL: LEMBALL 0x0049d110
-CTransportObjectMess* g_pTransportObjectMessage;
+CTransportObjectMess* g_pTransportObjectMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d114
-CObjectChangeStateMess* g_pObjectChangeStateMessage;
+CObjectChangeStateMess* g_pObjectChangeStateMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d118
-CRemoveObjectMess* g_pRemoveObjectMessage;
+CRemoveObjectMess* g_pRemoveObjectMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d11c
-CRequestActionMess* g_pRequestActionMessage;
+CRequestActionMess* g_pRequestActionMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d120
-CRequestReplyMess* g_pRequestReplyMessage;
+CRequestReplyMess* g_pRequestReplyMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d124
-CRequestCancelMess* g_pRequestCancelMessage;
+CRequestCancelMess* g_pRequestCancelMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d128
-CObjectPosMess* g_pObjectPosMessage;
+CObjectPosMess* g_pObjectPosMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d12c
-CObjectHitMess* g_pObjectHitMessage;
+CObjectHitMess* g_pObjectHitMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d130
-CObjectDiesMess* g_pObjectDiesMessage;
+CObjectDiesMess* g_pObjectDiesMessage = NULL;
 
 // GLOBAL: LEMBALL 0x0049d134
 int g_dwSommersaultDirection = SOMMERSAULT_DIRECTION_NORMAL;
