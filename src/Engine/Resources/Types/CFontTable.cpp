@@ -7,7 +7,6 @@
 
 #include <stddef.h>
 
-#define FONT_GLYPH_TABLE_BYTES 0x400
 #define FONT_GLYPH_COUNT 0x100
 
 // FUNCTION: LEMBALL 0x00473650
@@ -17,7 +16,7 @@ CFontTable::CFontTable(CResFONT* p_font)
 	unsigned int index;
 	int glyphIndex;
 
-	m_glyphs = (CResZRLE**) ::operator new(FONT_GLYPH_TABLE_BYTES);
+	m_glyphs = new CResZRLE*[FONT_GLYPH_COUNT];
 	offset = 0;
 	do {
 		m_glyphs[offset] = NULL;
@@ -63,5 +62,5 @@ char CFontTable::GetChar(CResZRLE* p_glyph) const
 // FUNCTION: LEMBALL 0x00473730
 CFontTable::~CFontTable()
 {
-	::operator delete(m_glyphs);
+	delete[] m_glyphs;
 }
