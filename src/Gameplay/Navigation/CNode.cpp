@@ -41,7 +41,7 @@ CNode::~CNode()
 void CNode::Initialise(int p_x, int p_y, int p_neighbourCapacity)
 {
 	if (p_neighbourCapacity != 0 && m_neighbours != NULL) {
-		m_neighbours = (NodeNeighbour*) operator new(p_neighbourCapacity * sizeof(NodeNeighbour));
+		m_neighbours = new NodeNeighbour[p_neighbourCapacity];
 	}
 	m_neighbourCapacity = p_neighbourCapacity;
 	m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
