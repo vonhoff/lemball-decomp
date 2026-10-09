@@ -58,14 +58,14 @@ private:
 	struct {
 		void* m_library;                                                          // 0x04
 		long(__stdcall* m_createDirectSound)(const void*, IDirectSound**, void*); // 0x08
-		unsigned int m_open;                                                      // 0x0c
+		bool m_open;                                                              // 0x0c
 		void* m_nativeWindow;                                                     // 0x10
 		int m_effectCapacity;                                                     // 0x14
 		int m_buffersPerEffect;                                                   // 0x18
-		unsigned int m_musicAvailable;                                            // 0x1c
-		unsigned int m_available;                                                 // 0x20
-		unsigned int m_stereo;                                                    // 0x24
-		unsigned int m_use16Bit;                                                  // 0x28
+		bool m_musicAvailable;                                                    // 0x1c
+		bool m_available;                                                         // 0x20
+		bool m_stereo;                                                            // 0x24
+		bool m_use16Bit;                                                          // 0x28
 		unsigned int m_unk0x2c;                                                   // 0x2c
 		unsigned int m_unk0x30;                                                   // 0x30
 		unsigned int m_sampleRate;                                                // 0x34

@@ -42,11 +42,11 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_buffersPerEffect = p_buffersPerEffect;
 	m_platform.m_nativeWindow = NULL;
 	m_platform.m_effects = new CDirectSoundEffect*[p_effectCapacity + 1];
-	m_platform.m_open = 0;
-	m_platform.m_musicAvailable = 0;
-	m_platform.m_available = 0;
-	m_platform.m_stereo = 0;
-	m_platform.m_use16Bit = 0;
+	m_platform.m_open = false;
+	m_platform.m_musicAvailable = false;
+	m_platform.m_available = false;
+	m_platform.m_stereo = false;
+	m_platform.m_use16Bit = false;
 	m_platform.m_unk0x2c = 0;
 	m_platform.m_sampleRate = 0;
 	m_platform.m_deviceId = 0xffffffff;
@@ -60,7 +60,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_format.wBitsPerSample = 16;
 	m_platform.m_format.nBlockAlign = 2;
 	m_platform.m_format.wFormatTag = 1;
-	m_platform.m_use16Bit = 1;
+	m_platform.m_use16Bit = true;
 	m_platform.m_format.nChannels = 1;
 	m_platform.m_format.nAvgBytesPerSec = 1;
 	m_platform.m_format.nAvgBytesPerSec *= m_platform.m_format.nSamplesPerSec * m_platform.m_format.nBlockAlign;
@@ -96,8 +96,8 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 					(HMODULE) m_platform.m_library,
 					"DirectSoundCreate");
 				if (m_platform.m_createDirectSound != NULL) {
-					m_platform.m_available = 1;
-					m_platform.m_open = 0;
+					m_platform.m_available = true;
+					m_platform.m_open = false;
 				}
 			}
 		}
@@ -130,7 +130,7 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Sound Create failed: "
 						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
-		m_platform.m_available = 0;
+		m_platform.m_available = false;
 		return 0;
 	}
 	memset(&description, 0, sizeof(description));
@@ -142,14 +142,14 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 	if (result != 0) {
 		*g_pErrorOutput << "Effect Buffer Set Cooperative Level failed: "
 						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
-		m_platform.m_available = 0;
+		m_platform.m_available = false;
 		return 0;
 	}
 	result = g_directSound->CreateSoundBuffer(&description, &g_primarySoundBuffer, NULL);
 	if (result != 0) {
 		*g_pErrorOutput << "Primary Sound Buffer failed: "
 						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
-		m_platform.m_available = 0;
+		m_platform.m_available = false;
 		return 0;
 	}
 	WAVEFORMATEX* format = &m_platform.m_format;
@@ -186,11 +186,11 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 	if (result != 0) {
 		*g_pErrorOutput << "Primary Sound Buffer play: "
 						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
-		m_platform.m_available = 0;
+		m_platform.m_available = false;
 		return 0;
 	}
-	m_platform.m_available = 1;
-	m_platform.m_open = 1;
+	m_platform.m_available = true;
+	m_platform.m_open = true;
 	return 1;
 }
 
