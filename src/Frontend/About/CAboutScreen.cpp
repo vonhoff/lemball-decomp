@@ -126,7 +126,7 @@ void CAboutScreen::DrawRegistrationText()
 	font = m_textManager->GetFont(RES_GAME_FONT3);
 	CVSSize sizeValue = font->GetSize(g_szRegisteredTo, TEXT_ADVANCE_X_POSITIVE);
 	CVSSize& size = sizeValue;
-	labelY = (int) (m_size.m_height / 2) - (int) (size.m_height / 2);
+	labelY = (m_size.m_height / 2) - (size.m_height / 2);
 	{
 		CVSSize advance;
 		advance.m_height = 0;
@@ -193,8 +193,8 @@ void CAboutScreen::OnSize(const CVSRect& p_rect)
 
 	m_size.m_width = p_rect.m_width;
 	m_size.m_height = p_rect.m_height;
-	textY = (int) p_rect.m_height - 0x20;
-	textX = ((int) p_rect.m_width - 0x60) / 2;
+	textY = p_rect.m_height - 0x20;
+	textX = (p_rect.m_width - 0x60) / 2;
 	if (m_textWindow != NULL) {
 		position.m_x = (short) textX;
 		position.m_y = (short) textY;
@@ -223,7 +223,7 @@ void CAboutScreen::DrawChangedRegion()
 			area.ExpandToInclude(*(CVSRect*) item);
 			index = index + 1;
 		}
-		if (0 < (int) area.m_height * (int) area.m_width) {
+		if (0 < area.m_height * area.m_width) {
 			if (m_size.m_width < area.m_width) {
 				area.m_width = m_size.m_width;
 			}
@@ -243,8 +243,8 @@ void CAboutScreen::DrawChangedRegion()
 			m_line.m_bounds.m_x = 0;
 			m_line.m_bounds.m_y = 0;
 			m_line.Draw(m_gdi);
-			int centreedY = ((int) m_size.m_height - (int) bitmap->m_rasterPoint.m_y) / 2;
-			m_bitmap.m_x = (short) (((int) m_size.m_width - (int) bitmap->m_rasterPoint.m_x) / 2);
+			int centreedY = (m_size.m_height - bitmap->m_rasterPoint.m_y) / 2;
+			m_bitmap.m_x = (short) ((m_size.m_width - bitmap->m_rasterPoint.m_x) / 2);
 			m_bitmap.m_y = (short) centreedY;
 			m_bitmap.m_resource = m_backgroundBitmap;
 			m_bitmap.m_remap = NULL;
