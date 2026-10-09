@@ -457,14 +457,14 @@ void CGameObject::Initialise()
 	m_objectActive = 0;
 	m_unk0xc4 = 0;
 	m_initiallyActive = 0;
-	m_isFlying = 0;
+	m_isFlying = false;
 	m_hidden = 0;
 	m_activationReserved = 0;
 	m_routeSearchFailed = 0;
 	m_routeSearchActive = 0;
-	m_isJumping = 0;
-	m_isFalling = 0;
-	m_wasHitByMine = 0;
+	m_isJumping = false;
+	m_isFalling = false;
+	m_wasHitByMine = false;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
 	m_flightVelocity.m_xFixed = 0;
@@ -482,8 +482,8 @@ void CGameObject::Initialise()
 // FUNCTION: LEMBALL 0x00415240
 void CGameObject::StartFly(C3DVector& p_velocity, C3DVector* p_origin)
 {
-	m_isJumping = 0;
-	m_isFalling = 0;
+	m_isJumping = false;
+	m_isFalling = false;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
 	if (p_origin != NULL) {
@@ -502,7 +502,7 @@ void CGameObject::StartFly(C3DVector& p_velocity, C3DVector* p_origin)
 		m_flightOrigin.m_yFixed = m_position.m_yFixed;
 		m_flightOrigin.m_zFixed = m_position.m_zFixed;
 	}
-	m_isFlying = 1;
+	m_isFlying = true;
 	m_flightVelocity.m_xFixed = p_velocity.m_xFixed;
 	m_flightVelocity.m_yFixed = p_velocity.m_yFixed;
 	m_flightVelocity.m_zFixed = p_velocity.m_zFixed;
@@ -540,12 +540,12 @@ void CGameObject::Fly()
 		int groundZ = g_pMap->GetZ(x >> FIXED_POINT_FRACTION_BITS, y >> FIXED_POINT_FRACTION_BITS, &mover);
 		int flightZ = z >> FIXED_POINT_FRACTION_BITS;
 		if (flightZ <= groundZ) {
-			m_isFlying = 0;
+			m_isFlying = false;
 			m_balloonPostId = 0;
 			if (groundZ - 12 >= flightZ) {
 				m_actionDeadline = g_dwGameTick;
 				if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
-					m_isFalling = 1;
+					m_isFalling = true;
 					m_flightVelocity.m_xFixed = GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED;
 					m_flightVelocity.m_yFixed = 0;
 					int objectZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
@@ -569,7 +569,7 @@ void CGameObject::Fly()
 					m_flightVelocity.m_zFixed = 0;
 				}
 				else {
-					m_isFlying = 1;
+					m_isFlying = true;
 				}
 				if (m_onMover == 0 && mover != NULL) {
 					mover->GetOn(this);
@@ -643,7 +643,7 @@ void CGameObject::StartMoving()
 			m_actionDeadline = g_dwGameTick;
 			if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
 				m_flightVelocity.m_yFixed = 0;
-				m_isFalling = 1;
+				m_isFalling = true;
 				m_flightVelocity.m_xFixed = GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED;
 				const int& fallSteps = (objectZ - groundZ) / 8;
 				m_flightVelocity.m_zFixed = (fallSteps + 1) << FIXED_POINT_FRACTION_BITS;
@@ -839,7 +839,7 @@ bool CGameObject::Move()
 			return false;
 		}
 		if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_JUMP) != 0) {
-			m_isJumping = 1;
+			m_isJumping = true;
 			m_lastMovementTick = g_dwGameTick;
 			m_flightZ = currentGroundZ;
 			m_groundPosition.m_xFixed = position.m_xFixed;
@@ -855,7 +855,7 @@ bool CGameObject::Move()
 	if ((int) height <= (int) currentGroundZ - 7) {
 		m_actionDeadline = g_dwGameTick;
 		if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
-			m_isFalling = 1;
+			m_isFalling = true;
 			unsigned int movementTick = g_dwGameTick;
 			int velocityY = 0;
 			m_actionArgument = 0;
@@ -1073,7 +1073,7 @@ void CGameObject::Jump()
 		AICOORD* position = &m_position;
 		m_position = m_groundPosition;
 		m_position.m_zFixed = groundZ;
-		m_isJumping = 0;
+		m_isJumping = false;
 		if (m_onMover == 0 && mover != NULL) {
 			if (!mover->GetOn(this)) {
 				g_pAI->StepOn(*position, this, m_collisionFlags);
@@ -1127,7 +1127,7 @@ bool CGameObject::Fall()
 			m_flightVelocity.m_xFixed = 0;
 			m_flightVelocity.m_yFixed = 0;
 			m_flightVelocity.m_zFixed = 0;
-			m_isFalling = 0;
+			m_isFalling = false;
 			if (m_onMover == 0 && mover != NULL && mover->GetOn(this)) {
 				ResetInstructions();
 			}

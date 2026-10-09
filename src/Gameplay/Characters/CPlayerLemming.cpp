@@ -411,7 +411,7 @@ void CPlayerLemming::HitMine()
 	C3DVector vel;
 	vel.m_xFixed = 0;
 	vel.m_yFixed = 0;
-	m_wasHitByMine = 1;
+	m_wasHitByMine = true;
 	vel.m_zFixed = PLAYER_LEMMING_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
 	StartFly(vel, NULL);
 	m_deathRequested = 1;
@@ -578,14 +578,14 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	short& resetFlags = m_unk0xc4;
 	resetFlags = 0;
 	m_fireRequestState = FIRE_REQUEST_NONE;
-	m_isFlying = 0;
+	m_isFlying = false;
 	m_hidden = 0;
 	m_activationReserved = 0;
 	m_routeSearchFailed = 0;
 	m_routeSearchActive = 0;
-	m_isJumping = 0;
-	m_isFalling = 0;
-	m_wasHitByMine = 0;
+	m_isJumping = false;
+	m_isFalling = false;
+	m_wasHitByMine = false;
 	m_liftId = INVALID_OBJECT_ID;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
@@ -692,7 +692,7 @@ void CPlayerLemming::OnBalloon()
 	if (dist < 16) {
 		m_balloonPostActive = 0;
 		SetSndEffect(SFX_BALLOON_EXPLODE);
-		m_isFalling = 1;
+		m_isFalling = true;
 		m_lastMovementTick = g_dwGameTick;
 		m_actionArgument = 0;
 		m_action = ACTION_FALLING;
@@ -834,7 +834,7 @@ void CPlayerLemming::StartStanding()
 	m_actionDeadline = g_dwGameTick;
 	if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
 		m_flightVelocity.m_yFixed = 0;
-		m_isFalling = 1;
+		m_isFalling = true;
 		m_flightVelocity.m_xFixed = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
 		m_flightVelocity.m_zFixed = (((tileZ - (int) groundZ) / 8) + 1) * FIXED_POINT_ONE;
 		unsigned int now = g_dwGameTick;

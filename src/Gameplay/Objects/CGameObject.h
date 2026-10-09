@@ -244,12 +244,12 @@ protected:
 	unsigned long m_actionPhase2Deadline;  // 0xd4
 	C3DVector m_flightOrigin;              // 0xd8
 	C3DVector m_auxiliaryPosition;         // 0xe4
-	unsigned int m_isFlying;               // 0xf0
+	bool m_isFlying;                       // 0xf0
 	AICOORD m_groundPosition;              // 0xf4
 	int m_flightZ;                         // 0x100
-	unsigned int m_isJumping;              // 0x104
-	unsigned int m_isFalling;              // 0x108
-	unsigned int m_wasHitByMine;           // 0x10c
+	bool m_isJumping;                      // 0x104
+	bool m_isFalling;                      // 0x108
+	bool m_wasHitByMine;                   // 0x10c
 	unsigned int m_liftId;                 // 0x110
 	unsigned int m_isRemoteObject;         // 0x114
 	unsigned int m_unk0x118;               // 0x118
