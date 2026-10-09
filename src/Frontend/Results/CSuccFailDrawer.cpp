@@ -247,8 +247,8 @@ void CSuccFailDrawer::CalculateText()
 
 	{
 		bool done = false;
-		short layoutMinX = (short) m_layout->m_messagePosition.m_x;
-		short layoutY = (short) m_layout->m_messagePosition.m_y;
+		short layoutMinX = m_layout->m_messagePosition.m_x;
+		short layoutY = m_layout->m_messagePosition.m_y;
 		m_firstLine = m_message;
 		m_secondLine = NULL;
 		short lineX;
@@ -257,8 +257,8 @@ void CSuccFailDrawer::CalculateText()
 			const CVSSize& textSize = font->GetSize(m_firstLine, TEXT_ADVANCE_X_POSITIVE);
 			measuredSize.m_height = textSize.m_height;
 			measuredSize.m_width = textSize.m_width;
-			lineX = (short) m_layout->m_frameStart.m_x +
-					(short) ((m_layout->m_frameEnd.m_x - (int) measuredSize.m_width) / 2);
+			lineX =
+				(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - measuredSize.m_width) / 2);
 			char* prevBreak = (m_secondLine != NULL) ? (m_secondLine - 1) : NULL;
 			if (lineX < layoutMinX) {
 				char* space = strrchr(m_firstLine, ' ');
@@ -283,7 +283,7 @@ void CSuccFailDrawer::CalculateText()
 			layoutY = layoutY + measuredSize.m_height;
 			const CVSSize& textSize = font->GetSize(m_secondLine, TEXT_ADVANCE_X_POSITIVE);
 			m_secondLinePos.m_x =
-				(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - (int) textSize.m_width) / 2);
+				(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - textSize.m_width) / 2);
 			m_secondLinePos.m_y = layoutY;
 		}
 	}
@@ -292,7 +292,7 @@ void CSuccFailDrawer::CalculateText()
 		const CVSSize& textSize = font->GetSize(g_szPasswordLabel, TEXT_ADVANCE_X_POSITIVE);
 		short labelHeight = textSize.m_height;
 		int labelWidth = textSize.m_width;
-		passwordLabelY = (short) m_layout->m_passwordLabelPosition.m_y;
+		passwordLabelY = m_layout->m_passwordLabelPosition.m_y;
 		m_passwordLabelPos.m_x =
 			(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - labelWidth) / 2);
 		m_passwordLabelPos.m_y = passwordLabelY;
@@ -373,7 +373,7 @@ void CSuccFailDrawer::Load()
 		primitive->m_primitive.m_remap = NULL;
 		resource = m_primaryBitmap;
 		position = m_layout->m_primaryPosition.m_y;
-		primary->m_primary.m_x = (short) bitmapX;
+		primary->m_primary.m_x = bitmapX;
 		primary->m_primary.m_y = position;
 		primary->m_primary.m_resource = resource;
 		primary->m_primary.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
@@ -384,7 +384,7 @@ void CSuccFailDrawer::Load()
 			SuccFailLayout* layout = m_layout;
 			secondaryY = layout->m_secondaryPosition.m_y;
 			unsigned int secondaryX = layout->m_secondaryPosition.m_x;
-			primary->m_secondary.m_x = (short) secondaryX;
+			primary->m_secondary.m_x = secondaryX;
 			primary->m_secondary.m_y = secondaryY;
 			primary->m_secondary.m_resource = secondaryResource;
 			primary->m_secondary.m_flags = CBitmap::BITMAP_TRANSPARENT_ZERO;
@@ -586,10 +586,10 @@ void CSuccFailDrawer::Processing()
 		if (now > m_animStartDeadline && m_animationsEnabled != 0) {
 			if (m_display->IsWindowValid() != 0) {
 				layout = m_layout;
-				short rectHeight = (short) layout->m_animWindowEnd.m_y;
-				short rectY = (short) layout->m_secondaryPosition.m_y;
-				short rectX = (short) layout->m_secondaryPosition.m_x;
-				CVSRect rect(rectX, rectY, (short) layout->m_animWindowEnd.m_x, rectHeight);
+				short rectHeight = layout->m_animWindowEnd.m_y;
+				short rectY = layout->m_secondaryPosition.m_y;
+				short rectX = layout->m_secondaryPosition.m_x;
+				CVSRect rect(rectX, rectY, layout->m_animWindowEnd.m_x, rectHeight);
 				m_animWindow.Create(rect, (CPVGWnd*) m_display, g_szPaintballSequence);
 				m_animWindow.Play();
 				m_animStarted = 1;
