@@ -23,8 +23,8 @@ public:
 	int GetnGame(CConnect* p_connection);
 	int CountActiveGames();
 	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
-	virtual void Process();                     // vtable+0x0c
-	virtual ~CNetworkManager();                 // vtable+0x04
+	virtual void Process();                        // vtable+0x0c
+	virtual ~CNetworkManager();                    // vtable+0x04
 	void Broadcast(const char* p_address);
 	void GameProcess();
 	void Kill();
@@ -44,9 +44,9 @@ private:
 	CConnect* m_connections[NETWORK_GAME_SLOT_COUNT]; // 0x20
 	unsigned int m_desiredGameState;                  // 0x48
 	unsigned int m_observedGameState;                 // 0x4c
-	unsigned int m_lastGameStateSendTime;             // 0x50
+	unsigned long m_lastGameStateSendTime;            // 0x50
 	unsigned int m_connectionsChanged;                // 0x54
-	unsigned int m_broadcastStartTime;                // 0x58
+	unsigned long m_broadcastStartTime;               // 0x58
 	unsigned int m_networkInitialised;                // 0x5c
 	unsigned int m_externalDriverLoaded;              // 0x60
 	unsigned int m_localDriverLoaded;                 // 0x64

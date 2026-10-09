@@ -108,7 +108,7 @@ void CNetworkManager::Stop()
 	if (g_pActiveConnection != NULL) {
 		m_rejectMessage->m_flag = 1;
 		m_rejectMessage->Send(g_pActiveConnection);
-		unsigned int startTime = CurrentMilliTimer();
+		unsigned long startTime = CurrentMilliTimer();
 		while (m_rejectMessage->m_pendingSendCount != 0 &&
 			   CurrentMilliTimer() - startTime < NETWORK_MESSAGE_SEND_WAIT_TIMEOUT_MS) {
 		}
