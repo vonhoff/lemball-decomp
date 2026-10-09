@@ -15,7 +15,7 @@ extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
 														   const char* p_caption,
 														   unsigned int p_type);
 
-unsigned int __cdecl DebugMessageThreadMain();
+unsigned long __cdecl DebugMessageThreadMain();
 
 // GLOBAL: LEMBALL 0x004a82e0
 jmp_buf g_vsDebugJumpBuffer;

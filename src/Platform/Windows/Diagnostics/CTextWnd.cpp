@@ -23,7 +23,7 @@ extern void* g_pDebugAcceleratorTable;
 extern void* g_pDebugSyncEvent;
 
 // FUNCTION: LEMBALL 0x00472b10
-unsigned int __cdecl DebugMessageThreadMain()
+unsigned long __cdecl DebugMessageThreadMain()
 {
 	// STRING: LEMBALL 0x004a2a20
 	g_pDebugWindow = new CTextWnd("Debug Window", DEBUG_TEXT_WINDOW_LINE_CAPACITY);

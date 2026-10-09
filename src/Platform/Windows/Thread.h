@@ -16,7 +16,7 @@ extern "C" __declspec(dllimport) void* __stdcall CreateEventA(void* p_security,
 															  int p_manual,
 															  int p_initial,
 															  const char* p_name);
-extern "C" __declspec(dllimport) unsigned int __stdcall WaitForSingleObject(void* p_handle, unsigned int p_ms);
-extern "C" __declspec(dllimport) int __stdcall TerminateThread(void* p_thread, unsigned int p_exit);
+extern "C" __declspec(dllimport) unsigned long __stdcall WaitForSingleObject(void* p_handle, unsigned long p_ms);
+extern "C" __declspec(dllimport) int __stdcall TerminateThread(void* p_thread, unsigned long p_exit);
 
 #endif
