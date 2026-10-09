@@ -16,15 +16,15 @@ class CPVGWnd;
 class CTrackWindow : public CGWnd, public CHotAreaHandler {
 public:
 	CTrackWindow(const CVSRect& p_rect, int p_value, CPVGWnd* p_parent);
-	virtual unsigned int GetStyle();                                               // vtable+0x64
-	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x04
-	virtual void Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_name);    // vtable+0x04
-	virtual void Move(const CVSPoint& p_position);                                 // vtable+0x38
-	virtual void OnCreate();                                                       // vtable+0x3c
-	virtual void OnDriverChange();                                                 // vtable+0x5c
-	virtual void OnInside(const CVSPoint& p_point);                                // vtable+0x18
-	virtual void OnPaint(const CVSRect& p_rect);                                   // vtable+0xa8
-	virtual ~CTrackWindow();                                                       // vtable+0x00
+	virtual unsigned int GetStyle();                                            // vtable+0x64
+	virtual void OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags);   // vtable+0x04
+	virtual void Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_name); // vtable+0x04
+	virtual void Move(const CVSPoint& p_position);                              // vtable+0x38
+	virtual void OnCreate();                                                    // vtable+0x3c
+	virtual void OnDriverChange();                                              // vtable+0x5c
+	virtual void OnInside(const CVSPoint& p_point);                             // vtable+0x18
+	virtual void OnPaint(const CVSRect& p_rect);                                // vtable+0xa8
+	virtual ~CTrackWindow();                                                    // vtable+0x00
 	void SetButtonValue(int p_value);
 
 private:

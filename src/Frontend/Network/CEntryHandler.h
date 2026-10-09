@@ -9,9 +9,9 @@
 class CEntryHandler : public CHotAreaHandler {
 public:
 	CEntryHandler();
-	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x04
-	virtual void OnEnter();                                                        // vtable+0x10
-	virtual void OnExit();                                                         // vtable+0x14
+	virtual void OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags); // vtable+0x04
+	virtual void OnEnter();                                                   // vtable+0x10
+	virtual void OnExit();                                                    // vtable+0x14
 	void Reset();
 
 	friend class CNetworkOptionsDrawer;

@@ -1,14 +1,14 @@
 #include "CToggleButton.h"
 
 // FUNCTION: LEMBALL 0x00443830
-void CToggleButton::OnReleased(eMouseButtonIndex p_flags)
+void CToggleButton::OnReleased(BUTTON_FLAGS p_flags)
 {
 	m_toggled = m_toggled ^ 1;
 	m_enabled = m_toggled;
 }
 
 // FUNCTION: LEMBALL 0x00443850
-void CToggleButton::OnPressed(eMouseButtonIndex p_flags)
+void CToggleButton::OnPressed(BUTTON_FLAGS p_flags)
 {
 	m_enabled = m_pressed ^ m_toggled;
 }

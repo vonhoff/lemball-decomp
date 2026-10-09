@@ -1716,7 +1716,7 @@ void C2D::OnInside(const CVSPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x004381c0
-void C2D::OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void C2D::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	m_mouseButtonDown = 0;
 	if (m_paused == 0) {
@@ -1728,7 +1728,7 @@ void C2D::OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00438210
-void C2D::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void C2D::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	m_mouseButtonDown = 1;
 	if (m_paused == 0) {

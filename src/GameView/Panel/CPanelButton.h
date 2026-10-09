@@ -16,15 +16,15 @@ class CPVGWnd;
 class CPanelButton : public CDepressedButton {
 public:
 	CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVGWnd* p_parent);
-	virtual void OnPaint(const CVSRect& p_rect);                                         // vtable+0xa8
-	virtual void DrawButton();                                                           // vtable+0xbc
-	virtual void OnEnterButton();                                                        // vtable+0xc8
-	virtual void OnExitButton();                                                         // vtable+0xcc
-	virtual void OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x0c
-	virtual void OnInside(const CVSPoint& p_point);                                      // vtable+0x18
-	virtual void OnPressed(eMouseButtonIndex p_flags);                                   // vtable+0xc4
-	virtual void OnReleased(eMouseButtonIndex p_flags);                                  // vtable+0xc0
-	virtual ~CPanelButton();                                                             // vtable+0x00
+	virtual void OnPaint(const CVSRect& p_rect);                                    // vtable+0xa8
+	virtual void DrawButton();                                                      // vtable+0xbc
+	virtual void OnEnterButton();                                                   // vtable+0xc8
+	virtual void OnExitButton();                                                    // vtable+0xcc
+	virtual void OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags); // vtable+0x0c
+	virtual void OnInside(const CVSPoint& p_point);                                 // vtable+0x18
+	virtual void OnPressed(BUTTON_FLAGS p_flags);                                   // vtable+0xc4
+	virtual void OnReleased(BUTTON_FLAGS p_flags);                                  // vtable+0xc0
+	virtual ~CPanelButton();                                                        // vtable+0x00
 
 private:
 	unsigned int m_pressedInside;        // 0x10c

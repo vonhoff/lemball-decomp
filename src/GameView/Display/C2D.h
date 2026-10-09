@@ -97,19 +97,19 @@ public:
 	unsigned long LemmingFly(CViewData& p_viewData, int& p_frame);
 	unsigned short CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, unsigned short p_z);
 	void UseBalloon(int p_playerIndex);
-	virtual bool GetPauser();                                                      // vtable+0x04
-	virtual bool QuitYet();                                                        // vtable+0x2c
-	virtual int GetReturnState();                                                  // vtable+0x28
-	virtual int ProcessMsg(tagMESSAGE* p_message);                                 // vtable+0x08
-	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x04
-	virtual void OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags);   // vtable+0x08
-	virtual void OnDriverChange();                                                 // vtable+0x30
-	virtual void OnInside(const CVSPoint& p_point);                                // vtable+0x18
-	virtual void OnSize(const CVSRect& p_rect);                                    // vtable+0x10
-	virtual void OnZoom(const CVSRect& p_rect);                                    // vtable+0x0c
-	virtual void Process();                                                        // vtable+0x1c
-	virtual void ShutDown();                                                       // vtable+0x04
-	virtual ~C2D();                                                                // vtable+0x00
+	virtual bool GetPauser();                                                 // vtable+0x04
+	virtual bool QuitYet();                                                   // vtable+0x2c
+	virtual int GetReturnState();                                             // vtable+0x28
+	virtual int ProcessMsg(tagMESSAGE* p_message);                            // vtable+0x08
+	virtual void OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags); // vtable+0x04
+	virtual void OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags);   // vtable+0x08
+	virtual void OnDriverChange();                                            // vtable+0x30
+	virtual void OnInside(const CVSPoint& p_point);                           // vtable+0x18
+	virtual void OnSize(const CVSRect& p_rect);                               // vtable+0x10
+	virtual void OnZoom(const CVSRect& p_rect);                               // vtable+0x0c
+	virtual void Process();                                                   // vtable+0x1c
+	virtual void ShutDown();                                                  // vtable+0x04
+	virtual ~C2D();                                                           // vtable+0x00
 	void AddObjectToGroup(int p_objectNo, int p_markSelection);
 	void AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_groundHeight, int p_adjustForGround);
 	void BuildObjectClipData(CViewData& p_viewData, int p_viewIndex);

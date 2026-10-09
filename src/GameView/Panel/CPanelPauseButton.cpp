@@ -45,7 +45,7 @@ void CPanelPauseButton::OnPaint(const CVSRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00442280
-void CPanelPauseButton::OnPressed(eMouseButtonIndex p_flags)
+void CPanelPauseButton::OnPressed(BUTTON_FLAGS p_flags)
 {
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT) {
 		m_pressedInside = 1;
@@ -55,7 +55,7 @@ void CPanelPauseButton::OnPressed(eMouseButtonIndex p_flags)
 }
 
 // FUNCTION: LEMBALL 0x004422b0
-void CPanelPauseButton::OnReleased(eMouseButtonIndex p_flags)
+void CPanelPauseButton::OnReleased(BUTTON_FLAGS p_flags)
 {
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT) {
 		unsigned int paused = m_toggled ^ 1;
@@ -75,7 +75,7 @@ void CPanelPauseButton::OnReleased(eMouseButtonIndex p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00442350
-void CPanelPauseButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void CPanelPauseButton::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	CPVButton::OnExternalButtonUp(p_point, p_flags);
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT && m_pressedInside != 0) {

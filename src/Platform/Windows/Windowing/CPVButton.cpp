@@ -182,7 +182,7 @@ void CPVButton::OnExit()
 }
 
 // FUNCTION: LEMBALL 0x00468000
-eMouseButtonIndex CPVButton::ConvertDoubleClick(int p_flags)
+BUTTON_FLAGS CPVButton::ConvertDoubleClick(BUTTON_FLAGS p_flags)
 {
 	switch (p_flags) {
 	case MOUSE_BUTTON_INDEX_LEFT:
@@ -200,9 +200,9 @@ eMouseButtonIndex CPVButton::ConvertDoubleClick(int p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00468050
-void CPVButton::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void CPVButton::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
-	eMouseButtonIndex converted;
+	BUTTON_FLAGS converted;
 	CVSPoint clickPos;
 
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK) {
@@ -218,9 +218,9 @@ void CPVButton::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 }
 
 // FUNCTION: LEMBALL 0x004680c0
-void CPVButton::OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void CPVButton::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
-	eMouseButtonIndex converted;
+	BUTTON_FLAGS converted;
 
 	if (m_pressed != 0) {
 		converted = ConvertDoubleClick(p_flags);
@@ -236,7 +236,7 @@ void CPVButton::OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
 }
 
 // FUNCTION: LEMBALL 0x00468130
-void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	int i;
 	unsigned int* state;
@@ -257,10 +257,10 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_
 }
 
 // FUNCTION: LEMBALL 0x00468180
-void CPVButton::_OnReleased(eMouseButtonIndex p_flags)
+void CPVButton::_OnReleased(BUTTON_FLAGS p_flags)
 {
 	tagMESSAGE posted;
-	eMouseButtonIndex converted;
+	BUTTON_FLAGS converted;
 
 	if (m_autoDraw == 0) {
 		m_forceDrawCount = 1;
@@ -277,10 +277,10 @@ void CPVButton::_OnReleased(eMouseButtonIndex p_flags)
 }
 
 // FUNCTION: LEMBALL 0x004681f0
-void CPVButton::_OnPressed(eMouseButtonIndex p_flags)
+void CPVButton::_OnPressed(BUTTON_FLAGS p_flags)
 {
 	tagMESSAGE posted;
-	eMouseButtonIndex converted;
+	BUTTON_FLAGS converted;
 
 	if (m_autoDraw == 0) {
 		m_forceDrawCount = 1;

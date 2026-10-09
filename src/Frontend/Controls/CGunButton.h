@@ -16,8 +16,8 @@ public:
 		: CGraphicButton(p_position, p_parent, p_animId, p_flags)
 	{
 	}
-	virtual void OnPressed(eMouseButtonIndex p_flags);  // vtable+0xc4
-	virtual void OnReleased(eMouseButtonIndex p_flags); // vtable+0xc0
+	virtual void OnPressed(BUTTON_FLAGS p_flags);  // vtable+0xc4
+	virtual void OnReleased(BUTTON_FLAGS p_flags); // vtable+0xc0
 };
 
 // SYNTHETIC: LEMBALL 0x0044e650

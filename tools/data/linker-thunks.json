@@ -308,7 +308,7 @@
       "target": 4467360,
       "original_bytes": "e9d8190400",
       "symbol": "__lemball_jump_004010c3",
-      "target_symbol": "?OnReleased@CPanelButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnReleased@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4198600,
@@ -1656,14 +1656,14 @@
       "target": 4465488,
       "original_bytes": "e9040f0400",
       "symbol": "__lemball_jump_00401447",
-      "target_symbol": "?OnExternalButtonUp@CPanelPauseButton@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnExternalButtonUp@CPanelPauseButton@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4199500,
       "target": 4506112,
       "original_bytes": "e9afad0400",
       "symbol": "__lemball_jump_0040144c",
-      "target_symbol": "?OnReleased@CGunButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnReleased@CGunButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4199505,
@@ -1761,7 +1761,7 @@
       "target": 4534880,
       "original_bytes": "e9c91d0500",
       "symbol": "__lemball_jump_00401492",
-      "target_symbol": "?OnButtonDown@CEntryHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnButtonDown@CEntryHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4199575,
@@ -2165,7 +2165,7 @@
       "target": 4475680,
       "original_bytes": "e985350400",
       "symbol": "__lemball_jump_00401596",
-      "target_symbol": "?OnButtonDown@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnButtonDown@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4199835,
@@ -2720,7 +2720,7 @@
       "target": 4430176,
       "original_bytes": "e958820300",
       "symbol": "__lemball_jump_00401703",
-      "target_symbol": "?OnButtonDown@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnButtonDown@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4200200,
@@ -4408,7 +4408,7 @@
       "target": 4470832,
       "original_bytes": "e9c81c0400",
       "symbol": "__lemball_jump_00401b63",
-      "target_symbol": "?OnReleased@CToggleButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnReleased@CToggleButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4201320,
@@ -4806,7 +4806,7 @@
       "target": 4424208,
       "original_bytes": "e9ae650300",
       "symbol": "__lemball_jump_00401c5d",
-      "target_symbol": "?OnButtonDown@C2D@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnButtonDown@C2D@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4201570,
@@ -6558,7 +6558,7 @@
       "target": 4475888,
       "original_bytes": "e9062b0400",
       "symbol": "__lemball_jump_004020e5",
-      "target_symbol": "?OnExternalButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnExternalButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4202730,
@@ -7014,7 +7014,7 @@
       "target": 4424128,
       "original_bytes": "e9aa5f0300",
       "symbol": "__lemball_jump_00402211",
-      "target_symbol": "?OnButtonUp@C2D@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnButtonUp@C2D@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4203030,
@@ -9198,7 +9198,7 @@
       "target": 4467392,
       "original_bytes": "e9f6020400",
       "symbol": "__lemball_jump_004027c5",
-      "target_symbol": "?OnExternalButtonUp@CPanelButton@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnExternalButtonUp@CPanelButton@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4204490,
@@ -9561,7 +9561,7 @@
       "target": 4465328,
       "original_bytes": "e9f1f90300",
       "symbol": "__lemball_jump_004028ba",
-      "target_symbol": "?OnReleased@CPanelPauseButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnReleased@CPanelPauseButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4204735,
@@ -9755,7 +9755,7 @@
       "target": 4433440,
       "original_bytes": "e9df7c0300",
       "symbol": "__lemball_jump_0040293c",
-      "target_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4204865,
@@ -10583,7 +10583,7 @@
       "target": 4516880,
       "original_bytes": "e9a9c00400",
       "symbol": "__lemball_jump_00402b62",
-      "target_symbol": "?OnButtonDown@CTrackWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnButtonDown@CTrackWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4205415,
@@ -11211,7 +11211,7 @@
       "target": 4475856,
       "original_bytes": "e9c51e0400",
       "symbol": "__lemball_jump_00402d06",
-      "target_symbol": "?OnButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4205835,
@@ -11274,7 +11274,7 @@
       "target": 4433504,
       "original_bytes": "e928790300",
       "symbol": "__lemball_jump_00402d33",
-      "target_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4205880,
@@ -11789,7 +11789,7 @@
       "target": 4506160,
       "original_bytes": "e99f930400",
       "symbol": "__lemball_jump_00402e8c",
-      "target_symbol": "?OnPressed@CGunButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnPressed@CGunButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4206225,
@@ -12604,7 +12604,7 @@
       "target": 4470864,
       "original_bytes": "e9b2070400",
       "symbol": "__lemball_jump_00403099",
-      "target_symbol": "?OnPressed@CToggleButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnPressed@CToggleButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4206750,
@@ -14428,7 +14428,7 @@
       "target": 4430192,
       "original_bytes": "e90e640300",
       "symbol": "__lemball_jump_0040355d",
-      "target_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4207970,
@@ -14917,7 +14917,7 @@
       "target": 4465280,
       "original_bytes": "e9cfeb0300",
       "symbol": "__lemball_jump_004036ac",
-      "target_symbol": "?OnPressed@CPanelPauseButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnPressed@CPanelPauseButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4208305,
@@ -15097,7 +15097,7 @@
       "target": 4430208,
       "original_bytes": "e957620300",
       "symbol": "__lemball_jump_00403724",
-      "target_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4208425,
@@ -15354,7 +15354,7 @@
       "target": 4467424,
       "original_bytes": "e908f30300",
       "symbol": "__lemball_jump_004037d3",
-      "target_symbol": "?OnPressed@CPanelButton@@UAEXW4eMouseButtonIndex@@@Z"
+      "target_symbol": "?OnPressed@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z"
     },
     {
       "address": 4208600,
@@ -34338,7 +34338,7 @@
     {
       "caller": 4424128,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-      "symbol": "?OnButtonUp@C2D@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z",
+      "symbol": "?OnButtonUp@C2D@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 69,
       "fingerprint": "dba3e43a9462ca9097e5e48ba467f707db94f528684499c53c34790accbcbe45",
       "references": [
@@ -34354,7 +34354,7 @@
     {
       "caller": 4424208,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-      "symbol": "?OnButtonDown@C2D@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z",
+      "symbol": "?OnButtonDown@C2D@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 280,
       "fingerprint": "806d0c971d83e0fe3a34803959cdb46fa13502a302de04b4b389870b0a66e65b",
       "references": [
@@ -36935,7 +36935,7 @@
     {
       "caller": 4465280,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelPauseButton.cpp.obj",
-      "symbol": "?OnPressed@CPanelPauseButton@@UAEXW4eMouseButtonIndex@@@Z",
+      "symbol": "?OnPressed@CPanelPauseButton@@UAEXW4BUTTON_FLAGS@@@Z",
       "size": 44,
       "fingerprint": "36ff1208a733bda883e7fdc750cec982fbdfaea9e91c657cd6650d63db257d00",
       "references": [
@@ -36951,7 +36951,7 @@
     {
       "caller": 4465328,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelPauseButton.cpp.obj",
-      "symbol": "?OnReleased@CPanelPauseButton@@UAEXW4eMouseButtonIndex@@@Z",
+      "symbol": "?OnReleased@CPanelPauseButton@@UAEXW4BUTTON_FLAGS@@@Z",
       "size": 159,
       "fingerprint": "51d870f5abf35f1cfdfac74d60e420552c9aad6911904111d38aa92adbfdce2d",
       "references": [
@@ -36974,7 +36974,7 @@
     {
       "caller": 4465488,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelPauseButton.cpp.obj",
-      "symbol": "?OnExternalButtonUp@CPanelPauseButton@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z",
+      "symbol": "?OnExternalButtonUp@CPanelPauseButton@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 59,
       "fingerprint": "7f550c26bc5e8271243486f302988e2f12b0f3eb3177d3c84ce88c616feaec9f",
       "references": [
@@ -37138,7 +37138,7 @@
     {
       "caller": 4467360,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
-      "symbol": "?OnReleased@CPanelButton@@UAEXW4eMouseButtonIndex@@@Z",
+      "symbol": "?OnReleased@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z",
       "size": 25,
       "fingerprint": "33f9e91815106244021bed8edeb6c32dea62887ef7d7c2f4d3c2ace5784a60e4",
       "references": [
@@ -37154,7 +37154,7 @@
     {
       "caller": 4467392,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
-      "symbol": "?OnExternalButtonUp@CPanelButton@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z",
+      "symbol": "?OnExternalButtonUp@CPanelButton@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 28,
       "fingerprint": "d70c5d34a84ab4f4439ff25c7513a70e3a89d60489179f1b200af9aff0109a0e",
       "references": [
@@ -37170,7 +37170,7 @@
     {
       "caller": 4467424,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
-      "symbol": "?OnPressed@CPanelButton@@UAEXW4eMouseButtonIndex@@@Z",
+      "symbol": "?OnPressed@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z",
       "size": 454,
       "fingerprint": "d5a45f9ecf4ee20a196b0f0141799dd95f31d04d94690088c84ee3cccb780859",
       "references": [
@@ -37705,7 +37705,7 @@
     {
       "caller": 4475680,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
-      "symbol": "?OnButtonDown@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z",
+      "symbol": "?OnButtonDown@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 167,
       "fingerprint": "dfadf7205d6c62c5bdbd7f54f24839258fd4bba4abcf69e536eb6af809251d32",
       "references": [
@@ -37728,7 +37728,7 @@
     {
       "caller": 4475856,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
-      "symbol": "?OnButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z",
+      "symbol": "?OnButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 22,
       "fingerprint": "ea23e24acbe23a7a678381676aa8266a99668600298155857b1f4db579676385",
       "references": [
@@ -37744,7 +37744,7 @@
     {
       "caller": 4475888,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
-      "symbol": "?OnExternalButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z",
+      "symbol": "?OnExternalButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 22,
       "fingerprint": "ea23e24acbe23a7a678381676aa8266a99668600298155857b1f4db579676385",
       "references": [
@@ -39956,7 +39956,7 @@
     {
       "caller": 4506160,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunButton.cpp.obj",
-      "symbol": "?OnPressed@CGunButton@@UAEXW4eMouseButtonIndex@@@Z",
+      "symbol": "?OnPressed@CGunButton@@UAEXW4BUTTON_FLAGS@@@Z",
       "size": 64,
       "fingerprint": "f77a3ca6f75f25c2d94b2d3022872185130347af024e84e9b89062bf4230fa5f",
       "references": [
@@ -65775,21 +65775,21 @@
           "original_pointer": 4812228,
           "original_bytes": "5d1c4000",
           "thunk": 4201565,
-          "source_symbol": "?OnButtonDown@C2D@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonDown@C2D@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 8,
           "original_pointer": 4812232,
           "original_bytes": "11224000",
           "thunk": 4203025,
-          "source_symbol": "?OnButtonUp@C2D@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonUp@C2D@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 12,
           "original_pointer": 4812236,
           "original_bytes": "24374000",
           "thunk": 4208420,
-          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 16,
@@ -66152,21 +66152,21 @@
           "original_pointer": 4812452,
           "original_bytes": "03174000",
           "thunk": 4200195,
-          "source_symbol": "?OnButtonDown@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonDown@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 8,
           "original_pointer": 4812456,
           "original_bytes": "5d354000",
           "thunk": 4207965,
-          "source_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 12,
           "original_pointer": 4812460,
           "original_bytes": "24374000",
           "thunk": 4208420,
-          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 16,
@@ -66410,14 +66410,14 @@
           "original_pointer": 4813256,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4813260,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -66479,7 +66479,7 @@
           "original_pointer": 4813468,
           "original_bytes": "47144000",
           "thunk": 4199495,
-          "source_symbol": "?OnExternalButtonUp@CPanelPauseButton@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnExternalButtonUp@CPanelPauseButton@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 24,
@@ -66685,14 +66685,14 @@
           "original_pointer": 4813688,
           "original_bytes": "ba284000",
           "thunk": 4204730,
-          "source_symbol": "?OnReleased@CPanelPauseButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CPanelPauseButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4813692,
           "original_bytes": "ac364000",
           "thunk": 4208300,
-          "source_symbol": "?OnPressed@CPanelPauseButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CPanelPauseButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -66915,14 +66915,14 @@
           "original_pointer": 4813984,
           "original_bytes": "631b4000",
           "thunk": 4201315,
-          "source_symbol": "?OnReleased@CToggleButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CToggleButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4813988,
           "original_bytes": "99304000",
           "thunk": 4206745,
-          "source_symbol": "?OnPressed@CToggleButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CToggleButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -66960,7 +66960,7 @@
           "original_pointer": 4814060,
           "original_bytes": "c5274000",
           "thunk": 4204485,
-          "source_symbol": "?OnExternalButtonUp@CPanelButton@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnExternalButtonUp@CPanelButton@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 24,
@@ -67173,14 +67173,14 @@
           "original_pointer": 4814280,
           "original_bytes": "c3104000",
           "thunk": 4198595,
-          "source_symbol": "?OnReleased@CPanelButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4814284,
           "original_bytes": "d3374000",
           "thunk": 4208595,
-          "source_symbol": "?OnPressed@CPanelButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -67410,14 +67410,14 @@
           "original_pointer": 4814576,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4814580,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -67510,21 +67510,21 @@
           "original_pointer": 4814684,
           "original_bytes": "96154000",
           "thunk": 4199830,
-          "source_symbol": "?OnButtonDown@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonDown@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 8,
           "original_pointer": 4814688,
           "original_bytes": "062d4000",
           "thunk": 4205830,
-          "source_symbol": "?OnButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 12,
           "original_pointer": 4814692,
           "original_bytes": "e5204000",
           "thunk": 4202725,
-          "source_symbol": "?OnExternalButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnExternalButtonUp@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 16,
@@ -69652,14 +69652,14 @@
           "original_pointer": 4816368,
           "original_bytes": "4c144000",
           "thunk": 4199500,
-          "source_symbol": "?OnReleased@CGunButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CGunButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4816372,
           "original_bytes": "8c2e4000",
           "thunk": 4206220,
-          "source_symbol": "?OnPressed@CGunButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CGunButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -69902,21 +69902,21 @@
           "original_pointer": 4816676,
           "original_bytes": "622b4000",
           "thunk": 4205410,
-          "source_symbol": "?OnButtonDown@CTrackWindow@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonDown@CTrackWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 8,
           "original_pointer": 4816680,
           "original_bytes": "5d354000",
           "thunk": 4207965,
-          "source_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 12,
           "original_pointer": 4816684,
           "original_bytes": "24374000",
           "thunk": 4208420,
-          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 16,
@@ -70338,14 +70338,14 @@
           "original_pointer": 4817168,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4817172,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -71995,21 +71995,21 @@
           "original_pointer": 4818612,
           "original_bytes": "92144000",
           "thunk": 4199570,
-          "source_symbol": "?OnButtonDown@CEntryHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonDown@CEntryHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 8,
           "original_pointer": 4818616,
           "original_bytes": "5d354000",
           "thunk": 4207965,
-          "source_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 12,
           "original_pointer": 4818620,
           "original_bytes": "24374000",
           "thunk": 4208420,
-          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 16,
@@ -73444,14 +73444,14 @@
           "original_pointer": 4823048,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4823052,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -73674,14 +73674,14 @@
           "original_pointer": 4823288,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4823292,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -73897,14 +73897,14 @@
           "original_pointer": 4823528,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4823532,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -74127,14 +74127,14 @@
           "original_pointer": 4823768,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4823772,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -74357,14 +74357,14 @@
           "original_pointer": 4824040,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4824044,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -74587,14 +74587,14 @@
           "original_pointer": 4824280,
           "original_bytes": "3c294000",
           "thunk": 4204860,
-          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnReleased@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4824284,
           "original_bytes": "332d4000",
           "thunk": 4205875,
-          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnPressed@CDepressedButton@@UAEXW4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 200,
@@ -74625,21 +74625,21 @@
           "original_pointer": 4824348,
           "original_bytes": "03174000",
           "thunk": 4200195,
-          "source_symbol": "?OnButtonDown@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonDown@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 8,
           "original_pointer": 4824352,
           "original_bytes": "5d354000",
           "thunk": 4207965,
-          "source_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 12,
           "original_pointer": 4824356,
           "original_bytes": "24374000",
           "thunk": 4208420,
-          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4eMouseButtonIndex@@@Z"
+          "source_symbol": "?OnExternalButtonUp@CHotAreaHandler@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z"
         },
         {
           "offset": 16,

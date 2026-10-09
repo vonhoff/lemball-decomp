@@ -6,7 +6,7 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x0043a620 FOLDED
-void CDepressedButton::OnReleased(eMouseButtonIndex p_flags)
+void CDepressedButton::OnReleased(BUTTON_FLAGS p_flags)
 {
 	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 1;
@@ -16,7 +16,7 @@ void CDepressedButton::OnReleased(eMouseButtonIndex p_flags)
 }
 
 // FUNCTION: LEMBALL 0x0043a660 FOLDED
-void CDepressedButton::OnPressed(eMouseButtonIndex p_flags)
+void CDepressedButton::OnPressed(BUTTON_FLAGS p_flags)
 {
 	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
 		m_enabled = 1;

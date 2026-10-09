@@ -22,12 +22,12 @@ public:
 		m_state = 0;
 		m_enabled = 0;
 	}
-	virtual void OnPaint(const CVSRect& p_rect);        // vtable+0xa8
-	virtual void _DrawButton();                         // vtable+0xb8
-	virtual void OnReleased(eMouseButtonIndex p_flags); // vtable+0xc0
-	virtual void OnPressed(eMouseButtonIndex p_flags);  // vtable+0xc4
-	virtual void OnEnterButton();                       // vtable+0xc8
-	virtual void OnExitButton();                        // vtable+0xcc
+	virtual void OnPaint(const CVSRect& p_rect);   // vtable+0xa8
+	virtual void _DrawButton();                    // vtable+0xb8
+	virtual void OnReleased(BUTTON_FLAGS p_flags); // vtable+0xc0
+	virtual void OnPressed(BUTTON_FLAGS p_flags);  // vtable+0xc4
+	virtual void OnEnterButton();                  // vtable+0xc8
+	virtual void OnExitButton();                   // vtable+0xcc
 	friend class CPanelLemming;
 
 protected:

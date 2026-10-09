@@ -11,7 +11,7 @@ void CEntryHandler::Reset()
 }
 
 // FUNCTION: LEMBALL 0x00453260
-void CEntryHandler::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void CEntryHandler::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK) {
 		m_pressed = 1;

@@ -156,7 +156,7 @@ void CTrackWindow::OnInside(const CVSPoint& p_point)
 }
 
 // FUNCTION: LEMBALL 0x0044ec10
-void CTrackWindow::OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void CTrackWindow::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	OnInside(p_point);
 }

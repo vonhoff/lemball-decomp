@@ -254,14 +254,14 @@ void CPanelButton::OnPaint(const CVSRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00442aa0
-void CPanelButton::OnReleased(eMouseButtonIndex p_flags)
+void CPanelButton::OnReleased(BUTTON_FLAGS p_flags)
 {
 	m_pressedInside = 0;
 	CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 }
 
 // FUNCTION: LEMBALL 0x00442ac0
-void CPanelButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags)
+void CPanelButton::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	if (m_pressedInside != 0) {
 		m_pressedInside = 0;
@@ -270,7 +270,7 @@ void CPanelButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex
 }
 
 // FUNCTION: LEMBALL 0x00442ae0
-void CPanelButton::OnPressed(eMouseButtonIndex p_flags)
+void CPanelButton::OnPressed(BUTTON_FLAGS p_flags)
 {
 	CPanelLemming* panelLemming = m_lemming;
 	C2D* game = panelLemming->m_panel->m_game;
