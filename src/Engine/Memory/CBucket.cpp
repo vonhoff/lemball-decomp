@@ -101,7 +101,7 @@ bool CBucket::Allocate(unsigned char** p_result)
 		current = current->m_child;
 	}
 	*p_result = NULL;
-	Boffset offset = current->m_freeOffset;
+	tagBOFFSET offset = current->m_freeOffset;
 	current->m_map[offset.m_wWord] |= g_bitMasks[offset.m_wBit];
 	current->m_freeBytes -= current->m_blockSize;
 	if ((int) current->m_freeBytes <= 0) {
@@ -135,7 +135,7 @@ bool CBucket::Free(unsigned char* p_memory)
 		}
 	}
 	int index = (p_memory - current->m_memory) / (int) current->m_blockSize;
-	Boffset offset;
+	tagBOFFSET offset;
 	offset.m_wWord = (short) (index / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD);
 	offset.m_wBit = (short) (index % SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD);
 	unsigned short oldFlags = current->m_flags;
@@ -155,7 +155,7 @@ bool CBucket::Free(unsigned char* p_memory)
 }
 
 // FUNCTION: LEMBALL 0x00472fd0
-Boffset CBucket::FindFreeOffset(Boffset p_offset)
+tagBOFFSET CBucket::FindFreeOffset(tagBOFFSET p_offset)
 {
 	if ((m_flags & BUCKET_FLAG_FULL) != 0) {
 		return p_offset;
