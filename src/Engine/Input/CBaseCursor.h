@@ -30,18 +30,18 @@ enum eHandCursorFrame {
 class CBaseCursor : public CBaseQueueHandler {
 public:
 	CBaseCursor();
-	virtual bool InWindow(CGWnd* p_window);     // vtable+0x0c
+	virtual bool InWindow(CGWnd* p_window);        // vtable+0x0c
 	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
-	virtual void KillSystemCursor() = 0;        // vtable+0x10
-	virtual void RestoreSystemCursor() = 0;     // vtable+0x14
-	virtual void RefreshPos();                  // vtable+0x18
-	virtual ~CBaseCursor();                     // vtable+0x04
+	virtual void KillSystemCursor() = 0;           // vtable+0x10
+	virtual void RestoreSystemCursor() = 0;        // vtable+0x14
+	virtual void RefreshPos();                     // vtable+0x18
+	virtual ~CBaseCursor();                        // vtable+0x04
 	void Draw(CGWnd* p_window);
 	void Initialise();
 	void Process();
 	void SetActive(unsigned int p_active);
-	void SetMainID(unsigned int p_resourceId);
-	void SetMainID(unsigned int p_resourceId, int p_frame);
+	void SetMainID(unsigned long p_resourceId);
+	void SetMainID(unsigned long p_resourceId, int p_frame);
 	void SetPos(const CVSPoint& p_position);
 
 	friend class CCursor;
@@ -55,7 +55,7 @@ private:
 	CZRLE* m_renderState;               // 0x1c
 	CResBase* m_resource;               // 0x20
 	int m_frame;                        // 0x24
-	unsigned int m_resourceId;          // 0x28
+	unsigned long m_resourceId;         // 0x28
 	unsigned int m_mouseInput;          // 0x2c
 	unsigned int m_keyboardInput;       // 0x30
 	unsigned int m_changingCursor;      // 0x34

@@ -215,7 +215,7 @@ void CBaseCursor::SetPos(const CVSPoint& p_position)
 }
 
 // FUNCTION: LEMBALL 0x0046b310
-void CBaseCursor::SetMainID(unsigned int p_resourceId)
+void CBaseCursor::SetMainID(unsigned long p_resourceId)
 {
 	if (p_resourceId == m_resourceId) {
 		return;
@@ -254,7 +254,7 @@ void CBaseCursor::SetActive(unsigned int p_active)
 }
 
 // FUNCTION: LEMBALL 0x0046b3b0
-void CBaseCursor::SetMainID(unsigned int p_resourceId, int p_frame)
+void CBaseCursor::SetMainID(unsigned long p_resourceId, int p_frame)
 {
 	if (p_resourceId != m_resourceId) {
 		if (m_resourceId != 0) {

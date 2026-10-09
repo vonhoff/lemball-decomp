@@ -16,7 +16,7 @@ extern "C" __declspec(dllimport) int __stdcall ShowCursor(int p_show);
 CCursor* g_pCursor;
 
 // GLOBAL: LEMBALL 0x0049ee10
-unsigned int g_cursorResourceIds[4] = {0, RES_CURSORS_HAND, RES_CURSORS_PAW_CURSOR, 0};
+unsigned long g_cursorResourceIds[4] = {0, RES_CURSORS_HAND, RES_CURSORS_PAW_CURSOR, 0};
 
 // GLOBAL: LEMBALL 0x0049ee20
 unsigned int g_cursorDisplayInited = 0;
