@@ -6,18 +6,18 @@
 #include "Gameplay/Simulation/GameTime.h"
 
 // SIZE 0x10
-struct StateEntry {
-	bool (*m_predicate)(CAI*, CGameObject*, Info*);      // 0x00
-	void (*m_actionFunction)(CAI*, CGameObject*, Info*); // 0x04
-	eAction m_nextAction;                                // 0x08
-	eSoundEffect m_soundEffect;                          // 0x0c
+struct tStateEntry {
+	bool (*m_predicate)(CAI*, CGameObject*, tInfo*);      // 0x00
+	void (*m_actionFunction)(CAI*, CGameObject*, tInfo*); // 0x04
+	eAction m_nextAction;                                 // 0x08
+	eSoundEffect m_soundEffect;                           // 0x0c
 };
 #include "Application/SoundEffects.h"
 
 #include <stddef.h>
 
 // GLOBAL: LEMBALL 0x0049d198
-StateEntry g_userLemmingStateEntries[] = {
+tStateEntry g_userLemmingStateEntries[] = {
 	{GameOver, StartSommersault, ACTION_PREPARING_SOMMERSAULT, SFX_NONE},
 	{Flying, Fly, ACTION_FLYING, SFX_NONE},
 	{RequestDeath, Die, ACTION_DEAD, SFX_NONE},
@@ -91,7 +91,7 @@ StateEntry g_userLemmingStateEntries[] = {
 };
 
 // GLOBAL: LEMBALL 0x0049d5f8
-StateEntry g_aiPlayerLemmingStateEntries[] = {
+tStateEntry g_aiPlayerLemmingStateEntries[] = {
 	{GameOver, StartSommersault, ACTION_PREPARING_SOMMERSAULT, SFX_NONE},
 	{Flying, Fly, ACTION_FLYING, SFX_NONE},
 	{RequestDeath, Die, ACTION_WAITING_TO_DIE, SFX_NONE},
@@ -155,7 +155,7 @@ StateEntry g_aiPlayerLemmingStateEntries[] = {
 };
 
 // GLOBAL: LEMBALL 0x0049d9b8
-StateEntry g_sheepStateEntries[] = {
+tStateEntry g_sheepStateEntries[] = {
 	{Flying, Fly, ACTION_FLYING, SFX_NONE},
 	{NotFacingDestination, TurnToFaceDestination, ACTION_TURNING, SFX_NONE},
 	{GotDestination, StartWalking, ACTION_WALKING, SFX_NONE},
@@ -172,7 +172,7 @@ StateEntry g_sheepStateEntries[] = {
 };
 
 // GLOBAL: LEMBALL 0x0049da88
-StateEntry g_enemyStateEntries[] = {
+tStateEntry g_enemyStateEntries[] = {
 	{IsHit, Hit, ACTION_HIT, SFX_GUNHIT},
 	{Flying, Fly, ACTION_FLYING, SFX_NONE},
 	{RequestDeath, Die, ACTION_DEAD, SFX_NONE},
@@ -212,7 +212,7 @@ StateEntry g_enemyStateEntries[] = {
 };
 
 // GLOBAL: LEMBALL 0x0049dcc8
-StateEntry* g_pUserLemmingStateTables[24] = {
+tStateEntry* g_pUserLemmingStateTables[24] = {
 	g_userLemmingStateEntries + 0,  g_userLemmingStateEntries + 14, g_userLemmingStateEntries + 19,
 	g_userLemmingStateEntries + 27, g_userLemmingStateEntries + 32, g_userLemmingStateEntries + 34,
 	g_userLemmingStateEntries + 35, g_userLemmingStateEntries + 41, g_userLemmingStateEntries + 43,
@@ -224,7 +224,7 @@ StateEntry* g_pUserLemmingStateTables[24] = {
 };
 
 // GLOBAL: LEMBALL 0x0049dd28
-StateEntry* g_pAiPlayerLemmingStateTables[24] = {
+tStateEntry* g_pAiPlayerLemmingStateTables[24] = {
 	g_aiPlayerLemmingStateEntries + 0,  g_aiPlayerLemmingStateEntries + 11, g_aiPlayerLemmingStateEntries + 16,
 	g_aiPlayerLemmingStateEntries + 23, g_aiPlayerLemmingStateEntries + 25, g_aiPlayerLemmingStateEntries + 27,
 	g_aiPlayerLemmingStateEntries + 28, g_aiPlayerLemmingStateEntries + 33, g_aiPlayerLemmingStateEntries + 35,
@@ -236,7 +236,7 @@ StateEntry* g_pAiPlayerLemmingStateTables[24] = {
 };
 
 // GLOBAL: LEMBALL 0x0049dd88
-StateEntry* g_pSheepStateTables[24] = {
+tStateEntry* g_pSheepStateTables[24] = {
 	g_sheepStateEntries + 0,  g_sheepStateEntries + 4, g_sheepStateEntries + 7, g_sheepStateEntries + 10,
 	g_sheepStateEntries + 11, g_enemyStateEntries + 0, g_enemyStateEntries + 0, g_enemyStateEntries + 0,
 	g_enemyStateEntries + 0,  g_enemyStateEntries + 0, g_enemyStateEntries + 0, g_enemyStateEntries + 0,
@@ -246,7 +246,7 @@ StateEntry* g_pSheepStateTables[24] = {
 };
 
 // GLOBAL: LEMBALL 0x0049dde8
-StateEntry* g_pEnemyStateTables[24] = {
+tStateEntry* g_pEnemyStateTables[24] = {
 	g_enemyStateEntries + 0,  g_enemyStateEntries + 8,  g_enemyStateEntries + 13, g_enemyStateEntries + 19,
 	g_enemyStateEntries + 26, g_enemyStateEntries + 28, g_enemyStateEntries + 29, g_enemyStateEntries + 31,
 	g_enemyStateEntries + 33, g_enemyStateEntries + 34, g_enemyStateEntries + 35, g_enemyStateEntries + 35,
@@ -256,24 +256,24 @@ StateEntry* g_pEnemyStateTables[24] = {
 };
 
 // FUNCTION: LEMBALL 0x00419980
-void StateMachine(StateEntry** p_stateTables, CAI* p_ai, CGameObject* p_object)
+void StateMachine(tStateEntry** p_stateTables, CAI* p_ai, CGameObject* p_object)
 {
 	unsigned int info;
 	eAction action;
 	eAction nextAction;
 	eSoundEffect soundEffect;
-	StateEntry* entry;
+	tStateEntry* entry;
 
 	action = p_object->m_action;
 	entry = p_stateTables[action];
 	while (entry->m_predicate != NULL) {
-		if (entry->m_predicate(p_ai, p_object, (Info*) &info) != 0) {
+		if (entry->m_predicate(p_ai, p_object, (tInfo*) &info) != 0) {
 			break;
 		}
 		entry++;
 	}
 	if (entry->m_actionFunction != NULL) {
-		entry->m_actionFunction(p_ai, p_object, (Info*) &info);
+		entry->m_actionFunction(p_ai, p_object, (tInfo*) &info);
 	}
 	nextAction = entry->m_nextAction;
 	soundEffect = entry->m_soundEffect;
@@ -312,13 +312,13 @@ void EnemyState(CAI* p_ai, CGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x00419ab0
-bool PlayerNotFacingCursor(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool PlayerNotFacingCursor(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->FacingCursor() == 0;
 }
 
 // FUNCTION: LEMBALL 0x00419ad0
-bool PlayerNotFacingTarget(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool PlayerNotFacingTarget(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	if (p_object->IsRequestingFire() && p_object->FacingTarget() == 0) {
 		return true;
@@ -327,13 +327,13 @@ bool PlayerNotFacingTarget(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419b00
-bool PlayerRequestingFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool PlayerRequestingFire(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->IsRequestingFire();
 }
 
 // FUNCTION: LEMBALL 0x00419b10
-bool PlayerWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool PlayerWaitingToFire(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	if (p_object->IsRequestingFire() && p_object->m_actionDeadline > g_dwGameTick) {
 		return true;
@@ -342,13 +342,13 @@ bool PlayerWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419b40
-bool PlayerBored(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool PlayerBored(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->Bored();
 }
 
 // FUNCTION: LEMBALL 0x00419b50
-bool EnemyNotFacingTarget(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool EnemyNotFacingTarget(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	if (p_object->IsRequestingFire() && p_object->FacingTarget() == 0) {
 		return true;
@@ -357,13 +357,13 @@ bool EnemyNotFacingTarget(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419b80
-bool EnemyRequestingFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool EnemyRequestingFire(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->IsRequestingFire();
 }
 
 // FUNCTION: LEMBALL 0x00419b90
-bool EnemyWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool EnemyWaitingToFire(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	if (p_object->IsRequestingFire() && p_object->m_actionDeadline > g_dwGameTick) {
 		return true;
@@ -372,7 +372,7 @@ bool EnemyWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419bc0
-bool GameOver(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool GameOver(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	if (g_nGameOver != 0 && p_ai->m_gameStatus == GAME_STATUS_COMPLETING) {
 		return true;
@@ -381,19 +381,19 @@ bool GameOver(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419be0
-bool IsStuck(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool IsStuck(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->m_routeSearchFailed;
 }
 
 // FUNCTION: LEMBALL 0x00419bf0
-bool RequestDeath(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool RequestDeath(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->m_deathRequested;
 }
 
 // FUNCTION: LEMBALL 0x00419c00
-bool NotFacingDestination(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool NotFacingDestination(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	if (GotDestination(p_ai, p_object, p_info) == 0) {
 		return false;
@@ -402,94 +402,94 @@ bool NotFacingDestination(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419c30
-bool GotDestination(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool GotDestination(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->DestinationExists();
 }
 
 // FUNCTION: LEMBALL 0x00419c40
-bool AtDestination(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool AtDestination(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return g_dwGameTick >= p_object->m_actionDeadline;
 }
 
 // FUNCTION: LEMBALL 0x00419c60
-bool NotTimeUp(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool NotTimeUp(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return g_dwGameTick < p_object->m_actionDeadline;
 }
 
 // FUNCTION: LEMBALL 0x00419c80
-bool Flying(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool Flying(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->IsFlying();
 }
 
 // FUNCTION: LEMBALL 0x00419c90
-bool IsHit(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool IsHit(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->IsHit();
 }
 
 // FUNCTION: LEMBALL 0x00419ca0
-bool IsJumping(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool IsJumping(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->m_isJumping;
 }
 
 // FUNCTION: LEMBALL 0x00419cb0
-bool IsFalling(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool IsFalling(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->m_isFalling;
 }
 
 // FUNCTION: LEMBALL 0x00419cc0
-bool QOnBalloon(CAI* p_ai, CGameObject* p_object, Info* p_info)
+bool QOnBalloon(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	return p_object->QOnBalloon();
 }
 
 // FUNCTION: LEMBALL 0x00419cd0
-void PlayerTurnToFaceCursor(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void PlayerTurnToFaceCursor(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->TurnToFaceCursor();
 	StartStanding(p_ai, p_object, p_info);
 }
 
 // FUNCTION: LEMBALL 0x00419d00
-void PlayerTurnToFaceTarget(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void PlayerTurnToFaceTarget(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->TurnToFaceTarget();
 	StartStanding(p_ai, p_object, p_info);
 }
 
 // FUNCTION: LEMBALL 0x00419d30
-void PlayerFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void PlayerFire(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->Fire();
 }
 
 // FUNCTION: LEMBALL 0x00419d40
-void PlayerStartFiring(CAI*, CGameObject* p_object, Info*)
+void PlayerStartFiring(CAI*, CGameObject* p_object, tInfo*)
 {
 	p_object->StartFiring();
 }
 
 // FUNCTION: LEMBALL 0x00419d50
-void PlayerEndFiring(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void PlayerEndFiring(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->EndFiring();
 	StartStanding(p_ai, p_object, p_info);
 }
 
 // FUNCTION: LEMBALL 0x00419d80
-void StartStanding(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void StartStanding(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->StartStanding();
 }
 
 // FUNCTION: LEMBALL 0x00419d90
-void PlayerRandomAction(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void PlayerRandomAction(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->RandomAction();
 	p_object->SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
@@ -497,7 +497,7 @@ void PlayerRandomAction(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419dd0
-void PlayerStopWalking(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void PlayerStopWalking(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->StopMoving();
 	p_object->SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
@@ -505,74 +505,74 @@ void PlayerStopWalking(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419e00
-void StartLand(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void StartLand(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->StartLand();
 }
 
 // FUNCTION: LEMBALL 0x00419e10
-void StartSommersault(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void StartSommersault(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->StartSommersault();
 }
 
 // FUNCTION: LEMBALL 0x00419e20
-void Land(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void Land(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->Land();
 	StartStanding(p_ai, p_object, p_info);
 }
 
 // FUNCTION: LEMBALL 0x00419e50
-void StartRoute(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void StartRoute(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->StartRoute();
 }
 
 // FUNCTION: LEMBALL 0x00419e60
-void SearchRoute(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void SearchRoute(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->SearchRoute();
 }
 
 // FUNCTION: LEMBALL 0x00419e70
-void Die(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void Die(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->Die();
 }
 
 // FUNCTION: LEMBALL 0x00419e80
-void Fly(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void Fly(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->Fly();
 }
 
 // FUNCTION: LEMBALL 0x00419e90
-void StartWalking(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void StartWalking(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->StartMoving();
 }
 
 // FUNCTION: LEMBALL 0x00419ea0
-void StopWalking(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void StopWalking(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->StopMoving();
 }
 
 // FUNCTION: LEMBALL 0x00419eb0
-void Walk(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void Walk(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->Move();
 }
 
 // FUNCTION: LEMBALL 0x00419ec0
-void TurnToFaceDestination(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void TurnToFaceDestination(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->TurnToFaceDestination();
 }
 
 // FUNCTION: LEMBALL 0x00419ed0
-void Hit(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void Hit(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	if (p_object->OnConveyor() != 0) {
 		p_object->OnConveyor(0, NULL, 1);
@@ -581,25 +581,25 @@ void Hit(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419f00
-void Jump(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void Jump(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->Jump();
 }
 
 // FUNCTION: LEMBALL 0x00419f10
-void Fall(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void Fall(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->Fall();
 }
 
 // FUNCTION: LEMBALL 0x00419f20
-void ExternalControlEnd(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void ExternalControlEnd(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->ExternalControlEnd();
 }
 
 // FUNCTION: LEMBALL 0x00419f30
-void StartBalloon(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void StartBalloon(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	if (p_object->OnConveyor() != 0) {
 		p_object->OnConveyor(0, NULL, 1);
@@ -608,31 +608,31 @@ void StartBalloon(CAI* p_ai, CGameObject* p_object, Info* p_info)
 }
 
 // FUNCTION: LEMBALL 0x00419f60
-void OnBalloon(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void OnBalloon(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->OnBalloon();
 }
 
 // FUNCTION: LEMBALL 0x00419f70
-void EnemyTurnToFaceTarget(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void EnemyTurnToFaceTarget(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->TurnToFaceTarget();
 }
 
 // FUNCTION: LEMBALL 0x00419f80
-void EnemyStartFiring(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void EnemyStartFiring(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->StartFiring();
 }
 
 // FUNCTION: LEMBALL 0x00419f90
-void EnemyFire(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void EnemyFire(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->Fire();
 }
 
 // FUNCTION: LEMBALL 0x00419fa0
-void EnemyEndFiring(CAI* p_ai, CGameObject* p_object, Info* p_info)
+void EnemyEndFiring(CAI* p_ai, CGameObject* p_object, tInfo* p_info)
 {
 	p_object->EndFiring();
 }

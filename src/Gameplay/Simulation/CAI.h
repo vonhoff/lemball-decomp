@@ -27,7 +27,7 @@ class CGlobalGameObject;
 class CGroundAnim;
 class CHandManager;
 class CIceManager;
-class Info;
+class tInfo;
 class CInvisibleSwitchManager;
 class CLaserManager;
 class CLevelLoader;
@@ -198,7 +198,7 @@ public:
 	friend class CPanelLemming;
 	friend class CPanelPauseButton;
 	friend class CPanelButton;
-	friend bool GameOver(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool GameOver(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
 
 private:
 	unsigned int m_unk0x48;                            // 0x48

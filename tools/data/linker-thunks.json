@@ -64,7 +64,7 @@
       "target": 4300688,
       "original_bytes": "e9688f0100",
       "symbol": "__lemball_jump_00401023",
-      "target_symbol": "?EnemyFire@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?EnemyFire@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4198440,
@@ -163,7 +163,7 @@
       "target": 4299520,
       "original_bytes": "e9978a0100",
       "symbol": "__lemball_jump_00401064",
-      "target_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4198505,
@@ -280,7 +280,7 @@
       "target": 4300656,
       "original_bytes": "e9bc8e0100",
       "symbol": "__lemball_jump_004010af",
-      "target_symbol": "?EnemyTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?EnemyTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4198580,
@@ -390,7 +390,7 @@
       "target": 4299968,
       "original_bytes": "e9c68b0100",
       "symbol": "__lemball_jump_004010f5",
-      "target_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4198650,
@@ -418,7 +418,7 @@
       "target": 4300176,
       "original_bytes": "e9828c0100",
       "symbol": "__lemball_jump_00401109",
-      "target_symbol": "?PlayerRandomAction@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerRandomAction@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4198670,
@@ -639,7 +639,7 @@
       "target": 4300480,
       "original_bytes": "e9178d0100",
       "symbol": "__lemball_jump_004011a4",
-      "target_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4198825,
@@ -1202,7 +1202,7 @@
       "target": 4299920,
       "original_bytes": "e966890100",
       "symbol": "__lemball_jump_00401325",
-      "target_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4199210,
@@ -1355,7 +1355,7 @@
       "target": 4300496,
       "original_bytes": "e9478b0100",
       "symbol": "__lemball_jump_00401384",
-      "target_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4199305,
@@ -1383,7 +1383,7 @@
       "target": 4299536,
       "original_bytes": "e973870100",
       "symbol": "__lemball_jump_00401398",
-      "target_symbol": "?PlayerWaitingToFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerWaitingToFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4199325,
@@ -1415,7 +1415,7 @@
       "target": 4299712,
       "original_bytes": "e90f880100",
       "symbol": "__lemball_jump_004013ac",
-      "target_symbol": "?GameOver@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?GameOver@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4199345,
@@ -2543,7 +2543,7 @@
       "target": 4300576,
       "original_bytes": "e98b880100",
       "symbol": "__lemball_jump_00401690",
-      "target_symbol": "?ExternalControlEnd@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?ExternalControlEnd@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4200085,
@@ -2871,7 +2871,7 @@
       "target": 4299984,
       "original_bytes": "e95f850100",
       "symbol": "__lemball_jump_0040176c",
-      "target_symbol": "?PlayerTurnToFaceCursor@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerTurnToFaceCursor@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4200305,
@@ -3058,7 +3058,7 @@
       "target": 4300448,
       "original_bytes": "e9b2860100",
       "symbol": "__lemball_jump_004017e9",
-      "target_symbol": "?StopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?StopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4200430,
@@ -3128,7 +3128,7 @@
       "target": 4300384,
       "original_bytes": "e940860100",
       "symbol": "__lemball_jump_0040181b",
-      "target_symbol": "?SearchRoute@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?SearchRoute@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4200480,
@@ -3728,7 +3728,7 @@
       "target": 4299840,
       "original_bytes": "e990820100",
       "symbol": "__lemball_jump_004019ab",
-      "target_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4200880,
@@ -3788,7 +3788,7 @@
       "target": 4300240,
       "original_bytes": "e9f8830100",
       "symbol": "__lemball_jump_004019d3",
-      "target_symbol": "?PlayerStopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerStopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4200920,
@@ -4011,7 +4011,7 @@
       "target": 4299472,
       "original_bytes": "e967800100",
       "symbol": "__lemball_jump_00401a64",
-      "target_symbol": "?PlayerNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4201065,
@@ -4276,7 +4276,7 @@
       "target": 4300112,
       "original_bytes": "e938820100",
       "symbol": "__lemball_jump_00401b13",
-      "target_symbol": "?PlayerEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4201240,
@@ -4781,7 +4781,7 @@
       "target": 4299584,
       "original_bytes": "e9ed7e0100",
       "symbol": "__lemball_jump_00401c4e",
-      "target_symbol": "?PlayerBored@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerBored@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4201555,
@@ -5392,7 +5392,7 @@
       "target": 4299936,
       "original_bytes": "e9b87e0100",
       "symbol": "__lemball_jump_00401de3",
-      "target_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4201960,
@@ -5534,7 +5534,7 @@
       "target": 4300432,
       "original_bytes": "e94e800100",
       "symbol": "__lemball_jump_00401e3d",
-      "target_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4202050,
@@ -5858,7 +5858,7 @@
       "target": 4300560,
       "original_bytes": "e9f27f0100",
       "symbol": "__lemball_jump_00401f19",
-      "target_symbol": "?Fall@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?Fall@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4202270,
@@ -6067,7 +6067,7 @@
       "target": 4300416,
       "original_bytes": "e9db7e0100",
       "symbol": "__lemball_jump_00401fa0",
-      "target_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4202405,
@@ -6654,7 +6654,7 @@
       "target": 4299760,
       "original_bytes": "e9ca7a0100",
       "symbol": "__lemball_jump_00402121",
-      "target_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4202790,
@@ -7316,7 +7316,7 @@
       "target": 4300320,
       "original_bytes": "e9387b0100",
       "symbol": "__lemball_jump_004022e3",
-      "target_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4203240,
@@ -7564,7 +7564,7 @@
       "target": 4299440,
       "original_bytes": "e928770100",
       "symbol": "__lemball_jump_00402383",
-      "target_symbol": "?PlayerNotFacingCursor@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerNotFacingCursor@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4203400,
@@ -7751,7 +7751,7 @@
       "target": 4299664,
       "original_bytes": "e98b770100",
       "symbol": "__lemball_jump_00402400",
-      "target_symbol": "?EnemyWaitingToFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?EnemyWaitingToFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4203525,
@@ -7832,7 +7832,7 @@
       "target": 4300304,
       "original_bytes": "e9d4790100",
       "symbol": "__lemball_jump_00402437",
-      "target_symbol": "?StartSommersault@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?StartSommersault@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4203580,
@@ -8055,7 +8055,7 @@
       "target": 4299904,
       "original_bytes": "e9b3770100",
       "symbol": "__lemball_jump_004024c8",
-      "target_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4203725,
@@ -8129,7 +8129,7 @@
       "target": 4300368,
       "original_bytes": "e951790100",
       "symbol": "__lemball_jump_004024fa",
-      "target_symbol": "?StartRoute@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?StartRoute@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4203775,
@@ -8327,7 +8327,7 @@
       "target": 4299744,
       "original_bytes": "e95f760100",
       "symbol": "__lemball_jump_0040257c",
-      "target_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4203905,
@@ -8746,7 +8746,7 @@
       "target": 4300080,
       "original_bytes": "e992760100",
       "symbol": "__lemball_jump_00402699",
-      "target_symbol": "?PlayerFire@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerFire@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4204190,
@@ -9142,7 +9142,7 @@
       "target": 4300672,
       "original_bytes": "e9de770100",
       "symbol": "__lemball_jump_0040279d",
-      "target_symbol": "?EnemyStartFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?EnemyStartFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4204450,
@@ -9374,10 +9374,10 @@
       "target": 4300096,
       "original_bytes": "e9fe740100",
       "symbol": "__lemball_jump_0040283d",
-      "target_symbol": "?PlayerStartFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "target_symbol": "?PlayerStartFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-        "symbol": "?PlayerStartFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+        "symbol": "?PlayerStartFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
       }
     },
     {
@@ -9540,7 +9540,7 @@
       "target": 4300288,
       "original_bytes": "e950750100",
       "symbol": "__lemball_jump_004028ab",
-      "target_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4204720,
@@ -10622,7 +10622,7 @@
       "target": 4300544,
       "original_bytes": "e980730100",
       "symbol": "__lemball_jump_00402b7b",
-      "target_symbol": "?Jump@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?Jump@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4205440,
@@ -11035,7 +11035,7 @@
       "target": 4299648,
       "original_bytes": "e9ed6e0100",
       "symbol": "__lemball_jump_00402c8e",
-      "target_symbol": "?EnemyRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?EnemyRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4205715,
@@ -11722,7 +11722,7 @@
       "target": 4299824,
       "original_bytes": "e9cc6d0100",
       "symbol": "__lemball_jump_00402e5f",
-      "target_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4206180,
@@ -12678,7 +12678,7 @@
       "target": 4299872,
       "original_bytes": "e9906b0100",
       "symbol": "__lemball_jump_004030cb",
-      "target_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4206800,
@@ -13057,7 +13057,7 @@
       "target": 4300400,
       "original_bytes": "e9976c0100",
       "symbol": "__lemball_jump_004031d4",
-      "target_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4207065,
@@ -13326,7 +13326,7 @@
       "target": 4300704,
       "original_bytes": "e9186d0100",
       "symbol": "__lemball_jump_00403283",
-      "target_symbol": "?EnemyEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?EnemyEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4207240,
@@ -13777,7 +13777,7 @@
       "target": 4300640,
       "original_bytes": "e9a76b0100",
       "symbol": "__lemball_jump_004033b4",
-      "target_symbol": "?OnBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?OnBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4207545,
@@ -13934,7 +13934,7 @@
       "target": 4300592,
       "original_bytes": "e9186b0100",
       "symbol": "__lemball_jump_00403413",
-      "target_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4207640,
@@ -14241,7 +14241,7 @@
       "target": 4300464,
       "original_bytes": "e9cb690100",
       "symbol": "__lemball_jump_004034e0",
-      "target_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4207845,
@@ -14706,7 +14706,7 @@
       "target": 4299776,
       "original_bytes": "e9e0650100",
       "symbol": "__lemball_jump_0040361b",
-      "target_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4208160,
@@ -14966,7 +14966,7 @@
       "target": 4299600,
       "original_bytes": "e97c640100",
       "symbol": "__lemball_jump_004036cf",
-      "target_symbol": "?EnemyNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?EnemyNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4208340,
@@ -14980,7 +14980,7 @@
       "target": 4299136,
       "original_bytes": "e9a2620100",
       "symbol": "__lemball_jump_004036d9",
-      "target_symbol": "?StateMachine@@YAXPAPAUStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
+      "target_symbol": "?StateMachine@@YAXPAPAUtStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
     },
     {
       "address": 4208350,
@@ -15132,7 +15132,7 @@
       "target": 4299952,
       "original_bytes": "e96e650100",
       "symbol": "__lemball_jump_0040373d",
-      "target_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4208450,
@@ -15273,7 +15273,7 @@
       "target": 4300032,
       "original_bytes": "e95f650100",
       "symbol": "__lemball_jump_0040379c",
-      "target_symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4208545,
@@ -15563,7 +15563,7 @@
       "target": 4300160,
       "original_bytes": "e921650100",
       "symbol": "__lemball_jump_0040385a",
-      "target_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+      "target_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
     },
     {
       "address": 4208735,
@@ -23123,7 +23123,7 @@
     {
       "caller": 4299136,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?StateMachine@@YAXPAPAUStateEntry@@PAVCAI@@PAVCGameObject@@@Z",
+      "symbol": "?StateMachine@@YAXPAPAUtStateEntry@@PAVCAI@@PAVCGameObject@@@Z",
       "size": 163,
       "fingerprint": "51f74d426b5165998da416f431ce2d78bdb9806a38b48e2ada8bae38743ff0a8",
       "references": [
@@ -23148,7 +23148,7 @@
           "original_instruction": 4299327,
           "original_bytes": "e8959cfeff",
           "thunk": 4208345,
-          "source_symbol": "?StateMachine@@YAXPAPAUStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
+          "source_symbol": "?StateMachine@@YAXPAPAUtStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
         }
       ]
     },
@@ -23164,7 +23164,7 @@
           "original_instruction": 4299359,
           "original_bytes": "e8759cfeff",
           "thunk": 4208345,
-          "source_symbol": "?StateMachine@@YAXPAPAUStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
+          "source_symbol": "?StateMachine@@YAXPAPAUtStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
         }
       ]
     },
@@ -23180,7 +23180,7 @@
           "original_instruction": 4299391,
           "original_bytes": "e8559cfeff",
           "thunk": 4208345,
-          "source_symbol": "?StateMachine@@YAXPAPAUStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
+          "source_symbol": "?StateMachine@@YAXPAPAUtStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
         }
       ]
     },
@@ -23196,14 +23196,14 @@
           "original_instruction": 4299423,
           "original_bytes": "e8359cfeff",
           "thunk": 4208345,
-          "source_symbol": "?StateMachine@@YAXPAPAUStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
+          "source_symbol": "?StateMachine@@YAXPAPAUtStateEntry@@PAVCAI@@PAVCGameObject@@@Z"
         }
       ]
     },
     {
       "caller": 4299776,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 48,
       "fingerprint": "04db10e121a9547e4bac920f84b9b173486aa18b558e433823234cca9353ae29",
       "references": [
@@ -23212,7 +23212,7 @@
           "original_instruction": 4299792,
           "original_bytes": "e84a92feff",
           "thunk": 4206175,
-          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 34,
@@ -23226,7 +23226,7 @@
     {
       "caller": 4299824,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 9,
       "fingerprint": "5de839869ac850e3df655ec7ba90d3aa402b3120ca8103083475b654e57035eb",
       "references": [
@@ -23242,7 +23242,7 @@
     {
       "caller": 4299984,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?PlayerTurnToFaceCursor@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?PlayerTurnToFaceCursor@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 33,
       "fingerprint": "195b6e75901727037f8343d8e7dcd75e15e08acf9b647351ae554db4a2cd4d79",
       "references": [
@@ -23251,14 +23251,14 @@
           "original_instruction": 4300007,
           "original_bytes": "e86e9bfeff",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     },
     {
       "caller": 4300032,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 36,
       "fingerprint": "b50b56b9ecf27925bab0b7902f75cc6257509c1306794299cd533668b8d53c2c",
       "references": [
@@ -23267,14 +23267,14 @@
           "original_instruction": 4300058,
           "original_bytes": "e83b9bfeff",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     },
     {
       "caller": 4300112,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?PlayerEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?PlayerEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 36,
       "fingerprint": "3362c2c1d500d6c37d810d83993962204405257acea644593ae5d4a4498bbd53",
       "references": [
@@ -23283,14 +23283,14 @@
           "original_instruction": 4300138,
           "original_bytes": "e8eb9afeff",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     },
     {
       "caller": 4300176,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?PlayerRandomAction@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?PlayerRandomAction@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 51,
       "fingerprint": "b00e7a749f2d02ad56fd546fbcb4c34aeb120729976ae013e2da5818087bff47",
       "references": [
@@ -23299,14 +23299,14 @@
           "original_instruction": 4300216,
           "original_bytes": "e89d9afeff",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     },
     {
       "caller": 4300240,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?PlayerStopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?PlayerStopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 36,
       "fingerprint": "ef0ffd71ef41eabd44ba77b7234f251608b62efcadcaf61ba91562fe5c4d15f6",
       "references": [
@@ -23322,7 +23322,7 @@
     {
       "caller": 4300304,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?StartSommersault@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?StartSommersault@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 9,
       "fingerprint": "5de839869ac850e3df655ec7ba90d3aa402b3120ca8103083475b654e57035eb",
       "references": [
@@ -23338,7 +23338,7 @@
     {
       "caller": 4300320,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 33,
       "fingerprint": "2d10e76dc4dd31dc3ec02c0cb75c5f1c5bfa0b8fba10d846bd0b70ea386aed39",
       "references": [
@@ -23347,14 +23347,14 @@
           "original_instruction": 4300343,
           "original_bytes": "e81e9afeff",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     },
     {
       "caller": 4300432,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 9,
       "fingerprint": "5de839869ac850e3df655ec7ba90d3aa402b3120ca8103083475b654e57035eb",
       "references": [
@@ -23370,7 +23370,7 @@
     {
       "caller": 4300448,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?StopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?StopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 9,
       "fingerprint": "5de839869ac850e3df655ec7ba90d3aa402b3120ca8103083475b654e57035eb",
       "references": [
@@ -23386,7 +23386,7 @@
     {
       "caller": 4300480,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 9,
       "fingerprint": "5de839869ac850e3df655ec7ba90d3aa402b3120ca8103083475b654e57035eb",
       "references": [
@@ -23402,7 +23402,7 @@
     {
       "caller": 4300544,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?Jump@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?Jump@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 9,
       "fingerprint": "5de839869ac850e3df655ec7ba90d3aa402b3120ca8103083475b654e57035eb",
       "references": [
@@ -23418,7 +23418,7 @@
     {
       "caller": 4300560,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?Fall@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z",
+      "symbol": "?Fall@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z",
       "size": 9,
       "fingerprint": "5de839869ac850e3df655ec7ba90d3aa402b3120ca8103083475b654e57035eb",
       "references": [
@@ -75684,7 +75684,7 @@
     {
       "caller": 4837784,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?g_userLemmingStateEntries@@3PAUStateEntry@@A",
+      "symbol": "?g_userLemmingStateEntries@@3PAUtStateEntry@@A",
       "size": 1120,
       "fingerprint": "208225a8faa2cae82047d5812a8b5ea496abd21c5fb85f557952da1730a17355",
       "kind": "data",
@@ -75694,637 +75694,637 @@
           "original_pointer": 4837784,
           "original_bytes": "ac134000",
           "thunk": 4199340,
-          "source_symbol": "?GameOver@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?GameOver@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 4,
           "original_pointer": 4837788,
           "original_bytes": "37244000",
           "thunk": 4203575,
-          "source_symbol": "?StartSommersault@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartSommersault@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 16,
           "original_pointer": 4837800,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 20,
           "original_pointer": 4837804,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 32,
           "original_pointer": 4837816,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 36,
           "original_pointer": 4837820,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 48,
           "original_pointer": 4837832,
           "original_bytes": "7c254000",
           "thunk": 4203900,
-          "source_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 52,
           "original_pointer": 4837836,
           "original_bytes": "fa244000",
           "thunk": 4203770,
-          "source_symbol": "?StartRoute@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartRoute@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 64,
           "original_pointer": 4837848,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 68,
           "original_pointer": 4837852,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 80,
           "original_pointer": 4837864,
           "original_bytes": "3d374000",
           "thunk": 4208445,
-          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 96,
           "original_pointer": 4837880,
           "original_bytes": "f5104000",
           "thunk": 4198645,
-          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 100,
           "original_pointer": 4837884,
           "original_bytes": "13344000",
           "thunk": 4207635,
-          "source_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 112,
           "original_pointer": 4837896,
           "original_bytes": "64104000",
           "thunk": 4198500,
-          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 116,
           "original_pointer": 4837900,
           "original_bytes": "99264000",
           "thunk": 4204185,
-          "source_symbol": "?PlayerFire@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerFire@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 128,
           "original_pointer": 4837912,
           "original_bytes": "641a4000",
           "thunk": 4201060,
-          "source_symbol": "?PlayerNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 132,
           "original_pointer": 4837916,
           "original_bytes": "9c374000",
           "thunk": 4208540,
-          "source_symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 144,
           "original_pointer": 4837928,
           "original_bytes": "1b364000",
           "thunk": 4208155,
-          "source_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 148,
           "original_pointer": 4837932,
           "original_bytes": "a4114000",
           "thunk": 4198820,
-          "source_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 160,
           "original_pointer": 4837944,
           "original_bytes": "5f2e4000",
           "thunk": 4206175,
-          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 164,
           "original_pointer": 4837948,
           "original_bytes": "3d1e4000",
           "thunk": 4202045,
-          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 176,
           "original_pointer": 4837960,
           "original_bytes": "4e1c4000",
           "thunk": 4201550,
-          "source_symbol": "?PlayerBored@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerBored@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 180,
           "original_pointer": 4837964,
           "original_bytes": "09114000",
           "thunk": 4198665,
-          "source_symbol": "?PlayerRandomAction@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerRandomAction@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 192,
           "original_pointer": 4837976,
           "original_bytes": "83234000",
           "thunk": 4203395,
-          "source_symbol": "?PlayerNotFacingCursor@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerNotFacingCursor@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4837980,
           "original_bytes": "6c174000",
           "thunk": 4200300,
-          "source_symbol": "?PlayerTurnToFaceCursor@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerTurnToFaceCursor@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 212,
           "original_pointer": 4837996,
           "original_bytes": "6c174000",
           "thunk": 4200300,
-          "source_symbol": "?PlayerTurnToFaceCursor@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerTurnToFaceCursor@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 224,
           "original_pointer": 4838008,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 228,
           "original_pointer": 4838012,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 240,
           "original_pointer": 4838024,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 244,
           "original_pointer": 4838028,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 256,
           "original_pointer": 4838040,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 260,
           "original_pointer": 4838044,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 272,
           "original_pointer": 4838056,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 304,
           "original_pointer": 4838088,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 308,
           "original_pointer": 4838092,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 320,
           "original_pointer": 4838104,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 324,
           "original_pointer": 4838108,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 336,
           "original_pointer": 4838120,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 340,
           "original_pointer": 4838124,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 352,
           "original_pointer": 4838136,
           "original_bytes": "e31d4000",
           "thunk": 4201955,
-          "source_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 368,
           "original_pointer": 4838152,
           "original_bytes": "3d374000",
           "thunk": 4208445,
-          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 384,
           "original_pointer": 4838168,
           "original_bytes": "64104000",
           "thunk": 4198500,
-          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 400,
           "original_pointer": 4838184,
           "original_bytes": "ab194000",
           "thunk": 4200875,
-          "source_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 404,
           "original_pointer": 4838188,
           "original_bytes": "d3194000",
           "thunk": 4200915,
-          "source_symbol": "?PlayerStopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerStopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 420,
           "original_pointer": 4838204,
           "original_bytes": "e0344000",
           "thunk": 4207840,
-          "source_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 432,
           "original_pointer": 4838216,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 436,
           "original_pointer": 4838220,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 448,
           "original_pointer": 4838232,
           "original_bytes": "98134000",
           "thunk": 4199320,
-          "source_symbol": "?PlayerWaitingToFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerWaitingToFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 464,
           "original_pointer": 4838248,
           "original_bytes": "64104000",
           "thunk": 4198500,
-          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 468,
           "original_pointer": 4838252,
           "original_bytes": "99264000",
           "thunk": 4204185,
-          "source_symbol": "?PlayerFire@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerFire@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 480,
           "original_pointer": 4838264,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 500,
           "original_pointer": 4838284,
           "original_bytes": "131b4000",
           "thunk": 4201235,
-          "source_symbol": "?PlayerEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 512,
           "original_pointer": 4838296,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 516,
           "original_pointer": 4838300,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 532,
           "original_pointer": 4838316,
           "original_bytes": "ab284000",
           "thunk": 4204715,
-          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 560,
           "original_pointer": 4838344,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 564,
           "original_pointer": 4838348,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 576,
           "original_pointer": 4838360,
           "original_bytes": "64104000",
           "thunk": 4198500,
-          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 592,
           "original_pointer": 4838376,
           "original_bytes": "641a4000",
           "thunk": 4201060,
-          "source_symbol": "?PlayerNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 596,
           "original_pointer": 4838380,
           "original_bytes": "9c374000",
           "thunk": 4208540,
-          "source_symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 608,
           "original_pointer": 4838392,
           "original_bytes": "5f2e4000",
           "thunk": 4206175,
-          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 624,
           "original_pointer": 4838408,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 644,
           "original_pointer": 4838428,
           "original_bytes": "5a384000",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 656,
           "original_pointer": 4838440,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 676,
           "original_pointer": 4838460,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 704,
           "original_pointer": 4838488,
           "original_bytes": "7c254000",
           "thunk": 4203900,
-          "source_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 708,
           "original_pointer": 4838492,
           "original_bytes": "1b184000",
           "thunk": 4200475,
-          "source_symbol": "?SearchRoute@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?SearchRoute@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 736,
           "original_pointer": 4838520,
           "original_bytes": "e31d4000",
           "thunk": 4201955,
-          "source_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 740,
           "original_pointer": 4838524,
           "original_bytes": "7b2b4000",
           "thunk": 4205435,
-          "source_symbol": "?Jump@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Jump@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 756,
           "original_pointer": 4838540,
           "original_bytes": "ab284000",
           "thunk": 4204715,
-          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 768,
           "original_pointer": 4838552,
           "original_bytes": "3d374000",
           "thunk": 4208445,
-          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 772,
           "original_pointer": 4838556,
           "original_bytes": "191f4000",
           "thunk": 4202265,
-          "source_symbol": "?Fall@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fall@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 788,
           "original_pointer": 4838572,
           "original_bytes": "ab284000",
           "thunk": 4204715,
-          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 800,
           "original_pointer": 4838584,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 820,
           "original_pointer": 4838604,
           "original_bytes": "3d1e4000",
           "thunk": 4202045,
-          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 832,
           "original_pointer": 4838616,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 880,
           "original_pointer": 4838664,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 900,
           "original_pointer": 4838684,
           "original_bytes": "90164000",
           "thunk": 4200080,
-          "source_symbol": "?ExternalControlEnd@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?ExternalControlEnd@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 912,
           "original_pointer": 4838696,
           "original_bytes": "f5104000",
           "thunk": 4198645,
-          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 916,
           "original_pointer": 4838700,
           "original_bytes": "b4334000",
           "thunk": 4207540,
-          "source_symbol": "?OnBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?OnBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 976,
           "original_pointer": 4838760,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 992,
           "original_pointer": 4838776,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 996,
           "original_pointer": 4838780,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 1012,
           "original_pointer": 4838796,
           "original_bytes": "e3224000",
           "thunk": 4203235,
-          "source_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 1040,
           "original_pointer": 4838824,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 1060,
           "original_pointer": 4838844,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 1072,
           "original_pointer": 4838856,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 1076,
           "original_pointer": 4838860,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 1088,
           "original_pointer": 4838872,
           "original_bytes": "f5104000",
           "thunk": 4198645,
-          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 1092,
           "original_pointer": 4838876,
           "original_bytes": "13344000",
           "thunk": 4207635,
-          "source_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     },
     {
       "caller": 4838904,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?g_aiPlayerLemmingStateEntries@@3PAUStateEntry@@A",
+      "symbol": "?g_aiPlayerLemmingStateEntries@@3PAUtStateEntry@@A",
       "size": 960,
       "fingerprint": "4fcbe535ab718ab77d4b278811fe4f2e4f7c478045a902182227760188661bf0",
       "kind": "data",
@@ -76334,532 +76334,532 @@
           "original_pointer": 4838904,
           "original_bytes": "ac134000",
           "thunk": 4199340,
-          "source_symbol": "?GameOver@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?GameOver@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 4,
           "original_pointer": 4838908,
           "original_bytes": "37244000",
           "thunk": 4203575,
-          "source_symbol": "?StartSommersault@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartSommersault@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 16,
           "original_pointer": 4838920,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 20,
           "original_pointer": 4838924,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 32,
           "original_pointer": 4838936,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 36,
           "original_pointer": 4838940,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 48,
           "original_pointer": 4838952,
           "original_bytes": "7c254000",
           "thunk": 4203900,
-          "source_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 52,
           "original_pointer": 4838956,
           "original_bytes": "fa244000",
           "thunk": 4203770,
-          "source_symbol": "?StartRoute@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartRoute@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 64,
           "original_pointer": 4838968,
           "original_bytes": "3d374000",
           "thunk": 4208445,
-          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 80,
           "original_pointer": 4838984,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 84,
           "original_pointer": 4838988,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 96,
           "original_pointer": 4839000,
           "original_bytes": "f5104000",
           "thunk": 4198645,
-          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 100,
           "original_pointer": 4839004,
           "original_bytes": "13344000",
           "thunk": 4207635,
-          "source_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 112,
           "original_pointer": 4839016,
           "original_bytes": "1b364000",
           "thunk": 4208155,
-          "source_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 116,
           "original_pointer": 4839020,
           "original_bytes": "a4114000",
           "thunk": 4198820,
-          "source_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 128,
           "original_pointer": 4839032,
           "original_bytes": "5f2e4000",
           "thunk": 4206175,
-          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 132,
           "original_pointer": 4839036,
           "original_bytes": "3d1e4000",
           "thunk": 4202045,
-          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 144,
           "original_pointer": 4839048,
           "original_bytes": "4e1c4000",
           "thunk": 4201550,
-          "source_symbol": "?PlayerBored@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerBored@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 148,
           "original_pointer": 4839052,
           "original_bytes": "09114000",
           "thunk": 4198665,
-          "source_symbol": "?PlayerRandomAction@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerRandomAction@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 164,
           "original_pointer": 4839068,
           "original_bytes": "5a384000",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 176,
           "original_pointer": 4839080,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 180,
           "original_pointer": 4839084,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 192,
           "original_pointer": 4839096,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4839100,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 208,
           "original_pointer": 4839112,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 212,
           "original_pointer": 4839116,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 224,
           "original_pointer": 4839128,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 244,
           "original_pointer": 4839148,
           "original_bytes": "5a384000",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 256,
           "original_pointer": 4839160,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 260,
           "original_pointer": 4839164,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 272,
           "original_pointer": 4839176,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 276,
           "original_pointer": 4839180,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 288,
           "original_pointer": 4839192,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 292,
           "original_pointer": 4839196,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 304,
           "original_pointer": 4839208,
           "original_bytes": "e31d4000",
           "thunk": 4201955,
-          "source_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 320,
           "original_pointer": 4839224,
           "original_bytes": "3d374000",
           "thunk": 4208445,
-          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 336,
           "original_pointer": 4839240,
           "original_bytes": "ab194000",
           "thunk": 4200875,
-          "source_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 340,
           "original_pointer": 4839244,
           "original_bytes": "d3194000",
           "thunk": 4200915,
-          "source_symbol": "?PlayerStopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerStopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 356,
           "original_pointer": 4839260,
           "original_bytes": "e0344000",
           "thunk": 4207840,
-          "source_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 368,
           "original_pointer": 4839272,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 372,
           "original_pointer": 4839276,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 388,
           "original_pointer": 4839292,
           "original_bytes": "5a384000",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 400,
           "original_pointer": 4839304,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 404,
           "original_pointer": 4839308,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 420,
           "original_pointer": 4839324,
           "original_bytes": "ab284000",
           "thunk": 4204715,
-          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 448,
           "original_pointer": 4839352,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 452,
           "original_pointer": 4839356,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 464,
           "original_pointer": 4839368,
           "original_bytes": "64104000",
           "thunk": 4198500,
-          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 480,
           "original_pointer": 4839384,
           "original_bytes": "641a4000",
           "thunk": 4201060,
-          "source_symbol": "?PlayerNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 484,
           "original_pointer": 4839388,
           "original_bytes": "9c374000",
           "thunk": 4208540,
-          "source_symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?PlayerTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 496,
           "original_pointer": 4839400,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 516,
           "original_pointer": 4839420,
           "original_bytes": "5a384000",
           "thunk": 4208730,
-          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartStanding@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 528,
           "original_pointer": 4839432,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 548,
           "original_pointer": 4839452,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 576,
           "original_pointer": 4839480,
           "original_bytes": "7c254000",
           "thunk": 4203900,
-          "source_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsStuck@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 580,
           "original_pointer": 4839484,
           "original_bytes": "1b184000",
           "thunk": 4200475,
-          "source_symbol": "?SearchRoute@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?SearchRoute@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 608,
           "original_pointer": 4839512,
           "original_bytes": "e31d4000",
           "thunk": 4201955,
-          "source_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsJumping@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 612,
           "original_pointer": 4839516,
           "original_bytes": "7b2b4000",
           "thunk": 4205435,
-          "source_symbol": "?Jump@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Jump@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 628,
           "original_pointer": 4839532,
           "original_bytes": "ab284000",
           "thunk": 4204715,
-          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 640,
           "original_pointer": 4839544,
           "original_bytes": "3d374000",
           "thunk": 4208445,
-          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsFalling@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 644,
           "original_pointer": 4839548,
           "original_bytes": "191f4000",
           "thunk": 4202265,
-          "source_symbol": "?Fall@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fall@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 660,
           "original_pointer": 4839564,
           "original_bytes": "ab284000",
           "thunk": 4204715,
-          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartLand@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 672,
           "original_pointer": 4839576,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 692,
           "original_pointer": 4839596,
           "original_bytes": "3d1e4000",
           "thunk": 4202045,
-          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 704,
           "original_pointer": 4839608,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 752,
           "original_pointer": 4839656,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 772,
           "original_pointer": 4839676,
           "original_bytes": "90164000",
           "thunk": 4200080,
-          "source_symbol": "?ExternalControlEnd@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?ExternalControlEnd@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 784,
           "original_pointer": 4839688,
           "original_bytes": "f5104000",
           "thunk": 4198645,
-          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 788,
           "original_pointer": 4839692,
           "original_bytes": "b4334000",
           "thunk": 4207540,
-          "source_symbol": "?OnBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?OnBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 848,
           "original_pointer": 4839752,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 868,
           "original_pointer": 4839772,
           "original_bytes": "e3224000",
           "thunk": 4203235,
-          "source_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 896,
           "original_pointer": 4839800,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 916,
           "original_pointer": 4839820,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 928,
           "original_pointer": 4839832,
           "original_bytes": "f5104000",
           "thunk": 4198645,
-          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?QOnBalloon@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 932,
           "original_pointer": 4839836,
           "original_bytes": "13344000",
           "thunk": 4207635,
-          "source_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartBalloon@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     },
     {
       "caller": 4839864,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?g_sheepStateEntries@@3PAUStateEntry@@A",
+      "symbol": "?g_sheepStateEntries@@3PAUtStateEntry@@A",
       "size": 208,
       "fingerprint": "01496975a17dd676a3eee88bd438d4be2f5fdfaa3cbb4be85ee28d6119829706",
       "kind": "data",
@@ -76869,126 +76869,126 @@
           "original_pointer": 4839864,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 4,
           "original_pointer": 4839868,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 16,
           "original_pointer": 4839880,
           "original_bytes": "1b364000",
           "thunk": 4208155,
-          "source_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 20,
           "original_pointer": 4839884,
           "original_bytes": "a4114000",
           "thunk": 4198820,
-          "source_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 32,
           "original_pointer": 4839896,
           "original_bytes": "5f2e4000",
           "thunk": 4206175,
-          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 36,
           "original_pointer": 4839900,
           "original_bytes": "3d1e4000",
           "thunk": 4202045,
-          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 64,
           "original_pointer": 4839928,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 68,
           "original_pointer": 4839932,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 80,
           "original_pointer": 4839944,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 112,
           "original_pointer": 4839976,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 116,
           "original_pointer": 4839980,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 128,
           "original_pointer": 4839992,
           "original_bytes": "ab194000",
           "thunk": 4200875,
-          "source_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 132,
           "original_pointer": 4839996,
           "original_bytes": "e9174000",
           "thunk": 4200425,
-          "source_symbol": "?StopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 148,
           "original_pointer": 4840012,
           "original_bytes": "e0344000",
           "thunk": 4207840,
-          "source_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 176,
           "original_pointer": 4840040,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 180,
           "original_pointer": 4840044,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 196,
           "original_pointer": 4840060,
           "original_bytes": "e3224000",
           "thunk": 4203235,
-          "source_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     },
     {
       "caller": 4840072,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Behavior/StateMachine.cpp.obj",
-      "symbol": "?g_enemyStateEntries@@3PAUStateEntry@@A",
+      "symbol": "?g_enemyStateEntries@@3PAUtStateEntry@@A",
       "size": 576,
       "fingerprint": "5f63294a13aa9ba0df69d2895c5cdca99cfa9175b7ff415439a640b912cd4736",
       "kind": "data",
@@ -76998,343 +76998,343 @@
           "original_pointer": 4840072,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 4,
           "original_pointer": 4840076,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 16,
           "original_pointer": 4840088,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 20,
           "original_pointer": 4840092,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 32,
           "original_pointer": 4840104,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 36,
           "original_pointer": 4840108,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 48,
           "original_pointer": 4840120,
           "original_bytes": "cf364000",
           "thunk": 4208335,
-          "source_symbol": "?EnemyNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyNotFacingTarget@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 52,
           "original_pointer": 4840124,
           "original_bytes": "af104000",
           "thunk": 4198575,
-          "source_symbol": "?EnemyTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyTurnToFaceTarget@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 64,
           "original_pointer": 4840136,
           "original_bytes": "8e2c4000",
           "thunk": 4205710,
-          "source_symbol": "?EnemyRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 68,
           "original_pointer": 4840140,
           "original_bytes": "9d274000",
           "thunk": 4204445,
-          "source_symbol": "?EnemyStartFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyStartFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 80,
           "original_pointer": 4840152,
           "original_bytes": "1b364000",
           "thunk": 4208155,
-          "source_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotFacingDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 84,
           "original_pointer": 4840156,
           "original_bytes": "a4114000",
           "thunk": 4198820,
-          "source_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?TurnToFaceDestination@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 96,
           "original_pointer": 4840168,
           "original_bytes": "5f2e4000",
           "thunk": 4206175,
-          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?GotDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 100,
           "original_pointer": 4840172,
           "original_bytes": "3d1e4000",
           "thunk": 4202045,
-          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StartWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 128,
           "original_pointer": 4840200,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 132,
           "original_pointer": 4840204,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 144,
           "original_pointer": 4840216,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 148,
           "original_pointer": 4840220,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 160,
           "original_pointer": 4840232,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 164,
           "original_pointer": 4840236,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 176,
           "original_pointer": 4840248,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 208,
           "original_pointer": 4840280,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 212,
           "original_pointer": 4840284,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 224,
           "original_pointer": 4840296,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 228,
           "original_pointer": 4840300,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 240,
           "original_pointer": 4840312,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 244,
           "original_pointer": 4840316,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 256,
           "original_pointer": 4840328,
           "original_bytes": "8e2c4000",
           "thunk": 4205710,
-          "source_symbol": "?EnemyRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 272,
           "original_pointer": 4840344,
           "original_bytes": "ab194000",
           "thunk": 4200875,
-          "source_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?AtDestination@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 276,
           "original_pointer": 4840348,
           "original_bytes": "e9174000",
           "thunk": 4200425,
-          "source_symbol": "?StopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?StopWalking@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 292,
           "original_pointer": 4840364,
           "original_bytes": "e0344000",
           "thunk": 4207840,
-          "source_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Walk@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 304,
           "original_pointer": 4840376,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 308,
           "original_pointer": 4840380,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 320,
           "original_pointer": 4840392,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 324,
           "original_pointer": 4840396,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 336,
           "original_pointer": 4840408,
           "original_bytes": "21214000",
           "thunk": 4202785,
-          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?RequestDeath@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 340,
           "original_pointer": 4840412,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 352,
           "original_pointer": 4840424,
           "original_bytes": "00244000",
           "thunk": 4203520,
-          "source_symbol": "?EnemyWaitingToFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyWaitingToFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 368,
           "original_pointer": 4840440,
           "original_bytes": "8e2c4000",
           "thunk": 4205710,
-          "source_symbol": "?EnemyRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyRequestingFire@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 372,
           "original_pointer": 4840444,
           "original_bytes": "23104000",
           "thunk": 4198435,
-          "source_symbol": "?EnemyFire@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyFire@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 384,
           "original_pointer": 4840456,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 404,
           "original_pointer": 4840476,
           "original_bytes": "83324000",
           "thunk": 4207235,
-          "source_symbol": "?EnemyEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?EnemyEndFiring@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 416,
           "original_pointer": 4840488,
           "original_bytes": "c8244000",
           "thunk": 4203720,
-          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Flying@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 420,
           "original_pointer": 4840492,
           "original_bytes": "a01f4000",
           "thunk": 4202400,
-          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Fly@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 436,
           "original_pointer": 4840508,
           "original_bytes": "e3224000",
           "thunk": 4203235,
-          "source_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Land@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 464,
           "original_pointer": 4840536,
           "original_bytes": "25134000",
           "thunk": 4199205,
-          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?IsHit@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 468,
           "original_pointer": 4840540,
           "original_bytes": "84134000",
           "thunk": 4199300,
-          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Hit@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 496,
           "original_pointer": 4840568,
           "original_bytes": "cb304000",
           "thunk": 4206795,
-          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?NotTimeUp@@YAHPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         },
         {
           "offset": 516,
           "original_pointer": 4840588,
           "original_bytes": "d4314000",
           "thunk": 4207060,
-          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVInfo@@@Z"
+          "source_symbol": "?Die@@YAXPAVCAI@@PAVCGameObject@@PAVtInfo@@@Z"
         }
       ]
     }

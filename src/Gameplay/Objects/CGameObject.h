@@ -28,10 +28,10 @@ class CAiDestinationList;
 class CBaseObjectManager;
 class CBullet;
 class CIce;
-class Info;
+class tInfo;
 struct tCoord3d;
 struct CPt3;
-struct StateEntry;
+struct tStateEntry;
 
 #define GAME_OBJECT_COLLISION_AFFECT_ROUTE_ON_BLOCK 0x01
 #define GAME_OBJECT_COLLISION_ALLOW_JUMP 0x02
@@ -168,16 +168,16 @@ public:
 	friend class CGenericGroup;
 	friend class CSheepGroup;
 	friend class CPlayerLemmingGroup;
-	friend void StateMachine(StateEntry** p_stateTables, CAI* p_ai, CGameObject* p_object);
+	friend void StateMachine(tStateEntry** p_stateTables, CAI* p_ai, CGameObject* p_object);
 
-	friend bool AtDestination(CAI* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool IsStuck(CAI* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool RequestDeath(CAI* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool IsJumping(CAI* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool IsFalling(CAI* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool NotTimeUp(CAI* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool PlayerWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info);
-	friend bool EnemyWaitingToFire(CAI* p_ai, CGameObject* p_object, Info* p_info);
+	friend bool AtDestination(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
+	friend bool IsStuck(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
+	friend bool RequestDeath(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
+	friend bool IsJumping(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
+	friend bool IsFalling(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
+	friend bool NotTimeUp(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
+	friend bool PlayerWaitingToFire(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
+	friend bool EnemyWaitingToFire(CAI* p_ai, CGameObject* p_object, tInfo* p_info);
 	friend class C2D;
 	friend class CPanelButton;
 	friend class CTower;
