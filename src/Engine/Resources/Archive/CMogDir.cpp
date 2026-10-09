@@ -2,8 +2,8 @@
 
 #include "CMogloadArena.h"
 #include "CRawRead.h"
-#include "Chunk.h"
-#include "ChunkInfo.h"
+#include "tagCHUNK.h"
+#include "tagChunkInfo.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Files/VsFile.h"
 
@@ -13,7 +13,7 @@
 int g_emptyChunkIndex = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
 
 // GLOBAL: LEMBALL 0x004a1d7c
-ChunkInfo* g_pEmptyChunkInfo = NULL;
+tagChunkInfo* g_pEmptyChunkInfo = NULL;
 
 #define MOG_SEEK_FROM_START 0
 #define MOG_DIRECTORY_ENTRY_STRIDE 36
@@ -21,14 +21,14 @@ ChunkInfo* g_pEmptyChunkInfo = NULL;
 // FUNCTION: LEMBALL 0x0045bda0
 CMogDir::CMogDir(unsigned long p_fileOffset)
 {
-	Chunk chunk;
+	tagCHUNK chunk;
 	unsigned int directoryDataSize;
 	int* firstIndex;
 	int* iteratorIndex;
 	int* currentDirIndex;
 
 	int chunkIndex = g_emptyChunkIndex;
-	ChunkInfo* chunkInfo = g_pEmptyChunkInfo;
+	tagChunkInfo* chunkInfo = g_pEmptyChunkInfo;
 	firstIndex = &m_first.m_index;
 	iteratorIndex = &m_iterator.m_index;
 	m_loadedChunkCount = 0;
@@ -60,7 +60,7 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	m_directoryData = (unsigned char*) CMogloadArena::operator new(directoryDataSize);
 	vsRead(g_pMogFile, m_directoryData, directoryDataSize);
 	if (m_chunkCount != 0) {
-		ChunkInfo* info = (ChunkInfo*) CMogloadArena::operator new(sizeof(ChunkInfo));
+		tagChunkInfo* info = (tagChunkInfo*) CMogloadArena::operator new(sizeof(tagChunkInfo));
 		m_first.m_info = info;
 		*firstIndex = 0;
 		GetChunkInfo(info);
@@ -86,10 +86,10 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 // FUNCTION: LEMBALL 0x0045bf10
 CMogDir::~CMogDir()
 {
-	Chunk* first;
-	Chunk* iterator;
-	ChunkInfo* chunk;
-	Chunk* next;
+	tagCHUNK* first;
+	tagCHUNK* iterator;
+	tagChunkInfo* chunk;
+	tagCHUNK* next;
 
 	iterator = &m_iterator;
 	first = &m_first;
@@ -115,7 +115,7 @@ CMogDir::~CMogDir()
 }
 
 // FUNCTION: LEMBALL 0x0045bfa0
-void CMogDir::GetChunkInfo(ChunkInfo* p_info)
+void CMogDir::GetChunkInfo(tagChunkInfo* p_info)
 {
 	vsSeek(g_pMogFile,
 		   (m_iterator.m_index + 1) * MOG_DIRECTORY_ENTRY_STRIDE + m_directoryEndOffset,
@@ -132,9 +132,9 @@ void CMogDir::GetChunkInfo(ChunkInfo* p_info)
 }
 
 // FUNCTION: LEMBALL 0x0045c030
-ChunkInfo* CMogDir::NewChunkInfo()
+tagChunkInfo* CMogDir::NewChunkInfo()
 {
-	ChunkInfo* info = (ChunkInfo*) CMogloadArena::operator new(sizeof(ChunkInfo));
+	tagChunkInfo* info = (tagChunkInfo*) CMogloadArena::operator new(sizeof(tagChunkInfo));
 	m_iterator.m_info->m_next.m_info = info;
 	m_iterator.m_info->m_next.m_index = m_loadedChunkCount;
 	m_loadedChunkCount++;
@@ -145,8 +145,8 @@ ChunkInfo* CMogDir::NewChunkInfo()
 // FUNCTION: LEMBALL 0x0045c060
 CMogDir* CMogDir::GetNextDir()
 {
-	Chunk chunk;
-	Chunk* current;
+	tagCHUNK chunk;
+	tagCHUNK* current;
 	CMogDir* dir;
 
 	chunk.m_info = NULL;
@@ -200,12 +200,12 @@ CMogDir* CMogDir::GetNextDir()
 }
 
 // FUNCTION: LEMBALL 0x0045c200
-void CMogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
+void CMogDir::FindNext(tagCHUNK& p_chunk, unsigned int p_type)
 {
 	int exhausted = 0;
 	unsigned int type = p_type;
-	Chunk* iterator = &m_iterator;
-	Chunk* next;
+	tagCHUNK* iterator = &m_iterator;
+	tagCHUNK* next;
 
 	do {
 		if (iterator->m_index != CHUNK_INDEX_BEFORE_FIRST_ENTRY) {
@@ -237,10 +237,10 @@ void CMogDir::FindNext(Chunk& p_chunk, unsigned int p_type)
 }
 
 // FUNCTION: LEMBALL 0x0045c2a0
-void CMogDir::FindFirst(Chunk& p_chunk, unsigned int p_type)
+void CMogDir::FindFirst(tagCHUNK& p_chunk, unsigned int p_type)
 {
-	Chunk* iterator = &m_iterator;
-	Chunk* first = &m_first;
+	tagCHUNK* iterator = &m_iterator;
+	tagCHUNK* first = &m_first;
 
 	*iterator = *first;
 	m_iterator.m_index = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
@@ -248,12 +248,12 @@ void CMogDir::FindFirst(Chunk& p_chunk, unsigned int p_type)
 }
 
 // FUNCTION: LEMBALL 0x0045c2d0
-void CMogDir::Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse)
+void CMogDir::Find(tagCHUNK& p_chunk, unsigned int p_id, unsigned int p_recurse)
 {
-	Chunk saved;
+	tagCHUNK saved;
 	CMogDir* dir;
-	Chunk* current;
-	Chunk* root;
+	tagCHUNK* current;
+	tagCHUNK* root;
 
 	FindFirst(p_chunk, RESOURCE_CHUNK_ANY_TYPE);
 	while (p_chunk.m_info != NULL && p_chunk.m_info->m_id != p_id) {

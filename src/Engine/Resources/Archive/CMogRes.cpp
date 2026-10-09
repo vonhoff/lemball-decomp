@@ -12,8 +12,8 @@ enum {
 #include "CMogloadArena.h"
 #include "CRawRead.h"
 #include "CVSRange.h"
-#include "Chunk.h"
-#include "ChunkInfo.h"
+#include "tagCHUNK.h"
+#include "tagChunkInfo.h"
 #include "Engine/Files/VsFile.h"
 #include "Engine/Memory/CArena.h"
 #include "Engine/Resources/Archive/CMogloadStat.h"
@@ -116,7 +116,7 @@ bool CMogRes::SetWD(char* p_path)
 	}
 	cursor = copy;
 	{
-		Chunk* current = &m_workingDirectory->m_currentDir;
+		tagCHUNK* current = &m_workingDirectory->m_currentDir;
 		*current = m_workingDirectory->m_root;
 		current->m_index = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
 	}
@@ -307,7 +307,7 @@ CResBase* CMogRes::Find(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x0045cb50
-bool CMogRes::Load(CResBase* p_resource, Chunk p_chunk)
+bool CMogRes::Load(CResBase* p_resource, tagCHUNK p_chunk)
 {
 	if (p_chunk.m_info->m_type != p_resource->m_chunkType) {
 		return false;
@@ -321,7 +321,7 @@ bool CMogRes::Load(CResBase* p_resource, Chunk p_chunk)
 // FUNCTION: LEMBALL 0x0045cb80
 bool CMogRes::Load(unsigned int p_resourceId, CResBase* p_resource, unsigned int p_recurse)
 {
-	Chunk chunk;
+	tagCHUNK chunk;
 	int handle;
 
 	m_workingDirectory->Find(chunk, p_resourceId, p_recurse);

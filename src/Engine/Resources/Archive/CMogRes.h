@@ -7,7 +7,7 @@ class CResBase;
 class CMogDir;
 class CBaseStat;
 struct CVSRange;
-struct Chunk;
+struct tagCHUNK;
 
 #define RESOURCE_HANDLE_COUNT 0x400
 
@@ -18,7 +18,7 @@ public:
 	bool CheckAllUnloaded();
 	bool Load(const CVSRange& p_range, unsigned char*& p_data, CResBase* p_resource);
 	bool Load(unsigned int p_resourceId, CResBase* p_resource, unsigned int p_recurse);
-	bool Load(CResBase* p_resource, Chunk p_chunk);
+	bool Load(CResBase* p_resource, tagCHUNK p_chunk);
 	bool SetWD(char* p_path);
 	int GetFreeHandle();
 	int KillLeastResource(unsigned long p_requiredSize);

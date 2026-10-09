@@ -2,11 +2,11 @@
 #define LEMBALL_VISOS_RESOURCES_CMOGDIR_H
 #include "CMogloadArena.h"
 #include "CRawRead.h"
-#include "Chunk.h"
+#include "tagCHUNK.h"
 
 #include <stddef.h>
 
-struct ChunkInfo;
+struct tagChunkInfo;
 
 #define RESOURCE_CHUNK_DIRECTORY 0x44495243
 #define RESOURCE_CHUNK_ANY_TYPE 0xffffffff
@@ -19,24 +19,24 @@ public:
 	void* operator new(size_t, void* p_ptr) { return p_ptr; }
 	void operator delete(void* p_data) { CMogloadArena::operator delete(p_data); }
 
-	ChunkInfo* NewChunkInfo();
+	tagChunkInfo* NewChunkInfo();
 	CMogDir(unsigned long p_fileOffset);
 	CMogDir* GetNextDir();
-	void Find(Chunk& p_chunk, unsigned int p_id, unsigned int p_recurse);
-	void FindFirst(Chunk& p_chunk, unsigned int p_type);
-	void FindNext(Chunk& p_chunk, unsigned int p_type);
-	void GetChunkInfo(ChunkInfo* p_info);
+	void Find(tagCHUNK& p_chunk, unsigned int p_id, unsigned int p_recurse);
+	void FindFirst(tagCHUNK& p_chunk, unsigned int p_type);
+	void FindNext(tagCHUNK& p_chunk, unsigned int p_type);
+	void GetChunkInfo(tagChunkInfo* p_info);
 	~CMogDir();
 
 	friend class CMogRes;
 
 private:
-	Chunk m_root;                      // 0x00
-	Chunk m_currentDir;                // 0x08
+	tagCHUNK m_root;                   // 0x00
+	tagCHUNK m_currentDir;             // 0x08
 	unsigned int m_directoryEndOffset; // 0x10
 	unsigned int m_payloadStartOffset; // 0x14
-	Chunk m_first;                     // 0x18
-	Chunk m_iterator;                  // 0x20
+	tagCHUNK m_first;                  // 0x18
+	tagCHUNK m_iterator;               // 0x20
 	int m_chunkCount;                  // 0x28
 	int m_loadedChunkCount;            // 0x2c
 	unsigned char* m_directoryData;    // 0x30
@@ -44,6 +44,6 @@ private:
 };
 
 extern int g_emptyChunkIndex;
-extern ChunkInfo* g_pEmptyChunkInfo;
+extern tagChunkInfo* g_pEmptyChunkInfo;
 
 #endif
