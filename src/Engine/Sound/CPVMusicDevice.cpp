@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0047f510
-void CPVMusicDevice::Initialise(unsigned long p_resourceId, unsigned long p_flags)
+void CPVMusicDevice::Initialise(unsigned long p_unused1, unsigned long p_unused2)
 {
 }
 

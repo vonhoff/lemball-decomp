@@ -196,13 +196,13 @@ void CSoundManager::Foreground()
 }
 
 // FUNCTION: LEMBALL 0x0045b2c0
-void CSoundManager::PrepareMusic(unsigned long p_resourceId, unsigned int p_flags)
+void CSoundManager::PrepareMusic(unsigned long p_unused1, unsigned int p_unused2)
 {
-	m_musicDevice->Initialise(p_resourceId, p_flags);
+	m_musicDevice->Initialise(p_unused1, p_unused2);
 }
 
 // FUNCTION: LEMBALL 0x0045b2e0
-unsigned long CSoundManager::PlayMusic(unsigned long p_handle, unsigned long p_unused)
+unsigned long CSoundManager::PlayMusic(unsigned long p_resourceId, unsigned long p_unused)
 {
 	unsigned long allocated;
 
@@ -212,7 +212,7 @@ unsigned long CSoundManager::PlayMusic(unsigned long p_handle, unsigned long p_u
 		if (m_nextMusicHandle == 0) {
 			m_nextMusicHandle = 1;
 		}
-		m_musicDevice->Prepare(allocated, p_handle);
+		m_musicDevice->Prepare(allocated, p_resourceId);
 		return allocated;
 	}
 	return 0;

@@ -13,7 +13,7 @@ public:
 		m_usePathPrefix = 0;
 	}
 	virtual ~CPVMusicDevice() {}                                                  // vtable+0x00
-	virtual void Initialise(unsigned long p_resourceId, unsigned long p_flags);   // vtable+0x04
+	virtual void Initialise(unsigned long p_unused1, unsigned long p_unused2);    // vtable+0x04
 	virtual void Prepare(unsigned long p_handle, unsigned long p_resourceId) = 0; // vtable+0x08
 	virtual void Free(unsigned long p_handle) = 0;                                // vtable+0x0c
 	virtual void Play(unsigned long p_handle) = 0;                                // vtable+0x10

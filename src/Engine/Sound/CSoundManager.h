@@ -21,7 +21,7 @@ public:
 				  CWnd* p_window);
 	unsigned char GetEffectVolume();
 	unsigned long PrepareEffect(unsigned long p_resourceId);
-	void PrepareMusic(unsigned long p_resourceId, unsigned int p_flags);
+	void PrepareMusic(unsigned long p_unused1, unsigned int p_unused2);
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	void Background();
 	void Foreground();
@@ -29,7 +29,7 @@ public:
 	void FreeMusic(unsigned long p_handle);
 	void PlayEffect(unsigned long p_effectId);
 	void PlayEffect(unsigned long p_effectId, unsigned int p_channel);
-	unsigned long PlayMusic(unsigned long p_handle, unsigned long p_unused);
+	unsigned long PlayMusic(unsigned long p_resourceId, unsigned long p_unused);
 	void ProcessMusic(unsigned long p_handle);
 	void SetEffectsWnd(CWnd* p_window);
 	void SetMusicWnd(CWnd* p_window);
