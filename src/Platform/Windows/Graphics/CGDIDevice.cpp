@@ -23,7 +23,7 @@ CGDIDevice::CGDIDevice(int p_surfaceCapacity)
 {
 	int i;
 
-	m_surfaceSlots = (GdiSurfaceSlot*) operator new((unsigned int) (p_surfaceCapacity * sizeof(GdiSurfaceSlot)));
+	m_surfaceSlots = new GdiSurfaceSlot[p_surfaceCapacity];
 	m_surfaceCapacity = p_surfaceCapacity;
 	m_reserved08 = 0;
 	m_primarySurfaceCount = 0;
@@ -58,7 +58,7 @@ CGDIDevice::~CGDIDevice()
 			++i;
 		} while (i < m_surfaceCapacity);
 	}
-	operator delete(m_surfaceSlots);
+	delete[] m_surfaceSlots;
 }
 
 // FUNCTION: LEMBALL 0x0046bce0
