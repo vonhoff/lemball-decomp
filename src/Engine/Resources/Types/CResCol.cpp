@@ -10,7 +10,7 @@ CResCol* CResCol::Load(unsigned long p_resourceId)
 {
 	void* storage;
 	CResCol* res;
-	register unsigned long id = p_resourceId;
+	unsigned long id = p_resourceId;
 	res = (CResCol*) g_pActiveMogRes->Find(id);
 	if (res == NULL) {
 		storage = operator new(sizeof(CResCol));

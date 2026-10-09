@@ -11,7 +11,7 @@ CResPALETTE* CResPALETTE::Load(unsigned long p_resourceId)
 {
 	void* storage;
 	CResPALETTE* res;
-	register unsigned long id = p_resourceId;
+	unsigned long id = p_resourceId;
 	res = (CResPALETTE*) g_pActiveMogRes->Find(id);
 	if (res == NULL) {
 		storage = operator new(sizeof(CResPALETTE));
