@@ -66,7 +66,7 @@ reviewed for correctness and maintainability.
 
 ## References
 
-### Technical Resources
+### Resources
 
 - [The Cutting Room Floor — Lemmings Paintball](https://tcrf.net/Lemmings_Paintball)
 - [Game Data Digs — Lemmings Paintball](https://gamedatadigs.neocities.org/lemmings_paintball)
