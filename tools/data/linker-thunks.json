@@ -7691,7 +7691,7 @@
       "target": 4410688,
       "original_bytes": "e963290300",
       "symbol": "__lemball_jump_004023d8",
-      "target_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4eAnimFrameType@@@Z"
+      "target_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4ANIM_TYPE@@@Z"
     },
     {
       "address": 4203485,
@@ -14099,7 +14099,7 @@
       "target": 4410304,
       "original_bytes": "e935170300",
       "symbol": "__lemball_jump_00403486",
-      "target_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+      "target_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
     },
     {
       "address": 4207755,
@@ -31421,84 +31421,84 @@
           "original_instruction": 4403190,
           "original_bytes": "e88b04fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 46,
           "original_instruction": 4403214,
           "original_bytes": "e87304fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 70,
           "original_instruction": 4403238,
           "original_bytes": "e85b04fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 94,
           "original_instruction": 4403262,
           "original_bytes": "e84304fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 118,
           "original_instruction": 4403286,
           "original_bytes": "e82b04fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 142,
           "original_instruction": 4403310,
           "original_bytes": "e81304fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 166,
           "original_instruction": 4403334,
           "original_bytes": "e8fb03fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 190,
           "original_instruction": 4403358,
           "original_bytes": "e8e303fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 214,
           "original_instruction": 4403382,
           "original_bytes": "e8cb03fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 238,
           "original_instruction": 4403406,
           "original_bytes": "e8b303fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 262,
           "original_instruction": 4403430,
           "original_bytes": "e89b03fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 276,
           "original_instruction": 4403444,
           "original_bytes": "e88d03fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 289,
@@ -31512,77 +31512,77 @@
           "original_instruction": 4403476,
           "original_bytes": "e86d03fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 322,
           "original_instruction": 4403490,
           "original_bytes": "e85f03fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 336,
           "original_instruction": 4403504,
           "original_bytes": "e85103fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 350,
           "original_instruction": 4403518,
           "original_bytes": "e84303fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 363,
           "original_instruction": 4403531,
           "original_bytes": "e888f2fcff",
           "thunk": 4203480,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 376,
           "original_instruction": 4403544,
           "original_bytes": "e87bf2fcff",
           "thunk": 4203480,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 389,
           "original_instruction": 4403557,
           "original_bytes": "e86ef2fcff",
           "thunk": 4203480,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 402,
           "original_instruction": 4403570,
           "original_bytes": "e861f2fcff",
           "thunk": 4203480,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 413,
           "original_instruction": 4403581,
           "original_bytes": "e80403fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 424,
           "original_instruction": 4403592,
           "original_bytes": "e8f902fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 435,
           "original_instruction": 4403603,
           "original_bytes": "e8ee02fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 448,
@@ -31617,105 +31617,105 @@
           "original_instruction": 4403685,
           "original_bytes": "e89c02fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 531,
           "original_instruction": 4403699,
           "original_bytes": "e88e02fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 545,
           "original_instruction": 4403713,
           "original_bytes": "e88002fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 556,
           "original_instruction": 4403724,
           "original_bytes": "e87502fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 567,
           "original_instruction": 4403735,
           "original_bytes": "e86a02fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 578,
           "original_instruction": 4403746,
           "original_bytes": "e85f02fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 589,
           "original_instruction": 4403757,
           "original_bytes": "e85402fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 600,
           "original_instruction": 4403768,
           "original_bytes": "e84902fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 611,
           "original_instruction": 4403779,
           "original_bytes": "e83e02fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 625,
           "original_instruction": 4403793,
           "original_bytes": "e83002fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 639,
           "original_instruction": 4403807,
           "original_bytes": "e82202fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 650,
           "original_instruction": 4403818,
           "original_bytes": "e81702fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 661,
           "original_instruction": 4403829,
           "original_bytes": "e80c02fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 675,
           "original_instruction": 4403843,
           "original_bytes": "e8fe01fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 689,
           "original_instruction": 4403857,
           "original_bytes": "e8f001fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 702,
@@ -31729,7 +31729,7 @@
           "original_instruction": 4403888,
           "original_bytes": "e8d101fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 733,
@@ -31743,14 +31743,14 @@
           "original_instruction": 4403924,
           "original_bytes": "e8fff0fcff",
           "thunk": 4203480,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 775,
           "original_instruction": 4403943,
           "original_bytes": "e8ecf0fcff",
           "thunk": 4203480,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 788,
@@ -31764,28 +31764,28 @@
           "original_instruction": 4403974,
           "original_bytes": "e87b01fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 820,
           "original_instruction": 4403988,
           "original_bytes": "e86d01fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 834,
           "original_instruction": 4404002,
           "original_bytes": "e85f01fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 848,
           "original_instruction": 4404016,
           "original_bytes": "e85101fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 870,
@@ -31799,7 +31799,7 @@
           "original_instruction": 4404057,
           "original_bytes": "e82801fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 902,
@@ -31827,77 +31827,77 @@
           "original_instruction": 4404122,
           "original_bytes": "e8e700fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 970,
           "original_instruction": 4404138,
           "original_bytes": "e8d700fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 983,
           "original_instruction": 4404151,
           "original_bytes": "e8ca00fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 994,
           "original_instruction": 4404162,
           "original_bytes": "e8bf00fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1005,
           "original_instruction": 4404173,
           "original_bytes": "e8b400fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1016,
           "original_instruction": 4404184,
           "original_bytes": "e8a900fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1027,
           "original_instruction": 4404195,
           "original_bytes": "e89e00fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1161,
           "original_instruction": 4404329,
           "original_bytes": "e81800fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1172,
           "original_instruction": 4404340,
           "original_bytes": "e80d00fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1183,
           "original_instruction": 4404351,
           "original_bytes": "e80200fdff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1194,
           "original_instruction": 4404362,
           "original_bytes": "e8f7fffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1207,
@@ -31918,28 +31918,28 @@
           "original_instruction": 4404410,
           "original_bytes": "e8c7fffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1256,
           "original_instruction": 4404424,
           "original_bytes": "e8b9fffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1270,
           "original_instruction": 4404438,
           "original_bytes": "e8abfffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 1284,
           "original_instruction": 4404452,
           "original_bytes": "e89dfffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         }
       ]
     },
@@ -31955,21 +31955,21 @@
           "original_instruction": 4404474,
           "original_bytes": "e887fffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 34,
           "original_instruction": 4404498,
           "original_bytes": "e86ffffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 58,
           "original_instruction": 4404522,
           "original_bytes": "e857fffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 80,
@@ -31983,14 +31983,14 @@
           "original_instruction": 4404563,
           "original_bytes": "e82efffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 113,
           "original_instruction": 4404577,
           "original_bytes": "e820fffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 126,
@@ -32004,7 +32004,7 @@
           "original_instruction": 4404608,
           "original_bytes": "e801fffcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 157,
@@ -32018,7 +32018,7 @@
           "original_instruction": 4404639,
           "original_bytes": "e8e2fefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 188,
@@ -32032,42 +32032,42 @@
           "original_instruction": 4404671,
           "original_bytes": "e8c2fefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 218,
           "original_instruction": 4404682,
           "original_bytes": "e8b7fefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 229,
           "original_instruction": 4404693,
           "original_bytes": "e8acfefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 240,
           "original_instruction": 4404704,
           "original_bytes": "e8a1fefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 251,
           "original_instruction": 4404715,
           "original_bytes": "e896fefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 262,
           "original_instruction": 4404726,
           "original_bytes": "e88bfefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 275,
@@ -32081,7 +32081,7 @@
           "original_instruction": 4404757,
           "original_bytes": "e86cfefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 306,
@@ -32095,7 +32095,7 @@
           "original_instruction": 4404788,
           "original_bytes": "e84dfefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 337,
@@ -32109,14 +32109,14 @@
           "original_instruction": 4404819,
           "original_bytes": "e82efefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 369,
           "original_instruction": 4404833,
           "original_bytes": "e820fefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 382,
@@ -32130,14 +32130,14 @@
           "original_instruction": 4404864,
           "original_bytes": "e801fefcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 414,
           "original_instruction": 4404878,
           "original_bytes": "e8f3fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 427,
@@ -32151,7 +32151,7 @@
           "original_instruction": 4404909,
           "original_bytes": "e8d4fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 458,
@@ -32165,14 +32165,14 @@
           "original_instruction": 4404941,
           "original_bytes": "e8b4fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 491,
           "original_instruction": 4404955,
           "original_bytes": "e8a6fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 504,
@@ -32186,63 +32186,63 @@
           "original_instruction": 4404986,
           "original_bytes": "e887fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 536,
           "original_instruction": 4405000,
           "original_bytes": "e879fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 550,
           "original_instruction": 4405014,
           "original_bytes": "e86bfdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 564,
           "original_instruction": 4405028,
           "original_bytes": "e85dfdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 575,
           "original_instruction": 4405039,
           "original_bytes": "e852fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 586,
           "original_instruction": 4405050,
           "original_bytes": "e847fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 597,
           "original_instruction": 4405061,
           "original_bytes": "e83cfdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 608,
           "original_instruction": 4405072,
           "original_bytes": "e831fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 619,
           "original_instruction": 4405083,
           "original_bytes": "e826fdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 632,
@@ -32256,7 +32256,7 @@
           "original_instruction": 4405111,
           "original_bytes": "e80afdfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 660,
@@ -32270,7 +32270,7 @@
           "original_instruction": 4405139,
           "original_bytes": "e8eefcfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 688,
@@ -32284,14 +32284,14 @@
           "original_instruction": 4405167,
           "original_bytes": "e8d2fcfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 714,
           "original_instruction": 4405178,
           "original_bytes": "e8c7fcfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 727,
@@ -32305,14 +32305,14 @@
           "original_instruction": 4405209,
           "original_bytes": "e8a8fcfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         },
         {
           "offset": 756,
           "original_instruction": 4405220,
           "original_bytes": "e89dfcfcff",
           "thunk": 4207750,
-          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4eAnimFrameType@@@Z"
+          "source_symbol": "?LoadAnimation@CLemmingAnimsManager@@QAEXKW4ANIM_TYPE@@@Z"
         }
       ]
     },

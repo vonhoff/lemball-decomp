@@ -31,7 +31,7 @@ enum eGroundStyle {
 	GROUND_STYLE_SPACE = 3
 };
 
-enum eAnimFrameType {
+enum ANIM_TYPE {
 	ANIM_FRAME_STATIC = 0,
 	ANIM_FRAME_REPEAT = 1,
 	ANIM_FRAME_SINGLE_FRAME = 2,
@@ -57,8 +57,8 @@ public:
 				  unsigned long p_time,
 				  CRemap* p_remap);
 	void Load(int p_groundStyle);
-	void LoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId, eAnimFrameType p_animType);
-	void LoadAnimation(unsigned long p_resourceId, eAnimFrameType p_animType);
+	void LoadAnimation(unsigned long p_firstResourceId, unsigned long p_lastResourceId, ANIM_TYPE p_animType);
+	void LoadAnimation(unsigned long p_resourceId, ANIM_TYPE p_animType);
 	void LoadMainRammed();
 	void LoadVrammed();
 	void SetupStyleSensitive();
