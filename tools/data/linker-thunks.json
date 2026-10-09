@@ -39319,7 +39319,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Preview/CPreviewDrawer.cpp.obj",
       "symbol": "?LoadLevelInformation@CPreviewDrawer@@QAEXXZ",
       "size": 729,
-      "fingerprint": "478c15396514cacb28d83f9c7fe61963268d466bd69942eca516de7165e0c298",
+      "fingerprint": "bb7cea5c5cf85657d90b68d9499f284f7fdb9f76969ea606a5ce721af9c69803",
       "references": [
         {
           "offset": 56,
