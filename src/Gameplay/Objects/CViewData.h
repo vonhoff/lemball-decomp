@@ -53,7 +53,7 @@ private:
 	eAction m_action;              // 0x18
 	short m_actionArgument;        // 0x1c
 	unsigned int m_stateTimer;     // 0x20
-	unsigned int m_animationTime;  // 0x24
+	unsigned long m_animationTime; // 0x24
 	eObjectType m_objectType;      // 0x28
 	unsigned short m_objectId;     // 0x2c
 	unsigned short m_playerIndex;  // 0x2e
