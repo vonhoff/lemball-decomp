@@ -13290,7 +13290,7 @@
       "target": 4291328,
       "original_bytes": "e98c480100",
       "symbol": "__lemball_jump_0040326f",
-      "target_symbol": "?SetEndpoints@CMovementInterpolation@@QAEXVCVector@@0@Z"
+      "target_symbol": "?SetEndpoints@CVMovePos@@QAEXVCVector@@0@Z"
     },
     {
       "address": 4207220,
@@ -15414,10 +15414,10 @@
       "target": 4351904,
       "original_bytes": "e9a02f0200",
       "symbol": "__lemball_jump_004037fb",
-      "target_symbol": "??4CMovementInterpolation@@QAEAAV0@ABV0@@Z",
+      "target_symbol": "??4CVMovePos@@QAEAAV0@ABV0@@Z",
       "definition": {
         "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLiftManager.cpp.obj",
-        "symbol": "??4CMovementInterpolation@@QAEAAV0@ABV0@@Z"
+        "symbol": "??4CVMovePos@@QAEAAV0@ABV0@@Z"
       }
     },
     {
@@ -21187,7 +21187,7 @@
           "original_instruction": 4282073,
           "original_bytes": "e891dbfeff",
           "thunk": 4207215,
-          "source_symbol": "?SetEndpoints@CMovementInterpolation@@QAEXVCVector@@0@Z"
+          "source_symbol": "?SetEndpoints@CVMovePos@@QAEXVCVector@@0@Z"
         }
       ]
     },
@@ -26281,7 +26281,7 @@
           "original_instruction": 4331604,
           "original_bytes": "e8161afeff",
           "thunk": 4207215,
-          "source_symbol": "?SetEndpoints@CMovementInterpolation@@QAEXVCVector@@0@Z"
+          "source_symbol": "?SetEndpoints@CVMovePos@@QAEXVCVector@@0@Z"
         }
       ]
     },

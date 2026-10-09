@@ -1,16 +1,16 @@
-#ifndef LEMBALL_AI_BASE_CMOVEMENTINTERPOLATION_H
-#define LEMBALL_AI_BASE_CMOVEMENTINTERPOLATION_H
+#ifndef LEMBALL_AI_BASE_CVMOVEPOS_H
+#define LEMBALL_AI_BASE_CVMOVEPOS_H
 
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Math/CVector.h"
 
-class CMovementInterpolation {
+class CVMovePos {
 public:
-	CMovementInterpolation() : m_start(DEBUG_SENTINEL, DEBUG_SENTINEL), m_delta(DEBUG_SENTINEL, DEBUG_SENTINEL) {}
+	CVMovePos() : m_start(DEBUG_SENTINEL, DEBUG_SENTINEL), m_delta(DEBUG_SENTINEL, DEBUG_SENTINEL) {}
 
 	void SetEndpoints(CVector p_start, CVector p_end);
 	// FUNCTION: LEMBALL 0x004267a0
-	CMovementInterpolation& operator=(const CMovementInterpolation& p_other)
+	CVMovePos& operator=(const CVMovePos& p_other)
 	{
 		m_start = p_other.m_start;
 		m_delta = p_other.m_delta;

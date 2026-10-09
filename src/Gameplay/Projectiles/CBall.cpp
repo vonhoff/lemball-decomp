@@ -6,7 +6,7 @@
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/Facing.h"
-#include "Gameplay/Movement/CMovementInterpolation.h"
+#include "Gameplay/Movement/CVMovePos.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectIds.h"

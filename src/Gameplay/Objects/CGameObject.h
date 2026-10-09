@@ -7,7 +7,7 @@
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Geometry/CRect3.h"
-#include "Gameplay/Movement/CMovementInterpolation.h"
+#include "Gameplay/Movement/CVMovePos.h"
 #include "Gameplay/Simulation/GameTime.h"
 #include "ObjectActions.h"
 #include "ObjectIds.h"
@@ -224,7 +224,7 @@ protected:
 	short m_desiredFacingDirection;        // 0x6e
 	CAiDestinationList* m_destinationList; // 0x70
 	unsigned int m_hasDestination;         // 0x74
-	CMovementInterpolation m_movement;     // 0x78
+	CVMovePos m_movement;                  // 0x78
 	int m_moveDurationTicks;               // 0x88
 	unsigned int m_activationReserved;     // 0x8c
 	unsigned int m_activatorObjectType;    // 0x90
