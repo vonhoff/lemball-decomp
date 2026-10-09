@@ -45,7 +45,7 @@ def read_catalog():
 
 def read_inferences():
     """Read explicit source hypotheses and address-derived linker labels."""
-    with (CATALOG.parent / "source-name-evidence.csv").open(
+    with (CATALOG.parent / "source-name-inferences.csv").open(
         newline="", encoding="utf-8-sig"
     ) as stream:
         inferences = {int(row["address"], 16): row for row in csv.DictReader(stream)}
