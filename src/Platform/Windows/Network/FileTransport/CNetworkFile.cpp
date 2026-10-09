@@ -149,13 +149,13 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 {
 	int success;
 	unsigned long got;
-	unsigned int error;
+	int error;
 
 	success = ReadFile(m_handle, p_data, (unsigned int) p_size, &got, NULL);
 	if (success == 0) {
 		error = GetLastError();
 		if (error != NETWORK_FILE_ERROR_LOCK_VIOLATION) {
-			*g_pErrorOutput << "Read error: " << (int) error << "\n";
+			*g_pErrorOutput << "Read error: " << error << "\n";
 		}
 		return false;
 	}
