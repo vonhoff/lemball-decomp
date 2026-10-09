@@ -149,7 +149,7 @@ void CHiliteButtons::LoadFaces(unsigned long* p_animIds)
 	int index;
 
 	m_animIds = p_animIds;
-	m_resources = (CResANIM**) operator new(m_valueCount * sizeof(*m_resources));
+	m_resources = new CResANIM*[m_valueCount];
 	index = 0;
 	while (index < m_valueCount) {
 		m_resources[index] = CResANIM::Load(m_animIds[index]);
@@ -179,7 +179,7 @@ void CHiliteButtons::UnLoadFaces()
 			index = index + 1;
 		} while (index < m_valueCount);
 	}
-	operator delete(m_resources);
+	delete[] m_resources;
 	m_resources = NULL;
 }
 
