@@ -278,7 +278,7 @@ private:
 	CMain2DDisplay* m_display;                   // 0x978
 	CPanel* m_panel;                             // 0x97c
 	CPauseWindow* m_pauseWindow;                 // 0x980
-	unsigned int m_pauseSelection;               // 0x984
+	eOptionSelections m_pauseSelection;          // 0x984
 	ePauseWindowMessages m_pauseMessage;         // 0x988
 	ePauseWindowMessages m_previousPauseMessage; // 0x98c
 	CDrawingMark m_drawingMark;                  // 0x990

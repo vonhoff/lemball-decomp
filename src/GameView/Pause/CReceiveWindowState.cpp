@@ -1,7 +1,7 @@
 #include "CReceiveWindowState.h"
 
 // FUNCTION: LEMBALL 0x00439430
-void CReceiveWindowState::SetOptionSelection(int p_selection)
+void CReceiveWindowState::SetOptionSelection(eOptionSelections p_selection)
 {
 	m_optionSelection = p_selection;
 }

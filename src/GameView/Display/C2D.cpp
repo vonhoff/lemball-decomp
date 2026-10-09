@@ -403,7 +403,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	InitSpriteGroundLU();
 	m_groundHitMode = 0;
 	m_pauseWindow = NULL;
-	m_optionSelection = 0;
+	m_optionSelection = PAUSE_OPTION_NONE;
 	m_cursorState = C2D_CURSOR_STATE_GROUND;
 	m_cursorTimestamp = g_dwSimulationTimestamp;
 	m_returnState = FLOW_MAIN_OPTIONS_1;
@@ -855,7 +855,7 @@ void C2D::Process()
 		NewPauseWindow(PAUSE_MSG_NONE);
 	}
 
-	if (m_optionSelection != 0) {
+	if (m_optionSelection != PAUSE_OPTION_NONE) {
 		switch (m_pauseMessage) {
 		case PAUSE_MSG_PAUSED:
 			switch (m_optionSelection) {
@@ -876,7 +876,7 @@ void C2D::Process()
 			}
 			break;
 		case PAUSE_MSG_LOADING:
-			m_optionSelection = 0;
+			m_optionSelection = PAUSE_OPTION_NONE;
 			goto optionHandled;
 		case PAUSE_MSG_ARE_YOU_SURE:
 			*g_pErrorOutput << "Confirmed\n";
@@ -904,7 +904,7 @@ void C2D::Process()
 			}
 			break;
 		}
-		m_optionSelection = 0;
+		m_optionSelection = PAUSE_OPTION_NONE;
 	}
 
 optionHandled:

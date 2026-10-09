@@ -638,7 +638,7 @@ void CPauseWindow::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 					if (textY <= relY) {
 						short boundY = textSizes[-1].m_y + textY;
 						if (boundY > relY) {
-							m_receiverState->SetOptionSelection(m_selection + 1);
+							m_receiverState->SetOptionSelection((eOptionSelections) (m_selection + 1));
 							m_selection = selection;
 							m_cursorState = CURSOR_HAND_FRAME_PRESSED;
 							CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_PRESSED);
@@ -699,12 +699,12 @@ int CPauseWindow::ProcessMsg(tagMESSAGE* p_message)
 			case INPUT_KEY_RETURN:
 			case 'W':
 			case 'X':
-				m_receiverState->SetOptionSelection(m_selection + 1);
+				m_receiverState->SetOptionSelection((eOptionSelections) (m_selection + 1));
 				g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 				return 1;
 			case INPUT_KEY_ESCAPE:
 				if (pauseMessage != 0 || m_receiverState->GetPauser()) {
-					m_receiverState->SetOptionSelection(m_initialSelection + 1);
+					m_receiverState->SetOptionSelection((eOptionSelections) (m_initialSelection + 1));
 					g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 				}
 				return 1;
