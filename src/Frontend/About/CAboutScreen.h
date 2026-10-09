@@ -51,8 +51,8 @@ private:
 	char* m_aboutText;              // 0x88
 	CPVButton* m_textWindow;        // 0x8c
 	CTextManager* m_textManager;    // 0x90
-	unsigned int m_startTime;       // 0x94
-	unsigned int m_endTime;         // 0x98
+	unsigned long m_startTime;      // 0x94
+	unsigned long m_endTime;        // 0x98
 };
 
 // SYNTHETIC: LEMBALL 0x0044c0d0
