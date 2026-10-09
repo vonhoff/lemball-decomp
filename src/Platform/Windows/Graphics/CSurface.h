@@ -65,7 +65,7 @@ public:
 	virtual void Blit(CZBuffScroll* p_scroll);
 	virtual void Blit(CZBuffClear* p_clear);
 	void BlitRect(CVSRect p_rect, int p_colour);
-	void BlitZRLE(int p_x, int p_y, CResZRLE* p_zrle, unsigned int p_flags, CRemap* p_remap, unsigned short p_depth);
+	void BlitZRLE(int p_x, int p_y, CResZRLE* p_zrle, unsigned long p_flags, CRemap* p_remap, unsigned short p_depth);
 	void BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse);
 	void BlitZRLEClipQZBuff(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth);
 	void BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,

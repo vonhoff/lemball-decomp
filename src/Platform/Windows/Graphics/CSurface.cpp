@@ -3635,7 +3635,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 void CSurface::BlitZRLE(int p_x,
 						int p_y,
 						CResZRLE* p_zrle,
-						unsigned int p_flags,
+						unsigned long p_flags,
 						CRemap* p_remap,
 						unsigned short p_depth)
 {
@@ -3643,7 +3643,7 @@ void CSurface::BlitZRLE(int p_x,
 	CResZRLE* resource;
 	short zHeight;
 	short zWidth;
-	unsigned int flags;
+	unsigned long flags;
 	int width;
 
 	resource = p_zrle;
