@@ -97,16 +97,9 @@ void CWriteSocket::SetNCBuffers(unsigned long p_lastSinglePacketMessageId,
 // FUNCTION: LEMBALL 0x0045fe60
 void CWriteSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 {
-	void* storage;
-
 	(void) p_messageCapacity;
 	DeleteCBuffers();
-	storage = operator new(sizeof(CWriteCBuff));
-	if (storage != NULL) {
-		m_criticalBuffer = new (storage) CWriteCBuff(p_packetCount, (unsigned short) g_networkPacketSize);
-		return;
-	}
-	m_criticalBuffer = NULL;
+	m_criticalBuffer = new CWriteCBuff(p_packetCount, g_networkPacketSize);
 }
 
 // FUNCTION: LEMBALL 0x0045fea0
