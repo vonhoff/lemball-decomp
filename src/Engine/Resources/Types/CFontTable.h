@@ -15,9 +15,9 @@ enum {
 class CFontTable : public CPvFontTable {
 public:
 	CFontTable(CResFONT* p_font);
-	virtual CResZRLE* GetZRLE(int p_character); // vtable+0x04
-	virtual char GetChar(CResZRLE* p_glyph);    // vtable+0x08
-	virtual ~CFontTable();                      // vtable+0x00
+	virtual CResZRLE* GetZRLE(int p_character) const; // vtable+0x04
+	virtual char GetChar(CResZRLE* p_glyph) const;    // vtable+0x08
+	virtual ~CFontTable();                            // vtable+0x00
 
 private:
 	CResZRLE** m_glyphs; // 0x04

@@ -40,13 +40,13 @@ CFontTable::CFontTable(CResFONT* p_font)
 }
 
 // FUNCTION: LEMBALL 0x00473700
-CResZRLE* CFontTable::GetZRLE(int p_character)
+CResZRLE* CFontTable::GetZRLE(int p_character) const
 {
 	return m_glyphs[p_character];
 }
 
 // FUNCTION: LEMBALL 0x00473710
-char CFontTable::GetChar(CResZRLE* p_glyph)
+char CFontTable::GetChar(CResZRLE* p_glyph) const
 {
 	int i = 0;
 	CResZRLE** glyphs = m_glyphs;
