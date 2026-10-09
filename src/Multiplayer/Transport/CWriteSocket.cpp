@@ -26,7 +26,7 @@ CWriteSocket::CWriteSocket()
 	BasePacketHeader* header;
 
 	m_lastSendTime = CurrentMilliTimer() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
-	header = (BasePacketHeader*) operator new(sizeof(BasePacketHeader));
+	header = new BasePacketHeader;
 	m_packetHeader = header;
 	header->m_magic = BASE_PACKET_MAGIC;
 	m_nonCriticalBuffer = NULL;
@@ -42,7 +42,7 @@ CWriteSocket::~CWriteSocket()
 {
 	operator delete(m_destinationAddress);
 	m_destinationAddress = NULL;
-	operator delete(m_packetHeader);
+	delete m_packetHeader;
 	DeleteNCBuffers();
 	DeleteCBuffers();
 }

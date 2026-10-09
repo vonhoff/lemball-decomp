@@ -116,7 +116,7 @@ void CHotAreaList::DeleteEntry(CHotAreaElement* p_entry)
 	else {
 		m_tail = previous;
 	}
-	operator delete(p_entry);
+	delete p_entry;
 }
 
 // FUNCTION: LEMBALL 0x0046a710
@@ -231,7 +231,7 @@ void CHotAreaList::AddToList(CHotAreaHandler* p_handler)
 {
 	CHotAreaElement* entry;
 
-	entry = (CHotAreaElement*) operator new(sizeof(CHotAreaElement));
+	entry = new CHotAreaElement;
 	if (entry != NULL) {
 		entry->m_handler = p_handler;
 		entry->m_next = NULL;

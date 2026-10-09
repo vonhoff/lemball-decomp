@@ -7,7 +7,7 @@ CPortsMessage::CPortsMessage()
 {
 	int i;
 
-	m_useCounts = (unsigned char*) operator new(NETWORK_PORT_COUNT);
+	m_useCounts = new unsigned char[NETWORK_PORT_COUNT];
 	m_payloadCapacity += NETWORK_PORT_COUNT;
 	i = 0;
 	do {

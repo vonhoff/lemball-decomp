@@ -130,7 +130,7 @@ int VSmain(int p_argc, char** p_argv)
 
 	g_pVSTrig = new VSTrig();
 
-	seed = (int*) operator new(4);
+	seed = new int;
 	if (seed != NULL) {
 		*seed = GAME_RANDOM_INITIAL_SEED;
 		g_pRandomSeed = seed;
@@ -157,7 +157,7 @@ int VSmain(int p_argc, char** p_argv)
 	}
 
 	_DEMO_Quit();
-	operator delete(g_pRandomSeed);
+	delete g_pRandomSeed;
 	operator delete(g_pVSTrig);
 	*g_pDebugOutput << g_szGameClosedDown;
 	return 0;
