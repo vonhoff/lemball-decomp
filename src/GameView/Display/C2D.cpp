@@ -5279,8 +5279,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 
 	p_z += 2;
 
-	unsigned short southZValue;
-	unsigned short& southZ = southZValue;
+	unsigned short southZ;
 	int southTileX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
 	int southTileY = (p_y + GROUND_BLOCK_PIXEL_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
 	{
@@ -5291,8 +5290,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			southZ = 0;
 		}
 		else {
-			int sampleY;
-			int& cellY = sampleY;
+			int cellY;
 			int cellX = p_x;
 			cellY = p_y;
 			cellY &= 0xf;
@@ -5312,8 +5310,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			eastZ = 0;
 		}
 		else {
-			int sampleY;
-			int& cellY = sampleY;
+			int cellY;
 			int cellX = p_x;
 			cellY = p_y;
 			cellY &= 0xf;
@@ -5340,7 +5337,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 	}
 
 	{
-		const int& southWithinZ = p_z >= southZ;
+		int southWithinZ = p_z >= southZ;
 		bool eastWithinZ = p_z >= eastZ;
 		bool southeastWithinZ = p_z >= southeastZ;
 		int threshold = (int) p_z - 0x18;
