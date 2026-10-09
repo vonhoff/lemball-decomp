@@ -8,7 +8,7 @@
 // FUNCTION: LEMBALL 0x0045aaf0
 CStatManager::CStatManager(int p_capacity)
 {
-	m_stats = (CBaseStat**) operator new((unsigned int) (p_capacity * sizeof(CBaseStat*)));
+	m_stats = new CBaseStat*[p_capacity];
 	m_capacity = p_capacity;
 	m_statCount = 0;
 }
@@ -28,7 +28,7 @@ CStatManager::~CStatManager()
 			byteIndex += sizeof(CBaseStat*);
 			++i;
 		}
-		operator delete(m_stats);
+		delete[] m_stats;
 		m_stats = NULL;
 	}
 }
