@@ -12,8 +12,8 @@ The goal is to reconstruct the game's codebase using semantic, maintainable C++ 
 as closely as possible. The resulting codebase will serve as a faithful reference and foundation for ports.
 
 > [!NOTE]
-> For a modern version with support for other platforms,
-see [lemball-portable](https://github.com/vonhoff/lemball-portable).
+> The reconstructed code only targets 32-bit Windows. For a modern version with support for other platforms,
+> see [lemball-portable](https://github.com/vonhoff/lemball-portable).
 
 ## Reconstruction
 
@@ -26,30 +26,15 @@ constants, algorithms, virtual tables, object layouts, and call relationships.
 
 ## Building
 
-The reconstructed code is compiled using Microsoft Visual C++ 4.00 and targets 32-bit Windows.
-
-### Prerequisites
-
-1. **Python 3.10+** with required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. **MSVC 4.00 toolchain**:
-   Clone the compiler into `msvc400/` or point `MSVC400_ROOT` to its directory:
-   ```bash
-   git clone https://github.com/vonhoff/MSVC400 msvc400
-   ```
-
-### Build
+Requires Python 3.10+ and the MSVC 4.00 toolchain:
 
 ```bash
+pip install -r requirements.txt
+git clone https://github.com/vonhoff/MSVC400 msvc400
 python tools/make_binary.py
 ```
 
-Useful flags:
-
-- `--clean-first`: Perform a full clean rebuild.
-- `--disable-startup-checks`: Bypass startup CD-ROM and installation checks.
+Pass `--disable-startup-checks` to bypass CD-ROM and installation checks.
 
 ## Matching
 
@@ -60,6 +45,19 @@ Each function is compared against the original executable using [reccmp](https:/
 - **Effective:** Non-stub raw 100% matches and reccmp's own equivalence results.
 
 The [decomp.dev report](https://decomp.dev/vonhoff/lemball-decomp) only includes exact and fuzzy matches.
+
+### Prerequisites
+
+Matching requires the built executable in `build-msvc400` and the original `LEMBALL.EXE` placed in `data`.
+
+SHA-256: `d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63`
+
+### Workflow
+
+1. Find target: `python tools/triage_targets.py`
+2. Rebuild and diff: `python tools/make_binary.py && python tools/check_function.py 0xADDR`
+3. Check source: `python tools/check_source.py`
+4. Update report: `python tools/make_report.py` (writes to `build-msvc400/report.json`)
 
 ## AI Disclosure
 
