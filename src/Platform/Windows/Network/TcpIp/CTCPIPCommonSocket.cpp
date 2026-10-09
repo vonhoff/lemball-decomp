@@ -24,7 +24,7 @@ CTCPIPCommonSocket::CTCPIPCommonSocket() : CNetworkWnd("Socket Window", &g_socke
 CTCPIPCommonSocket::~CTCPIPCommonSocket()
 {
 	if (m_asyncBuffer != NULL) {
-		operator delete(m_asyncBuffer);
+		delete[] m_asyncBuffer;
 	}
 }
 
@@ -48,7 +48,7 @@ CTCPIPCommonSocket::NameResult CTCPIPCommonSocket::OnNameResolved(unsigned int p
 	default:
 		SocketError((NetworkErrors) error);
 		if (*p_buffer != NULL) {
-			operator delete(*p_buffer);
+			delete[] *p_buffer;
 		}
 		*p_buffer = NULL;
 		return NAME_LOOKUP_ERROR_HANDLED;

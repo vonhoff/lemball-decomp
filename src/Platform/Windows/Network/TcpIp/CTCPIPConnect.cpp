@@ -20,7 +20,7 @@ bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)
 {
 	m_address = (char*) operator new(strlen(p_remoteName) + 1);
 	strcpy(m_address, p_remoteName);
-	m_asyncBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
+	m_asyncBuffer = new char[MAXGETHOSTSTRUCT];
 	m_name = (char*) operator new(strlen(p_localName) + 1);
 	strcpy(m_name, p_localName);
 	m_writeReady = 1;
@@ -85,7 +85,7 @@ void CTCPIPConnect::HandleServiceLookupResult(bool p_failed)
 		SetPort(0);
 		*g_pErrorOutput << "Service port number specified was not found\n";
 	}
-	operator delete(m_asyncBuffer);
+	delete[] m_asyncBuffer;
 	m_asyncBuffer = NULL;
 	if (!p_failed) {
 		Connect();

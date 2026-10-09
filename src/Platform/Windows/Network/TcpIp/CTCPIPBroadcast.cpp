@@ -31,7 +31,7 @@ CTCPIPBroadcast::CTCPIPBroadcast()
 CTCPIPBroadcast::~CTCPIPBroadcast()
 {
 	if (m_specificNameBuffer != NULL) {
-		operator delete(m_specificNameBuffer);
+		delete[] m_specificNameBuffer;
 	}
 }
 
@@ -59,10 +59,10 @@ void CTCPIPBroadcast::GetSpecificAddr(const char* p_name)
 			SocketError();
 			return;
 		}
-		operator delete(m_specificNameBuffer);
+		delete[] m_specificNameBuffer;
 		m_specificNameBuffer = NULL;
 	}
-	m_specificNameBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
+	m_specificNameBuffer = new char[MAXGETHOSTSTRUCT];
 	m_specificNameRequest = WSAAsyncGetHostByName(m_windowHandle,
 												  TCPIP_MESSAGE_SPECIFIC_HOST_RESOLVED,
 												  p_name,
@@ -110,7 +110,7 @@ void CTCPIPBroadcast::GotName(int p_failed)
 			g_pNetworkStatusQueue->Post(message);
 		}
 	}
-	operator delete(m_specificNameBuffer);
+	delete[] m_specificNameBuffer;
 	m_specificNameBuffer = NULL;
 }
 
@@ -127,7 +127,7 @@ bool CTCPIPBroadcast::Start(const char* p_name)
 	}
 	g_szBroadcastPeerName = (char*) operator new(strlen(hostName) + 1);
 	strcpy(g_szBroadcastPeerName, hostName);
-	m_asyncBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
+	m_asyncBuffer = new char[MAXGETHOSTSTRUCT];
 	m_writeReady = 1;
 	m_asyncRequest = WSAAsyncGetHostByName(m_windowHandle,
 										   TCPIP_MESSAGE_LOCAL_HOST_RESOLVED,
@@ -162,7 +162,7 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 		g_pBroadcastAddress->GetStr();
 	}
 	g_localHostLookupComplete = 1;
-	operator delete(m_asyncBuffer);
+	delete[] m_asyncBuffer;
 	m_asyncBuffer = NULL;
 	m_socketHandle = socket(AF_INET, SOCK_DGRAM, 0);
 	if (m_socketHandle == NETWORK_SOCKET_HANDLE_INVALID) {
@@ -171,7 +171,7 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 		return;
 	}
 	m_isOpen = 1;
-	m_asyncBuffer = (char*) operator new(MAXGETHOSTSTRUCT);
+	m_asyncBuffer = new char[MAXGETHOSTSTRUCT];
 	m_writeReady = 1;
 	m_asyncRequest = WSAAsyncGetServByName(m_windowHandle,
 										   TCPIP_MESSAGE_SERVICE_RESOLVED,
@@ -203,7 +203,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 		serviceEntry = (TcpIpServiceEntry*) m_asyncBuffer;
 		SetPort((short) (ntohs(serviceEntry->m_port) - g_broadcastPort));
 	}
-	operator delete(m_asyncBuffer);
+	delete[] m_asyncBuffer;
 	m_asyncBuffer = NULL;
 	option = 1;
 	if (setsockopt(m_socketHandle, SOL_SOCKET, SO_BROADCAST, (const char*) &option, sizeof(option)) ==
