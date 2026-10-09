@@ -19,7 +19,7 @@
 #include "SwitchEntry.h"
 
 // GLOBAL: LEMBALL 0x0049e1b8
-unsigned short g_wNextSwitchIndex;
+unsigned short g_wNextSwitchIndex = 0;
 
 enum eLegacySwitchType {
 	LEGACY_SWITCH_SINGLE_LIFT = 1,

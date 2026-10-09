@@ -410,4 +410,4 @@ char* CSoundManager::BuildDriverInfo()
 char g_szSoundDriverInfo[1024];
 
 // GLOBAL: LEMBALL 0x004a9bc8
-CSoundManager* g_pSoundManager = NULL;
+CSoundManager* g_pSoundManager;

@@ -110,7 +110,7 @@ CAI* g_pGenericGroupAI;
 CAI* g_pAI;
 
 // GLOBAL: LEMBALL 0x004a74b8
-int g_nGameOver = 0;
+int g_nGameOver;
 
 // GLOBAL: LEMBALL 0x0049cf34
 CAI* g_pActiveAI = NULL;

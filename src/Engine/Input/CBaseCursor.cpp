@@ -29,10 +29,10 @@ enum {
 };
 
 // GLOBAL: LEMBALL 0x004a9bec
-CGWnd* g_pCursorLastWindow = NULL;
+CGWnd* g_pCursorLastWindow;
 
 // GLOBAL: LEMBALL 0x004a9bf0
-unsigned char g_cursorFocusFlag = 0;
+unsigned char g_cursorFocusFlag;
 
 // FUNCTION: LEMBALL 0x0046aec0
 CBaseCursor::CBaseCursor()

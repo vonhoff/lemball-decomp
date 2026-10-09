@@ -167,7 +167,7 @@ InitCmdOption g_aInitCmdOptions[14] = {
 char g_szOptionParanoid[12] = "paranoid";
 
 // GLOBAL: LEMBALL 0x004a8320
-int g_cParsedArgs = 0;
+int g_cParsedArgs;
 
 // GLOBAL: LEMBALL 0x004a8328
 char* g_apszParsedArgs[16];

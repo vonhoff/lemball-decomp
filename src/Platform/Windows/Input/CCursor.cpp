@@ -13,7 +13,7 @@ extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* p_cursor);
 extern "C" __declspec(dllimport) int __stdcall ShowCursor(int p_show);
 
 // GLOBAL: LEMBALL 0x004a9bf4
-CCursor* g_pCursor = NULL;
+CCursor* g_pCursor;
 
 // GLOBAL: LEMBALL 0x0049ee10
 unsigned int g_cursorResourceIds[4] = {0, RES_CURSORS_HAND, RES_CURSORS_PAW_CURSOR, 0};
