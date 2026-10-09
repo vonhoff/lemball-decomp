@@ -1,6 +1,8 @@
 """Audit source signatures against independent symbol catalog evidence."""
 
+import csv
 import re
+from collections import defaultdict
 
 from reccmp.cvdump.demangler import msvc_demangle
 
@@ -41,6 +43,22 @@ TYPE_DEF = re.compile(
 WINDOWS_MARK = re.compile(
     rf"//\s*(?P<kind>FUNCTION|STUB|SYNTHETIC|TEMPLATE|LIBRARY):\s*{re.escape(TARGET_ID)}\s+(?P<address>0x[0-9a-fA-F]+)\b"
 )
+
+
+def read_catalog(path):
+    """Read symbol identities and Windows mappings from the fixed catalog."""
+    symbols, by_windows = {}, defaultdict(list)
+    with path.open(newline="", encoding="utf-8-sig") as stream:
+        rows = csv.reader(stream)
+        next(rows)
+        for mac, name, win in rows:
+            mac = int(mac, 16)
+            symbols[mac] = name
+            if win:
+                by_windows[int(win, 16)].append(mac)
+    for candidates in by_windows.values():
+        candidates.sort()
+    return symbols, by_windows
 
 
 def compare_signature(expected, actual):
@@ -173,7 +191,7 @@ def scan(path, symbols, by_windows, inferences=None):
             except ValueError as error:
                 yield dict(
                     row,
-                    status="unresolved" if candidates else "unmapped",
+                    status="unresolved",
                     reason=f"{error}; no verified source identity",
                 )
                 continue
@@ -185,13 +203,24 @@ def scan(path, symbols, by_windows, inferences=None):
                     yield dict(
                         row, status="inferred", reason="explicit source inference"
                     )
+                elif inferred_signature:
+                    yield dict(
+                        row,
+                        status="mismatch",
+                        reason=f"recorded Windows inference {inferred_signature} -> {actual_signature}",
+                    )
                 else:
-                    reason = f"{actual_signature}: no Windows catalog mapping or explicit inference"
-                    if inferred_signature:
-                        reason += f"; recorded inference is {inferred_signature}"
-                    yield dict(row, status="unmapped", reason=reason)
+                    yield dict(
+                        row,
+                        status="unmapped",
+                        reason=f"{actual_signature}: no Windows catalog mapping or explicit inference",
+                    )
                 continue
-            if actual.method == f"__lemball_jump_{address:08x}":
+            if (
+                marker["kind"] == "SYNTHETIC"
+                and actual.method == f"__lemball_jump_{address:08x}"
+                and (inferences or {}).get(address) == actual_signature
+            ):
                 yield dict(
                     row,
                     status="synthetic",

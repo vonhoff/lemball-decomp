@@ -13,7 +13,8 @@ from reccmp.dir import source_code_search
 from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 
 from lib import ROOT, TARGET_ID
-from lib.names import scan
+from lib.codewarrior import decode_signature
+from lib.names import read_catalog, scan
 from lib.policy import violations
 from lib.signatures import Signature
 
@@ -25,22 +26,6 @@ CATALOG = ROOT / "tools/data/mac-symbol-catalog.csv"
 def collect_sources(paths=None):
     """Find C/C++ sources under supplied paths or the configured source root."""
     return list(source_code_search([ROOT / path for path in paths or (SRC,)]))
-
-
-def read_catalog():
-    """Read symbol identities and Windows mappings from the fixed catalog."""
-    symbols, by_windows = {}, defaultdict(list)
-    with CATALOG.open(newline="", encoding="utf-8-sig") as stream:
-        rows = csv.reader(stream)
-        next(rows)
-        for mac, name, win in rows:
-            mac = int(mac, 16)
-            symbols[mac] = name
-            if win:
-                by_windows[int(win, 16)].append(mac)
-    for candidates in by_windows.values():
-        candidates.sort()
-    return symbols, by_windows
 
 
 def read_inferences():
@@ -96,8 +81,8 @@ def check_annotations(paths=None) -> int:
 
 
 def check_names(paths: list[Path | str] | None = None, verbose=False):
-    """Require mapped or explicitly inferred names; keep ABI reviews informational."""
-    symbols, mappings = read_catalog()
+    """Check source identities and coverage of all mapped Windows addresses."""
+    symbols, mappings = read_catalog(CATALOG)
     inferences = read_inferences()
     files = collect_sources(paths)
     rows = [row for path in files for row in scan(path, symbols, mappings, inferences)]
@@ -105,16 +90,31 @@ def check_names(paths: list[Path | str] | None = None, verbose=False):
     signatures = Counter(
         row["signature_status"] for row in rows if "signature_status" in row
     )
+    missing, stubs = set(), set()
+    if not paths:
+        kinds = defaultdict(set)
+        for row in rows:
+            kinds[int(row["windows_address"], 16)].add(row["kind"])
+        missing = mappings.keys() - kinds.keys()
+        stubs = {address for address in mappings if kinds.get(address) == {"STUB"}}
+        for address in sorted(missing | stubs):
+            expected = "; ".join(
+                decode_signature(symbols[mac]).display() for mac in mappings[address]
+            )
+            reason = "missing source annotation" if address in missing else "stub only"
+            print(f"catalog: {reason}: {expected} [0x{address:08x}]")
+        print(
+            f"catalog: source coverage {len(mappings) - len(missing) - len(stubs)}/{len(mappings)} "
+            f"mapped Windows addresses; {len(missing)} missing, {len(stubs)} stub-only"
+        )
     for row in rows:
         required = row["status"] in (
             "mismatch",
             "case",
             "unresolved",
-            "unmapped",
-            "windows",
         )
         requested = verbose and (
-            row["status"] == "inferred"
+            row["status"] in ("inferred", "unmapped", "windows")
             or row.get("signature_status") in ("review", "unresolved")
         )
         if required or requested:
@@ -133,6 +133,11 @@ def check_names(paths: list[Path | str] | None = None, verbose=False):
         f"{dict(Counter(row['kind'] for row in rows if row['status'] == 'unmapped'))}"
     )
     print(f"names: parameter/const comparisons: {dict(signatures)}")
+    if counts["unmapped"]:
+        print(
+            f"names: {counts['unmapped']} unsupported identities "
+            "(no catalog mapping or accepted Windows inference); --verbose lists entries"
+        )
     if signatures["review"] or signatures["unresolved"]:
         print(
             "names: signature review requires Windows evidence; "
@@ -140,7 +145,15 @@ def check_names(paths: list[Path | str] | None = None, verbose=False):
         )
     if counts["unresolved"]:
         return 2
-    return int(bool(counts["mismatch"] or counts["case"] or counts["unmapped"]))
+    return int(
+        bool(
+            missing
+            or stubs
+            or counts["mismatch"]
+            or counts["case"]
+            or counts["unmapped"]
+        )
+    )
 
 
 def main() -> int:

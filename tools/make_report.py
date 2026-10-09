@@ -16,6 +16,8 @@ from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType, ImageId
 
 from lib import BUILD, ROOT, TARGET_ID
+from lib.codewarrior import decode_signature
+from lib.names import read_catalog
 from lib.progress import accepted_functions, effective_code_percent, save_progress
 
 
@@ -153,6 +155,35 @@ def build_report(engine, comparisons, modules: ModuleMap) -> dict[str, Any]:
     return {"version": 2, "units": units, "measures": measures(functions, len(units))}
 
 
+def check_catalog_implementations(comparisons):
+    """Require rebuilt, non-stub code for every catalog-mapped Windows address."""
+    symbols, mappings = read_catalog(ROOT / "tools/data/mac-symbol-catalog.csv")
+    missing = [
+        address
+        for address in mappings
+        if (entity := comparisons.entities.get(address)) is None
+        or not entity.is_matched()
+        or entity.is_stub
+        or entity.type
+        not in (
+            EntityType.FUNCTION,
+            EntityType.VTORDISP,
+            EntityType.THUNK,
+            EntityType.IMPORT_THUNK,
+        )
+    ]
+    for address in sorted(missing):
+        expected = "; ".join(
+            decode_signature(symbols[mac]).display() for mac in mappings[address]
+        )
+        print(f"catalog: missing rebuilt implementation: {expected} [0x{address:08x}]")
+    print(
+        f"catalog: rebuilt implementations {len(mappings) - len(missing)}/{len(mappings)} "
+        "mapped Windows addresses"
+    )
+    return int(bool(missing))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.parse_args()
@@ -166,6 +197,7 @@ def main() -> int:
     engine = Compare.from_target(target)
     comparisons = engine.to_report(filename=target.original_path.name)
     compare_import_thunks(engine, comparisons)
+    catalog_status = check_catalog_implementations(comparisons)
     report = build_report(
         engine,
         comparisons,
@@ -181,7 +213,7 @@ def main() -> int:
         f"{effective:.2f}% effective; "
         f"{totals['fuzzy_match_percent']:.2f}% fuzzy"
     )
-    return 0
+    return catalog_status
 
 
 if __name__ == "__main__":
