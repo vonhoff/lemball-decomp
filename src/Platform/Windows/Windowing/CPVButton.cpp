@@ -209,8 +209,8 @@ void CPVButton::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 		m_pressed = 1;
 	}
 	converted = ConvertDoubleClick(p_flags);
-	clickPos.m_y = (short) (p_point.m_y - m_relativeTopLeft.m_y);
-	clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
+	clickPos.m_y = p_point.m_y - m_relativeTopLeft.m_y;
+	clickPos.m_x = p_point.m_x - m_relativeTopLeft.m_x;
 	m_clickPosition.m_x = clickPos.m_x;
 	m_clickPosition.m_y = clickPos.m_y;
 	_OnPressed(converted);
@@ -225,8 +225,8 @@ void CPVButton::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 	if (m_pressed != 0) {
 		converted = ConvertDoubleClick(p_flags);
 		CVSPoint clickPos;
-		clickPos.m_y = (short) (p_point.m_y - m_relativeTopLeft.m_y);
-		clickPos.m_x = (short) (p_point.m_x - m_relativeTopLeft.m_x);
+		clickPos.m_y = p_point.m_y - m_relativeTopLeft.m_y;
+		clickPos.m_x = p_point.m_x - m_relativeTopLeft.m_x;
 		m_clickPosition.m_x = clickPos.m_x;
 		m_clickPosition.m_y = clickPos.m_y;
 		m_pressed = 0;
@@ -243,8 +243,8 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags
 
 	CVSPoint relativeValue(m_relativeTopLeft);
 	CVSPoint originValue(m_relativeTopLeft);
-	relativeValue.m_y = (short) (p_point.m_y - originValue.m_y);
-	relativeValue.m_x = (short) (p_point.m_x - originValue.m_x);
+	relativeValue.m_y = p_point.m_y - originValue.m_y;
+	relativeValue.m_x = p_point.m_x - originValue.m_x;
 	m_clickPosition.m_x = relativeValue.m_x;
 	m_clickPosition.m_y = relativeValue.m_y;
 	state = m_buttonState;
@@ -268,7 +268,7 @@ void CPVButton::_OnReleased(BUTTON_FLAGS p_flags)
 	if (m_messageQueue != NULL) {
 		converted = ConvertDoubleClick(p_flags);
 		posted.m_time = CurrentQueueTimer();
-		posted.m_code = (int) m_controlMessage;
+		posted.m_code = m_controlMessage;
 		posted.m_payload = this;
 		posted.m_type = MESSAGE_BUTTON_RELEASED;
 		posted.m_source = (void*) converted;
@@ -288,7 +288,7 @@ void CPVButton::_OnPressed(BUTTON_FLAGS p_flags)
 	if (m_messageQueue != NULL) {
 		converted = ConvertDoubleClick(p_flags);
 		posted.m_time = CurrentQueueTimer();
-		posted.m_code = (int) m_controlMessage;
+		posted.m_code = m_controlMessage;
 		posted.m_payload = this;
 		posted.m_type = MESSAGE_BUTTON_PRESSED;
 		posted.m_source = (void*) converted;
@@ -303,7 +303,7 @@ void CPVButton::_OnEnterButton()
 
 	if (m_messageQueue != NULL) {
 		posted.m_time = CurrentQueueTimer();
-		posted.m_code = (int) m_controlMessage;
+		posted.m_code = m_controlMessage;
 		posted.m_type = MESSAGE_BUTTON_ENTERED;
 		posted.m_payload = this;
 		m_messageQueue->Post(posted);
@@ -317,7 +317,7 @@ void CPVButton::_OnExitButton()
 
 	if (m_messageQueue != NULL) {
 		posted.m_time = CurrentQueueTimer();
-		posted.m_code = (int) m_controlMessage;
+		posted.m_code = m_controlMessage;
 		posted.m_type = MESSAGE_BUTTON_EXITED;
 		posted.m_payload = this;
 		m_messageQueue->Post(posted);
