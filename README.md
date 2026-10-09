@@ -82,5 +82,4 @@ reviewed for correctness and maintainability.
 This is an unofficial reverse-engineering project not affiliated with or endorsed by the original rights holders.
 Original game assets are not included in this repository.
 
-No license is granted for the reconstructed game code. Independently developed code is licensed under
-the [GNU General Public License v3.0](LICENSE).
+No license is granted for the reconstructed game code. Independently developed code is [GPL-3.0](LICENSE) licensed.
