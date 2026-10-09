@@ -224,7 +224,7 @@ CGame::~CGame()
 	unsigned long started;
 	unsigned long now;
 
-	resources = (CFrontendResourceLoader*) m_frontendResources;
+	resources = m_frontendResources;
 	if (resources != NULL) {
 		resources->~CFrontendResourceLoader();
 		operator delete(resources);
@@ -329,7 +329,7 @@ void CGame::LoadFrontendResources(int p_mode)
 void CGame::UnLoadFrontendResources()
 {
 	if (m_frontendResources != NULL) {
-		delete (CFrontendResourceLoader*) m_frontendResources;
+		delete m_frontendResources;
 		m_frontendResources = NULL;
 	}
 }
