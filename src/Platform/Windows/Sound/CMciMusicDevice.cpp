@@ -46,8 +46,8 @@ CMciMusicDevice::CMciMusicDevice()
 
 	m_preparedHandle = 0;
 	g_nPreparedMciMusicTrackHandle = 0;
-	m_playing = 0;
-	m_paused = 0;
+	m_playing = false;
+	m_paused = false;
 	m_pausePosition = 0;
 	g_pActiveMciMusicDevice = this;
 	memset(&openParms, 0, sizeof(openParms));
@@ -58,11 +58,11 @@ CMciMusicDevice::CMciMusicDevice()
 		mciGetErrorStringA(error, errorText, sizeof(errorText));
 		*g_pErrorOutput << "Error!     HL Midi Device Not Found.\n";
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
-		m_available = 0;
+		m_available = false;
 		return;
 	}
 	m_deviceId = openParms.wDeviceID;
-	m_available = 1;
+	m_available = true;
 	mciSendCommandA(m_deviceId, MCI_CLOSE, 0, 0);
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
@@ -112,7 +112,7 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	if (m_preparedHandle != 0) {
 		*g_pErrorOutput << "Error! Call to Prepare Music when already prepared!\n";
 	}
-	if (m_playing == 1) {
+	if (m_playing == true) {
 		*g_pErrorOutput << "Error! Cannot Prepare Music while playing.\n";
 	}
 	m_preparedHandle = p_handle;
@@ -189,8 +189,8 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 		g_nPreparedMciMusicTrackHandle = 0;
 		return;
 	}
-	m_playing = 0;
-	m_paused = 0;
+	m_playing = false;
+	m_paused = false;
 }
 
 // FUNCTION: LEMBALL 0x0047ee70
@@ -204,7 +204,7 @@ void CMciMusicDevice::Free(unsigned long p_handle)
 	}
 	m_preparedHandle = 0;
 	g_nPreparedMciMusicTrackHandle = 0;
-	if (m_playing == 1) {
+	if (m_playing == true) {
 		*g_pErrorOutput << "Error! Must stop music before closing...\n";
 	}
 	mciSendCommandA(m_deviceId, MCI_CLOSE, 0, 0);
@@ -224,7 +224,7 @@ void CMciMusicDevice::Play(unsigned long p_handle)
 	if (m_preparedHandle != p_handle) {
 		*g_pErrorOutput << "Error Call to Play (HL) with unknown Handle!\n";
 	}
-	if (m_playing == 1) {
+	if (m_playing == true) {
 		*g_pErrorOutput << "Error! Play Command (HL) While already playing!\n";
 	}
 	seekParms.dwTo = 0;
@@ -243,9 +243,9 @@ void CMciMusicDevice::Play(unsigned long p_handle)
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		return;
 	}
-	m_paused = 0;
+	m_paused = false;
 	m_pausePosition = 0;
-	m_playing = 1;
+	m_playing = true;
 }
 
 // FUNCTION: LEMBALL 0x0047f040
@@ -260,7 +260,7 @@ void CMciMusicDevice::Stop(unsigned long p_handle)
 	if (m_preparedHandle != p_handle) {
 		*g_pErrorOutput << "Error Call to Stop (HL) with unknown Handle!\n";
 	}
-	if (m_playing == 0) {
+	if (m_playing == false) {
 		*g_pErrorOutput << "Error! Stop Command (HL) when not playing!\n";
 		return;
 	}
@@ -271,7 +271,7 @@ void CMciMusicDevice::Stop(unsigned long p_handle)
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		return;
 	}
-	m_playing = 0;
+	m_playing = false;
 }
 
 // FUNCTION: LEMBALL 0x0047f120
@@ -302,8 +302,8 @@ void CMciMusicDevice::Pause(unsigned long p_handle)
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 	}
 	else {
-		m_playing = 0;
-		m_paused = 1;
+		m_playing = false;
+		m_paused = true;
 	}
 }
 
@@ -337,14 +337,14 @@ void CMciMusicDevice::Resume(unsigned long p_handle)
 		*g_pErrorOutput << "MCI Error:\t" << errorText << "\n";
 		return;
 	}
-	m_playing = 1;
-	m_paused = 0;
+	m_playing = true;
+	m_paused = false;
 }
 
 // FUNCTION: LEMBALL 0x0047f390
 int CMciMusicDevice::IsAvailable()
 {
-	return (int) m_available;
+	return m_available;
 }
 
 // FUNCTION: LEMBALL 0x0047f3a0
@@ -353,7 +353,7 @@ char* CMciMusicDevice::GetInfo()
 	MIDIOUTCAPSA capabilities;
 	char deviceType[256];
 
-	if (m_available != 0) {
+	if (m_available != false) {
 		midiOutGetDevCapsA(m_deviceId, &capabilities, sizeof(capabilities));
 		deviceType[0] = '\0';
 		if (capabilities.wTechnology & MOD_MIDIPORT) {
