@@ -549,7 +549,7 @@ void CGameObject::Fly()
 					m_flightVelocity.m_xFixed = GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED;
 					m_flightVelocity.m_yFixed = 0;
 					int objectZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
-					m_flightVelocity.m_zFixed = ((objectZ - groundZ) / 8 + 1) << FIXED_POINT_FRACTION_BITS;
+					m_flightVelocity.m_zFixed = ((objectZ - groundZ) / 8 + 1) * FIXED_POINT_ONE;
 					m_lastMovementTick = g_dwGameTick;
 					m_flightZ = objectZ;
 					m_groundPosition.m_yFixed = m_position.m_yFixed;
