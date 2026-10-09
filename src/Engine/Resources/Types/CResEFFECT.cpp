@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e380
-CResEFFECT* CResEFFECT::Load(unsigned int p_resourceId)
+CResEFFECT* CResEFFECT::Load(unsigned long p_resourceId)
 {
 	CResEFFECT* res = (CResEFFECT*) g_pActiveMogRes->Find(p_resourceId);
 	if (!res) {
