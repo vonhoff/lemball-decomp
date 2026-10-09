@@ -1,5 +1,7 @@
 address,signature,basis
 0x00407e40,CVSOStream::~CVSOStream(?),MSVC compiler helper; Mac 0x10213dc6
+0x00407e80,CDebugOStream::~CDebugOStream(?),Windows compiler helper inference; vtable 0x00493020+0x00
+0x00408010,CAbout::~CAbout(?),Windows compiler helper inference; vtable 0x00493090+0x00
 0x00408040,CPasswordProc::~CPasswordProc(?),MSVC compiler helper; Mac 0x1011bb38
 0x00408050,CMainOptions2::~CMainOptions2(?),MSVC compiler helper; Mac 0x1011b9ae
 0x00408060,CMainOptions1::~CMainOptions1(?),MSVC compiler helper; Mac 0x1011b94e
@@ -19,6 +21,7 @@ address,signature,basis
 0x004395f0,CSolidRect::~CSolidRect(?),MSVC compiler helper; Mac 0x10100c60
 0x00439840,C2D::~C2D(?),MSVC compiler helper; Mac 0x10b06e3e
 0x00439850,C2D::~C2D(?),MSVC compiler helper; Mac 0x10b06e3e
+0x0043a450,CInputTextButton::~CInputTextButton(?),Windows compiler helper inference; vtable 0x004970e0+0x00
 0x00443950,CPanelButton::~CPanelButton(?),MSVC compiler helper; Mac 0x10b0cb74
 0x004439b0,CAnim::~CAnim(?),MSVC compiler helper; Mac 0x10101896
 0x004439f0,CPanel::~CPanel(?),MSVC compiler helper; Mac 0x10b0dc46
@@ -32,6 +35,8 @@ address,signature,basis
 0x004491a0,CMainOptions2Drawer::~CMainOptions2Drawer(?),MSVC compiler helper; Mac 0x1080ab4a
 0x0044aa00,CPreview::~CPreview(?),MSVC compiler helper; Mac 0x1011ba0e
 0x0044aa10,CPreviewDrawer::~CPreviewDrawer(?),MSVC compiler helper; Mac 0x1080b3d6
+0x0044c0d0,CAboutScreen::~CAboutScreen(?),Windows compiler helper inference; vtable 0x00497cb0+0x00
+0x0044c1d0,CAboutScreen::~CAboutScreen(?),"Windows compiler helper inference; vtable 0x00497ca0+0x04; ECX -= 4, forwards to 0x0044c0d0"
 0x004511f0,CSuccFail::~CSuccFail(?),MSVC compiler helper; Mac 0x1011ba68
 0x00451200,CSuccFailDrawer::~CSuccFailDrawer(?),MSVC compiler helper; Mac 0x108098f2
 0x004523a0,CPasswordDrawer::~CPasswordDrawer(?),MSVC compiler helper; Mac 0x1080c8ce
@@ -39,15 +44,34 @@ address,signature,basis
 0x00455e90,CEntryHandler::~CEntryHandler(?),MSVC compiler helper; Mac 0x1011c36e
 0x00455ee0,CNetworkOptionsDrawer::~CNetworkOptionsDrawer(?),MSVC compiler helper; Mac 0x10806800
 0x00455ef0,CNetworkOptionsProc::~CNetworkOptionsProc(?),MSVC compiler helper; Mac 0x10808a36
+0x00458210,CGraphicsDriver::~CGraphicsDriver(?),Windows compiler helper inference; vtable 0x00498700+0x00
+0x00458230,CGdiDriver::~CGdiDriver(?),Windows compiler helper inference; vtable 0x00498738+0x00
+0x00458260,CGdiContext::~CGdiContext(?),Windows compiler helper inference; vtable 0x00498770+0x00
+0x00458290,CDrawingContext::~CDrawingContext(?),Windows compiler helper inference; vtable 0x00498778+0x00
+0x004582f0,CDibContext::~CDibContext(?),Windows compiler helper inference; vtable 0x00498780+0x00
+0x00458310,CGdiDibContext::~CGdiDibContext(?),Windows compiler helper inference; vtable 0x00498798+0x00
+0x00458330,CDisplayDibDriver::~CDisplayDibDriver(?),Windows compiler helper inference; vtable 0x004987b0+0x00
+0x00458360,CDirectDrawDriver::~CDirectDrawDriver(?),Windows compiler helper inference; vtable 0x004987e8+0x00
+0x00458380,CDirectDrawContext::~CDirectDrawContext(?),Windows compiler helper inference; vtable 0x00498820+0x00
+0x004583a0,CDirectDrawSurface::~CDirectDrawSurface(?),Windows compiler helper inference; vtable 0x00498828+0x00
+0x004583c0,CPlanarDibDriver::~CPlanarDibDriver(?),Windows compiler helper inference; vtable 0x00498840+0x00
 0x0045a8d0,CArena::~CArena(?),MSVC compiler helper; Mac 0x102148f6
 0x0045a8e0,CRAMArena::~CRAMArena(?),MSVC compiler helper; Mac 0x102157b6
 0x0045a8f0,CMBlock::~CMBlock(?),MSVC compiler helper; Mac 0x1021599a
+0x0045a920,CMSizedBlock::~CMSizedBlock(?),Windows compiler helper inference; vtable 0x00498950+0x04; inherited empty CMBlock::operator delete
 0x0045e660,CResBase::~CResBase(?),MSVC compiler helper; Mac 0x10202bb6
+0x0045e820,CResRaster::~CResRaster(?),Windows compiler helper inference; vtable 0x00498ab0+0x00
 0x0045e8c0,CResZRLE::~CResZRLE(?),MSVC compiler helper; Mac 0x10115f3c
 0x0045e8d0,CResFONT::~CResFONT(?),MSVC compiler helper; Mac 0x102039d2
 0x0045e9a0,CResINT::~CResINT(?),MSVC compiler helper; Mac 0x10100e7a
+0x0045e9d0,CResBool::~CResBool(?),Windows compiler helper inference; vtable 0x00498b88+0x00
+0x0045ea10,CResCol::~CResCol(?),Windows compiler helper inference; vtable 0x00498bc8+0x00
 0x0045ea80,CResMOVIE::~CResMOVIE(?),MSVC compiler helper; Mac 0x1020425c
 0x0045eb30,CResSTRING::~CResSTRING(?),MSVC compiler helper; Mac 0x10100fdc
+0x0045eb50,CResImage::~CResImage(?),Windows compiler helper inference; vtable 0x00498ce0+0x00
+0x0045ebe0,CResPatch::~CResPatch(?),Windows compiler helper inference; vtable 0x00498da0+0x00
+0x0045ec10,CResTune::~CResTune(?),Windows compiler helper inference; vtable 0x00498de0+0x00
+0x0045ec40,CResPres::~CResPres(?),Windows compiler helper inference; vtable 0x00498e20+0x00
 0x004628e0,CBaseCommonSocket::~CBaseCommonSocket(?),MSVC compiler helper; Mac 0x1020b25a
 0x00462940,CReadSocket::~CReadSocket(?),MSVC compiler helper; Mac 0x1020b56e
 0x00462990,CWriteSocket::~CWriteSocket(?),MSVC compiler helper; Mac 0x1020bd2c
@@ -80,7 +104,12 @@ address,signature,basis
 0x00462e00,CConnect::~CConnect(?),MSVC compiler helper; Mac 0x1020d0c6
 0x00462e20,CConnect::~CConnect(?),MSVC compiler helper; Mac 0x1020d0c6
 0x004698f0,CPushActive::~CPushActive(?),MSVC compiler helper; Mac 0x10100cae
+0x00469900,CFramedButton::~CFramedButton(?),Windows compiler helper inference; vtable 0x00499818+0x00
+0x004699a0,CResourceButton::~CResourceButton(?),Windows compiler helper inference; vtable 0x00499908+0x00
+0x004699d0,CTextButton::~CTextButton(?),Windows compiler helper inference; vtable 0x004999f8+0x00
 0x00469b60,CZRLE::~CZRLE(?),MSVC compiler helper; Mac 0x10100a7a
+0x00469c00,CStateTextButton::~CStateTextButton(?),Windows compiler helper inference; vtable 0x00499b08+0x00
+0x00469c30,CMessageTextButton::~CMessageTextButton(?),Windows compiler helper inference; vtable 0x00499bf8+0x00
 0x0046aa70,CHotAreaList::~CHotAreaList(?),MSVC compiler helper; Mac 0x1021221e
 0x0046dc90,CPVBackBuffSurface::HasBackBuff(),MSVC compiler helper; Mac 0x10215fb6
 0x0046dca0,CPVZBuffSurface::HasZBuff(),MSVC compiler helper; Mac 0x10101386
@@ -119,6 +148,9 @@ address,signature,basis
 0x0047c000,CFileConnect::~CFileConnect(?),MSVC compiler helper; Mac 0x10209a58
 0x0047c010,CConnect::FirstReceive(),MSVC compiler helper; Mac 0x1020d348
 0x0047c030,"CConnect::PostRead(NetworkEvents, CBasePacket*)",MSVC compiler helper; Mac 0x1020d63a
+0x0047d270,CWaveSoundDevice::~CWaveSoundDevice(?),Windows compiler helper inference; vtable 0x0049ac38+0x00
+0x0047e8e0,CDirectSoundDevice::~CDirectSoundDevice(?),Windows compiler helper inference; vtable 0x0049acd8+0x00
+0x0047f590,CMciMusicDevice::~CMciMusicDevice(?),Windows compiler helper inference; vtable 0x0049ad78+0x00
 0x0047fab0,__toupper(?),MSVC 4.00 LIBCMT.LIB: __toupper
 0x0047fac0,_toupper(?),MSVC 4.00 LIBCMT.LIB: _toupper
 0x0047fb10,__toupper_lk(?),MSVC 4.00 LIBCMT.LIB: __toupper_lk
