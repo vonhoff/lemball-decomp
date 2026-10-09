@@ -426,9 +426,7 @@ void CMover::VerifyObjects()
 bool CMover::GetOn(CGameObject* p_object)
 {
 	AICOORD objectPosition;
-	objectPosition.m_xFixed = p_object->m_position.m_xFixed;
-	objectPosition.m_yFixed = p_object->m_position.m_yFixed;
-	objectPosition.m_zFixed = p_object->m_position.m_zFixed;
+	objectPosition = p_object->m_position;
 	int objectZ = objectPosition.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	int moverZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	if (objectZ < moverZ - 16 || objectZ > moverZ + 16) {
