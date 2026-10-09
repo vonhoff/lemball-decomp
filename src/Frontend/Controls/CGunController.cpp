@@ -41,23 +41,23 @@ enum {
 };
 
 // GLOBAL: LEMBALL 0x004a7b38
-unsigned long g_gunEffectLeftResourceId = 0;
+unsigned long g_gunEffectLeftResourceId;
 // GLOBAL: LEMBALL 0x004a7b3c
-unsigned long g_gunBulletRightResourceId = 0;
+unsigned long g_gunBulletRightResourceId;
 // GLOBAL: LEMBALL 0x004a7b40
-unsigned long g_gunFireLeftResourceId = 0;
+unsigned long g_gunFireLeftResourceId;
 // GLOBAL: LEMBALL 0x004a7b44
-unsigned long g_gunBulletLeftResourceId = 0;
+unsigned long g_gunBulletLeftResourceId;
 // GLOBAL: LEMBALL 0x004a7b48
-unsigned long g_gunEffectRightResourceId = 0;
+unsigned long g_gunEffectRightResourceId;
 // GLOBAL: LEMBALL 0x004a7b4c
-unsigned long g_gunSplatRightResourceId = 0;
+unsigned long g_gunSplatRightResourceId;
 // GLOBAL: LEMBALL 0x004a7b50
-unsigned long g_gunFireRightResourceId = 0;
+unsigned long g_gunFireRightResourceId;
 // GLOBAL: LEMBALL 0x004a7b54
-unsigned long g_gunTurnResourceId = 0;
+unsigned long g_gunTurnResourceId;
 // GLOBAL: LEMBALL 0x004a7b58
-unsigned long g_gunSplatLeftResourceId = 0;
+unsigned long g_gunSplatLeftResourceId;
 
 // GLOBAL: LEMBALL 0x0049fa70
 CoordPair g_anGunSpriteOffset[9] =
