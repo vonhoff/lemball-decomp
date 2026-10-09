@@ -88,12 +88,12 @@ void CBaseCursor::Initialise()
 	m_keys[6] = 0x49;
 	m_maxSpeed = CURSOR_INPUT_ACCELERATION_PER_20MS;
 	m_acceleration = CURSOR_MAX_VELOCITY_FIXED;
-	m_fixedX = (int) m_position.m_x << FIXED_POINT_FRACTION_BITS;
+	m_fixedX = (int) m_position.m_x * FIXED_POINT_ONE;
 	m_velocityX = 0;
 	m_velocityY = 0;
 	m_directionX = 0;
 	m_directionY = 0;
-	m_fixedY = (int) m_position.m_y << FIXED_POINT_FRACTION_BITS;
+	m_fixedY = (int) m_position.m_y * FIXED_POINT_ONE;
 	m_lastInputX = CurrentMilliTimer();
 	m_lastInputY = m_lastInputX;
 }
@@ -210,8 +210,8 @@ void CBaseCursor::SetPos(const CVSPoint& p_position)
 {
 	m_position.m_x = p_position.m_x;
 	m_position.m_y = p_position.m_y;
-	m_fixedX = (int) m_position.m_x << FIXED_POINT_FRACTION_BITS;
-	m_fixedY = (int) m_position.m_y << FIXED_POINT_FRACTION_BITS;
+	m_fixedX = (int) m_position.m_x * FIXED_POINT_ONE;
+	m_fixedY = (int) m_position.m_y * FIXED_POINT_ONE;
 }
 
 // FUNCTION: LEMBALL 0x0046b310
