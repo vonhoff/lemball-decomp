@@ -110,7 +110,7 @@ struct IcDrawSuggest {
 };
 
 // FUNCTION: LEMBALL 0x00478fb0
-long __stdcall WinGDrawDriverProc(unsigned int p_driverId,
+long __stdcall WinGDrawDriverProc(unsigned long p_driverId,
 								  void* p_driverHandle,
 								  unsigned int p_message,
 								  long p_param1,
