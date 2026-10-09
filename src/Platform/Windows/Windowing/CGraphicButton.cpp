@@ -44,11 +44,11 @@ CGraphicButton::CGraphicButton(const CVSPoint& p_position,
 	m_buttonPosition.m_x = x;
 	short y = p_position.m_y;
 	m_buttonPosition.m_y = y;
-	CVSRect createRect(x, y, CHotAreaHandler::m_bounds.m_width, CHotAreaHandler::m_bounds.m_height);
+	CVSRect createRect(x, y, m_bounds.m_width, m_bounds.m_height);
 	CGWnd* window = this;
 	window->Create(createRect, m_ownerWindow, g_szButton);
-	CHotAreaHandler::m_bounds.m_x = (short) (CHotAreaHandler::m_bounds.m_x + m_relativeTopLeft.m_x);
-	CHotAreaHandler::m_bounds.m_y = (short) (CHotAreaHandler::m_bounds.m_y + m_relativeTopLeft.m_y);
+	m_bounds.m_x = (short) (m_bounds.m_x + m_relativeTopLeft.m_x);
+	m_bounds.m_y = (short) (m_bounds.m_y + m_relativeTopLeft.m_y);
 	area = this;
 	m_ownerWindow->m_hotAreaList->AddToList(area);
 }
@@ -88,39 +88,39 @@ void CGraphicButton::Initialise()
 		graphicHeight = (unsigned short) height;
 	}
 	m_animation->m_directUseCount = m_animation->m_directUseCount - 1;
-	const CVSPoint* position = &this->CHotAreaHandler::m_bounds;
+	const CVSPoint* position = &m_bounds;
 	m_graphicOffsetX = position->m_x;
 	m_graphicOffsetY = position->m_y;
-	boxWidth = CHotAreaHandler::m_bounds.m_width;
+	boxWidth = m_bounds.m_width;
 	if (boxWidth < 0) {
-		CHotAreaHandler::m_bounds.m_width = (short) (-(short) m_graphicWidth * boxWidth);
+		m_bounds.m_width = (short) (-(short) m_graphicWidth * boxWidth);
 	}
 	else if (boxWidth == 0) {
-		CHotAreaHandler::m_bounds.m_width = (short) m_graphicWidth;
+		m_bounds.m_width = (short) m_graphicWidth;
 	}
-	boxHeight = CHotAreaHandler::m_bounds.m_height;
+	boxHeight = m_bounds.m_height;
 	if (boxHeight < 0) {
-		CHotAreaHandler::m_bounds.m_height = (short) (-(short) m_graphicHeight * boxHeight);
+		m_bounds.m_height = (short) (-(short) m_graphicHeight * boxHeight);
 	}
 	else if (boxHeight == 0) {
-		CHotAreaHandler::m_bounds.m_height = (short) m_graphicHeight;
+		m_bounds.m_height = (short) m_graphicHeight;
 	}
-	if ((int) CHotAreaHandler::m_bounds.m_width * (int) CHotAreaHandler::m_bounds.m_height != 0) {
+	if ((int) m_bounds.m_width * (int) m_bounds.m_height != 0) {
 		CHotAreaHandler::SetActive(1);
 	}
 	short& offsetX = m_graphicOffsetX;
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_HORIZONTAL_CENTER) != 0) {
-		offsetX = (short) (((int) CHotAreaHandler::m_bounds.m_width - (int) (short) m_graphicWidth) / 2);
+		offsetX = (short) (((int) m_bounds.m_width - (int) (short) m_graphicWidth) / 2);
 	}
 	else if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_RIGHT) != 0) {
-		offsetX = (short) (CHotAreaHandler::m_bounds.m_width - (short) m_graphicWidth);
+		offsetX = (short) (m_bounds.m_width - (short) m_graphicWidth);
 	}
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_VERTICAL_CENTER) != 0) {
-		m_graphicOffsetY = (short) (((int) CHotAreaHandler::m_bounds.m_height - (int) (short) m_graphicHeight) / 2);
+		m_graphicOffsetY = (short) (((int) m_bounds.m_height - (int) (short) m_graphicHeight) / 2);
 		return;
 	}
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_BOTTOM) != 0) {
-		m_graphicOffsetY = (short) (CHotAreaHandler::m_bounds.m_height - (short) m_graphicHeight);
+		m_graphicOffsetY = (short) (m_bounds.m_height - (short) m_graphicHeight);
 	}
 }
 

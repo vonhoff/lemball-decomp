@@ -69,11 +69,11 @@ void CTrackWindow::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_name)
 	const CVSPoint* position;
 
 	CGWnd::Create(p_rect, p_parent, p_name);
-	CHotAreaHandler::m_bounds.m_width = p_rect.m_width;
-	CHotAreaHandler::m_bounds.m_height = p_rect.m_height;
+	m_bounds.m_width = p_rect.m_width;
+	m_bounds.m_height = p_rect.m_height;
 	position = &p_rect;
-	CHotAreaHandler::m_bounds.m_x = position->m_x;
-	CHotAreaHandler::m_bounds.m_y = position->m_y;
+	m_bounds.m_x = position->m_x;
+	m_bounds.m_y = position->m_y;
 	handler = this;
 	m_parent->m_hotAreaList->AddToList(handler);
 }
@@ -144,14 +144,14 @@ void CTrackWindow::SetButtonValue(int p_value)
 void CTrackWindow::OnInside(const CVSPoint& p_point)
 {
 	if (m_buttonState[0] != 0) {
-		int distance = (int) p_point.m_x - (int) CHotAreaHandler::m_bounds.m_x;
+		int distance = (int) p_point.m_x - (int) m_bounds.m_x;
 		if (distance < 0) {
 			distance = 0;
 		}
 		else if (distance > m_trackRect.m_width) {
 			distance = m_trackRect.m_width;
 		}
-		SetButtonValue(distance * TRACK_VALUE_PERCENT_SCALE / (int) CHotAreaHandler::m_bounds.m_width);
+		SetButtonValue(distance * TRACK_VALUE_PERCENT_SCALE / (int) m_bounds.m_width);
 	}
 }
 

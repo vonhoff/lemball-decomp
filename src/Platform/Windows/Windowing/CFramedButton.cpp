@@ -33,8 +33,8 @@ CFramedButton::CFramedButton(const CVSRect& p_rect, CPVGWnd* p_parent, unsigned 
 	createRect.m_y = m_buttonPosition.m_y;
 	CGWnd* window = this;
 	window->Create(createRect, m_ownerWindow, g_szButton);
-	CHotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;
-	CHotAreaHandler::m_bounds.m_y += m_relativeTopLeft.m_y;
+	m_bounds.m_x += m_relativeTopLeft.m_x;
+	m_bounds.m_y += m_relativeTopLeft.m_y;
 	CHotAreaHandler* area = this;
 	m_ownerWindow->m_hotAreaList->AddToList(area);
 }

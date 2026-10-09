@@ -41,11 +41,11 @@ unsigned int CPVButton::GetStyle()
 void CPVButton::Move(const CVSPoint& p_point)
 {
 	m_forceDrawCount = 1;
-	CHotAreaHandler::m_bounds.m_x -= m_relativeTopLeft.m_x;
-	CHotAreaHandler::m_bounds.m_y -= m_relativeTopLeft.m_y;
+	m_bounds.m_x -= m_relativeTopLeft.m_x;
+	m_bounds.m_y -= m_relativeTopLeft.m_y;
 	CGWnd::Move(p_point);
-	CHotAreaHandler::m_bounds.m_x += m_relativeTopLeft.m_x;
-	CHotAreaHandler::m_bounds.m_y += m_relativeTopLeft.m_y;
+	m_bounds.m_x += m_relativeTopLeft.m_x;
+	m_bounds.m_y += m_relativeTopLeft.m_y;
 }
 
 // FUNCTION: LEMBALL 0x0043a5e0
