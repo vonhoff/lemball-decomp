@@ -9,7 +9,7 @@
 #include "Gameplay/Collectables/CAmmo.h"
 #include "Gameplay/Collectables/CKey.h"
 #include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Geometry/Rect.h"
+#include "Gameplay/Geometry/tRect.h"
 #include "Gameplay/Mechanisms/CBalloon.h"
 #include "Gameplay/Mechanisms/CCatapult.h"
 #include "Gameplay/Mechanisms/CCrate.h"
@@ -376,7 +376,7 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position)
 	int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	int y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int index = 0;
-	Rect bounds;
+	tRect bounds;
 	if (m_count != 0) {
 		CGlobalGameObject** objects = m_objects;
 		do {
@@ -423,7 +423,7 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position, eObjectT
 // FUNCTION: LEMBALL 0x0041bb10
 CGlobalGameObject* CObjectManager::FindObjectInBounds(CVSRect* p_bounds, eObjectType p_objectType)
 {
-	Rect query;
+	tRect query;
 	query.m_left = p_bounds->m_x;
 	query.m_top = p_bounds->m_y;
 	query.m_right = query.m_left + p_bounds->m_width;
@@ -436,7 +436,7 @@ CGlobalGameObject* CObjectManager::FindObjectInBounds(CVSRect* p_bounds, eObject
 		}
 		CGlobalGameObject* object = m_objects[index];
 		if (object->m_objectType == p_objectType) {
-			Rect bounds;
+			tRect bounds;
 			bounds.m_left = (object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 			bounds.m_top = (object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 			bounds.m_right = bounds.m_left + 8;

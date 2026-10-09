@@ -32,7 +32,7 @@
       "target": 4320768,
       "original_bytes": "e9ecdd0100",
       "symbol": "__lemball_jump_0040100f",
-      "target_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAURect@@@Z"
+      "target_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAUtRect@@@Z"
     },
     {
       "address": 4198420,
@@ -49171,7 +49171,7 @@
           "original_pointer": 4800688,
           "original_bytes": "0f104000",
           "thunk": 4198415,
-          "source_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAURect@@@Z"
+          "source_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAUtRect@@@Z"
         },
         {
           "offset": 76,
@@ -53974,7 +53974,7 @@
           "original_pointer": 4803920,
           "original_bytes": "0f104000",
           "thunk": 4198415,
-          "source_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAURect@@@Z"
+          "source_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAUtRect@@@Z"
         },
         {
           "offset": 76,
@@ -54131,7 +54131,7 @@
           "original_pointer": 4804024,
           "original_bytes": "0f104000",
           "thunk": 4198415,
-          "source_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAURect@@@Z"
+          "source_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAUtRect@@@Z"
         },
         {
           "offset": 76,
@@ -56484,7 +56484,7 @@
           "original_pointer": 4805696,
           "original_bytes": "0f104000",
           "thunk": 4198415,
-          "source_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAURect@@@Z"
+          "source_symbol": "?GetAllBoundingBoxes@CGenericGroupManager@@UAEHPAUtRect@@@Z"
         },
         {
           "offset": 76,

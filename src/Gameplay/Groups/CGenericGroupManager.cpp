@@ -3,7 +3,7 @@
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
 #include "Engine/Math/CVSRect.h"
-#include "Gameplay/Geometry/Rect.h"
+#include "Gameplay/Geometry/tRect.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Objects/CViewData.h"
@@ -293,9 +293,9 @@ void CGenericGroupManager::FindElementInGroupAndRemoveIt(CGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x0041ee00
-int CGenericGroupManager::GetAllBoundingBoxes(Rect* p_rects)
+int CGenericGroupManager::GetAllBoundingBoxes(tRect* p_rects)
 {
-	Rect* output;
+	tRect* output;
 	int count = 0;
 	CVSRect bounds;
 	CGenericGroup* group = GetFirstGroup();

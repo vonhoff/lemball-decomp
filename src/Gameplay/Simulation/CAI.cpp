@@ -17,7 +17,7 @@
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/CRect3.h"
-#include "Gameplay/Geometry/Rect.h"
+#include "Gameplay/Geometry/tRect.h"
 #include "Gameplay/Groups/CEnemyGroupManager.h"
 #include "Gameplay/Groups/CFormationManager.h"
 #include "Gameplay/Groups/CPlayerLemmingGroupManager.h"
@@ -910,9 +910,9 @@ int CAI::ProcessMsg(tagMESSAGE* p_message)
 void CAI::CollectNetworkGroupData(int* p_output)
 {
 	*p_output = 0;
-	int sheepCount = m_sheepGroupManager->GetAllBoundingBoxes(reinterpret_cast<Rect*>(p_output + 1));
+	int sheepCount = m_sheepGroupManager->GetAllBoundingBoxes(reinterpret_cast<tRect*>(p_output + 1));
 	*p_output = sheepCount;
-	int playerCount = m_playerGroupManager->GetAllBoundingBoxes(reinterpret_cast<Rect*>(p_output + 1) + sheepCount);
+	int playerCount = m_playerGroupManager->GetAllBoundingBoxes(reinterpret_cast<tRect*>(p_output + 1) + sheepCount);
 	*p_output = sheepCount + playerCount;
 }
 

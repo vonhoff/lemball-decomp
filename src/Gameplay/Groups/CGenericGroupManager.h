@@ -9,7 +9,7 @@ class CGenericGroup;
 class CObjectManager;
 class CViewData;
 class CVSRect;
-struct Rect;
+struct tRect;
 
 enum {
 	GENERIC_GROUP_CAPACITY = 40
@@ -39,7 +39,7 @@ public:
 	virtual void AddElementToGroup(CGameObject* p_object, CGenericGroup* p_group);      // vtable+0x3c
 	virtual bool RemoveElementFromGroup(CGameObject* p_object, CGenericGroup* p_group); // vtable+0x40
 	virtual void FindElementInGroupAndRemoveIt(CGameObject* p_object);                  // vtable+0x44
-	virtual int GetAllBoundingBoxes(Rect* p_rects);                                     // vtable+0x48
+	virtual int GetAllBoundingBoxes(tRect* p_rects);                                    // vtable+0x48
 	virtual int GetViewData(CViewData* p_viewData);                                     // vtable+0x4c
 	virtual bool CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinate);        // vtable+0x50
 	void Restart();
