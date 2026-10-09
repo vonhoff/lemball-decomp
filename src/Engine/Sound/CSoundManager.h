@@ -45,12 +45,12 @@ public:
 
 private:
 	unsigned int m_reserved04;         // 0x04
-	unsigned int m_background;         // 0x08
-	unsigned int m_musicAvailable;     // 0x0c
-	unsigned int m_effectsAvailable;   // 0x10
-	unsigned int m_requestedMusic;     // 0x14
-	unsigned int m_requestedEffects;   // 0x18
-	unsigned int m_useMusicCD;         // 0x1c
+	bool m_background;                 // 0x08
+	bool m_musicAvailable;             // 0x0c
+	bool m_effectsAvailable;           // 0x10
+	bool m_requestedMusic;             // 0x14
+	bool m_requestedEffects;           // 0x18
+	bool m_useMusicCD;                 // 0x1c
 	unsigned int m_deviceCount;        // 0x20
 	CBaseSoundDevice* m_devices[4];    // 0x24
 	CPVMusicDevice* m_musicDevice;     // 0x34
@@ -64,10 +64,10 @@ private:
 	unsigned char m_effectsRequested;  // 0xc7d
 	unsigned char m_musicCapability;   // 0xc7e
 	unsigned char m_effectsCapability; // 0xc7f
-	unsigned int m_musicState;         // 0xc80
-	unsigned int m_effectsState;       // 0xc84
-	unsigned int m_advancedEffects;    // 0xc88
-	unsigned int m_musicStateCopy;     // 0xc8c
+	bool m_musicState;                 // 0xc80
+	bool m_effectsState;               // 0xc84
+	bool m_advancedEffects;            // 0xc88
+	bool m_musicStateCopy;             // 0xc8c
 };
 
 extern char g_szSoundDriverInfo[1024];
