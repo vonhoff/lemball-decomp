@@ -260,7 +260,7 @@ void CPlayerLemming::TurnToFaceTarget()
 									   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
 									   m_fireTarget.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 									   m_fireTarget.m_yFixed >> FIXED_POINT_FRACTION_BITS);
-	if (facing != (int) m_facingDirection) {
+	if (facing != m_facingDirection) {
 		if (g_anRotationDirections[(facing - m_facingDirection) & FACING_DIRECTION_MASK] < 0) {
 			RotateAnticlockwise();
 		}
