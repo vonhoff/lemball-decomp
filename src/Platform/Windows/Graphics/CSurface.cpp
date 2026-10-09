@@ -247,9 +247,13 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 							 void* p_unused,
 							 unsigned int* p_fallbackEntries)
 {
-	unsigned char paletteStorage[SURFACE_PALETTE_BUFFER_BYTES];
+	struct PaletteStorage {
+		WORD palVersion;
+		WORD palNumEntries;
+		PALETTEENTRY palPalEntry[SURFACE_PALETTE_ENTRY_COUNT];
+	} paletteStorage;
 	int count;
-	PALETTEENTRY* systemEntries = ((LOGPALETTE*) paletteStorage)->palPalEntry;
+	PALETTEENTRY* systemEntries = paletteStorage.palPalEntry;
 	unsigned char* output;
 	PALETTEENTRY* entry;
 	const unsigned char* source;
@@ -282,8 +286,8 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 	if (hdc != NULL) {
 		ReleaseDC(NULL, hdc);
 	}
-	((LOGPALETTE*) paletteStorage)->palVersion = SURFACE_PALETTE_VERSION_WIN3;
-	((LOGPALETTE*) paletteStorage)->palNumEntries = SURFACE_PALETTE_ENTRY_COUNT;
+	paletteStorage.palVersion = SURFACE_PALETTE_VERSION_WIN3;
+	paletteStorage.palNumEntries = SURFACE_PALETTE_ENTRY_COUNT;
 	output = &((RGBQUAD*) p_entries)[0].rgbRed;
 	entry = systemEntries;
 	do {
@@ -386,7 +390,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 			} while (paletteCount != 0);
 		}
 	}
-	g_pTargetGraphicsDriver->CreatePalette((LOGPALETTE*) paletteStorage);
+	g_pTargetGraphicsDriver->CreatePalette(&paletteStorage);
 }
 
 // FUNCTION: LEMBALL 0x0046c5d0
