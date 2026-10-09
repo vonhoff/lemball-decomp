@@ -84,9 +84,9 @@ CEnemy::CEnemy(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
 		int pixelY = p_y & GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(pixelX, pixelY);
 	}
-	m_initialFacingDirection = (short) p_facingDirection;
-	m_spawnPosition.m_zFixed = (int) z << FIXED_POINT_FRACTION_BITS;
-	SetId((unsigned short) NextLoadingId());
+	m_initialFacingDirection = p_facingDirection;
+	m_spawnPosition.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+	SetId(NextLoadingId());
 	m_state2Action = ENEMY_ACTION_STOP;
 	m_state1Action = ENEMY_ACTION_STOP;
 	m_state0Action = ENEMY_ACTION_STOP;

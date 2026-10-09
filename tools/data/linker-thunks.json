@@ -25788,18 +25788,18 @@
       "caller": 4326624,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CEnemy.cpp.obj",
       "symbol": "?EndFiring@CEnemy@@UAEXXZ",
-      "size": 277,
-      "fingerprint": "08861957df9b3949eaedc8670e55c91abf0d32e45e190b443e57fd5af47aa35b",
+      "size": 280,
+      "fingerprint": "cca7daaf4801ed191c1be086e56f9a70040c4c3cb528dbfa5e29758eca16f3dc",
       "references": [
         {
-          "offset": 221,
+          "offset": 222,
           "original_instruction": 4326840,
           "original_bytes": "e8e823feff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 242,
+          "offset": 245,
           "original_instruction": 4326869,
           "original_bytes": "e8b32cfeff",
           "thunk": 4207245,
@@ -25860,7 +25860,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CEnemy.cpp.obj",
       "symbol": "?GetHit@CEnemy@@UAEXXZ",
       "size": 121,
-      "fingerprint": "18db15ed69393f8113a4c36b8819f72f1d70129752caf25cd3ddb96363918de7",
+      "fingerprint": "75cbabd71cf97560c2f34fa6a3bb07fb7e987d01cfc47db40babf30c1d461f74",
       "references": [
         {
           "offset": 112,
