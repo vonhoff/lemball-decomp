@@ -4099,8 +4099,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 		switch (objectType) {
 		case OBJECT_PLAYER_1:
 		case OBJECT_PLAYER_2: {
-			bounds.m_x = (short) screenX - 24;
-			bounds.m_y = (short) screenY - 24;
+			bounds.m_x = screenX - 24;
+			bounds.m_y = screenY - 24;
 			bounds.m_width = 48;
 			bounds.m_height = 40;
 			if (InGroupByObjectNo(p_viewData.m_objectId)) {
@@ -4179,8 +4179,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				CFixed leftFixed((gameX - m_viewOriginX) << FIXED_POINT_FRACTION_BITS);
 				int left = leftFixed.m_value >> FIXED_POINT_FRACTION_BITS;
 				int top = topFixed.m_value >> FIXED_POINT_FRACTION_BITS;
-				bounds.m_x = (short) left - 10;
-				bounds.m_y = (short) top - 5;
+				bounds.m_x = left - 10;
+				bounds.m_y = top - 5;
 				bounds.m_width = 20;
 				bounds.m_height = 10;
 				m_clipSearchHeight = 160;
@@ -4188,99 +4188,99 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			break;
 		}
 		case OBJECT_BULLET:
-			bounds.m_x = (short) screenX - 8;
-			bounds.m_y = (short) screenY - 8;
+			bounds.m_x = screenX - 8;
+			bounds.m_y = screenY - 8;
 			bounds.m_width = 16;
 			bounds.m_height = 16;
 			break;
 		case OBJECT_CATAPULT:
-			bounds.m_x = (short) screenX - 48;
-			bounds.m_y = (short) screenY - 60;
+			bounds.m_x = screenX - 48;
+			bounds.m_y = screenY - 60;
 			bounds.m_width = 64;
 			bounds.m_height = 56;
 			break;
 		case OBJECT_AMMO:
-			bounds.m_x = (short) screenX - 8;
-			bounds.m_y = (short) screenY - 16;
+			bounds.m_x = screenX - 8;
+			bounds.m_y = screenY - 16;
 			bounds.m_width = 16;
 			bounds.m_height = 24;
 			break;
 		case OBJECT_SHEEP:
-			bounds.m_x = (short) screenX - g_sheepOffset[0];
-			bounds.m_y = (short) screenY - g_sheepOffset[1];
+			bounds.m_x = screenX - g_sheepOffset[0];
+			bounds.m_y = screenY - g_sheepOffset[1];
 			bounds.m_width = g_sheepOffset[0] * 2;
 			bounds.m_height = g_sheepOffset[1] * 2;
 			break;
 		case OBJECT_BALL:
-			bounds.m_x = (short) screenX - 10;
-			bounds.m_y = (short) screenY - 15;
+			bounds.m_x = screenX - 10;
+			bounds.m_y = screenY - 15;
 			bounds.m_width = 24;
 			bounds.m_height = 24;
 			break;
 		case OBJECT_FLAG_1:
 		case OBJECT_FLAG_2:
-			bounds.m_x = (short) screenX - 16;
-			bounds.m_y = (short) screenY - 28;
+			bounds.m_x = screenX - 16;
+			bounds.m_y = screenY - 28;
 			bounds.m_width = 32;
 			bounds.m_height = 32;
 			break;
 		case OBJECT_TOWER:
-			bounds.m_x = (short) screenX - (short) g_styleObjectClip[0];
-			bounds.m_y = (short) screenY - (short) g_styleObjectClip[1];
-			bounds.m_width = (short) g_styleObjectClip[2];
-			bounds.m_height = (short) g_styleObjectClip[3];
+			bounds.m_x = screenX - (short) g_styleObjectClip[0];
+			bounds.m_y = screenY - (short) g_styleObjectClip[1];
+			bounds.m_width = g_styleObjectClip[2];
+			bounds.m_height = g_styleObjectClip[3];
 			break;
 		case OBJECT_CRATE:
 			if (p_viewData.m_action == ACTION_OBJECT_READY) {
-				bounds.m_x = (short) screenX - 12;
-				bounds.m_y = (short) screenY - 12;
+				bounds.m_x = screenX - 12;
+				bounds.m_y = screenY - 12;
 				bounds.m_width = 24;
 				bounds.m_height = 24;
 			}
 			else {
-				bounds.m_x = (short) screenX - 32;
-				bounds.m_y = (short) screenY - 64;
+				bounds.m_x = screenX - 32;
+				bounds.m_y = screenY - 64;
 				bounds.m_width = 64;
 				bounds.m_height = 64;
 			}
 			break;
 		case OBJECT_BONUS:
-			bounds.m_x = (short) screenX - 16;
-			bounds.m_y = (short) screenY - 16;
+			bounds.m_x = screenX - 16;
+			bounds.m_y = screenY - 16;
 			bounds.m_width = 32;
 			bounds.m_height = 20;
 			break;
 		case OBJECT_MINE:
-			bounds.m_x = (short) screenX - 28;
-			bounds.m_y = (short) screenY - 35;
+			bounds.m_x = screenX - 28;
+			bounds.m_y = screenY - 35;
 			bounds.m_width = 56;
 			bounds.m_height = 44;
 			break;
 		case OBJECT_SWITCH:
-			bounds.m_x = (short) screenX - 16;
-			bounds.m_y = (short) screenY - 16;
+			bounds.m_x = screenX - 16;
+			bounds.m_y = screenY - 16;
 			bounds.m_width = 32;
 			bounds.m_height = 32;
 			break;
 		case OBJECT_KEY_1:
 		case OBJECT_KEY_2:
 		case OBJECT_KEY_3:
-			bounds.m_x = (short) screenX - 12;
-			bounds.m_y = (short) screenY - 32;
+			bounds.m_x = screenX - 12;
+			bounds.m_y = screenY - 32;
 			bounds.m_width = 24;
 			bounds.m_height = 32;
 			break;
 		case OBJECT_TRAP_DOOR:
-			bounds.m_x = (short) screenX - 48;
-			bounds.m_y = (short) screenY - 40;
+			bounds.m_x = screenX - 48;
+			bounds.m_y = screenY - 40;
 			bounds.m_width = 96;
 			bounds.m_height = 168;
 			m_clipSearchHeight = 160;
 			break;
 		case OBJECT_DOOR_1:
 		case OBJECT_DOOR_2:
-			bounds.m_x = (short) screenX - 26;
-			bounds.m_y = (short) screenY - 24;
+			bounds.m_x = screenX - 26;
+			bounds.m_y = screenY - 24;
 			bounds.m_width = 48;
 			bounds.m_height = 40;
 			if (p_viewData.m_action == ACTION_DOOR_LOCKED_FEEDBACK) {
@@ -4289,14 +4289,14 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			}
 			break;
 		case OBJECT_TIME_BONUS:
-			bounds.m_x = (short) screenX - 16;
-			bounds.m_y = (short) screenY - 12;
+			bounds.m_x = screenX - 16;
+			bounds.m_y = screenY - 12;
 			bounds.m_width = 32;
 			bounds.m_height = 24;
 			break;
 		case OBJECT_DUPLICATOR:
-			bounds.m_x = (short) screenX - 13;
-			bounds.m_y = (short) screenY - 54;
+			bounds.m_x = screenX - 13;
+			bounds.m_y = screenY - 54;
 			bounds.m_width = 100;
 			bounds.m_height = 60;
 			break;
@@ -4304,38 +4304,38 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 		case OBJECT_LASER_VERTICAL:
 		case OBJECT_LASER_EMITTER_H:
 		case OBJECT_LASER_EMITTER_V:
-			bounds.m_x = (short) screenX - 20;
-			bounds.m_y = (short) screenY - 10;
+			bounds.m_x = screenX - 20;
+			bounds.m_y = screenY - 10;
 			bounds.m_width = 40;
 			bounds.m_height = 30;
 			break;
 		case OBJECT_HAND:
-			bounds.m_x = (short) screenX - 48;
-			bounds.m_y = (short) screenY - 20;
+			bounds.m_x = screenX - 48;
+			bounds.m_y = screenY - 20;
 			bounds.m_width = 48;
 			bounds.m_height = 48;
 			break;
 		case OBJECT_ROCKET:
-			bounds.m_x = (short) screenX - 13;
-			bounds.m_y = (short) screenY - 80;
+			bounds.m_x = screenX - 13;
+			bounds.m_y = screenY - 80;
 			bounds.m_width = 26;
 			bounds.m_height = 80;
 			break;
 		case OBJECT_PAINT_GUN:
-			bounds.m_x = (short) screenX - 22;
-			bounds.m_y = (short) screenY - 35;
+			bounds.m_x = screenX - 22;
+			bounds.m_y = screenY - 35;
 			bounds.m_width = 48;
 			bounds.m_height = 48;
 			break;
 		case OBJECT_TRAMPOLINE:
-			bounds.m_x = (short) screenX - 22;
-			bounds.m_y = (short) screenY - 22;
+			bounds.m_x = screenX - 22;
+			bounds.m_y = screenY - 22;
 			bounds.m_width = 48;
 			bounds.m_height = 32;
 			break;
 		case OBJECT_LASER_HORIZONTAL_BEAM:
-			bounds.m_x = (short) screenX - 21;
-			bounds.m_y = (short) screenY - 14;
+			bounds.m_x = screenX - 21;
+			bounds.m_y = screenY - 14;
 			bounds.m_width = 22;
 			bounds.m_height = 15;
 			break;
@@ -4343,8 +4343,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 		case OBJECT_BALLOON_2:
 		case OBJECT_BALLOON_4:
 		case OBJECT_BALLOON_6:
-			bounds.m_x = (short) screenX - 20;
-			bounds.m_y = (short) screenY - 68;
+			bounds.m_x = screenX - 20;
+			bounds.m_y = screenY - 68;
 			bounds.m_width = 40;
 			bounds.m_height = 72;
 			break;
@@ -4352,27 +4352,27 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 		case OBJECT_BALLOON_3:
 		case OBJECT_BALLOON_5:
 		case OBJECT_BALLOON_7:
-			bounds.m_x = (short) screenX - 16;
-			bounds.m_y = (short) screenY - 48;
+			bounds.m_x = screenX - 16;
+			bounds.m_y = screenY - 48;
 			bounds.m_width = 32;
 			bounds.m_height = 48;
 			break;
 		case OBJECT_LASER_VERTICAL_BEAM:
-			bounds.m_x = (short) screenX - 21;
-			bounds.m_y = (short) screenY - 14;
+			bounds.m_x = screenX - 21;
+			bounds.m_y = screenY - 14;
 			bounds.m_width = 22;
 			bounds.m_height = 15;
 			break;
 		case OBJECT_MOVER:
-			bounds.m_x = (short) screenX - 24;
-			bounds.m_y = (short) screenY - 24;
+			bounds.m_x = screenX - 24;
+			bounds.m_y = screenY - 24;
 			bounds.m_width = 48;
 			bounds.m_height = 56;
 			break;
 		case OBJECT_SLINKY: {
 			unsigned int direction = (unsigned short) p_viewData.m_actionArgument;
-			bounds.m_x = (short) screenX - g_slinkyOffsets[direction][0];
-			bounds.m_y = (short) screenY - g_slinkyOffsets[direction][1];
+			bounds.m_x = screenX - g_slinkyOffsets[direction][0];
+			bounds.m_y = screenY - g_slinkyOffsets[direction][1];
 			bounds.m_width = 40;
 			bounds.m_height = 42;
 			break;
