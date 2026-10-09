@@ -224,8 +224,7 @@ CGame::~CGame()
 
 	resources = m_frontendResources;
 	if (resources != NULL) {
-		resources->~CFrontendResourceLoader();
-		operator delete(resources);
+		delete resources;
 	}
 	if (g_pNetworkManager != NULL) {
 		g_pNetworkManager->Stop();
@@ -254,8 +253,7 @@ CGame::~CGame()
 	}
 	if (g_pSoundView != NULL) {
 		soundView = g_pSoundView;
-		soundView->~CSoundView();
-		operator delete(soundView);
+		delete soundView;
 		EndSound();
 	}
 	if (g_pMogRes != NULL) {
@@ -265,7 +263,7 @@ CGame::~CGame()
 		g_pMogRes = NULL;
 	}
 	if (g_pGameStatus != NULL) {
-		operator delete(g_pGameStatus);
+		delete g_pGameStatus;
 		g_pGameStatus = NULL;
 	}
 	g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintballRegistry, 0);
@@ -310,16 +308,8 @@ bool CGame::IsValidResource()
 // FUNCTION: LEMBALL 0x004073b0
 void CGame::LoadFrontendResources(int p_mode)
 {
-	void* storage;
-
 	if (m_frontendResources == NULL) {
-		storage = operator new(sizeof(CFrontendResourceLoader));
-		if (storage != NULL) {
-			m_frontendResources = new (storage) CFrontendResourceLoader(m_mainDisplay, p_mode);
-		}
-		else {
-			m_frontendResources = NULL;
-		}
+		m_frontendResources = new CFrontendResourceLoader(m_mainDisplay, p_mode);
 	}
 }
 
