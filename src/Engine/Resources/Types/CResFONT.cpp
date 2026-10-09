@@ -18,7 +18,7 @@ CResFONT::CResFONT() : CResBaseLIST(g_pResourceTypes)
 	m_fontEntries = NULL;
 	m_fontTable = NULL;
 	Initialise();
-	m_initialised = 1;
+	m_initialised = true;
 }
 
 // FUNCTION: LEMBALL 0x0045d7b0
@@ -28,7 +28,7 @@ CResFONT::CResFONT(unsigned long p_resourceId) : CResBaseLIST(g_pResourceTypes)
 	m_fontEntries = NULL;
 	m_fontTable = NULL;
 	DoLoad(p_resourceId);
-	m_initialised = 1;
+	m_initialised = true;
 }
 
 // FUNCTION: LEMBALL 0x0045d810

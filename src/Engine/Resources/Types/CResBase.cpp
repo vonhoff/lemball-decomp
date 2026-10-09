@@ -41,7 +41,7 @@ bool CResBase::Direct(unsigned char*& p_cursor, CResBaseLIST* p_list)
 	++m_referenceCount;
 	++m_directUseCount;
 	m_age = 0;
-	m_loaded = 1;
+	m_loaded = true;
 	m_age = 0;
 	OnLoad();
 	return false;
@@ -67,7 +67,7 @@ bool CResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCurs
 	++m_referenceCount;
 	++m_directUseCount;
 	m_age = 0;
-	m_loaded = 1;
+	m_loaded = true;
 	m_age = 0;
 	OnLoad();
 	return false;
@@ -83,8 +83,8 @@ void CResBase::Initialise()
 {
 	m_directUseCount = 0;
 	m_referenceCount = 0;
-	m_vramLoaded = 0;
-	m_loaded = 0;
+	m_vramLoaded = false;
+	m_loaded = false;
 	m_dataSize = 0;
 	m_fileOffset = 0;
 	m_name = NULL;
@@ -109,7 +109,7 @@ void CResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned 
 		}
 	}
 	if (m_name != NULL) {
-		m_loaded = 1;
+		m_loaded = true;
 		OnLoad();
 	}
 }
@@ -170,7 +170,7 @@ void CResBase::UnLoadData(unsigned int p_force)
 	}
 	UnLoadVramData(p_force);
 	if (m_loaded != 0) {
-		m_loaded = 0;
+		m_loaded = false;
 		OnUnLoad();
 	}
 }
@@ -180,7 +180,7 @@ void CResBase::UnLoadExtData(unsigned int p_force)
 {
 	UnLoadVramData(p_force);
 	if (m_loaded != 0) {
-		m_loaded = 0;
+		m_loaded = false;
 		m_data = NULL;
 		--m_directUseCount;
 	}

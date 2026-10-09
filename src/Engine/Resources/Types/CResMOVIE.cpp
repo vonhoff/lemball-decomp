@@ -29,7 +29,7 @@ CResMOVIE::CResMOVIE() : CResBaseLIST(g_pPreloadedResourceTypes)
 	m_movieEntries = NULL;
 	m_fontEntries = NULL;
 	Initialise();
-	m_initialised = 0;
+	m_initialised = false;
 }
 
 // FUNCTION: LEMBALL 0x0045df20
@@ -38,7 +38,7 @@ CResMOVIE::CResMOVIE(unsigned long p_resourceId) : CResBaseLIST(g_pPreloadedReso
 	m_movieEntries = NULL;
 	m_fontEntries = NULL;
 	DoLoad(p_resourceId);
-	m_initialised = 0;
+	m_initialised = false;
 }
 
 // FUNCTION: LEMBALL 0x0045df70

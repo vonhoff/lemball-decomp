@@ -7,7 +7,7 @@ class CResBaseLIST;
 // VTABLE: LEMBALL 0x00498980
 class CResBase {
 public:
-	CResBase() { m_initialised = 0; }
+	CResBase() { m_initialised = false; }
 	CResBase* CheckError();
 	bool Direct(unsigned char*& p_cursor, CResBaseLIST* p_list);
 	bool Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCursor, CResBaseLIST* p_list);
@@ -58,10 +58,10 @@ protected:
 	CResBaseLIST* m_externalList;  // 0x04
 	unsigned int m_directUseCount; // 0x08
 	unsigned int m_referenceCount; // 0x0c
-	unsigned int m_loaded;         // 0x10
-	unsigned int m_vramLoaded;     // 0x14
-	unsigned int m_initialised;    // 0x18
-	unsigned int m_vramSwappable;  // 0x1c
+	bool m_loaded;                 // 0x10
+	bool m_vramLoaded;             // 0x14
+	bool m_initialised;            // 0x18
+	bool m_vramSwappable;          // 0x1c
 	unsigned int m_unk0x20;        // 0x20
 	unsigned int m_age;            // 0x24
 	unsigned int m_dataSize;       // 0x28

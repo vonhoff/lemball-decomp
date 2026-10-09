@@ -15,7 +15,7 @@ public:
 	{
 		m_animationEntries = NULL;
 		DoLoad(p_resourceId);
-		m_initialised = 1;
+		m_initialised = true;
 	}
 	CResANIM() {}
 	static CResANIM* Load(unsigned long p_resourceId);

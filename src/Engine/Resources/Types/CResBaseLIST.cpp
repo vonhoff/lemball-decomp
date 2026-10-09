@@ -33,14 +33,14 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 			m_headerData = g_pActiveMogRes->AllocateMainMem(p_size);
 			memcpy(m_headerData, p_source, p_size);
 		}
-		m_headerLoaded = 1;
+		m_headerLoaded = true;
 	}
 	else {
 		if (m_data == NULL) {
 			m_data = g_pActiveMogRes->AllocateMainMem(p_size);
 			memcpy(m_data, p_source, p_size);
 		}
-		m_bodyLoaded = 1;
+		m_bodyLoaded = true;
 	}
 	if (m_loaded == 0 && m_bodyLoaded != 0 && m_headerLoaded != 0) {
 		unsigned int count;
@@ -65,7 +65,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 			}
 			g_pActiveMogRes->DeallocateMem(m_headerData, 1);
 			m_headerData = NULL;
-			m_vramReady = 1;
+			m_vramReady = true;
 		}
 		else {
 			for (unsigned int i = 0; i < count; i++) {
@@ -77,7 +77,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 				}
 			}
 		}
-		m_loaded = 1;
+		m_loaded = true;
 		OnLoad();
 		m_listHeader->m_currentIndex = RESOURCE_LIST_HEADER_UNSET;
 	}
@@ -142,7 +142,7 @@ void CResBaseLIST::UnLoadData(unsigned int p_force)
 			goto unload_entries;
 		}
 	}
-	m_loaded = 0;
+	m_loaded = false;
 	g_pActiveMogRes->DeallocateMem(m_data, 1);
 	m_data = NULL;
 unload_entries:
