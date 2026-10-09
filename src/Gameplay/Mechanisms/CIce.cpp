@@ -245,8 +245,7 @@ bool CIce::Process()
 				position.m_xFixed += FIXED_POINT_ONE;
 			}
 		}
-		const AICOORD& movedPosition = position;
-		object->m_position = movedPosition;
+		object->m_position = position;
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
