@@ -173,7 +173,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
 			}
 			break;
 		case LEVEL_BLOCK_NODES:
-			m_ai->m_nodeManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);
+			m_ai->m_nodeManager->LoadLevel((tagLoadNodeInformation*) (header + 1), dataSize, p_skip);
 			break;
 		case LEVEL_BLOCK_PAINT_GUNS:
 			m_ai->m_paintGunManager->LoadLevel((unsigned char*) (header + 1), dataSize, p_skip);

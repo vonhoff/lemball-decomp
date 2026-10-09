@@ -85,4 +85,22 @@ struct tagLoadDefaultBlox {
 	unsigned short m_objectData;
 };
 
+// SIZE 0x02
+struct tagLoadNodeInformation {
+	unsigned short m_nodeCount; // 0x00
+};
+
+// SIZE 0x06
+struct tagLoadNodeData {
+	unsigned short m_x;              // 0x00
+	unsigned short m_y;              // 0x02
+	unsigned short m_neighbourCount; // 0x04
+};
+
+// SIZE 0x04
+struct tagLoadNodeNeighbour {
+	unsigned short m_node; // 0x00
+	unsigned short m_cost; // 0x02
+};
+
 #endif

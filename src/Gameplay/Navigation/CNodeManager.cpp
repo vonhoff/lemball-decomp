@@ -2,6 +2,7 @@
 
 #include "CNode.h"
 #include "Gameplay/Geometry/CPt3.h"
+#include "Level/LevelFormat.h"
 
 #include <stddef.h>
 
@@ -76,11 +77,12 @@ int CNodeManager::AddNode(int p_x, int p_y)
 }
 
 // FUNCTION: LEMBALL 0x00421470
-void CNodeManager::LoadLevel(unsigned char* p_data, unsigned int p_dataSize, unsigned int p_skip)
+void CNodeManager::LoadLevel(tagLoadNodeInformation* p_information, unsigned long p_dataSize, unsigned int p_skip)
 {
+	unsigned char* p_data = (unsigned char*) p_information;
 	unsigned char* end = p_data + p_dataSize;
-	int count = *(unsigned short*) p_data;
-	p_data += 2;
+	int count = p_information->m_nodeCount;
+	p_data += sizeof(*p_information);
 
 	Initialise(count);
 	m_count = count;
@@ -97,16 +99,18 @@ void CNodeManager::LoadLevel(unsigned char* p_data, unsigned int p_dataSize, uns
 	int y;
 	int neighbourCount;
 	do {
-		x = ((unsigned short*) p_data)[0];
-		y = ((unsigned short*) p_data)[1];
-		neighbourCount = ((unsigned short*) p_data)[2];
+		tagLoadNodeData* node = (tagLoadNodeData*) p_data;
+		x = node->m_x;
+		y = node->m_y;
+		neighbourCount = node->m_neighbourCount;
 
 		m_nodes[i].Initialise(x, y, neighbourCount);
-		p_data += 6;
+		p_data += sizeof(*node);
 		if (neighbourCount > 0) {
 			do {
-				m_nodes[i].AddANeighbour(((unsigned short*) p_data)[0], ((unsigned short*) p_data)[1]);
-				p_data += 4;
+				tagLoadNodeNeighbour* neighbour = (tagLoadNodeNeighbour*) p_data;
+				m_nodes[i].AddANeighbour(neighbour->m_node, neighbour->m_cost);
+				p_data += sizeof(*neighbour);
 				neighbourCount--;
 			} while (neighbourCount != 0);
 		}
