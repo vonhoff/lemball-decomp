@@ -40,7 +40,7 @@ enum eEnemyBehaviorStage {
 #define ENEMY_FIRE_SLOW_INTERVAL_MS 800
 #define ENEMY_FIRE_RANDOM_MIN_INTERVAL_MS 150
 #define ENEMY_FIRE_RANDOM_INTERVAL_RANGE_MS 1000
-#define ENEMY_MUZZLE_HEIGHT_FIXED 0xc000
+#define ENEMY_MUZZLE_HEIGHT_FIXED (12 * FIXED_POINT_ONE)
 
 struct EnemyFacingOffset {
 	int m_dx;
@@ -48,7 +48,8 @@ struct EnemyFacingOffset {
 };
 
 // GLOBAL: LEMBALL 0x004950c0
-EnemyFacingOffset g_enemyFacingOffsets[8] = {{0, 3}, {-4, 1}, {-5, 0}, {-4, -3}, {0, -4}, {6, -3}, {5, 0}, {4, 1}};
+EnemyFacingOffset g_enemyFacingOffsets[FACING_DIRECTION_COUNT] =
+	{{0, 3}, {-4, 1}, {-5, 0}, {-4, -3}, {0, -4}, {6, -3}, {5, 0}, {4, 1}};
 
 enum {
 	ENEMY_DESTINATION_CAPACITY = 10,
