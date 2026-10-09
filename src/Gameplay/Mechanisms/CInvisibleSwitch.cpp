@@ -84,10 +84,10 @@ void CInvisibleSwitch::Set(const tCoord3d& p_cornerA, const tCoord3d& p_cornerB)
 		m_maxCorner.m_y = minY;
 	}
 	m_repeatable = 0;
-	m_position.m_xFixed = ((int) m_minCorner.m_x) << FIXED_POINT_FRACTION_BITS;
-	m_position.m_yFixed = ((int) m_minCorner.m_y) << FIXED_POINT_FRACTION_BITS;
+	m_position.m_xFixed = ((int) m_minCorner.m_x) * FIXED_POINT_ONE;
+	m_position.m_yFixed = ((int) m_minCorner.m_y) * FIXED_POINT_ONE;
 	m_triggered = 0;
-	m_position.m_zFixed = ((int) m_minCorner.m_z) << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = ((int) m_minCorner.m_z) * FIXED_POINT_ONE;
 	for (int y = m_minCorner.m_y; y <= m_maxCorner.m_y; y += GROUND_BLOCK_PIXEL_SIZE) {
 		for (int x = m_minCorner.m_x; x <= m_maxCorner.m_x; x += GROUND_BLOCK_PIXEL_SIZE) {
 			int blockX = x / GROUND_BLOCK_PIXEL_SIZE;
