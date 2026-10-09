@@ -209,7 +209,7 @@ void CPasswordDrawer::Load()
 	} while (--primitiveCount != 0);
 	CAnimsManager::LoadAnims(m_animationId);
 	int* keyMap = g_passwordKeyMap;
-	CoordPair* offsetPtr = m_buttonOffsets;
+	tagCoordPair* offsetPtr = m_buttonOffsets;
 	gridStartX = m_layout->m_keypadX;
 	gridY = m_layout->m_keypadY;
 	gridX = gridStartX;

@@ -20,7 +20,7 @@ class CResBITMAP;
 class CTextManager;
 class CVSRect;
 struct tagMESSAGE;
-struct CoordPair;
+struct tagCoordPair;
 
 // SIZE 0x398
 // VTABLE: LEMBALL 0x004978a8 CDrawer
@@ -59,7 +59,7 @@ public:
 	void _DrawBackGround();
 	void _Load();
 	void _UnLoad();
-	void DrawFrame(CoordPair p_start, CoordPair p_end);
+	void DrawFrame(tagCoordPair p_start, tagCoordPair p_end);
 	void DrawFrame(CVSRect p_rect);
 	void InitialiseBackBuffer();
 	void LostConnection();

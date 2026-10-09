@@ -14213,7 +14213,7 @@
       "target": 4481232,
       "original_bytes": "e9ff2b0400",
       "symbol": "__lemball_jump_004034cc",
-      "target_symbol": "?DrawFrame@CBaseFrontendDrawer@@QAEXUCoordPair@@0@Z"
+      "target_symbol": "?DrawFrame@CBaseFrontendDrawer@@QAEXUtagCoordPair@@0@Z"
     },
     {
       "address": 4207825,
@@ -38094,7 +38094,7 @@
     {
       "caller": 4481232,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
-      "symbol": "?DrawFrame@CBaseFrontendDrawer@@QAEXUCoordPair@@0@Z",
+      "symbol": "?DrawFrame@CBaseFrontendDrawer@@QAEXUtagCoordPair@@0@Z",
       "size": 56,
       "fingerprint": "e5a9dd48e09837b3984dc4fc8f06be2c8833d31e0eca1f5aa4bde3c30884b888",
       "references": [
@@ -39228,7 +39228,7 @@
           "original_instruction": 4495262,
           "original_bytes": "e8299dfbff",
           "thunk": 4207820,
-          "source_symbol": "?DrawFrame@CBaseFrontendDrawer@@QAEXUCoordPair@@0@Z"
+          "source_symbol": "?DrawFrame@CBaseFrontendDrawer@@QAEXUtagCoordPair@@0@Z"
         }
       ]
     },
@@ -40969,7 +40969,7 @@
           "original_instruction": 4524992,
           "original_bytes": "e80729fbff",
           "thunk": 4207820,
-          "source_symbol": "?DrawFrame@CBaseFrontendDrawer@@QAEXUCoordPair@@0@Z"
+          "source_symbol": "?DrawFrame@CBaseFrontendDrawer@@QAEXUtagCoordPair@@0@Z"
         }
       ]
     },

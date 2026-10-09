@@ -4,7 +4,7 @@
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CUserActionMessage.h"
-#include "Frontend/CoordPair.h"
+#include "Frontend/tagCoordPair.h"
 
 #define PREVIEW_LEVEL_NAME_LINE_COUNT 3
 #define PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES 32
@@ -48,7 +48,7 @@ enum PreviewLayoutIndex {
 
 // SIZE 0xd8
 struct PreviewLayout {
-	CoordPair m_positions[27];
+	tagCoordPair m_positions[27];
 };
 
 // SIZE 0x488
@@ -61,13 +61,13 @@ public:
 	bool AddWord(char* p_source, char* p_line, int& p_sourcePos, int& p_linePos);
 	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
-	virtual void DrawAnims();                         // vtable+0x48
-	virtual void DrawBackGround();                    // vtable+0x50
-	virtual void DrawText();                          // vtable+0x4c
-	virtual void Load();                              // vtable+0x40
-	virtual void Processing();                        // vtable+0x38
-	virtual void UnLoad();                            // vtable+0x44
-	virtual ~CPreviewDrawer();                        // vtable+0x00
+	virtual void DrawAnims();                            // vtable+0x48
+	virtual void DrawBackGround();                       // vtable+0x50
+	virtual void DrawText();                             // vtable+0x4c
+	virtual void Load();                                 // vtable+0x40
+	virtual void Processing();                           // vtable+0x38
+	virtual void UnLoad();                               // vtable+0x44
+	virtual ~CPreviewDrawer();                           // vtable+0x00
 	void DisableNextLastButtons();
 	void Go();
 	void LoadLevelInformation();
@@ -106,7 +106,7 @@ private:
 	int m_timeSeconds;                                                                               // 0x3f8
 	char m_levelNameLines[PREVIEW_LEVEL_NAME_LINE_COUNT][PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES]; // 0x3fc
 	char m_timeText[5];                                                                              // 0x45c
-	CoordPair m_textPositions[PREVIEW_LEVEL_NAME_LINE_COUNT];                                        // 0x464
+	tagCoordPair m_textPositions[PREVIEW_LEVEL_NAME_LINE_COUNT];                                     // 0x464
 	unsigned int m_buttonBinding;                                                                    // 0x47c
 	unsigned int m_nextDisabled;                                                                     // 0x480
 	unsigned int m_previousDisabled;                                                                 // 0x484

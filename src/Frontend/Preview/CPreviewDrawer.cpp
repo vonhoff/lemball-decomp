@@ -17,7 +17,7 @@
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Text/CTextManager.h"
 #include "Frontend/Controls/CHiliteController.h"
-#include "Frontend/CoordPair.h"
+#include "Frontend/tagCoordPair.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/tagPRIMS.h"
 #include "GameView/Display/CMain2DDisplay.h"
@@ -299,7 +299,7 @@ void CPreviewDrawer::DrawText()
 
 	if (m_drawingBackBuffer != 0) {
 		line = (char*) m_levelNameLines;
-		CoordPair* linePosition = m_textPositions;
+		tagCoordPair* linePosition = m_textPositions;
 		count = PREVIEW_LEVEL_NAME_LINE_COUNT;
 		do {
 			if (linePosition->m_x != PREVIEW_TEXT_POSITION_UNSET) {
@@ -322,7 +322,7 @@ void CPreviewDrawer::DrawText()
 			do {
 				advance.m_height = 0;
 				advance.m_width = 0;
-				CoordPair* layoutPosition = &m_layout->m_positions[*positions];
+				tagCoordPair* layoutPosition = &m_layout->m_positions[*positions];
 				CVSPoint pos((short) layoutPosition->m_x, (short) layoutPosition->m_y);
 				positions = positions + 1;
 				m_textManager
@@ -599,7 +599,7 @@ void CPreviewDrawer::LoadLevelInformation()
 	int layoutY;
 	int layoutWidth;
 	char* targetLine;
-	CoordPair* targetPos;
+	tagCoordPair* targetPos;
 	int endOfSource;
 
 	endOfSource = 0;

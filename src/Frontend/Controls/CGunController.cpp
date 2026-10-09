@@ -22,7 +22,7 @@
 #include "Engine/Time/VsTime.h"
 #include "Frontend/Controls/CGunController.h"
 #include "Frontend/Controls/ControlMessages.h"
-#include "Frontend/CoordPair.h"
+#include "Frontend/tagCoordPair.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Platform/Windows/Graphics/CSurface.h"
@@ -60,10 +60,10 @@ unsigned long g_gunTurnResourceId;
 unsigned long g_gunSplatLeftResourceId;
 
 // GLOBAL: LEMBALL 0x0049fa70
-CoordPair g_anGunSpriteOffset[9] =
+tagCoordPair g_anGunSpriteOffset[9] =
 	{{0, 12}, {-8, -2}, {52, -2}, {-13, 28}, {116, 0}, {0, -13}, {19, 28}, {-16, 0}, {-24, -2}};
 // GLOBAL: LEMBALL 0x0049fab8
-CoordPair g_anGunSpriteOffsetCompact[10] =
+tagCoordPair g_anGunSpriteOffsetCompact[10] =
 	{{0, 6}, {-4, -2}, {26, -2}, {-7, 14}, {58, 0}, {0, 0}, {10, 14}, {-8, 0}, {-12, -2}, {0, 0}};
 
 // FUNCTION: LEMBALL 0x0044c870
@@ -366,7 +366,7 @@ void CGunController::DrawButtons(int p_firstState, int p_secondState)
 void CGunController::DrawSpriteWindow()
 {
 	CGDI* previousGdi;
-	CoordPair* offsets;
+	tagCoordPair* offsets;
 	unsigned long frame;
 
 	m_spriteSurface->m_renderTarget->GetCurrDB();
@@ -649,7 +649,7 @@ void CGunController::SelectOption()
 {
 	int i;
 	int* targetX;
-	CoordPair* offsets;
+	tagCoordPair* offsets;
 	unsigned int delta;
 
 	m_selectionMessage.m_type = MESSAGE_BUTTON_RELEASED;

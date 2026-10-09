@@ -38,7 +38,7 @@ extern char g_szUnknownUserActionReceived[];
 #include "Application/FlowProcesses.h"
 #include "Application/SoundEffects.h"
 #include "CUserActionMessage.h"
-#include "CoordPair.h"
+#include "tagCoordPair.h"
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CPrimitive.h"
@@ -470,7 +470,7 @@ void CBaseFrontendDrawer::ResetPrimitives()
 }
 
 // FUNCTION: LEMBALL 0x004460d0
-void CBaseFrontendDrawer::DrawFrame(CoordPair p_start, CoordPair p_end)
+void CBaseFrontendDrawer::DrawFrame(tagCoordPair p_start, tagCoordPair p_end)
 {
 	DrawFrame(CVSRect(p_start.m_x, p_start.m_y, p_end.m_x, p_end.m_y));
 }

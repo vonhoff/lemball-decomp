@@ -6,7 +6,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CUserActionMessage.h"
-#include "Frontend/CoordPair.h"
+#include "Frontend/tagCoordPair.h"
 
 class CGDI;
 class CMain2DDisplay;
@@ -14,19 +14,19 @@ class CResBITMAP;
 class CVSRect;
 // SIZE 0x68
 struct SuccFailLayout {
-	CoordPair m_returnButton;          // 0x00
-	CoordPair m_goButton;              // 0x08
-	CoordPair m_backgroundPosition;    // 0x10
-	CoordPair m_primaryPosition;       // 0x18
-	CoordPair m_successAnimOffset;     // 0x20
-	CoordPair m_failurePosition;       // 0x28
-	CoordPair m_failureAnimOffset;     // 0x30
-	CoordPair m_frameStart;            // 0x38
-	CoordPair m_frameEnd;              // 0x40
-	CoordPair m_messagePosition;       // 0x48
-	CoordPair m_secondaryPosition;     // 0x50
-	CoordPair m_animWindowEnd;         // 0x58
-	CoordPair m_passwordLabelPosition; // 0x60
+	tagCoordPair m_returnButton;          // 0x00
+	tagCoordPair m_goButton;              // 0x08
+	tagCoordPair m_backgroundPosition;    // 0x10
+	tagCoordPair m_primaryPosition;       // 0x18
+	tagCoordPair m_successAnimOffset;     // 0x20
+	tagCoordPair m_failurePosition;       // 0x28
+	tagCoordPair m_failureAnimOffset;     // 0x30
+	tagCoordPair m_frameStart;            // 0x38
+	tagCoordPair m_frameEnd;              // 0x40
+	tagCoordPair m_messagePosition;       // 0x48
+	tagCoordPair m_secondaryPosition;     // 0x50
+	tagCoordPair m_animWindowEnd;         // 0x58
+	tagCoordPair m_passwordLabelPosition; // 0x60
 };
 
 // SIZE 0x60c
@@ -38,11 +38,11 @@ public:
 	CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect, unsigned int p_success);
 	bool ConfirmedAction(eUserActions p_action);
 	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
-	virtual void DrawBackGround();                    // vtable+0x50
-	virtual void Load();                              // vtable+0x40
-	virtual void Processing();                        // vtable+0x38
-	virtual void UnLoad();                            // vtable+0x44
-	virtual ~CSuccFailDrawer();                       // vtable+0x00
+	virtual void DrawBackGround();                       // vtable+0x50
+	virtual void Load();                                 // vtable+0x40
+	virtual void Processing();                           // vtable+0x38
+	virtual void UnLoad();                               // vtable+0x44
+	virtual ~CSuccFailDrawer();                          // vtable+0x00
 	void CalculateText();
 	void DestroyDrawer();
 	void DrawText();

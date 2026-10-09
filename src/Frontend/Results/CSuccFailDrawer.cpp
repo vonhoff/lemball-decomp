@@ -22,7 +22,7 @@
 #include "Engine/Time/VsTime.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/Controls/CHiliteController.h"
-#include "Frontend/CoordPair.h"
+#include "Frontend/tagCoordPair.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/tagPRIMS.h"
 #include "GameView/Display/CMain2DDisplay.h"

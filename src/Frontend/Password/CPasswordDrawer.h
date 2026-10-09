@@ -4,7 +4,7 @@
 #include "Engine/Animation/CStaticAnim.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CoordPair.h"
+#include "Frontend/tagCoordPair.h"
 
 class CGDI;
 class CMain2DDisplay;
@@ -42,13 +42,13 @@ public:
 	CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2);
 	void ButtonNumeric(int p_button);
 	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
-	virtual void DrawAnims();                         // vtable+0x48
-	virtual void DrawBackGround();                    // vtable+0x50
-	virtual void DrawText();                          // vtable+0x4c
-	virtual void Load();                              // vtable+0x40
-	virtual void Processing();                        // vtable+0x38
-	virtual void UnLoad();                            // vtable+0x44
-	virtual ~CPasswordDrawer();                       // vtable+0x00
+	virtual void DrawAnims();                            // vtable+0x48
+	virtual void DrawBackGround();                       // vtable+0x50
+	virtual void DrawText();                             // vtable+0x4c
+	virtual void Load();                                 // vtable+0x40
+	virtual void Processing();                           // vtable+0x38
+	virtual void UnLoad();                               // vtable+0x44
+	virtual ~CPasswordDrawer();                          // vtable+0x00
 	void DrawButtons();
 	void DrawHilite();
 	void DrawPassword();
@@ -62,7 +62,7 @@ private:
 	PasswordTextLayout* m_layout;          // 0x3a8
 	unsigned long* m_buttonAnimIds;        // 0x3ac
 	char m_password[16];                   // 0x3b0
-	CoordPair m_buttonOffsets[12];         // 0x3c0
+	tagCoordPair m_buttonOffsets[12];      // 0x3c0
 	int m_passwordLength;                  // 0x420
 	CPVButton* m_buttons[12];              // 0x424
 	CClipRect m_hiliteRect;                // 0x454
