@@ -50,8 +50,8 @@ void CBaseStat::Update(unsigned int p_value)
 CVSOStream& CBaseStat::StreamOut(CVSOStream& p_stream)
 {
 	if (m_sampleCount != 0) {
-		p_stream << Hex8(m_total / m_sampleCount) << " " << Hex8(m_total) << " " << Hex8(m_maximum) << " "
-				 << Hex8(m_minimum) << " " << Hex8(m_sampleCount) << " " << m_description << "\n";
+		p_stream << HEX8(m_total / m_sampleCount) << " " << HEX8(m_total) << " " << HEX8(m_maximum) << " "
+				 << HEX8(m_minimum) << " " << HEX8(m_sampleCount) << " " << m_description << "\n";
 	}
 	else {
 		p_stream << "----\n";

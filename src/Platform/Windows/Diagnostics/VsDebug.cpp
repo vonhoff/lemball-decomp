@@ -159,7 +159,7 @@ void FatalWin32Error(char* p_context)
 	char buffer[0x80];
 	{
 		CDebugOStream stream(buffer, sizeof(buffer));
-		stream << p_context << '\n' << " GetLastError()=" << (long) error << ", " << Hex8(error);
+		stream << p_context << '\n' << " GetLastError()=" << (long) error << ", " << HEX8(error);
 	}
 	MessageBoxA(NULL, buffer, "FATAL ERROR", 0);
 	ExitProcess(VISOS_FATAL_EXIT_CODE);

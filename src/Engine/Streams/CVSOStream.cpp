@@ -141,7 +141,7 @@ CVSOStream& CVSOStream::operator<<(unsigned int p_value)
 }
 
 // FUNCTION: LEMBALL 0x00458780
-CVSOStream& CVSOStream::operator<<(Hex p_value)
+CVSOStream& CVSOStream::operator<<(HEX p_value)
 {
 	unsigned int oldFlags = SetFlags(VSO_STREAM_HEXADECIMAL_BASE_FLAG, VSO_STREAM_BASE_FIELD_MASK);
 	unsigned int oldRadix = SetRadix(VSO_RADIX_HEXADECIMAL);
@@ -153,7 +153,7 @@ CVSOStream& CVSOStream::operator<<(Hex p_value)
 }
 
 // FUNCTION: LEMBALL 0x004589c0
-CVSOStream& CVSOStream::operator<<(Hex8 p_value)
+CVSOStream& CVSOStream::operator<<(HEX8 p_value)
 {
 	char oldFill = SetFill('0');
 	unsigned int oldWidth = SetWidth(VSO_HEX8_DIGIT_WIDTH);
@@ -179,7 +179,7 @@ CVSOStream& CVSOStream::operator<<(CHAR4 p_value)
 }
 
 // FUNCTION: LEMBALL 0x0045bad0
-CVSOStream& operator<<(CVSOStream& p_stream, Rname p_resourceName)
+CVSOStream& operator<<(CVSOStream& p_stream, RNAME p_resourceName)
 {
 	p_stream << (int) p_resourceName.m_value;
 	return p_stream;

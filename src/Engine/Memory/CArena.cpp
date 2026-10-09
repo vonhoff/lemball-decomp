@@ -225,7 +225,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 	headerSize = GetSizeOfBlock();
 	needed = aligned + headerSize;
 	if (aligned > m_freeSize) {
-		Hex hexSize;
+		HEX hexSize;
 		hexSize.m_value = aligned;
 		*g_pErrorOutput << "CArena::Allocate : Not enough free memory : " << p_description << " : 0x" << hexSize
 						<< " : Free Size is " << m_freeSize << "\n";
@@ -235,7 +235,7 @@ bool CArena::Allocate(unsigned char** p_data, unsigned long p_size, char* p_desc
 	block = FindSmallestBlock(needed, p_description);
 	if (block == NULL) {
 		unsigned long freeSize = m_freeSize;
-		Hex hexSize;
+		HEX hexSize;
 		hexSize.m_value = aligned;
 		*g_pErrorOutput << "CArena::Allocate : memory blocks are too fragmented to satisfy : " << p_description
 						<< " : 0x" << hexSize << " : Free Size is " << freeSize << "\n";

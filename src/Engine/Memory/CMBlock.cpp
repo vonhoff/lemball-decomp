@@ -30,7 +30,7 @@ bool CMBlock::ContainsAddress(void* p_address)
 // FUNCTION: LEMBALL 0x0045a5b0
 CVSOStream& CMBlock::StreamOut(CVSOStream& p_stream)
 {
-	p_stream << (const void*) m_data << "\t0x" << Hex8(m_size);
+	p_stream << (const void*) m_data << "\t0x" << HEX8(m_size);
 	if ((m_flags & MEMORY_BLOCK_FLAG_FREE) != 0) {
 		p_stream << "\tFree\n";
 		return p_stream;

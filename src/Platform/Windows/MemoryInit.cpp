@@ -94,7 +94,7 @@ bool _MEM_Quit()
 	if (GlobalFree(g_pMasterArenaMemory) != NULL) {
 		lastError = GetLastError();
 		*g_pErrorOutput << g_szMasterArenaFreeFailed;
-		*g_pErrorOutput << g_szGetLastErrorEq << lastError << g_szColonHexPrefix << Hex(lastError)
+		*g_pErrorOutput << g_szGetLastErrorEq << lastError << g_szColonHexPrefix << HEX(lastError)
 						<< g_szGetLastErrorNewline;
 		return false;
 	}

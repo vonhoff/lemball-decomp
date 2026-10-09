@@ -13,21 +13,21 @@ struct CHAR4 {
 };
 
 // SIZE 0x04
-struct Hex {
+struct HEX {
 	unsigned int m_value;
-	Hex(unsigned int p_v = 0) : m_value(p_v) {}
+	HEX(unsigned int p_v = 0) : m_value(p_v) {}
 };
 
 // SIZE 0x04
-struct Hex8 {
+struct HEX8 {
 	unsigned int m_value;
-	Hex8(unsigned int p_v = 0) : m_value(p_v) {}
+	HEX8(unsigned int p_v = 0) : m_value(p_v) {}
 };
 
 // SIZE 0x04
-struct Rname {
+struct RNAME {
 	unsigned int m_value;
-	Rname(unsigned int p_v = 0) : m_value(p_v) {}
+	RNAME(unsigned int p_v = 0) : m_value(p_v) {}
 };
 
 // SIZE 0x14c
@@ -35,8 +35,8 @@ struct Rname {
 class CVSOStream : public virtual CVSIOs {
 public:
 	CVSOStream& operator<<(CHAR4 p_value);
-	CVSOStream& operator<<(Hex p_value);
-	CVSOStream& operator<<(Hex8 p_value);
+	CVSOStream& operator<<(HEX p_value);
+	CVSOStream& operator<<(HEX8 p_value);
 	CVSOStream& operator<<(char p_character);
 	CVSOStream& operator<<(unsigned char p_value);
 	CVSOStream& operator<<(const char* p_text);
@@ -54,7 +54,7 @@ public:
 	char* m_formattedText;               // 0x128
 };
 
-CVSOStream& operator<<(CVSOStream& p_stream, Rname p_resourceName);
+CVSOStream& operator<<(CVSOStream& p_stream, RNAME p_resourceName);
 CVSOStream& operator<<(CVSOStream& p_stream, CString& p_string);
 
 extern CVSOStream* g_pErrorOutput;

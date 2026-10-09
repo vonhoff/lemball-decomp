@@ -130,7 +130,7 @@ void CText::Render(CGDI* p_gdi)
 					m_glyph = m_font->m_animationEntries;
 				}
 				if (*text != ' ' || m_glyph == NULL) {
-					*g_pDebugOutput << "Letter '" << *text << "' not found in font " << Rname(m_font->m_resourceId)
+					*g_pDebugOutput << "Letter '" << *text << "' not found in font " << RNAME(m_font->m_resourceId)
 									<< "\n";
 				}
 				NextPos();
