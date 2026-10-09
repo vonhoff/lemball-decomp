@@ -18,10 +18,7 @@ class CWnd : public CPVWnd {
 public:
 	CWnd();
 	int SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam);
-	static long __stdcall ProcessMessage(void* p_hwnd,
-										 unsigned int p_message,
-										 unsigned int p_wParam,
-										 unsigned int p_lParam);
+	static long __stdcall ProcessMessage(void* p_hwnd, unsigned int p_message, unsigned int p_wParam, long p_lParam);
 	static void ProcessMouseMoves();
 	virtual bool IsFocusWindow();                                                // vtable+0x60
 	virtual unsigned int GetStyle();                                             // vtable+0x64

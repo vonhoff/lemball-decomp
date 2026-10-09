@@ -174,7 +174,7 @@ void CWnd::OnSize()
 }
 
 // FUNCTION: LEMBALL 0x00464520
-long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
+long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigned int p_wParam, long p_lParam)
 {
 	CWnd* window;
 	CREATESTRUCTA* create;
@@ -269,7 +269,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_SIZE: {
 		window->m_rect.m_width = (short) p_lParam;
-		p_lParam >>= 16;
+		p_lParam = (unsigned long) p_lParam >> 16;
 		window->m_rect.m_height = (short) p_lParam;
 		switch (p_wParam) {
 		case SIZE_RESTORED:
@@ -385,7 +385,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		if (g_pTargetGraphicsSystem != NULL) {
 			CVSSize size;
 			size.m_width = (short) p_lParam;
-			p_lParam >>= 16;
+			p_lParam = (unsigned long) p_lParam >> 16;
 			size.m_height = (short) p_lParam;
 			g_pTargetGraphicsSystem->UpdateDriverSize(size);
 		}
@@ -445,7 +445,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			}
 		}
 		mouseX = window->m_rect.m_x + (short) p_lParam;
-		p_lParam >>= 16;
+		p_lParam = (unsigned long) p_lParam >> 16;
 		mouseY = window->m_rect.m_y + (short) p_lParam;
 		posted.m_code = PackParam(mouseX, mouseY);
 		posted.m_source = NULL;
@@ -471,7 +471,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 			break;
 		}
 		mouseX = window->m_rect.m_x + (short) p_lParam;
-		p_lParam >>= 16;
+		p_lParam = (unsigned long) p_lParam >> 16;
 		mouseY = window->m_rect.m_y + (short) p_lParam;
 		posted.m_code = PackParam(mouseX, mouseY);
 		posted.m_source = NULL;
