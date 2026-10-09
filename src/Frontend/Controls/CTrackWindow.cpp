@@ -90,7 +90,7 @@ void CTrackWindow::Move(const CVSPoint& p_position)
 void CTrackWindow::OnPaint(const CVSRect& p_rect)
 {
 	int height = m_trackRect.m_height;
-	short width = (short) (m_trackRect.m_width * m_value / TRACK_VALUE_PERCENT_SCALE);
+	short width = (m_trackRect.m_width * m_value / TRACK_VALUE_PERCENT_SCALE);
 	if (m_value != 0) {
 		m_line.m_colour = TRACK_PROGRESS_COLOUR_INDEX;
 		m_line.m_bounds.m_width = width;
@@ -110,13 +110,13 @@ void CTrackWindow::OnPaint(const CVSRect& p_rect)
 		m_edges[1].m_end.m_y = height;
 		m_edges[1].m_colour = TRACK_BEVEL_LIGHT_COLOUR_INDEX;
 		m_edges[1].Draw(m_gdi);
-		m_edges[2].m_start.m_x = (short) m_value;
+		m_edges[2].m_start.m_x = m_value;
 		m_edges[2].m_start.m_y = height;
 		m_edges[2].m_end.m_x = 0;
 		m_edges[2].m_end.m_y = height;
 		m_edges[2].m_colour = TRACK_BEVEL_DARK_COLOUR_INDEX;
 		m_edges[2].Draw(m_gdi);
-		m_edges[3].m_start.m_x = (short) m_value;
+		m_edges[3].m_start.m_x = m_value;
 		m_edges[3].m_start.m_y = height;
 		m_edges[3].m_end.m_x = width;
 		m_edges[3].m_end.m_y = 0;
