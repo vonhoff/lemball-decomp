@@ -38,7 +38,7 @@ public:
 private:
 	CMap* m_map;                    // 0x0000
 	unsigned short** m_distances;   // 0x0004
-	unsigned int m_routeSearchBusy; // 0x0008
+	bool m_routeSearchBusy;         // 0x0008
 	unsigned char m_changeA[0x800]; // 0x000c
 	unsigned char m_changeB[0x800]; // 0x080c
 	unsigned char m_changeSelect;   // 0x100c
