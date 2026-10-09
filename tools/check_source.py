@@ -11,7 +11,7 @@ from reccmp import color
 from reccmp.dir import source_code_search
 from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 
-from lib import ROOT, TARGET_ID
+from lib import ROOT, TARGET_ID, thunk_symbol
 from lib.codewarrior import decode_signature
 from lib.names import read_catalog, scan
 from lib.policy import violations
@@ -66,7 +66,7 @@ def check_names(paths: list[Path | str] | None = None):
     """Check source identities and coverage of all mapped Windows addresses."""
     symbols, mappings = read_catalog(CATALOG)
     thunks = {
-        thunk["address"]: thunk["symbol"]
+        thunk["address"]: thunk_symbol(thunk["address"])
         for thunk in json.loads((CATALOG.parent / "linker-thunks.json").read_text())[
             "thunks"
         ]

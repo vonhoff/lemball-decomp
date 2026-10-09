@@ -5,9 +5,8 @@ import argparse
 from lib.progress import load_progress
 
 
-def rank_functions(report, effective=None, min_size=0, sort="score"):
+def rank_functions(report, effective, min_size=0, sort="score"):
     """Rank unfinished functions without changing the canonical report."""
-    effective = effective or set()
     functions = (
         {**function, "unit": unit["name"]}
         for unit in report["units"]
@@ -44,9 +43,7 @@ def main() -> int:
         report, accepted = load_progress(exact=args.exact)
     except ValueError as exc:
         parser.error(str(exc))
-    functions = rank_functions(
-        report, None if args.exact else accepted, args.min_size, args.sort
-    )
+    functions = rank_functions(report, accepted, args.min_size, args.sort)
     if args.limit > 0:
         functions = functions[: args.limit]
     for function in functions:

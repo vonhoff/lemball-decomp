@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Generate objdiff progress from raw assembly comparisons."""
 
-import argparse
 from collections import defaultdict
 from pathlib import PureWindowsPath
 from typing import Any, cast
@@ -185,9 +184,6 @@ def check_catalog_implementations(comparisons):
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.parse_args()
-
     detect_project(
         project_directory=ROOT,
         search_path=[ROOT / "data"],
@@ -195,7 +191,10 @@ def main() -> int:
     )
     target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
     engine = Compare.from_target(target)
-    comparisons = engine.to_report(filename=target.original_path.name)
+    comparisons = engine.to_report(
+        filename=target.original_path.name,
+        filter_fn=lambda entity: entity.entity_type != EntityType.VTABLE,
+    )
     compare_import_thunks(engine, comparisons)
     catalog_status = check_catalog_implementations(comparisons)
     report = build_report(

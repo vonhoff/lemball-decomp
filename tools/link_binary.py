@@ -11,6 +11,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from lib import thunk_symbol
+
 from reccmp.formats.exceptions import (
     InvalidVirtualAddressError,
     InvalidVirtualReadError,
@@ -211,7 +213,7 @@ class CoffObject:
                     raise ValueError(
                         f"Unverified linker-thunk reference: {route['symbol']}"
                     )
-                symbol = thunk["symbol"]
+                symbol = thunk_symbol(thunk["address"])
                 if symbol not in added:
                     added[symbol] = self.symbol_count + len(added)
                     name = struct.pack("<II", 0, len(strings))
@@ -222,10 +224,6 @@ class CoffObject:
         struct.pack_into("<I", data, 12, self.symbol_count + len(added))
         tail = data[self.string_start + len(self.strings) :]
         return bytes(data[: self.string_start] + symbols + strings + tail)
-
-
-def thunk_symbol(address):
-    return f"__lemball_jump_{address:08x}"
 
 
 def prepare_runtime(linker, build):
@@ -299,7 +297,7 @@ def make_thunk_object(thunks):
     start = 20 + len(thunks) * SECTION_SIZE
     targets = {}
     for i, thunk in enumerate(thunks):
-        symbol(thunk["symbol"], i + 1)
+        symbol(thunk_symbol(thunk["address"]), i + 1)
         target = thunk["target_symbol"]
         if target not in targets:
             targets[target] = symbol(target, 0)
@@ -327,7 +325,7 @@ def make_thunk_object(thunks):
 def prepare_link(objects, build, manifest_path):
     """Produce overlays; never mutate the compiler's object files."""
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    if manifest["version"] != 3:
+    if manifest["version"] != 4:
         raise ValueError("Unsupported linker-thunk manifest version")
     thunks = {thunk["address"]: thunk for thunk in manifest["thunks"]}
     for thunk in thunks.values():
@@ -351,7 +349,7 @@ def prepare_link(objects, build, manifest_path):
         )
     linked = []
     applied = 0
-    skipped = []
+    skipped = 0
     for name in objects:
         key = name.replace("\\", "/").casefold()
         routes = grouped.get(key, [])
@@ -372,7 +370,8 @@ def prepare_link(objects, build, manifest_path):
             if valid:
                 current.append(route)
             else:
-                skipped.append(route["symbol"])
+                print(f"linker thunks: stale routes for {route['symbol']}")
+                skipped += 1
         if current:
             overlay = output / "objects" / name
             overlay.parent.mkdir(parents=True, exist_ok=True)
@@ -391,12 +390,9 @@ def prepare_link(objects, build, manifest_path):
             thunk_object = output / name
             thunk_object.write_bytes(make_thunk_object(thunks))
             linked.append(str(thunk_object.relative_to(build)))
-    (output / "applied.json").write_text(
-        json.dumps({"references": applied, "skipped": skipped}, indent=2) + "\n"
-    )
     print(
         f"linker thunks: {len(manifest['thunks'])} entries; {applied} references; "
-        f"{len(skipped)} stale symbols"
+        f"{skipped} stale symbols"
     )
     return linked
 

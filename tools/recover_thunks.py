@@ -23,8 +23,10 @@ from reccmp.parser.codebase import DecompCodebase
 from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType, ImageId
 
-from link_binary import CoffObject, DIR32, REL32, read_jump_target, thunk_symbol
-from lib import BUILD, ROOT, TARGET_ID
+from link_binary import CoffObject, DIR32, REL32, read_jump_target
+from lib import BUILD, ROOT, TARGET_ID, thunk_symbol
+from lib.progress import load_progress
+from triage_targets import rank_functions
 
 MANIFEST = ROOT / "tools/data/linker-thunks.json"
 ANNOTATIONS = ROOT / "src/Platform/MSVC/LinkerThunks.h"
@@ -50,7 +52,6 @@ def thunk_matches(engine, functions, thunk):
         or comparison is None
         or comparison.is_stub
         or comparison.accuracy != 1
-        or engine.orig_bin.read(thunk["address"], 5).hex() != thunk["original_bytes"]
         or read_jump_target(engine.orig_bin, thunk["address"]) != thunk["target"]
         or read_jump_target(engine.recomp_bin, entry.recomp_addr) != body.recomp_addr
     )
@@ -64,14 +65,14 @@ def reference_matches(engine, functions, caller, reference):
     original_address = (
         reference["original_pointer"] if pointer else reference["original_instruction"]
     )
+    if pointer and (
+        original_address != caller.orig_addr + reference["offset"]
+        or original_address not in engine.orig_bin.relocations
+    ):
+        return False
     original = engine.orig_bin.read(original_address, length)
     rebuilt = engine.recomp_bin.read(instruction, length)
     if pointer:
-        if (
-            original_address != caller.orig_addr + reference["offset"]
-            or original_address not in engine.orig_bin.relocations
-        ):
-            return False
         original_target = int.from_bytes(original, "little")
         rebuilt_target = int.from_bytes(rebuilt, "little")
     else:
@@ -88,17 +89,15 @@ def reference_matches(engine, functions, caller, reference):
 
 
 def verify_thunks():
-    """Verify saved routes and report failures against the current executable."""
+    """Verify saved routes; print failures and return a failing exit code."""
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
     engine = Compare.from_target(target)
     functions = {function.orig_addr: function for function in engine.get_functions()}
     entities = {
-        entity.orig_addr: entity for entity in engine.get_all() if entity.orig_addr
+        entity.orig_addr: entity for entity in engine.get_all() if entity.matched
     }
-    errors = []
-    verified_thunks = 0
-    verified_references = 0
+    errors = references = 0
     if (
         hashlib.sha256(target.original_path.read_bytes()).hexdigest()
         != manifest["original_sha256"]
@@ -106,48 +105,22 @@ def verify_thunks():
         raise ValueError("Original image differs from the recorded thunk evidence")
     for thunk in manifest["thunks"]:
         if not thunk_matches(engine, functions, thunk):
-            errors.append(
-                {
-                    "thunk": thunk["address"],
-                    "reason": "Jump entry or destination mismatch",
-                }
-            )
-        else:
-            verified_thunks += 1
+            print(f"0x{thunk['address']:08x}: jump entry or destination mismatch")
+            errors += 1
     for route in manifest["routes"]:
         caller = entities.get(route["caller"])
         for reference in route["references"]:
-            if caller is None:
-                errors.append(
-                    {"caller": route["caller"], "reason": "Caller is unmatched"}
+            references += 1
+            if caller is None or not reference_matches(
+                engine, functions, caller, reference
+            ):
+                print(
+                    f"0x{route['caller']:08x}+0x{reference['offset']:x}: "
+                    f"reference to 0x{reference['thunk']:08x} mismatched or caller unmatched"
                 )
-                continue
-            if not reference_matches(engine, functions, caller, reference):
-                errors.append(
-                    {
-                        "caller": route["caller"],
-                        "reference": reference.get(
-                            "original_pointer", reference.get("original_instruction")
-                        ),
-                        "reason": "Caller does not reference the evidenced jump entry",
-                    }
-                )
-            else:
-                verified_references += 1
-    result = {
-        "original_sha256": manifest["original_sha256"],
-        "rebuilt_sha256": hashlib.sha256(
-            target.recompiled_path.read_bytes()
-        ).hexdigest(),
-        "thunks_verified": verified_thunks,
-        "references_verified": verified_references,
-        "errors": errors,
-    }
-    path = OUTPUT / "verification.json"
-    path.write_text(json.dumps(result, indent=2) + "\n")
+                errors += 1
     print(
-        f"verified {verified_thunks} jump entries; {verified_references} references; "
-        f"{len(errors)} errors; {path}"
+        f"checked {len(manifest['thunks'])} jump entries; {references} references; {errors} errors"
     )
     return int(bool(errors))
 
@@ -333,8 +306,6 @@ def make_thunk(engine, callee, entry, target_symbol, aliases):
     thunk = {
         "address": entry,
         "target": callee.orig_addr,
-        "original_bytes": engine.orig_bin.read(entry, 5).hex(),
-        "symbol": thunk_symbol(entry),
         "target_symbol": definitions[callee.recomp_addr]["symbol"]
         if definitions
         else target_symbol,
@@ -664,9 +635,9 @@ def recover_routes(engine, target, addresses, functions, entries, previous_route
 
 
 def write_recovery(target, thunks, routes, unresolved):
-    """Save the manifest, matching annotations, and unresolved owner report."""
+    """Save the manifest and matching annotations; print unresolved owners."""
     manifest = {
-        "version": 3,
+        "version": 4,
         "original_sha256": hashlib.sha256(
             target.original_path.read_bytes()
         ).hexdigest(),
@@ -680,12 +651,13 @@ def write_recovery(target, thunks, routes, unresolved):
     for thunk in thunks:
         lines += [
             f"// SYNTHETIC: LEMBALL 0x{thunk['address']:08x} SYMBOL",
-            "// " + thunk["symbol"],
+            "// " + thunk_symbol(thunk["address"]),
             "",
         ]
     lines += ["#endif", ""]
     ANNOTATIONS.write_text("\n".join(lines), encoding="utf-8", newline="\n")
-    (OUTPUT / "unresolved.json").write_text(json.dumps(unresolved, indent=2) + "\n")
+    for owner in unresolved:
+        print(f"0x{owner['caller']:08x}: {owner['reason']}")
     print(
         f"recovered {len(thunks)} thunks; {len(routes)} owners; "
         f"{sum(len(route['references']) for route in routes)} references; "
@@ -696,17 +668,11 @@ def write_recovery(target, thunks, routes, unresolved):
 def recover_thunks(forwarders):
     """Recover evidence from an unrouted link, retaining unchanged saved callers."""
     previous = {"routes": [], "thunks": []}
-    ranking = subprocess.check_output(
-        [
-            sys.executable,
-            str(ROOT / "tools/triage_targets.py"),
-            "--exact",
-            "--limit",
-            "0",
-        ],
-        text=True,
+    report, accepted = load_progress(exact=True)
+    addresses = dict.fromkeys(
+        int(function["metadata"]["virtual_address"])
+        for function in rank_functions(report, accepted)
     )
-    addresses = dict.fromkeys(int(row.split()[0], 16) for row in ranking.splitlines())
     if MANIFEST.exists():
         previous = json.loads(MANIFEST.read_text())
         forwarders.update(
