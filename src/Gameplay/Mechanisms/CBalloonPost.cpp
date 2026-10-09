@@ -1,7 +1,6 @@
 #include "CBalloonPost.h"
 
 #include "CTheBalloonPost.h"
-#include "Engine/Math/CFixed.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CViewData.h"
@@ -79,7 +78,6 @@ bool CBalloonPost::FindPost(eObjectType p_objectType, AICOORD& p_position)
 // FUNCTION: LEMBALL 0x0042a170
 void CBalloonPost::Process()
 {
-	CFixed height(0);
 	if ((m_activeMask & BALLOON_POST_BALLOON_1_ACTIVE_MASK) != 0) {
 		int width;
 		int y = m_positions[0].m_yFixed >> FIXED_POINT_FRACTION_BITS;
@@ -96,9 +94,9 @@ void CBalloonPost::Process()
 		else {
 			z = 0;
 		}
-		height = CFixed(z << FIXED_POINT_FRACTION_BITS);
-		m_positions[0].m_zFixed = height.m_value;
-		m_posts[0]->m_position.m_zFixed = height.m_value;
+		int height = z << FIXED_POINT_FRACTION_BITS;
+		m_positions[0].m_zFixed = height;
+		m_posts[0]->m_position.m_zFixed = height;
 	}
 	if ((m_activeMask & BALLOON_POST_BALLOON_3_ACTIVE_MASK) != 0) {
 		int width;
@@ -116,9 +114,9 @@ void CBalloonPost::Process()
 		else {
 			z = 0;
 		}
-		height = CFixed(z << FIXED_POINT_FRACTION_BITS);
-		m_positions[1].m_zFixed = height.m_value;
-		m_posts[1]->m_position.m_zFixed = height.m_value;
+		int height = z << FIXED_POINT_FRACTION_BITS;
+		m_positions[1].m_zFixed = height;
+		m_posts[1]->m_position.m_zFixed = height;
 	}
 	if ((m_activeMask & BALLOON_POST_BALLOON_5_ACTIVE_MASK) != 0) {
 		int width;
@@ -136,9 +134,9 @@ void CBalloonPost::Process()
 		else {
 			z = 0;
 		}
-		height = CFixed(z << FIXED_POINT_FRACTION_BITS);
-		m_positions[2].m_zFixed = height.m_value;
-		m_posts[2]->m_position.m_zFixed = height.m_value;
+		int height = z << FIXED_POINT_FRACTION_BITS;
+		m_positions[2].m_zFixed = height;
+		m_posts[2]->m_position.m_zFixed = height;
 	}
 	if ((m_activeMask & BALLOON_POST_BALLOON_7_ACTIVE_MASK) != 0) {
 		int width;
@@ -156,9 +154,9 @@ void CBalloonPost::Process()
 		else {
 			z = 0;
 		}
-		height = CFixed(z << FIXED_POINT_FRACTION_BITS);
-		m_positions[3].m_zFixed = height.m_value;
-		m_posts[3]->m_position.m_zFixed = height.m_value;
+		int height = z << FIXED_POINT_FRACTION_BITS;
+		m_positions[3].m_zFixed = height;
+		m_posts[3]->m_position.m_zFixed = height;
 	}
 }
 
@@ -275,13 +273,13 @@ void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 		z = data->z;
 		p_data += sizeof(*data);
 
-		position->m_xFixed = (unsigned int) x << FIXED_POINT_FRACTION_BITS;
-		position->m_yFixed = (unsigned int) y << FIXED_POINT_FRACTION_BITS;
-		position->m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
+		position->m_xFixed = x << FIXED_POINT_FRACTION_BITS;
+		position->m_yFixed = y << FIXED_POINT_FRACTION_BITS;
+		position->m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 		CTheBalloonPost* currentPost = *post;
-		currentPost->m_position.m_xFixed = (unsigned int) x << FIXED_POINT_FRACTION_BITS;
-		currentPost->m_position.m_yFixed = (unsigned int) y << FIXED_POINT_FRACTION_BITS;
-		currentPost->m_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
+		currentPost->m_position.m_xFixed = x << FIXED_POINT_FRACTION_BITS;
+		currentPost->m_position.m_yFixed = y << FIXED_POINT_FRACTION_BITS;
+		currentPost->m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 		(*post)->m_active = 0;
 
 		position++;
