@@ -5,7 +5,7 @@
 #include "CPanelLemming.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Windowing/CDepressedButton.h"
 
 class CPVGWnd;

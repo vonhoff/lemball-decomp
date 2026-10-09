@@ -13,7 +13,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Time/VsTime.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 
@@ -259,7 +259,7 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_
 // FUNCTION: LEMBALL 0x00468180
 void CPVButton::_OnReleased(eMouseButtonIndex p_flags)
 {
-	Message posted;
+	tagMESSAGE posted;
 	eMouseButtonIndex converted;
 
 	if (m_autoDraw == 0) {
@@ -279,7 +279,7 @@ void CPVButton::_OnReleased(eMouseButtonIndex p_flags)
 // FUNCTION: LEMBALL 0x004681f0
 void CPVButton::_OnPressed(eMouseButtonIndex p_flags)
 {
-	Message posted;
+	tagMESSAGE posted;
 	eMouseButtonIndex converted;
 
 	if (m_autoDraw == 0) {
@@ -299,7 +299,7 @@ void CPVButton::_OnPressed(eMouseButtonIndex p_flags)
 // FUNCTION: LEMBALL 0x00468260
 void CPVButton::_OnEnterButton()
 {
-	Message posted;
+	tagMESSAGE posted;
 
 	if (m_messageQueue != NULL) {
 		posted.m_time = CurrentQueueTimer();
@@ -313,7 +313,7 @@ void CPVButton::_OnEnterButton()
 // FUNCTION: LEMBALL 0x004682b0
 void CPVButton::_OnExitButton()
 {
-	Message posted;
+	tagMESSAGE posted;
 
 	if (m_messageQueue != NULL) {
 		posted.m_time = CurrentQueueTimer();

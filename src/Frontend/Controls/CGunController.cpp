@@ -17,7 +17,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "Engine/Time/VsTime.h"
 #include "Frontend/Controls/CGunController.h"
@@ -204,7 +204,7 @@ CGunController::~CGunController()
 }
 
 // FUNCTION: LEMBALL 0x0044cec0
-int CGunController::ProcessMsg(Message* p_message)
+int CGunController::ProcessMsg(tagMESSAGE* p_message)
 {
 	if ((int) (p_message->m_time - m_inputReadyTime) < 0) {
 		return 0;

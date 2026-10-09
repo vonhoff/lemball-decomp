@@ -3,7 +3,7 @@
 
 class CBaseQueue;
 class CVSOStream;
-struct Message;
+struct tagMESSAGE;
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493110
@@ -12,7 +12,7 @@ public:
 	CBaseQueueHandler();
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	virtual ~CBaseQueueHandler() {}                      // vtable+0x04
-	virtual int ProcessMsg(Message* p_message);          // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message);       // vtable+0x08
 
 	friend class CGame;
 	friend class CIntroAnimDrawer;

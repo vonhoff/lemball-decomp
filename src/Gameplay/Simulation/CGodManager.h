@@ -15,7 +15,7 @@ public:
 	bool TransportReceive(CReadPacket* p_packet);
 	int GetViewData(CViewData* p_viewData);
 	CBaseObjectManager* GetManagerForTransport(int p_transportId);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual ~CGodManager();                     // vtable+0x04
 	void Process();
 	void Register(CBaseObjectManager* p_manager);

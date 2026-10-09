@@ -39,7 +39,7 @@
 #include "Engine/Input/CBaseCursor.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "GameView/Loading/LoadAnimCallbacks.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
 
@@ -394,7 +394,7 @@ void CMain2DDisplay::ToggleResolution()
 }
 
 // FUNCTION: LEMBALL 0x00431cd0
-int CMain2DDisplay::ProcessMsg(Message* p_message)
+int CMain2DDisplay::ProcessMsg(tagMESSAGE* p_message)
 {
 	int helpOk;
 	char* cdDir;

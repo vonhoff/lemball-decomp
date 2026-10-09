@@ -30,7 +30,7 @@ public:
 	virtual int GetReturnState();               // vtable+0x28
 	virtual bool QuitYet();                     // vtable+0x2c
 	virtual void OnDriverChange();              // vtable+0x30
-	virtual int ProcessMsg(Message* p_message);
+	virtual int ProcessMsg(tagMESSAGE* p_message);
 	void DrawChangedRegion();
 	void DrawRegistrationText();
 

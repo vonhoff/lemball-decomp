@@ -10,7 +10,7 @@ struct PadToButtonEntry;
 class CPadToButton : public CBaseQueueHandler {
 public:
 	CPadToButton(int p_entryCapacity);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual ~CPadToButton();                    // vtable+0x04
 	void AddBinding(CPVButton* p_button, unsigned int p_padCode);
 

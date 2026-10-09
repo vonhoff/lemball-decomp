@@ -41,7 +41,7 @@ class CPasswordDrawer : public CBaseFrontendDrawer {
 public:
 	CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2);
 	void ButtonNumeric(int p_button);
-	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
+	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
 	virtual void DrawAnims();                         // vtable+0x48
 	virtual void DrawBackGround();                    // vtable+0x50
 	virtual void DrawText();                          // vtable+0x4c

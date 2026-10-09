@@ -1,7 +1,7 @@
 #include "CBaseQueueHandler.h"
 
 #include <stddef.h>
-struct Message;
+struct tagMESSAGE;
 
 namespace
 {
@@ -19,7 +19,7 @@ CBaseQueueHandler::CBaseQueueHandler()
 }
 
 // FUNCTION: LEMBALL 0x00462ec0
-int CBaseQueueHandler::ProcessMsg(Message* p_message)
+int CBaseQueueHandler::ProcessMsg(tagMESSAGE* p_message)
 {
 	m_processedCount++;
 	return 0;

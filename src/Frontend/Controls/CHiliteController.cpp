@@ -12,7 +12,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "Engine/Time/VsTime.h"
 #include "Frontend/Controls/CHiliteController.h"
@@ -106,7 +106,7 @@ CHiliteController::~CHiliteController()
 }
 
 // FUNCTION: LEMBALL 0x0044f6c0
-int CHiliteController::ProcessMsg(Message* p_message)
+int CHiliteController::ProcessMsg(tagMESSAGE* p_message)
 {
 	if (m_active == 0) {
 		return 0;
@@ -283,7 +283,7 @@ void CHiliteController::SetHilite(int p_buttonIndex)
 // FUNCTION: LEMBALL 0x0044fb70
 void CHiliteController::PostSelectionMessage()
 {
-	Message& posted = m_navigationState;
+	tagMESSAGE& posted = m_navigationState;
 	posted.m_type = MESSAGE_BUTTON_RELEASED;
 	m_navigationState.m_time = CurrentQueueTimer();
 	m_navigationState.m_code = m_junctions[m_currentButton].m_controlMessage;

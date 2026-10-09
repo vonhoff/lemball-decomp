@@ -19,7 +19,7 @@ class CNetworkMessage;
 class CBaseNetwork : public CBaseQueueHandler {
 public:
 	CBaseNetwork();
-	virtual int ProcessMsg(Message* p_message);          // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message);       // vtable+0x08
 	virtual void Initialise() = 0;                       // vtable+0x0c
 	virtual void UnInitialise() = 0;                     // vtable+0x10
 	virtual void Process();                              // vtable+0x14

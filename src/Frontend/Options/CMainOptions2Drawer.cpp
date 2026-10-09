@@ -5,7 +5,7 @@
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Streams/CVSOStream.h"
@@ -236,7 +236,7 @@ CMainOptions2Drawer::~CMainOptions2Drawer()
 }
 
 // FUNCTION: LEMBALL 0x00448ee0
-bool CMainOptions2Drawer::ProcessMessages(Message* p_message)
+bool CMainOptions2Drawer::ProcessMessages(tagMESSAGE* p_message)
 {
 	switch (p_message->m_type) {
 	case MESSAGE_BUTTON_RELEASED:

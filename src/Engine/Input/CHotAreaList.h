@@ -6,7 +6,7 @@
 #include "Engine/Queues/CBaseQueueHandler.h"
 
 class CVSRect;
-struct Message;
+struct tagMESSAGE;
 struct CHotAreaElement;
 
 // SIZE 0x60
@@ -17,12 +17,12 @@ public:
 	CHotAreaList(const CVSRect& p_rect, const CVSPoint& p_relativeTopLeft, const CVSPoint& p_innerOrigin);
 	void Set(const CVSRect& p_rect, CVSPoint p_relativeTopLeft, const CVSPoint& p_innerOrigin);
 	void RemoveFromList(CHotAreaHandler* p_handler);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual void OnExit();                      // vtable+0x14
 	virtual ~CHotAreaList();                    // vtable+0x00
 	void AddToList(CHotAreaHandler* p_handler);
 	void DeleteEntry(CHotAreaElement* p_entry);
-	void ProcessHandlers(const CVSPoint& p_point, Message* p_message);
+	void ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_message);
 	void UpdateHandlers();
 
 	friend class CPVWnd;

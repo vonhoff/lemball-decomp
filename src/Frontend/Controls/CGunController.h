@@ -5,7 +5,7 @@
 #include "../../Engine/Animation/CStaticAnim.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #define GUN_SIDE_LEFT 0
 #define GUN_SIDE_RIGHT 1
 #define GUN_JUNCTION_LEFT GUN_SIDE_LEFT
@@ -56,7 +56,7 @@ enum eGunButtonPostAction {
 class CGunController : public CBaseQueueHandler, public CAnimsManager {
 public:
 	CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigned int p_mode);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual ~CGunController();                  // vtable+0x04
 	void ActivateButtons(int p_active);
 	void AddButton(int p_x,
@@ -109,7 +109,7 @@ private:
 	int m_projectileY;                    // 0xac
 	int m_projectileTargetX;              // 0xb0
 	unsigned int m_messageSent;           // 0xb4
-	Message m_selectionMessage;           // 0xb8
+	tagMESSAGE m_selectionMessage;        // 0xb8
 	int m_projectileEndX;                 // 0xcc
 	int m_projectileEndY;                 // 0xd0
 	unsigned int m_inputReadyTime;        // 0xd4

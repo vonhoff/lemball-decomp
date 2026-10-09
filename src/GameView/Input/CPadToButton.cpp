@@ -2,7 +2,7 @@
 
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Windowing/CPVButton.h"
 
 #include <stddef.h>
@@ -33,7 +33,7 @@ CPadToButton::~CPadToButton()
 }
 
 // FUNCTION: LEMBALL 0x0043a2e0
-int CPadToButton::ProcessMsg(Message* p_message)
+int CPadToButton::ProcessMsg(tagMESSAGE* p_message)
 {
 	int result = 0;
 	int index = 0;

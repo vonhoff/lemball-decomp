@@ -13,7 +13,7 @@ public:
 	CDemo(int p_sourceId);
 	bool LoadBuffer();
 	bool SendNextPacket(int p_packetIndex);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual ~CDemo();                           // vtable+0x04
 	void CleanUp();
 	void GameIsOver();

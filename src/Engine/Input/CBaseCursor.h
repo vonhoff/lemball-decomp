@@ -31,7 +31,7 @@ class CBaseCursor : public CBaseQueueHandler {
 public:
 	CBaseCursor();
 	virtual bool InWindow(CGWnd* p_window);     // vtable+0x0c
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual void KillSystemCursor() = 0;        // vtable+0x10
 	virtual void RestoreSystemCursor() = 0;     // vtable+0x14
 	virtual void RefreshPos();                  // vtable+0x18

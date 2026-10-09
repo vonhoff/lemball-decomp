@@ -128,7 +128,7 @@
       "target": 4524400,
       "original_bytes": "e920f90400",
       "symbol": "__lemball_jump_0040104b",
-      "target_symbol": "?ProcessMessages@CSuccFailDrawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CSuccFailDrawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4198480,
@@ -149,7 +149,7 @@
       "target": 4475920,
       "original_bytes": "e9b13b0400",
       "symbol": "__lemball_jump_0040105a",
-      "target_symbol": "?ProcessMsg@CPauseWindow@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CPauseWindow@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4198495,
@@ -1266,7 +1266,7 @@
       "target": 4483280,
       "original_bytes": "e97e550400",
       "symbol": "__lemball_jump_0040134d",
-      "target_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4199250,
@@ -1938,7 +1938,7 @@
       "target": 4484960,
       "original_bytes": "e9565a0400",
       "symbol": "__lemball_jump_00401505",
-      "target_symbol": "?ProcessMessages@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4199690,
@@ -1984,7 +1984,7 @@
       "target": 4519616,
       "original_bytes": "e998e10400",
       "symbol": "__lemball_jump_00401523",
-      "target_symbol": "?ProcessMsg@CHiliteController@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CHiliteController@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4199720,
@@ -2200,7 +2200,7 @@
       "target": 4279936,
       "original_bytes": "e9cc380100",
       "symbol": "__lemball_jump_004015af",
-      "target_symbol": "?ProcessMsg@CAICursor@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CAICursor@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4199860,
@@ -3286,7 +3286,7 @@
       "target": 4482176,
       "original_bytes": "e9f24b0400",
       "symbol": "__lemball_jump_00401889",
-      "target_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4200590,
@@ -3919,7 +3919,7 @@
       "target": 4232880,
       "original_bytes": "e9837c0000",
       "symbol": "__lemball_jump_00401a28",
-      "target_symbol": "?ProcessMsg@CDemo@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CDemo@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4201005,
@@ -4187,7 +4187,7 @@
       "target": 4509376,
       "original_bytes": "e9dfb30400",
       "symbol": "__lemball_jump_00401adc",
-      "target_symbol": "?ProcessMsg@CGunController@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CGunController@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4201185,
@@ -4319,7 +4319,7 @@
       "target": 4469440,
       "original_bytes": "e98f170400",
       "symbol": "__lemball_jump_00401b2c",
-      "target_symbol": "?ProcessMsg@CPanel@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CPanel@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4201265,
@@ -4422,7 +4422,7 @@
       "target": 4505216,
       "original_bytes": "e90ea30400",
       "symbol": "__lemball_jump_00401b6d",
-      "target_symbol": "?ProcessMsg@CAboutScreen@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CAboutScreen@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4201330,
@@ -5157,7 +5157,7 @@
       "target": 4527856,
       "original_bytes": "e9adf90400",
       "symbol": "__lemball_jump_00401d3e",
-      "target_symbol": "?ProcessMessages@CPasswordDrawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CPasswordDrawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4201795,
@@ -5805,7 +5805,7 @@
       "target": 4422496,
       "original_bytes": "e9655c0300",
       "symbol": "__lemball_jump_00401ef6",
-      "target_symbol": "?ProcessMsg@C2D@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@C2D@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4202235,
@@ -5879,7 +5879,7 @@
       "target": 4506720,
       "original_bytes": "e933a50400",
       "symbol": "__lemball_jump_00401f28",
-      "target_symbol": "?ProcessMsg@CGunButtons@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CGunButtons@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4202285,
@@ -7818,7 +7818,7 @@
       "target": 4490784,
       "original_bytes": "e9ee610400",
       "symbol": "__lemball_jump_0040242d",
-      "target_symbol": "?ProcessMessages@CMainOptions1Drawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CMainOptions1Drawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4203570,
@@ -8679,7 +8679,7 @@
       "target": 4518240,
       "original_bytes": "e9efca0400",
       "symbol": "__lemball_jump_0040266c",
-      "target_symbol": "?ProcessMsg@CHiliteButtons@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CHiliteButtons@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4204145,
@@ -9730,7 +9730,7 @@
       "target": 4398288,
       "original_bytes": "e99ef30200",
       "symbol": "__lemball_jump_0040292d",
-      "target_symbol": "?ProcessMsg@CMain2DDisplay@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CMain2DDisplay@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4204850,
@@ -9794,7 +9794,7 @@
       "target": 4269664,
       "original_bytes": "e906fd0000",
       "symbol": "__lemball_jump_00402955",
-      "target_symbol": "?ProcessMsg@CAI@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CAI@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4204890,
@@ -10907,7 +10907,7 @@
       "target": 4486672,
       "original_bytes": "e9cd490400",
       "symbol": "__lemball_jump_00402c3e",
-      "target_symbol": "?ProcessMessages@CIntroAnimDrawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CIntroAnimDrawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4205635,
@@ -12052,7 +12052,7 @@
       "target": 4496688,
       "original_bytes": "e9fa6d0400",
       "symbol": "__lemball_jump_00402f31",
-      "target_symbol": "?ProcessMessages@CPreviewDrawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CPreviewDrawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4206390,
@@ -12257,7 +12257,7 @@
       "target": 4532304,
       "original_bytes": "e993f80400",
       "symbol": "__lemball_jump_00402fb8",
-      "target_symbol": "?ProcessMsg@CNetworkManager@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CNetworkManager@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4206525,
@@ -12381,7 +12381,7 @@
       "target": 4432608,
       "original_bytes": "e9d3720300",
       "symbol": "__lemball_jump_00403008",
-      "target_symbol": "?ProcessMsg@CPadToButton@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CPadToButton@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4206605,
@@ -12808,7 +12808,7 @@
       "target": 4493024,
       "original_bytes": "e9b65d0400",
       "symbol": "__lemball_jump_00403125",
-      "target_symbol": "?ProcessMessages@CMainOptions2Drawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CMainOptions2Drawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4206890,
@@ -14783,7 +14783,7 @@
       "target": 4239888,
       "original_bytes": "e9b97b0000",
       "symbol": "__lemball_jump_00403652",
-      "target_symbol": "?ProcessMsg@CGodManager@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMsg@CGodManager@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4208215,
@@ -15217,7 +15217,7 @@
       "target": 4226864,
       "original_bytes": "e9b7470000",
       "symbol": "__lemball_jump_00403774",
-      "target_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4208505,
@@ -15492,7 +15492,7 @@
       "target": 4538464,
       "original_bytes": "e92e080500",
       "symbol": "__lemball_jump_0040382d",
-      "target_symbol": "?ProcessMessages@CNetworkOptionsDrawer@@UAEHPAUMessage@@@Z"
+      "target_symbol": "?ProcessMessages@CNetworkOptionsDrawer@@UAEHPAUtagMESSAGE@@@Z"
     },
     {
       "address": 4208690,
@@ -16845,7 +16845,7 @@
     {
       "caller": 4232880,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CDemo.cpp.obj",
-      "symbol": "?ProcessMsg@CDemo@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CDemo@@UAEHPAUtagMESSAGE@@@Z",
       "size": 115,
       "fingerprint": "cd68107f1c3c2a93309b46d600356977d729e60f8ca93ff82ee0cd362de777a1",
       "references": [
@@ -17292,7 +17292,7 @@
     {
       "caller": 4239888,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CGodManager.cpp.obj",
-      "symbol": "?ProcessMsg@CGodManager@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CGodManager@@UAEHPAUtagMESSAGE@@@Z",
       "size": 125,
       "fingerprint": "70e334f10861b5a807fda3508a0f1db3a45c4bae437fe36f90076dddae902582",
       "references": [
@@ -19850,7 +19850,7 @@
     {
       "caller": 4269664,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
-      "symbol": "?ProcessMsg@CAI@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CAI@@UAEHPAUtagMESSAGE@@@Z",
       "size": 224,
       "fingerprint": "d422cf96c1a909092c8a27364f1625f31210d0e707b0d718b5a85bad48fca332",
       "references": [
@@ -21015,7 +21015,7 @@
     {
       "caller": 4279936,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAICursor.cpp.obj",
-      "symbol": "?ProcessMsg@CAICursor@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CAICursor@@UAEHPAUtagMESSAGE@@@Z",
       "size": 43,
       "fingerprint": "a9dc8ef2971af8b4e2d1934d2566bd1fdbee5968a099357c9f8c35e365b8d59c",
       "references": [
@@ -31224,7 +31224,7 @@
     {
       "caller": 4398288,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/CMain2DDisplay.cpp.obj",
-      "symbol": "?ProcessMsg@CMain2DDisplay@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CMain2DDisplay@@UAEHPAUtagMESSAGE@@@Z",
       "size": 476,
       "fingerprint": "a7b3fd7b9bef22e5281fc7e40da5e9916837f4c6bc4e311f3576099368e48f1a",
       "references": [
@@ -34065,7 +34065,7 @@
     {
       "caller": 4422496,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-      "symbol": "?ProcessMsg@C2D@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@C2D@@UAEHPAUtagMESSAGE@@@Z",
       "size": 416,
       "fingerprint": "0b874be4df48e44329ef2f225c76b9c34daa8bde266859c2a302ac180d6d63dd",
       "references": [
@@ -37431,7 +37431,7 @@
     {
       "caller": 4469440,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanel.cpp.obj",
-      "symbol": "?ProcessMsg@CPanel@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CPanel@@UAEHPAUtagMESSAGE@@@Z",
       "size": 137,
       "fingerprint": "7d44d5ef58eaa0795797ee2bec3535e6bc359fc1fa9d22ad0d432868e6c11b61",
       "references": [
@@ -37760,7 +37760,7 @@
     {
       "caller": 4475920,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
-      "symbol": "?ProcessMsg@CPauseWindow@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CPauseWindow@@UAEHPAUtagMESSAGE@@@Z",
       "size": 400,
       "fingerprint": "c01b093398db5c9931fb3d738a7b262039da16d63b1816de1fe1a2dbcf13a9f2",
       "references": [
@@ -38241,7 +38241,7 @@
     {
       "caller": 4483280,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendProcess.cpp.obj",
-      "symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z",
       "size": 181,
       "fingerprint": "ddcc9802e8b713093066f0f05f1440f46aaa0af1c68b069ae8af6ecce671ba03",
       "references": [
@@ -38466,7 +38466,7 @@
     {
       "caller": 4486672,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Intro/CIntroAnimDrawer.cpp.obj",
-      "symbol": "?ProcessMessages@CIntroAnimDrawer@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMessages@CIntroAnimDrawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 146,
       "fingerprint": "939fc0e0d56030a3ec757347c480eb3120cd3a7c48e3d1b1495e5a9fbd2e1aba",
       "references": [
@@ -38822,7 +38822,7 @@
     {
       "caller": 4490784,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Options/CMainOptions1Drawer.cpp.obj",
-      "symbol": "?ProcessMessages@CMainOptions1Drawer@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMessages@CMainOptions1Drawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 471,
       "fingerprint": "c155a7926decb70ca1c00e87b6a2a7358c2f7c6f11f2b20d33a63b23be98a8f6",
       "references": [
@@ -39025,7 +39025,7 @@
     {
       "caller": 4493024,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Options/CMainOptions2Drawer.cpp.obj",
-      "symbol": "?ProcessMessages@CMainOptions2Drawer@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMessages@CMainOptions2Drawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 285,
       "fingerprint": "65bba8c62f2e2e9082d1eaffc699bbd67154b83bb74e02802d3deae8853e3d95",
       "references": [
@@ -39235,7 +39235,7 @@
     {
       "caller": 4496688,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Preview/CPreviewDrawer.cpp.obj",
-      "symbol": "?ProcessMessages@CPreviewDrawer@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMessages@CPreviewDrawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 304,
       "fingerprint": "7d427bcf7a901b1b1b8b24f0bdd48a0791f38ca14caa4fc1572aae809b9569a5",
       "references": [
@@ -40020,7 +40020,7 @@
     {
       "caller": 4506720,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunButtons.cpp.obj",
-      "symbol": "?ProcessMsg@CGunButtons@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CGunButtons@@UAEHPAUtagMESSAGE@@@Z",
       "size": 322,
       "fingerprint": "48c2066131b5833145e9a5fdace85f7ec28759a4a21ceb5090737953cf3dd369",
       "references": [
@@ -40100,7 +40100,7 @@
     {
       "caller": 4509376,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
-      "symbol": "?ProcessMsg@CGunController@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CGunController@@UAEHPAUtagMESSAGE@@@Z",
       "size": 232,
       "fingerprint": "8e2259f47f073558e1b5f6d6d28864334bc0aba50d0739ef4c64d834a98f587e",
       "references": [
@@ -40460,7 +40460,7 @@
     {
       "caller": 4518240,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CHiliteButtons.cpp.obj",
-      "symbol": "?ProcessMsg@CHiliteButtons@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CHiliteButtons@@UAEHPAUtagMESSAGE@@@Z",
       "size": 225,
       "fingerprint": "ba0d146b84f6a4112bade8c1ddd12fba6178f6b782fd2e419105385e3487b842",
       "references": [
@@ -40492,7 +40492,7 @@
     {
       "caller": 4519616,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CHiliteController.cpp.obj",
-      "symbol": "?ProcessMsg@CHiliteController@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CHiliteController@@UAEHPAUtagMESSAGE@@@Z",
       "size": 500,
       "fingerprint": "e7c041743a383b051d501b78614c0e0062022ad0a33f9a0689e1bd02b0caa5c9",
       "references": [
@@ -40870,7 +40870,7 @@
     {
       "caller": 4524400,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Results/CSuccFailDrawer.cpp.obj",
-      "symbol": "?ProcessMessages@CSuccFailDrawer@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMessages@CSuccFailDrawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 122,
       "fingerprint": "98b866e8076f9137bf88afcc8314ab86b1092ab8ecba4b56882a97c703612957",
       "references": [
@@ -41196,7 +41196,7 @@
     {
       "caller": 4527856,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Password/CPasswordDrawer.cpp.obj",
-      "symbol": "?ProcessMessages@CPasswordDrawer@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMessages@CPasswordDrawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 894,
       "fingerprint": "2a54e1bce5ad63fd83b61f338837ff9e707b4152c9b26055c2d3082be8f9cf5b",
       "references": [
@@ -41424,7 +41424,7 @@
     {
       "caller": 4532304,
       "object": "CMakeFiles/LEMBALL.dir/src/Multiplayer/CNetworkManager.cpp.obj",
-      "symbol": "?ProcessMsg@CNetworkManager@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMsg@CNetworkManager@@UAEHPAUtagMESSAGE@@@Z",
       "size": 497,
       "fingerprint": "5617a8ea59e468c48addfc83e89dec5ca48f64e44ebf86e4f27c561b1f27abaa",
       "references": [
@@ -41740,7 +41740,7 @@
     {
       "caller": 4538464,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
-      "symbol": "?ProcessMessages@CNetworkOptionsDrawer@@UAEHPAUMessage@@@Z",
+      "symbol": "?ProcessMessages@CNetworkOptionsDrawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 1162,
       "fingerprint": "40d8522c396d61b8ad4a9b51bc81a101d5df3f2175fddd6e86c139521b1e318a",
       "references": [
@@ -42939,7 +42939,7 @@
           "original_pointer": 4796488,
           "original_bytes": "4d134000",
           "thunk": 4199245,
-          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -42984,7 +42984,7 @@
           "original_pointer": 4796512,
           "original_bytes": "74374000",
           "thunk": 4208500,
-          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -43008,7 +43008,7 @@
           "original_pointer": 4796528,
           "original_bytes": "4d134000",
           "thunk": 4199245,
-          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -43053,7 +43053,7 @@
           "original_pointer": 4796552,
           "original_bytes": "74374000",
           "thunk": 4208500,
-          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -43118,7 +43118,7 @@
           "original_pointer": 4796600,
           "original_bytes": "4d134000",
           "thunk": 4199245,
-          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -43163,7 +43163,7 @@
           "original_pointer": 4796624,
           "original_bytes": "74374000",
           "thunk": 4208500,
-          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -43187,7 +43187,7 @@
           "original_pointer": 4796640,
           "original_bytes": "4d134000",
           "thunk": 4199245,
-          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -43232,7 +43232,7 @@
           "original_pointer": 4796664,
           "original_bytes": "74374000",
           "thunk": 4208500,
-          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -43256,7 +43256,7 @@
           "original_pointer": 4796680,
           "original_bytes": "281a4000",
           "thunk": 4201000,
-          "source_symbol": "?ProcessMsg@CDemo@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CDemo@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -43974,7 +43974,7 @@
           "original_pointer": 4797168,
           "original_bytes": "52364000",
           "thunk": 4208210,
-          "source_symbol": "?ProcessMsg@CGodManager@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CGodManager@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -46747,7 +46747,7 @@
           "original_pointer": 4799064,
           "original_bytes": "55294000",
           "thunk": 4204885,
-          "source_symbol": "?ProcessMsg@CAI@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CAI@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -47397,7 +47397,7 @@
           "original_pointer": 4799504,
           "original_bytes": "af154000",
           "thunk": 4199855,
-          "source_symbol": "?ProcessMsg@CAICursor@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CAICursor@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -65126,7 +65126,7 @@
           "original_pointer": 4811696,
           "original_bytes": "2d294000",
           "thunk": 4204845,
-          "source_symbol": "?ProcessMsg@CMain2DDisplay@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CMain2DDisplay@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -65841,7 +65841,7 @@
           "original_pointer": 4812272,
           "original_bytes": "f61e4000",
           "thunk": 4202230,
-          "source_symbol": "?ProcessMsg@C2D@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@C2D@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -66455,7 +66455,7 @@
           "original_pointer": 4813328,
           "original_bytes": "08304000",
           "thunk": 4206600,
-          "source_symbol": "?ProcessMsg@CPadToButton@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CPadToButton@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -67486,7 +67486,7 @@
           "original_pointer": 4814664,
           "original_bytes": "2c1b4000",
           "thunk": 4201260,
-          "source_symbol": "?ProcessMsg@CPanel@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CPanel@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -67593,7 +67593,7 @@
           "original_pointer": 4814736,
           "original_bytes": "5a104000",
           "thunk": 4198490,
-          "source_symbol": "?ProcessMsg@CPauseWindow@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CPauseWindow@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -67857,7 +67857,7 @@
           "original_pointer": 4815008,
           "original_bytes": "89184000",
           "thunk": 4200585,
-          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -67979,7 +67979,7 @@
           "original_pointer": 4815076,
           "original_bytes": "05154000",
           "thunk": 4199685,
-          "source_symbol": "?ProcessMessages@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 72,
@@ -68093,7 +68093,7 @@
           "original_pointer": 4815168,
           "original_bytes": "4d134000",
           "thunk": 4199245,
-          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -68138,7 +68138,7 @@
           "original_pointer": 4815192,
           "original_bytes": "74374000",
           "thunk": 4208500,
-          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -68371,7 +68371,7 @@
           "original_pointer": 4815456,
           "original_bytes": "89184000",
           "thunk": 4200585,
-          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -68493,7 +68493,7 @@
           "original_pointer": 4815524,
           "original_bytes": "3e2c4000",
           "thunk": 4205630,
-          "source_symbol": "?ProcessMessages@CIntroAnimDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CIntroAnimDrawer@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 64,
@@ -68593,7 +68593,7 @@
           "original_pointer": 4815592,
           "original_bytes": "89184000",
           "thunk": 4200585,
-          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -68715,7 +68715,7 @@
           "original_pointer": 4815660,
           "original_bytes": "2d244000",
           "thunk": 4203565,
-          "source_symbol": "?ProcessMessages@CMainOptions1Drawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CMainOptions1Drawer@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 64,
@@ -68798,7 +68798,7 @@
           "original_pointer": 4815720,
           "original_bytes": "89184000",
           "thunk": 4200585,
-          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -68920,7 +68920,7 @@
           "original_pointer": 4815788,
           "original_bytes": "25314000",
           "thunk": 4206885,
-          "source_symbol": "?ProcessMessages@CMainOptions2Drawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CMainOptions2Drawer@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 64,
@@ -69003,7 +69003,7 @@
           "original_pointer": 4815848,
           "original_bytes": "89184000",
           "thunk": 4200585,
-          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -69125,7 +69125,7 @@
           "original_pointer": 4815916,
           "original_bytes": "312f4000",
           "thunk": 4206385,
-          "source_symbol": "?ProcessMessages@CPreviewDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CPreviewDrawer@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 64,
@@ -69191,7 +69191,7 @@
           "original_pointer": 4815976,
           "original_bytes": "4d134000",
           "thunk": 4199245,
-          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -69236,7 +69236,7 @@
           "original_pointer": 4816000,
           "original_bytes": "74374000",
           "thunk": 4208500,
-          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -69311,7 +69311,7 @@
           "original_pointer": 4816040,
           "original_bytes": "6d1b4000",
           "thunk": 4201325,
-          "source_symbol": "?ProcessMsg@CAboutScreen@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CAboutScreen@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -69443,7 +69443,7 @@
           "original_pointer": 4816128,
           "original_bytes": "281f4000",
           "thunk": 4202280,
-          "source_symbol": "?ProcessMsg@CGunButtons@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CGunButtons@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -69878,7 +69878,7 @@
           "original_pointer": 4816664,
           "original_bytes": "dc1a4000",
           "thunk": 4201180,
-          "source_symbol": "?ProcessMsg@CGunController@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CGunController@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -70383,7 +70383,7 @@
           "original_pointer": 4817240,
           "original_bytes": "6c264000",
           "thunk": 4204140,
-          "source_symbol": "?ProcessMsg@CHiliteButtons@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CHiliteButtons@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -70588,7 +70588,7 @@
           "original_pointer": 4817480,
           "original_bytes": "23154000",
           "thunk": 4199715,
-          "source_symbol": "?ProcessMsg@CHiliteController@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CHiliteController@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -70821,7 +70821,7 @@
           "original_pointer": 4817744,
           "original_bytes": "89184000",
           "thunk": 4200585,
-          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -70943,7 +70943,7 @@
           "original_pointer": 4817812,
           "original_bytes": "4b104000",
           "thunk": 4198475,
-          "source_symbol": "?ProcessMessages@CSuccFailDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CSuccFailDrawer@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 64,
@@ -71009,7 +71009,7 @@
           "original_pointer": 4817872,
           "original_bytes": "4d134000",
           "thunk": 4199245,
-          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -71054,7 +71054,7 @@
           "original_pointer": 4817896,
           "original_bytes": "74374000",
           "thunk": 4208500,
-          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -71095,7 +71095,7 @@
           "original_pointer": 4817920,
           "original_bytes": "89184000",
           "thunk": 4200585,
-          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -71217,7 +71217,7 @@
           "original_pointer": 4817988,
           "original_bytes": "3e1d4000",
           "thunk": 4201790,
-          "source_symbol": "?ProcessMessages@CPasswordDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CPasswordDrawer@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 64,
@@ -71707,7 +71707,7 @@
           "original_pointer": 4818432,
           "original_bytes": "b82f4000",
           "thunk": 4206520,
-          "source_symbol": "?ProcessMsg@CNetworkManager@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CNetworkManager@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 12,
@@ -71807,7 +71807,7 @@
           "original_pointer": 4818488,
           "original_bytes": "89184000",
           "thunk": 4200585,
-          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendDrawer@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -71929,7 +71929,7 @@
           "original_pointer": 4818556,
           "original_bytes": "2d384000",
           "thunk": 4208685,
-          "source_symbol": "?ProcessMessages@CNetworkOptionsDrawer@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CNetworkOptionsDrawer@@UAEHPAUtagMESSAGE@@@Z"
         },
         {
           "offset": 64,
@@ -72061,7 +72061,7 @@
           "original_pointer": 4818656,
           "original_bytes": "4d134000",
           "thunk": 4199245,
-          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },
@@ -72106,7 +72106,7 @@
           "original_pointer": 4818680,
           "original_bytes": "74374000",
           "thunk": 4208500,
-          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUMessage@@@Z"
+          "source_symbol": "?ProcessMessages@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z"
         }
       ]
     },

@@ -7,7 +7,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Startup/PreInit.h"
 #include "Engine/Streams/CVSOStream.h"
@@ -178,7 +178,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 {
 	CWnd* window;
 	CREATESTRUCTA* create;
-	Message posted;
+	tagMESSAGE posted;
 	short mouseX;
 	short mouseY;
 	unsigned int style;
@@ -485,7 +485,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	case WM_COMMAND: {
 		menuAction = window->SelectMenu(p_message, p_wParam, p_lParam);
 		if (menuAction != 0) {
-			Message command;
+			tagMESSAGE command;
 			command.m_type = MESSAGE_WINDOW_COMMAND;
 			command.m_time = CurrentQueueTimer();
 			command.m_code = menuAction;
@@ -549,7 +549,7 @@ void CWnd::Move(const CVSPoint& p_point)
 void CWnd::ProcessMouseMoves()
 {
 	POINT position;
-	Message posted;
+	tagMESSAGE posted;
 
 	GetCursorPos(&position);
 	if (position.x != g_nLastCursorX || position.y != g_nLastCursorY) {

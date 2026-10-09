@@ -2,7 +2,7 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
@@ -104,7 +104,7 @@ void CTCPIPBroadcast::GotName(int p_failed)
 	else {
 		*g_pErrorOutput << "Specified computer name not found\n";
 		if (m_addressMode == BROADCAST_ADDRESS_SPECIFIC) {
-			Message message;
+			tagMESSAGE message;
 			message.m_type = NETWORK_EVENT_HOST_LOOKUP_FAILED;
 			message.m_code = STATUS_HOST_LOOKUP_FAILED;
 			g_pNetworkStatusQueue->Post(message);
@@ -191,7 +191,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 	int option;
 	int selectResult;
 	TcpIpSocketAddress address;
-	Message message;
+	tagMESSAGE message;
 
 	if (p_failed) {
 		*g_pErrorOutput << "Failed to determine service port number\n";

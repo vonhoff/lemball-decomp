@@ -1,14 +1,14 @@
 #include "CTimedQueue.h"
 
-#include "Message.h"
+#include "tagMESSAGE.h"
 
 // FUNCTION: LEMBALL 0x00458e80
-bool CTimedQueue::Post(Message& p_message)
+bool CTimedQueue::Post(tagMESSAGE& p_message)
 {
-	Message* slot;
+	tagMESSAGE* slot;
 	unsigned int count;
 	unsigned int index;
-	Message* message;
+	tagMESSAGE* message;
 
 	slot = m_readCursor;
 	if (m_capacity == m_messageCount) {
@@ -37,7 +37,7 @@ bool CTimedQueue::Post(Message& p_message)
 }
 
 // FUNCTION: LEMBALL 0x00458ef0
-bool CTimedQueue::Send(Message& p_message)
+bool CTimedQueue::Send(tagMESSAGE& p_message)
 {
 	m_sendCount = m_sendCount + 1;
 	return (unsigned int) Process(&p_message) >= 1;

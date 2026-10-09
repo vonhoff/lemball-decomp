@@ -4,7 +4,7 @@
 #include "CMasterInput.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 
 #include <stddef.h>
 
@@ -135,7 +135,9 @@ void CHotAreaHandler::Reset()
 }
 
 // FUNCTION: LEMBALL 0x0046a380
-void CHotAreaHandler::ProcessArea(Message* p_message, const CVSPoint& p_point, class CHotAreaHandler* p_currentHandler)
+void CHotAreaHandler::ProcessArea(tagMESSAGE* p_message,
+								  const CVSPoint& p_point,
+								  class CHotAreaHandler* p_currentHandler)
 {
 	unsigned short type;
 	eMouseButtonIndex button;

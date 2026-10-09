@@ -7,7 +7,7 @@
 #include "CGodManager.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Time/VsTime.h"
 #include "GameView/Animation/CAnimSpecial.h"
@@ -870,7 +870,7 @@ void CAI::FireBullet(unsigned short p_id,
 }
 
 // FUNCTION: LEMBALL 0x00412660
-int CAI::ProcessMsg(Message* p_message)
+int CAI::ProcessMsg(tagMESSAGE* p_message)
 {
 	unsigned int messageType = p_message->m_type;
 	if (messageType != AI_MESSAGE_REQUEST_FIRE) {

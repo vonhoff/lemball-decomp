@@ -16,7 +16,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResFONT.h"
@@ -669,7 +669,7 @@ void CPauseWindow::OnExternalButtonUp(const CVSPoint& p_point, eMouseButtonIndex
 }
 
 // FUNCTION: LEMBALL 0x00444c10
-int CPauseWindow::ProcessMsg(Message* p_message)
+int CPauseWindow::ProcessMsg(tagMESSAGE* p_message)
 {
 	int pauseMessage = m_pauseMessage;
 

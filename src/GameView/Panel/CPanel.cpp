@@ -8,7 +8,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResZRLE.h"
@@ -176,7 +176,7 @@ unsigned long CPanel::TranslateKey(unsigned long p_key)
 }
 
 // FUNCTION: LEMBALL 0x004432c0
-int CPanel::ProcessMsg(Message* p_message)
+int CPanel::ProcessMsg(tagMESSAGE* p_message)
 {
 	if (m_game->m_paused == 0 && m_game->m_ai->m_gameStatus != GAME_STATUS_PAUSED) {
 		unsigned int type = p_message->m_type;

@@ -11,7 +11,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/ResourceLimits.h"
@@ -265,7 +265,7 @@ void CAboutScreen::DrawChangedRegion()
 }
 
 // FUNCTION: LEMBALL 0x0044be80
-int CAboutScreen::ProcessMsg(Message* p_message)
+int CAboutScreen::ProcessMsg(tagMESSAGE* p_message)
 {
 	switch (p_message->m_type) {
 	case MESSAGE_KEY_DOWN:

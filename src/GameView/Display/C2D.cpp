@@ -50,7 +50,7 @@ struct ObjectClipGrid {
 #include "Engine/Math/CFixed.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Math/FixedPoint.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Sorting/VsSort.h"
@@ -1116,7 +1116,7 @@ void C2D::AddObjectToGroup(int p_objectNo, int p_markSelection)
 // FUNCTION: LEMBALL 0x00437170
 void C2D::FormGroup()
 {
-	Message message;
+	tagMESSAGE message;
 	message.m_type = AI_MESSAGE_FORM_GROUP;
 	message.m_code = m_groupCount;
 	message.m_time = 0;
@@ -1135,7 +1135,7 @@ void C2D::FormGroup()
 // FUNCTION: LEMBALL 0x004371e0
 void C2D::MoveGroup(const CVSPoint& p_point)
 {
-	Message msg;
+	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_MOVE_GROUP;
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
 	msg.m_code = p_point.m_x;
@@ -1149,7 +1149,7 @@ void C2D::MoveGroup(const CVSPoint& p_point)
 // FUNCTION: LEMBALL 0x00437250
 void C2D::CancelMoves()
 {
-	Message msg;
+	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_CANCEL_MOVES;
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
 	m_lemmingManager->Post(msg);
@@ -1161,7 +1161,7 @@ void C2D::CancelMoves()
 // FUNCTION: LEMBALL 0x004372a0
 void C2D::NextGroup()
 {
-	Message msg;
+	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_NEXT_GROUP;
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
 	m_lemmingManager->Post(msg);
@@ -1173,7 +1173,7 @@ void C2D::NextGroup()
 // FUNCTION: LEMBALL 0x004372f0
 void C2D::PrevGroup()
 {
-	Message msg;
+	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_PREVIOUS_GROUP;
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
 	m_lemmingManager->Post(msg);
@@ -1185,7 +1185,7 @@ void C2D::PrevGroup()
 // FUNCTION: LEMBALL 0x00437340
 void C2D::SelectLemming(int p_playerIndex)
 {
-	Message msg;
+	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_USE_OBJECT;
 	msg.m_time = 0;
 	msg.m_code = m_ai->m_networkLemmings[p_playerIndex]->m_objectId;
@@ -1199,7 +1199,7 @@ void C2D::SelectLemming(int p_playerIndex)
 // FUNCTION: LEMBALL 0x004373b0
 void C2D::SelectObject(int p_viewIndex)
 {
-	Message msg;
+	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_USE_OBJECT;
 	msg.m_time = 0;
 	msg.m_code = m_viewData[p_viewIndex].m_objectId;
@@ -1400,7 +1400,7 @@ void C2D::NoStateRightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gam
 {
 	CViewData* views;
 	int index;
-	Message message;
+	tagMESSAGE message;
 	message.m_type = AI_MESSAGE_REQUEST_FIRE;
 	memset(&message.m_time,
 		   0,
@@ -1507,7 +1507,7 @@ bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 }
 
 // FUNCTION: LEMBALL 0x00437b60
-int C2D::ProcessMsg(Message* p_message)
+int C2D::ProcessMsg(tagMESSAGE* p_message)
 {
 	if ((g_pDemo == NULL || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
 		return 0;
@@ -1678,7 +1678,7 @@ void C2D::SetMouseShape()
 // FUNCTION: LEMBALL 0x004380c0
 void C2D::SendCursorMsg()
 {
-	Message message;
+	tagMESSAGE message;
 	int screenX;
 	int screenY;
 	message.m_type = AI_MESSAGE_CURSOR_POSITION;

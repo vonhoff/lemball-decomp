@@ -7,7 +7,7 @@
 #include "CWriteSocket.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
@@ -85,7 +85,7 @@ void CConnect::Stop()
 // FUNCTION: LEMBALL 0x00460d70
 void CConnect::FirstReceive()
 {
-	Message message;
+	tagMESSAGE message;
 
 	message.m_type = CONNECT_QUEUE_FIRST_RECEIVE;
 	m_established = 1;
@@ -111,7 +111,7 @@ bool CConnect::Send(CNetworkMessage& p_message)
 	bool opened;
 	bool isOpen;
 	bool sent;
-	Message message;
+	tagMESSAGE message;
 
 	if (m_readReady != 0 && m_killRequested == 0) {
 		isOpen = p_message.m_openDepth > 0;
@@ -142,7 +142,7 @@ bool CConnect::Send(CNetworkMessage& p_message)
 // FUNCTION: LEMBALL 0x00460f00
 void CConnect::Closed(int p_notifyPeer)
 {
-	Message message;
+	tagMESSAGE message;
 
 	m_killRequested = 1;
 	CRwSocket::Closed(p_notifyPeer);
@@ -158,7 +158,7 @@ void CConnect::Closed(int p_notifyPeer)
 CNetworkMessage* CConnect::ReceiveAcknowledgement()
 {
 	CNetworkMessage* acknowledgement;
-	Message message;
+	tagMESSAGE message;
 
 	acknowledgement = CWriteSocket::ReceiveAcknowledgement();
 	if (acknowledgement != NULL) {
@@ -186,7 +186,7 @@ void CConnect::Kill()
 // FUNCTION: LEMBALL 0x00460ff0
 void CConnect::PostRead(NetworkEvents p_event, CBasePacket* p_packet)
 {
-	Message message;
+	tagMESSAGE message;
 
 	message.m_type = p_event;
 	message.m_code = 0;

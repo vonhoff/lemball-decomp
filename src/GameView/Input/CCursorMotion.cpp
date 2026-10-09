@@ -6,7 +6,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Time/VsTime.h"
 #include "GameView/Animation/CLemmingAnimsManager.h"
 #include "Gameplay/Simulation/CAI.h"
@@ -54,7 +54,7 @@ void CCursorMotion::PostPosition()
 {
 	int x;
 	int y;
-	Message message;
+	tagMESSAGE message;
 	message.m_type = AI_MESSAGE_CURSOR_POSITION;
 	memset(&message.m_time, 0, 16);
 	int screenX = m_fixedX >> FIXED_POINT_FRACTION_BITS;

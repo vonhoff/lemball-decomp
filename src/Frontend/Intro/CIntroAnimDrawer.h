@@ -15,7 +15,7 @@ class CVSRect;
 class CIntroAnimDrawer : public CBaseFrontendDrawer {
 public:
 	CIntroAnimDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect, unsigned int p_completionSequence);
-	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
+	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
 	virtual void Load();                              // vtable+0x40
 	virtual void Processing();                        // vtable+0x38
 	virtual void UnLoad();                            // vtable+0x44

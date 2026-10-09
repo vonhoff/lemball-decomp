@@ -10,7 +10,7 @@
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBase.h"
@@ -99,7 +99,7 @@ void CBaseCursor::Initialise()
 }
 
 // FUNCTION: LEMBALL 0x0046b0e0
-int CBaseCursor::ProcessMsg(Message* p_message)
+int CBaseCursor::ProcessMsg(tagMESSAGE* p_message)
 {
 	int code;
 	unsigned long now;
@@ -116,7 +116,7 @@ int CBaseCursor::ProcessMsg(Message* p_message)
 		return 0;
 	case MESSAGE_KEY_UP:
 	case MESSAGE_KEY_DOWN: {
-		Message posted;
+		tagMESSAGE posted;
 		if (m_keyboardInput == 0) {
 			goto done;
 		}
@@ -481,7 +481,7 @@ void CBaseCursor::Process()
 	m_position.m_x = (short) (x >> FIXED_POINT_FRACTION_BITS);
 	m_position.m_y = (short) (y >> FIXED_POINT_FRACTION_BITS);
 	if (m_keyboardInput != 0 && !m_position.Equals(oldPosition)) {
-		Message posted;
+		tagMESSAGE posted;
 		posted.m_type = MESSAGE_CURSOR_MOVED;
 		posted.m_time = CurrentQueueTimer();
 		posted.m_code = PackParam(m_position.m_x, m_position.m_y);

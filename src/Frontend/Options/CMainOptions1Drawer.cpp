@@ -54,7 +54,7 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 													RES_NEWFRONT_ICONS_LORES_OKAY,
 													RES_NEWFRONT_ICONS_LORES_FULLSCREEN};
 
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 
 // FUNCTION: LEMBALL 0x00448200
 CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
@@ -235,7 +235,7 @@ void CMainOptions1Drawer::DrawBackGround()
 }
 
 // FUNCTION: LEMBALL 0x00448620
-bool CMainOptions1Drawer::ProcessMessages(Message* p_message)
+bool CMainOptions1Drawer::ProcessMessages(tagMESSAGE* p_message)
 {
 	int type;
 	int mode;

@@ -60,7 +60,7 @@ public:
 	CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect);
 	bool AddWord(char* p_source, char* p_line, int& p_sourcePos, int& p_linePos);
 	bool ConfirmedAction(eUserActions p_action);
-	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
+	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
 	virtual void DrawAnims();                         // vtable+0x48
 	virtual void DrawBackGround();                    // vtable+0x50
 	virtual void DrawText();                          // vtable+0x4c

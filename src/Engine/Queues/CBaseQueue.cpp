@@ -1,7 +1,7 @@
 #include "CBaseQueue.h"
 
 #include "CBaseQueueHandler.h"
-#include "Message.h"
+#include "tagMESSAGE.h"
 
 #include <stddef.h>
 
@@ -14,9 +14,9 @@ struct QueueHandlerNode {
 // FUNCTION: LEMBALL 0x00463020
 CBaseQueue::CBaseQueue(unsigned int p_capacity)
 {
-	Message* buffer;
+	tagMESSAGE* buffer;
 
-	buffer = (Message*) operator new(p_capacity * sizeof(*buffer));
+	buffer = (tagMESSAGE*) operator new(p_capacity * sizeof(*buffer));
 	m_messageBuffer = buffer;
 	m_capacity = p_capacity;
 	m_messageBufferEnd = buffer + p_capacity;
@@ -35,10 +35,10 @@ CBaseQueue::CBaseQueue(unsigned int p_capacity)
 // FUNCTION: LEMBALL 0x004630a0
 CBaseQueue::CBaseQueue(unsigned int p_capacity, char* p_name)
 {
-	Message* buffer;
+	tagMESSAGE* buffer;
 
 	(void) p_name;
-	buffer = (Message*) operator new(p_capacity * sizeof(*buffer));
+	buffer = (tagMESSAGE*) operator new(p_capacity * sizeof(*buffer));
 	m_messageBuffer = buffer;
 	m_capacity = p_capacity;
 	m_messageBufferEnd = buffer + p_capacity;
@@ -77,9 +77,9 @@ CBaseQueue::~CBaseQueue()
 }
 
 // FUNCTION: LEMBALL 0x004631a0
-bool CBaseQueue::Post(Message& p_message)
+bool CBaseQueue::Post(tagMESSAGE& p_message)
 {
-	Message* write;
+	tagMESSAGE* write;
 	bool result;
 
 	EnterCritical();
@@ -106,7 +106,7 @@ bool CBaseQueue::Post(Message& p_message)
 }
 
 // FUNCTION: LEMBALL 0x00463230
-bool CBaseQueue::Send(Message& p_message)
+bool CBaseQueue::Send(tagMESSAGE& p_message)
 {
 	bool result;
 
@@ -228,7 +228,7 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 }
 
 // FUNCTION: LEMBALL 0x00463570
-bool CBaseQueue::GetNth(Message* p_message, unsigned int p_index)
+bool CBaseQueue::GetNth(tagMESSAGE* p_message, unsigned int p_index)
 {
 	EnterCritical();
 	PeekNth(p_message, p_index);
@@ -238,9 +238,9 @@ bool CBaseQueue::GetNth(Message* p_message, unsigned int p_index)
 }
 
 // FUNCTION: LEMBALL 0x004635b0
-bool CBaseQueue::PeekNth(Message* p_message, unsigned int p_index)
+bool CBaseQueue::PeekNth(tagMESSAGE* p_message, unsigned int p_index)
 {
-	Message* slot;
+	tagMESSAGE* slot;
 
 	EnterCritical();
 	slot = m_readCursor + p_index;
@@ -253,11 +253,11 @@ bool CBaseQueue::PeekNth(Message* p_message, unsigned int p_index)
 }
 
 // FUNCTION: LEMBALL 0x00463610
-bool CBaseQueue::PutNth(Message* p_message, unsigned int p_index)
+bool CBaseQueue::PutNth(tagMESSAGE* p_message, unsigned int p_index)
 {
-	Message* slot;
-	Message* dest;
-	Message* src;
+	tagMESSAGE* slot;
+	tagMESSAGE* dest;
+	tagMESSAGE* src;
 	unsigned int shifted;
 
 	EnterCritical();
@@ -294,11 +294,11 @@ bool CBaseQueue::PutNth(Message* p_message, unsigned int p_index)
 // FUNCTION: LEMBALL 0x004636e0
 bool CBaseQueue::DeleteNth(unsigned int p_index)
 {
-	Message* slot;
-	Message* src;
-	Message* read;
+	tagMESSAGE* slot;
+	tagMESSAGE* src;
+	tagMESSAGE* read;
 	unsigned int count;
-	Message* end;
+	tagMESSAGE* end;
 
 	EnterCritical();
 	read = m_readCursor;
@@ -355,7 +355,7 @@ bool CBaseQueue::DeleteNth(unsigned int p_index)
 // FUNCTION: LEMBALL 0x00463810
 bool CBaseQueue::ProcessNMsgs(unsigned int p_count)
 {
-	Message message;
+	tagMESSAGE message;
 	unsigned int available;
 	unsigned int index;
 
@@ -383,7 +383,7 @@ bool CBaseQueue::ProcessNMsgs(unsigned int p_count)
 }
 
 // FUNCTION: LEMBALL 0x004638a0
-bool CBaseQueue::Process(Message* p_message)
+bool CBaseQueue::Process(tagMESSAGE* p_message)
 {
 	unsigned int index;
 	QueueHandlerNode* node;

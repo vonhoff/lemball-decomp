@@ -3,19 +3,19 @@
 #include "Engine/Queues/CBaseQueue.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Input/InputTranslation.h"
 
 #include <windows.h>
 
 // FUNCTION: LEMBALL 0x00472a60
-int CTranslator::ProcessMsg(Message* p_message)
+int CTranslator::ProcessMsg(tagMESSAGE* p_message)
 {
-	Message translated;
+	tagMESSAGE translated;
 	InputTranslationEntry* entry;
 	int index;
 	short keyState;
-	Message* message = p_message;
+	tagMESSAGE* message = p_message;
 
 	translated.m_time = message->m_time;
 	unsigned short type = message->m_type;

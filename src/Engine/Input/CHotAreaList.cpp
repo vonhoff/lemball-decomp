@@ -4,7 +4,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
 
 #include <stddef.h>
@@ -120,7 +120,7 @@ void CHotAreaList::DeleteEntry(CHotAreaElement* p_entry)
 }
 
 // FUNCTION: LEMBALL 0x0046a710
-int CHotAreaList::ProcessMsg(Message* p_message)
+int CHotAreaList::ProcessMsg(tagMESSAGE* p_message)
 {
 	switch ((int) p_message->m_type) {
 	case MESSAGE_MOUSE_BUTTON_UP:
@@ -142,12 +142,12 @@ int CHotAreaList::ProcessMsg(Message* p_message)
 }
 
 // FUNCTION: LEMBALL 0x0046a770
-void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, Message* p_message)
+void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_message)
 {
 	CHotAreaHandler* handler;
 	CHotAreaElement* entry;
 	CHotAreaElement* previous;
-	Message fallback;
+	tagMESSAGE fallback;
 	unsigned int type;
 	const CVSPoint* origin;
 

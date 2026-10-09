@@ -11,7 +11,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Memory/CArena.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Statistics/CStatManager.h"
@@ -516,7 +516,7 @@ void CSuccFailDrawer::DrawText()
 }
 
 // FUNCTION: LEMBALL 0x00450970
-bool CSuccFailDrawer::ProcessMessages(Message* p_message)
+bool CSuccFailDrawer::ProcessMessages(tagMESSAGE* p_message)
 {
 	switch ((unsigned int) p_message->m_type) {
 	case MESSAGE_BUTTON_RELEASED:

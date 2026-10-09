@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_CDEPRESSEDBUTTON_H
 
 #include "CPVButton.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 
 class CPVGWnd;
 class CVSRect;

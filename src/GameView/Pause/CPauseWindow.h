@@ -8,7 +8,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Text/CTextManager.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 
@@ -58,7 +58,7 @@ public:
 	CBaseRemap* Remap(int p_item);
 	CPauseWindow(CReceiveWindowState* p_receiverState, CPVGWnd* p_parentWindow, ePauseWindowMessages p_pauseMessage);
 	CVSRect CalculateWindow();
-	virtual int ProcessMsg(Message* p_message);                                          // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message);                                       // vtable+0x08
 	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags);       // vtable+0x04
 	virtual void FreeVram();                                                             // vtable+0x00
 	virtual void OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags);         // vtable+0x08

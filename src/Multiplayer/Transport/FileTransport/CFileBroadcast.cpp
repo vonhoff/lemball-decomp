@@ -2,7 +2,7 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/VsString.h"
 #include "Engine/Time/VsTime.h"
@@ -125,7 +125,7 @@ bool CFileBroadcast::Start(const char* p_name)
 		m_socketFlags = 1;
 		m_lastBroadcastTime = CurrentMilliTimer() - NETWORK_BROADCAST_INTERVAL_MS;
 
-		Message message;
+		tagMESSAGE message;
 		message.m_type = 2;
 		message.m_code = 0;
 		g_pNetworkStatusQueue->Post(message);

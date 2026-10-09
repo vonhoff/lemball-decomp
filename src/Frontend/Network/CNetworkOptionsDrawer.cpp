@@ -11,7 +11,7 @@
 #include "Engine/Input/CHotAreaList.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Text/TextAdvanceFlags.h"
@@ -671,7 +671,7 @@ void CNetworkOptionsDrawer::DrawAnims()
 }
 
 // FUNCTION: LEMBALL 0x00454060
-bool CNetworkOptionsDrawer::ProcessMessages(Message* p_message)
+bool CNetworkOptionsDrawer::ProcessMessages(tagMESSAGE* p_message)
 {
 	bool handled;
 	unsigned int code;

@@ -3,7 +3,7 @@
 
 #include "Engine/Memory/CArenaBase.h"
 #include "Platform/Windows/CCritical.h"
-struct Message;
+struct tagMESSAGE;
 
 class CBaseQueueHandler;
 struct QueueHandlerNode;
@@ -23,16 +23,16 @@ public:
 	bool Attach(CBaseQueueHandler* p_handler, int p_priority);
 	bool DeleteNth(unsigned int p_index);
 	bool Detach(CBaseQueueHandler* p_handler, int p_priority);
-	bool GetNth(Message* p_message, unsigned int p_index);
-	bool PeekNth(Message* p_message, unsigned int p_index);
-	bool Process(Message* p_message);
+	bool GetNth(tagMESSAGE* p_message, unsigned int p_index);
+	bool PeekNth(tagMESSAGE* p_message, unsigned int p_index);
+	bool Process(tagMESSAGE* p_message);
 	bool ProcessNMsgs(unsigned int p_count);
-	bool PutNth(Message* p_message, unsigned int p_index);
+	bool PutNth(tagMESSAGE* p_message, unsigned int p_index);
 	unsigned int GetMessageCount() { return m_messageCount; }
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
 	virtual ~CBaseQueue();                               // vtable+0x04
-	virtual bool Post(Message& p_message);               // vtable+0x08
-	virtual bool Send(Message& p_message);               // vtable+0x0c
+	virtual bool Post(tagMESSAGE& p_message);            // vtable+0x08
+	virtual bool Send(tagMESSAGE& p_message);            // vtable+0x0c
 	CBaseQueue();
 
 	friend class CTimedQueue;
@@ -46,10 +46,10 @@ private:
 	unsigned int m_postCount;        // 0x38
 	unsigned int m_sendCount;        // 0x3c
 	unsigned int m_unhandledCount;   // 0x40
-	Message* m_messageBuffer;        // 0x44
-	Message* m_messageBufferEnd;     // 0x48
-	Message* m_readCursor;           // 0x4c
-	Message* m_writeCursor;          // 0x50
+	tagMESSAGE* m_messageBuffer;     // 0x44
+	tagMESSAGE* m_messageBufferEnd;  // 0x48
+	tagMESSAGE* m_readCursor;        // 0x4c
+	tagMESSAGE* m_writeCursor;       // 0x50
 	QueueHandlerNode* m_handlerList; // 0x54
 };
 

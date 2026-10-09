@@ -8,7 +8,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Time/VsTime.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
@@ -129,7 +129,7 @@ void CTrackWindow::OnPaint(const CVSRect& p_rect)
 void CTrackWindow::SetButtonValue(int p_value)
 {
 	if (m_value != p_value) {
-		Message message;
+		tagMESSAGE message;
 		message.m_type = MESSAGE_BUTTON_RELEASED;
 		m_value = p_value;
 		message.m_time = CurrentQueueTimer();

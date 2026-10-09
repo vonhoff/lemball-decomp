@@ -3,7 +3,7 @@
 struct _Filet;
 
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResBIN.h"
 #include "Engine/Time/VsTime.h"
@@ -71,7 +71,7 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	if (*m_readCursor != (p_packetIndex & DEMO_PACKET_INDEX_BYTE_MASK)) {
 		return false;
 	}
-	Message message;
+	tagMESSAGE message;
 	message.m_time = CurrentQueueTimer();
 	m_readCursor++;
 	message.m_type = m_readCursor[0];
@@ -253,7 +253,7 @@ void CDemo::GameIsOver()
 }
 
 // FUNCTION: LEMBALL 0x004096b0
-int CDemo::ProcessMsg(Message* p_message)
+int CDemo::ProcessMsg(tagMESSAGE* p_message)
 {
 	if (m_demoMode != 0) {
 		unsigned short type = p_message->m_type;

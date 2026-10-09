@@ -1,5 +1,5 @@
-#ifndef LEMBALL_VISOS_FOUNDATION_MESSAGE_H
-#define LEMBALL_VISOS_FOUNDATION_MESSAGE_H
+#ifndef LEMBALL_VISOS_FOUNDATION_TAGMESSAGE_H
+#define LEMBALL_VISOS_FOUNDATION_TAGMESSAGE_H
 
 #define INPUT_KEY_UP 1
 #define INPUT_KEY_DOWN 2
@@ -90,7 +90,7 @@ enum eMouseButtonIndex {
 #define MESSAGE_CURSOR_MOVED 10
 
 // SIZE 0x14
-struct Message {
+struct tagMESSAGE {
 	unsigned short m_type;     // 0x00
 	unsigned short m_reserved; // 0x02
 	unsigned int m_time;       // 0x04

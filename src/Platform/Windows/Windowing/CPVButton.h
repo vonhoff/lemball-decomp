@@ -5,7 +5,7 @@
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Math/CVSPoint.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 
 class CBaseQueue;
 class CPrimitive;

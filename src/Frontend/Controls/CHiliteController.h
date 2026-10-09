@@ -5,7 +5,7 @@
 #include "../../Engine/Animation/CStaticAnim.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 // SIZE 0x10
 struct HiliteControllerJunction {
 	unsigned int m_present;        // 0x00
@@ -33,7 +33,7 @@ public:
 					  int p_arg2,
 					  unsigned int p_layoutMode,
 					  unsigned int p_horizontalMode);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual ~CHiliteController();               // vtable+0x04
 	void ActivateButtons(int p_active);
 	void AddButton(int p_x,
@@ -62,7 +62,7 @@ public:
 
 private:
 	int m_buttonCount;                       // 0x80
-	Message m_navigationState;               // 0x84
+	tagMESSAGE m_navigationState;            // 0x84
 	int m_currentX;                          // 0x98
 	int m_currentY;                          // 0x9c
 	int m_targetX;                           // 0xa0

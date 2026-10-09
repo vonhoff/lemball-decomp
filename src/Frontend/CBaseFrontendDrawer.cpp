@@ -47,7 +47,7 @@ extern char g_szUnknownUserActionReceived[];
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "tagPRIMS.h"
 
@@ -564,7 +564,7 @@ void CBaseFrontendDrawer::DrawFrame(CVSRect p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00446480
-int CBaseFrontendDrawer::ProcessMsg(Message* p_message)
+int CBaseFrontendDrawer::ProcessMsg(tagMESSAGE* p_message)
 {
 	unsigned int sequence;
 
@@ -676,7 +676,7 @@ void CBaseFrontendDrawer::Processing()
 }
 
 // FUNCTION: LEMBALL 0x00446f60
-bool CBaseFrontendDrawer::ProcessMessages(Message* p_message)
+bool CBaseFrontendDrawer::ProcessMessages(tagMESSAGE* p_message)
 {
 	return false;
 }

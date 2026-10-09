@@ -1,7 +1,7 @@
 #include "Platform/Windows/Input/InputTranslation.h"
 
 #include "Engine/Input/CMasterInput.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 
 #include <stddef.h>
 
@@ -113,7 +113,7 @@ bool QuitInput()
 }
 
 // FUNCTION: LEMBALL 0x00472220
-bool __stdcall HandleInputQuitEvent(const Message* p_event)
+bool __stdcall HandleInputQuitEvent(const tagMESSAGE* p_event)
 {
 	switch ((unsigned int) p_event->m_type) {
 	case MESSAGE_KEY_UP:

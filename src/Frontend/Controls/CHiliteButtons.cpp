@@ -5,7 +5,7 @@
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Time/VsTime.h"
 #include "Frontend/Controls/ControlMessages.h"
@@ -76,9 +76,9 @@ CHiliteButtons::~CHiliteButtons()
 }
 
 // FUNCTION: LEMBALL 0x0044f160
-int CHiliteButtons::ProcessMsg(Message* p_message)
+int CHiliteButtons::ProcessMsg(tagMESSAGE* p_message)
 {
-	Message posted;
+	tagMESSAGE posted;
 	int nextValue;
 	posted.m_type = MESSAGE_BUTTON_RELEASED;
 	posted.m_time = CurrentQueueTimer();

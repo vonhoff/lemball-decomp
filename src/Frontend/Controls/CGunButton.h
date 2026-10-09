@@ -1,7 +1,7 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CGUNBUTTON_H
 #define LEMBALL_FRONTEND_CONTROLS_CGUNBUTTON_H
 
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 
 class CPVGWnd;

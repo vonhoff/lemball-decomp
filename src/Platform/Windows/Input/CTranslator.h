@@ -8,7 +8,7 @@
 class CTranslator : public CBaseQueueHandler {
 public:
 	CTranslator() {}
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 };
 
 extern CTranslator* g_pInputTranslator;

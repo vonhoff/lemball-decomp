@@ -37,7 +37,7 @@ class CSuccFailDrawer : public CBaseFrontendDrawer {
 public:
 	CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect, unsigned int p_success);
 	bool ConfirmedAction(eUserActions p_action);
-	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
+	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
 	virtual void DrawBackGround();                    // vtable+0x50
 	virtual void Load();                              // vtable+0x40
 	virtual void Processing();                        // vtable+0x38

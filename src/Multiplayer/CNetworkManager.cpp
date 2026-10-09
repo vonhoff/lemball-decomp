@@ -123,7 +123,7 @@ void CNetworkManager::Stop()
 	}
 }
 
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/Network/CNetworkOptionsProc.h"
@@ -134,7 +134,7 @@ extern char* g_szGameName;
 extern char g_szNetworkGameName[16];
 
 // FUNCTION: LEMBALL 0x00452850
-int CNetworkManager::ProcessMsg(Message* p_message)
+int CNetworkManager::ProcessMsg(tagMESSAGE* p_message)
 {
 	unsigned int messageType;
 	int status = p_message->m_code;

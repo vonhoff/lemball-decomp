@@ -4,7 +4,7 @@
 #include "Application/SoundEffects.h"
 #include "CPanel.h"
 #include "Engine/Input/CBaseCursor.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Platform/Windows/Input/CCursor.h"

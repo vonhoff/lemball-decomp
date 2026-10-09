@@ -2,7 +2,7 @@
 
 #include "CBaseFrontendDrawer.h"
 #include "CUserActionMessage.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
@@ -29,7 +29,7 @@ void CBaseFrontendProcess::Processing()
 }
 
 // FUNCTION: LEMBALL 0x00407f30
-bool CBaseFrontendProcess::ProcessMessages(Message* p_message)
+bool CBaseFrontendProcess::ProcessMessages(tagMESSAGE* p_message)
 {
 	return false;
 }
@@ -94,10 +94,10 @@ void CBaseFrontendProcess::Action(eUserActions p_action, eUserActionStages p_sta
 }
 
 // FUNCTION: LEMBALL 0x004468d0
-int CBaseFrontendProcess::ProcessMsg(Message* p_message)
+int CBaseFrontendProcess::ProcessMsg(tagMESSAGE* p_message)
 {
 	int code = p_message->m_code;
-	Message* message = p_message;
+	tagMESSAGE* message = p_message;
 	CReadPacket* packet;
 	CConnect* connection;
 	unsigned int id;

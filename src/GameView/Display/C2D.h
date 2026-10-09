@@ -16,7 +16,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Time/VsTime.h"
 #include "GameView/Pause/CReceiveWindowState.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -100,7 +100,7 @@ public:
 	virtual bool GetPauser();                                                      // vtable+0x04
 	virtual bool QuitYet();                                                        // vtable+0x2c
 	virtual int GetReturnState();                                                  // vtable+0x28
-	virtual int ProcessMsg(Message* p_message);                                    // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message);                                 // vtable+0x08
 	virtual void OnButtonDown(const CVSPoint& p_point, eMouseButtonIndex p_flags); // vtable+0x04
 	virtual void OnButtonUp(const CVSPoint& p_point, eMouseButtonIndex p_flags);   // vtable+0x08
 	virtual void OnDriverChange();                                                 // vtable+0x30

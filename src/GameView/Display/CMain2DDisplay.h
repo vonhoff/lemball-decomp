@@ -26,7 +26,7 @@ public:
 	CVSRect GetUseRect(int p_x, int p_y);
 	virtual bool GetMenu(int& p_count, MenuList*** p_menu); // vtable+0x0c
 	bool IsWindowValid();
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	int GetReturnState();
 	int QuitYet();
 	unsigned int GetStyle();

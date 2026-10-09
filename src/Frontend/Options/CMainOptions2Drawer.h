@@ -13,7 +13,7 @@ class CVSRect;
 class CMainOptions2Drawer : public CBaseFrontendDrawer {
 public:
 	CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2);
-	virtual bool ProcessMessages(Message* p_message); // vtable+0x3c
+	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
 	virtual void DrawBackGround();                    // vtable+0x50
 	virtual void Load();                              // vtable+0x40
 	virtual void UnLoad();                            // vtable+0x44

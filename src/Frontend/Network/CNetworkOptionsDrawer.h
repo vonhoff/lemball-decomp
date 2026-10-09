@@ -90,7 +90,7 @@ public:
 	bool AcceptingLock();
 	bool HighlightNextEntry();
 	bool HighlightPreviousEntry();
-	bool ProcessMessages(Message* p_message);
+	bool ProcessMessages(tagMESSAGE* p_message);
 	virtual void DrawAnims();         // vtable+0x48
 	virtual ~CNetworkOptionsDrawer(); // vtable+0x00
 	void DrawBackGround();

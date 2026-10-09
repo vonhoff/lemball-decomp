@@ -4,7 +4,7 @@
 #include "CIntroAnimAnimWindow.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Strings/CString.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "GameView/Display/CMain2DDisplay.h"
@@ -87,7 +87,7 @@ void CIntroAnimDrawer::EndPhase()
 }
 
 // FUNCTION: LEMBALL 0x00447610
-bool CIntroAnimDrawer::ProcessMessages(Message* p_message)
+bool CIntroAnimDrawer::ProcessMessages(tagMESSAGE* p_message)
 {
 	switch ((unsigned int) p_message->m_type) {
 	case MESSAGE_KEY_DOWN:

@@ -14,7 +14,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Strings/VsString.h"
@@ -308,9 +308,9 @@ void CPasswordDrawer::ShiftHilite(int p_delta)
 }
 
 // FUNCTION: LEMBALL 0x004516f0
-bool CPasswordDrawer::ProcessMessages(Message* p_message)
+bool CPasswordDrawer::ProcessMessages(tagMESSAGE* p_message)
 {
-	Message* message = p_message;
+	tagMESSAGE* message = p_message;
 	unsigned int code;
 
 	switch (message->m_type) {

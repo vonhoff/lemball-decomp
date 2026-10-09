@@ -5,7 +5,7 @@
 #include "CNetworkAddress.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/Transport/Protocol/CAckMessage.h"
@@ -631,10 +631,10 @@ bool CBaseNetwork::SendAll(CNetworkMessage& p_message)
 }
 
 // FUNCTION: LEMBALL 0x004627b0
-int CBaseNetwork::ProcessMsg(Message* p_message)
+int CBaseNetwork::ProcessMsg(tagMESSAGE* p_message)
 {
 	unsigned int type;
-	Message* message;
+	tagMESSAGE* message;
 	CNetworkMessage* stream;
 	CConnect* peer;
 

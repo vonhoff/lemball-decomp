@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_CTOGGLEBUTTON_H
 
 #include "CGraphicButton.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 
 class CPVGWnd;
 struct CVSPoint;

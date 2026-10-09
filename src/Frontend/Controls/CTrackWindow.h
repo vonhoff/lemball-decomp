@@ -5,7 +5,7 @@
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 
 class CPVGWnd;

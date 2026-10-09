@@ -111,7 +111,7 @@ public:
 	void StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned short p_collisionFlags);
 	unsigned short DoorId(int p_index);
 	unsigned short LiftId(int p_index);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	void AddANetworkStart(int p_x, int p_y, int p_z, int p_index);
 	void AddData();
 	void AddNewTrapDoor(AICOORD& p_position, unsigned long p_time);

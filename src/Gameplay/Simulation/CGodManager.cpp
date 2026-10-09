@@ -1,7 +1,7 @@
 #include "CGodManager.h"
 
 #include "CAI.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Gameplay/Messages/CGameStateMessage.h"
 #include "Gameplay/Messages/GameMessageIds.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
@@ -120,7 +120,7 @@ CBaseObjectManager* CGodManager::GetManagerForTransport(int p_transportId)
 }
 
 // FUNCTION: LEMBALL 0x0040b210
-int CGodManager::ProcessMsg(Message* p_message)
+int CGodManager::ProcessMsg(tagMESSAGE* p_message)
 {
 	int code = p_message->m_code;
 	switch (p_message->m_type) {

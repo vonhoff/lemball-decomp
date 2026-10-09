@@ -11,7 +11,7 @@
 #include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSSize.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Manifest.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Types/CResFONT.h"
@@ -473,7 +473,7 @@ void CPreviewDrawer::DrawAnims()
 }
 
 // FUNCTION: LEMBALL 0x00449d30
-bool CPreviewDrawer::ProcessMessages(Message* p_message)
+bool CPreviewDrawer::ProcessMessages(tagMESSAGE* p_message)
 {
 	switch ((int) p_message->m_type) {
 	default:

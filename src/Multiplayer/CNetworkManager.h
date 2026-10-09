@@ -22,7 +22,7 @@ public:
 	bool Start();
 	int GetnGame(CConnect* p_connection);
 	int CountActiveGames();
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual void Process();                     // vtable+0x0c
 	virtual ~CNetworkManager();                 // vtable+0x04
 	void Broadcast(const char* p_address);

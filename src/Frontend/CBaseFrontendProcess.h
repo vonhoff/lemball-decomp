@@ -8,7 +8,7 @@ class CConnect;
 
 class CGame;
 class CReadPacket;
-struct Message;
+struct tagMESSAGE;
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00497938 CBaseQueueHandler
 // VTABLE: LEMBALL 0x00497948 CBaseProcess
@@ -19,8 +19,8 @@ public:
 	virtual void Process();                                                                          // vtable+0x04
 	virtual bool ReceiveCritical(unsigned long p_id, CReadPacket* p_packet, CConnect* p_connection); // vtable+0x08
 	virtual void Processing();                                                                       // vtable+0x0c
-	virtual bool ProcessMessages(Message* p_message);                                                // vtable+0x10
-	int ProcessMsg(Message* p_message);
+	virtual bool ProcessMessages(tagMESSAGE* p_message);                                             // vtable+0x10
+	int ProcessMsg(tagMESSAGE* p_message);
 	void Action(eUserActions p_action, eUserActionStages p_stage);
 	CBaseFrontendProcess();
 

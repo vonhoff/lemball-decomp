@@ -8,7 +8,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Time/VsTime.h"
@@ -132,9 +132,9 @@ bool CGunButtons::DrawBackBuffer()
 }
 
 // FUNCTION: LEMBALL 0x0044c460
-int CGunButtons::ProcessMsg(Message* p_message)
+int CGunButtons::ProcessMsg(tagMESSAGE* p_message)
 {
-	Message posted;
+	tagMESSAGE posted;
 	int nextValue;
 	unsigned long animId;
 

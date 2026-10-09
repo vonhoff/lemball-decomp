@@ -2,7 +2,7 @@
 
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
@@ -286,7 +286,7 @@ bool CNetworkMessage::Set(unsigned char* p_data)
 // FUNCTION: LEMBALL 0x0045f2b0
 void CNetworkMessage::Send(CConnect* p_connection)
 {
-	Message message;
+	tagMESSAGE message;
 
 	if (p_connection != NULL) {
 		message.m_type = NETWORK_QUEUE_SEND_ONE;

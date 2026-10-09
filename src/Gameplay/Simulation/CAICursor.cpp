@@ -1,7 +1,7 @@
 #include "Gameplay/Simulation/CAICursor.h"
 
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Gameplay/Simulation/CAI.h"
 
 // FUNCTION: LEMBALL 0x00414da0
@@ -62,7 +62,7 @@ void CAICursor::GetCursorSurfaceCoordinates(int& p_x, int& p_y)
 }
 
 // FUNCTION: LEMBALL 0x00414e80
-int CAICursor::ProcessMsg(Message* p_message)
+int CAICursor::ProcessMsg(tagMESSAGE* p_message)
 {
 	switch (p_message->m_type) {
 	case AI_MESSAGE_CURSOR_POSITION:

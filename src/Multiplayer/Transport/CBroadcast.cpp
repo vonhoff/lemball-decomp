@@ -6,7 +6,7 @@
 #include "CWriteSocket.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Strings/VsString.h"
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
@@ -204,7 +204,7 @@ void CBroadcast::Process()
 // FUNCTION: LEMBALL 0x004609f0
 void CBroadcast::SendFailedInit(NetworkErrors p_error)
 {
-	Message message;
+	tagMESSAGE message;
 
 	message.m_type = 2;
 	message.m_code = p_error;

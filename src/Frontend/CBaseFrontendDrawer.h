@@ -19,7 +19,7 @@ class CPlayThruAnim;
 class CResBITMAP;
 class CTextManager;
 class CVSRect;
-struct Message;
+struct tagMESSAGE;
 struct CoordPair;
 
 // SIZE 0x398
@@ -37,7 +37,7 @@ public:
 						int p_zrleCapacity,
 						int p_textPrimitiveCapacity,
 						int p_maxStringLen);
-	virtual int ProcessMsg(Message* p_message);          // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message);       // vtable+0x08
 	virtual ~CBaseFrontendDrawer();                      // vtable+0x00
 	virtual void Draw(const CVSRect& p_rect);            // vtable+0x08
 	virtual void OnSize(const CVSRect& p_rect);          // vtable+0x10
@@ -47,7 +47,7 @@ public:
 	virtual bool QuitYet();                              // vtable+0x2c
 	virtual void OnDriverChange();                       // vtable+0x30
 	virtual void Processing();                           // vtable+0x38
-	virtual bool ProcessMessages(Message* p_message);    // vtable+0x3c
+	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
 	virtual void Load() = 0;                             // vtable+0x40
 	virtual void UnLoad() = 0;                           // vtable+0x44
 	virtual void DrawAnims();                            // vtable+0x48

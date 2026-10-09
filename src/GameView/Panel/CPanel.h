@@ -19,7 +19,7 @@ public:
 	CVSPoint GetPausePos();
 	bool MouseInPanel(const CVSPoint& p_point);
 	unsigned long TranslateKey(unsigned long p_key);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual ~CPanel();                          // vtable+0x04
 	void OnSize();
 	void Process();

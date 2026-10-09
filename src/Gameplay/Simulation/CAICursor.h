@@ -10,7 +10,7 @@ class CBaseQueue;
 class CAICursor : public CBaseQueueHandler {
 public:
 	CAICursor(CAI* p_ai, int p_maximumX, int p_maximumY);
-	virtual int ProcessMsg(Message* p_message); // vtable+0x08
+	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	virtual ~CAICursor();                       // vtable+0x04
 	void CheckAndClipCursorBounds();
 	void GetCursorSurfaceCoordinates(int& p_x, int& p_y);

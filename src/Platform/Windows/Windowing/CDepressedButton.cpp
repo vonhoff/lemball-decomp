@@ -2,7 +2,7 @@
 
 #include "Engine/Graphics/CChangeList.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
-#include "Engine/Queues/Message.h"
+#include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x0043a620 FOLDED
