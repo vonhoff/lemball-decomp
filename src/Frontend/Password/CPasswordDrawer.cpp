@@ -528,7 +528,7 @@ void CPasswordDrawer::ButtonNumeric(int p_button)
 		m_passwordValid = g_pGameStatus->DecodePassword(m_password);
 		DrawText();
 		g_pGameStatus->GotoLastLevels();
-		g_pSoundView->PlayEffect((eSoundEffect) (0x13 + (m_passwordValid ? 0 : 0x0f)));
+		g_pSoundView->PlayEffect(m_passwordValid ? SFX_ROPESLID : SFX_ELECCY);
 		m_submitTime = CurrentMilliTimer();
 		m_passwordSubmitted = 1;
 		m_returnDeadline = m_submitTime + PASSWORD_RETURN_DELAY_MS;
