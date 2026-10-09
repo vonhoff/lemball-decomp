@@ -68,8 +68,8 @@ reviewed for correctness and maintainability.
 
 ### Resources
 
-- [The Cutting Room Floor — Lemmings Paintball](https://tcrf.net/Lemmings_Paintball)
-- [Game Data Digs — Lemmings Paintball](https://gamedatadigs.neocities.org/lemmings_paintball)
+- [The Cutting Room Floor - Lemmings Paintball](https://tcrf.net/Lemmings_Paintball)
+- [Game Data Digs - Lemmings Paintball](https://datadigs.info/doku.php?id=wiki:games:lemmings_paintball)
 - [Reverse Engineering a DOS Game with Ghidra and Codex](https://alexbevi.com/blog/2026/03/14/reverse-engineering-a-dos-game-with-ghidra-and-codex)
 
 ### Inspirations
@@ -82,5 +82,5 @@ reviewed for correctness and maintainability.
 This is an unofficial reverse-engineering project not affiliated with or endorsed by the original rights holders.
 Original game assets remain the property of their respective owners and are not included in this repository.
 
-The reconstructed game code is not offered under a license. Independently developed code is licensed under
+No license is granted for the reconstructed game code. Independently developed code is licensed under
 the [GNU General Public License v3.0](LICENSE).
