@@ -34,7 +34,7 @@ git clone https://github.com/vonhoff/MSVC400 msvc400
 python tools/make_binary.py
 ```
 
-Pass `--disable-startup-checks` to bypass CD-ROM and installation checks.
+Pass `--disable-startup-checks` to `make_binary.py` to bypass the CD-ROM and installation checks.
 
 ## Matching
 
