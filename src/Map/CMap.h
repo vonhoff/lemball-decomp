@@ -90,8 +90,8 @@ public:
 	friend class CGameObject;
 
 private:
-	unsigned int m_mapType; // 0x00
-	int m_orientation;      // 0x04
+	unsigned int m_mapType;        // 0x00
+	eMapOrientation m_orientation; // 0x04
 
 public:
 	CGroundArray m_ground; // 0x08
