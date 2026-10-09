@@ -191,7 +191,7 @@ unsigned int CChangeList::GetArea()
 }
 
 // FUNCTION: LEMBALL 0x00466d40
-bool CChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark)
+bool CChangeList::GetNextArea(unsigned char p_findMark, bool p_itemMark, unsigned char p_replacementMark)
 {
 	int mapWidth;
 	int scanY;
@@ -303,25 +303,25 @@ int CChangeList::GetNumItems()
 		m_itemCount = 0;
 		m_scanY = 0;
 		m_scanX = 0;
-		while (GetNextArea(1, 1, 0) != 0) {
+		while (GetNextArea(1, true, 0) != 0) {
 		}
 		m_scanY = 0;
 		m_scanX = 0;
-		while (GetNextArea('P', 1, 1) != 0) {
+		while (GetNextArea('P', true, 1) != 0) {
 		}
 		m_scanY = 0;
 		m_scanX = 0;
-		while (GetNextArea('p', 0, 1) != 0) {
+		while (GetNextArea('p', false, 1) != 0) {
 		}
 		m_drawMarkCount = m_itemCount;
 		if (m_activeMark == 'A' || m_activeMark == 'a') {
 			m_scanY = 0;
 			m_scanX = 0;
-			while (GetNextArea('A', 1, 1) != 0) {
+			while (GetNextArea('A', true, 1) != 0) {
 			}
 			m_scanY = 0;
 			m_scanX = 0;
-			while (GetNextArea('a', 0, 1) != 0) {
+			while (GetNextArea('a', false, 1) != 0) {
 			}
 		}
 	}

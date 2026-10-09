@@ -8,7 +8,7 @@ class tagCHANGERECT : public CVSRect {
 public:
 	tagCHANGERECT();
 
-	unsigned int m_drawMark; // 0x08
+	bool m_drawMark; // 0x08
 };
 
 #endif

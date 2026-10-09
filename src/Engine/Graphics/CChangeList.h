@@ -10,7 +10,7 @@ class CChangeList {
 public:
 	CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize);
 	tagCHANGERECT* GetNItem(int p_index);
-	bool GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark);
+	bool GetNextArea(unsigned char p_findMark, bool p_itemMark, unsigned char p_replacementMark);
 	int GetDrawMark();
 	int GetNumItems();
 	unsigned int GetArea();
