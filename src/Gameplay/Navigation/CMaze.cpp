@@ -4,7 +4,7 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-#include "Solution.h"
+#include "tSolution.h"
 
 #include <string.h>
 
@@ -401,7 +401,7 @@ int Direction(int p_x0, int p_y0, int p_x1, int p_y1)
 }
 
 // FUNCTION: LEMBALL 0x004238b0
-void CMaze::BSolution(int& p_count, Solution* p_solution)
+void CMaze::BSolution(int& p_count, tSolution* p_solution)
 {
 	p_count = 0;
 	int x = m_endX;

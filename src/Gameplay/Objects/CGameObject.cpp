@@ -9,7 +9,7 @@
 #include "Gameplay/Navigation/CAiDestinationEntry.h"
 #include "Gameplay/Navigation/CAiDestinationList.h"
 #include "Gameplay/Navigation/CMaze.h"
-#include "Gameplay/Navigation/Solution.h"
+#include "Gameplay/Navigation/tSolution.h"
 #include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Simulation/GameTime.h"
@@ -727,7 +727,7 @@ bool CGameObject::SearchRoute()
 		bool complete;
 		unsigned int reached;
 		unsigned int noChanges;
-		Solution solutions[GAME_OBJECT_ROUTE_SOLUTION_CAPACITY];
+		tSolution solutions[GAME_OBJECT_ROUTE_SOLUTION_CAPACITY];
 
 		complete = g_pMaze->BIteration(reached, noChanges);
 		m_routeSearchFailed = complete == 0;
@@ -737,7 +737,7 @@ bool CGameObject::SearchRoute()
 			if (solutionCount < GAME_OBJECT_ROUTE_MAX_ACCEPTED_SOLUTIONS) {
 				int index = solutionCount - 1;
 				if (index >= 0) {
-					Solution* solution = &solutions[index];
+					tSolution* solution = &solutions[index];
 					do {
 						CAiDestinationList* list;
 						AICOORD coordinate;

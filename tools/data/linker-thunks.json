@@ -11964,7 +11964,7 @@
       "target": 4339888,
       "original_bytes": "e9b6090200",
       "symbol": "__lemball_jump_00402ef5",
-      "target_symbol": "?BSolution@CMaze@@QAEXAAHPAUSolution@@@Z"
+      "target_symbol": "?BSolution@CMaze@@QAEXAAHPAUtSolution@@@Z"
     },
     {
       "address": 4206330,
@@ -21238,7 +21238,7 @@
           "original_instruction": 4282628,
           "original_bytes": "e8ecd5feff",
           "thunk": 4206325,
-          "source_symbol": "?BSolution@CMaze@@QAEXAAHPAUSolution@@@Z"
+          "source_symbol": "?BSolution@CMaze@@QAEXAAHPAUtSolution@@@Z"
         },
         {
           "offset": 350,
@@ -26960,7 +26960,7 @@
     {
       "caller": 4339888,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Navigation/CMaze.cpp.obj",
-      "symbol": "?BSolution@CMaze@@QAEXAAHPAUSolution@@@Z",
+      "symbol": "?BSolution@CMaze@@QAEXAAHPAUtSolution@@@Z",
       "size": 264,
       "fingerprint": "b831e928e35ad4ad5d3a9d48d9168cf63a29228efcd08c87119c06e6d154af05",
       "references": [
