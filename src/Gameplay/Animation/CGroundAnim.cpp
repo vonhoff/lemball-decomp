@@ -23,7 +23,7 @@ void CGroundAnim::Restart()
 {
 	unsigned int currentTick = g_dwGameTick;
 	m_count = 0;
-	m_needsValidation = 1;
+	m_needsValidation = true;
 	m_nextProcessTick = currentTick + GROUND_ANIM_PROCESS_INTERVAL_TICKS;
 }
 
@@ -38,21 +38,21 @@ bool CGroundAnim::CheckAllAnims()
 	int next;
 	int index = 0;
 	while (index < m_count) {
-		unsigned int& active = m_entries[index].m_active;
+		bool& active = m_entries[index].m_active;
 		if (active != 0) {
 			switch (m_entries[index].m_mapCell->m_objectType) {
 			case TERRAIN_ANIM:
 			case TERRAIN_CONVEYOR_VARIANT_A:
 			case TERRAIN_CONVEYOR_VARIANT_B:
-				active = 1;
+				active = true;
 				break;
 			case TERRAIN_FLAME:
 			case TERRAIN_ELECTRIC:
-				active = 0;
+				active = false;
 				break;
 			default: {
 				next = index + 1;
-				active = 0;
+				active = false;
 				while (next < m_count) {
 					m_entries[next - 1] = m_entries[next];
 					next++;
@@ -74,7 +74,7 @@ void CGroundAnim::Process()
 	if (m_nextProcessTick <= g_dwGameTick) {
 		if (m_needsValidation != 0) {
 			CheckAllAnims();
-			m_needsValidation = 0;
+			m_needsValidation = false;
 		}
 
 		int index = 0;
@@ -128,7 +128,7 @@ void CGroundAnim::AddStaticGroundAnim(const tCoord3d& p_coordinate)
 		return;
 	}
 
-	m_entries[m_count].m_active = 0;
+	m_entries[m_count].m_active = false;
 	m_entries[m_count].m_direction = 0;
 	m_entries[m_count].m_coordinate = p_coordinate;
 	++m_count;
@@ -145,7 +145,7 @@ void CGroundAnim::Add(const tCoord3d& p_coordinate, unsigned short p_startFrame,
 		return;
 	}
 
-	m_entries[m_count].m_active = 1;
+	m_entries[m_count].m_active = true;
 	m_entries[m_count].m_coordinate = p_coordinate;
 	m_entries[m_count].m_currentFrame = p_startFrame;
 	m_entries[m_count].m_startFrame = p_startFrame;

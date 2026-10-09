@@ -14,7 +14,7 @@ struct GroundAnimEntry {
 	short m_startFrame;                // 0x0e
 	short m_endFrame;                  // 0x10
 	short m_direction;                 // 0x12
-	unsigned int m_active;             // 0x14
+	bool m_active;                     // 0x14
 };
 
 enum {
@@ -41,7 +41,7 @@ private:
 	unsigned int m_nextProcessTick;                        // 0x0000
 	int m_count;                                           // 0x0004
 	GroundAnimEntry m_entries[GROUND_ANIM_ENTRY_CAPACITY]; // 0x0008
-	unsigned int m_needsValidation;                        // 0x12c8
+	bool m_needsValidation;                                // 0x12c8
 };
 
 #endif
