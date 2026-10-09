@@ -90,7 +90,7 @@ void CTrackWindow::Move(const CVSPoint& p_position)
 void CTrackWindow::OnPaint(const CVSRect& p_rect)
 {
 	int height = m_trackRect.m_height;
-	short width = (short) ((int) m_trackRect.m_width * m_value / TRACK_VALUE_PERCENT_SCALE);
+	short width = (short) (m_trackRect.m_width * m_value / TRACK_VALUE_PERCENT_SCALE);
 	if (m_value != 0) {
 		m_line.m_colour = TRACK_PROGRESS_COLOUR_INDEX;
 		m_line.m_bounds.m_width = width;
@@ -144,14 +144,14 @@ void CTrackWindow::SetButtonValue(int p_value)
 void CTrackWindow::OnInside(const CVSPoint& p_point)
 {
 	if (m_buttonState[0] != 0) {
-		int distance = (int) p_point.m_x - (int) m_bounds.m_x;
+		int distance = p_point.m_x - m_bounds.m_x;
 		if (distance < 0) {
 			distance = 0;
 		}
 		else if (distance > m_trackRect.m_width) {
 			distance = m_trackRect.m_width;
 		}
-		SetButtonValue(distance * TRACK_VALUE_PERCENT_SCALE / (int) m_bounds.m_width);
+		SetButtonValue(distance * TRACK_VALUE_PERCENT_SCALE / m_bounds.m_width);
 	}
 }
 
