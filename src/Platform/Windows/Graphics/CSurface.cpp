@@ -1180,16 +1180,16 @@ void CSurface::Blit(CScreenScroll* p_scroll)
 	CVSPoint dst = p_scroll->m_destination;
 
 	if (HasBackBuff()) {
-		CPVBackBuffSurface::m_bitmap.Scroll(&rect, &dst);
+		CPVBackBuffSurface::m_bitmap.Scroll(rect, dst);
 	}
 	if (HasZBuff()) {
 		CVSRect zrect(rect.m_x * 2, rect.m_y, rect.m_width * 2, rect.m_height);
 		CVSPoint zdst;
 		zdst.m_x = dst.m_x * 2;
 		zdst.m_y = dst.m_y;
-		CPVZBuffSurface::m_bitmap.Scroll(&zrect, &zdst);
+		CPVZBuffSurface::m_bitmap.Scroll(zrect, zdst);
 	}
-	CPVGDIBitmap::Scroll(&rect, &dst);
+	CPVGDIBitmap::Scroll(rect, dst);
 	AddToChangeList(rect);
 }
 

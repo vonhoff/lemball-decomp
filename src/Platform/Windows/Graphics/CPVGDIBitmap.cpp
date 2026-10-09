@@ -107,22 +107,22 @@ void CPVGDIBitmap::SetLinePtrs()
 }
 
 // FUNCTION: LEMBALL 0x00472440
-void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
+void CPVGDIBitmap::Scroll(const CVSRect& p_rect, const CVSPoint& p_destination)
 {
 	int width;
 	int height;
 	const CVSPoint* position;
 	short deltaY;
 
-	width = (int) p_rect->m_width;
-	height = (int) p_rect->m_height;
+	width = (int) p_rect.m_width;
+	height = (int) p_rect.m_height;
 	if (height * width == 0) {
 		return;
 	}
 	if (m_directScroll == 0) {
-		position = p_rect;
-		deltaY = (short) (position->m_y - p_destination->m_y);
-		m_xOffset = m_xOffset - (unsigned int) (short) (position->m_x - p_destination->m_x);
+		position = &p_rect;
+		deltaY = (short) (position->m_y - p_destination.m_y);
+		m_xOffset = m_xOffset - (unsigned int) (short) (position->m_x - p_destination.m_x);
 		height = deltaY + (int) m_firstLine;
 		m_firstLine = (unsigned int) height;
 		width = m_size.m_height;
@@ -137,10 +137,10 @@ void CPVGDIBitmap::Scroll(const CVSRect* p_rect, const CVSPoint* p_destination)
 		SetLinePtrs();
 		return;
 	}
-	int rectX = p_rect->m_x;
-	int rectY = p_rect->m_y;
-	int destinationX = p_destination->m_x;
-	int destinationY = p_destination->m_y;
+	int rectX = p_rect.m_x;
+	int rectY = p_rect.m_y;
+	int destinationX = p_destination.m_x;
+	int destinationY = p_destination.m_y;
 	if (destinationY == rectY) {
 		if (destinationX != rectX && 0 < height) {
 			int srcY = rectY;
