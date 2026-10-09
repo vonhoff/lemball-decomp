@@ -83,8 +83,8 @@ public:
 	virtual bool SearchRoute();                                                      // vtable+0x40
 	virtual bool Move();                                                             // vtable+0x44
 	virtual void GetBoundingBox(CVSRect& p_rect);                                    // vtable+0x48
-	virtual bool Collision(const CPt3& p_point);                                     // vtable+0x4c
-	virtual bool Collision(const CRect3& p_bounds);                                  // vtable+0x50
+	virtual bool Collision(const CPt3& p_point);                                     // vtable+0x50
+	virtual bool Collision(const CRect3& p_bounds);                                  // vtable+0x4c
 	virtual void HitBullet(CBullet* p_bullet);                                       // vtable+0x54
 	virtual void HitBall();                                                          // vtable+0x58
 	virtual int IsHit();                                                             // vtable+0x5c
@@ -104,10 +104,10 @@ public:
 	virtual void RandomAction();                                                     // vtable+0x94
 	virtual bool FacingTarget();                                                     // vtable+0x98
 	virtual void TurnToFaceTarget();                                                 // vtable+0x9c
-	virtual bool OnLift(tCoord3d& p_liftPosition);                                   // vtable+0xa0
-	virtual bool OnLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax);                   // vtable+0xa4
-	virtual void OffLift(tCoord3d& p_liftPosition);                                  // vtable+0xa8
-	virtual void OffLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax);                  // vtable+0xac
+	virtual bool OnLift(tCoord3d& p_liftPosition);                                   // vtable+0xa4
+	virtual bool OnLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax);                   // vtable+0xa0
+	virtual void OffLift(tCoord3d& p_liftPosition);                                  // vtable+0xac
+	virtual void OffLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax);                  // vtable+0xa8
 	virtual bool PossiblyOnLift();                                                   // vtable+0xb0
 	virtual bool HasObject(eObjectType p_objectType);                                // vtable+0xb4
 	virtual bool AddObject(eObjectType p_objectType, class CGameObject* p_object);   // vtable+0xb8
