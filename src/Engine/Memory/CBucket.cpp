@@ -164,7 +164,7 @@ tagBOFFSET CBucket::FindFreeOffset(tagBOFFSET p_offset)
 	if (m_map[word] == 0xFFFFFFFF) {
 		do {
 			word++;
-			if ((int) word >= (int) m_mapWordCount) {
+			if (word >= m_mapWordCount) {
 				word = 0;
 			}
 		} while (m_map[word] == 0xFFFFFFFF);

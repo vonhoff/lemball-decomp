@@ -27,14 +27,14 @@ private:
 	class CBucket* m_child;           // 0x1c
 	class CBucket* m_parent;          // 0x20
 	unsigned int m_blockSize;         // 0x24
-	unsigned int m_blockCount;        // 0x28
+	int m_blockCount;                 // 0x28
 	unsigned int m_totalBytes;        // 0x2c
 	unsigned int m_freeBytes;         // 0x30
 	unsigned int m_totalAllocations;  // 0x34
 	unsigned int m_activeAllocations; // 0x38
 	unsigned int m_peakAllocations;   // 0x3c
 	unsigned short m_flags;           // 0x40
-	unsigned int m_mapWordCount;      // 0x44
+	int m_mapWordCount;               // 0x44
 	unsigned long* m_map;             // 0x48
 	unsigned char* m_memory;          // 0x4c
 	tagBOFFSET m_freeOffset;          // 0x50
