@@ -153,8 +153,8 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 	int controlId;
 	char* systemInfo;
 	unsigned long handle;
-	unsigned int versionSize;
-	void* versionData;
+	unsigned long versionSize;
+	unsigned char* versionData;
 	char modulePath[ABOUT_MODULE_PATH_BUFFER_SIZE];
 	char itemText[ABOUT_VERSION_VALUE_BUFFER_SIZE];
 	char queryPath[ABOUT_VERSION_QUERY_BUFFER_SIZE];
@@ -191,7 +191,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 		GetModuleFileNameA((HINSTANCE) g_pApplicationInstance, modulePath, sizeof(modulePath));
 		versionSize = GetFileVersionInfoSizeA(modulePath, &handle);
 		if (versionSize != 0) {
-			versionData = operator new(versionSize);
+			versionData = new unsigned char[versionSize];
 			GetFileVersionInfoA(modulePath, handle, versionSize, versionData);
 			lstrcpyA(queryPath, g_szStringFileInfoPrefix);
 			queryEnd = queryPath + (unsigned short) lstrlenA(queryPath);
@@ -209,7 +209,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 				}
 				controlId = controlId + 1;
 			} while (controlId <= IDC_ABOUT_LEGAL_TRADEMARKS);
-			operator delete(versionData);
+			delete[] versionData;
 		}
 		return 1;
 	case WM_COMMAND:
