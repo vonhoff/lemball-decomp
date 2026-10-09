@@ -133,7 +133,7 @@ void CFileConnect::ConnectSetup()
 	}
 
 	while (GetFileSize() < requiredSize) {
-		unsigned char* data = (unsigned char*) operator new(g_networkPacketSize);
+		unsigned char* data = new unsigned char[g_networkPacketSize];
 		memset(data, 0, g_networkPacketSize);
 		Seek(GetFileSize());
 
@@ -149,7 +149,7 @@ void CFileConnect::ConnectSetup()
 			CNetworkFile::Write(data, g_networkPacketSize);
 		}
 
-		operator delete(data);
+		delete[] data;
 	}
 
 	if (!CNetworkFile::UnLock(0, m_message.m_payloadCapacity)) {

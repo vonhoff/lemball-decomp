@@ -10,7 +10,7 @@ public:
 	~CAbstractFile()
 	{
 		if (m_filename != NULL) {
-			operator delete(m_filename);
+			delete[] m_filename;
 		}
 	}
 	CAbstractFile()

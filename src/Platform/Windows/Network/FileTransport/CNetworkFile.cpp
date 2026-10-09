@@ -66,7 +66,7 @@ bool CNetworkFile::Open(const char* p_filename, unsigned char p_mode, int p_crea
 
 	(void) p_mode;
 	length = strlen(p_filename) + 1;
-	m_filename = (char*) operator new(length);
+	m_filename = new char[length];
 	strcpy(m_filename, p_filename);
 	if (p_create == 0) {
 		creation = 3;

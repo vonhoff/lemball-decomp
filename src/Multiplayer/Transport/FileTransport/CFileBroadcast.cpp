@@ -34,7 +34,7 @@ void CFileBroadcast::Setup(const char* p_peerName, const char* p_path)
 	*g_pDebugOutput << "Found Local host OK: " << g_szBroadcastPeerName << "\n";
 	g_localHostLookupComplete = 1;
 
-	g_pFileBroadcastData = (char*) operator new(strlen(p_path) + 0xf);
+	g_pFileBroadcastData = new char[strlen(p_path) + 0xf];
 	length = strlen(p_path);
 	strcpy(g_pFileBroadcastData, p_path);
 	if (g_pFileBroadcastData[length] != '\\' && g_pFileBroadcastData[length] != ':') {
@@ -70,7 +70,7 @@ CFileBroadcast::~CFileBroadcast()
 {
 	delete CFileReadSocket::m_file;
 	if (g_pFileBroadcastData != NULL) {
-		operator delete(g_pFileBroadcastData);
+		delete[] g_pFileBroadcastData;
 		g_pFileBroadcastData = NULL;
 	}
 	if (g_pFileBroadcast != NULL) {
@@ -87,12 +87,12 @@ void CFileBroadcast::InitialiseFile()
 	CFileWriteSocket::Write(*g_pFileBroadcast, 0, 0);
 	CFileWriteSocket::Write(*CFileWriteSocket::m_file, 0, 0);
 
-	unsigned char* data = (unsigned char*) operator new(g_networkPacketSize);
+	unsigned char* data = new unsigned char[g_networkPacketSize];
 	memset(data, 0, g_networkPacketSize);
 	for (int i = 0; i < CFileCommonSocket::m_headerSlotCount; i++) {
 		CNetworkFile::Write(data, g_networkPacketSize);
 	}
-	operator delete(data);
+	delete[] data;
 }
 
 // FUNCTION: LEMBALL 0x0047ab10
