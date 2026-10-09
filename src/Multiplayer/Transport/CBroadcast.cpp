@@ -57,7 +57,7 @@ CBroadcast::~CBroadcast()
 		g_szBroadcastPeerName = NULL;
 	}
 	if (g_pBroadcastPacketTemplate != NULL) {
-		operator delete(g_pBroadcastPacketTemplate);
+		delete[] (unsigned char*) g_pBroadcastPacketTemplate;
 		g_pBroadcastPacketTemplate = NULL;
 	}
 }
