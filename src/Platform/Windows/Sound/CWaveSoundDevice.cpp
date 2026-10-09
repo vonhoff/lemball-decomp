@@ -28,11 +28,11 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	m_channelCount = (unsigned int) p_channelCount;
 	m_effects = new CWaveEffect*[p_channelCount];
 	m_effectHandles = new unsigned long[p_channelCount];
-	m_effectUsed = new unsigned int[p_channelCount];
+	m_effectUsed = new bool[p_channelCount];
 	m_musicDevice = 0;
-	m_available = 0;
-	m_stereo = 0;
-	m_use16Bit = 0;
+	m_available = false;
+	m_stereo = false;
+	m_use16Bit = false;
 	m_unk0x18 = 0;
 	m_deviceId = WAVE_MAPPER;
 	m_sampleRate = 0;
@@ -44,7 +44,7 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 	m_nextHandle = 1;
 	for (channel = 0; channel < m_channelCount; channel++) {
 		m_effects[channel] = NULL;
-		m_effectUsed[channel] = 0;
+		m_effectUsed[channel] = false;
 		m_effectHandles[channel] = 0;
 	}
 	found = 0;
@@ -59,26 +59,26 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 		}
 		if (waveOutGetDevCapsA(deviceId, &m_caps, sizeof(WAVEOUTCAPSA)) == 0) {
 			if ((m_caps.dwFormats & WAVE_FORMAT_1M08) == WAVE_FORMAT_1M08) {
-				m_available = 1;
+				m_available = true;
 				m_deviceId = deviceId;
-				m_use16Bit = 0;
+				m_use16Bit = false;
 				m_sampleRate = WAVE_LOW_SAMPLE_RATE;
 			}
 			if ((m_caps.dwFormats & WAVE_FORMAT_1M16) != 0) {
-				m_use16Bit = 1;
-				m_available = 1;
+				m_use16Bit = true;
+				m_available = true;
 				m_sampleRate = WAVE_LOW_SAMPLE_RATE;
 				m_deviceId = deviceId;
 			}
 			if ((m_caps.dwFormats & WAVE_FORMAT_2M08) != 0) {
-				m_available = 1;
+				m_available = true;
 				m_deviceId = deviceId;
-				m_use16Bit = 0;
+				m_use16Bit = false;
 				m_sampleRate = WAVE_HIGH_SAMPLE_RATE;
 			}
 			if ((m_caps.dwFormats & WAVE_FORMAT_2M16) != 0) {
-				m_use16Bit = 1;
-				m_available = 1;
+				m_use16Bit = true;
+				m_available = true;
 				m_sampleRate = WAVE_HIGH_SAMPLE_RATE;
 				m_deviceId = deviceId;
 			}
@@ -152,10 +152,10 @@ int CWaveSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigne
 			waveOutSetVolume(m_waveOut, WAVE_FULL_VOLUME);
 		}
 		if (result == 0) {
-			m_available = 1;
+			m_available = true;
 			return 1;
 		}
-		m_available = 0;
+		m_available = false;
 		return 0;
 	}
 	return 1;
@@ -330,7 +330,7 @@ int CWaveSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_hand
 					new (storage) CWaveEffect(p_data, m_waveOut, m_sampleRate, (int) m_use16Bit, (int) m_stereo);
 			}
 			Open(0, 1, 0);
-			m_effectUsed[i] = 1;
+			m_effectUsed[i] = true;
 			m_effectHandles[i] = m_nextHandle;
 			*p_handle = m_nextHandle;
 			m_nextHandle = m_nextHandle + 1;
@@ -374,7 +374,7 @@ int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 		if (device->m_effectHandles[channelIndex] == p_effectId) {
 			effect = device->m_effects[channelIndex];
 			delete effect;
-			device->m_effectUsed[channelIndex] = 0;
+			device->m_effectUsed[channelIndex] = false;
 			device->m_effectHandles[channelIndex] = 0;
 		}
 		channelIndex = channelIndex + 1;
@@ -398,7 +398,7 @@ int CWaveSoundDevice::FreeAllEffects()
 					effect->~CWaveEffect();
 					operator delete(effect);
 				}
-				device->m_effectUsed[i] = 0;
+				device->m_effectUsed[i] = false;
 				device->m_effectHandles[i] = 0;
 			}
 			i = i + 1;

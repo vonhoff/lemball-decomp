@@ -51,9 +51,9 @@ public:
 private:
 	unsigned int m_channelCount;      // 0x04
 	unsigned int m_musicDevice;       // 0x08
-	unsigned int m_available;         // 0x0c
-	unsigned int m_stereo;            // 0x10
-	unsigned int m_use16Bit;          // 0x14
+	bool m_available;                 // 0x0c
+	bool m_stereo;                    // 0x10
+	bool m_use16Bit;                  // 0x14
 	unsigned int m_unk0x18;           // 0x18
 	unsigned int m_unk0x1c;           // 0x1c
 	unsigned int m_channelState[8];   // 0x20
@@ -66,7 +66,7 @@ private:
 	WAVEFORMATEX m_waveFormat;        // 0x90
 	unsigned long m_nextHandle;       // 0xa4
 	CWaveEffect** m_effects;          // 0xa8
-	unsigned int* m_effectUsed;       // 0xac
+	bool* m_effectUsed;               // 0xac
 	unsigned long* m_effectHandles;   // 0xb0
 	DWORD m_savedVolume;              // 0xb4
 };
