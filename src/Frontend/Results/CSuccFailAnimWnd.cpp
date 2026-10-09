@@ -35,7 +35,7 @@ void CSuccFailAnimWnd::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_di
 // FUNCTION: LEMBALL 0x00450d00
 void CSuccFailAnimWnd::SetVariant(int p_lowResolution)
 {
-	unsigned int animBase;
+	unsigned long animBase;
 
 	if (p_lowResolution != 0) {
 		animBase = m_lowResAnimBase;

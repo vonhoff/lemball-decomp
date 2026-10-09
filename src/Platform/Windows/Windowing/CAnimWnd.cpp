@@ -206,7 +206,7 @@ void CAnimWnd::Refresh(CVSRect* p_rect)
 }
 
 // FUNCTION: LEMBALL 0x0046e130
-void CAnimWnd::SetAnim(unsigned int p_resourceId)
+void CAnimWnd::SetAnim(unsigned long p_resourceId)
 {
 	CResMOVIE* movie;
 	char* fileName;

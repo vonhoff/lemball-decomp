@@ -26,7 +26,7 @@ public:
 	void OnNotifySize(int p_width, int p_height);
 	void Play();
 	void Resume();
-	void SetAnim(unsigned int p_resourceId);
+	void SetAnim(unsigned long p_resourceId);
 	void SetMovieWindow(unsigned int p_lParam);
 	void Stop();
 	~CAnimWnd();
@@ -36,12 +36,12 @@ public:
 	friend class CSuccFailDrawer;
 
 private:
-	unsigned int m_animSet;        // 0xa0
-	unsigned int m_playing;        // 0xa4
-	unsigned int m_paused;         // 0xa8
-	unsigned int m_animResourceId; // 0xac
-	CString m_moviePath;           // 0xb0
-	void* m_movieWindow;           // 0xb8
+	unsigned int m_animSet;         // 0xa0
+	unsigned int m_playing;         // 0xa4
+	unsigned int m_paused;          // 0xa8
+	unsigned long m_animResourceId; // 0xac
+	CString m_moviePath;            // 0xb0
+	void* m_movieWindow;            // 0xb8
 };
 
 #endif

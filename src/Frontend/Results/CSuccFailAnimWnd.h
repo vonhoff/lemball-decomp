@@ -16,13 +16,13 @@ public:
 	void SetVariant(int p_lowResolution);
 
 private:
-	CSuccFailDrawer* m_owner;       // 0xbc
-	CMain2DDisplay* m_display;      // 0xc0
-	unsigned int m_success;         // 0xc4
-	unsigned int m_lowResAnimBase;  // 0xc8
-	unsigned int m_highResAnimBase; // 0xcc
-	unsigned int m_variantIndex;    // 0xd0
-	unsigned int m_musicStarted;    // 0xd4
+	CSuccFailDrawer* m_owner;        // 0xbc
+	CMain2DDisplay* m_display;       // 0xc0
+	unsigned int m_success;          // 0xc4
+	unsigned long m_lowResAnimBase;  // 0xc8
+	unsigned long m_highResAnimBase; // 0xcc
+	unsigned int m_variantIndex;     // 0xd0
+	unsigned int m_musicStarted;     // 0xd4
 };
 
 #endif
