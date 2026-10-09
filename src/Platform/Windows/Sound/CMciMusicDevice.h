@@ -25,13 +25,13 @@ public:
 	virtual char* GetInfo();
 
 private:
-	unsigned int m_preparedHandle; // 0x18
-	unsigned int m_available;      // 0x1c
-	MCIDEVICEID m_deviceId;        // 0x20
-	unsigned int m_playing;        // 0x24
-	unsigned int m_paused;         // 0x28
-	DWORD m_pausePosition;         // 0x2c
-	HWND m_notifyWindow;           // 0x30
+	unsigned long m_preparedHandle; // 0x18
+	unsigned int m_available;       // 0x1c
+	MCIDEVICEID m_deviceId;         // 0x20
+	unsigned int m_playing;         // 0x24
+	unsigned int m_paused;          // 0x28
+	DWORD m_pausePosition;          // 0x2c
+	HWND m_notifyWindow;            // 0x30
 };
 
 // SYNTHETIC: LEMBALL 0x0047f590

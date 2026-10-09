@@ -16,7 +16,7 @@
 static CMciMusicDevice* g_pActiveMciMusicDevice;
 
 // GLOBAL: LEMBALL 0x004aa22c
-static unsigned int g_nPreparedMciMusicTrackHandle;
+static unsigned long g_nPreparedMciMusicTrackHandle;
 
 // GLOBAL: LEMBALL 0x004aa230
 static char g_szMciDeviceInfo[256];
