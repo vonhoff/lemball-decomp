@@ -114,7 +114,7 @@ CMain2DDisplay::~CMain2DDisplay()
 	resource->UnLoad();
 	resource = m_gamePalette;
 	resource->UnLoad();
-	resource = (CResBase*) m_cursorResource;
+	resource = m_cursorResource;
 	resource->UnLoad();
 	g_pMasterInputQueue->Detach(static_cast<CBaseQueueHandler*>(this), MASTER_INPUT_QUEUE_PRIORITY);
 }

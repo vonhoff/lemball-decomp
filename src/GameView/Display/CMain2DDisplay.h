@@ -15,6 +15,7 @@ enum {
 class CGame;
 class CCdLoadAnimDraw;
 class CResPALETTE;
+class CResZRLE;
 
 // SIZE 0xe4
 // VTABLE: LEMBALL 0x00496bb8 CGWnd
@@ -55,7 +56,7 @@ public:
 private:
 	unsigned int m_windowReady;     // 0xa0
 	CCdLoadAnimDraw* m_loadingDraw; // 0xa4
-	void* m_cursorResource;         // 0xa8
+	CResZRLE* m_cursorResource;     // 0xa8
 	CResPALETTE* m_gamePalette;     // 0xac
 	CResPALETTE* m_titlePalette;    // 0xb0
 	void* m_map;                    // 0xb4
