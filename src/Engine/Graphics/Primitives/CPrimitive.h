@@ -7,7 +7,7 @@ class CGDI;
 // VTABLE: LEMBALL 0x00496ca8
 class CPrimitive {
 public:
-	inline CPrimitive() {}
+	CPrimitive() {}
 
 	virtual ~CPrimitive() {}              // vtable+0x00
 	virtual void Draw(CGDI* p_gdi) = 0;   // vtable+0x04

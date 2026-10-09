@@ -11,8 +11,8 @@
 // VTABLE: LEMBALL 0x00498ea0
 class CBroadcastMessage : public CNetworkMessage {
 public:
-	inline CBroadcastMessage() {}
-	inline CBroadcastMessage(const char* p_header)
+	CBroadcastMessage() {}
+	CBroadcastMessage(const char* p_header)
 	{
 		m_header = p_header;
 		m_payloadCapacity += strlen(p_header) + 1;

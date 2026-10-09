@@ -7,13 +7,13 @@
 // VTABLE: LEMBALL 0x00499ce8
 class CCopyText : public CText {
 public:
-	inline CCopyText(unsigned int p_maxLen)
+	CCopyText(unsigned int p_maxLen)
 	{
 		m_capacity = p_maxLen;
 		m_buffer = new char[p_maxLen + 1];
 	}
 
-	inline virtual ~CCopyText() { delete[] m_buffer; }
+	virtual ~CCopyText() { delete[] m_buffer; }
 	virtual void Set(int p_x,
 					 int p_y,
 					 CResFONT* p_font,

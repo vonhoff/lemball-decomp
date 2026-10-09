@@ -10,7 +10,7 @@
 class CBaseGlobalObject : public CGlobalGameObject {
 public:
 	// FUNCTION: LEMBALL 0x0041c380
-	inline CBaseGlobalObject(const AICOORD& p_position, eObjectType p_type) : CGlobalGameObject(p_type, 0, 0)
+	CBaseGlobalObject(const AICOORD& p_position, eObjectType p_type) : CGlobalGameObject(p_type, 0, 0)
 	{
 		m_initialPosition = p_position;
 	}

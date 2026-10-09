@@ -10,7 +10,7 @@ class AICOORD;
 // VTABLE: LEMBALL 0x00494268
 class CAmmo : public CBaseGlobalObject {
 public:
-	inline CAmmo(const AICOORD& p_position) : CBaseGlobalObject(p_position, OBJECT_AMMO) {}
+	CAmmo(const AICOORD& p_position) : CBaseGlobalObject(p_position, OBJECT_AMMO) {}
 	virtual AICOORD ActivatePosition();           // vtable+0x2c
 	virtual bool Activate(CGameObject* p_object); // vtable+0x18
 	virtual bool Process();                       // vtable+0x14

@@ -6,14 +6,14 @@
 // SIZE 0x0c
 class AICOORD {
 public:
-	inline AICOORD()
+	AICOORD()
 	{
 		m_xFixed = DEBUG_SENTINEL;
 		m_yFixed = DEBUG_SENTINEL;
 		m_zFixed = DEBUG_SENTINEL;
 	}
 
-	inline AICOORD(int p_x, int p_y, int p_z)
+	AICOORD(int p_x, int p_y, int p_z)
 	{
 		m_xFixed = p_x;
 		m_yFixed = p_y;

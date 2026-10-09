@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00493fe8
 class CTransportObjectMess : public CGameObjectMess {
 public:
-	inline CTransportObjectMess() : CGameObjectMess(0) {}
+	CTransportObjectMess() : CGameObjectMess(0) {}
 	virtual void GetData(); // vtable+0x08
 
 private:

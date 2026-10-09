@@ -38,7 +38,7 @@ enum {
 // VTABLE: LEMBALL 0x00493268
 class CBaseObjectManager : public CNetworkMessage {
 public:
-	inline CBaseObjectManager(unsigned long p_messageId, int p_transportId) : CNetworkMessage(p_messageId)
+	CBaseObjectManager(unsigned long p_messageId, int p_transportId) : CNetworkMessage(p_messageId)
 	{
 		m_transportId = p_transportId;
 		if (g_pBaseNetwork != NULL) {

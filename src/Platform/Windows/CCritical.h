@@ -16,8 +16,8 @@ extern "C"
 // VTABLE: LEMBALL 0x004988d0
 class CCritical {
 public:
-	inline CCritical() { InitializeCriticalSection((_RTL_CRITICAL_SECTION*) m_criticalSection); }
-	inline ~CCritical() { DeleteCriticalSection((_RTL_CRITICAL_SECTION*) m_criticalSection); }
+	CCritical() { InitializeCriticalSection((_RTL_CRITICAL_SECTION*) m_criticalSection); }
+	~CCritical() { DeleteCriticalSection((_RTL_CRITICAL_SECTION*) m_criticalSection); }
 	virtual void EnterCritical(); // vtable+0x00
 	virtual void LeaveCritical(); // vtable+0x04
 

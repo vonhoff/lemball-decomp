@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00499230
 class CAckMessage : public CNetworkMessage {
 public:
-	inline CAckMessage() : CNetworkMessage(NETWORK_MESSAGE_ACKNOWLEDGEMENT)
+	CAckMessage() : CNetworkMessage(NETWORK_MESSAGE_ACKNOWLEDGEMENT)
 	{
 		m_payloadCapacity += sizeof(m_packetSequence) + sizeof(m_subpacketSequence);
 	}

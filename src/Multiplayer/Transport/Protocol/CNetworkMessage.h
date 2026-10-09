@@ -16,7 +16,7 @@ enum eNetworkMessageId {
 // VTABLE: LEMBALL 0x004932c8
 class CNetworkMessage {
 public:
-	inline CNetworkMessage(unsigned long p_messageId = NETWORK_MESSAGE_FILE_OPEN_COUNT)
+	CNetworkMessage(unsigned long p_messageId = NETWORK_MESSAGE_FILE_OPEN_COUNT)
 	{
 		m_messageId = p_messageId;
 		Initialise();

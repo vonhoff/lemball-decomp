@@ -7,7 +7,7 @@
 // SIZE 0x1c
 class CMove3d {
 public:
-	inline CMove3d() : m_start(0, 0, 0) {}
+	CMove3d() : m_start(0, 0, 0) {}
 	void Position(CPt3& p_position, int p_time);
 	void Set(CPt3& p_start, CPt3& p_end, int p_startTime, int p_speed);
 

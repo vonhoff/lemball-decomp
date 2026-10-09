@@ -10,7 +10,7 @@ class AICOORD;
 // VTABLE: LEMBALL 0x00494788
 class CTower : public CBaseGlobalObject {
 public:
-	inline CTower(const AICOORD& p_position) : CBaseGlobalObject(p_position, OBJECT_TOWER) {}
+	CTower(const AICOORD& p_position) : CBaseGlobalObject(p_position, OBJECT_TOWER) {}
 	virtual AICOORD ActivatePosition();           // vtable+0x2c
 	virtual bool Activate(CGameObject* p_object); // vtable+0x18
 	virtual bool Process();                       // vtable+0x14

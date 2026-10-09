@@ -5,8 +5,8 @@
 class CFixed {
 public:
 	CFixed();
-	inline CFixed(int p_value) : m_value(p_value) {}
-	inline CFixed(const CFixed& p_other) : m_value(p_other.m_value) {}
+	CFixed(int p_value) : m_value(p_value) {}
+	CFixed(const CFixed& p_other) : m_value(p_other.m_value) {}
 
 	int m_value; // 0x00
 };

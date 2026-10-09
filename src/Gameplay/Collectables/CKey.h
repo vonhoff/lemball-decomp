@@ -9,7 +9,7 @@
 // VTABLE: LEMBALL 0x004943b0
 class CKey : public CBaseGlobalObject {
 public:
-	inline CKey(const AICOORD& p_position, eObjectType p_type) : CBaseGlobalObject(p_position, p_type) {}
+	CKey(const AICOORD& p_position, eObjectType p_type) : CBaseGlobalObject(p_position, p_type) {}
 	virtual AICOORD ActivatePosition();           // vtable+0x2c
 	virtual bool Activate(CGameObject* p_object); // vtable+0x18
 	virtual bool Process();                       // vtable+0x14

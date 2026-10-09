@@ -9,7 +9,7 @@
 // VTABLE: LEMBALL 0x004944f8
 class CBalloon : public CBaseGlobalObject {
 public:
-	inline CBalloon(const AICOORD& p_position, eObjectType p_type) : CBaseGlobalObject(p_position, p_type) {}
+	CBalloon(const AICOORD& p_position, eObjectType p_type) : CBaseGlobalObject(p_position, p_type) {}
 	virtual AICOORD ActivatePosition();           // vtable+0x2c
 	virtual bool Activate(CGameObject* p_object); // vtable+0x18
 	virtual bool Process();                       // vtable+0x14

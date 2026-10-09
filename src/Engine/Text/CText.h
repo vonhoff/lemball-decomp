@@ -14,7 +14,7 @@ struct CVSPoint;
 // VTABLE: LEMBALL 0x00499ae8
 class CText : public CPrimitive {
 public:
-	inline CText() : m_x(m_y = 0), m_offsetX(m_offsetY = 0), m_startX(m_startY = 0), m_advanceX(m_advanceY = 0) {}
+	CText() : m_x(m_y = 0), m_offsetX(m_offsetY = 0), m_startX(m_startY = 0), m_advanceX(m_advanceY = 0) {}
 
 	void NextPos();
 	virtual void Draw(CGDI* p_gdi);   // vtable+0x04

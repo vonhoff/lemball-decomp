@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00499218
 class CPulseMessage : public CNetworkMessage {
 public:
-	inline CPulseMessage() : CNetworkMessage(NETWORK_MESSAGE_PULSE) { OpenDataStream(); }
+	CPulseMessage() : CNetworkMessage(NETWORK_MESSAGE_PULSE) { OpenDataStream(); }
 	void AddData();
 	void GetData();
 	~CPulseMessage() { CloseDataStream(); }
