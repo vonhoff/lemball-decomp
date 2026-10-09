@@ -1,6 +1,6 @@
 #include "Engine/Graphics/CChangeList.h"
 
-#include "Engine/Graphics/ChangeListItem.h"
+#include "Engine/Graphics/tagCHANGERECT.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 
@@ -14,7 +14,7 @@ enum {
 CChangeList::CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize)
 {
 	if (p_capacity != 0) {
-		m_items = new ChangeListItem[p_capacity];
+		m_items = new tagCHANGERECT[p_capacity];
 	}
 	else {
 		m_items = NULL;
@@ -204,7 +204,7 @@ bool CChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark,
 	int probeX;
 	int cell;
 	unsigned char* pixel;
-	ChangeListItem* item;
+	tagCHANGERECT* item;
 
 	scanY = m_scanY;
 	mapWidth = m_mapSize.m_width;
@@ -329,7 +329,7 @@ int CChangeList::GetNumItems()
 }
 
 // FUNCTION: LEMBALL 0x00467000
-ChangeListItem* CChangeList::GetNItem(int p_index)
+tagCHANGERECT* CChangeList::GetNItem(int p_index)
 {
 	if (m_itemCount == CHANGE_LIST_ITEMS_NEED_REBUILD) {
 		GetNumItems();

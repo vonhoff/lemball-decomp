@@ -11,7 +11,7 @@
 #include "CPVZBuffSurface.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Graphics/CChangeList.h"
-#include "Engine/Graphics/ChangeListItem.h"
+#include "Engine/Graphics/tagCHANGERECT.h"
 #include "Engine/Graphics/Palettes/CRemap.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CBitmap.h"
@@ -726,7 +726,7 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 	int index = 0;
 	if (m_changeList->GetNumItems() > 0) {
 		do {
-			ChangeListItem* item = m_changeList->GetNItem(index);
+			tagCHANGERECT* item = m_changeList->GetNItem(index);
 			CVSRect translated(*(CVSRect*) item);
 			if (g_dwFullScreenGdi == 0) {
 				translated.m_x += m_presentX;
@@ -762,7 +762,7 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 		int i = 0;
 		if (m_changeList->GetNumItems() > 0) {
 			do {
-				ChangeListItem* item = m_changeList->GetNItem(i);
+				tagCHANGERECT* item = m_changeList->GetNItem(i);
 				CopyBackBuffToScreen(*(CVSRect*) item);
 				i++;
 			} while (i < m_changeList->GetNumItems());

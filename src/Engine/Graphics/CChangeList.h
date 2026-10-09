@@ -3,13 +3,13 @@
 
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-class ChangeListItem;
+class tagCHANGERECT;
 
 // SIZE 0x4c
 class CChangeList {
 public:
 	CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize);
-	ChangeListItem* GetNItem(int p_index);
+	tagCHANGERECT* GetNItem(int p_index);
 	bool GetNextArea(unsigned char p_findMark, unsigned int p_itemMark, unsigned char p_replacementMark);
 	int GetDrawMark();
 	int GetNumItems();
@@ -29,7 +29,7 @@ private:
 	int m_capacity;                  // 0x00
 	int m_itemCount;                 // 0x04
 	int m_drawMarkCount;             // 0x08
-	ChangeListItem* m_items;         // 0x0c
+	tagCHANGERECT* m_items;          // 0x0c
 	unsigned char* m_map;            // 0x10
 	CVSSize m_viewSize;              // 0x14
 	CVSSize m_cellSize;              // 0x18

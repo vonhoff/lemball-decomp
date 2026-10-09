@@ -34,7 +34,7 @@ enum {
 	ABOUT_SCREEN_DISPLAY_DURATION_MS = 5 * MILLISECONDS_PER_SECOND
 };
 
-class ChangeListItem;
+class tagCHANGERECT;
 
 // GLOBAL: LEMBALL 0x0049f9e4
 char g_szRegisteredTo[] = "Registered to";
@@ -206,7 +206,7 @@ void CAboutScreen::OnSize(const CVSRect& p_rect)
 void CAboutScreen::DrawChangedRegion()
 {
 	CChangeList* changes;
-	ChangeListItem* item;
+	tagCHANGERECT* item;
 	int itemCount;
 	int index;
 	CResBITMAP* bitmap;

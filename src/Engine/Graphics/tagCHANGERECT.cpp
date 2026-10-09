@@ -1,0 +1,6 @@
+#include "Engine/Graphics/tagCHANGERECT.h"
+
+// FUNCTION: LEMBALL 0x00467040
+tagCHANGERECT::tagCHANGERECT()
+{
+}
