@@ -156,7 +156,7 @@ void CMover::SetUpNextNode(unsigned long p_time)
 		y &= 15;
 		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
 	}
-	const unsigned int& height = (unsigned int) z;
+	const unsigned int height = (unsigned int) z;
 	nextPosition.m_z = height << FIXED_POINT_FRACTION_BITS;
 
 	int startY;
@@ -288,7 +288,7 @@ bool CMover::Process()
 			y &= GROUND_BLOCK_PIXEL_MASK;
 			z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
 		}
-		const unsigned int& height = (unsigned int) z;
+		const unsigned int height = (unsigned int) z;
 		m_position.m_zFixed = height << FIXED_POINT_FRACTION_BITS;
 		oldPosition.m_xFixed =
 			(oldPosition.m_xFixed >> FIXED_POINT_FRACTION_BITS) - (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
