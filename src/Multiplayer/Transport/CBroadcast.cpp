@@ -53,7 +53,7 @@ CBroadcast::~CBroadcast()
 	operator delete(g_pBroadcastAddress);
 	g_pBroadcastAddress = NULL;
 	if (g_szBroadcastPeerName != NULL) {
-		operator delete(g_szBroadcastPeerName);
+		delete[] g_szBroadcastPeerName;
 		g_szBroadcastPeerName = NULL;
 	}
 	if (g_pBroadcastPacketTemplate != NULL) {
@@ -127,7 +127,7 @@ void CBroadcast::Initialise(const char* p_networkName)
 void CBroadcast::Stop()
 {
 	if (g_szBroadcastPeerName != NULL) {
-		operator delete(g_szBroadcastPeerName);
+		delete[] g_szBroadcastPeerName;
 		g_szBroadcastPeerName = NULL;
 	}
 	CBaseCommonSocket::CloseSocket();

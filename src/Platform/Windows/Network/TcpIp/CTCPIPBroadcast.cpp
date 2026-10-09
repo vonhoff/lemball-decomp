@@ -125,7 +125,7 @@ bool CTCPIPBroadcast::Start(const char* p_name)
 		SocketError();
 		return false;
 	}
-	g_szBroadcastPeerName = (char*) operator new(strlen(hostName) + 1);
+	g_szBroadcastPeerName = new char[strlen(hostName) + 1];
 	strcpy(g_szBroadcastPeerName, hostName);
 	m_asyncBuffer = new char[MAXGETHOSTSTRUCT];
 	m_writeReady = 1;

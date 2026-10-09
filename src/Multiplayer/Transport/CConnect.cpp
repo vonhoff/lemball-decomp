@@ -41,7 +41,7 @@ CConnect::~CConnect()
 // FUNCTION: LEMBALL 0x00460c60
 void CConnect::InitConnect(const char* p_peerName, CNetworkAddress* p_address, short p_port)
 {
-	m_name = (char*) operator new(strlen(p_peerName) + 1);
+	m_name = new char[strlen(p_peerName) + 1];
 	strcpy(m_name, p_peerName);
 	SetPort(p_port);
 	SetDestAddr(p_address);
@@ -72,11 +72,11 @@ void CConnect::SetConnectTime()
 void CConnect::Stop()
 {
 	if (m_name != NULL) {
-		operator delete(m_name);
+		delete[] m_name;
 		m_name = NULL;
 	}
 	if (m_address != NULL) {
-		operator delete(m_address);
+		delete[] m_address;
 		m_address = NULL;
 	}
 	CBaseCommonSocket::CloseSocket();

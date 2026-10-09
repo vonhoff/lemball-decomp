@@ -18,10 +18,10 @@
 // FUNCTION: LEMBALL 0x00470dd0
 bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)
 {
-	m_address = (char*) operator new(strlen(p_remoteName) + 1);
+	m_address = new char[strlen(p_remoteName) + 1];
 	strcpy(m_address, p_remoteName);
 	m_asyncBuffer = new char[MAXGETHOSTSTRUCT];
-	m_name = (char*) operator new(strlen(p_localName) + 1);
+	m_name = new char[strlen(p_localName) + 1];
 	strcpy(m_name, p_localName);
 	m_writeReady = 1;
 	m_asyncRequest = WSAAsyncGetHostByName(m_windowHandle,
