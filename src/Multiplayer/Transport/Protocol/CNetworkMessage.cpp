@@ -115,12 +115,12 @@ void CNetworkMessage::Add(const unsigned char* p_data, int p_length)
 }
 
 // FUNCTION: LEMBALL 0x0045eff0
-int CNetworkMessage::GetDWORD()
+unsigned long CNetworkMessage::GetDWORD()
 {
 	unsigned long value;
 
 	Get(value);
-	return (int) value;
+	return value;
 }
 
 // FUNCTION: LEMBALL 0x0045f010

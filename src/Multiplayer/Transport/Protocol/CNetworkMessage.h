@@ -38,7 +38,7 @@ public:
 	friend class CFileBroadcast;
 	friend class CNetworkManager;
 	bool Set(unsigned char* p_data);
-	int GetDWORD();
+	unsigned long GetDWORD();
 	unsigned char GetBYTE();
 	unsigned short GetWORD();
 	virtual bool CheckMessage(const unsigned char* p_arg0); // vtable+0x00
