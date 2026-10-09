@@ -140,7 +140,7 @@ private:
 	CSpriteWindow* m_spriteWindow;        // 0x268
 	CGDI* m_spriteSurface;                // 0x26c
 	unsigned int m_mode;                  // 0x270
-	unsigned int m_alternateAssets;       // 0x274
+	unsigned int m_useCompactAssets;      // 0x274
 	unsigned int m_buttonsActive;         // 0x278
 };
 
