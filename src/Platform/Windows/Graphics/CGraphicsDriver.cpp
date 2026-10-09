@@ -70,7 +70,7 @@ bool CGraphicsDriver::BlitWrappedBitmap(CDrawingContext* p_destination,
 		CVSPoint* point = p_destinationRect;
 		short height = (short) (rect0->m_height * scale);
 		short width = (short) (rect0->m_width * scale);
-		CVSRect destRect(point->m_x, point->m_y, width, height);
+		CVSRect destRect(*point, CVSSize(width, height));
 		copied = StretchBltContexts(p_destination, &destRect, p_source, rect0);
 	}
 	if (rect1 != NULL) {
