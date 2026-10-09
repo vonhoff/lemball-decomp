@@ -69,7 +69,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 		if (GetSystemDirectoryA(path, sizeof(path)) != 0) {
 			memcpy(path + strlen(path), "\\DSOUND.DLL", 12);
 			DWORD size = GetFileVersionInfoSizeA(path, &versionHandle);
-			void* data = operator new(size);
+			unsigned char* data = new unsigned char[size];
 			valid = GetFileVersionInfoA(path, 0, size, data);
 			if (valid != 0) {
 				VerQueryValueA(data, "\\", &versionInfo, &versionLength);
@@ -90,7 +90,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 					*g_pErrorOutput << "Defaulting to windows sound device\n";
 				}
 			}
-			operator delete(data);
+			delete[] data;
 			if (valid) {
 				m_platform.m_createDirectSound = (long(__stdcall*)(const void*, IDirectSound**, void*)) GetProcAddress(
 					(HMODULE) m_platform.m_library,
