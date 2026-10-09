@@ -316,7 +316,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 	p_viewData->m_stateTimer = timer;
 	p_viewData->m_statusFlags = 0;
 	p_viewData->m_hidden = m_hidden;
-	((C3DVector&) p_viewData->m_auxiliaryPosition) = (const C3DVector&) m_auxiliaryPosition;
+	p_viewData->m_auxiliaryPosition = m_auxiliaryPosition;
 	p_viewData->m_soundEffect = m_soundEffect;
 	p_viewData->m_animationTime = m_isRemoteObject ? g_dwNetworkSimulationTimestamp : g_dwSimulationTimestamp;
 	SetSndEffect(SFX_NONE);
@@ -354,7 +354,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 				p_viewData->SetViewActionTuple(m_action, (unsigned short) m_actionArgument, m_stateTimer);
 				p_viewData->m_statusFlags = 0;
 				p_viewData->m_hidden = m_hidden;
-				((C3DVector&) p_viewData->m_auxiliaryPosition) = (const C3DVector&) m_auxiliaryPosition;
+				p_viewData->m_auxiliaryPosition = m_auxiliaryPosition;
 				p_viewData->m_soundEffect = m_soundEffect;
 				p_viewData->m_animationTime =
 					m_isRemoteObject ? g_dwNetworkSimulationTimestamp : g_dwSimulationTimestamp;
