@@ -87,9 +87,9 @@ CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigne
 	}
 	m_controllerActive = 0;
 	m_buttonCount = 0;
-	m_verticalMoving = 0;
+	m_verticalMoving = false;
 	m_selectionState = GUN_SELECTION_IDLE;
-	m_messageSent = 0;
+	m_messageSent = false;
 	g_pMasterInputQueue->Attach(this, 0);
 	if (m_mode == FRONTEND_LAYOUT_COMPACT) {
 		m_alternateAssets = 1;
@@ -539,7 +539,7 @@ void CGunController::MoveUp()
 	m_moveStartTime = CurrentMilliTimer();
 	m_moveEndTime = abs(m_targetY - m_gunY) * 3 + m_moveStartTime;
 	m_moveStartY = m_gunY;
-	m_verticalMoving = 1;
+	m_verticalMoving = true;
 }
 
 // FUNCTION: LEMBALL 0x0044d8e0
@@ -574,7 +574,7 @@ void CGunController::MoveDown()
 	m_moveStartTime = CurrentMilliTimer();
 	m_moveEndTime = abs(m_targetY - m_gunY) * 3 + m_moveStartTime;
 	m_moveStartY = m_gunY;
-	m_verticalMoving = 1;
+	m_verticalMoving = true;
 }
 
 // FUNCTION: LEMBALL 0x0044d990
@@ -752,11 +752,11 @@ void CGunController::Process()
 			if (fireTime <= now && m_messageSent != 1) {
 				m_selectionMessage.m_time = CurrentQueueTimer();
 				g_pMasterInputQueue->Post(m_selectionMessage);
-				m_messageSent = 1;
+				m_messageSent = true;
 			}
 			if (m_fireEndTime <= now) {
 				m_selectionState = GUN_SELECTION_IDLE;
-				m_messageSent = 0;
+				m_messageSent = false;
 			}
 			break;
 		}
@@ -768,7 +768,7 @@ void CGunController::Process()
 				m_moveStartY;
 			return;
 		}
-		m_verticalMoving = 0;
+		m_verticalMoving = false;
 		m_gunY = m_targetY;
 	}
 }

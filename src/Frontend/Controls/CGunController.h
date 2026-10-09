@@ -108,13 +108,13 @@ private:
 	int m_projectileX;                    // 0xa8
 	int m_projectileY;                    // 0xac
 	int m_projectileTargetX;              // 0xb0
-	unsigned int m_messageSent;           // 0xb4
+	bool m_messageSent;                   // 0xb4
 	tagMESSAGE m_selectionMessage;        // 0xb8
 	int m_projectileEndX;                 // 0xcc
 	int m_projectileEndY;                 // 0xd0
 	unsigned long m_inputReadyTime;       // 0xd4
 	unsigned int m_selectedMessage;       // 0xd8
-	unsigned int m_verticalMoving;        // 0xdc
+	bool m_verticalMoving;                // 0xdc
 	GunControllerJunction m_junctions[8]; // 0xe0
 	CGunButtons* m_buttons[8];            // 0x1e0
 	CClipRect m_cursorRect[1];            // 0x200
