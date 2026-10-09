@@ -176,8 +176,6 @@ unsigned long g_dwSuccFailSuccessBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SU
 // GLOBAL: LEMBALL 0x0049fe18
 char g_szPaintballSequence[] = "Paintball Sequence";
 
-extern char g_szSuccFailMoviePrefix[];
-
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Multiplayer/CNetworkGameMessage.h"
 #include "Multiplayer/CNetworkManager.h"
@@ -186,12 +184,6 @@ extern char g_szSuccFailMoviePrefix[];
 #include <string.h>
 
 #pragma intrinsic(strcpy, strlen)
-
-extern char* g_apSuccFailSingleWin[8];
-extern char* g_apSuccFailNetWin[8];
-extern char* g_apSuccFailSingleLose[8];
-extern char* g_apSuccFailNetLose[8];
-extern char g_szPasswordLabel[];
 
 // FUNCTION: LEMBALL 0x00450020
 CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect, unsigned int p_success)
@@ -370,7 +362,7 @@ void CSuccFailDrawer::Load()
 	bitmapX = m_size.m_width - m_primaryBitmap->m_rasterPoint.m_x;
 	primitive = m_primitiveBundle;
 	primary = m_primitives;
-	i = 1;
+	i = sizeof(m_primitives) / sizeof(*m_primitives);
 	do {
 		resource = m_backgroundBitmap;
 		position = m_layout->m_backgroundPosition.m_y;
