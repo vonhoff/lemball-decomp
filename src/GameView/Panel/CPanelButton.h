@@ -2,13 +2,12 @@
 #define LEMBALL_VIEWS_PANEL_CPANELBUTTON_H
 
 #include "../../Engine/Animation/CAnim.h"
+#include "CPanelLemming.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/Message.h"
-#include "Gameplay/Objects/ObjectTypes.h"
 #include "Platform/Windows/Windowing/CDepressedButton.h"
 
-class CPanelLemming;
 class CPVGWnd;
 
 // SIZE 0x1b8
@@ -28,19 +27,19 @@ public:
 	virtual ~CPanelButton();                                                             // vtable+0x00
 
 private:
-	unsigned int m_pressedInside;   // 0x10c
-	CPanelLemming* m_lemming;       // 0x110
-	CSolidRect m_statusLine[1];     // 0x114
-	CSolidRect m_inventoryLines[3]; // 0x124
-	CVSRect m_statusRect;           // 0x154
-	CVSRect m_inventoryRect;        // 0x15c
-	unsigned int m_lastAmmo;        // 0x164
-	unsigned int m_unavailable;     // 0x168
-	unsigned int m_alternatePlayer; // 0x16c
-	eObjectType m_lastBalloon;      // 0x170
-	unsigned int m_inventoryCount;  // 0x174
-	CAnim m_statusAnim[1];          // 0x178
-	CAnim m_inventoryAnim[1];       // 0x198
+	unsigned int m_pressedInside;        // 0x10c
+	CPanelLemming* m_lemming;            // 0x110
+	CSolidRect m_statusLine[1];          // 0x114
+	CSolidRect m_inventoryLines[3];      // 0x124
+	CVSRect m_statusRect;                // 0x154
+	CVSRect m_inventoryRect;             // 0x15c
+	unsigned int m_lastAmmo;             // 0x164
+	unsigned int m_unavailable;          // 0x168
+	unsigned int m_alternatePlayer;      // 0x16c
+	ePanelRemapIndex m_lastBalloonRemap; // 0x170
+	unsigned int m_inventoryCount;       // 0x174
+	CAnim m_statusAnim[1];               // 0x178
+	CAnim m_inventoryAnim[1];            // 0x198
 };
 
 // SYNTHETIC: LEMBALL 0x00443950

@@ -31,7 +31,7 @@ CPanelLemming::CPanelLemming(CPlayerLemming* p_lemming, const CVSPoint& p_positi
 	m_lemming = p_lemming;
 	CVSRect rect;
 	m_playerIndex = p_lemming->m_playerIndex;
-	m_balloonType = OBJECT_BALLOON_NONE;
+	m_balloonRemap = PANEL_REMAP_INDEX_NONE;
 	m_inventoryCount = 0;
 
 	rect.m_x = p_position.m_x;
@@ -70,19 +70,19 @@ void CPanelLemming::UpdateStatus()
 
 	switch (m_lemming->GetLastBalloon()) {
 	case OBJECT_BALLOON_0:
-		m_balloonType = OBJECT_BULLET;
+		m_balloonRemap = PANEL_REMAP_INDEX_3;
 		break;
 	case OBJECT_BALLOON_2:
-		m_balloonType = OBJECT_PLAYER_1;
+		m_balloonRemap = PANEL_REMAP_INDEX_1;
 		break;
 	case OBJECT_BALLOON_4:
-		m_balloonType = OBJECT_CATAPULT;
+		m_balloonRemap = PANEL_REMAP_INDEX_4;
 		break;
 	case OBJECT_BALLOON_6:
-		m_balloonType = OBJECT_NONE;
+		m_balloonRemap = PANEL_REMAP_INDEX_0;
 		break;
 	default:
-		m_balloonType = OBJECT_BALLOON_NONE;
+		m_balloonRemap = PANEL_REMAP_INDEX_NONE;
 		break;
 	}
 
@@ -90,15 +90,15 @@ void CPanelLemming::UpdateStatus()
 	for (int i = 0; i < (int) m_lemming->m_inventoryCount; i++) {
 		switch (m_lemming->GetObject(i)) {
 		case OBJECT_KEY_1:
-			m_inventoryTypes[m_inventoryCount] = OBJECT_BULLET;
+			m_inventoryRemaps[m_inventoryCount] = PANEL_REMAP_INDEX_3;
 			m_inventoryCount++;
 			break;
 		case OBJECT_KEY_2:
-			m_inventoryTypes[m_inventoryCount] = OBJECT_PLAYER_1;
+			m_inventoryRemaps[m_inventoryCount] = PANEL_REMAP_INDEX_1;
 			m_inventoryCount++;
 			break;
 		case OBJECT_KEY_3:
-			m_inventoryTypes[m_inventoryCount] = OBJECT_CATAPULT;
+			m_inventoryRemaps[m_inventoryCount] = PANEL_REMAP_INDEX_4;
 			m_inventoryCount++;
 			break;
 		}

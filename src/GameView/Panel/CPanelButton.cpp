@@ -63,7 +63,7 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVG
 	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == ACTION_DEAD);
 	m_alternatePlayer = m_lemming->m_lemming->HasObject(OBJECT_FLAG_2);
 	m_lastAmmo = AMMO_COUNT_CACHE_UNSET;
-	m_lastBalloon = OBJECT_BALLOON_NONE;
+	m_lastBalloonRemap = PANEL_REMAP_INDEX_NONE;
 	m_inventoryCount = 0;
 	{
 		CVSSize size;
@@ -117,9 +117,9 @@ void CPanelButton::DrawButton()
 	else {
 		playerRemap = NULL;
 	}
-	if (lemming->m_balloonType != OBJECT_BALLOON_NONE) {
-		if ((int) lemming->m_balloonType < 4) {
-			balloonRemap = lemming->m_panel->m_game->m_remaps[lemming->m_balloonType];
+	if (lemming->m_balloonRemap != PANEL_REMAP_INDEX_NONE) {
+		if ((int) lemming->m_balloonRemap < 4) {
+			balloonRemap = lemming->m_panel->m_game->m_remaps[lemming->m_balloonRemap];
 		}
 		else {
 			balloonRemap = NULL;
@@ -143,7 +143,7 @@ void CPanelButton::DrawButton()
 	m_statusAnim[0].m_remap = (CRemap*) playerRemap;
 	m_statusAnim[0].Draw(m_gdi);
 	lemming = m_lemming;
-	if (lemming->m_balloonType != OBJECT_BALLOON_NONE && m_unavailable == 0) {
+	if (lemming->m_balloonRemap != PANEL_REMAP_INDEX_NONE && m_unavailable == 0) {
 		CResANIM* resource;
 		const CVSPoint* position = (const CVSPoint*) &m_inventoryRect;
 		resource = lemming->m_panel->m_resources[3];
@@ -202,7 +202,7 @@ void CPanelButton::DrawButton()
 	if (m_unavailable == 0) {
 		for (int i = 0; i < (int) m_lemming->m_inventoryCount; i++) {
 			CSolidRect* line = &m_inventoryLines[i];
-			int type = m_lemming->m_inventoryTypes[i];
+			int type = m_lemming->m_inventoryRemaps[i];
 			CBaseRemap* remap;
 			if (type < 4) {
 				remap = m_lemming->m_panel->m_game->m_remaps[type];
@@ -246,9 +246,9 @@ void CPanelButton::OnPaint(const CVSRect& p_rect)
 		m_forceDrawCount = 1;
 		m_alternatePlayer = !m_alternatePlayer;
 	}
-	if (m_lemming->m_balloonType != m_lastBalloon) {
+	if (m_lemming->m_balloonRemap != m_lastBalloonRemap) {
 		m_forceDrawCount = 1;
-		m_lastBalloon = m_lemming->m_balloonType;
+		m_lastBalloonRemap = m_lemming->m_balloonRemap;
 	}
 	CDepressedButton::OnPaint(p_rect);
 }
@@ -297,7 +297,7 @@ void CPanelButton::OnPressed(eMouseButtonIndex p_flags)
 	}
 
 normal:
-	if (panelLemming->m_balloonType != OBJECT_BALLOON_NONE) {
+	if (panelLemming->m_balloonRemap != PANEL_REMAP_INDEX_NONE) {
 		if (m_inventoryRect.m_x <= m_clickPosition.m_x &&
 			m_clickPosition.m_x < (short) (m_inventoryRect.m_width + m_inventoryRect.m_x)) {
 			short inventoryY = m_inventoryRect.m_y;

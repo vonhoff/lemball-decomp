@@ -36992,7 +36992,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "??0CPanelButton@@QAE@PAVCPanelLemming@@ABVCVSRect@@PAVCPVGWnd@@@Z",
       "size": 630,
-      "fingerprint": "6c1dfd969e8b220e8dd64878c693e84f48c8750edcc7e323e5e665e971e7dab3",
+      "fingerprint": "ac2df372cae75d923c0afcd37aa2f7e101ff2573a76990723aeea7458b3ee74a",
       "references": [
         {
           "offset": 65,
@@ -37102,32 +37102,32 @@
       "caller": 4466320,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?DrawButton@CPanelButton@@UAEXXZ",
-      "size": 787,
-      "fingerprint": "39460d735de16d0eb01e47efa1ea6a7ac50b91fbe61163a4d7764dcceb79868d",
+      "size": 760,
+      "fingerprint": "81a2a9fc7592ebf5a515431845e8ef33260c2960344967fe0997a2146006ac02",
       "references": [
         {
-          "offset": 576,
+          "offset": 549,
           "original_instruction": 4466896,
           "original_bytes": "e873f9fbff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 592,
+          "offset": 565,
           "original_instruction": 4466912,
           "original_bytes": "e81ff7fbff",
           "thunk": 4202500,
           "source_symbol": "??4CVSPoint@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 718,
+          "offset": 691,
           "original_instruction": 4467038,
           "original_bytes": "e8e5f8fbff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 731,
+          "offset": 704,
           "original_instruction": 4467051,
           "original_bytes": "e894f6fbff",
           "thunk": 4202500,
@@ -37172,7 +37172,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?OnPressed@CPanelButton@@UAEXW4eMouseButtonIndex@@@Z",
       "size": 454,
-      "fingerprint": "b63bbc64f570b93072475568345efa24af61d7d2ab2d0832016b4835227ffab7",
+      "fingerprint": "d5a45f9ecf4ee20a196b0f0141799dd95f31d04d94690088c84ee3cccb780859",
       "references": [
         {
           "offset": 186,
