@@ -234,7 +234,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 	int i;
 
 	m_animIds = p_animIds;
-	m_resources = (CResANIM**) operator new(m_valueCount * 4);
+	m_resources = (CResANIM**) operator new(m_valueCount * sizeof(*m_resources));
 	i = 0;
 	if (m_valueCount > i) {
 		do {

@@ -224,7 +224,7 @@ void INIT_SubSystems()
 	resOk = _RES_Init();
 	*g_pSysOutput << "_RES_Init   : " << OkFailed(resOk) << "...\n";
 
-	storage = operator new(0x20);
+	storage = operator new(sizeof(CMogloadStat));
 	if (storage != NULL) {
 		stat = (CBaseStat*) storage;
 		new (storage) CMogloadStat("Main memory arena");

@@ -156,7 +156,7 @@ void CBaseFrontendDrawer::Setup()
 	Restart();
 
 	if (m_ambientAnimId != 0) {
-		storage = operator new(0x1c);
+		storage = operator new(sizeof(CPlayThruAnim));
 		if (storage == NULL) {
 			m_ambientAnim = NULL;
 		}

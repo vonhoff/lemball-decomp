@@ -29,7 +29,7 @@ void CPVWnd::AddChild(class CPVWnd* p_child)
 {
 	void** node;
 
-	node = (void**) operator new(0xc);
+	node = (void**) operator new(3 * sizeof(*node));
 	if (node != NULL) {
 		node[0] = p_child;
 		node[1] = NULL;

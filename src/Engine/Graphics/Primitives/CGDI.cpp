@@ -19,7 +19,7 @@ CGDI::CGDI(const CVSRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSur
 
 	if ((int) p_rect.m_height * (int) p_rect.m_width > 1) {
 		m_primitiveCapacity = p_primitiveCapacity + 3;
-		m_primitives = (CPrimitive**) operator new(m_primitiveCapacity * 4);
+		m_primitives = (CPrimitive**) operator new(m_primitiveCapacity * sizeof(*m_primitives));
 		target = g_pGdiDevice->AllocateSurface(p_rect, p_parentSurface);
 		i = 0;
 		m_renderTarget = target;

@@ -73,7 +73,7 @@ CHiliteController::CHiliteController(CGWnd* p_window,
 // FUNCTION: LEMBALL 0x0044f590
 void CHiliteController::SetHiliteWindow()
 {
-	void* storage = operator new(0x90);
+	void* storage = operator new(sizeof(CHiliteWindow));
 	if (storage == NULL) {
 		m_hiliteWindow = NULL;
 	}
