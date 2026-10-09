@@ -57,7 +57,7 @@ class CGunController : public CBaseQueueHandler, public CAnimsManager {
 public:
 	CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigned int p_mode);
 	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
-	virtual ~CGunController();                  // vtable+0x04
+	virtual ~CGunController();                     // vtable+0x04
 	void ActivateButtons(int p_active);
 	void AddButton(int p_x,
 				   int p_y,
@@ -112,7 +112,7 @@ private:
 	tagMESSAGE m_selectionMessage;        // 0xb8
 	int m_projectileEndX;                 // 0xcc
 	int m_projectileEndY;                 // 0xd0
-	unsigned int m_inputReadyTime;        // 0xd4
+	unsigned long m_inputReadyTime;       // 0xd4
 	unsigned int m_selectedMessage;       // 0xd8
 	unsigned int m_verticalMoving;        // 0xdc
 	GunControllerJunction m_junctions[8]; // 0xe0
@@ -121,16 +121,16 @@ private:
 	CGDI* m_gdi;                          // 0x210
 	CGWnd* m_window;                      // 0x214
 	unsigned int m_nextMessageId;         // 0x218
-	unsigned int m_moveStartTime;         // 0x21c
-	unsigned int m_moveEndTime;           // 0x220
-	unsigned int m_sideStartTime;         // 0x224
-	unsigned int m_sideEndTime;           // 0x228
-	unsigned int m_selectStartTime;       // 0x22c
-	unsigned int m_selectEndTime;         // 0x230
+	unsigned long m_moveStartTime;        // 0x21c
+	unsigned long m_moveEndTime;          // 0x220
+	unsigned long m_sideStartTime;        // 0x224
+	unsigned long m_sideEndTime;          // 0x228
+	unsigned long m_selectStartTime;      // 0x22c
+	unsigned long m_selectEndTime;        // 0x230
 	unsigned int m_reserved234;           // 0x234
 	unsigned int m_reserved238;           // 0x238
-	unsigned int m_fireStartTime;         // 0x23c
-	unsigned int m_fireEndTime;           // 0x240
+	unsigned long m_fireStartTime;        // 0x23c
+	unsigned long m_fireEndTime;          // 0x240
 	CPlayThruAnim* m_sideAnim;            // 0x244
 	CPlayThruAnim* m_leftShotAnim;        // 0x248
 	CPlayThruAnim* m_cursorAnim;          // 0x24c
