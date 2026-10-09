@@ -109,7 +109,7 @@ void CEnemy::Restart()
 	m_facingDirection = m_initialFacingDirection;
 	m_stateIndex = ENEMY_BEHAVIOR_STAGE_FIRST;
 	m_fireState = ENEMY_FIRE_IDLE;
-	m_hit = 0;
+	m_hit = false;
 	m_deathRequested = 0;
 
 	CAI* ai = g_pAI;
@@ -450,7 +450,7 @@ void CEnemy::EndFiring()
 void CEnemy::HitBullet(CBullet* p_bullet)
 {
 	if (p_bullet->m_owner != OWNER_ENEMY) {
-		m_hit = 1;
+		m_hit = true;
 		m_actionDeadline = g_dwGameTick + ENEMY_HIT_RESPONSE_DELAY_TICKS;
 		m_facingDirection = (p_bullet->m_facingDirection + FACING_DIRECTION_OPPOSITE_OFFSET) & FACING_DIRECTION_MASK;
 		m_deathRequested = 1;
@@ -483,7 +483,7 @@ void CEnemy::HitMine()
 // FUNCTION: LEMBALL 0x004206f0
 void CEnemy::HitBall()
 {
-	m_hit = 1;
+	m_hit = true;
 	m_actionDeadline = g_dwGameTick + ENEMY_HIT_RESPONSE_DELAY_TICKS;
 	g_pAI->Score(AI_SCORE_ENEMY_HIT_POINTS);
 }
@@ -507,7 +507,7 @@ void CEnemy::GetHit()
 }
 
 // FUNCTION: LEMBALL 0x00420aa0
-int CEnemy::IsHit()
+bool CEnemy::IsHit()
 {
 	return m_hit;
 }

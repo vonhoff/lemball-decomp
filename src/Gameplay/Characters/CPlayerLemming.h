@@ -38,7 +38,7 @@ public:
 	virtual void StartStanding();                                                          // vtable+0x30
 	virtual void HitBullet(CBullet* p_bullet);                                             // vtable+0x54
 	virtual void HitBall();                                                                // vtable+0x58
-	virtual int IsHit();                                                                   // vtable+0x5c
+	virtual bool IsHit();                                                                  // vtable+0x5c
 	virtual void GetHit();                                                                 // vtable+0x60
 	virtual void HitMine();                                                                // vtable+0x64
 	virtual void Die();                                                                    // vtable+0x68
@@ -84,7 +84,7 @@ private:
 	eObjectType m_balloonObjectType;                            // 0x16c
 	unsigned int m_alternatePlayer;                             // 0x170
 	unsigned int m_spawnDelay;                                  // 0x174
-	unsigned int m_wasHitByBullet;                              // 0x178
+	bool m_wasHitByBullet;                                      // 0x178
 	unsigned int m_isGroupLeader;                               // 0x17c
 	unsigned int m_groupIndex;                                  // 0x180
 	eFireRequestState m_fireRequestState;                       // 0x184

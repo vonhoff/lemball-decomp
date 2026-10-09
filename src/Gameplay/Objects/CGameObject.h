@@ -87,7 +87,7 @@ public:
 	virtual bool Collision(const CRect3& p_bounds);                                  // vtable+0x4c
 	virtual void HitBullet(CBullet* p_bullet);                                       // vtable+0x54
 	virtual void HitBall();                                                          // vtable+0x58
-	virtual int IsHit();                                                             // vtable+0x5c
+	virtual bool IsHit();                                                            // vtable+0x5c
 	virtual void GetHit();                                                           // vtable+0x60
 	virtual void HitMine();                                                          // vtable+0x64
 	virtual void Die();                                                              // vtable+0x68

@@ -145,9 +145,9 @@ void CGameObject::HitBall()
 }
 
 // FUNCTION: LEMBALL 0x0040a950
-int CGameObject::IsHit()
+bool CGameObject::IsHit()
 {
-	return 0;
+	return false;
 }
 
 // FUNCTION: LEMBALL 0x0040a960

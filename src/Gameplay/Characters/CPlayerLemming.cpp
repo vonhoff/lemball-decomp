@@ -117,7 +117,7 @@ void CPlayerLemming::Restart()
 		m_flightVelocity.m_yFixed = 0;
 		m_flightVelocity.m_zFixed = PLAYER_LEMMING_INITIAL_FALL_VERTICAL_VELOCITY_FIXED;
 		m_isGroupLeader = 0;
-		m_wasHitByBullet = 0;
+		m_wasHitByBullet = false;
 		m_hasDestination = 0;
 		m_fireRequestState = FIRE_REQUEST_NONE;
 		m_desiredFacingDirection = m_initialFacingDirection;
@@ -178,7 +178,7 @@ void CPlayerLemming::HitBullet(CBullet* p_bullet)
 				return;
 			}
 			m_hidden = 0;
-			m_wasHitByBullet = 1;
+			m_wasHitByBullet = true;
 			m_actionDeadline = g_dwGameTick + PLAYER_LEMMING_BULLET_HIT_STUN_TICKS;
 			m_facingDirection =
 				(p_bullet->m_facingDirection + FACING_DIRECTION_OPPOSITE_OFFSET) & FACING_DIRECTION_MASK;
@@ -571,7 +571,7 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_inventoryCount = 0;
 	m_action = ACTION_NONE;
 	m_isGroupLeader = 0;
-	m_wasHitByBullet = 0;
+	m_wasHitByBullet = false;
 	m_ice = NULL;
 	m_onConveyor = 0;
 	m_hasDestination = 0;
@@ -908,7 +908,7 @@ int CPlayerLemming::Bored()
 }
 
 // FUNCTION: LEMBALL 0x00410a10
-int CPlayerLemming::IsHit()
+bool CPlayerLemming::IsHit()
 {
 	return m_wasHitByBullet;
 }
@@ -939,7 +939,7 @@ void CPlayerLemming::GetHit()
 // FUNCTION: LEMBALL 0x00410aa0
 void CPlayerLemming::HitBall()
 {
-	m_wasHitByBullet = 1;
+	m_wasHitByBullet = true;
 	m_actionDeadline = g_dwGameTick + PLAYER_LEMMING_BALL_HIT_STUN_TICKS;
 }
 
