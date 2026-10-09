@@ -15,7 +15,7 @@ from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_t
 from lib import ROOT, TARGET_ID
 from lib.names import scan
 from lib.policy import violations
-from lib.signatures import Signature, adjacent_signature
+from lib.signatures import Signature
 
 
 SRC = ROOT / "src"
@@ -45,29 +45,17 @@ def read_catalog():
 
 def read_inferences():
     """Read explicit source hypotheses and address-derived linker labels."""
-    with (CATALOG.parent / "source-name-inferences.csv").open(
-        newline="", encoding="utf-8-sig"
-    ) as stream:
-        inferences = {int(row["address"], 16): row for row in csv.DictReader(stream)}
     with (CATALOG.parent / "inferred-symbols.csv").open(
         newline="", encoding="utf-8-sig"
     ) as stream:
-        rows = csv.DictReader(line for line in stream if not line.startswith("#"))
-        for row in rows:
-            prototype = row["source_prototype"]
-            if prototype.startswith("tail jump;"):
-                continue
-            inferences[int(row["address"], 16)] = {
-                "signature": adjacent_signature(prototype, 0, []).display(),
-                "basis": row["basis"],
-            }
+        inferences = {
+            int(row["address"], 16): row["signature"]
+            for row in csv.DictReader(stream)
+            if row["signature"]
+        }
     thunks = json.loads((CATALOG.parent / "linker-thunks.json").read_text())
     for thunk in thunks["thunks"]:
-        inferences[thunk["address"]] = {
-            "signature": Signature("", thunk["symbol"], None).display(),
-            "basis": f"intentional address-derived label; original E9 {thunk['original_bytes']} "
-            f"targets 0x{thunk['target']:08x}; original source name unknown",
-        }
+        inferences[thunk["address"]] = Signature("", thunk["symbol"], None).display()
     return inferences
 
 

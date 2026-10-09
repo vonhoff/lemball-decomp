@@ -180,17 +180,15 @@ def scan(path, symbols, by_windows, inferences=None):
             actual_signature = actual.display()
             row["actual_signature"] = actual_signature
             if not candidates:
-                evidence = (inferences or {}).get(address)
-                if (
-                    evidence
-                    and evidence["signature"] == actual_signature
-                    and evidence["basis"].strip()
-                ):
-                    yield dict(row, status="inferred", reason=evidence["basis"])
+                inferred_signature = (inferences or {}).get(address)
+                if inferred_signature == actual_signature:
+                    yield dict(
+                        row, status="inferred", reason="explicit source inference"
+                    )
                 else:
-                    reason = f"{actual_signature}: no Windows catalog mapping or documented inference"
-                    if evidence:
-                        reason += f"; recorded inference is {evidence['signature']}"
+                    reason = f"{actual_signature}: no Windows catalog mapping or explicit inference"
+                    if inferred_signature:
+                        reason += f"; recorded inference is {inferred_signature}"
                     yield dict(row, status="unmapped", reason=reason)
                 continue
             if actual.method == f"__lemball_jump_{address:08x}":
