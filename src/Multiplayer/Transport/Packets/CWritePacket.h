@@ -14,10 +14,10 @@ public:
 	~CWritePacket();
 
 private:
-	unsigned char m_available;   // 0x08
-	CNetworkMessage* m_message;  // 0x0c
-	unsigned int m_lastSendTime; // 0x10
-	unsigned char m_retryCount;  // 0x14
+	unsigned char m_available;    // 0x08
+	CNetworkMessage* m_message;   // 0x0c
+	unsigned long m_lastSendTime; // 0x10
+	unsigned char m_retryCount;   // 0x14
 
 	friend class CWriteSocket;
 	friend class CWritePacketBuff;

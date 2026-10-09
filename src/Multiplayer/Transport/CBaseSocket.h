@@ -23,8 +23,8 @@ protected:
 	unsigned short m_multiMessageSequence; // 0x36
 	unsigned int m_unknown38;              // 0x38
 	union {
-		unsigned int m_lastReceiveTime; // 0x3c
-		unsigned int m_lastSendTime;    // 0x3c
+		unsigned long m_lastReceiveTime; // 0x3c
+		unsigned long m_lastSendTime;    // 0x3c
 	};
 	unsigned int m_unknown40; // 0x40
 };
