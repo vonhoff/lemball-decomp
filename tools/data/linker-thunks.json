@@ -31616,11 +31616,25 @@
       "caller": 4458560,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?CalcGroundCode@C2D@@QAEGW4eObjectType@@HHG@Z",
-      "size": 957,
-      "fingerprint": "d74cf5fd6f92743cd6266e69e8081cc05cd3a27fd4830fa1661a3c6e3ee815b3",
+      "size": 941,
+      "fingerprint": "dddc81c751a9885a60a35aa5b3c378878b0bc0f395ee2d02af68c1bc3a01545b",
       "references": [
         {
-          "offset": 460,
+          "offset": 270,
+          "original_instruction": 4458834,
+          "original_bytes": "e84e20fcff",
+          "thunk": 4204965,
+          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
+        },
+        {
+          "offset": 359,
+          "original_instruction": 4458930,
+          "original_bytes": "e8ee1ffcff",
+          "thunk": 4204965,
+          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
+        },
+        {
+          "offset": 440,
           "original_instruction": 4459013,
           "original_bytes": "e89b1ffcff",
           "thunk": 4204965,

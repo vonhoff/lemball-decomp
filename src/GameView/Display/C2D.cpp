@@ -5270,9 +5270,9 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 		break;
 	}
 
-	unsigned short tileX = (unsigned short) (p_x / GROUND_BLOCK_PIXEL_SIZE);
-	unsigned short tileY = (unsigned short) (p_y / GROUND_BLOCK_PIXEL_SIZE);
-	unsigned short code = (unsigned short) ((tileY + tileX) * 0x40 + 4);
+	unsigned short tileX = p_x / GROUND_BLOCK_PIXEL_SIZE;
+	unsigned short tileY = p_y / GROUND_BLOCK_PIXEL_SIZE;
+	unsigned short code = (tileY + tileX) * 0x40 + 4;
 	if (baseCodeOnly) {
 		return code;
 	}
@@ -5293,9 +5293,9 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			int cellY;
 			int cellX = p_x;
 			cellY = p_y;
-			cellY &= 0xf;
+			cellY &= GROUND_BLOCK_PIXEL_MASK;
 			width *= southTileY;
-			cellX &= 0xf;
+			cellX &= GROUND_BLOCK_PIXEL_MASK;
 			southZ = (map->m_ground.m_ground + width + southTileX)->GetZ(cellX, cellY);
 		}
 	}
@@ -5313,9 +5313,9 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			int cellY;
 			int cellX = p_x;
 			cellY = p_y;
-			cellY &= 0xf;
+			cellY &= GROUND_BLOCK_PIXEL_MASK;
 			eastTileY *= map->m_ground.m_width;
-			cellX &= 0xf;
+			cellX &= GROUND_BLOCK_PIXEL_MASK;
 			eastZ = (map->m_ground.m_ground + eastTileY + eastTileX)->GetZ(cellX, cellY);
 		}
 	}
@@ -5329,8 +5329,8 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			southeastZ = 0;
 		}
 		else {
-			p_x &= 0xf;
-			p_y &= 0xf;
+			p_x &= GROUND_BLOCK_PIXEL_MASK;
+			p_y &= GROUND_BLOCK_PIXEL_MASK;
 			width *= southTileY;
 			southeastZ = (map->m_ground.m_ground + width + eastTileX)->GetZ(p_x, p_y);
 		}
@@ -5340,9 +5340,9 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 		int southWithinZ = p_z >= southZ;
 		bool eastWithinZ = p_z >= eastZ;
 		bool southeastWithinZ = p_z >= southeastZ;
-		int threshold = (int) p_z - 0x18;
+		int threshold = p_z - 0x18;
 		bool southSolid;
-		if ((int) southZ < threshold) {
+		if (southZ < threshold) {
 		southClear:
 			southSolid = false;
 		}
@@ -5370,7 +5370,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 		}
 
 		bool eastSolid;
-		if ((int) eastZ < threshold) {
+		if (eastZ < threshold) {
 		eastClear:
 			eastSolid = false;
 		}
@@ -5397,7 +5397,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 		}
 
 		bool southeastSolid;
-		if ((int) southeastZ < threshold) {
+		if (southeastZ < threshold) {
 		southeastClear:
 			southeastSolid = false;
 		}
