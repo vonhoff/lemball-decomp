@@ -12,8 +12,8 @@ The goal is to reconstruct the game's codebase using semantic, maintainable C++ 
 as closely as possible. The resulting codebase will serve as a faithful reference and foundation for ports.
 
 > [!NOTE]
-> This reconstruction targets 32-bit Windows and uses Microsoft Visual C++ 4.0.
-> For a modern version with support for other platforms, see [lemball-portable](https://github.com/vonhoff/lemball-portable).
+> This reconstruction exclusively targets 32-bit Windows and uses Microsoft Visual C++ 4.0.
+> For a modern, cross-platform version with web support, see [lemball-portable](https://github.com/vonhoff/lemball-portable).
 
 ## Reconstruction
 
