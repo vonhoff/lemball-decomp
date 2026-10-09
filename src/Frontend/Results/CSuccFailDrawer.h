@@ -59,30 +59,30 @@ private:
 		CBigBitmap m_secondary; // 0x24
 	};
 
-	tagPRIMS m_primitives[1];         // 0x398
-	char m_message[256];              // 0x3e0
-	char* m_firstLine;                // 0x4e0
-	char* m_secondLine;               // 0x4e4
-	CVSPoint m_firstLinePos;          // 0x4e8
-	CVSPoint m_secondLinePos;         // 0x4ec
-	CVSPoint m_passwordLabelPos;      // 0x4f0
-	CVSPoint m_passwordPos;           // 0x4f4
-	char* m_password;                 // 0x4f8
-	CResBITMAP* m_primaryBitmap;      // 0x4fc
-	CResBITMAP* m_secondaryBitmap;    // 0x500
-	unsigned int m_primaryBitmapId;   // 0x504
-	unsigned int m_backgroundId;      // 0x508
-	unsigned int m_secondaryBitmapId; // 0x50c
-	SuccFailLayout* m_layout;         // 0x510
-	unsigned int m_buttonBinding;     // 0x514
-	unsigned int m_success;           // 0x518
-	unsigned int m_soundStarted;      // 0x51c
-	CSuccFailAnimWnd m_animWindow;    // 0x520
-	unsigned int m_animStartDeadline; // 0x5f8
-	unsigned int m_animStarted;       // 0x5fc
-	unsigned int m_soundStartTime;    // 0x600
-	unsigned int m_animationsEnabled; // 0x604
-	unsigned int m_soundStopped;      // 0x608
+	tagPRIMS m_primitives[1];          // 0x398
+	char m_message[256];               // 0x3e0
+	char* m_firstLine;                 // 0x4e0
+	char* m_secondLine;                // 0x4e4
+	CVSPoint m_firstLinePos;           // 0x4e8
+	CVSPoint m_secondLinePos;          // 0x4ec
+	CVSPoint m_passwordLabelPos;       // 0x4f0
+	CVSPoint m_passwordPos;            // 0x4f4
+	char* m_password;                  // 0x4f8
+	CResBITMAP* m_primaryBitmap;       // 0x4fc
+	CResBITMAP* m_secondaryBitmap;     // 0x500
+	unsigned int m_primaryBitmapId;    // 0x504
+	unsigned int m_backgroundId;       // 0x508
+	unsigned int m_secondaryBitmapId;  // 0x50c
+	SuccFailLayout* m_layout;          // 0x510
+	unsigned int m_buttonBinding;      // 0x514
+	unsigned int m_success;            // 0x518
+	unsigned int m_soundStarted;       // 0x51c
+	CSuccFailAnimWnd m_animWindow;     // 0x520
+	unsigned long m_animStartDeadline; // 0x5f8
+	unsigned int m_animStarted;        // 0x5fc
+	unsigned long m_soundStartTime;    // 0x600
+	unsigned int m_animationsEnabled;  // 0x604
+	unsigned int m_soundStopped;       // 0x608
 };
 
 // SYNTHETIC: LEMBALL 0x004510e0

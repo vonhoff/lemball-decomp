@@ -73,8 +73,8 @@ private:
 	int m_selectedButton;                  // 0x480
 	unsigned int m_passwordValid;          // 0x484
 	unsigned int m_passwordSubmitted;      // 0x488
-	unsigned int m_submitTime;             // 0x48c
-	unsigned int m_returnDeadline;         // 0x490
+	unsigned long m_submitTime;            // 0x48c
+	unsigned long m_returnDeadline;        // 0x490
 };
 
 // SYNTHETIC: LEMBALL 0x00452370
