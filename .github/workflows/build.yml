@@ -74,6 +74,9 @@ jobs:
       - name: Generate objdiff report
         run: python tools/make_report.py
 
+      - name: Verify mapped implementations and linker routes
+        run: python tools/recover_thunks.py --verify
+
       - name: Generate progress badges
         run: python tools/make_badges.py
 
@@ -84,7 +87,7 @@ jobs:
           if-no-files-found: error
           path: |
             build-msvc400/report.json
-            build-msvc400/reccmp.json
+            build-msvc400/effective.json
 
       - name: Publish progress badges
         if: github.ref == 'refs/heads/main'

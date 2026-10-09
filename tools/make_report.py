@@ -7,7 +7,6 @@ from typing import Any, cast
 
 from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
-from reccmp.compare.report import ReccmpComparedEntity, ReccmpStatusReport
 from reccmp.formats.pe import PEImage
 from reccmp.project.detect import DetectWhat, detect_project
 from reccmp.project.detect import RecCmpProject
@@ -15,9 +14,7 @@ from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType, ImageId
 
 from lib import BUILD, ROOT, TARGET_ID
-from lib.codewarrior import decode_signature
-from lib.names import read_catalog
-from lib.progress import accepted_functions, effective_code_percent, save_progress
+from lib.progress import effective_code_percent, save_progress
 
 
 def measures(functions, total_units=1):
@@ -63,61 +60,30 @@ def module_name(path):
     return PureWindowsPath(path.stem).stem or "Unknown"
 
 
-def compare_import_thunks(engine: Compare, comparisons: ReccmpStatusReport):
-    """Score import jumps omitted by reccmp's default comparison inventory."""
-    for entity in engine.get_all():
-        address = entity.orig_addr
-        if (
-            address is None
-            or entity.entity_type != EntityType.IMPORT_THUNK
-            or address in comparisons.entities
-        ):
-            continue
-        result = (
-            engine.function_comparator.compare_function(cast(ReccmpMatch, entity))
-            if entity.matched
-            else None
-        )
-        comparisons.add_match(
-            ReccmpComparedEntity(
-                orig_addr=address,
-                recomp_addr=entity.recomp_addr,
-                name=entity.best_name() or f"0x{address:08x}",
-                type=EntityType.IMPORT_THUNK,
-                accuracy=result.match_ratio if result else 0.0,
-                is_effective_match=result.is_effective_match if result else False,
-                is_stub=entity.get("stub", False),
-                is_library=entity.get("library", False),
-                rdiff=result.diff if result else None,
-            )
-        )
-
-
-def build_report(engine, comparisons, modules: ModuleMap) -> dict[str, Any]:
+def build_report(engine, modules: ModuleMap) -> tuple[dict[str, Any], set[int]]:
     """Map the original code inventory to objdiff functions and PDB units."""
     code_regions = [
         range(region.addr, region.addr + len(region.data))
         for region in engine.orig_bin.get_code_regions()
     ]
     groups = defaultdict(list)
+    accepted = set()
     for entity in engine.get_all():
         address = entity.orig_addr
         size = entity.size(ImageId.ORIG)
         if (
             address is None
             or size is None
-            or entity.entity_type
-            not in (
-                None,
-                EntityType.FUNCTION,
-                EntityType.VTORDISP,
-                EntityType.THUNK,
-                EntityType.IMPORT_THUNK,
-            )
             or not any(address in region for region in code_regions)
         ):
             continue
-        comparison = comparisons.entities.get(address)
+        comparison = (
+            engine.function_comparator.compare_function(cast(ReccmpMatch, entity))
+            if entity.matched and size and not entity.get("stub")
+            else None
+        )
+        if comparison and comparison.match_ratio != 1 and comparison.is_effective_match:
+            accepted.add(address)
         if entity.entity_type == EntityType.IMPORT_THUNK:
             unit_name = "Import Thunks"
         else:
@@ -137,8 +103,8 @@ def build_report(engine, comparisons, modules: ModuleMap) -> dict[str, Any]:
                     or entity.get("symbol")
                     or f"0x{address:08x}",
                 },
-                "fuzzy_match_percent": comparison.accuracy * 100
-                if comparison and comparison.is_matched() and not comparison.is_stub
+                "fuzzy_match_percent": comparison.match_ratio * 100
+                if comparison
                 else 0.0,
             }
         )
@@ -151,36 +117,11 @@ def build_report(engine, comparisons, modules: ModuleMap) -> dict[str, Any]:
         for name, functions in sorted(groups.items())
     ]
     functions = (function for unit in units for function in unit["functions"])
-    return {"version": 2, "units": units, "measures": measures(functions, len(units))}
-
-
-def check_catalog_implementations(comparisons):
-    """Require rebuilt, non-stub code for every catalog-mapped Windows address."""
-    symbols, mappings = read_catalog(ROOT / "tools/data/mac-symbol-catalog.csv")
-    missing = [
-        address
-        for address in mappings
-        if (entity := comparisons.entities.get(address)) is None
-        or not entity.is_matched()
-        or entity.is_stub
-        or entity.type
-        not in (
-            EntityType.FUNCTION,
-            EntityType.VTORDISP,
-            EntityType.THUNK,
-            EntityType.IMPORT_THUNK,
-        )
-    ]
-    for address in sorted(missing):
-        expected = "; ".join(
-            decode_signature(symbols[mac]).display() for mac in mappings[address]
-        )
-        print(f"catalog: missing rebuilt implementation: {expected} [0x{address:08x}]")
-    print(
-        f"catalog: rebuilt implementations {len(mappings) - len(missing)}/{len(mappings)} "
-        "mapped Windows addresses"
-    )
-    return int(bool(missing))
+    return {
+        "version": 2,
+        "units": units,
+        "measures": measures(functions, len(units)),
+    }, accepted
 
 
 def main() -> int:
@@ -191,19 +132,11 @@ def main() -> int:
     )
     target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
     engine = Compare.from_target(target)
-    comparisons = engine.to_report(
-        filename=target.original_path.name,
-        filter_fn=lambda entity: entity.entity_type != EntityType.VTABLE,
-    )
-    compare_import_thunks(engine, comparisons)
-    catalog_status = check_catalog_implementations(comparisons)
-    report = build_report(
+    report, accepted = build_report(
         engine,
-        comparisons,
         ModuleMap(target.recompiled_pdb, cast(PEImage, engine.recomp_bin)),
     )
-    accepted = accepted_functions(comparisons)
-    save_progress(report, comparisons)
+    save_progress(report, accepted)
     totals = report["measures"]
     effective = effective_code_percent(report, accepted)
     print(
@@ -212,7 +145,7 @@ def main() -> int:
         f"{effective:.2f}% effective; "
         f"{totals['fuzzy_match_percent']:.2f}% fuzzy"
     )
-    return catalog_status
+    return 0
 
 
 if __name__ == "__main__":

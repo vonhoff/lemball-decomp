@@ -25,6 +25,7 @@ from reccmp.types import EntityType, ImageId
 
 from link_binary import CoffObject, DIR32, REL32, read_jump_target
 from lib import BUILD, ROOT, TARGET_ID, thunk_symbol
+from lib.names import check_names
 from lib.progress import load_progress
 from triage_targets import rank_functions
 
@@ -94,15 +95,14 @@ def verify_thunks():
     target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
     engine = Compare.from_target(target)
     functions = {function.orig_addr: function for function in engine.get_functions()}
-    entities = {
-        entity.orig_addr: entity for entity in engine.get_all() if entity.matched
-    }
-    errors = references = 0
+    entities = {entity.orig_addr: entity for entity in engine.get_all()}
+    references = 0
     if (
         hashlib.sha256(target.original_path.read_bytes()).hexdigest()
         != manifest["original_sha256"]
     ):
         raise ValueError("Original image differs from the recorded thunk evidence")
+    errors = check_names(engine, entities)
     for thunk in manifest["thunks"]:
         if not thunk_matches(engine, functions, thunk):
             print(f"0x{thunk['address']:08x}: jump entry or destination mismatch")
@@ -111,8 +111,10 @@ def verify_thunks():
         caller = entities.get(route["caller"])
         for reference in route["references"]:
             references += 1
-            if caller is None or not reference_matches(
-                engine, functions, caller, reference
+            if (
+                caller is None
+                or not caller.matched
+                or not reference_matches(engine, functions, caller, reference)
             ):
                 print(
                     f"0x{route['caller']:08x}+0x{reference['offset']:x}: "

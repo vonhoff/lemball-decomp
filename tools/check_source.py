@@ -1,24 +1,18 @@
 #!/usr/bin/env python3
-"""Check source policy, annotations, and catalog identities."""
+"""Check source policy and reccmp annotations."""
 
 import argparse
-import json
-from collections import defaultdict
 from itertools import groupby
-from pathlib import Path
 
 from reccmp import color
 from reccmp.dir import source_code_search
 from reccmp.tools.decomplint import DecomplintTarget, display_errors, lint_all_targets
 
-from lib import ROOT, TARGET_ID, thunk_symbol
-from lib.codewarrior import decode_signature
-from lib.names import read_catalog, scan
+from lib import ROOT, TARGET_ID
 from lib.policy import violations
 
 
 SRC = ROOT / "src"
-CATALOG = ROOT / "tools/data/mac-symbol-catalog.csv"
 
 
 def collect_sources(paths=None):
@@ -62,54 +56,13 @@ def check_annotations(paths=None) -> int:
     return int(any(alert.is_error() or alert.is_warning() for alert in alerts))
 
 
-def check_names(paths: list[Path | str] | None = None):
-    """Check source identities and coverage of all mapped Windows addresses."""
-    symbols, mappings = read_catalog(CATALOG)
-    thunks = {
-        thunk["address"]: thunk_symbol(thunk["address"])
-        for thunk in json.loads((CATALOG.parent / "linker-thunks.json").read_text())[
-            "thunks"
-        ]
-    }
-    files = collect_sources(paths)
-    rows = [row for path in files for row in scan(path, symbols, mappings, thunks)]
-    missing, stubs = set(), set()
-    if not paths:
-        kinds = defaultdict(set)
-        for row in rows:
-            kinds[int(row["windows_address"], 16)].add(row["kind"])
-        missing = mappings.keys() - kinds.keys()
-        stubs = {address for address in mappings if kinds.get(address) == {"STUB"}}
-        for address in sorted(missing | stubs):
-            expected = "; ".join(
-                decode_signature(symbols[mac]).display() for mac in mappings[address]
-            )
-            reason = "missing source annotation" if address in missing else "stub only"
-            print(f"catalog: {reason}: {expected} [0x{address:08x}]")
-        print(
-            f"catalog: source coverage {len(mappings) - len(missing) - len(stubs)}/{len(mappings)} "
-            f"mapped Windows addresses; {len(missing)} missing, {len(stubs)} stub-only"
-        )
-    failures = [row for row in rows if row["status"] != "match"]
-    for row in failures:
-        print(
-            f"{row['path']}:{row['line']}: {row['reason']} [{row['windows_address']}]"
-        )
-    print(
-        f"catalog: {len(rows)} mapped source entries; {len(failures)} identity errors"
-    )
-    return int(bool(missing or stubs or failures))
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--path", action="append", dest="paths")
     args = parser.parse_args()
     if code := check_policy(args.paths):
         return code
-    if code := check_annotations(args.paths):
-        return code
-    return check_names(args.paths)
+    return check_annotations(args.paths)
 
 
 if __name__ == "__main__":

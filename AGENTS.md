@@ -24,13 +24,14 @@
 | `tools/link_binary.py` | CMake toolchain MSVC 4.00 linker adapter |
 | `tools/check_function.py 0xADDR` | Compare/diff function against target; `--summary` to omit diffs |
 | `tools/triage_targets.py` | Select unfinished functions; `--exact` for raw, `--min-size N --sort size` for larger targets |
-| `tools/check_source.py` | Source policy, annotation, and mapped catalog identity checks |
+| `tools/check_source.py` | Source policy and annotation checks |
+| `tools/recover_thunks.py --verify` | Compiled catalog identities, mapped implementation coverage, and linker routes |
 | `tools/make_report.py` | Canonical reports plus console Effective score |
 | `tools/make_badges.py` | README badges, separate from canonical progress |
 
 Deep comparison: `reccmp-vtable` / `reccmp-stackcmp` / `reccmp-datacmp` from `build-msvc400`.
 Progress uses original bytes. Exact: non-stub raw 100%; Effective: non-stub raw 100% or reccmp equivalence. Stubs contribute zero; fuzzy retains raw scores.
-`report.json`: objdiff progress. `reccmp.json`: compact native results and report hash. Badges and triage consume this pair.
+`report.json`: objdiff progress. `effective.json`: additional Effective addresses and report hash; Exact matches already reside in `report.json`. Badges and triage consume this pair.
 Retain incremental build outputs and saved reports in `build-msvc400`. Remove temporary trial artifacts only; clean builds for stale artifacts, not routine batch cleanup.
 
 ## Documentation changes
@@ -45,7 +46,7 @@ The source reconstruction workflow below applies to C/C++ source changes. Tool c
 2. Read the full function, declarations, relevant original callers/callees. Preserve ABI, dispatch, side effects, reload timing, narrowing, ownership, initialization, allocation failures. Ambiguous diff: inspect raw x86.
 3. Build and match trials with `tools/make_binary.py && tools/check_function.py 0xADDR`. Use `--summary` for compact multi-address checks. Revert failed trials; retry with new evidence. `record_attempt`: actual trials only. `record_observation`: durable x86 facts with address/citation. Tools unavailable: continue locally.
 4. Batch boundary: `tools/make_report.py` to inspect progress and diff against git. Header/ABI/multi-TU changes: `detect_changes`. Explain regressions. No full reports per speculative trial.
-5. Clang-format touched C/C++; run `tools/check_source.py` and relevant checks; commit verified work.
+5. Clang-format touched C/C++; run `tools/check_source.py`, `tools/recover_thunks.py --verify`, and relevant checks; commit verified work.
 
 ## Source conventions
 
