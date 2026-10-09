@@ -32,9 +32,9 @@ CVSPoint CPanel::GetPausePos()
 		width = m_window->m_rect.m_width;
 		height = m_window->m_rect.m_height;
 	}
-	width = (short) ((int) width / zoom);
-	y = (short) ((int) height / zoom - (int) m_pauseSize.m_height);
-	x = (short) (((int) width - (int) m_panelSize.m_width) / 2);
+	width = width / zoom;
+	y = height / zoom - m_pauseSize.m_height;
+	x = (width - m_panelSize.m_width) / 2;
 	return result;
 }
 
@@ -61,7 +61,7 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	m_pauseSize.m_height = size->m_height;
 	m_panelSize.m_width = m_pauseSize.m_width;
 	m_panelSize.m_height = m_pauseSize.m_height;
-	m_panelSize.m_width = (short) (m_panelSize.m_width + (m_lemmingButtonSize.m_width + m_ammoButtonSize.m_width) * 4);
+	m_panelSize.m_width = m_panelSize.m_width + (m_lemmingButtonSize.m_width + m_ammoButtonSize.m_width) * 4;
 	const CVSPoint& calculated = GetPausePos();
 	short x = calculated.m_x;
 	m_panelPosition.m_x = x;
