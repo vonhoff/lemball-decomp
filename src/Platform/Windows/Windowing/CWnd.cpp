@@ -12,7 +12,7 @@
 #include "Engine/Startup/PreInit.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Time/VsTime.h"
-#include "MenuList.h"
+#include "tagMenuList.h"
 #include "Platform/Windows/CPlatformServices.h"
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
@@ -656,7 +656,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		HWND parentWindow;
 		int hasMenu;
 		int menuResourceId;
-		MenuList** menuLists;
+		tagMenuList** menuLists;
 		styleFlags = GetStyle();
 		if ((styleFlags & WS_CHILD) != 0 && p_parent != NULL) {
 			m_parent = NULL;
@@ -846,12 +846,12 @@ int CWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, un
 void CWnd::ReSetMenu()
 {
 	HMENU menu = ::GetMenu((HWND) m_nativeWindow);
-	MenuList** lists = m_menuLists;
+	tagMenuList** lists = m_menuLists;
 	if (*lists != NULL) {
 		BOOL(WINAPI * enableMenuItem)(HMENU, UINT, UINT) = EnableMenuItem;
 		DWORD(WINAPI * checkMenuItem)(HMENU, UINT, UINT) = CheckMenuItem;
 		do {
-			MenuList* item = *lists;
+			tagMenuList* item = *lists;
 			while (item->m_name != NULL) {
 				if (item->m_enabled != 0) {
 					enableMenuItem(menu, item->m_commandId, MF_ENABLED);
@@ -873,7 +873,7 @@ void CWnd::ReSetMenu()
 }
 
 // FUNCTION: LEMBALL 0x004656f0
-void CWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
+void CWnd::SetMenu(int& p_menuResourceId, tagMenuList** p_menuLists)
 {
 	HMENU currentMenu;
 	HMENU newMenu;
@@ -896,8 +896,8 @@ void CWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
 // FUNCTION: LEMBALL 0x00465750
 int CWnd::SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
 {
-	MenuList** menuList;
-	MenuList* item;
+	tagMenuList** menuList;
+	tagMenuList* item;
 
 	if (m_menuLists == NULL) {
 		return 0;

@@ -4,7 +4,7 @@
 #include "CPVWnd.h"
 
 struct CVSPoint;
-struct MenuList;
+struct tagMenuList;
 
 enum eWindowStyleFlags {
 	WINDOW_STYLE_SHOW_ON_CREATE = 0x00000001,
@@ -36,22 +36,22 @@ public:
 	virtual void OnFocusLost();                                                  // vtable+0x9c
 	virtual int ProcessOtherMessages(unsigned int p_message,
 									 unsigned int p_wParam,
-									 unsigned int p_lParam);             // vtable+0xa0
-	virtual void OnCreate();                                             // vtable+0x3c
-	virtual void OnDestroy();                                            // vtable+0x40
-	virtual void OnMaximise();                                           // vtable+0x50
-	virtual void OnMinimise();                                           // vtable+0x4c
-	virtual void OnMove();                                               // vtable+0x48
-	virtual void OnRestore();                                            // vtable+0x54
-	virtual void OnSize();                                               // vtable+0x44
-	virtual void _OnZoom(int p_oldZoom);                                 // vtable+0x2c
-	virtual void OnZoom(int p_oldZoom);                                  // vtable+0x58
-	virtual void OnDriverChange();                                       // vtable+0x5c
-	virtual void ReSetMenu();                                            // vtable+0x00
-	virtual void Refresh(CVSRect* p_rect);                               // vtable+0x70
-	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists); // vtable+0x10
-	virtual void _SetRect(const CVSRect& p_rect);                        // vtable+0x30
-	virtual void _SetRelTL(const CVSPoint& p_point);                     // vtable+0x34
+									 unsigned int p_lParam);                // vtable+0xa0
+	virtual void OnCreate();                                                // vtable+0x3c
+	virtual void OnDestroy();                                               // vtable+0x40
+	virtual void OnMaximise();                                              // vtable+0x50
+	virtual void OnMinimise();                                              // vtable+0x4c
+	virtual void OnMove();                                                  // vtable+0x48
+	virtual void OnRestore();                                               // vtable+0x54
+	virtual void OnSize();                                                  // vtable+0x44
+	virtual void _OnZoom(int p_oldZoom);                                    // vtable+0x2c
+	virtual void OnZoom(int p_oldZoom);                                     // vtable+0x58
+	virtual void OnDriverChange();                                          // vtable+0x5c
+	virtual void ReSetMenu();                                               // vtable+0x00
+	virtual void Refresh(CVSRect* p_rect);                                  // vtable+0x70
+	virtual void SetMenu(int& p_menuResourceId, tagMenuList** p_menuLists); // vtable+0x10
+	virtual void _SetRect(const CVSRect& p_rect);                           // vtable+0x30
+	virtual void _SetRelTL(const CVSPoint& p_point);                        // vtable+0x34
 	~CWnd();
 
 	friend struct CGraphicsState;
@@ -61,7 +61,7 @@ public:
 	friend class CDirectSoundDevice;
 
 private:
-	MenuList** m_menuLists;        // 0x3c
+	tagMenuList** m_menuLists;     // 0x3c
 	unsigned int m_menuResourceId; // 0x40
 	void* m_nativeWindow;          // 0x44
 	CPVWnd* m_createRect;          // 0x48

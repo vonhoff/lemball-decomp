@@ -24,7 +24,7 @@ class CMain2DDisplay : public CGWnd, public CBaseQueueHandler {
 public:
 	CMain2DDisplay(CGame* p_game);
 	CVSRect GetUseRect(int p_x, int p_y);
-	virtual bool GetMenu(int& p_count, MenuList*** p_menu); // vtable+0x0c
+	virtual bool GetMenu(int& p_count, tagMenuList*** p_menu); // vtable+0x0c
 	bool IsWindowValid();
 	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
 	int GetReturnState();

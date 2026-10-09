@@ -945,7 +945,7 @@
       "target": 4398768,
       "original_bytes": "e9350c0300",
       "symbol": "__lemball_jump_00401276",
-      "target_symbol": "?GetMenu@CMain2DDisplay@@UAEHAAHPAPAPAUMenuList@@@Z"
+      "target_symbol": "?GetMenu@CMain2DDisplay@@UAEHAAHPAPAPAUtagMenuList@@@Z"
     },
     {
       "address": 4199035,
@@ -14156,7 +14156,7 @@
       "target": 4433088,
       "original_bytes": "e912700300",
       "symbol": "__lemball_jump_004034a9",
-      "target_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+      "target_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
     },
     {
       "address": 4207790,
@@ -65143,7 +65143,7 @@
           "original_pointer": 4811716,
           "original_bytes": "76124000",
           "thunk": 4199030,
-          "source_symbol": "?GetMenu@CMain2DDisplay@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CMain2DDisplay@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -66242,7 +66242,7 @@
           "original_pointer": 4813076,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -66510,7 +66510,7 @@
           "original_pointer": 4813508,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -66754,7 +66754,7 @@
           "original_pointer": 4813804,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -66991,7 +66991,7 @@
           "original_pointer": 4814100,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -67242,7 +67242,7 @@
           "original_pointer": 4814396,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -67610,7 +67610,7 @@
           "original_pointer": 4814756,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -68155,7 +68155,7 @@
           "original_pointer": 4815212,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -69491,7 +69491,7 @@
           "original_pointer": 4816188,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -69690,7 +69690,7 @@
           "original_pointer": 4816444,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -69968,7 +69968,7 @@
           "original_pointer": 4816724,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -70177,7 +70177,7 @@
           "original_pointer": 4816988,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -70400,7 +70400,7 @@
           "original_pointer": 4817260,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -70605,7 +70605,7 @@
           "original_pointer": 4817500,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -71276,7 +71276,7 @@
           "original_pointer": 4818052,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -72566,7 +72566,7 @@
           "original_pointer": 4821612,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 72,
@@ -72709,7 +72709,7 @@
           "original_pointer": 4821796,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -72873,7 +72873,7 @@
           "original_pointer": 4821980,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 72,
@@ -72995,7 +72995,7 @@
           "original_pointer": 4822148,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 104,
@@ -73081,7 +73081,7 @@
           "original_pointer": 4822628,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -73283,7 +73283,7 @@
           "original_pointer": 4822868,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -73506,7 +73506,7 @@
           "original_pointer": 4823108,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -73736,7 +73736,7 @@
           "original_pointer": 4823348,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -73959,7 +73959,7 @@
           "original_pointer": 4823588,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -74189,7 +74189,7 @@
           "original_pointer": 4823860,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -74419,7 +74419,7 @@
           "original_pointer": 4824100,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 56,
@@ -74677,7 +74677,7 @@
           "original_pointer": 4824692,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,
@@ -74834,7 +74834,7 @@
           "original_pointer": 4824892,
           "original_bytes": "a9344000",
           "thunk": 4207785,
-          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUMenuList@@@Z"
+          "source_symbol": "?GetMenu@CPVWnd@@UAEHAAHPAPAPAUtagMenuList@@@Z"
         },
         {
           "offset": 60,

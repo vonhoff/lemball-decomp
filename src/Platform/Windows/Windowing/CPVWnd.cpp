@@ -7,7 +7,7 @@
 
 #include <stddef.h>
 
-struct MenuList;
+struct tagMenuList;
 
 extern int g_cursorState;
 extern int g_nNativeWindowCount;
@@ -86,7 +86,7 @@ void CPVWnd::RemoveChild(class CPVWnd* p_child)
 }
 
 // FUNCTION: LEMBALL 0x0043a4c0
-bool CPVWnd::GetMenu(int& p_menuResourceId, MenuList*** p_menuLists)
+bool CPVWnd::GetMenu(int& p_menuResourceId, tagMenuList*** p_menuLists)
 {
 	return false;
 }
@@ -433,7 +433,7 @@ void CPVWnd::ReSetMenu()
 }
 
 // FUNCTION: LEMBALL 0x004662f0
-void CPVWnd::SetMenu(int& p_menuResourceId, MenuList** p_menuLists)
+void CPVWnd::SetMenu(int& p_menuResourceId, tagMenuList** p_menuLists)
 {
 }
 

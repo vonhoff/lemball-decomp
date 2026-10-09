@@ -2,7 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_MENULIST_H
 
 // SIZE 0x18
-struct MenuList {
+struct tagMenuList {
 	char* m_name;    // 0x00
 	int m_commandId; // 0x04
 	int m_action;    // 0x08

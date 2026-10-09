@@ -29,7 +29,7 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/AboutDialog.h"
-#include "Platform/Windows/Windowing/MenuList.h"
+#include "Platform/Windows/Windowing/tagMenuList.h"
 
 #include <new.h>
 #include <string.h>
@@ -68,7 +68,7 @@ enum eDisplayResolution {
 	MAIN_DISPLAY_HIGH_RESOLUTION_HEIGHT_PX = 480
 };
 
-extern MenuList* g_apMainDisplayMenus[4];
+extern tagMenuList* g_apMainDisplayMenus[4];
 
 enum eMainDisplayMenuAction {
 	MAIN_MENU_EXIT = 1,
@@ -456,7 +456,7 @@ int CMain2DDisplay::ProcessMsg(tagMESSAGE* p_message)
 }
 
 // FUNCTION: LEMBALL 0x00431eb0
-bool CMain2DDisplay::GetMenu(int& p_count, MenuList*** p_menu)
+bool CMain2DDisplay::GetMenu(int& p_count, tagMenuList*** p_menu)
 {
 	p_count = 0x73;
 	*p_menu = g_apMainDisplayMenus;
@@ -559,21 +559,21 @@ char g_szMenuHelpOnHelp[16] = "H&elp On Help";
 char g_szMenuAbout[12] = "&About...";
 
 // GLOBAL: LEMBALL 0x0049e5f8
-MenuList g_aFileMenuItems[3] = {
+tagMenuList g_aFileMenuItems[3] = {
 	{g_szMenuFile, 0, 0, 1, 0, 0},
 	{g_szMenuExit, 40001, MAIN_MENU_EXIT, 1, 0, 0},
 	{NULL, 0, 0, 0, 0, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049e640
-MenuList g_aOptionsMenuItems[3] = {
+tagMenuList g_aOptionsMenuItems[3] = {
 	{g_szMenuOptions, 0, 0, 1, 0, 0},
 	{g_szMenuFullScreen, 40012, MAIN_MENU_TOGGLE_FULLSCREEN, 1, 0, 0},
 	{NULL, 0, 0, 0, 0, 0},
 };
 
 // GLOBAL: LEMBALL 0x0049e688
-MenuList g_aHelpMenuItems[6] = {
+tagMenuList g_aHelpMenuItems[6] = {
 	{g_szMenuHelp, 0, 0, 1, 0, 0},
 	{g_szMenuContents, 40003, MAIN_MENU_HELP_CONTENTS, 1, 0, 0},
 	{g_szMenuSearchTopic, 40016, MAIN_MENU_HELP_SEARCH, 1, 0, 0},
@@ -583,7 +583,7 @@ MenuList g_aHelpMenuItems[6] = {
 };
 
 // GLOBAL: LEMBALL 0x0049e718
-MenuList* g_apMainDisplayMenus[4] = {
+tagMenuList* g_apMainDisplayMenus[4] = {
 	g_aFileMenuItems,
 	g_aOptionsMenuItems,
 	g_aHelpMenuItems,

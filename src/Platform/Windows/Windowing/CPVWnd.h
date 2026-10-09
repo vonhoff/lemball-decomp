@@ -4,7 +4,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 
-struct MenuList;
+struct tagMenuList;
 class CHotAreaList;
 struct CVSSize;
 
@@ -32,8 +32,8 @@ public:
 	virtual void ReSetMenu();                                                              // vtable+0x00
 	virtual void Create(const CVSRect& p_rect, class CPVWnd* p_parent, char* p_title) = 0; // vtable+0x04
 	virtual void SetInnerWindow(const CVSRect& p_rect);                                    // vtable+0x08
-	virtual bool GetMenu(int& p_menuResourceId, MenuList*** p_menuLists);                  // vtable+0x0c
-	virtual void SetMenu(int& p_menuResourceId, MenuList** p_menuLists);                   // vtable+0x10
+	virtual bool GetMenu(int& p_menuResourceId, tagMenuList*** p_menuLists);               // vtable+0x0c
+	virtual void SetMenu(int& p_menuResourceId, tagMenuList** p_menuLists);                // vtable+0x10
 	virtual void InitHotAreaList();                                                        // vtable+0x14
 	virtual void _OnCreate();                                                              // vtable+0x18
 	virtual void _OnDestroy();                                                             // vtable+0x1c
