@@ -25582,7 +25582,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Map/CMap.cpp.obj",
       "symbol": "?CreateWalkBits@CMap@@QAEXXZ",
       "size": 1009,
-      "fingerprint": "df9dc068be348e0148b5cca6b23b895e83ac1d55b0718d2b8545a75427dffee6",
+      "fingerprint": "ec40fa712312792271350a208512b85aef50f9ead8e3c42f0d3bb88bf4d6e516",
       "references": [
         {
           "offset": 109,
@@ -25599,37 +25599,72 @@
           "source_symbol": "?GetZ@CGroundArray@@QAEGHH@Z"
         },
         {
-          "offset": 425,
+          "offset": 194,
           "original_instruction": 4392674,
           "original_bytes": "e8cd0efdff",
           "thunk": 4199860,
           "source_symbol": "?GetGroundCell@CGroundArray@@QAEPAVCGround@@HH@Z"
         },
         {
-          "offset": 432,
+          "offset": 201,
           "original_instruction": 4392681,
           "original_bytes": "e8b722fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 524,
+          "offset": 293,
           "original_instruction": 4392773,
           "original_bytes": "e86a0efdff",
           "thunk": 4199860,
           "source_symbol": "?GetGroundCell@CGroundArray@@QAEPAVCGround@@HH@Z"
         },
         {
-          "offset": 593,
+          "offset": 362,
           "original_instruction": 4392842,
           "original_bytes": "e8250efdff",
           "thunk": 4199860,
           "source_symbol": "?GetGroundCell@CGroundArray@@QAEPAVCGround@@HH@Z"
         },
         {
-          "offset": 600,
+          "offset": 369,
           "original_instruction": 4392849,
           "original_bytes": "e80f22fdff",
+          "thunk": 4204965,
+          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
+        },
+        {
+          "offset": 425,
+          "original_instruction": 4392905,
+          "original_bytes": "e8e60dfdff",
+          "thunk": 4199860,
+          "source_symbol": "?GetGroundCell@CGroundArray@@QAEPAVCGround@@HH@Z"
+        },
+        {
+          "offset": 432,
+          "original_instruction": 4392912,
+          "original_bytes": "e8d021fdff",
+          "thunk": 4204965,
+          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
+        },
+        {
+          "offset": 524,
+          "original_instruction": 4393004,
+          "original_bytes": "e8830dfdff",
+          "thunk": 4199860,
+          "source_symbol": "?GetGroundCell@CGroundArray@@QAEPAVCGround@@HH@Z"
+        },
+        {
+          "offset": 593,
+          "original_instruction": 4393076,
+          "original_bytes": "e83b0dfdff",
+          "thunk": 4199860,
+          "source_symbol": "?GetGroundCell@CGroundArray@@QAEPAVCGround@@HH@Z"
+        },
+        {
+          "offset": 600,
+          "original_instruction": 4393083,
+          "original_bytes": "e82521fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
@@ -25691,7 +25726,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Map/CMap.cpp.obj",
       "symbol": "?LoadLevel@CMap@@QAEXPAUtagLoadGroundSurfaceData@@KE@Z",
       "size": 201,
-      "fingerprint": "38df79667ed295cab174dd90418989474d65c837edcdca357337f530a4696436",
+      "fingerprint": "2d40374fdf31ac48d43566f486e0698cbf52f50c48d35378d22efbcd79836f99",
       "references": [
         {
           "offset": 38,

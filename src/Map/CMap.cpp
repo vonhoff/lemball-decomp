@@ -186,12 +186,12 @@ void CMap::CreateWalkBits()
 	int westHeight;
 	int adjacentBlock;
 	CGround* ground;
-	unsigned int low;
-	unsigned int coordinate;
+	int low;
+	int coordinate;
 	int nextBlock;
 	int blockCoordinate;
 	int currentBlockY;
-	unsigned int lowCoordinate;
+	int lowCoordinate;
 	int lowBlock;
 	unsigned char* walkBits;
 
@@ -221,8 +221,8 @@ void CMap::CreateWalkBits()
 							firstHeight = collision;
 							coordinate = y - (WALK_CELL_HALF_SIZE + 1);
 							blockCoordinate = x >> WALK_CELL_SHIFT;
-							adjacentBlock = (int) coordinate >> WALK_CELL_SHIFT;
-							if ((x < 0) || ((int) coordinate < 0) || m_ground.m_width <= blockCoordinate ||
+							adjacentBlock = coordinate >> WALK_CELL_SHIFT;
+							if ((x < 0) || (coordinate < 0) || m_ground.m_width <= blockCoordinate ||
 								m_ground.m_height <= adjacentBlock) {
 								z = 0;
 							}
@@ -254,8 +254,8 @@ void CMap::CreateWalkBits()
 						if ((collision & WALK_BLOCKING_COLLISION_MASK) == 0) {
 							coordinate = x + (WALK_CELL_HALF_SIZE - 1);
 							currentBlockY = y >> WALK_CELL_SHIFT;
-							blockCoordinate = (int) coordinate >> WALK_CELL_SHIFT;
-							if (((((int) coordinate < 0) || (y < 0)) || m_ground.m_width <= blockCoordinate) ||
+							blockCoordinate = coordinate >> WALK_CELL_SHIFT;
+							if ((((coordinate < 0) || (y < 0)) || m_ground.m_width <= blockCoordinate) ||
 								m_ground.m_height <= currentBlockY) {
 								collision = 0;
 							}
