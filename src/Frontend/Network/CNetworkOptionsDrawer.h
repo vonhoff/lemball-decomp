@@ -127,13 +127,13 @@ private:
 	eEditingStage m_pendingStage;               // 0x3a4
 	eNetOptsMessages m_message;                 // 0x3a8
 	eNetOptsMessages m_drawnMessage;            // 0x3ac
-	unsigned int m_messageStartTime;            // 0x3b0
+	unsigned long m_messageStartTime;           // 0x3b0
 	unsigned long m_messageDuration;            // 0x3b4
 	unsigned int m_broadcasting;                // 0x3b8
 	unsigned int m_networkMode;                 // 0x3bc
 	unsigned int m_redrawPending;               // 0x3c0
 	eNetworkOptionsHandlerState m_networkState; // 0x3c4
-	unsigned int m_lastDrawTime;                // 0x3c8
+	unsigned long m_lastDrawTime;               // 0x3c8
 	CEntryHandler* m_playerEntries;             // 0x3cc
 	int m_acceptedPlayer;                       // 0x3d0
 	int m_highlightedPlayer;                    // 0x3d4
