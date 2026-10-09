@@ -581,8 +581,8 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_isFlying = false;
 	m_hidden = 0;
 	m_activationReserved = 0;
-	m_routeSearchFailed = 0;
-	m_routeSearchActive = 0;
+	m_routeSearchFailed = false;
+	m_routeSearchActive = false;
 	m_isJumping = false;
 	m_isFalling = false;
 	m_wasHitByMine = false;

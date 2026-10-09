@@ -203,8 +203,8 @@ public:
 
 protected:
 	unsigned short m_runtimeFlags;         // 0x04
-	unsigned int m_routeSearchFailed;      // 0x08
-	unsigned int m_routeSearchActive;      // 0x0c
+	bool m_routeSearchFailed;              // 0x08
+	bool m_routeSearchActive;              // 0x0c
 	unsigned int m_transientFlags;         // 0x10
 	CRect3 m_collisionBounds;              // 0x14
 	bool m_deathRequested;                 // 0x2c
