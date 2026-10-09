@@ -17,9 +17,9 @@ public:
 	virtual bool DirectResources(unsigned long p_index, unsigned char*& p_cursor); // vtable+0x50
 	virtual bool DirectResources(unsigned long p_index,
 								 unsigned char*& p_headerCursor,
-								 unsigned char*& p_dataCursor);                // vtable+0x4c
-	virtual void UnLoadResources(unsigned long p_index, unsigned int p_force); // vtable+0x54
-	virtual ~CResMOVIE();                                                      // vtable+0x00
+								 unsigned char*& p_dataCursor);        // vtable+0x4c
+	virtual void UnLoadResources(unsigned long p_index, bool p_force); // vtable+0x54
+	virtual ~CResMOVIE();                                              // vtable+0x00
 
 	friend class CAnimWnd;
 

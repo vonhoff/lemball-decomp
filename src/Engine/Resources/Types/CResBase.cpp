@@ -146,7 +146,7 @@ void CResBase::LoadData()
 void CResBase::UnLoad()
 {
 	if (--m_referenceCount == 0) {
-		UnLoadData(1);
+		UnLoadData(true);
 		if (g_pActiveMogRes->m_skipCleanup != 0) {
 			if (m_resourceId != 0) {
 				g_pActiveMogRes->Remove(this);
@@ -157,7 +157,7 @@ void CResBase::UnLoad()
 }
 
 // FUNCTION: LEMBALL 0x0045d1c0
-void CResBase::UnLoadData(unsigned int p_force)
+void CResBase::UnLoadData(bool p_force)
 {
 	unsigned int size;
 
@@ -176,7 +176,7 @@ void CResBase::UnLoadData(unsigned int p_force)
 }
 
 // FUNCTION: LEMBALL 0x0045d220
-void CResBase::UnLoadExtData(unsigned int p_force)
+void CResBase::UnLoadExtData(bool p_force)
 {
 	UnLoadVramData(p_force);
 	if (m_loaded != 0) {
@@ -226,7 +226,7 @@ bool CResBase::ForceLoadVram()
 }
 
 // FUNCTION: LEMBALL 0x0045e5f0
-void CResBase::UnLoadVramData(unsigned int p_force)
+void CResBase::UnLoadVramData(bool p_force)
 {
 }
 

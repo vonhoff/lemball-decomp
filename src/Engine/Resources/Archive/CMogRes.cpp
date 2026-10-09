@@ -250,7 +250,7 @@ unsigned char* CMogRes::AllocateMainMem(unsigned long p_size)
 			}
 			int handle = KillLeastResource(needed);
 			if (handle != RESOURCE_INDEX_NONE) {
-				m_resources[handle]->UnLoadData(1);
+				m_resources[handle]->UnLoadData(true);
 				if (handle != RESOURCE_INDEX_NONE) {
 					continue;
 				}

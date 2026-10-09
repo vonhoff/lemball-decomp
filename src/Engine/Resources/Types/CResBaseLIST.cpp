@@ -132,7 +132,7 @@ bool CResBaseLIST::ForceLoadVram()
 }
 
 // FUNCTION: LEMBALL 0x0045d540
-void CResBaseLIST::UnLoadData(unsigned int p_force)
+void CResBaseLIST::UnLoadData(bool p_force)
 {
 	if (m_loaded == 0) {
 		if (!GetfAnyVramLoaded()) {
@@ -157,7 +157,7 @@ unload_entries:
 }
 
 // FUNCTION: LEMBALL 0x0045d5c0
-void CResBaseLIST::UnLoadVramData(unsigned int p_force)
+void CResBaseLIST::UnLoadVramData(bool p_force)
 {
 	if (GetfAnyVramLoaded()) {
 		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_capacity; i++) {
@@ -204,7 +204,7 @@ unsigned int CResBaseLIST::GetnVramEntries()
 }
 
 // FUNCTION: LEMBALL 0x0045e6e0
-void CResBaseLIST::UnLoadVramData(unsigned long p_index, unsigned int p_force)
+void CResBaseLIST::UnLoadVramData(unsigned long p_index, bool p_force)
 {
 }
 
