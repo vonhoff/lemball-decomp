@@ -597,7 +597,7 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	short& facing = m_desiredFacingDirection;
 	facing = 0;
 	m_unk0x58 = 0;
-	m_onMover = 0;
+	m_onMover = false;
 	m_ammoCount = PLAYER_START_AMMO;
 	SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 	int tileX = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;

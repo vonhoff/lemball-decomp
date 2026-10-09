@@ -472,7 +472,7 @@ void CGameObject::Initialise()
 	m_desiredFacingDirection = 0;
 	m_flightVelocity.m_zFixed = 0;
 	m_unk0x58 = 0;
-	m_onMover = 0;
+	m_onMover = false;
 	m_hasDestination = 0;
 	m_actionDeadline = g_dwGameTick;
 	m_soundEffect = SFX_NONE;

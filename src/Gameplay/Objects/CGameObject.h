@@ -253,7 +253,7 @@ protected:
 	unsigned int m_liftId;                 // 0x110
 	unsigned int m_isRemoteObject;         // 0x114
 	unsigned int m_unk0x118;               // 0x118
-	unsigned int m_onMover;                // 0x11c
+	bool m_onMover;                        // 0x11c
 	unsigned short m_invisibleSwitchId;    // 0x120
 };
 
