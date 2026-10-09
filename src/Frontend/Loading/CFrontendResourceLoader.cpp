@@ -180,6 +180,22 @@ unsigned int g_dwFrontendStringIds[1] = {RES_REGISTRATION_FINGERPRINT};
 
 #include <stddef.h>
 
+enum {
+	FRONTEND_COMPACT_ANIM_COUNT = sizeof(g_dwFrontendCompactAnimIds) / sizeof(*g_dwFrontendCompactAnimIds),
+	FRONTEND_ANIM_COUNT = sizeof(g_dwFrontendAnimIds) / sizeof(*g_dwFrontendAnimIds),
+	FRONTEND_COMPACT_FONT_COUNT = sizeof(g_dwFrontendCompactFontIds) / sizeof(*g_dwFrontendCompactFontIds),
+	FRONTEND_FONT_COUNT = sizeof(g_dwFrontendFontIds) / sizeof(*g_dwFrontendFontIds),
+	FRONTEND_COMPACT_BITMAP_COUNT = sizeof(g_dwFrontendCompactBitmapIds) / sizeof(*g_dwFrontendCompactBitmapIds),
+	FRONTEND_BITMAP_COUNT = sizeof(g_dwFrontendBitmapIds) / sizeof(*g_dwFrontendBitmapIds),
+	FRONTEND_PALETTE_COUNT = sizeof(g_dwFrontendPaletteIds) / sizeof(*g_dwFrontendPaletteIds),
+	FRONTEND_STRING_COUNT = sizeof(g_dwFrontendStringIds) / sizeof(*g_dwFrontendStringIds),
+	FRONTEND_SUCCESS_MOVIE_COUNT =
+		RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS3 - RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1 + 1,
+	FRONTEND_FAILURE_MOVIE_COUNT =
+		RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL3 - RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1 + 1,
+	FRONTEND_MOVIE_COUNT = FRONTEND_SUCCESS_MOVIE_COUNT + FRONTEND_FAILURE_MOVIE_COUNT
+};
+
 // FUNCTION: LEMBALL 0x004479e0
 CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int p_soundState)
 {
@@ -197,29 +213,29 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 		m_animResourceIds = g_dwFrontendCompactAnimIds;
 		m_fontResourceIds = g_dwFrontendCompactFontIds;
 		m_bitmapResourceIds = g_dwFrontendCompactBitmapIds;
-		m_animCapacity = 0x44;
-		m_fontCapacity = 1;
-		m_bitmapCapacity = 3;
-		m_totalResources = 0x48;
+		m_animCapacity = FRONTEND_COMPACT_ANIM_COUNT;
+		m_fontCapacity = FRONTEND_COMPACT_FONT_COUNT;
+		m_bitmapCapacity = FRONTEND_COMPACT_BITMAP_COUNT;
+		m_totalResources = FRONTEND_COMPACT_ANIM_COUNT + FRONTEND_COMPACT_FONT_COUNT + FRONTEND_COMPACT_BITMAP_COUNT;
 	}
 	else {
 		m_animResourceIds = g_dwFrontendAnimIds;
 		m_fontResourceIds = g_dwFrontendFontIds;
 		m_bitmapResourceIds = g_dwFrontendBitmapIds;
-		m_animCapacity = 0x43;
-		m_fontCapacity = 1;
-		m_bitmapCapacity = 3;
-		m_totalResources = 0x47;
+		m_animCapacity = FRONTEND_ANIM_COUNT;
+		m_fontCapacity = FRONTEND_FONT_COUNT;
+		m_bitmapCapacity = FRONTEND_BITMAP_COUNT;
+		m_totalResources = FRONTEND_ANIM_COUNT + FRONTEND_FONT_COUNT + FRONTEND_BITMAP_COUNT;
 	}
-	m_totalResources += 3;
-	m_totalResources += 3;
-	m_totalResources += 3;
+	m_totalResources += FRONTEND_PALETTE_COUNT + FRONTEND_STRING_COUNT;
+	m_totalResources += FRONTEND_SUCCESS_MOVIE_COUNT;
+	m_totalResources += FRONTEND_FAILURE_MOVIE_COUNT;
 	m_anims = (CResANIM**) operator new(m_animCapacity * sizeof(*m_anims));
 	m_fonts = (CResFONT**) operator new(m_fontCapacity * sizeof(*m_fonts));
 	m_bitmaps = (CResBITMAP**) operator new(m_bitmapCapacity * sizeof(*m_bitmaps));
-	m_palettes = (CResPALETTE**) operator new(2 * sizeof(*m_palettes));
-	m_strings = (CResSTRING**) operator new(sizeof(*m_strings));
-	m_movies = (CResMOVIE**) operator new(6 * sizeof(*m_movies));
+	m_palettes = (CResPALETTE**) operator new(FRONTEND_PALETTE_COUNT * sizeof(*m_palettes));
+	m_strings = (CResSTRING**) operator new(FRONTEND_STRING_COUNT * sizeof(*m_strings));
+	m_movies = (CResMOVIE**) operator new(FRONTEND_MOVIE_COUNT * sizeof(*m_movies));
 	CCDLoadAnim* loadAnim = (CCDLoadAnim*) operator new(sizeof(CCDLoadAnim));
 	if (loadAnim == NULL) {
 		m_loadAnim = NULL;
@@ -246,16 +262,16 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	do {
 		LoadPALETTE(*id);
 		++id;
-	} while (id < g_dwFrontendPaletteIds + 2);
+	} while (id < g_dwFrontendPaletteIds + FRONTEND_PALETTE_COUNT);
 	id = g_dwFrontendStringIds;
 	do {
 		LoadSTRING(*id);
 		++id;
-	} while (id < g_dwFrontendStringIds + 1);
-	for (i = 0; i < 3; i++) {
+	} while (id < g_dwFrontendStringIds + FRONTEND_STRING_COUNT);
+	for (i = 0; i < FRONTEND_SUCCESS_MOVIE_COUNT; i++) {
 		LoadMOVIE(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1);
 	}
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < FRONTEND_FAILURE_MOVIE_COUNT; i++) {
 		LoadMOVIE(i + RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1);
 	}
 	p_display->m_loadingDraw = NULL;
@@ -284,13 +300,13 @@ CFrontendResourceLoader::~CFrontendResourceLoader()
 	do {
 		UnLoadPALETTE(*id);
 		++id;
-	} while (id < g_dwFrontendPaletteIds + 2);
+	} while (id < g_dwFrontendPaletteIds + FRONTEND_PALETTE_COUNT);
 	id = g_dwFrontendStringIds;
 	do {
 		UnLoadSTRING(*id);
 		++id;
-	} while (id < g_dwFrontendStringIds + 1);
-	for (i = 0; i < 6; i++) {
+	} while (id < g_dwFrontendStringIds + FRONTEND_STRING_COUNT);
+	for (i = 0; i < FRONTEND_MOVIE_COUNT; i++) {
 		m_movies[i]->UnLoad();
 		m_movies[i] = NULL;
 	}

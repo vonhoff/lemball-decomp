@@ -38510,7 +38510,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Loading/CFrontendResourceLoader.cpp.obj",
       "symbol": "??0CFrontendResourceLoader@@QAE@PAVCMain2DDisplay@@H@Z",
       "size": 609,
-      "fingerprint": "036d60aa508dd97da851c8bd248adf59e59e83afdbde4a668b6e82292e3a0453",
+      "fingerprint": "e174256f8f10ab3f66200c5f5dd7b48f78ad9f59552cebddd92a0db24b6e32ed",
       "references": [
         {
           "offset": 285,
@@ -38603,8 +38603,15 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Loading/CFrontendResourceLoader.cpp.obj",
       "symbol": "??1CFrontendResourceLoader@@QAE@XZ",
       "size": 295,
-      "fingerprint": "c45eec0c955767db4015f4f281e8f418708c4e5a371be5c447c8e952cf8e899a",
+      "fingerprint": "c7c2bcc23d914f7091032d6d3f5c2219fc5796c10ac971f7e2bed5bc4b1642b5",
       "references": [
+        {
+          "offset": 21,
+          "original_instruction": 4488293,
+          "original_bytes": "e8ceabfbff",
+          "thunk": 4204600,
+          "source_symbol": "?ChangeState@CSoundView@@QAEXGPAVCLoadUpdate@@@Z"
+        },
         {
           "offset": 47,
           "original_instruction": 4488319,
