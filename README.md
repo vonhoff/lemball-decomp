@@ -80,7 +80,7 @@ reviewed for correctness and maintainability.
 ## Legal
 
 This is an unofficial reverse-engineering project not affiliated with or endorsed by the original rights holders.
-Original game assets remain the property of their respective owners and are not included in this repository.
+Original game assets are not included in this repository.
 
 No license is granted for the reconstructed game code. Independently developed code is licensed under
 the [GNU General Public License v3.0](LICENSE).
