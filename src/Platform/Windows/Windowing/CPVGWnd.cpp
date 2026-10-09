@@ -50,8 +50,7 @@ void CPVGWnd::Clear(int p_colour)
 	}
 
 	m_gdi->m_renderTarget->GetCurrDB();
-	CVSSize size(m_gdi->m_renderTarget->CPVSurface::m_windowRect.m_width,
-				 m_gdi->m_renderTarget->CPVSurface::m_windowRect.m_height);
+	CVSSize size(m_gdi->m_renderTarget->m_windowRect.m_width, m_gdi->m_renderTarget->m_windowRect.m_height);
 	CVSRect clearRect(0, 0, &size);
 	clearRect.m_x = clearRect.m_y = 0;
 	CDrawingMark* drawingMark = new CDrawingMark;
@@ -102,6 +101,6 @@ void CPVGWnd::_OnZoom(int p_oldZoom)
 {
 	CWnd::_OnZoom(p_oldZoom);
 	if (m_gdi != NULL && m_gdi->m_renderTarget != NULL && m_parent == NULL) {
-		m_gdi->m_renderTarget->CPVSurface::m_zoom = m_zoom;
+		m_gdi->m_renderTarget->m_zoom = m_zoom;
 	}
 }
