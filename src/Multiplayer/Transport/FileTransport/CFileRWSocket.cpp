@@ -15,7 +15,7 @@ bool CFileRWSocket::SendPacket(const unsigned char* p_data, int p_size)
 {
 	bool sent = CFileWriteSocket::SendPacket(p_data, p_size);
 	if (sent) {
-		CFileWriteSocket::m_nextWriteSlot %= CFileCommonSocket::m_headerSlotCount;
+		m_nextWriteSlot %= m_headerSlotCount;
 	}
 	return sent;
 }

@@ -22,9 +22,9 @@
 // FUNCTION: LEMBALL 0x0047af30
 CFileConnect::CFileConnect()
 {
-	CFileCommonSocket::m_headerSlotCount = 3;
-	CFileReadSocket::m_file = new CHeaders(CFileCommonSocket::m_headerSlotCount);
-	CFileWriteSocket::m_file = new CHeaders(CFileCommonSocket::m_headerSlotCount);
+	m_headerSlotCount = 3;
+	CFileReadSocket::m_file = new CHeaders(m_headerSlotCount);
+	CFileWriteSocket::m_file = new CHeaders(m_headerSlotCount);
 	CFileReadSocket::m_headersOffset = m_message.m_payloadCapacity;
 	CFileWriteSocket::m_headersOffset = m_message.m_payloadCapacity;
 }
@@ -107,15 +107,13 @@ void CFileConnect::ConnectSetup()
 	}
 
 	CFileReadSocket::m_headersOffset +=
-		(CFileCommonSocket::m_headerSlotCount * g_networkPacketSize + CFileReadSocket::m_file->m_payloadCapacity) *
-		readIndex;
+		(m_headerSlotCount * g_networkPacketSize + CFileReadSocket::m_file->m_payloadCapacity) * readIndex;
 	CFileReadSocket::m_dataOffset = CFileReadSocket::m_file->m_payloadCapacity + CFileReadSocket::m_headersOffset;
 	CFileWriteSocket::m_headersOffset +=
-		(CFileCommonSocket::m_headerSlotCount * g_networkPacketSize + CFileWriteSocket::m_file->m_payloadCapacity) *
-		writeIndex;
+		(m_headerSlotCount * g_networkPacketSize + CFileWriteSocket::m_file->m_payloadCapacity) * writeIndex;
 	CFileWriteSocket::m_dataOffset = CFileWriteSocket::m_file->m_payloadCapacity + CFileWriteSocket::m_headersOffset;
 
-	unsigned int packetBytes = CFileCommonSocket::m_headerSlotCount * g_networkPacketSize;
+	unsigned int packetBytes = m_headerSlotCount * g_networkPacketSize;
 	unsigned int requiredSize = CFileReadSocket::m_dataOffset + packetBytes;
 	unsigned int writeSize = CFileWriteSocket::m_dataOffset + packetBytes;
 	if (writeSize > requiredSize) {
@@ -139,13 +137,13 @@ void CFileConnect::ConnectSetup()
 
 		CFileWriteSocket::Write(*CFileWriteSocket::m_file, 0, 0);
 		int i = 0;
-		for (; i < CFileCommonSocket::m_headerSlotCount; i++) {
+		for (; i < m_headerSlotCount; i++) {
 			CNetworkFile::Write(data, g_networkPacketSize);
 		}
 
 		CFileWriteSocket::Write(*CFileReadSocket::m_file, 0, 0);
 		i = 0;
-		for (; i < CFileCommonSocket::m_headerSlotCount; i++) {
+		for (; i < m_headerSlotCount; i++) {
 			CNetworkFile::Write(data, g_networkPacketSize);
 		}
 

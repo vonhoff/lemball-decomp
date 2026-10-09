@@ -220,7 +220,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 		CBroadcast::SendFailedInit(NETWORK_ERROR_BROADCAST_BIND);
 		return;
 	}
-	if (CBroadcast::m_listenEnabled != 0) {
+	if (m_listenEnabled != 0) {
 		selectResult = WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE);
 	}
 	else {
@@ -233,7 +233,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 	}
 	m_readReady = 1;
 	m_writeReady = 0;
-	CBroadcast::m_lastBroadcastTime = CurrentMilliTimer() - NETWORK_BROADCAST_INTERVAL_MS;
+	m_lastBroadcastTime = CurrentMilliTimer() - NETWORK_BROADCAST_INTERVAL_MS;
 	message.m_type = 2;
 	message.m_code = 0;
 	g_pNetworkStatusQueue->Post(message);
@@ -288,27 +288,27 @@ int CTCPIPBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long
 // FUNCTION: LEMBALL 0x00470d30
 void CTCPIPBroadcast::StartListen()
 {
-	if (CBroadcast::m_listenEnabled == 0) {
+	if (m_listenEnabled == 0) {
 		if (m_readReady != 0 &&
 			WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) ==
 				NETWORK_SOCKET_ERROR) {
 			SocketError();
 			return;
 		}
-		CBroadcast::m_listenEnabled = 1;
+		m_listenEnabled = 1;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00470d80
 void CTCPIPBroadcast::StopListen()
 {
-	if (CBroadcast::m_listenEnabled != 0) {
+	if (m_listenEnabled != 0) {
 		if (m_readReady != 0 && WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_WRITE) ==
 									NETWORK_SOCKET_ERROR) {
 			SocketError();
 			return;
 		}
-		CBroadcast::m_listenEnabled = 0;
+		m_listenEnabled = 0;
 	}
 }
 

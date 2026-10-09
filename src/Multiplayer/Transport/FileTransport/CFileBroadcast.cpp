@@ -57,8 +57,8 @@ CFileBroadcast::CFileBroadcast()
 		g_pFileBroadcast = new CPortsMessage();
 	}
 
-	CFileCommonSocket::m_headerSlotCount = 0x14;
-	CFileWriteSocket::m_file = new CHeaders(CFileCommonSocket::m_headerSlotCount);
+	m_headerSlotCount = 0x14;
+	CFileWriteSocket::m_file = new CHeaders(m_headerSlotCount);
 	CFileReadSocket::m_file = CFileWriteSocket::m_file;
 	CFileWriteSocket::m_headersOffset = g_pFileBroadcast->m_payloadCapacity + m_message.m_payloadCapacity;
 	CFileReadSocket::m_headersOffset = CFileWriteSocket::m_headersOffset;
@@ -89,7 +89,7 @@ void CFileBroadcast::InitialiseFile()
 
 	unsigned char* data = new unsigned char[g_networkPacketSize];
 	memset(data, 0, g_networkPacketSize);
-	for (int i = 0; i < CFileCommonSocket::m_headerSlotCount; i++) {
+	for (int i = 0; i < m_headerSlotCount; i++) {
 		CNetworkFile::Write(data, g_networkPacketSize);
 	}
 	delete[] data;

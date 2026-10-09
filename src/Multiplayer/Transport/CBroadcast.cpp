@@ -66,7 +66,7 @@ CBroadcast::~CBroadcast()
 void CBroadcast::Closed(int p_notifyPeer)
 {
 	(void) p_notifyPeer;
-	g_pBaseNetwork->KillUnBornConnection(CWriteSocket::m_destinationAddress);
+	g_pBaseNetwork->KillUnBornConnection(m_destinationAddress);
 }
 
 // FUNCTION: LEMBALL 0x004605d0

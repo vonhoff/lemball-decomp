@@ -51,7 +51,7 @@ bool CFileReadSocket::Read(CNetworkMessage& p_message, int p_remove, int p_wait)
 // FUNCTION: LEMBALL 0x00479b30
 bool CFileReadSocket::ReadBuff(int p_index)
 {
-	if (!Seek(g_networkPacketSize * p_index + CFileBaseSocket::m_dataOffset)) {
+	if (!Seek(g_networkPacketSize * p_index + m_dataOffset)) {
 		return false;
 	}
 	CHeaderMessage* header = &m_file->m_headers[p_index];
@@ -87,7 +87,7 @@ void CFileReadSocket::Process()
 				header->m_sequenceState.m_mirroredSequence = header->m_sequenceState.m_sequence;
 				unsigned short sequence;
 				int index;
-				for (index = m_pendingReadSlot; index < CFileCommonSocket::m_headerSlotCount; index++) {
+				for (index = m_pendingReadSlot; index < m_headerSlotCount; index++) {
 					HeaderSequenceState& state = m_file->m_headers[index].m_sequenceState;
 					sequence = state.m_sequence;
 					if (state.m_mirroredSequence < sequence) {
@@ -95,7 +95,7 @@ void CFileReadSocket::Process()
 						break;
 					}
 				}
-				if (index == CFileCommonSocket::m_headerSlotCount) {
+				if (index == m_headerSlotCount) {
 					m_pendingReadSlot = FILE_READ_SOCKET_NO_PENDING_SLOT;
 				}
 			}
@@ -107,7 +107,7 @@ void CFileReadSocket::Process()
 				m_file->Set((unsigned char*) g_pNetworkPacketScratch);
 				int index = 0;
 				bool found = false;
-				for (; index < CFileCommonSocket::m_headerSlotCount; index++) {
+				for (; index < m_headerSlotCount; index++) {
 					CHeaderMessage* header = &m_file->m_headers[index];
 					if (header->m_sequenceState.m_mirroredSequence < header->m_sequenceState.m_sequence) {
 						if (found) {
