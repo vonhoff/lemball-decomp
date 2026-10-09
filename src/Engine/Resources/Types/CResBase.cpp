@@ -3,6 +3,7 @@
 #include "CResBaseLIST.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/Archive/CVSRange.h"
+#include "Engine/Resources/Archive/RECURSE.h"
 
 #include <string.h>
 
@@ -21,7 +22,7 @@ enum eResourceCheckDisposition {
 void CResBase::DoLoad(unsigned int p_resourceId)
 {
 	Initialise();
-	if (g_pActiveMogRes->Load(p_resourceId, this, 1) != 0) {
+	if (g_pActiveMogRes->Load(p_resourceId, this, RESOURCE_SEARCH_RECURSIVE) != 0) {
 		m_resourceId = p_resourceId;
 		SetHeader();
 		LoadData();

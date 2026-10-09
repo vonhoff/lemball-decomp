@@ -38043,7 +38043,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?_DrawBackGround@CBaseFrontendDrawer@@QAEXXZ",
       "size": 598,
-      "fingerprint": "a22ae5d6b20ecf9ec693284bd21567f9e65a0094ef54ffc30721d85e115559d2",
+      "fingerprint": "3f715fe614791a6aa2d5f62c58358606c3e92fac52eb1924c9c13a8b1514c728",
       "references": [
         {
           "offset": 527,
@@ -38119,7 +38119,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?Process@CBaseFrontendDrawer@@UAEXXZ",
       "size": 230,
-      "fingerprint": "997872214f0d9baaa88648cbea685b6145e5e3eb5c1fa856c69008e1372a2d7b",
+      "fingerprint": "a92bf57e3d866a7ce5449e48d5567face83c1b47e77c1da7521cf411d9ceee5c",
       "references": [
         {
           "offset": 67,

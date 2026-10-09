@@ -319,7 +319,7 @@ bool CMogRes::Load(CResBase* p_resource, tagCHUNK p_chunk)
 }
 
 // FUNCTION: LEMBALL 0x0045cb80
-bool CMogRes::Load(unsigned int p_resourceId, CResBase* p_resource, unsigned int p_recurse)
+bool CMogRes::Load(unsigned int p_resourceId, CResBase* p_resource, RECURSE p_recurse)
 {
 	tagCHUNK chunk;
 	int handle;

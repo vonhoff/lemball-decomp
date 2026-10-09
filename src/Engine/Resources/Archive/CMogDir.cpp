@@ -248,7 +248,7 @@ void CMogDir::FindFirst(tagCHUNK& p_chunk, unsigned int p_type)
 }
 
 // FUNCTION: LEMBALL 0x0045c2d0
-void CMogDir::Find(tagCHUNK& p_chunk, unsigned int p_id, unsigned int p_recurse)
+void CMogDir::Find(tagCHUNK& p_chunk, unsigned int p_id, RECURSE p_recurse)
 {
 	tagCHUNK saved;
 	CMogDir* dir;

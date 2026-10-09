@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_RESOURCES_CMOGDIR_H
 #include "CMogloadArena.h"
 #include "CRawRead.h"
+#include "RECURSE.h"
 #include "tagCHUNK.h"
 
 #include <stddef.h>
@@ -22,7 +23,7 @@ public:
 	tagChunkInfo* NewChunkInfo();
 	CMogDir(unsigned long p_fileOffset);
 	CMogDir* GetNextDir();
-	void Find(tagCHUNK& p_chunk, unsigned int p_id, unsigned int p_recurse);
+	void Find(tagCHUNK& p_chunk, unsigned int p_id, RECURSE p_recurse);
 	void FindFirst(tagCHUNK& p_chunk, unsigned int p_type);
 	void FindNext(tagCHUNK& p_chunk, unsigned int p_type);
 	void GetChunkInfo(tagChunkInfo* p_info);
