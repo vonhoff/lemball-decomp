@@ -106,9 +106,9 @@ protected:
 	char m_unknown344[8];                  // 0x344
 	CPlayThruAnim* m_ambientAnim;          // 0x34c
 	CStaticAnim m_staticAnim;              // 0x350
-	unsigned int m_backBufferNeeded;       // 0x360
-	unsigned int m_drawingBackBuffer;      // 0x364
-	unsigned int m_backBufferReady;        // 0x368
+	bool m_backBufferNeeded;               // 0x360
+	bool m_drawingBackBuffer;              // 0x364
+	bool m_backBufferReady;                // 0x368
 	int m_framePrimitiveCount;             // 0x36c
 	eFlowProcesses m_flowProcess;          // 0x370
 	int m_returnState;                     // 0x374

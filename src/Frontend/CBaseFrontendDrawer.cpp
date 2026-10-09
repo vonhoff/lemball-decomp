@@ -110,8 +110,8 @@ CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 	g_pMasterInputQueue->Attach(this, 0);
 	m_returnState = FLOW_NONE;
 	m_quitYet = 0;
-	m_backBufferReady = 0;
-	m_drawingBackBuffer = 0;
+	m_backBufferReady = false;
+	m_drawingBackBuffer = false;
 	m_ready = 1;
 	if (g_pGameStatus->m_skill == SKILL_NETWORK && g_pActiveConnection != NULL) {
 		m_networkMode = NETWORK_MODE_MULTIPLAYER;
@@ -237,8 +237,8 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 	unsigned int hiliteActive;
 	unsigned int gunActive;
 
-	m_backBufferNeeded = 0;
-	m_drawingBackBuffer = 1;
+	m_backBufferNeeded = false;
+	m_drawingBackBuffer = true;
 	if (m_hiliteController != NULL && (hiliteActive = m_hiliteController->m_buttonsActive) != 0) {
 		m_hiliteController->ActivateButtons(0);
 	}
@@ -246,7 +246,7 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 		m_gunController->ActivateButtons(0);
 	}
 	if (m_backBufferReady == 0) {
-		m_backBufferReady = 1;
+		m_backBufferReady = true;
 	}
 	g_pCursor->SetActive(0);
 	m_display->Render();
@@ -261,7 +261,7 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 	bitmap->m_destination.m_x = origin->m_x;
 	bitmap->m_destination.m_y = origin->m_y;
 	m_primitiveBundle[m_primitiveBank].m_bitmap.Draw(m_gdi);
-	m_drawingBackBuffer = 0;
+	m_drawingBackBuffer = false;
 	if (m_hiliteController != NULL && hiliteActive != 0) {
 		m_hiliteController->ActivateButtons(1);
 	}
@@ -279,10 +279,10 @@ void CBaseFrontendDrawer::Draw(const CVSRect& p_rect)
 		m_primitiveBank = 0;
 		if (m_gunController != NULL) {
 			if (CGunButtons::DrawBackBuffer() == 0 && m_backBufferNeeded == 0) {
-				m_backBufferNeeded = 0;
+				m_backBufferNeeded = false;
 			}
 			else {
-				m_backBufferNeeded = 1;
+				m_backBufferNeeded = true;
 			}
 		}
 		if (m_backBufferNeeded != 0) {
@@ -402,7 +402,7 @@ void CBaseFrontendDrawer::Restart()
 	if (windowValid != 0) {
 		_Load();
 		Load();
-		m_backBufferNeeded = 1;
+		m_backBufferNeeded = true;
 	}
 }
 

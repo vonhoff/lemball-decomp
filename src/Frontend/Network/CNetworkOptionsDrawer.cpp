@@ -904,7 +904,7 @@ void CNetworkOptionsDrawer::SetMessage(eNetOptsMessages p_message)
 
 	m_message = p_message;
 	m_messageDuration = 0;
-	m_backBufferNeeded = 1;
+	m_backBufferNeeded = true;
 	now = CurrentMilliTimer();
 	m_redrawPending = 1;
 	m_lastDrawTime = now;
@@ -995,7 +995,7 @@ void CNetworkOptionsDrawer::StartMessageTimeout(eNetOptsMessages p_message, unsi
 
 	m_message = p_message;
 	now = CurrentMilliTimer();
-	m_backBufferNeeded = 1;
+	m_backBufferNeeded = true;
 	m_messageStartTime = now;
 	m_messageDuration = p_duration;
 	now = CurrentMilliTimer();
@@ -1040,24 +1040,24 @@ void CNetworkOptionsDrawer::Processing()
 		ident = g_pBroadcastAddress->GetStr();
 		peer = g_szBroadcastPeerName;
 		if (m_localAddressText != ident) {
-			m_backBufferNeeded = 1;
+			m_backBufferNeeded = true;
 			m_localAddressText = ident;
 		}
 		if (m_localComputerName != peer) {
-			m_backBufferNeeded = 1;
+			m_backBufferNeeded = true;
 			m_localComputerName = peer;
 		}
 		if (m_networkState == NETWORK_OPTIONS_HANDLERS_CURRENT) {
 			if (g_pNetworkManager->m_connectionsChanged != 0) {
 				g_pNetworkManager->m_connectionsChanged = 0;
 				m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
-				m_backBufferNeeded = 1;
+				m_backBufferNeeded = true;
 				InitialiseHandlers();
 			}
 		}
 		else {
 			m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
-			m_backBufferNeeded = 1;
+			m_backBufferNeeded = true;
 			InitialiseHandlers();
 		}
 		connections = g_pNetworkManager->m_connections;
@@ -1093,7 +1093,7 @@ void CNetworkOptionsDrawer::Processing()
 			now = CurrentMilliTimer();
 			if (now - m_messageStartTime > duration) {
 				m_message = NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT;
-				m_backBufferNeeded = 1;
+				m_backBufferNeeded = true;
 				m_messageDuration = 0;
 			}
 		}
