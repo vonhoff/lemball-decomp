@@ -3615,7 +3615,7 @@
       "target": 4503280,
       "original_bytes": "e98b9d0400",
       "symbol": "__lemball_jump_00401960",
-      "target_symbol": "?Cos@VSTrig@@QAE?AVCFixed@@H@Z"
+      "target_symbol": "?Cos@VSTrig@@QBE?AVCFixed@@H@Z"
     },
     {
       "address": 4200805,
@@ -11946,7 +11946,7 @@
       "target": 4503200,
       "original_bytes": "e9b0870400",
       "symbol": "__lemball_jump_00402eeb",
-      "target_symbol": "?Sin@VSTrig@@QAE?AVCFixed@@H@Z"
+      "target_symbol": "?Sin@VSTrig@@QBE?AVCFixed@@H@Z"
     },
     {
       "address": 4206320,
@@ -39711,14 +39711,14 @@
           "original_instruction": 4501744,
           "original_bytes": "e8f67dfbff",
           "thunk": 4206315,
-          "source_symbol": "?Sin@VSTrig@@QAE?AVCFixed@@H@Z"
+          "source_symbol": "?Sin@VSTrig@@QBE?AVCFixed@@H@Z"
         },
         {
           "offset": 573,
           "original_instruction": 4501757,
           "original_bytes": "e85e68fbff",
           "thunk": 4200800,
-          "source_symbol": "?Cos@VSTrig@@QAE?AVCFixed@@H@Z"
+          "source_symbol": "?Cos@VSTrig@@QBE?AVCFixed@@H@Z"
         },
         {
           "offset": 604,
@@ -39739,14 +39739,14 @@
           "original_instruction": 4501849,
           "original_bytes": "e88d7dfbff",
           "thunk": 4206315,
-          "source_symbol": "?Sin@VSTrig@@QAE?AVCFixed@@H@Z"
+          "source_symbol": "?Sin@VSTrig@@QBE?AVCFixed@@H@Z"
         },
         {
           "offset": 678,
           "original_instruction": 4501862,
           "original_bytes": "e8807dfbff",
           "thunk": 4206315,
-          "source_symbol": "?Sin@VSTrig@@QAE?AVCFixed@@H@Z"
+          "source_symbol": "?Sin@VSTrig@@QBE?AVCFixed@@H@Z"
         },
         {
           "offset": 709,
@@ -39767,14 +39767,14 @@
           "original_instruction": 4501924,
           "original_bytes": "e8427dfbff",
           "thunk": 4206315,
-          "source_symbol": "?Sin@VSTrig@@QAE?AVCFixed@@H@Z"
+          "source_symbol": "?Sin@VSTrig@@QBE?AVCFixed@@H@Z"
         },
         {
           "offset": 753,
           "original_instruction": 4501937,
           "original_bytes": "e8357dfbff",
           "thunk": 4206315,
-          "source_symbol": "?Sin@VSTrig@@QAE?AVCFixed@@H@Z"
+          "source_symbol": "?Sin@VSTrig@@QBE?AVCFixed@@H@Z"
         },
         {
           "offset": 784,

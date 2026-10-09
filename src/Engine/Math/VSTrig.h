@@ -15,8 +15,8 @@ enum {
 // SIZE 0x800
 class VSTrig {
 public:
-	CFixed Cos(int p_angle);
-	CFixed Sin(int p_angle);
+	CFixed Cos(int p_angle) const;
+	CFixed Sin(int p_angle) const;
 	CVector Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos) const;
 	CVector Rotate(CVector& p_vector, int p_angle);
 	VSTrig();

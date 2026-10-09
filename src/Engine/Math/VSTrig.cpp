@@ -34,7 +34,7 @@ CVector VSTrig::Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos) const
 }
 
 // FUNCTION: LEMBALL 0x0044b6a0
-CFixed VSTrig::Sin(int p_angle)
+CFixed VSTrig::Sin(int p_angle) const
 {
 	if (p_angle < 0) {
 		return CFixed(-m_sine[(-p_angle) % TRIG_ANGLE_FULL_TURN].m_value);
@@ -43,7 +43,7 @@ CFixed VSTrig::Sin(int p_angle)
 }
 
 // FUNCTION: LEMBALL 0x0044b6f0
-CFixed VSTrig::Cos(int p_angle)
+CFixed VSTrig::Cos(int p_angle) const
 {
 	int angle = p_angle + TRIG_ANGLE_QUARTER_TURN;
 	if (angle < 0) {
