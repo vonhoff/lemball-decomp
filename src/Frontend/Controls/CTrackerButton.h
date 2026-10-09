@@ -1,12 +1,12 @@
 #ifndef LEMBALL_FRONTEND_CONTROLS_CTRACKERBUTTON_H
 #define LEMBALL_FRONTEND_CONTROLS_CTRACKERBUTTON_H
 
+#include "Engine/Math/CVSPoint.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 
 class CPVGWnd;
 class CTrackWindow;
 class CVSRect;
-struct CVSPoint;
 // SIZE 0x138
 // VTABLE: LEMBALL 0x00498050 CGWnd
 // VTABLE: LEMBALL 0x00498028 CHotAreaHandler
@@ -23,8 +23,7 @@ public:
 private:
 	friend class CGunController;
 	friend class CGunButtons;
-	short m_trackOffsetX;        // 0x130
-	short m_trackOffsetY;        // 0x132
+	CVSPoint m_trackOffset;      // 0x130
 	CTrackWindow* m_trackWindow; // 0x134
 };
 
