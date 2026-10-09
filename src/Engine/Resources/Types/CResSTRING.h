@@ -7,7 +7,7 @@
 // VTABLE: LEMBALL 0x00498c48
 class CResSTRING : public CResBase {
 public:
-	inline CResSTRING(unsigned long p_resourceId) { DoLoad(p_resourceId); }
+	CResSTRING(unsigned long p_resourceId) { DoLoad(p_resourceId); }
 	CResSTRING();
 	static CResSTRING* Load(unsigned long p_resourceId);
 	virtual void SetType(); // vtable+0x34

@@ -9,7 +9,7 @@
 // VTABLE: LEMBALL 0x00498da0
 class CResPatch : public CResBase {
 public:
-	inline CResPatch(unsigned long p_resourceId) { DoLoad(p_resourceId); }
+	CResPatch(unsigned long p_resourceId) { DoLoad(p_resourceId); }
 	static CResPatch* Load(unsigned long p_resourceId);
 	virtual void SetType(); // vtable+0x34
 };

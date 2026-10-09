@@ -15,8 +15,8 @@ struct ResListHeader {
 // VTABLE: LEMBALL 0x004989c0
 class CResBaseLIST : public CResBase {
 public:
-	inline CResBaseLIST() {}
-	inline CResBaseLIST(ResourceTypeList* p_header)
+	CResBaseLIST() {}
+	CResBaseLIST(ResourceTypeList* p_header)
 	{
 		m_listHeader = p_header;
 		m_bodyLoaded = 0;

@@ -12,7 +12,7 @@ struct PaletteHeader {
 // VTABLE: LEMBALL 0x00498c08
 class CResPALETTE : public CResBase {
 public:
-	inline CResPALETTE(unsigned long p_resourceId) { DoLoad(p_resourceId); }
+	CResPALETTE(unsigned long p_resourceId) { DoLoad(p_resourceId); }
 	static CResPALETTE* Load(unsigned long p_resourceId);
 	virtual void SetHeader(); // vtable+0x08
 	virtual void SetType();   // vtable+0x34
