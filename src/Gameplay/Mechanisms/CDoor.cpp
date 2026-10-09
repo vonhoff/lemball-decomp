@@ -329,7 +329,7 @@ bool CDoor::IsUsable(eAction p_action)
 // FUNCTION: LEMBALL 0x0040dd50
 bool CDoor::TryBeginActivation()
 {
-	unsigned int tick;
+	unsigned long tick;
 
 	if (m_activationPending != 0) {
 		return false;

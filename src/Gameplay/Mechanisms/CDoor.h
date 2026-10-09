@@ -28,7 +28,7 @@ public:
 
 private:
 	unsigned short m_doorIndex;       // 0x138
-	unsigned int m_setTick;           // 0x13c
+	unsigned long m_setTick;          // 0x13c
 	short m_doorType;                 // 0x140
 	unsigned int m_activationPending; // 0x144
 	unsigned short m_unk0x148;        // 0x148
