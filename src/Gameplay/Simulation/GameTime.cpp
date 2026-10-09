@@ -70,28 +70,28 @@ void SetRemoteGameTimeReal(unsigned long p_timestamp)
 }
 
 // GLOBAL: LEMBALL 0x0049ce08
-unsigned long g_dwSimulationTimestamp;
+unsigned long g_dwSimulationTimestamp = 0;
 
 // GLOBAL: LEMBALL 0x0049ce0c
-unsigned long g_dwRemoteGameTick;
+unsigned long g_dwRemoteGameTick = 0;
 
 // GLOBAL: LEMBALL 0x0049ce10
-unsigned long g_dwNetworkSimulationTimestamp;
+unsigned long g_dwNetworkSimulationTimestamp = 0;
 
 // GLOBAL: LEMBALL 0x0049ce14
-unsigned long g_dwLastRemoteTimestamp;
+unsigned long g_dwLastRemoteTimestamp = 0;
 
 // GLOBAL: LEMBALL 0x0049ce18
-unsigned long g_dwLastElapsedMilli;
+unsigned long g_dwLastElapsedMilli = 0;
 
 // GLOBAL: LEMBALL 0x0049ce1c
-unsigned long g_dwGameTimeTick;
+unsigned long g_dwGameTimeTick = 0;
 
 // GLOBAL: LEMBALL 0x0049ce20
-unsigned long g_dwCurrentMilli;
+unsigned long g_dwCurrentMilli = 0;
 
 // GLOBAL: LEMBALL 0x0049ce24
-unsigned long g_dwPausedMilli;
+unsigned long g_dwPausedMilli = 0;
 
 // GLOBAL: LEMBALL 0x0049ce28
-unsigned int g_dwClockEditMode;
+unsigned int g_dwClockEditMode = 0;
