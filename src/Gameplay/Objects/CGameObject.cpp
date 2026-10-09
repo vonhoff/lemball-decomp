@@ -725,8 +725,8 @@ bool CGameObject::SearchRoute()
 	if (m_routeSearchActive != 0) {
 		int solutionCount;
 		bool complete;
-		unsigned int reached;
-		unsigned int noChanges;
+		bool reached;
+		bool noChanges;
 		tSolution solutions[GAME_OBJECT_ROUTE_SOLUTION_CAPACITY];
 
 		complete = g_pMaze->BIteration(reached, noChanges);

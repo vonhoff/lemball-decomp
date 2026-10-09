@@ -322,9 +322,9 @@ void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, i
 }
 
 // FUNCTION: LEMBALL 0x00423650
-bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
+bool CMaze::BIteration(bool& p_reached, bool& p_noChanges)
 {
-	p_reached = 0;
+	p_reached = false;
 	if (m_endY < 0 || m_endX < 0 || m_height <= m_endY || m_width <= m_endX ||
 		m_distances[m_endY][m_endX] == MAZE_DISTANCE_BLOCKED) {
 		return true;
@@ -387,7 +387,7 @@ bool CMaze::BIteration(unsigned int& p_reached, unsigned int& p_noChanges)
 	}
 
 	p_reached = m_distances[m_endY][m_endX] != MAZE_DISTANCE_UNREACHED;
-	p_noChanges = !p_reached || changed ? 0 : 1;
+	p_noChanges = !p_reached || changed ? false : true;
 	if (!p_reached && changed && m_radius < 0x14) {
 		return false;
 	}

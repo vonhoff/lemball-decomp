@@ -21,7 +21,7 @@ enum eMazeChangeBitmapLayout {
 class CMaze {
 public:
 	CMaze(CMap* p_map);
-	bool BIteration(unsigned int& p_reached, unsigned int& p_noChanges);
+	bool BIteration(bool& p_reached, bool& p_noChanges);
 	bool CalcNewDistance(int p_x, int p_y);
 	bool FindSquare(unsigned short p_distance, int& p_x, int& p_y);
 	void BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY);
