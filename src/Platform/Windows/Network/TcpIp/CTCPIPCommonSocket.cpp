@@ -29,14 +29,12 @@ CTCPIPCommonSocket::~CTCPIPCommonSocket()
 }
 
 // FUNCTION: LEMBALL 0x0046fdb0
-CTCPIPCommonSocket::NameResult CTCPIPCommonSocket::OnNameResolved(unsigned int p_wParam,
-																  unsigned int p_lParam,
-																  char** p_buffer)
+CTCPIPCommonSocket::NameResult CTCPIPCommonSocket::OnNameResolved(unsigned int p_wParam, long p_lParam, char** p_buffer)
 {
 	int error;
 
 	(void) p_wParam;
-	error = (unsigned short) (p_lParam >> 16);
+	error = (unsigned short) ((unsigned long) p_lParam >> 16);
 	switch (error) {
 	case 0:
 		return NAME_RESOLVED;
