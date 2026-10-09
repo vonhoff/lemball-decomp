@@ -58,8 +58,6 @@ enum {
 	BASE_FRONTEND_AMBIENT_ANIMATION_DURATION_MS = 500
 };
 
-class CAnimFrameBASE;
-
 // GLOBAL: LEMBALL 0x0049f144
 CBaseFrontendDrawer* g_pBaseFrontendDrawer = NULL;
 
@@ -455,7 +453,7 @@ void CBaseFrontendDrawer::_DrawAnims()
 {
 	if (m_ambientAnim != NULL) {
 		m_ambientAnim->m_fixedTime = CurrentMilliTimer();
-		CAnimsManager::DrawAnim(m_animPosition, m_ambientAnimId, 0, (CAnimFrameBASE*) m_ambientAnim, NULL);
+		CAnimsManager::DrawAnim(m_animPosition, m_ambientAnimId, 0, m_ambientAnim, NULL);
 	}
 }
 
@@ -506,11 +504,7 @@ void CBaseFrontendDrawer::DrawFrame(CVSRect p_rect)
 	}
 	m_framePrimitiveCount++;
 	m_staticAnim.m_frameState = 0;
-	CAnimsManager::DrawAnim(CVSPoint((short) startX, (short) startY),
-							m_topFrameAnimId,
-							0,
-							(CAnimFrameBASE*) &m_staticAnim,
-							NULL);
+	CAnimsManager::DrawAnim(CVSPoint((short) startX, (short) startY), m_topFrameAnimId, 0, &m_staticAnim, NULL);
 	int x = tileWidth;
 	int right = width - tileWidth;
 	for (; right > x; x += tileWidth) {
@@ -518,48 +512,44 @@ void CBaseFrontendDrawer::DrawFrame(CVSRect p_rect)
 		CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) startY),
 								m_topFrameAnimId,
 								0,
-								(CAnimFrameBASE*) &m_staticAnim,
+								&m_staticAnim,
 								NULL);
 	}
 	m_staticAnim.m_frameState = 2;
-	CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) startY),
-							m_topFrameAnimId,
-							0,
-							(CAnimFrameBASE*) &m_staticAnim,
-							NULL);
+	CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) startY), m_topFrameAnimId, 0, &m_staticAnim, NULL);
 	int y = tileHeight;
 	height -= tileHeight;
 	for (; y < height; y += tileHeight) {
 		m_staticAnim.m_frameState = 0;
 		short currentY = (short) (startY + y);
 		CVSPoint left((short) startX, currentY);
-		CAnimsManager::DrawAnim(left, m_sideFrameAnimId, 0, (CAnimFrameBASE*) &m_staticAnim, NULL);
+		CAnimsManager::DrawAnim(left, m_sideFrameAnimId, 0, &m_staticAnim, NULL);
 		m_staticAnim.m_frameState = 2;
 		CAnimsManager::DrawAnim(CVSPoint((short) (width - tileWidth + startX), currentY),
 								m_sideFrameAnimId,
 								0,
-								(CAnimFrameBASE*) &m_staticAnim,
+								&m_staticAnim,
 								NULL);
 	}
 	m_staticAnim.m_frameState = 0;
 	CAnimsManager::DrawAnim(CVSPoint((short) startX, (short) (startY + y)),
 							m_bottomFrameAnimId,
 							0,
-							(CAnimFrameBASE*) &m_staticAnim,
+							&m_staticAnim,
 							NULL);
 	for (x = tileWidth; right > x; x += tileWidth) {
 		m_staticAnim.m_frameState = 1;
 		CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) (startY + y)),
 								m_bottomFrameAnimId,
 								0,
-								(CAnimFrameBASE*) &m_staticAnim,
+								&m_staticAnim,
 								NULL);
 	}
 	m_staticAnim.m_frameState = 2;
 	CAnimsManager::DrawAnim(CVSPoint((short) (startX + x), (short) (startY + y)),
 							m_bottomFrameAnimId,
 							0,
-							(CAnimFrameBASE*) &m_staticAnim,
+							&m_staticAnim,
 							NULL);
 }
 
