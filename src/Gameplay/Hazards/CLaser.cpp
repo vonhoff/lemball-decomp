@@ -212,7 +212,7 @@ bool CLaser::Process()
 			switch (m_action) {
 			case ACTION_RECOVERY:
 				if (m_target != NULL) {
-					m_target->m_deathRequested = 1;
+					m_target->m_deathRequested = true;
 					m_target = NULL;
 				}
 				Action(ACTION_READY);
@@ -233,7 +233,7 @@ bool CLaser::Process()
 		case ACTION_RECOVERY:
 			if (m_target != NULL) {
 				m_target->SetSndEffect(SFX_ELECCY);
-				m_target->m_deathRequested = 1;
+				m_target->m_deathRequested = true;
 				m_target = NULL;
 			}
 			Action(ACTION_READY);
@@ -260,7 +260,7 @@ bool CLaser::Process()
 				m_active = m_autoActivate;
 				m_actionDeadline = g_dwGameTick + LASER_REACTIVATION_DELAY_TICKS;
 				if (m_target != NULL) {
-					m_target->m_deathRequested = 1;
+					m_target->m_deathRequested = true;
 					m_target = NULL;
 				}
 				Action(ACTION_RECOVERY);

@@ -450,7 +450,7 @@ CGameObject::~CGameObject()
 void CGameObject::Initialise()
 {
 	m_actionArgument = 0;
-	m_deathRequested = 0;
+	m_deathRequested = false;
 	m_action = ACTION_NONE;
 	m_isRemoteObject = 0;
 	m_facingDirection = 0;

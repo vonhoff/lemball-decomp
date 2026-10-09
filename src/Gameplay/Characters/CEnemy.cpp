@@ -110,7 +110,7 @@ void CEnemy::Restart()
 	m_stateIndex = ENEMY_BEHAVIOR_STAGE_FIRST;
 	m_fireState = ENEMY_FIRE_IDLE;
 	m_hit = false;
-	m_deathRequested = 0;
+	m_deathRequested = false;
 
 	CAI* ai = g_pAI;
 	ai->m_objects[ai->m_objectCount] = this;
@@ -453,7 +453,7 @@ void CEnemy::HitBullet(CBullet* p_bullet)
 		m_hit = true;
 		m_actionDeadline = g_dwGameTick + ENEMY_HIT_RESPONSE_DELAY_TICKS;
 		m_facingDirection = (p_bullet->m_facingDirection + FACING_DIRECTION_OPPOSITE_OFFSET) & FACING_DIRECTION_MASK;
-		m_deathRequested = 1;
+		m_deathRequested = true;
 	}
 }
 
@@ -477,7 +477,7 @@ void CEnemy::HitMine()
 	velocity.m_yFixed = 0;
 	velocity.m_zFixed = ENEMY_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
 	StartFly(velocity, NULL);
-	m_deathRequested = 1;
+	m_deathRequested = true;
 }
 
 // FUNCTION: LEMBALL 0x004206f0

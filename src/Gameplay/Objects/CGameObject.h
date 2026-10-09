@@ -207,7 +207,7 @@ protected:
 	unsigned int m_routeSearchActive;      // 0x0c
 	unsigned int m_transientFlags;         // 0x10
 	CRect3 m_collisionBounds;              // 0x14
-	unsigned int m_deathRequested;         // 0x2c
+	bool m_deathRequested;                 // 0x2c
 	unsigned int m_balloonPostActive;      // 0x30
 	unsigned int m_balloonPostId;          // 0x34
 	int m_objectActive;                    // 0x38

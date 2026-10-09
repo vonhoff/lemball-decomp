@@ -131,7 +131,7 @@ void CPlayerLemming::Restart()
 		m_position.m_xFixed = m_spawnPosition.m_xFixed;
 		m_position.m_yFixed = m_spawnPosition.m_yFixed;
 		m_position.m_zFixed = m_spawnPosition.m_zFixed;
-		m_deathRequested = 0;
+		m_deathRequested = false;
 		m_sfxChanged = 1;
 		m_group = NULL;
 		m_ice = NULL;
@@ -414,7 +414,7 @@ void CPlayerLemming::HitMine()
 	m_wasHitByMine = true;
 	vel.m_zFixed = PLAYER_LEMMING_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
 	StartFly(vel, NULL);
-	m_deathRequested = 1;
+	m_deathRequested = true;
 }
 
 // FUNCTION: LEMBALL 0x0040f640
@@ -565,7 +565,7 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_position.m_xFixed = p_position.m_xFixed;
 	m_position.m_yFixed = p_position.m_yFixed;
 	m_position.m_zFixed = p_position.m_zFixed;
-	m_deathRequested = 0;
+	m_deathRequested = false;
 	g_wLemmingCount++;
 	m_facingDirection = 0;
 	m_inventoryCount = 0;

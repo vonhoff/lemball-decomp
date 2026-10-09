@@ -117,7 +117,7 @@ int CTrampoline::TryEnableNearPosition(const AICOORD& p_position, CGameObject* p
 		int z = p_position.m_zFixed;
 		m_position.m_zFixed = z;
 		m_relocationZ = z >> FIXED_POINT_FRACTION_BITS;
-		p_object->m_deathRequested = 1;
+		p_object->m_deathRequested = true;
 		return 1;
 	}
 	return 0;
