@@ -348,16 +348,15 @@ int CDirectSoundDevice::FreeEffect(unsigned long p_effectId)
 int CDirectSoundDevice::FreeAllEffects()
 {
 	int index = 1;
-	CDirectSoundDevice* device = this;
-	if (index <= device->m_platform.m_effectCapacity) {
+	if (index <= m_platform.m_effectCapacity) {
 		do {
-			CDirectSoundEffect* effect = device->m_platform.m_effects[index];
+			CDirectSoundEffect* effect = m_platform.m_effects[index];
 			if (effect != NULL) {
 				delete effect;
-				device->m_platform.m_effects[index] = NULL;
+				m_platform.m_effects[index] = NULL;
 			}
 			index++;
-		} while (index <= device->m_platform.m_effectCapacity);
+		} while (index <= m_platform.m_effectCapacity);
 	}
 	return 1;
 }
