@@ -18,9 +18,9 @@ public:
 	friend class CPaintGunManager;
 
 private:
-	unsigned int m_enabled; // 0x138
-	unsigned int m_active;  // 0x13c
-	int m_direction;        // 0x140
+	bool m_enabled;  // 0x138
+	bool m_active;   // 0x13c
+	int m_direction; // 0x140
 };
 
 // SYNTHETIC: LEMBALL 0x0042c9e0

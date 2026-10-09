@@ -48,8 +48,8 @@ void CPaintGun::Restart()
 {
 	CGlobalGameObject::Restart();
 	m_stateTimer = 0;
-	m_enabled = 0;
-	m_active = 0;
+	m_enabled = false;
+	m_active = false;
 	m_direction = 0;
 }
 
@@ -68,8 +68,8 @@ void CPaintGun::Set(unsigned short p_id, const AICOORD& p_position, int p_direct
 	m_position.m_yFixed = y;
 	m_position.m_zFixed = p_position.m_zFixed;
 	m_direction = p_direction;
-	m_active = 1;
-	m_enabled = 1;
+	m_active = true;
+	m_enabled = true;
 	m_action = ACTION_READY;
 	int groundX = (x >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	int groundY = (y >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
