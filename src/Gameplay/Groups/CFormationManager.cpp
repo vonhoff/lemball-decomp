@@ -2,6 +2,7 @@
 
 #include "Engine/Math/CFixed.h"
 #include "Engine/Math/CVector.h"
+#include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/VSTrig.h"
 
 #include <new.h>
@@ -25,9 +26,9 @@ CFormationManager::CFormationManager()
 		do {
 			y = (*formation)[kFormationVectorY];
 			x = (*formation)[kFormationVectorX];
-			x <<= 12;
+			x *= FIXED_POINT_ONE;
 			source++;
-			y <<= 12;
+			y *= FIXED_POINT_ONE;
 			formation++;
 			vectorCount--;
 			source[-1].m_xFixed = x;
