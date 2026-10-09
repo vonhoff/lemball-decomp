@@ -18,13 +18,13 @@ CBaseCommonSocket::CBaseCommonSocket()
 	m_eventPending = 0;
 	m_socketFlags = 0;
 	m_lastError = NETWORK_ERROR_NONE;
-	m_platformState = operator new(0x10);
+	m_platformState = new unsigned char[0x10];
 }
 
 // FUNCTION: LEMBALL 0x0045f6c0
 CBaseCommonSocket::~CBaseCommonSocket()
 {
-	operator delete(m_platformState);
+	delete[] m_platformState;
 }
 
 // FUNCTION: LEMBALL 0x0045f6e0
