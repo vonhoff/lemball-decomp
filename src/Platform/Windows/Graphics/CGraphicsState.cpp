@@ -36,7 +36,7 @@ static const char* g_graphicsDriverNames[] = {"NO",
 											  NULL};
 
 // GLOBAL: LEMBALL 0x004a07a0
-static const char* g_graphicsDriverErrors[] = {
+static char* g_graphicsDriverErrors[] = {
 	"None",
 	"Defaulting to normal 640*480 mode (using CreateDIBSection)",
 	"Unable to find DispDib32 Libraries for full screen 320*200 mode (dspdib16.dll & dspdib32.dll) - please reinstall",

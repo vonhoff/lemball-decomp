@@ -5,7 +5,7 @@
 class CString {
 public:
 	CString();
-	CString(const char* p_text);
+	CString(char* p_text);
 	CString(CString& p_other);
 	~CString();
 

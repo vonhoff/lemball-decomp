@@ -20,7 +20,7 @@ CString::CString()
 }
 
 // FUNCTION: LEMBALL 0x0046e430
-CString::CString(const char* p_text)
+CString::CString(char* p_text)
 {
 	m_capacity = strlen(p_text) + 1;
 	m_text = new char[m_capacity];
