@@ -393,7 +393,7 @@ def native_definition(callee, modules, public_addresses):
         raise ValueError("Definition is not external")
     if public_addresses.get(symbol) != callee.recomp_addr:
         raise ValueError("Definition public address differs from the paired body")
-    return {"object": object_name, "symbol": symbol}
+    return symbol
 
 
 def recover_table_entries(
@@ -408,12 +408,10 @@ def recover_table_entries(
         if callee is None or not callee.get("symbol"):
             continue
         try:
-            definition = native_definition(callee, modules, public_addresses)
+            target_symbol = native_definition(callee, modules, public_addresses)
         except (ValueError, OSError):
             continue
-        thunk = make_thunk(engine, callee, address, definition["symbol"], aliases)
-        thunk["definition"] = definition
-        thunks[address] = thunk
+        thunks[address] = make_thunk(engine, callee, address, target_symbol, aliases)
 
 
 def recover_references(
@@ -743,10 +741,8 @@ def recover_thunks(forwarders):
         for address in missing:
             destination = read_jump_target(engine.orig_bin, address)
             callee = functions[destination]
-            definition = native_definition(callee, modules, public_addresses)
-            thunks[address] = make_thunk(
-                engine, callee, address, definition["symbol"], {}
-            )
+            target_symbol = native_definition(callee, modules, public_addresses)
+            thunks[address] = make_thunk(engine, callee, address, target_symbol, {})
     for address in forwarders:
         thunks[address]["kind"] = "tail-forwarder"
     write_recovery(
