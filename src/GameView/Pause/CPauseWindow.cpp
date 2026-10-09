@@ -383,7 +383,7 @@ CVSRect CPauseWindow::CalculateWindow()
 		m_borderAnims = new CAnim[m_borderAnimCount * 2];
 	}
 
-	CVSRect cornerBounds(0, 0, windowSize.m_width, windowSize.m_height);
+	CVSRect cornerBounds(CVSPoint(0, 0), windowSize);
 	CVSSize* cornerSize = &m_horizontalBorderAnim->m_animationEntries[0].m_size;
 	cornerBounds.m_width = (short) (cornerBounds.m_width - cornerSize->m_width);
 	cornerBounds.m_height = (short) (cornerBounds.m_height - cornerSize->m_height);
