@@ -13,7 +13,7 @@ as closely as possible. The resulting codebase will serve as a faithful referenc
 
 > [!NOTE]
 > This reconstruction exclusively targets 32-bit Windows and uses Microsoft Visual C++ 4.0.
-> For a modern, cross-platform version with web support, see [lemball-portable](https://github.com/vonhoff/lemball-portable).
+> For a modern, cross-platform version, see [lemball-portable](https://github.com/vonhoff/lemball-portable).
 
 ## Reconstruction
 
