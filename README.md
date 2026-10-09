@@ -24,9 +24,6 @@ throughout the game and engine.
 Since the Windows executable had its symbols removed, functions were matched between the two versions using strings,
 constants, algorithms, virtual tables, object layouts, and call relationships.
 
-These findings are used to reconstruct the original C++ classes and functions. Each function is then refined and
-compared against the Windows executable to reproduce its machine code as closely as possible.
-
 ## Building
 
 The reconstructed code is compiled using Microsoft Visual C++ 4.00 and targets 32-bit Windows.
