@@ -5,11 +5,11 @@
 #include <string.h>
 
 extern "C" __declspec(dllimport) void* __stdcall CreateFileA(const char* p_name,
-															 unsigned int p_access,
-															 unsigned int p_share,
+															 unsigned long p_access,
+															 unsigned long p_share,
 															 void* p_security,
-															 unsigned int p_creation,
-															 unsigned int p_flags,
+															 unsigned long p_creation,
+															 unsigned long p_flags,
 															 void* p_template);
 extern "C" __declspec(dllimport) int __stdcall CloseHandle(void* p_handle);
 extern "C" __declspec(dllimport) int __stdcall DeleteFileA(const char* p_name);
@@ -20,14 +20,14 @@ extern "C" __declspec(dllimport) int __stdcall WriteFile(void* p_handle,
 														 void* p_overlapped);
 extern "C" __declspec(dllimport) int __stdcall ReadFile(void* p_handle,
 														void* p_buffer,
-														unsigned int p_bytes,
-														unsigned int* p_read,
+														unsigned long p_bytes,
+														unsigned long* p_read,
 														void* p_overlapped);
-extern "C" __declspec(dllimport) unsigned int __stdcall SetFilePointer(void* p_handle,
-																	   int p_distance,
-																	   int* p_distanceHigh,
-																	   unsigned int p_method);
-extern "C" __declspec(dllimport) unsigned int __stdcall GetFileSize(void* p_handle, unsigned int* p_sizeHigh);
+extern "C" __declspec(dllimport) unsigned long __stdcall SetFilePointer(void* p_handle,
+																		long p_distance,
+																		long* p_distanceHigh,
+																		unsigned long p_method);
+extern "C" __declspec(dllimport) unsigned long __stdcall GetFileSize(void* p_handle, unsigned long* p_sizeHigh);
 extern "C" __declspec(dllimport) int __stdcall LockFile(void* p_handle,
 														unsigned long p_offsetLow,
 														unsigned long p_offsetHigh,
@@ -61,7 +61,7 @@ char* CNetworkFile::GetFilename()
 bool CNetworkFile::Open(const char* p_filename, unsigned char p_mode, int p_create)
 {
 	unsigned int length;
-	unsigned int creation;
+	unsigned long creation;
 	void* handle;
 
 	(void) p_mode;
@@ -148,7 +148,7 @@ enum eNetworkFileError {
 bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 {
 	int success;
-	unsigned int got;
+	unsigned long got;
 	unsigned int error;
 
 	success = ReadFile(m_handle, p_data, (unsigned int) p_size, &got, NULL);
