@@ -20,9 +20,9 @@ public:
 	friend class CPreviewDrawer;
 
 protected:
-	unsigned int m_frames;     // 0x04
-	unsigned int m_reserved08; // 0x08
-	unsigned int m_frameState; // 0x0c
+	unsigned int m_frames;      // 0x04
+	unsigned int m_reserved08;  // 0x08
+	unsigned long m_frameState; // 0x0c
 };
 
 #endif
