@@ -6675,7 +6675,7 @@
       "target": 4221744,
       "original_bytes": "e9fb490000",
       "symbol": "__lemball_jump_00402130",
-      "target_symbol": "?UnJiggleLevelData@CGameStatus@@QAEXI@Z"
+      "target_symbol": "?UnJiggleLevelData@CGameStatus@@QAEXK@Z"
     },
     {
       "address": 4202805,
@@ -13566,7 +13566,7 @@
       "target": 4221856,
       "original_bytes": "e978380000",
       "symbol": "__lemball_jump_00403323",
-      "target_symbol": "?CalcCheckSum@CGameStatus@@QAEII@Z"
+      "target_symbol": "?CalcCheckSum@CGameStatus@@QAEIK@Z"
     },
     {
       "address": 4207400,
@@ -15731,7 +15731,7 @@
     {
       "caller": 4221744,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGameStatus.cpp.obj",
-      "symbol": "?UnJiggleLevelData@CGameStatus@@QAEXI@Z",
+      "symbol": "?UnJiggleLevelData@CGameStatus@@QAEXK@Z",
       "size": 107,
       "fingerprint": "d3327d033903e98833f3a2d73310a086c935023d635023196faa33420a56136c",
       "references": [
@@ -15779,7 +15779,7 @@
           "original_instruction": 4221971,
           "original_bytes": "e80bc7ffff",
           "thunk": 4207395,
-          "source_symbol": "?CalcCheckSum@CGameStatus@@QAEII@Z"
+          "source_symbol": "?CalcCheckSum@CGameStatus@@QAEIK@Z"
         }
       ]
     },
@@ -15809,14 +15809,14 @@
           "original_instruction": 4222274,
           "original_bytes": "e8dcc5ffff",
           "thunk": 4207395,
-          "source_symbol": "?CalcCheckSum@CGameStatus@@QAEII@Z"
+          "source_symbol": "?CalcCheckSum@CGameStatus@@QAEIK@Z"
         },
         {
           "offset": 199,
           "original_instruction": 4222311,
           "original_bytes": "e8c4b3ffff",
           "thunk": 4202800,
-          "source_symbol": "?UnJiggleLevelData@CGameStatus@@QAEXI@Z"
+          "source_symbol": "?UnJiggleLevelData@CGameStatus@@QAEXK@Z"
         }
       ]
     },

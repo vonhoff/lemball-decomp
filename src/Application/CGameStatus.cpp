@@ -81,7 +81,7 @@ unsigned int CGameStatus::JiggleLevelData()
 }
 
 // FUNCTION: LEMBALL 0x00406b30
-void CGameStatus::UnJiggleLevelData(unsigned int p_value)
+void CGameStatus::UnJiggleLevelData(unsigned long p_value)
 {
 	unsigned int mixed[PASSWORD_LEVEL_DATA_CHUNK_COUNT];
 	unsigned int chunks[PASSWORD_LEVEL_DATA_CHUNK_COUNT];
@@ -110,7 +110,7 @@ void CGameStatus::UnJiggleLevelData(unsigned int p_value)
 }
 
 // FUNCTION: LEMBALL 0x00406ba0
-unsigned int CGameStatus::CalcCheckSum(unsigned int p_value)
+unsigned int CGameStatus::CalcCheckSum(unsigned long p_value)
 {
 	return ((p_value >> 16) + (p_value >> 8) + p_value) & PASSWORD_CHECKSUM_MASK;
 }

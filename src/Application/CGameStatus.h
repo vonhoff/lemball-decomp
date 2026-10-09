@@ -48,7 +48,7 @@ public:
 	int Level();
 	int NoOfLevelsInSkill(int p_skill);
 	int StringToDWord();
-	unsigned int CalcCheckSum(unsigned int p_value);
+	unsigned int CalcCheckSum(unsigned long p_value);
 	unsigned int JiggleLevelData();
 	void GotoLastLevels();
 	void IncLevel();
@@ -56,7 +56,7 @@ public:
 	void DecSkill(unsigned int p_wrap);
 	void Level(int p_level);
 	void SetMaxLevel(int p_skill, int p_level);
-	void UnJiggleLevelData(unsigned int p_value);
+	void UnJiggleLevelData(unsigned long p_value);
 
 	friend class CNetworkOptionsDrawer;
 	friend class CPlayerLemming;
