@@ -48,7 +48,7 @@ void CChangeList::AllocMap()
 	unsigned int capacity;
 
 	if (m_map == NULL) {
-		capacity = (unsigned int) ((int) m_mapSize.m_width * (int) m_mapSize.m_height);
+		capacity = (unsigned int) (m_mapSize.m_width * m_mapSize.m_height);
 		m_mapCapacity = capacity;
 		m_map = (unsigned char*) operator new(capacity);
 	}
@@ -67,12 +67,12 @@ void CChangeList::Resize(CVSSize p_size)
 		m_viewSize.m_width = p_size.m_width;
 		m_viewSize.m_height = p_size.m_height;
 		m_mapSize.m_width = mapWidth;
-		needed = (int) mapWidth * mapHeight;
+		needed = mapWidth * mapHeight;
 		m_mapSize.m_height = mapHeight;
 		if (needed > (int) m_mapCapacity) {
 			FreeMap();
 		}
-		if (0 < (int) p_size.m_height * (int) p_size.m_width) {
+		if (0 < p_size.m_height * p_size.m_width) {
 			AllocMap();
 		}
 	}
@@ -133,15 +133,15 @@ void CChangeList::Add(const CVSRect& p_area)
 	if (m_map != NULL) {
 		cellWidth = m_cellSize.m_width;
 		const short& cellHeight = m_cellSize.m_height;
-		cellX = (int) (p_area.m_x / cellWidth);
-		cellY = (int) (p_area.m_y / cellHeight);
-		spanX = ((int) p_area.m_width + (int) p_area.m_x - 1 + (int) cellWidth) / (int) cellWidth - cellX;
-		spanY = ((int) p_area.m_height + (int) p_area.m_y - 1 + (int) cellHeight) / (int) cellHeight - cellY;
-		mapHeight = (int) m_mapSize.m_height;
+		cellX = (p_area.m_x / cellWidth);
+		cellY = (p_area.m_y / cellHeight);
+		spanX = (p_area.m_width + p_area.m_x - 1 + cellWidth) / cellWidth - cellX;
+		spanY = (p_area.m_height + p_area.m_y - 1 + cellHeight) / cellHeight - cellY;
+		mapHeight = m_mapSize.m_height;
 		if (mapHeight < cellY + spanY) {
 			spanY = mapHeight - cellY;
 		}
-		mapWidth = (int) m_mapSize.m_width;
+		mapWidth = m_mapSize.m_width;
 		if (mapWidth < cellX + spanX) {
 			spanX = mapWidth - cellX;
 		}
@@ -152,7 +152,7 @@ void CChangeList::Add(const CVSRect& p_area)
 				row = row + m_mapSize.m_width;
 				spanY = spanY - 1;
 			}
-			m_area = m_area + (int) p_area.m_width * (int) p_area.m_height;
+			m_area = m_area + p_area.m_width * p_area.m_height;
 		}
 	}
 }
@@ -207,22 +207,22 @@ bool CChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark,
 	ChangeListItem* item;
 
 	scanY = m_scanY;
-	mapWidth = (int) m_mapSize.m_width;
+	mapWidth = m_mapSize.m_width;
 	scanX = m_scanX;
 	row = scanY * mapWidth + m_map;
-	while (scanY < (int) m_mapSize.m_height) {
-		if (scanX < (int) m_mapSize.m_width) {
+	while (scanY < m_mapSize.m_height) {
+		if (scanX < m_mapSize.m_width) {
 			do {
 				if (row[scanX] == p_findMark) {
 					break;
 				}
 				scanX = scanX + 1;
-			} while (scanX < (int) m_mapSize.m_width);
-			if (scanX < (int) m_mapSize.m_width) {
+			} while (scanX < m_mapSize.m_width);
+			if (scanX < m_mapSize.m_width) {
 				goto found;
 			}
 		}
-		row = row + (int) m_mapSize.m_width;
+		row = row + m_mapSize.m_width;
 		scanX = 0;
 		scanY = scanY + 1;
 	}
@@ -231,22 +231,22 @@ bool CChangeList::GetNextArea(unsigned char p_findMark, unsigned int p_itemMark,
 found:
 	startX = scanX;
 	widthPixels = 0;
-	while (scanX < (int) m_mapSize.m_width) {
+	while (scanX < m_mapSize.m_width) {
 		pixel = row + scanX;
 		if (*pixel != p_findMark) {
 			break;
 		}
-		widthPixels = widthPixels + (int) m_cellSize.m_width;
+		widthPixels = widthPixels + m_cellSize.m_width;
 		*pixel = p_replacementMark;
 		scanX = scanX + 1;
 	}
 
 	heightCells = 1;
-	widthCells = widthPixels / (int) m_cellSize.m_width;
-	row = row + (int) m_mapSize.m_width;
-	if (scanY + 1 < (int) m_mapSize.m_height) {
-		while (scanY + heightCells < (int) m_mapSize.m_height) {
-			mapWidth = (int) m_mapSize.m_width;
+	widthCells = widthPixels / m_cellSize.m_width;
+	row = row + m_mapSize.m_width;
+	if (scanY + 1 < m_mapSize.m_height) {
+		while (scanY + heightCells < m_mapSize.m_height) {
+			mapWidth = m_mapSize.m_width;
 			probeX = startX;
 			if (probeX < mapWidth) {
 				while (probeX < mapWidth && row[probeX] == p_findMark) {
@@ -266,7 +266,7 @@ found:
 					cell = cell + 1;
 				} while (probeX - startX < widthCells);
 			}
-			row = row + (int) m_mapSize.m_width;
+			row = row + m_mapSize.m_width;
 		}
 	}
 
@@ -283,7 +283,7 @@ found:
 	m_items[m_itemCount].m_drawMark = p_itemMark;
 	m_scanX = 0;
 	m_itemCount = m_itemCount + 1;
-	if ((int) m_mapSize.m_width > scanX) {
+	if (m_mapSize.m_width > scanX) {
 		m_scanX = scanX;
 	}
 	m_scanY = scanY;
