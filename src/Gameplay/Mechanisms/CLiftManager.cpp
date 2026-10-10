@@ -247,15 +247,15 @@ void CLiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 
 				initialActive = *data++;
 				activateType = (eLiftActivateType) *data++;
-				start.m_x = (short) *data++;
-				start.m_y = (short) *data++;
-				start.m_z = (short) *data++;
-				end.m_x = (short) *data++;
-				end.m_y = (short) *data++;
-				end.m_z = (short) *data++;
+				start.m_x = *data++;
+				start.m_y = *data++;
+				start.m_z = *data++;
+				end.m_x = *data++;
+				end.m_y = *data++;
+				end.m_z = *data++;
 				lowHeight = (short) *data++;
 				highHeight = (short) *data++;
-				direction = (short) *data++;
+				direction = *data++;
 				m_lifts[m_count].SetId(id);
 				m_lifts[m_count].Set(start, end, direction, lowHeight, highHeight, activateType, initialActive);
 			}
@@ -263,12 +263,12 @@ void CLiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 
 				initialActive = *data++;
 				activateType = (eLiftActivateType) *data++;
-				position.m_x = (short) *data++;
-				position.m_y = (short) *data++;
-				position.m_z = (short) *data++;
+				position.m_x = *data++;
+				position.m_y = *data++;
+				position.m_z = *data++;
 				lowHeight = (short) *data++;
 				highHeight = (short) *data++;
-				direction = (short) *data++;
+				direction = *data++;
 				m_lifts[m_count].SetId(id);
 				m_lifts[m_count].Set(position.m_x,
 									 position.m_y,

@@ -22332,7 +22332,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLiftManager.cpp.obj",
       "symbol": "?RemoveLift@CLiftManager@@QAEXPAVCLift@@@Z",
       "size": 1006,
-      "fingerprint": "efc9e8a15781f14cee14f4c17cde73bd91b6c4924f192c71412e905b30a1d588",
+      "fingerprint": "19e6f1986b3396b96f12b20e833caa89fedc16633c09ea55f2714bfc18ebfc8e",
       "references": [
         {
           "offset": 76,
@@ -22349,16 +22349,51 @@
           "source_symbol": "??4AICOORD@@QAEAAV0@ABV0@@Z"
         },
         {
-          "offset": 540,
+          "offset": 218,
           "original_instruction": 4348264,
           "original_bytes": "e83abffdff",
           "thunk": 4200615,
           "source_symbol": "??4C3DVector@@QAEAAV0@ABV0@@Z"
         },
         {
-          "offset": 588,
+          "offset": 298,
+          "original_instruction": 4348344,
+          "original_bytes": "e83edefdff",
+          "thunk": 4208635,
+          "source_symbol": "??4CVMovePos@@QAEAAV0@ABV0@@Z"
+        },
+        {
+          "offset": 376,
           "original_instruction": 4348422,
           "original_bytes": "e83bb6fdff",
+          "thunk": 4198470,
+          "source_symbol": "??4AICOORD@@QAEAAV0@ABV0@@Z"
+        },
+        {
+          "offset": 394,
+          "original_instruction": 4348440,
+          "original_bytes": "e829b6fdff",
+          "thunk": 4198470,
+          "source_symbol": "??4AICOORD@@QAEAAV0@ABV0@@Z"
+        },
+        {
+          "offset": 540,
+          "original_instruction": 4348586,
+          "original_bytes": "e8f8bdfdff",
+          "thunk": 4200615,
+          "source_symbol": "??4C3DVector@@QAEAAV0@ABV0@@Z"
+        },
+        {
+          "offset": 558,
+          "original_instruction": 4348604,
+          "original_bytes": "e8e6bdfdff",
+          "thunk": 4200615,
+          "source_symbol": "??4C3DVector@@QAEAAV0@ABV0@@Z"
+        },
+        {
+          "offset": 588,
+          "original_instruction": 4348634,
+          "original_bytes": "e867b5fdff",
           "thunk": 4198470,
           "source_symbol": "??4AICOORD@@QAEAAV0@ABV0@@Z"
         }
@@ -22576,7 +22611,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLiftManager.cpp.obj",
       "symbol": "??_ECLift@@UAEPAXI@Z",
       "size": 105,
-      "fingerprint": "f8786d40fe78d18c36d4f67e16311f76ccad7aa6a6cd23b692300c551eabcb92",
+      "fingerprint": "4914c95e9225352883bff15d8306d4f23dc6f4ad7c9425bcbc65818cae2ef0cf",
       "references": [
         {
           "offset": 46,
