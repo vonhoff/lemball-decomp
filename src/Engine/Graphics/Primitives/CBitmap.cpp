@@ -7,8 +7,8 @@
 // FUNCTION: LEMBALL 0x00447300
 void CBitmap::Draw(CGDI* p_gdi)
 {
-	register CResBITMAP* resource = m_resource;
-	register CBitmap* self = this;
+	CResBITMAP* resource = m_resource;
+	CBitmap* self = this;
 
 	if (resource->m_loaded != 0) {
 		resource->m_age = 0;
