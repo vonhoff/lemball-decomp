@@ -15,7 +15,7 @@ inline int VsAbs(int p_val)
 		p = &t[0];
 	}
 	else {
-		t[1] = -p_val;
+		t[1] = 0U - p_val;
 		p = &t[1];
 	}
 	return *p;
