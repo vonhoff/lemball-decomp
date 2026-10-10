@@ -239,7 +239,7 @@ void CDemo::CleanUp()
 		m_resource = NULL;
 	}
 	else if (m_buffer != NULL) {
-		operator delete(m_buffer);
+		delete[] m_buffer;
 	}
 	m_buffer = NULL;
 	m_readCursor = NULL;
