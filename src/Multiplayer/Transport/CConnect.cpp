@@ -26,9 +26,9 @@ CConnect::CConnect()
 	m_name = NULL;
 	m_previousConnect = NULL;
 	m_nextConnect = NULL;
-	m_isHost = 0;
-	m_killRequested = 0;
-	m_established = 0;
+	m_isHost = false;
+	m_killRequested = false;
+	m_established = false;
 	m_newPortRequestCount = 0;
 	m_connectTime = CurrentMilliTimer();
 }
@@ -88,7 +88,7 @@ void CConnect::FirstReceive()
 	tagMESSAGE message;
 
 	message.m_type = CONNECT_QUEUE_FIRST_RECEIVE;
-	m_established = 1;
+	m_established = true;
 	message.m_code = 0;
 	message.m_payload = this;
 	m_writeReady = 0;
@@ -144,7 +144,7 @@ void CConnect::Closed(int p_notifyPeer)
 {
 	tagMESSAGE message;
 
-	m_killRequested = 1;
+	m_killRequested = true;
 	CRWSocket::Closed(p_notifyPeer);
 	if (p_notifyPeer != 0) {
 		message.m_type = CONNECT_QUEUE_CLOSED;
@@ -180,7 +180,7 @@ void CConnect::Kill()
 			Closed(1);
 		}
 	}
-	m_killRequested = 1;
+	m_killRequested = true;
 }
 
 // FUNCTION: LEMBALL 0x00460ff0

@@ -59,15 +59,15 @@ public:
 	friend class CTCPIPConnect;
 
 private:
-	char* m_name;                 // 0x08
-	char* m_address;              // 0x0c
-	CConnect* m_nextConnect;      // 0x10
-	CConnect* m_previousConnect;  // 0x14
-	int m_newPortRequestCount;    // 0x18
-	unsigned int m_isHost;        // 0x1c
-	unsigned int m_killRequested; // 0x20
-	unsigned int m_established;   // 0x24
-	unsigned long m_connectTime;  // 0x28
+	char* m_name;                // 0x08
+	char* m_address;             // 0x0c
+	CConnect* m_nextConnect;     // 0x10
+	CConnect* m_previousConnect; // 0x14
+	int m_newPortRequestCount;   // 0x18
+	bool m_isHost;               // 0x1c
+	bool m_killRequested;        // 0x20
+	bool m_established;          // 0x24
+	unsigned long m_connectTime; // 0x28
 };
 
 extern CConnect* g_pActiveConnection;

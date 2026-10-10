@@ -77,7 +77,7 @@ void CFileConnect::Listen(CNetworkAddress* p_address)
 	SetDestAddr(p_address);
 	m_closePending = 1;
 	m_eventPending = 1;
-	m_isHost = 0;
+	m_isHost = false;
 	CWriteSocket::m_lastSendTime = CurrentMilliTimer() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 	ConnectSetup();
@@ -88,7 +88,7 @@ void CFileConnect::Connect()
 {
 	InitSocket();
 	m_eventPending = 1;
-	m_isHost = 1;
+	m_isHost = true;
 	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 	ConnectSetup();
 }
