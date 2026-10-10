@@ -101,7 +101,7 @@ void CInvisibleSwitch::Set(const tCoord3d& p_cornerA, const tCoord3d& p_cornerB)
 					if (g_pMap->m_ground.m_height <= blockY) {
 						continue;
 					}
-					CGround* ground = g_pMap->m_ground.m_ground + width * blockY + blockX;
+					CGround* ground = g_pMap->m_ground.m_ground + (int) ((unsigned int) width * blockY + blockX);
 					((unsigned char*) &ground->m_collision)[1] |= GROUND_COLLISION_OBJECT_INTERACTION >> 8;
 				}
 			}
