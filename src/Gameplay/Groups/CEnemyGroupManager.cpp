@@ -129,9 +129,9 @@ void CEnemyGroupManager::LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dat
 	int headerCount = *wordData;
 	int count;
 	unsigned char* data = (unsigned char*) p_data + ENEMY_LEVEL_HEADER_BYTES;
-	unsigned int x;
-	unsigned int y;
-	unsigned int facing;
+	int x;
+	int y;
+	int facing;
 	eEnemyStateActions action1;
 	eEnemyStateActions action0;
 	eEnemyStateRules rule0;
