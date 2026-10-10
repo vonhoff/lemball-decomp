@@ -24664,8 +24664,8 @@
       "caller": 4377968,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Process@CIce@@UAEHXZ",
-      "size": 1545,
-      "fingerprint": "541538201699d1213d2ca3997e95b605d2078ce1b3c3189111f3d740f85b8224",
+      "size": 1541,
+      "fingerprint": "ab02a45718363912934ee637996871d52d10eda1306c140309712ce59c8a8402",
       "references": [
         {
           "offset": 54,
@@ -24689,35 +24689,35 @@
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1017,
+          "offset": 1015,
           "original_instruction": 4378983,
           "original_bytes": "e83958fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1240,
+          "offset": 1236,
           "original_instruction": 4379204,
           "original_bytes": "e85c57fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1281,
+          "offset": 1277,
           "original_instruction": 4379245,
           "original_bytes": "e8ab61fdff",
           "thunk": 4207645,
           "source_symbol": "?StepOn@CAI@@QAEXABVAICOORD@@PAVCGameObject@@G@Z"
         },
         {
-          "offset": 1461,
+          "offset": 1457,
           "original_instruction": 4379429,
           "original_bytes": "e87b56fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1502,
+          "offset": 1498,
           "original_instruction": 4379470,
           "original_bytes": "e8ca60fdff",
           "thunk": 4207645,
@@ -24785,7 +24785,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Switched@CIce@@QAEXXZ",
       "size": 556,
-      "fingerprint": "9cec4073e0977614596b0ea30d5ef5c2c018041a330aa95fa2c6ba8fd9b24690",
+      "fingerprint": "b849ab7876312f4ef56715be740ff5583aaf2f8dd6b400ff03b09a20f0bd0b85",
       "references": [
         {
           "offset": 261,

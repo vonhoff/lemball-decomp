@@ -208,7 +208,7 @@ bool CIce::Process()
 			else {
 				x &= GROUND_BLOCK_PIXEL_MASK;
 				y &= GROUND_BLOCK_PIXEL_MASK;
-				terrainZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
+				terrainZ = map->m_ground.m_ground[(int) ((unsigned int) by * width + bx)].GetZ(x, y);
 			}
 		}
 		int groundZ = terrainZ;
@@ -273,7 +273,7 @@ bool CIce::Process()
 					else {
 						x &= GROUND_BLOCK_PIXEL_MASK;
 						y &= GROUND_BLOCK_PIXEL_MASK;
-						groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
+						groundZ = map->m_ground.m_ground[(int) ((unsigned int) by * width + bx)].GetZ(x, y);
 					}
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
@@ -302,7 +302,7 @@ bool CIce::Process()
 				else {
 					x &= GROUND_BLOCK_PIXEL_MASK;
 					y &= GROUND_BLOCK_PIXEL_MASK;
-					groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
+					groundZ = map->m_ground.m_ground[(int) ((unsigned int) by * width + bx)].GetZ(x, y);
 				}
 			}
 			if ((current.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
@@ -327,7 +327,7 @@ bool CIce::Process()
 			else {
 				x &= GROUND_BLOCK_PIXEL_MASK;
 				y &= GROUND_BLOCK_PIXEL_MASK;
-				groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
+				groundZ = map->m_ground.m_ground[(int) ((unsigned int) by * width + bx)].GetZ(x, y);
 			}
 		}
 		if ((position.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
@@ -440,7 +440,7 @@ void CIce::Switched()
 					else {
 						x &= 15;
 						y &= 15;
-						groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
+						groundZ = map->m_ground.m_ground[(int) ((unsigned int) by * width + bx)].GetZ(x, y);
 					}
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
@@ -469,7 +469,7 @@ void CIce::Switched()
 				else {
 					x &= 15;
 					y &= 15;
-					groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
+					groundZ = map->m_ground.m_ground[(int) ((unsigned int) by * width + bx)].GetZ(x, y);
 				}
 			}
 			if ((current.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
