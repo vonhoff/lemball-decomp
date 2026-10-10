@@ -18,8 +18,8 @@ unsigned int g_anFacingDirectionYFlip[FACING_DIRECTION_COUNT] = {4, 3, 2, 3, 4, 
 // FUNCTION: LEMBALL 0x00413e80
 unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY)
 {
-	int nDeltaX = (p_toX - p_fromX) << FIXED_POINT_FRACTION_BITS;
-	int nDeltaY = (p_toY - p_fromY) << FIXED_POINT_FRACTION_BITS;
+	int nDeltaX = ((unsigned int) p_toX - p_fromX) << FIXED_POINT_FRACTION_BITS;
+	int nDeltaY = ((unsigned int) p_toY - p_fromY) << FIXED_POINT_FRACTION_BITS;
 
 	int nAbsX = VsAbs(nDeltaX);
 	int nFraction;
@@ -33,7 +33,7 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 	if (nHigh * 0x6a0 + nFraction > nAbsX) {
 		nDirection = 0;
 	}
-	else if ((nHigh * 0x350 + nAbsY) * 2 + nFraction > nAbsX) {
+	else if ((int) (((unsigned int) nHigh * 0x350 + nAbsY) * 2 + nFraction) > nAbsX) {
 		nDirection = 1;
 	}
 	else {
@@ -52,11 +52,11 @@ unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_to
 // FUNCTION: LEMBALL 0x00413f80
 unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
 {
-	int dx = abs(p_x1 - p_x2);
-	int dy = abs(p_y1 - p_y2);
-	dx = dx * dx;
-	dy = dy * dy;
-	return ((CVSMath*) g_pRandomSeed)->SqRoot(dy + dx);
+	int dx = abs((int) ((unsigned int) p_x1 - p_x2));
+	int dy = abs((int) ((unsigned int) p_y1 - p_y2));
+	dx = (unsigned int) dx * dx;
+	dy = (unsigned int) dy * dy;
+	return ((CVSMath*) g_pRandomSeed)->SqRoot((unsigned int) dy + dx);
 }
 
 // FUNCTION: LEMBALL 0x004140d0
@@ -73,7 +73,7 @@ bool CloseTo(AICOORD p_first, AICOORD p_second)
 		dz = -dz;
 	}
 	if (dz <= CLOSE_TO_MAX_VERTICAL_DISTANCE) {
-		if (dy * dy + dx * dx < CLOSE_TO_HORIZONTAL_DISTANCE_SQUARED_LIMIT) {
+		if ((int) ((unsigned int) dy * dy + (unsigned int) dx * dx) < CLOSE_TO_HORIZONTAL_DISTANCE_SQUARED_LIMIT) {
 			return true;
 		}
 	}
