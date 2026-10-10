@@ -124,7 +124,7 @@ bool CDuplicator::Process()
 			AICOORD pos;
 			pos.m_xFixed = m_position.m_xFixed;
 			int z = m_position.m_zFixed;
-			pos.m_yFixed = m_position.m_yFixed + DUPLICATOR_DUPLICATE_SPAWN_Y_OFFSET_FIXED;
+			pos.m_yFixed = (unsigned int) m_position.m_yFixed + DUPLICATOR_DUPLICATE_SPAWN_Y_OFFSET_FIXED;
 			pos.m_zFixed = z;
 			dead->Resurrect(pos);
 			CPlayerLemmingGroup* group = ((CPlayerLemming*) m_duplicatedObject)->GetGroup();
@@ -140,7 +140,7 @@ AICOORD CDuplicator::ActivatePosition()
 {
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	y += DUPLICATOR_ACTIVATION_POSITION_Y_OFFSET_FIXED;
+	y = (unsigned int) y + DUPLICATOR_ACTIVATION_POSITION_Y_OFFSET_FIXED;
 	int x = m_position.m_xFixed;
 	return AICOORD(x, y, z);
 }
@@ -166,7 +166,7 @@ void CDuplicator::DoActivate()
 	unsigned long timestamp = g_dwSimulationTimestamp;
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	y += DUPLICATOR_STAGING_POSITION_Y_OFFSET_FIXED;
+	y = (unsigned int) y + DUPLICATOR_STAGING_POSITION_Y_OFFSET_FIXED;
 	m_stateTimer = timestamp;
 	CGameObject* activator = m_activator;
 	m_actionDeadline += g_dwGameTick;
