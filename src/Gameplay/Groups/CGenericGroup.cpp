@@ -248,10 +248,10 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 			if (object != NULL) {
 				x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 				y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-				int right = radius + x;
-				x -= radius;
-				int bottom = y + radius;
-				y -= radius;
+				int right = (int) ((unsigned int) radius + x);
+				x = (int) ((unsigned int) x - radius);
+				int bottom = (int) ((unsigned int) y + radius);
+				y = (int) ((unsigned int) y - radius);
 				if (x < minX) {
 					minX = x;
 				}
@@ -269,8 +269,8 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 			count--;
 		} while (count != 0);
 	}
-	maxX -= minX;
-	maxY -= minY;
+	maxX = (int) ((unsigned int) maxX - minX);
+	maxY = (int) ((unsigned int) maxY - minY);
 	m_bounds.m_x = (short) minX;
 	m_bounds.m_y = (short) minY;
 	m_bounds.m_width = (short) maxX;
@@ -316,8 +316,8 @@ void CGenericGroup::SendNewWaypoint(AICOORD p_coordinate)
 		int index = 0;
 		while (index < count) {
 			CVector* vector = g_pGroupFormationManager->GetAVector(index);
-			destination.m_xFixed = vector->m_xFixed + p_coordinate.m_xFixed;
-			destination.m_yFixed = vector->m_yFixed + p_coordinate.m_yFixed;
+			destination.m_xFixed = (int) ((unsigned int) vector->m_xFixed + p_coordinate.m_xFixed);
+			destination.m_yFixed = (int) ((unsigned int) vector->m_yFixed + p_coordinate.m_yFixed);
 			destination.m_zFixed = height;
 			object->AddDestination(destination);
 			object = GetNextElementInGroup();
@@ -383,8 +383,8 @@ void CGenericGroup::ReformAlteredGroup(CFormationManager* p_formationManager)
 			int count = GetElementsInGroup();
 			for (int i = 0; i < count; i++) {
 				CVector* vector = p_formationManager->GetAVector(i);
-				coordinate.m_xFixed = vector->m_xFixed + destination.m_xFixed;
-				coordinate.m_yFixed = vector->m_yFixed + destination.m_yFixed;
+				coordinate.m_xFixed = (int) ((unsigned int) vector->m_xFixed + destination.m_xFixed);
+				coordinate.m_yFixed = (int) ((unsigned int) vector->m_yFixed + destination.m_yFixed);
 				coordinate.m_zFixed = destination.m_zFixed;
 				object->AlterDestination(coordinate);
 				object = GetNextElementInGroup();
@@ -409,7 +409,8 @@ bool CGenericGroup::CheckGroupIntersection(CVSRect* p_rect, AICOORD* p_coordinat
 		while (object != NULL) {
 			int x = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 			int y = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-			if (x - 24 < rectRight && rectX < x + 24 && y - 24 < rectBottom && rectY < y + 24) {
+			if (x - GROUP_BOUNDING_BOX_RADIUS_PIXELS < rectRight && rectX < x + GROUP_BOUNDING_BOX_RADIUS_PIXELS &&
+				y - GROUP_BOUNDING_BOX_RADIUS_PIXELS < rectBottom && rectY < y + GROUP_BOUNDING_BOX_RADIUS_PIXELS) {
 				*p_coordinate = object->m_position;
 				return true;
 			}
