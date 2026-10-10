@@ -176,6 +176,6 @@ void CTextButton::OnPaint(const CVSRect& p_rect)
 		CChangeList* changeList = m_gdi->m_renderTarget->GetChangeList();
 		m_gdi->AddToList(m_primitive);
 		changeList->Reset();
-		m_drawCompleted = 1;
+		m_drawCompleted = true;
 	}
 }

@@ -64,18 +64,18 @@ public:
 	friend class CTrackerButton;
 
 private:
-	CPVGWnd* m_ownerWindow;          // 0xc8
-	unsigned int m_controlMessage;   // 0xcc
-	unsigned int m_pressed;          // 0xd0
-	unsigned int m_lastDrawnPressed; // 0xd4
-	unsigned int m_forceDrawCount;   // 0xd8
-	CVSPoint m_buttonPosition;       // 0xdc
-	CPrimitive* m_primitive;         // 0xe0
-	CClipRect m_clipRect[1];         // 0xe4
-	CBaseQueue* m_messageQueue;      // 0xf4
-	unsigned int m_autoDraw;         // 0xf8
-	unsigned int m_drawCompleted;    // 0xfc
-	CVSPoint m_clickPosition;        // 0x100
+	CPVGWnd* m_ownerWindow;        // 0xc8
+	unsigned int m_controlMessage; // 0xcc
+	bool m_pressed;                // 0xd0
+	bool m_lastDrawnPressed;       // 0xd4
+	unsigned int m_forceDrawCount; // 0xd8
+	CVSPoint m_buttonPosition;     // 0xdc
+	CPrimitive* m_primitive;       // 0xe0
+	CClipRect m_clipRect[1];       // 0xe4
+	CBaseQueue* m_messageQueue;    // 0xf4
+	bool m_autoDraw;               // 0xf8
+	bool m_drawCompleted;          // 0xfc
+	CVSPoint m_clickPosition;      // 0x100
 };
 
 // SYNTHETIC: LEMBALL 0x00469880

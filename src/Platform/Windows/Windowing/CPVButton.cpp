@@ -87,11 +87,11 @@ CPVButton::CPVButton(CPVGWnd* p_ownerWindow)
 void CPVButton::Initialise()
 {
 	m_forceDrawCount = 1;
-	m_autoDraw = 1;
+	m_autoDraw = true;
 	m_reserved = 1;
-	m_pressed = 0;
-	m_lastDrawnPressed = 0;
-	m_drawCompleted = 0;
+	m_pressed = false;
+	m_lastDrawnPressed = false;
+	m_drawCompleted = false;
 	m_primitive = new CDrawingMark();
 	m_gdiFlags = 2;
 	m_messageQueue = NULL;
@@ -147,12 +147,12 @@ void CPVButton::_DrawButton()
 // FUNCTION: LEMBALL 0x00467f30
 void CPVButton::Draw(unsigned int p_force)
 {
-	unsigned int autoDraw;
+	bool autoDraw;
 	CVSRect paintRect;
 
 	if (m_drawCompleted == 0 || p_force != 0) {
 		autoDraw = m_autoDraw;
-		m_autoDraw = 1;
+		m_autoDraw = true;
 		paintRect.m_width = m_rect.m_width;
 		paintRect.m_height = m_rect.m_height;
 		paintRect.m_x = 0;
@@ -160,14 +160,14 @@ void CPVButton::Draw(unsigned int p_force)
 		OnPaint(paintRect);
 		m_autoDraw = autoDraw;
 	}
-	m_drawCompleted = 0;
+	m_drawCompleted = false;
 }
 
 // FUNCTION: LEMBALL 0x00467fa0
 void CPVButton::OnEnter()
 {
 	if (m_buttonState[MOUSE_BUTTON_INDEX_LEFT] != 0 || m_buttonState[MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK] != 0) {
-		m_pressed = 1;
+		m_pressed = true;
 	}
 	_OnEnterButton();
 	OnEnterButton();
@@ -176,7 +176,7 @@ void CPVButton::OnEnter()
 // FUNCTION: LEMBALL 0x00467fd0
 void CPVButton::OnExit()
 {
-	m_pressed = 0;
+	m_pressed = false;
 	_OnExitButton();
 	OnExitButton();
 }
@@ -206,7 +206,7 @@ void CPVButton::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 	CVSPoint clickPos;
 
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK) {
-		m_pressed = 1;
+		m_pressed = true;
 	}
 	converted = ConvertDoubleClick(p_flags);
 	clickPos.m_y = p_point.m_y - m_relativeTopLeft.m_y;
@@ -229,7 +229,7 @@ void CPVButton::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 		clickPos.m_x = p_point.m_x - m_relativeTopLeft.m_x;
 		m_clickPosition.m_x = clickPos.m_x;
 		m_clickPosition.m_y = clickPos.m_y;
-		m_pressed = 0;
+		m_pressed = false;
 		_OnReleased(converted);
 		OnReleased(converted);
 	}
