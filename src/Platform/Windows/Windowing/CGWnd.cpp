@@ -78,7 +78,7 @@ void CGWnd::_OnCreate()
 	CVSRect localRect(m_rect);
 	localRect.m_x = m_relativeTopLeft.m_x;
 	localRect.m_y = m_relativeTopLeft.m_y;
-	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
+	if (m_innerRect.m_width * m_innerRect.m_height != 0) {
 		localRect.m_width = m_innerRect.m_width;
 		localRect.m_height = m_innerRect.m_height;
 		CVSPoint* innerOrigin = &m_innerRect;
@@ -88,8 +88,8 @@ void CGWnd::_OnCreate()
 		localRect.m_y += m_relativeTopLeft.m_y;
 	}
 	if (m_parent == NULL) {
-		localRect.m_width = (short) ((int) localRect.m_width / (int) m_zoom);
-		localRect.m_height = (short) ((int) localRect.m_height / (int) m_zoom);
+		localRect.m_width = localRect.m_width / m_zoom;
+		localRect.m_height = localRect.m_height / m_zoom;
 	}
 
 	CGDI** gdi = &m_gdi;
@@ -97,15 +97,15 @@ void CGWnd::_OnCreate()
 
 	target = (*gdi)->m_renderTarget;
 	if (m_parent == NULL) {
-		target->m_zoom = (short) m_zoom;
+		target->m_zoom = m_zoom;
 	}
 	CVSPoint* innerOrigin = &m_innerRect;
 	originX = innerOrigin->m_x;
 	originY = innerOrigin->m_y;
 	if (m_parent != NULL) {
 		CVSPoint* parentOrigin = &m_parent->m_relativeTopLeft;
-		originX = (short) (originX - parentOrigin->m_x);
-		originY = (short) (originY - parentOrigin->m_y);
+		originX = originX - parentOrigin->m_x;
+		originY = originY - parentOrigin->m_y;
 	}
 	CPVSurface& surface = *target;
 	surface.m_relOriginX = originX;
@@ -115,8 +115,8 @@ void CGWnd::_OnCreate()
 		style = GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE);
 		if ((style & WS_CHILD) != 0) {
 			CVSPoint* createOrigin = &m_createRect->m_relativeTopLeft;
-			localRect.m_x = (short) (localRect.m_x - createOrigin->m_x);
-			localRect.m_y = (short) (localRect.m_y - createOrigin->m_y);
+			localRect.m_x = localRect.m_x - createOrigin->m_x;
+			localRect.m_y = localRect.m_y - createOrigin->m_y;
 			CSurface* presentTarget = (*gdi)->m_renderTarget;
 			presentTarget->m_presentX = localRect.m_x;
 			presentTarget->m_presentY = localRect.m_y;
@@ -166,14 +166,14 @@ void CGWnd::_OnSize()
 		return;
 	}
 	CVSSize size(m_rect);
-	if ((int) m_innerRect.m_width * (int) m_innerRect.m_height != 0) {
+	if (m_innerRect.m_width * m_innerRect.m_height != 0) {
 		size.m_width = m_innerRect.m_width;
 		size.m_height = m_innerRect.m_height;
 	}
 	target = m_gdi->m_renderTarget;
 	if (m_parent == NULL) {
-		size.m_width = (short) ((int) size.m_width / (int) m_zoom);
-		size.m_height = (short) ((int) size.m_height / (int) m_zoom);
+		size.m_width = size.m_width / m_zoom;
+		size.m_height = size.m_height / m_zoom;
 	}
 	target->Resize(size);
 	innerOrigin = &m_innerRect;
@@ -181,8 +181,8 @@ void CGWnd::_OnSize()
 	relY = innerOrigin->m_y;
 	if (m_parent != NULL) {
 		parentOrigin = &m_parent->m_relativeTopLeft;
-		relX = (short) (relX - parentOrigin->m_x);
-		relY = (short) (relY - parentOrigin->m_y);
+		relX = relX - parentOrigin->m_x;
+		relY = relY - parentOrigin->m_y;
 	}
 	CPVSurface& surface = *target;
 	surface.m_relOriginX = relX;
@@ -220,24 +220,24 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 			HDC(WINAPI * beginPaint)(HWND, LPPAINTSTRUCT) = BeginPaint;
 			beginPaint((HWND) m_nativeWindow, &paint);
 			paintX = (short) paint.rcPaint.left;
-			paintWidth = (short) ((short) paint.rcPaint.right - (unsigned short) paint.rcPaint.left);
+			paintWidth = (short) paint.rcPaint.right - (unsigned short) paint.rcPaint.left;
 			paintY = (short) paint.rcPaint.top;
-			paintHeight = (short) ((short) paint.rcPaint.bottom - (unsigned short) paint.rcPaint.top);
-			if ((int) paintHeight * (int) paintWidth != 0) {
+			paintHeight = (short) paint.rcPaint.bottom - (unsigned short) paint.rcPaint.top;
+			if (paintHeight * paintWidth != 0) {
 				if (paintX < m_refreshX) {
-					m_refreshWidth = (unsigned short) (m_refreshWidth + (m_refreshX - (unsigned short) paintX));
-					m_refreshX = (unsigned short) paintX;
+					m_refreshWidth = m_refreshWidth + (m_refreshX - (unsigned short) paintX);
+					m_refreshX = paintX;
 				}
 				if ((short) (m_refreshWidth + m_refreshX) < (short) ((unsigned short) paintX + paintWidth)) {
-					paintWidth = (short) (paintWidth - m_refreshX);
-					m_refreshWidth = (unsigned short) (paintWidth + (unsigned short) paintX);
+					paintWidth = paintWidth - m_refreshX;
+					m_refreshWidth = paintWidth + (unsigned short) paintX;
 				}
 				if (paintY < m_refreshY) {
-					m_refreshHeight = (unsigned short) (m_refreshHeight + (m_refreshY - (unsigned short) paintY));
-					m_refreshY = (unsigned short) paintY;
+					m_refreshHeight = m_refreshHeight + (m_refreshY - (unsigned short) paintY);
+					m_refreshY = paintY;
 				}
 				if ((short) (m_refreshHeight + m_refreshY) < (short) ((unsigned short) paintY + paintHeight)) {
-					m_refreshHeight = (unsigned short) ((paintHeight - m_refreshY) + (unsigned short) paintY);
+					m_refreshHeight = (paintHeight - m_refreshY) + (unsigned short) paintY;
 				}
 			}
 			EndPaint((HWND) m_nativeWindow, &paint);
@@ -252,20 +252,20 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 	case WM_PALETTECHANGED:
 		paintWidth = m_rect.m_width;
 		paintHeight = m_rect.m_height;
-		if ((int) paintHeight * (int) paintWidth != 0) {
+		if (paintHeight * paintWidth != 0) {
 			if (0 < m_refreshX) {
-				m_refreshWidth = (unsigned short) (m_refreshWidth + m_refreshX);
+				m_refreshWidth = m_refreshWidth + m_refreshX;
 				m_refreshX = 0;
 			}
 			if ((short) (m_refreshWidth + m_refreshX) < m_rect.m_width) {
-				m_refreshWidth = (unsigned short) (m_rect.m_width - m_refreshX);
+				m_refreshWidth = m_rect.m_width - m_refreshX;
 			}
 			if (0 < m_refreshY) {
-				m_refreshHeight = (unsigned short) (m_refreshHeight + m_refreshY);
+				m_refreshHeight = m_refreshHeight + m_refreshY;
 				m_refreshY = 0;
 			}
 			if ((short) (m_refreshHeight + m_refreshY) < m_rect.m_height) {
-				m_refreshHeight = (unsigned short) (m_rect.m_height - m_refreshY);
+				m_refreshHeight = m_rect.m_height - m_refreshY;
 			}
 		}
 		break;
@@ -347,23 +347,23 @@ void CGWnd::Refresh(CVSRect* p_rect)
 		innerWidth = m_innerRect.m_width;
 		innerHeight = m_innerRect.m_height;
 		if (innerWidth * innerHeight != 0) {
-			innerX = (unsigned short) m_innerRect.m_x;
+			innerX = m_innerRect.m_x;
 			if (damage.m_x < (short) innerX) {
 				damage.m_width += (short) (damage.m_x - innerX);
-				damage.m_x = (short) innerX;
+				damage.m_x = innerX;
 			}
-			innerX = (short) (innerX + innerWidth);
+			innerX = innerX + innerWidth;
 			if ((short) (damage.m_x + damage.m_width) > (short) innerX) {
-				damage.m_width = (short) (innerX - damage.m_x);
+				damage.m_width = innerX - damage.m_x;
 			}
 			width = m_innerRect.m_y;
 			if (damage.m_y < width) {
 				damage.m_height += (short) (damage.m_y - width);
 				damage.m_y = width;
 			}
-			width = (short) (width + innerHeight);
+			width = width + innerHeight;
 			if ((short) (damage.m_y + damage.m_height) > width) {
-				damage.m_height = (short) (width - damage.m_y);
+				damage.m_height = width - damage.m_y;
 			}
 			if (damage.m_width <= 0 || damage.m_height <= 0) {
 				damage.m_height = 0;
