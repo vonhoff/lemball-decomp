@@ -67,20 +67,20 @@ public:
 	friend class CLiftManager;
 
 private:
-	unsigned short m_liftId;          // 0x138
-	tCoord3d m_start;                 // 0x13a
-	tCoord3d m_end;                   // 0x140
-	int m_lowHeight;                  // 0x148
-	int m_highHeight;                 // 0x14c
-	int m_movementStartHeight;        // 0x150
-	short m_direction;                // 0x154
-	unsigned int m_unk0x158;          // 0x158
-	eLiftActivateType m_activateType; // 0x15c
-	CGround* m_mapCell;               // 0x160
-	unsigned int m_active;            // 0x164
-	unsigned int m_defaultActive;     // 0x168
-	unsigned int m_activationLatched; // 0x16c
-	CGameObject* m_objects[8];        // 0x170
+	unsigned short m_liftId;                       // 0x138
+	tCoord3d m_start;                              // 0x13a
+	tCoord3d m_end;                                // 0x140
+	int m_lowHeight;                               // 0x148
+	int m_highHeight;                              // 0x14c
+	int m_movementStartHeight;                     // 0x150
+	short m_direction;                             // 0x154
+	unsigned int m_unk0x158;                       // 0x158
+	eLiftActivateType m_activateType;              // 0x15c
+	CGround* m_mapCell;                            // 0x160
+	unsigned int m_active;                         // 0x164
+	unsigned int m_defaultActive;                  // 0x168
+	eLiftActivationLatchState m_activationLatched; // 0x16c
+	CGameObject* m_objects[8];                     // 0x170
 };
 
 // SYNTHETIC: LEMBALL 0x00426710
