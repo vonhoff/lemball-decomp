@@ -85,9 +85,9 @@ CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, c
 		break;
 	}
 	g_pGameStatus->m_lastLevels[4] = 0;
-	m_drawBackground = 1;
-	m_drawFrame = 1;
-	m_drawSolid = 1;
+	m_drawBackground = true;
+	m_drawFrame = true;
+	m_drawSolid = true;
 	Setup();
 }
 
@@ -251,12 +251,12 @@ bool CMainOptions1Drawer::ProcessMessages(tagMESSAGE* p_message)
 		switch ((unsigned int) p_message->m_code) {
 		case MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS:
 			m_returnState = FLOW_MAIN_OPTIONS_2;
-			m_quitYet = 1;
+			m_quitYet = true;
 			g_nFrontendAutoFlowToggle = 1;
 			return true;
 		case MAIN_OPTIONS1_BUTTON_MESSAGE_PASSWORD:
 			m_returnState = FLOW_PASSWORD;
-			m_quitYet = 1;
+			m_quitYet = true;
 			g_nFrontendAutoFlowToggle = 1;
 			return true;
 		case MAIN_OPTIONS1_BUTTON_MESSAGE_RESOLUTION:
@@ -268,7 +268,7 @@ bool CMainOptions1Drawer::ProcessMessages(tagMESSAGE* p_message)
 			status = g_pGameStatus;
 			status->m_level = status->m_lastLevels[mode];
 			status->m_skill = mode;
-			m_quitYet = 1;
+			m_quitYet = true;
 			g_nFrontendAutoFlowToggle = 1;
 			if (p_message->m_code == MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW) {
 				m_returnState = FLOW_PREVIEW;
@@ -296,7 +296,7 @@ void CMainOptions1Drawer::Processing()
 		CGameStatus* status = g_pGameStatus;
 		status->m_level = status->m_lastLevels[0];
 		status->m_skill = SKILL_FUN;
-		m_quitYet = 1;
+		m_quitYet = true;
 		m_returnState = FLOW_PREVIEW;
 	}
 	now = CurrentMilliTimer();
@@ -307,7 +307,7 @@ void CMainOptions1Drawer::Processing()
 	if (now <= m_idleDeadline) {
 		return;
 	}
-	m_quitYet = 1;
+	m_quitYet = true;
 	if (g_nFrontendAutoFlowToggle == 0 && g_nAnimationsDisabled == 0) {
 		m_returnState = FLOW_INTRO_ANIM;
 		g_nFrontendAutoFlowToggle = 1;

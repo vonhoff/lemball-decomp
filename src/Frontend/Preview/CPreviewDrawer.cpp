@@ -118,9 +118,9 @@ extern int g_previewRemapTargetIndices[10];
 CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)
 {
-	m_drawBackground = 1;
-	m_drawFrame = 1;
-	m_drawSolid = 1;
+	m_drawBackground = true;
+	m_drawFrame = true;
+	m_drawSolid = true;
 	Setup();
 	m_lemmingAnim = new CRepeatAnim(CAnimsManager::GetnAnims(m_lemmingAnimId), 1);
 	m_lemmingAnim->StartAnim(PREVIEW_ANIMATION_CYCLE_DURATION_MS);
@@ -472,7 +472,7 @@ bool CPreviewDrawer::ProcessMessages(tagMESSAGE* p_message)
 			Action(USER_ACTION_PREVIEW_GO_REQUEST, USER_ACTION_STAGE_REQUEST);
 			return true;
 		}
-		m_quitYet = 1;
+		m_quitYet = true;
 		m_returnState = FLOW_MAIN_OPTIONS_1;
 		return true;
 	case PREVIEW_BUTTON_MESSAGE_RETURN:
@@ -480,12 +480,12 @@ bool CPreviewDrawer::ProcessMessages(tagMESSAGE* p_message)
 			Action(USER_ACTION_PREVIEW_RETURN_REQUEST, USER_ACTION_STAGE_REQUEST);
 			return true;
 		}
-		m_quitYet = 1;
+		m_quitYet = true;
 		m_returnState = FLOW_GAMEPLAY;
 		return true;
 	case PREVIEW_BUTTON_MESSAGE_NEXT_LEVEL:
 		if (m_nextDisabled == 1) {
-			m_ready = 1;
+			m_ready = true;
 			return true;
 		}
 		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
@@ -496,7 +496,7 @@ bool CPreviewDrawer::ProcessMessages(tagMESSAGE* p_message)
 		return true;
 	case PREVIEW_BUTTON_MESSAGE_PREVIOUS_LEVEL:
 		if (m_previousDisabled == 1) {
-			m_ready = 1;
+			m_ready = true;
 			return true;
 		}
 		if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
@@ -525,14 +525,14 @@ void CPreviewDrawer::PreviousLevel()
 // FUNCTION: LEMBALL 0x00449ea0
 void CPreviewDrawer::Go()
 {
-	m_quitYet = 1;
+	m_quitYet = true;
 	m_returnState = FLOW_GAMEPLAY;
 }
 
 // FUNCTION: LEMBALL 0x00449ec0
 void CPreviewDrawer::Return()
 {
-	m_quitYet = 1;
+	m_quitYet = true;
 	m_returnState = FLOW_MAIN_OPTIONS_1;
 }
 
@@ -561,7 +561,7 @@ bool CPreviewDrawer::ConfirmedAction(eUserActions p_action)
 void CPreviewDrawer::Processing()
 {
 	if (g_nTestAllLevels) {
-		m_quitYet = 1;
+		m_quitYet = true;
 		m_returnState = FLOW_GAMEPLAY;
 	}
 }
@@ -587,7 +587,7 @@ void CPreviewDrawer::LoadLevelInformation()
 	endOfSource = 0;
 	sourcePos = 0;
 	m_backBufferNeeded = true;
-	m_ready = 1;
+	m_ready = true;
 
 	CLevelLoader::RetrievePreviewData((eSkill) g_pGameStatus->m_skill,
 									  g_pGameStatus->m_lastLevels[g_pGameStatus->m_skill],

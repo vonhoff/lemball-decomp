@@ -291,9 +291,9 @@ CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_
 		((CGWnd*) m_display)->m_hotAreaList->AddToList(&m_playerEntries[playerEntryIndex]);
 		playerEntryIndex = playerEntryIndex + 1;
 	} while (playerEntryIndex < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
-	m_drawBackground = 1;
-	m_drawFrame = 1;
-	m_drawSolid = 0;
+	m_drawBackground = true;
+	m_drawFrame = true;
+	m_drawSolid = false;
 	Setup();
 }
 
@@ -830,7 +830,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(tagMESSAGE* p_message)
 			break;
 		case NETWORK_OPTIONS_BUTTON_MESSAGE_RETURN:
 			Stop();
-			m_quitYet = 1;
+			m_quitYet = true;
 			m_returnState = FLOW_MAIN_OPTIONS_1;
 			return true;
 		}
@@ -1354,7 +1354,7 @@ bool CNetworkOptionsDrawer::AcceptingLock()
 			Lock();
 			g_pActiveConnection = connections[m_acceptedPlayer];
 			skill = 4;
-			m_quitYet = 1;
+			m_quitYet = true;
 			m_returnState = skill;
 			status = g_pGameStatus;
 			status->m_level = status->m_lastLevels[4];

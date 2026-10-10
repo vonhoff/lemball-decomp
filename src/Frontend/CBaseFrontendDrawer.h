@@ -81,15 +81,15 @@ protected:
 	CMain2DDisplay* m_display;             // 0x84
 	CGDI* m_gdi;                           // 0x88
 	unsigned int m_networkMode;            // 0x8c
-	unsigned int m_actionPending;          // 0x90
-	unsigned int m_startupPending;         // 0x94
+	bool m_actionPending;                  // 0x90
+	bool m_startupPending;                 // 0x94
 	CTextManager* m_textManager;           // 0x98
-	unsigned int m_loaded;                 // 0x9c
+	bool m_loaded;                         // 0x9c
 	int m_textPrimitiveCapacity;           // 0xa0
 	int m_maxStringLen;                    // 0xa4
-	unsigned int m_drawBackground;         // 0xa8
-	unsigned int m_drawFrame;              // 0xac
-	unsigned int m_drawSolid;              // 0xb0
+	bool m_drawBackground;                 // 0xa8
+	bool m_drawFrame;                      // 0xac
+	bool m_drawSolid;                      // 0xb0
 	unsigned int m_desiredPalette;         // 0xb4
 	unsigned int m_activePalette;          // 0xb8
 	unsigned int m_createdAt;              // 0xbc
@@ -98,7 +98,7 @@ protected:
 	tagPRIMS m_primitiveBundle[1];         // 0xc8
 	int m_primitiveBank;                   // 0x328
 	int m_mode;                            // 0x32c
-	unsigned int m_ready;                  // 0x330
+	bool m_ready;                          // 0x330
 	CGunController* m_gunController;       // 0x334
 	CHiliteController* m_hiliteController; // 0x338
 	unsigned int m_ambientDelay;           // 0x33c
@@ -112,7 +112,7 @@ protected:
 	int m_framePrimitiveCount;             // 0x36c
 	eFlowProcesses m_flowProcess;          // 0x370
 	int m_returnState;                     // 0x374
-	int m_quitYet;                         // 0x378
+	bool m_quitYet;                        // 0x378
 	CVSSize m_size;                        // 0x37c
 	CVSPoint m_animPosition;               // 0x380
 	unsigned int m_chalkFontId;            // 0x384

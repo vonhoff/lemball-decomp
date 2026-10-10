@@ -40,9 +40,9 @@ CIntroAnimDrawer::CIntroAnimDrawer(CMain2DDisplay* p_display,
 	m_animWindow.m_resolveMoviePath = 1;
 	m_animWindow.m_moviePrefix = g_szMoviePrefix;
 	m_animWindow.m_useMoviePrefix = 1;
-	m_drawBackground = 0;
-	m_drawFrame = 0;
-	m_drawSolid = 0;
+	m_drawBackground = false;
+	m_drawFrame = false;
+	m_drawSolid = false;
 	Setup();
 }
 
@@ -79,7 +79,7 @@ void CIntroAnimDrawer::DestroyDrawer()
 // FUNCTION: LEMBALL 0x004475e0
 void CIntroAnimDrawer::EndPhase()
 {
-	m_quitYet = 1;
+	m_quitYet = true;
 	m_returnState = m_nextFlow;
 	if (m_animWindow.m_lifecycleRefs == 1) {
 		m_animWindow.Destroy();

@@ -166,9 +166,9 @@ CPasswordDrawer::CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVS
 	m_passwordSubmitted = false;
 	m_passwordLength = 10;
 	m_selectedButton = 4;
-	m_drawBackground = 1;
-	m_drawFrame = 1;
-	m_drawSolid = 1;
+	m_drawBackground = true;
+	m_drawFrame = true;
+	m_drawSolid = true;
 	Setup();
 }
 
@@ -414,7 +414,7 @@ void CPasswordDrawer::Processing()
 {
 	if (m_passwordSubmitted) {
 		if (CurrentMilliTimer() > m_returnDeadline) {
-			m_quitYet = 1;
+			m_quitYet = true;
 			m_returnState = FLOW_MAIN_OPTIONS_1;
 		}
 	}

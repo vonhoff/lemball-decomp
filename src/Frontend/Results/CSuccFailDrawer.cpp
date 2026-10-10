@@ -199,9 +199,9 @@ CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const C
 	m_soundStarted = 0;
 	m_soundStopped = 0;
 	m_animStartDeadline = CurrentMilliTimer() + 0x28;
-	m_drawBackground = 1;
-	m_drawFrame = 1;
-	m_drawSolid = 1;
+	m_drawBackground = true;
+	m_drawFrame = true;
+	m_drawSolid = true;
 	m_password = g_pGameStatus->EncodePassword();
 	Setup();
 }
@@ -543,7 +543,7 @@ bool CSuccFailDrawer::ProcessMessages(tagMESSAGE* p_message)
 // FUNCTION: LEMBALL 0x004509f0
 void CSuccFailDrawer::Return()
 {
-	m_quitYet = 1;
+	m_quitYet = true;
 	m_returnState = FLOW_MAIN_OPTIONS_1;
 }
 
@@ -556,7 +556,7 @@ void CSuccFailDrawer::Go()
 	if (g_nMemoryDebugRequested != 0) {
 		g_pMasterArena->StreamOut(*g_pSysOutput);
 	}
-	m_quitYet = 1;
+	m_quitYet = true;
 	m_returnState = FLOW_PREVIEW;
 }
 

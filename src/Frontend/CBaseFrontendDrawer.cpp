@@ -101,26 +101,26 @@ CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 	m_textPrimitiveCapacity = p_textPrimitiveCapacity;
 	m_maxStringLen = p_maxStringLen;
 	m_framePrimitiveCount = 0;
-	m_drawBackground = 1;
-	m_drawFrame = 1;
-	m_drawSolid = 0;
+	m_drawBackground = true;
+	m_drawFrame = true;
+	m_drawSolid = false;
 	m_activePalette = 0;
-	m_loaded = 0;
+	m_loaded = false;
 	m_desiredPalette = RES_PALETTES_TITLEPALETTE;
 	g_pMasterInputQueue->Attach(this, 0);
 	m_returnState = FLOW_NONE;
-	m_quitYet = 0;
+	m_quitYet = false;
 	m_backBufferReady = false;
 	m_drawingBackBuffer = false;
-	m_ready = 1;
+	m_ready = true;
 	if (g_pGameStatus->m_skill == SKILL_NETWORK && g_pActiveConnection != NULL) {
 		m_networkMode = NETWORK_MODE_MULTIPLAYER;
 	}
 	else {
 		m_networkMode = NETWORK_MODE_SINGLE_PLAYER;
 	}
-	m_startupPending = 1;
-	m_actionPending = 0;
+	m_startupPending = true;
+	m_actionPending = false;
 	m_gunController = NULL;
 	m_hiliteController = NULL;
 	m_ambientAnimId = 0;
@@ -173,8 +173,8 @@ void CBaseFrontendDrawer::Setup()
 	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER) {
 		CNetworkManager* network;
 		int desiredState;
-		m_startupPending = 0;
-		m_actionPending = 1;
+		m_startupPending = false;
+		m_actionPending = true;
 		if (m_hiliteController != NULL) {
 			m_hiliteController->ActivateButtons(0);
 			m_hiliteController->m_active = 0;
@@ -289,7 +289,7 @@ void CBaseFrontendDrawer::Draw(const CVSRect& p_rect)
 			InitialiseBackBuffer();
 		}
 		ReplaceBackground();
-		m_ready = 0;
+		m_ready = false;
 	}
 }
 
@@ -409,7 +409,7 @@ void CBaseFrontendDrawer::Restart()
 // FUNCTION: LEMBALL 0x00445ed0
 void CBaseFrontendDrawer::_Load()
 {
-	m_loaded = 1;
+	m_loaded = true;
 	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
 		m_tileBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_PAINTBALL_TILE);
 		m_backgroundBitmap = CResBITMAP::Load(RES_NEWFRONT_BITMAPS_LORES_TITLE_BMP);
@@ -445,7 +445,7 @@ void CBaseFrontendDrawer::_UnLoad()
 	CAnimsManager::UnLoadAnims(m_topFrameAnimId);
 	CAnimsManager::UnLoadAnims(m_sideFrameAnimId);
 	CAnimsManager::UnLoadAnims(m_bottomFrameAnimId);
-	m_loaded = 0;
+	m_loaded = false;
 }
 
 // FUNCTION: LEMBALL 0x00446050
@@ -578,8 +578,8 @@ void CBaseFrontendDrawer::Process()
 	int seed;
 	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER && m_startupPending == 0 &&
 		g_pNetworkManager->m_observedGameState == g_pNetworkManager->m_desiredGameState) {
-		m_actionPending = 0;
-		m_startupPending = 1;
+		m_actionPending = false;
+		m_startupPending = true;
 		if (m_hiliteController != NULL) {
 			m_hiliteController->ActivateButtons(1);
 			m_hiliteController->m_active = 1;
@@ -608,14 +608,14 @@ void CBaseFrontendDrawer::Process()
 // FUNCTION: LEMBALL 0x004465c0
 void CBaseFrontendDrawer::LostConnection()
 {
-	m_quitYet = 1;
+	m_quitYet = true;
 	m_returnState = FLOW_MAIN_OPTIONS_1;
 }
 
 // FUNCTION: LEMBALL 0x004465e0
 void CBaseFrontendDrawer::Action(eUserActions p_action, eUserActionStages p_stage)
 {
-	m_actionPending = 1;
+	m_actionPending = true;
 	g_pCurrentFrontendProcess->Action(p_action, p_stage);
 }
 
@@ -630,24 +630,24 @@ void CBaseFrontendDrawer::RemoteAction(eUserActions p_action, eUserActionStages 
 			Action(p_action, USER_ACTION_STAGE_REJECT);
 			return;
 		}
-		m_actionPending = 1;
+		m_actionPending = true;
 		Action(p_action, USER_ACTION_STAGE_CONFIRM);
 		g_pSoundView->PlayEffect(SFX_DRUM1);
 		confirmed = ConfirmedAction(p_action);
 		if (confirmed == 0) {
 			*g_pErrorOutput << g_szUnknownUserActionSpecified;
 		}
-		m_actionPending = 0;
+		m_actionPending = false;
 		return;
 	case USER_ACTION_STAGE_CONFIRM:
 		confirmed = ConfirmedAction(p_action);
 		if (confirmed == 0) {
 			*g_pErrorOutput << g_szUnknownUserActionReceived;
 		}
-		m_actionPending = 0;
+		m_actionPending = false;
 		return;
 	case USER_ACTION_STAGE_REJECT:
-		m_actionPending = 0;
+		m_actionPending = false;
 	}
 }
 

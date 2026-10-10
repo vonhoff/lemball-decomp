@@ -81,9 +81,9 @@ CMainOptions2Drawer::CMainOptions2Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, c
 	m_transitionPending = 0;
 	g_nPendingMusicVolume = g_nMusicVolume;
 	g_nPendingEffectsVolume = g_nEffectsVolume;
-	m_drawBackground = 1;
-	m_drawFrame = 1;
-	m_drawSolid = 1;
+	m_drawBackground = true;
+	m_drawFrame = true;
+	m_drawSolid = true;
 	Setup();
 }
 
@@ -251,11 +251,11 @@ bool CMainOptions2Drawer::ProcessMessages(tagMESSAGE* p_message)
 	case MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE:
 		return true;
 	case MAIN_OPTIONS2_RETURN_MESSAGE:
-		m_quitYet = 1;
+		m_quitYet = true;
 		m_returnState = FLOW_MAIN_OPTIONS_1;
 		return true;
 	case MAIN_OPTIONS2_KEYBOARD_SETTINGS_MESSAGE:
-		m_quitYet = 1;
+		m_quitYet = true;
 		m_returnState = FLOW_KEYBOARD_SETTINGS;
 		return true;
 	case MAIN_OPTIONS2_EFFECTS_VOLUME_CHANGED_MESSAGE:
