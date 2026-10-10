@@ -132,7 +132,7 @@ void CPlayerLemming::Restart()
 		m_position.m_yFixed = m_spawnPosition.m_yFixed;
 		m_position.m_zFixed = m_spawnPosition.m_zFixed;
 		m_deathRequested = false;
-		m_sfxChanged = 1;
+		m_sfxChanged = true;
 		m_group = NULL;
 		m_ice = NULL;
 		m_onConveyor = 0;
@@ -451,21 +451,21 @@ void CPlayerLemming::AddData()
 		m_stateTimer = g_dwSimulationTimestamp;
 	}
 	Add((unsigned long) m_stateTimer);
-	m_sfxChanged = 0;
+	m_sfxChanged = false;
 }
 
 // FUNCTION: LEMBALL 0x0040f7a0
 bool CPlayerLemming::CheckSFX()
 {
-	unsigned int* pSfx = &m_sfxChanged;
+	bool* pSfx = &m_sfxChanged;
 	eSoundEffect sfx = m_soundEffect;
 	if (m_cachedSoundEffect == sfx && *pSfx == 0) {
-		*pSfx = 0;
+		*pSfx = false;
 		m_cachedSoundEffect = sfx;
 		return *pSfx;
 	}
 	m_cachedSoundEffect = sfx;
-	*pSfx = 1;
+	*pSfx = true;
 	return *pSfx;
 }
 

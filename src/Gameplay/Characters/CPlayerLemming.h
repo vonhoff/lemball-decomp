@@ -79,7 +79,7 @@ public:
 	friend class CPanelLemming;
 
 private:
-	unsigned int m_sfxChanged;                                  // 0x164
+	bool m_sfxChanged;                                          // 0x164
 	unsigned short m_playerIndex;                               // 0x168
 	eObjectType m_balloonObjectType;                            // 0x16c
 	unsigned int m_alternatePlayer;                             // 0x170
