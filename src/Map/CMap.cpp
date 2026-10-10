@@ -403,20 +403,20 @@ void CMap::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY
 {
 	switch (m_orientation) {
 	case MAP_ORIENTATION_ROTATION_0_DEGREES:
-		p_gameX = p_screenX / 2 + p_screenY - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
-		p_gameY = p_screenY - p_screenX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameX = (unsigned int) (p_screenX / 2) + p_screenY - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameY = (unsigned int) p_screenY - p_screenX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
 	case MAP_ORIENTATION_ROTATION_90_DEGREES:
-		p_gameX = p_screenY - p_screenX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
-		p_gameY = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - p_screenX / 2 - p_screenY;
+		p_gameX = (unsigned int) p_screenY - p_screenX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameY = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - (unsigned int) (p_screenX / 2) - p_screenY;
 		break;
 	case MAP_ORIENTATION_ROTATION_180_DEGREES:
-		p_gameX = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - p_screenX / 2 - p_screenY;
-		p_gameY = p_screenX / 2 - p_screenY + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameX = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - (unsigned int) (p_screenX / 2) - p_screenY;
+		p_gameY = (unsigned int) (p_screenX / 2) - p_screenY + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
 	case MAP_ORIENTATION_ROTATION_270_DEGREES:
-		p_gameX = p_screenX / 2 - p_screenY + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
-		p_gameY = p_screenX / 2 + p_screenY - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameX = (unsigned int) (p_screenX / 2) - p_screenY + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_gameY = (unsigned int) (p_screenX / 2) + p_screenY - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 	}
 }
 
@@ -428,20 +428,20 @@ void CMap::ScreenToGame(int& p_x, int& p_y)
 	y = p_y;
 	switch (m_orientation) {
 	case MAP_ORIENTATION_ROTATION_0_DEGREES:
-		p_x = x / 2 + y - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
-		p_y = y - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_x = (unsigned int) (x / 2) + y - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_y = (unsigned int) y - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
 	case MAP_ORIENTATION_ROTATION_90_DEGREES:
-		p_x = y - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
-		p_y = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - x / 2 - y;
+		p_x = (unsigned int) y - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_y = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - (unsigned int) (x / 2) - y;
 		break;
 	case MAP_ORIENTATION_ROTATION_180_DEGREES:
-		p_x = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - x / 2 - y;
-		p_y = x / 2 - y + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_x = MAP_PROJECTION_BLOCK_PLUS_HALF_PIXEL_SIZE - (unsigned int) (x / 2) - y;
+		p_y = (unsigned int) (x / 2) - y + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
 	case MAP_ORIENTATION_ROTATION_270_DEGREES:
-		p_x = x / 2 - y + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
-		p_y = x / 2 + y - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_x = (unsigned int) (x / 2) - y + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_y = (unsigned int) (x / 2) + y - MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 	}
 }
 
@@ -450,20 +450,20 @@ void CMap::GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY
 {
 	switch (m_orientation) {
 	case MAP_ORIENTATION_ROTATION_0_DEGREES:
-		p_screenX = p_gameX - p_gameY + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
+		p_screenX = (unsigned int) p_gameX - p_gameY + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
 		p_screenY = p_gameY / 2 + p_gameX / 2;
 		break;
 	case MAP_ORIENTATION_ROTATION_90_DEGREES:
-		p_screenX = MAP_PROJECTION_DOUBLE_BLOCK_PIXEL_SIZE - p_gameY - p_gameX;
-		p_screenY = p_gameX / 2 - p_gameY / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_screenX = MAP_PROJECTION_DOUBLE_BLOCK_PIXEL_SIZE - (unsigned int) p_gameY - p_gameX;
+		p_screenY = (unsigned int) (p_gameX / 2) - p_gameY / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
 	case MAP_ORIENTATION_ROTATION_180_DEGREES:
-		p_screenX = p_gameY - p_gameX + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
-		p_screenY = MAP_PROJECTION_BLOCK_PIXEL_SIZE - p_gameY / 2 - p_gameX / 2;
+		p_screenX = (unsigned int) p_gameY - p_gameX + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
+		p_screenY = MAP_PROJECTION_BLOCK_PIXEL_SIZE - (unsigned int) (p_gameY / 2) - p_gameX / 2;
 		break;
 	case MAP_ORIENTATION_ROTATION_270_DEGREES:
-		p_screenX = p_gameX + p_gameY;
-		p_screenY = p_gameY / 2 - p_gameX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_screenX = (unsigned int) p_gameX + p_gameY;
+		p_screenY = (unsigned int) (p_gameY / 2) - p_gameX / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 	}
 }
 
@@ -476,20 +476,20 @@ void CMap::GameToScreen(int& p_x, int& p_y)
 	x = p_x;
 	switch (m_orientation) {
 	case MAP_ORIENTATION_ROTATION_0_DEGREES:
-		p_x = x - y + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
+		p_x = (unsigned int) x - y + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
 		*outputY = y / 2 + x / 2;
 		break;
 	case MAP_ORIENTATION_ROTATION_90_DEGREES:
-		p_x = MAP_PROJECTION_DOUBLE_BLOCK_PIXEL_SIZE - y - x;
-		*outputY = x / 2 - y / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_x = MAP_PROJECTION_DOUBLE_BLOCK_PIXEL_SIZE - (unsigned int) y - x;
+		*outputY = (unsigned int) (x / 2) - y / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
 	case MAP_ORIENTATION_ROTATION_180_DEGREES:
-		p_x = y - x + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
-		*outputY = MAP_PROJECTION_BLOCK_PIXEL_SIZE - y / 2 - x / 2;
+		p_x = (unsigned int) y - x + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
+		*outputY = MAP_PROJECTION_BLOCK_PIXEL_SIZE - (unsigned int) (y / 2) - x / 2;
 		break;
 	case MAP_ORIENTATION_ROTATION_270_DEGREES:
-		p_x = x + y;
-		*outputY = y / 2 - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_x = (unsigned int) x + y;
+		*outputY = (unsigned int) (y / 2) - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 	}
 }
 
