@@ -72,9 +72,8 @@ bool CCollectable::Process()
 					if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 						int cellX = x & GROUND_BLOCK_PIXEL_MASK;
 						int cellY = y & GROUND_BLOCK_PIXEL_MASK;
-						z = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(
-							cellX,
-							cellY);
+						z = map->m_ground.m_ground[(unsigned int) blockY * map->m_ground.m_width + blockX].GetZ(cellX,
+																												cellY);
 					}
 					else {
 						z = 0;
