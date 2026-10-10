@@ -17,8 +17,8 @@ void CText::Set(int p_x, int p_y, CResFONT* p_font, const char* p_text, unsigned
 {
 	short& startX = m_startX;
 	short& startY = m_startY;
-	startX = (short) p_x;
-	startY = (short) p_y;
+	startX = p_x;
+	startY = p_y;
 	m_font = p_font;
 	m_remap = p_remap;
 	m_flags = p_flags;
@@ -45,8 +45,8 @@ void CText::Set(int p_x, int p_y, CResFONT* p_font, CString p_text, unsigned lon
 {
 	short& startX = m_startX;
 	short& startY = m_startY;
-	startX = (short) p_x;
-	startY = (short) p_y;
+	startX = p_x;
+	startY = p_y;
 	m_font = p_font;
 	m_flags = p_flags;
 	m_remap = p_remap;
