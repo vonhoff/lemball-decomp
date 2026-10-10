@@ -685,22 +685,24 @@ void CGunController::SelectOption()
 		m_leftShotAnim->StartAnim(GUN_CONTROLLER_FIRE_ANIMATION_DURATION_MS);
 		targetX = &m_projectileTargetX;
 		if (m_targetSide == GUN_SIDE_LEFT) {
-			m_projectileX = offsets[3].m_x + m_selectionStartX;
-			m_projectileY = offsets[3].m_y + m_targetY;
-			*targetX = offsets[4].m_x + m_junctions[i].m_leftX;
-			m_projectileEndX = offsets[5].m_x + m_junctions[i].m_leftX;
-			m_projectileEndY = offsets[5].m_y + m_junctions[i].m_y;
+			m_projectileX = (int) ((unsigned int) offsets[3].m_x + m_selectionStartX);
+			m_projectileY = (int) ((unsigned int) offsets[3].m_y + m_targetY);
+			*targetX = (int) ((unsigned int) offsets[4].m_x + m_junctions[i].m_leftX);
+			m_projectileEndX = (int) ((unsigned int) offsets[5].m_x + m_junctions[i].m_leftX);
+			m_projectileEndY = (int) ((unsigned int) offsets[5].m_y + m_junctions[i].m_y);
 		}
 		else {
-			m_projectileX = offsets[6].m_x + m_selectionStartX;
-			m_projectileY = offsets[6].m_y + m_targetY;
-			*targetX = offsets[7].m_x + m_junctions[i].m_rightX;
-			m_projectileEndX = offsets[8].m_x + m_junctions[i].m_rightX;
-			m_projectileEndY = offsets[8].m_y + m_junctions[i].m_y;
+			m_projectileX = (int) ((unsigned int) offsets[6].m_x + m_selectionStartX);
+			m_projectileY = (int) ((unsigned int) offsets[6].m_y + m_targetY);
+			*targetX = (int) ((unsigned int) offsets[7].m_x + m_junctions[i].m_rightX);
+			m_projectileEndX = (int) ((unsigned int) offsets[8].m_x + m_junctions[i].m_rightX);
+			m_projectileEndY = (int) ((unsigned int) offsets[8].m_y + m_junctions[i].m_y);
 		}
 		m_selectStartTime = CurrentMilliTimer();
-		delta = *targetX - m_projectileX;
-		delta = abs((int) delta);
+		delta = (unsigned int) *targetX - m_projectileX;
+		if ((int) delta < 0) {
+			delta = 0U - delta;
+		}
 		m_selectEndTime = delta * 2 + m_selectStartTime;
 		m_selectionState = GUN_SELECTION_AIMING;
 		g_pSoundView->PlayEffect(SFX_BIGGUN);
