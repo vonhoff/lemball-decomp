@@ -49,7 +49,7 @@ CBroadcast::~CBroadcast()
 	if (m_specificAddress != NULL) {
 		operator delete(m_specificAddress);
 	}
-	operator delete(m_connectionData);
+	delete[] m_connectionData;
 	operator delete(g_pBroadcastAddress);
 	g_pBroadcastAddress = NULL;
 	if (g_szBroadcastPeerName != NULL) {
