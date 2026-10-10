@@ -1414,7 +1414,10 @@ void CSurface::Blit(CCircle* p_circle)
 	int colour = p_circle->m_colour;
 	int centreY = p_circle->m_y;
 	int centreX = p_circle->m_x;
-	int radius = abs((int) p_circle->m_radius);
+	int radius = p_circle->m_radius;
+	if (radius < 0) {
+		radius = 0U - radius;
+	}
 	int clipResult = ClipCircle(centreX, centreY, radius);
 	if (clipResult != CIRCLE_OUTSIDE_CLIP) {
 		switch (clipResult) {
@@ -1479,7 +1482,10 @@ void CSurface::Blit(CFilledCircle* p_circle)
 	int colour = p_circle->m_colour;
 	int y = p_circle->m_y;
 	int x = p_circle->m_x;
-	int radius = abs((int) p_circle->m_radius);
+	int radius = p_circle->m_radius;
+	if (radius < 0) {
+		radius = 0U - radius;
+	}
 	int clipResult = ClipCircle(x, y, radius);
 	if (clipResult != CIRCLE_OUTSIDE_CLIP) {
 		switch (clipResult) {
