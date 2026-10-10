@@ -2174,7 +2174,7 @@ void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, C
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2294,7 +2294,7 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 			int runCount;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2601,7 +2601,7 @@ void CSurface::BlitZRLENoClipZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsi
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2639,7 +2639,7 @@ void CSurface::BlitZRLENoClipZBuffRemap(const CVSRect& p_rect,
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2680,7 +2680,7 @@ void CSurface::BlitZRLENoClipQZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, uns
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2727,7 +2727,7 @@ void CSurface::BlitZRLENoClipQZBuffRemap(const CVSRect& p_rect,
 	if (p_rect.m_height > 0) {
 		do {
 			unsigned char* dst = (unsigned char*) m_lines[y] + x;
-			unsigned short* zlines = (unsigned short*) ((unsigned char*) CPVZBuffSurface::m_bitmap.m_lines[y] + x * 2);
+			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
