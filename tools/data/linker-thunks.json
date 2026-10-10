@@ -37530,7 +37530,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Engine/Startup/VsInit.cpp.obj",
       "symbol": "?INIT_PreInit@@YAXXZ",
       "size": 243,
-      "fingerprint": "5270457cad2a391a8b1bfc2e2367a5c577cf36d803d38e1a0967ad0d81a6625e",
+      "fingerprint": "134e32ac12a16f6d409268e3d1df531f98683bc82125fea43649c6535b0c71c2",
       "references": [
         {
           "offset": 31,

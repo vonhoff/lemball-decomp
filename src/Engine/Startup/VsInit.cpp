@@ -14,12 +14,9 @@
 #include "VisosVersion.h"
 
 #include <ctype.h>
-#include <new.h>
 #include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
-
-class CBaseStat;
 
 enum ePreInitDisplayMode {
 	PREINIT_DISPLAY_MODE_WING = 0,
@@ -187,7 +184,6 @@ void INIT_SubSystems()
 	int statOk;
 	int resOk;
 	CBaseStat* stat;
-	void* storage;
 
 	memOk = _MEM_Init();
 	if (memOk == 0) {
@@ -224,14 +220,7 @@ void INIT_SubSystems()
 	resOk = _RES_Init();
 	*g_pSysOutput << "_RES_Init   : " << OkFailed(resOk) << "...\n";
 
-	storage = operator new(sizeof(CMogloadStat));
-	if (storage != NULL) {
-		stat = (CBaseStat*) storage;
-		new (storage) CMogloadStat("Main memory arena");
-	}
-	else {
-		stat = NULL;
-	}
+	stat = new CMogloadStat("Main memory arena");
 	g_pStatManager->Register(stat);
 	g_pMasterArena->m_usageStat = stat;
 }
