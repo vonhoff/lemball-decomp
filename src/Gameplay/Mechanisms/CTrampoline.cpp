@@ -75,7 +75,8 @@ void CTrampoline::Set(unsigned short p_id, const AICOORD& p_position)
 			CMap* map = g_pMap;
 			int width = map->m_ground.m_width;
 			if (width > blockX && map->m_ground.m_height > blockY) {
-				g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_OBJECT_INTERACTION;
+				g_pMap->m_ground.m_ground[(int) ((unsigned int) width * blockY + blockX)].m_collision |=
+					GROUND_COLLISION_OBJECT_INTERACTION;
 			}
 		}
 	}

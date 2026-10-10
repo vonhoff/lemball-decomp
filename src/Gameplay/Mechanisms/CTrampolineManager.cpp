@@ -134,9 +134,9 @@ void CTrampolineManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
 		AICOORD position;
-		position.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
-		position.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
-		position.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
+		position.m_xFixed = (int) ((unsigned int) p_x << FIXED_POINT_FRACTION_BITS);
+		position.m_yFixed = (int) ((unsigned int) p_y << FIXED_POINT_FRACTION_BITS);
+		position.m_zFixed = (int) ((unsigned int) p_z << FIXED_POINT_FRACTION_BITS);
 		m_trampolines[m_count].Set(p_id, position);
 		m_count++;
 	}

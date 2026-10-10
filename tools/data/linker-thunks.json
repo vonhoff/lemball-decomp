@@ -23952,7 +23952,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTrampoline.cpp.obj",
       "symbol": "?Hit@CTrampoline@@QAEHABVAICOORD@@PAVCGameObject@@@Z",
       "size": 960,
-      "fingerprint": "18ac44f31b16c5533958c8519cb042f09efcd10581ca5688677e7ca72e9c0cdb",
+      "fingerprint": "d9bcb862a48b3d382e07691175b62ee101cd70c4a8ae3831b4bbd91ffc80bee6",
       "references": [
         {
           "offset": 255,
@@ -24059,7 +24059,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTrampolineManager.cpp.obj",
       "symbol": "?Initialise@CTrampolineManager@@QAEXH@Z",
       "size": 159,
-      "fingerprint": "8c9e64ce7cd78eac478a902f576c1dfe1dcc13dce3b25b892d5aa684c677bc7b",
+      "fingerprint": "ce33bf77697c8ff1ea1b0e9c92798e1e3481ebbb0b0216090019658114c5e7b4",
       "references": [
         {
           "offset": 91,
@@ -24188,7 +24188,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTrampolineManager.cpp.obj",
       "symbol": "?LoadLevel@CTrampolineManager@@QAEXPAEHE@Z",
       "size": 101,
-      "fingerprint": "4923163cb289db38b950eb06972ac3cc5f2f37df43fd615465b5ca1bdf191641",
+      "fingerprint": "b941e0b3f002e6c1a23d8fa6d85ef228b87ab8596e030b218a31cf6c3fa895b2",
       "references": [
         {
           "offset": 20,
