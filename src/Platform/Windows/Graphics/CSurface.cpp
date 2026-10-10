@@ -147,7 +147,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 	m_flag74 = false;
 	m_parentSurface = p_parentSurface;
 	parentList = (SurfaceListHead*) &m_parentSurface->m_childSurfaceHead;
-	storage = operator new(0xc);
+	storage = operator new(sizeof(SurfaceListNode));
 	if (storage != NULL) {
 		node = (SurfaceListNode*) storage;
 		node->m_surface = this;
@@ -180,7 +180,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 		}
 	}
 	head = g_pSurfaceList;
-	storage = operator new(0xc);
+	storage = operator new(sizeof(SurfaceListNode));
 	if (storage != NULL) {
 		node = (SurfaceListNode*) storage;
 		node->m_surface = this;
