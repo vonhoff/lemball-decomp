@@ -208,9 +208,9 @@ void CMover::MoveObjects(int p_deltaX, int p_deltaY, int p_deltaZ)
 {
 	for (int i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		object->m_position.m_xFixed += p_deltaX << FIXED_POINT_FRACTION_BITS;
-		object->m_position.m_yFixed += p_deltaY << FIXED_POINT_FRACTION_BITS;
-		object->m_position.m_zFixed += p_deltaZ << FIXED_POINT_FRACTION_BITS;
+		object->m_position.m_xFixed += (unsigned int) p_deltaX << FIXED_POINT_FRACTION_BITS;
+		object->m_position.m_yFixed += (unsigned int) p_deltaY << FIXED_POINT_FRACTION_BITS;
+		object->m_position.m_zFixed += (unsigned int) p_deltaZ << FIXED_POINT_FRACTION_BITS;
 	}
 }
 
@@ -331,14 +331,14 @@ bool CMover::Process()
 			position.m_y = 0;
 			position.m_z = 0;
 			m_motion.Position(position, time);
-			int dx = position.m_x - (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
+			int dx = (unsigned int) position.m_x - (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
 			int dz = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
-			int dy = position.m_y - (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
-			dz = position.m_z - dz;
+			int dy = (unsigned int) position.m_y - (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
+			dz = (unsigned int) position.m_z - dz;
 			MoveObjects(dx, dy, dz);
-			m_position.m_xFixed = position.m_x << FIXED_POINT_FRACTION_BITS;
-			m_position.m_yFixed = position.m_y << FIXED_POINT_FRACTION_BITS;
-			m_position.m_zFixed = position.m_z << FIXED_POINT_FRACTION_BITS;
+			m_position.m_xFixed = (unsigned int) position.m_x << FIXED_POINT_FRACTION_BITS;
+			m_position.m_yFixed = (unsigned int) position.m_y << FIXED_POINT_FRACTION_BITS;
+			m_position.m_zFixed = (unsigned int) position.m_z << FIXED_POINT_FRACTION_BITS;
 		}
 		break;
 	case ACTION_STARTING_ROUTE:
