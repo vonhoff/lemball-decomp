@@ -62,7 +62,7 @@ CFileBroadcast::CFileBroadcast()
 	CFileReadSocket::m_file = CFileWriteSocket::m_file;
 	CFileWriteSocket::m_headersOffset = g_pFileBroadcast->m_payloadCapacity + m_message.m_payloadCapacity;
 	CFileReadSocket::m_headersOffset = CFileWriteSocket::m_headersOffset;
-	m_portInfoLocked = 0;
+	m_portInfoLocked = false;
 }
 
 // FUNCTION: LEMBALL 0x0047a910
@@ -144,7 +144,7 @@ bool CFileBroadcast::ReadPortInfo()
 	}
 	if (CNetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, length)) {
 		g_pFileBroadcast->Set((unsigned char*) g_pNetworkPacketScratch);
-		m_portInfoLocked = 1;
+		m_portInfoLocked = true;
 		return true;
 	}
 	CNetworkFile::UnLock(m_message.m_payloadCapacity, length);
@@ -157,7 +157,7 @@ bool CFileBroadcast::WritePortInfo()
 	g_pFileBroadcast->OpenDataStream();
 	unsigned int length = g_pFileBroadcast->m_payloadCapacity;
 	Seek(m_message.m_payloadCapacity);
-	m_portInfoLocked = 0;
+	m_portInfoLocked = false;
 	bool result = CNetworkFile::Write(g_pFileBroadcast->m_buffer + sizeof(BasePacketHeader), length);
 	g_pFileBroadcast->CloseDataStream();
 	if (result) {
@@ -183,7 +183,7 @@ short CFileBroadcast::FindPort(const unsigned char* p_data)
 	}
 	if (port != NETWORK_PORT_COUNT) {
 		counts[(unsigned short) port]++;
-		int written = WritePortInfo();
+		bool written = WritePortInfo();
 		int result = NETWORK_PORT_NOT_FOUND;
 		if (written) {
 			result = port;
@@ -198,7 +198,7 @@ short CFileBroadcast::FindPort(const unsigned char* p_data)
 void CFileBroadcast::ResetPort(short p_port)
 {
 	m_connectionData[p_port] = 0;
-	if (m_portInfoLocked == 0) {
+	if (!m_portInfoLocked) {
 		ReadPortInfo();
 		g_pFileBroadcast->m_useCounts[(unsigned short) p_port]--;
 		WritePortInfo();
