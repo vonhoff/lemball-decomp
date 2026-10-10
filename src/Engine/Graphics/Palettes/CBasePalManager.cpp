@@ -55,7 +55,6 @@ CBasePalManager::~CBasePalManager()
 CBaseRemap* CBasePalManager::RegisterRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)
 {
 	CBaseRemap** slot;
-	void* storage;
 	CBaseRemap* remap;
 	int i;
 
@@ -67,13 +66,7 @@ CBaseRemap* CBasePalManager::RegisterRemap(unsigned long p_resourceId, unsigned 
 		i = i + 1;
 		remap = *slot;
 	}
-	storage = operator new(sizeof(CRemap));
-	if (storage == NULL) {
-		m_remaps[i] = NULL;
-	}
-	else {
-		m_remaps[i] = new (storage) CRemap(p_resourceId, p_mapping, p_type);
-	}
+	m_remaps[i] = new CRemap(p_resourceId, p_mapping, p_type);
 	m_remapCount = m_remapCount + 1;
 	return m_remaps[i];
 }
