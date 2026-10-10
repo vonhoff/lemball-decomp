@@ -72,7 +72,7 @@ void CHand::Set(unsigned short p_id, const AICOORD& p_position)
 		if (collisionY >= 0) {
 			int width = g_pMap->m_ground.m_width;
 			if (width > blockX && g_pMap->m_ground.m_height > collisionY) {
-				g_pMap->m_ground.m_ground[(int) ((unsigned int) width * collisionY + blockX)].m_collision |=
+				g_pMap->m_ground.m_ground[(unsigned int) width * collisionY + blockX].m_collision |=
 					GROUND_COLLISION_OBJECT_INTERACTION;
 			}
 		}
@@ -82,7 +82,7 @@ void CHand::Set(unsigned short p_id, const AICOORD& p_position)
 			if (collisionY >= 0) {
 				int width = g_pMap->m_ground.m_width;
 				if (width > blockX && g_pMap->m_ground.m_height > collisionY) {
-					g_pMap->m_ground.m_ground[(int) ((unsigned int) width * collisionY + blockX)].m_collision |=
+					g_pMap->m_ground.m_ground[(unsigned int) width * collisionY + blockX].m_collision |=
 						GROUND_COLLISION_OBJECT_INTERACTION;
 				}
 			}
