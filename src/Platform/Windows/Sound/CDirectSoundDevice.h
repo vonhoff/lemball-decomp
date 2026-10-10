@@ -56,7 +56,7 @@ private:
 	bool PrepareEffect(unsigned char* p_data, unsigned long* p_handle, unsigned int p_effectHandle);
 
 	struct {
-		void* m_library;                                                          // 0x04
+		HMODULE m_library;                                                        // 0x04
 		long(__stdcall* m_createDirectSound)(const void*, IDirectSound**, void*); // 0x08
 		bool m_open;                                                              // 0x0c
 		void* m_nativeWindow;                                                     // 0x10

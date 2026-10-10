@@ -92,9 +92,9 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 			}
 			delete[] data;
 			if (valid) {
-				m_platform.m_createDirectSound = (long(__stdcall*)(const void*, IDirectSound**, void*)) GetProcAddress(
-					(HMODULE) m_platform.m_library,
-					"DirectSoundCreate");
+				m_platform.m_createDirectSound =
+					(long(__stdcall*)(const void*, IDirectSound**, void*)) GetProcAddress(m_platform.m_library,
+																						  "DirectSoundCreate");
 				if (m_platform.m_createDirectSound != NULL) {
 					m_platform.m_available = true;
 					m_platform.m_open = false;
@@ -109,7 +109,7 @@ CDirectSoundDevice::~CDirectSoundDevice()
 {
 	delete[] m_platform.m_effects;
 	if (m_platform.m_library != NULL) {
-		FreeLibrary((HMODULE) m_platform.m_library);
+		FreeLibrary(m_platform.m_library);
 		m_platform.m_library = NULL;
 	}
 }
