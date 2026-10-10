@@ -142,8 +142,8 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 	SurfaceListHead* parentList;
 	void* storage;
 
-	m_propagateChanges = 1;
-	m_fullUpdatePending = 0;
+	m_propagateChanges = true;
+	m_fullUpdatePending = false;
 	m_forwardChangesImmediately = false;
 	m_parentSurface = p_parentSurface;
 	parentList = (SurfaceListHead*) &m_parentSurface->m_childSurfaceHead;
@@ -407,7 +407,7 @@ CSurface::CSurface(GrafPort* p_port)
 	m_parentSurface = NULL;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
 	m_lockInitialised = 1;
-	m_propagateChanges = 0;
+	m_propagateChanges = false;
 }
 
 // FUNCTION: LEMBALL 0x0046c710
@@ -594,7 +594,7 @@ void CSurface::AddToChangeList(const CVSRect& p_rect)
 	short originY;
 
 	parent = (CSurface*) m_parentSurface;
-	if (parent != (CSurface*) g_pGdiHelperTarget && m_forwardChangesImmediately && m_propagateChanges != 0) {
+	if (parent != (CSurface*) g_pGdiHelperTarget && m_forwardChangesImmediately && m_propagateChanges) {
 		origin = &this->m_surfaceRect;
 		originX = origin->m_x;
 		originY = origin->m_y;
@@ -697,11 +697,11 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 {
 	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
 		if (!m_forwardChangesImmediately) {
-			if (m_fullUpdatePending != 0) {
+			if (m_fullUpdatePending) {
 				m_parentSurface->AddToChangeList(m_windowRect);
-				m_fullUpdatePending = 0;
+				m_fullUpdatePending = false;
 			}
-			else if (m_propagateChanges != 0) {
+			else if (m_propagateChanges) {
 				CChangeList* list = GetChangeList();
 				int diff = list->GetNumItems() - list->GetDrawMark();
 				if (diff > 0) {

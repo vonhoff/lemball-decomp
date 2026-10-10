@@ -79,9 +79,9 @@ private:
 	CVSRect m_clipRect;               // 0x24
 	short m_zoom;                     // 0x2c
 	short m_pad2e;                    // 0x2e
-	unsigned int m_propagateChanges;  // 0x30
+	bool m_propagateChanges;          // 0x30
 	bool m_forwardChangesImmediately; // 0x34
-	unsigned int m_fullUpdatePending; // 0x38
+	bool m_fullUpdatePending;         // 0x38
 	unsigned int m_updateEnabled;     // 0x3c
 	int m_worldWidth;                 // 0x40
 };
