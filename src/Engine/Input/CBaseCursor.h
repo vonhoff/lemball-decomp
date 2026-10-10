@@ -63,8 +63,8 @@ private:
 	unsigned int m_systemCursorVisible; // 0x3c
 	CPopActive m_popActive;             // 0x40
 	CPushActive m_pushActive;           // 0x44
-	int m_maxSpeed;                     // 0x4c
-	int m_acceleration;                 // 0x50
+	int m_acceleration;                 // 0x4c
+	int m_maxSpeed;                     // 0x50
 	int m_fixedX;                       // 0x54
 	int m_fixedY;                       // 0x58
 	int m_velocityX;                    // 0x5c

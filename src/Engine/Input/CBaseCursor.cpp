@@ -36,7 +36,7 @@ unsigned char g_cursorFocusFlag;
 
 // FUNCTION: LEMBALL 0x0046aec0
 CBaseCursor::CBaseCursor()
-	: m_maxSpeed((int) 0xaa55aa55), m_acceleration((int) 0xaa55aa55), m_fixedX((int) 0xaa55aa55),
+	: m_acceleration((int) 0xaa55aa55), m_maxSpeed((int) 0xaa55aa55), m_fixedX((int) 0xaa55aa55),
 	  m_fixedY((int) 0xaa55aa55), m_velocityX((int) 0xaa55aa55), m_velocityY((int) 0xaa55aa55),
 	  m_directionX((int) 0xaa55aa55), m_directionY((int) 0xaa55aa55)
 {
@@ -86,8 +86,8 @@ void CBaseCursor::Initialise()
 	m_keys[3] = 2;
 	m_keys[4] = 0x1f;
 	m_keys[6] = 0x49;
-	m_maxSpeed = CURSOR_INPUT_ACCELERATION_PER_20MS;
-	m_acceleration = CURSOR_MAX_VELOCITY_FIXED;
+	m_acceleration = CURSOR_INPUT_ACCELERATION_PER_20MS;
+	m_maxSpeed = CURSOR_MAX_VELOCITY_FIXED;
 	m_fixedX = (int) m_position.m_x * FIXED_POINT_ONE;
 	m_velocityX = 0;
 	m_velocityY = 0;
@@ -167,25 +167,25 @@ int CBaseCursor::ProcessMsg(tagMESSAGE* p_message)
 				if (m_keys[3] != code) {
 					if (m_keys[0] != code) {
 						if (m_keys[1] == code) {
-							m_directionX = m_maxSpeed;
+							m_directionX = m_acceleration;
 							m_lastInputX = now;
 							return 0;
 						}
 					}
 					else {
-						m_directionX = -m_maxSpeed;
+						m_directionX = -m_acceleration;
 						m_lastInputX = now;
 						return 0;
 					}
 				}
 				else {
-					m_directionY = m_maxSpeed;
+					m_directionY = m_acceleration;
 					m_lastInputY = now;
 					return 0;
 				}
 			}
 			else {
-				m_directionY = -m_maxSpeed;
+				m_directionY = -m_acceleration;
 				m_lastInputY = now;
 			}
 		}
@@ -456,21 +456,21 @@ void CBaseCursor::Process()
 	if (m_directionX != 0) {
 		m_velocityX += (int) (m_directionX * (now - m_lastInputX)) / CURSOR_ACCELERATION_INTERVAL_MS;
 		m_lastInputX = now;
-		if (m_velocityX > m_acceleration) {
-			m_velocityX = m_acceleration;
+		if (m_velocityX > m_maxSpeed) {
+			m_velocityX = m_maxSpeed;
 		}
-		if (m_velocityX < -m_acceleration) {
-			m_velocityX = -m_acceleration;
+		if (m_velocityX < -m_maxSpeed) {
+			m_velocityX = -m_maxSpeed;
 		}
 	}
 	if (m_directionY != 0) {
 		m_velocityY += (int) ((now - m_lastInputY) * m_directionY) / CURSOR_ACCELERATION_INTERVAL_MS;
 		m_lastInputY = now;
-		if (m_velocityY > m_acceleration) {
-			m_velocityY = m_acceleration;
+		if (m_velocityY > m_maxSpeed) {
+			m_velocityY = m_maxSpeed;
 		}
-		if (m_velocityY < -m_acceleration) {
-			m_velocityY = -m_acceleration;
+		if (m_velocityY < -m_maxSpeed) {
+			m_velocityY = -m_maxSpeed;
 		}
 	}
 	CVSPoint oldPosition(m_position);
