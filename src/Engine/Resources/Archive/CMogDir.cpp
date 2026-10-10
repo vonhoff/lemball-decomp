@@ -64,7 +64,7 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 		m_first.m_info = info;
 		*firstIndex = 0;
 		GetChunkInfo(info);
-		m_loadedChunkCount++;
+		m_loadedChunkCount += 1U;
 	}
 	*iteratorIndex = *firstIndex;
 	m_iterator.m_info = m_first.m_info;
@@ -118,7 +118,7 @@ CMogDir::~CMogDir()
 void CMogDir::GetChunkInfo(tagChunkInfo* p_info)
 {
 	vsSeek(g_pMogFile,
-		   (m_iterator.m_index + 1) * MOG_DIRECTORY_ENTRY_STRIDE + m_directoryEndOffset,
+		   ((unsigned int) m_iterator.m_index + 1) * MOG_DIRECTORY_ENTRY_STRIDE + m_directoryEndOffset,
 		   MOG_SEEK_FROM_START);
 	p_info->m_next.m_info = NULL;
 	p_info->m_child.m_info = NULL;
@@ -137,7 +137,7 @@ tagChunkInfo* CMogDir::NewChunkInfo()
 	tagChunkInfo* info = (tagChunkInfo*) CMogloadArena::operator new(sizeof(tagChunkInfo));
 	m_iterator.m_info->m_next.m_info = info;
 	m_iterator.m_info->m_next.m_index = m_loadedChunkCount;
-	m_loadedChunkCount++;
+	m_loadedChunkCount += 1U;
 	GetChunkInfo(info);
 	return info;
 }
@@ -209,7 +209,7 @@ void CMogDir::FindNext(tagCHUNK& p_chunk, unsigned int p_type)
 
 	do {
 		if (iterator->m_index != CHUNK_INDEX_BEFORE_FIRST_ENTRY) {
-			if (m_chunkCount - iterator->m_index == 1) {
+			if ((unsigned int) m_chunkCount - iterator->m_index == 1) {
 				exhausted = 1;
 				break;
 			}
