@@ -24635,7 +24635,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Set@CIce@@QAEXGABUtCoord3d@@0HHI@Z",
       "size": 603,
-      "fingerprint": "c96b5307f04d72a6e96851092ebcacfb279e78dc7661ac8067a76d42f6f0940d",
+      "fingerprint": "4a17a73e3dd5179101cc027487f72af838dd35a5cffeb9627e960e5896b940e1",
       "references": [
         {
           "offset": 14,
@@ -24664,8 +24664,8 @@
       "caller": 4377968,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Process@CIce@@UAEHXZ",
-      "size": 1541,
-      "fingerprint": "ab02a45718363912934ee637996871d52d10eda1306c140309712ce59c8a8402",
+      "size": 1545,
+      "fingerprint": "c714221184529947d3fb98238a66372e67e6c502b841eaa0dbc033b05cf0a229",
       "references": [
         {
           "offset": 54,
@@ -24682,42 +24682,42 @@
           "source_symbol": "?Switched@CIce@@QAEXXZ"
         },
         {
-          "offset": 557,
+          "offset": 559,
           "original_instruction": 4378478,
           "original_bytes": "e8325afdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1015,
+          "offset": 1017,
           "original_instruction": 4378983,
           "original_bytes": "e83958fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1236,
+          "offset": 1240,
           "original_instruction": 4379204,
           "original_bytes": "e85c57fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1277,
+          "offset": 1281,
           "original_instruction": 4379245,
           "original_bytes": "e8ab61fdff",
           "thunk": 4207645,
           "source_symbol": "?StepOn@CAI@@QAEXABVAICOORD@@PAVCGameObject@@G@Z"
         },
         {
-          "offset": 1457,
+          "offset": 1461,
           "original_instruction": 4379429,
           "original_bytes": "e87b56fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1498,
+          "offset": 1502,
           "original_instruction": 4379470,
           "original_bytes": "e8ca60fdff",
           "thunk": 4207645,
@@ -24784,25 +24784,25 @@
       "caller": 4380000,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Switched@CIce@@QAEXXZ",
-      "size": 556,
-      "fingerprint": "b849ab7876312f4ef56715be740ff5583aaf2f8dd6b400ff03b09a20f0bd0b85",
+      "size": 557,
+      "fingerprint": "b9b03d491937682201b217abe88e2978b9698346dbb913c193458a014d878ef3",
       "references": [
         {
-          "offset": 261,
+          "offset": 262,
           "original_instruction": 4380262,
           "original_bytes": "e83a53fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 482,
+          "offset": 483,
           "original_instruction": 4380490,
           "original_bytes": "e85652fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 523,
+          "offset": 524,
           "original_instruction": 4380531,
           "original_bytes": "e8a55cfdff",
           "thunk": 4207645,
