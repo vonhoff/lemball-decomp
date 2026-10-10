@@ -80,10 +80,7 @@ bool _MEM_Quit()
 
 	g_nSmallMemoryEnabled = 0;
 	smallMemory = g_pSmallMemory;
-	if (smallMemory != NULL) {
-		smallMemory->~CSmallMemory();
-		operator delete(smallMemory);
-	}
+	delete smallMemory;
 	delete g_pMasterArena;
 	if (GlobalUnlock(g_pMasterArenaMemory) != 0) {
 		*g_pErrorOutput << g_szMasterArenaStillLocked;
