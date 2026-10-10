@@ -89,7 +89,7 @@ void CBalloonPost::Process()
 		if (x >= 0 && y >= 0 && blockX < (width = map->m_ground.m_width) && blockY < map->m_ground.m_height) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[(int) ((unsigned int) blockY * width + blockX)].GetZ(x, y);
 		}
 		else {
 			z = 0;
@@ -109,7 +109,7 @@ void CBalloonPost::Process()
 		if (x >= 0 && y >= 0 && blockX < (width = map->m_ground.m_width) && blockY < map->m_ground.m_height) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[(int) ((unsigned int) blockY * width + blockX)].GetZ(x, y);
 		}
 		else {
 			z = 0;
@@ -129,7 +129,7 @@ void CBalloonPost::Process()
 		if (x >= 0 && y >= 0 && blockX < (width = map->m_ground.m_width) && blockY < map->m_ground.m_height) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[(int) ((unsigned int) blockY * width + blockX)].GetZ(x, y);
 		}
 		else {
 			z = 0;
@@ -149,7 +149,7 @@ void CBalloonPost::Process()
 		if (x >= 0 && y >= 0 && blockX < (width = map->m_ground.m_width) && blockY < map->m_ground.m_height) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[(int) ((unsigned int) blockY * width + blockX)].GetZ(x, y);
 		}
 		else {
 			z = 0;
