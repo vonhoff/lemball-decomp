@@ -13,7 +13,7 @@ private:
 	unsigned int m_duration;    // 0x10
 	unsigned int m_currentTime; // 0x14
 	int m_direction;            // 0x18
-	unsigned int m_finished;    // 0x1c
+	bool m_finished;            // 0x1c
 };
 
 // FUNCTION: LEMBALL 0x0044aa20
@@ -25,7 +25,7 @@ unsigned int CFixedTimeAnim::GetFrameNo()
 	unsigned int elapsed = m_currentTime - m_startTime;
 	if (m_duration <= elapsed) {
 		unsigned int frame = m_frames - 1;
-		m_finished = 1;
+		m_finished = true;
 		m_lastFrame = frame;
 		return frame;
 	}
@@ -39,6 +39,6 @@ unsigned int CFixedTimeAnim::GetFrameNo()
 // FUNCTION: LEMBALL 0x0044aa70
 void CFixedTimeAnim::StartAnim(unsigned int p_unused)
 {
-	m_finished = 0;
+	m_finished = false;
 	m_startTime = m_currentTime;
 }
