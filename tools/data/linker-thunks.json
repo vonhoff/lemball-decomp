@@ -23561,7 +23561,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaserManager.cpp.obj",
       "symbol": "?Initialise@CLaserManager@@QAEXH@Z",
       "size": 154,
-      "fingerprint": "2c34014fec67c8d2f1a5dd837aa987f7ace4652e3eb244c57ff8a4376d9b3d7f",
+      "fingerprint": "942397548e2527cfa6a7aff98187f39bcb3afe2388b11f9e826c6667330d8f98",
       "references": [
         {
           "offset": 86,
