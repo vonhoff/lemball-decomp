@@ -159,7 +159,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 	char itemText[ABOUT_VERSION_VALUE_BUFFER_SIZE];
 	char queryPath[ABOUT_VERSION_QUERY_BUFFER_SIZE];
 	unsigned int queryLen;
-	char* queryValue;
+	void* queryValue;
 	int queryOk;
 	char* queryEnd;
 
@@ -201,9 +201,9 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 				lstrcatA(queryPath, itemText);
 				queryLen = 0;
 				queryValue = NULL;
-				queryOk = VerQueryValueA(versionData, queryPath, (void**) &queryValue, &queryLen);
+				queryOk = VerQueryValueA(versionData, queryPath, &queryValue, &queryLen);
 				if (queryOk != 0 && queryLen != 0 && queryValue != NULL) {
-					lstrcpyA(itemText, queryValue);
+					lstrcpyA(itemText, (char*) queryValue);
 					SetDlgItemTextA((HWND) p_dlg, controlId, itemText);
 					SendMessageA(GetDlgItem((HWND) p_dlg, controlId), WM_SETFONT, (unsigned int) g_hAboutFont, TRUE);
 				}
