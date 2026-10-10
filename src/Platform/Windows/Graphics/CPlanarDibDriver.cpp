@@ -25,8 +25,7 @@ enum {
 // FUNCTION: LEMBALL 0x00457070
 void CPlanarDibDriver::SetPlaneWriteMask(unsigned char p_mask)
 {
-	_outpw(VGA_SEQUENCER_INDEX_PORT,
-		   ((unsigned short) p_mask << VGA_REGISTER_INDEX_SHIFT) | VGA_SEQUENCER_MAP_MASK_REGISTER_INDEX);
+	_outpw(VGA_SEQUENCER_INDEX_PORT, (p_mask << VGA_REGISTER_INDEX_SHIFT) | VGA_SEQUENCER_MAP_MASK_REGISTER_INDEX);
 }
 
 // FUNCTION: LEMBALL 0x00457080
@@ -50,12 +49,12 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 									 CVSPoint* p_position)
 {
 	if (g_dwFullScreenGdi != 0) {
-		return BitBlt((HDC) ((CGdiContext*) p_destination)->m_hDC,
+		return BitBlt(((CGdiContext*) p_destination)->m_hDC,
 					  p_rect->m_x,
 					  p_rect->m_y,
 					  p_rect->m_width,
 					  p_rect->m_height,
-					  (HDC) ((CGdiContext*) p_source)->m_hDC,
+					  ((CGdiContext*) p_source)->m_hDC,
 					  p_position->m_x,
 					  p_position->m_y,
 					  SRCCOPY);
@@ -98,7 +97,7 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 	int destinationX = p_rect->m_x;
 	int sourceX = p_position->m_x;
 	int sourceEnd = width - 1 + sourceX;
-	int stride = (short) (m_screenSize.m_width / 4);
+	int stride = m_screenSize.m_width / 4;
 	int row = p_position->m_y;
 	unsigned char* destination = m_frameBuffer + p_rect->m_y * stride;
 	int i = 0;
@@ -113,7 +112,7 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 			int offset = sourceX + plane;
 			if (offset <= sourceEnd) {
 				int count = (sourceEnd - offset) / 4 + 1;
-				SetPlaneWriteMask((unsigned char) (1 << (x & PLANAR_DIB_PLANE_INDEX_MASK)));
+				SetPlaneWriteMask(1 << (x & PLANAR_DIB_PLANE_INDEX_MASK));
 				ExtractPlaneBytes(destination + x / 4, source + offset, count);
 			}
 			plane++;
