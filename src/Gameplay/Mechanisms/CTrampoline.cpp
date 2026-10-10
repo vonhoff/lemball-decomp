@@ -112,8 +112,8 @@ int CTrampoline::TryEnableNearPosition(const AICOORD& p_position, CGameObject* p
 		m_enabled = 1;
 		m_lastMovementTick = g_dwGameTick;
 		m_stateTimer = g_dwSimulationTimestamp;
-		m_position.m_xFixed = p_position.m_xFixed + TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED;
-		m_position.m_yFixed = p_position.m_yFixed + TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED;
+		m_position.m_xFixed = (int) ((unsigned int) p_position.m_xFixed + TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED);
+		m_position.m_yFixed = (int) ((unsigned int) p_position.m_yFixed + TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED);
 		int z = p_position.m_zFixed;
 		m_position.m_zFixed = z;
 		m_relocationZ = z >> FIXED_POINT_FRACTION_BITS;
@@ -150,7 +150,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 								  CFixed(p_object->m_flightVelocity.m_yFixed),
 								  CFixed(p_object->m_flightVelocity.m_zFixed)};
 	if (incomingVelocity[2].m_value < 0) {
-		incomingVelocity[2].m_value = -incomingVelocity[2].m_value;
+		incomingVelocity[2].m_value = (int) (0U - (unsigned int) incomingVelocity[2].m_value);
 	}
 
 	if (incomingVelocity[1].m_value != 0) {
@@ -158,7 +158,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			CFixed impulse[3] = {CFixed(0),
 								 CFixed(TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
 								 CFixed(TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED)};
-			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
+			CFixed bouncedX((int) ((unsigned int) incomingVelocity[0].m_value + (unsigned int) impulse[0].m_value));
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
 			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
@@ -170,7 +170,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			CFixed impulse[3] = {CFixed(0),
 								 CFixed(-TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
 								 CFixed(TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED)};
-			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
+			CFixed bouncedX((int) ((unsigned int) incomingVelocity[0].m_value + (unsigned int) impulse[0].m_value));
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
 			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
@@ -184,7 +184,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			CFixed impulse[3] = {CFixed(TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
 								 CFixed(0),
 								 CFixed(TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED)};
-			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
+			CFixed bouncedX((int) ((unsigned int) incomingVelocity[0].m_value + (unsigned int) impulse[0].m_value));
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
 			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
@@ -196,7 +196,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			CFixed impulse[3] = {CFixed(-TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
 								 CFixed(0),
 								 CFixed(TRAMPOLINE_VERTICAL_BOUNCE_IMPULSE_FIXED)};
-			CFixed bouncedX(incomingVelocity[0].m_value + impulse[0].m_value);
+			CFixed bouncedX((int) ((unsigned int) incomingVelocity[0].m_value + (unsigned int) impulse[0].m_value));
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
 			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
@@ -222,7 +222,9 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 		flightVelocity.m_zFixed = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
 
-	AICOORD position(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed + TRAMPOLINE_SURFACE_HEIGHT_FIXED);
+	AICOORD position(m_position.m_xFixed,
+					 m_position.m_yFixed,
+					 (int) ((unsigned int) m_position.m_zFixed + TRAMPOLINE_SURFACE_HEIGHT_FIXED));
 	p_object->m_position = position;
 	p_object->StartFly(flightVelocity, NULL);
 	p_object->m_balloonPostId = 1;

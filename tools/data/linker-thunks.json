@@ -23951,8 +23951,8 @@
       "caller": 4369296,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTrampoline.cpp.obj",
       "symbol": "?Hit@CTrampoline@@QAEHABVAICOORD@@PAVCGameObject@@@Z",
-      "size": 959,
-      "fingerprint": "fc426f3d11880b4f43e72886ff3bef086e6a7a4272399476ba33dc530ae5c78b",
+      "size": 960,
+      "fingerprint": "18ac44f31b16c5533958c8519cb042f09efcd10581ca5688677e7ca72e9c0cdb",
       "references": [
         {
           "offset": 255,
@@ -24039,14 +24039,14 @@
           "source_symbol": "??0C3DVector@@QAE@ABVCFixed@@00@Z"
         },
         {
-          "offset": 872,
+          "offset": 873,
           "original_instruction": 4370178,
           "original_bytes": "e83f75fdff",
           "thunk": 4203590,
           "source_symbol": "?ResetInstructions@CGameObject@@QAEXXZ"
         },
         {
-          "offset": 927,
+          "offset": 928,
           "original_instruction": 4370233,
           "original_bytes": "e8e47ffdff",
           "thunk": 4206370,
