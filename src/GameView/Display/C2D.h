@@ -2,6 +2,7 @@
 #define LEMBALL_VIEWS_DISPLAY_C2D_H
 
 #include "../Pause/CPauseWindow.h"
+#include "Application/FlowProcesses.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Graphics/Primitives/CCopyColourToBackBuff.h"
 #include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
@@ -248,7 +249,7 @@ private:
 	int m_score;                                 // 0x8f0
 	int m_levelScore;                            // 0x8f4
 	unsigned long m_scoreTimestamp;              // 0x8f8
-	int m_returnState;                           // 0x8fc
+	eFlowProcesses m_returnState;                // 0x8fc
 	CPushActive m_pushActive;                    // 0x900
 	CPopActive m_popActive;                      // 0x908
 	unsigned int m_viewOrientation;              // 0x90c

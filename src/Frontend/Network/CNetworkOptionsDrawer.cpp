@@ -1355,7 +1355,7 @@ bool CNetworkOptionsDrawer::AcceptingLock()
 			g_pActiveConnection = connections[m_acceptedPlayer];
 			skill = 4;
 			m_quitYet = true;
-			m_returnState = skill;
+			m_returnState = FLOW_PREVIEW;
 			status = g_pGameStatus;
 			status->m_level = status->m_lastLevels[4];
 			status->m_skill = skill;

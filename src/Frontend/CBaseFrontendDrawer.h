@@ -111,7 +111,7 @@ protected:
 	bool m_backBufferReady;                // 0x368
 	int m_framePrimitiveCount;             // 0x36c
 	eFlowProcesses m_flowProcess;          // 0x370
-	int m_returnState;                     // 0x374
+	eFlowProcesses m_returnState;          // 0x374
 	bool m_quitYet;                        // 0x378
 	CVSSize m_size;                        // 0x37c
 	CVSPoint m_animPosition;               // 0x380

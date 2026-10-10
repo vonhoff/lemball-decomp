@@ -25,7 +25,7 @@ public:
 
 private:
 	unsigned int m_completionSequence; // 0x398
-	int m_nextFlow;                    // 0x39c
+	eFlowProcesses m_nextFlow;         // 0x39c
 	CClipRect m_backgroundRect;        // 0x3a0
 	unsigned int m_unk0x3b0;           // 0x3b0
 	int m_startCountdown;              // 0x3b4

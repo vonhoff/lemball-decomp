@@ -1,6 +1,7 @@
 #ifndef LEMBALL_FRONTEND_SUPPORT_CABOUTSCREEN_H
 #define LEMBALL_FRONTEND_SUPPORT_CABOUTSCREEN_H
 
+#include "Application/FlowProcesses.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
@@ -37,7 +38,7 @@ public:
 	friend class CMain2DDisplay;
 
 private:
-	unsigned int m_returnState;     // 0x14
+	eFlowProcesses m_returnState;   // 0x14
 	CVSSize m_size;                 // 0x18
 	CMain2DDisplay* m_display;      // 0x1c
 	CGDI* m_gdi;                    // 0x20
