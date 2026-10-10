@@ -82,7 +82,7 @@ enum eMainDisplayMenuAction {
 // FUNCTION: LEMBALL 0x00431590
 CMain2DDisplay::CMain2DDisplay(CGame* p_game)
 {
-	m_quitRequested = 0;
+	m_quitRequested = false;
 	m_loadingDraw = NULL;
 	m_frameCount = 0;
 	m_game = p_game;
@@ -416,7 +416,7 @@ int CMain2DDisplay::ProcessMsg(tagMESSAGE* p_message)
 		default:
 			return 1;
 		case MAIN_MENU_EXIT:
-			m_quitRequested = 1;
+			m_quitRequested = true;
 			break;
 		case MAIN_MENU_HELP_CONTENTS:
 			helpPath[0] = 0;

@@ -64,7 +64,7 @@ private:
 	unsigned int m_drawerClosing;   // 0xbc
 	CGame* m_game;                  // 0xc0
 	void* m_ai;                     // 0xc4
-	unsigned int m_quitRequested;   // 0xc8
+	bool m_quitRequested;           // 0xc8
 	eFlowProcesses m_currentFlow;   // 0xcc
 	CDrawingMark m_drawingMark;     // 0xd0
 	class CDrawer* m_drawer;        // 0xd4

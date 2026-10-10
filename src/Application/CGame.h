@@ -30,7 +30,7 @@ private:
 	CTimeStat* m_refreshingStat;                  // 0x54
 	unsigned int m_flowTicks;                     // 0x58
 	CProcess* m_process;                          // 0x5c
-	unsigned int m_quit;                          // 0x60
+	bool m_quit;                                  // 0x60
 	CMain2DDisplay* m_mainDisplay;                // 0x64
 	eFlowProcesses m_currentFlow;                 // 0x68
 	CFrontendResourceLoader* m_frontendResources; // 0x6c

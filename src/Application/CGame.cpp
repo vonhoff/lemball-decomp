@@ -134,7 +134,7 @@ CGame::CGame(char* p_runtimeFileName)
 	m_mainDisplay = NULL;
 	g_pMogRes = NULL;
 	g_pSoundView = NULL;
-	m_quit = 1;
+	m_quit = true;
 	m_process = NULL;
 
 #if LEMBALL_ENFORCE_STARTUP_CHECKS
@@ -210,7 +210,7 @@ CGame::CGame(char* p_runtimeFileName)
 		memcpy(m_runtimeName + strlen(m_runtimeName), g_szDefaultRuntimeFile, sizeof(g_szDefaultRuntimeFile));
 	}
 
-	m_quit = 0;
+	m_quit = false;
 }
 
 // FUNCTION: LEMBALL 0x004071d0
@@ -463,7 +463,7 @@ void CGame::Process()
 			NextProcess((eFlowProcesses) m_process->m_returnState);
 			break;
 		case PROCESS_RESULT_QUIT:
-			m_quit = 1;
+			m_quit = true;
 			break;
 		}
 	}
@@ -476,7 +476,7 @@ void CGame::Process()
 		NextProcess((eFlowProcesses) m_mainDisplay->GetReturnState());
 		break;
 	case DISPLAY_QUIT_APPLICATION:
-		m_quit = 1;
+		m_quit = true;
 		break;
 	}
 
@@ -545,7 +545,7 @@ void CGame::Run()
 			RefreshViews();
 			break;
 		case EVENT_PUMP_QUIT:
-			m_quit = 1;
+			m_quit = true;
 			break;
 		}
 	}
