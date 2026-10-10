@@ -401,7 +401,7 @@ void CEnemy::Fire()
 	start.m_xFixed = m_position.m_xFixed;
 	int facing = m_facingDirection;
 	start.m_yFixed = m_position.m_yFixed;
-	start.m_zFixed = m_position.m_zFixed + ENEMY_MUZZLE_HEIGHT_FIXED;
+	start.m_zFixed = (unsigned int) m_position.m_zFixed + ENEMY_MUZZLE_HEIGHT_FIXED;
 
 	g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, facing, start, m_fireTarget);
 	m_fireState = ENEMY_FIRE_FIRED;
@@ -420,8 +420,8 @@ void CEnemy::EndFiring()
 	m_fireState = ENEMY_FIRE_IDLE;
 	int width = g_pMap->m_ground.m_width;
 	int height = g_pMap->m_ground.m_height;
-	int pixelWidth = width << GROUND_BLOCK_PIXEL_SHIFT;
-	int pixelHeight = height << GROUND_BLOCK_PIXEL_SHIFT;
+	int pixelWidth = (unsigned int) width << GROUND_BLOCK_PIXEL_SHIFT;
+	int pixelHeight = (unsigned int) height << GROUND_BLOCK_PIXEL_SHIFT;
 	int x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) + g_enemyFacingOffsets[m_facingDirection].m_dx;
 	int y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) + g_enemyFacingOffsets[m_facingDirection].m_dy;
 	if (x >= 0 && y >= 0 && x < pixelWidth && y < pixelHeight) {
@@ -434,13 +434,13 @@ void CEnemy::EndFiring()
 			groundZ = 0;
 		}
 		else {
-			groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
-																		   y & GROUND_BLOCK_PIXEL_MASK);
+			groundZ = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
+																						  y & GROUND_BLOCK_PIXEL_MASK);
 		}
 		if (groundZ == z) {
 			if ((MapCheck(x, y) & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
-				m_position.m_xFixed = x << FIXED_POINT_FRACTION_BITS;
-				m_position.m_yFixed = y << FIXED_POINT_FRACTION_BITS;
+				m_position.m_xFixed = (unsigned int) x << FIXED_POINT_FRACTION_BITS;
+				m_position.m_yFixed = (unsigned int) y << FIXED_POINT_FRACTION_BITS;
 			}
 		}
 	}

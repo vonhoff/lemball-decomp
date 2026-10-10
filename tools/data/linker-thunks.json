@@ -20609,11 +20609,11 @@
       "caller": 4327200,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CEnemy.cpp.obj",
       "symbol": "?GetHit@CEnemy@@UAEXXZ",
-      "size": 121,
-      "fingerprint": "18db15ed69393f8113a4c36b8819f72f1d70129752caf25cd3ddb96363918de7",
+      "size": 117,
+      "fingerprint": "024ffafa49656b847a9919841443ff3babb79f1bcbb8bb22ba86754ee7e0833e",
       "references": [
         {
-          "offset": 112,
+          "offset": 108,
           "original_instruction": 4327308,
           "original_bytes": "e89127feff",
           "thunk": 4206370,
