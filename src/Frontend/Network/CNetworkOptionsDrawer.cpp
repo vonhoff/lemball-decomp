@@ -680,7 +680,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(tagMESSAGE* p_message)
 		return false;
 	}
 
-	switch ((int) p_message->m_type) {
+	switch (p_message->m_type) {
 	case MESSAGE_KEY_DOWN: {
 
 		code = p_message->m_code;
@@ -817,7 +817,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(tagMESSAGE* p_message)
 		}
 		return false;
 	case MESSAGE_BUTTON_RELEASED:
-		switch ((unsigned int) p_message->m_code) {
+		switch (p_message->m_code) {
 		case NETWORK_OPTIONS_BUTTON_MESSAGE_LAN:
 			if (m_locked == 0) {
 				Start(NETWORK_OPTIONS_MODE_LAN);
