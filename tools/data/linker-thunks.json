@@ -30076,18 +30076,18 @@
       "caller": 4442432,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?DrawBalloon@C2D@@QAEXAAVCViewData@@H@Z",
-      "size": 170,
-      "fingerprint": "2369bc1a85389b30a2fcd1f29d7e7542ea9ac3c219b233fbc5e094fb51d4139e",
+      "size": 172,
+      "fingerprint": "21f4abe216e2f975c6fb848c539dc75456ca9fa4ab77edd1340b7f35466488a0",
       "references": [
         {
-          "offset": 134,
+          "offset": 136,
           "original_instruction": 4442565,
           "original_bytes": "e8df4cfcff",
           "thunk": 4200105,
           "source_symbol": "?DrawAnim@CLemmingAnimsManager@@QAEXFFKKKPAVCRemap@@@Z"
         },
         {
-          "offset": 158,
+          "offset": 160,
           "original_instruction": 4442589,
           "original_bytes": "e8c74cfcff",
           "thunk": 4200105,
