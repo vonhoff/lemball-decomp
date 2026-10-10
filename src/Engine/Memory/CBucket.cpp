@@ -137,8 +137,8 @@ bool CBucket::Free(unsigned char* p_memory)
 	}
 	int index = (p_memory - current->m_memory) / (int) current->m_blockSize;
 	tagBOFFSET offset;
-	offset.m_wWord = (short) (index / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD);
-	offset.m_wBit = (short) (index % SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD);
+	offset.m_wWord = index / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
+	offset.m_wBit = index % SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
 	unsigned short oldFlags = current->m_flags;
 	current->m_map[offset.m_wWord] &= ~g_bitMasks[offset.m_wBit];
 	current->m_freeBytes += current->m_blockSize;
