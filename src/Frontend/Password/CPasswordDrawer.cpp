@@ -162,8 +162,8 @@ CPasswordDrawer::CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVS
 
 	encoded = g_pGameStatus->EncodePassword();
 	strcpy(m_password, encoded);
-	m_passwordValid = 0;
-	m_passwordSubmitted = 0;
+	m_passwordValid = false;
+	m_passwordSubmitted = false;
 	m_passwordLength = 10;
 	m_selectedButton = 4;
 	m_drawBackground = 1;
@@ -288,7 +288,7 @@ void CPasswordDrawer::DrawAnims()
 // FUNCTION: LEMBALL 0x00451630
 void CPasswordDrawer::ShiftHilite(int p_delta)
 {
-	if (m_passwordSubmitted == 1) {
+	if (m_passwordSubmitted == true) {
 		return;
 	}
 	CVSPoint pt;
@@ -412,7 +412,7 @@ bool CPasswordDrawer::ProcessMessages(tagMESSAGE* p_message)
 // FUNCTION: LEMBALL 0x00451a70
 void CPasswordDrawer::Processing()
 {
-	if (m_passwordSubmitted != 0) {
+	if (m_passwordSubmitted) {
 		if (CurrentMilliTimer() > m_returnDeadline) {
 			m_quitYet = 1;
 			m_returnState = FLOW_MAIN_OPTIONS_1;
@@ -452,8 +452,8 @@ void CPasswordDrawer::DrawText()
 		labelPos++;
 		textPtr = textPtr + 6;
 	} while (textPtr < g_abPasswordLevelText + 24);
-	if (m_passwordSubmitted == 1) {
-		if (m_passwordValid == 1) {
+	if (m_passwordSubmitted == true) {
+		if (m_passwordValid == true) {
 			CVSSize advance;
 			CVSPoint position((short) m_layout->m_resultPosition.m_x, (short) m_layout->m_resultPosition.m_y);
 			m_textManager
@@ -490,7 +490,7 @@ void CPasswordDrawer::DrawPassword()
 // FUNCTION: LEMBALL 0x00451d20
 void CPasswordDrawer::ButtonNumeric(int p_button)
 {
-	if (m_passwordSubmitted == 1) {
+	if (m_passwordSubmitted == true) {
 		return;
 	}
 
@@ -530,7 +530,7 @@ void CPasswordDrawer::ButtonNumeric(int p_button)
 		g_pGameStatus->GotoLastLevels();
 		g_pSoundView->PlayEffect(m_passwordValid ? SFX_ROPESLID : SFX_ELECCY);
 		m_submitTime = CurrentMilliTimer();
-		m_passwordSubmitted = 1;
+		m_passwordSubmitted = true;
 		m_returnDeadline = m_submitTime + PASSWORD_RETURN_DELAY_MS;
 		break;
 	default:

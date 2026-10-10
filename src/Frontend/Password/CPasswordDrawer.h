@@ -71,8 +71,8 @@ private:
 	int m_hiliteX;                         // 0x478
 	int m_hiliteY;                         // 0x47c
 	int m_selectedButton;                  // 0x480
-	unsigned int m_passwordValid;          // 0x484
-	unsigned int m_passwordSubmitted;      // 0x488
+	bool m_passwordValid;                  // 0x484
+	bool m_passwordSubmitted;              // 0x488
 	unsigned long m_submitTime;            // 0x48c
 	unsigned long m_returnDeadline;        // 0x490
 };
