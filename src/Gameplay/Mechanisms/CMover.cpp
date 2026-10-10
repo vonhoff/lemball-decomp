@@ -45,12 +45,12 @@ void CMover::Restart()
 void CMover::Initialise()
 {
 	m_stateTimer = 0;
-	m_active = 0;
+	m_active = false;
 	m_moving = 0;
 	m_movementMode = MOVER_MODE_AUTOMATIC;
-	m_switchRequested = 0;
+	m_switchRequested = false;
 	m_objectCount = 0;
-	m_findOccupants = 1;
+	m_findOccupants = true;
 	m_action = ACTION_READY;
 }
 
@@ -120,7 +120,7 @@ void CMover::Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode,
 		z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
 	}
 
-	m_active = 1;
+	m_active = true;
 	m_actionArgument = (short) p_pathId;
 	m_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 	m_startNode = p_startNode;
@@ -230,7 +230,7 @@ bool CMover::Process()
 		return true;
 	}
 	if (m_findOccupants != 0) {
-		m_findOccupants = 0;
+		m_findOccupants = false;
 		FindObjectsOnTopOfMe();
 	}
 	bool local = g_pActiveConnection == NULL || g_pActiveConnection->m_isHost != 0;
@@ -356,7 +356,7 @@ bool CMover::Process()
 	case ACTION_MOVER_WAITING_FOR_SWITCH:
 		if (m_switchRequested != 0) {
 			Action(ACTION_TURNING);
-			m_switchRequested = 0;
+			m_switchRequested = false;
 		}
 	}
 	return true;
@@ -365,7 +365,7 @@ bool CMover::Process()
 // FUNCTION: LEMBALL 0x0042eeb0
 void CMover::Switch()
 {
-	m_switchRequested = 1;
+	m_switchRequested = true;
 }
 
 // FUNCTION: LEMBALL 0x0042eec0

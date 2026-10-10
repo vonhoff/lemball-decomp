@@ -39,17 +39,17 @@ public:
 private:
 	bool AlwaysFalse(unsigned int p_arg0, unsigned int p_arg1);
 
-	unsigned int m_active;          // 0x138
-	unsigned int m_moving;          // 0x13c
-	unsigned int m_findOccupants;   // 0x140
-	unsigned int m_movementMode;    // 0x144
-	unsigned int m_switchRequested; // 0x148
-	CMove3d m_motion;               // 0x14c
-	int m_startNode;                // 0x168
-	int m_nodeCount;                // 0x16c
-	int m_currentNode;              // 0x170
-	int m_objectCount;              // 0x174
-	CGameObject* m_objects[10];     // 0x178
+	bool m_active;               // 0x138
+	unsigned int m_moving;       // 0x13c
+	bool m_findOccupants;        // 0x140
+	unsigned int m_movementMode; // 0x144
+	bool m_switchRequested;      // 0x148
+	CMove3d m_motion;            // 0x14c
+	int m_startNode;             // 0x168
+	int m_nodeCount;             // 0x16c
+	int m_currentNode;           // 0x170
+	int m_objectCount;           // 0x174
+	CGameObject* m_objects[10];  // 0x178
 };
 
 // SYNTHETIC: LEMBALL 0x0042fbd0
