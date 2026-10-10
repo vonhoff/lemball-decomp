@@ -493,7 +493,7 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 		if (blockX < width && map->m_ground.m_height > blockY) {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
+			z = map->m_ground.m_ground[(int) ((unsigned int) blockY * width + blockX)].GetZ(x, y);
 		}
 		else {
 			z = 0;
@@ -603,8 +603,9 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 		if (x >= 0 && y >= 0) {
 			int width = map->m_ground.m_width;
 			if (blockX < width && map->m_ground.m_height > blockY) {
-				z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
-																		 y & GROUND_BLOCK_PIXEL_MASK);
+				z = map->m_ground.m_ground[(int) ((unsigned int) blockY * width + blockX)].GetZ(
+					x & GROUND_BLOCK_PIXEL_MASK,
+					y & GROUND_BLOCK_PIXEL_MASK);
 			}
 			else {
 				z = 0;
