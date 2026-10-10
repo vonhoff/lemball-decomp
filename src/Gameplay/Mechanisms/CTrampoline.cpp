@@ -48,8 +48,8 @@ void CTrampoline::Restart()
 {
 	CGlobalGameObject::Restart();
 	m_stateTimer = 0;
-	m_enabled = 0;
-	m_active = 0;
+	m_enabled = false;
+	m_active = false;
 }
 
 // FUNCTION: LEMBALL 0x0042a9d0
@@ -65,8 +65,8 @@ void CTrampoline::Set(unsigned short p_id, const AICOORD& p_position)
 	m_position.m_yFixed = p_position.m_yFixed;
 	m_position.m_zFixed = p_position.m_zFixed;
 	m_action = ACTION_READY;
-	m_active = 1;
-	m_enabled = 1;
+	m_active = true;
+	m_enabled = true;
 
 	int blockX = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (blockX >= 0) {
@@ -110,7 +110,7 @@ int CTrampoline::TryEnableNearPosition(const AICOORD& p_position, CGameObject* p
 					   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
 					   p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 					   p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) < TRAMPOLINE_ACTIVATION_RADIUS_PIXELS) {
-		m_enabled = 1;
+		m_enabled = true;
 		m_lastMovementTick = g_dwGameTick;
 		m_stateTimer = g_dwSimulationTimestamp;
 		m_position.m_xFixed = (int) ((unsigned int) p_position.m_xFixed + TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED);
