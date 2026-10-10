@@ -62,7 +62,7 @@ CAnimsManager::CAnimsManager(CGDI* p_gdi,
 	m_zrleCount = 0;
 	m_gdi = p_gdi;
 	m_resourceCapacity = p_resourceCapacity;
-	m_resourceIdCount = (int) p_resourceIdCount;
+	m_resourceIdCount = p_resourceIdCount;
 	m_animPrimitives = NULL;
 	m_zrlePrimitives = NULL;
 	m_previousGdi = NULL;
@@ -75,7 +75,7 @@ CAnimsManager::CAnimsManager(CGDI* p_gdi,
 		m_resources[i] = NULL;
 	}
 	for (i = 0; i < m_resourceIdCount; i++) {
-		m_resourceSlots[i] = (short) m_resourceCapacity;
+		m_resourceSlots[i] = m_resourceCapacity;
 	}
 	if (m_doubleBuffered != 0) {
 		m_bufferHalf = ANIMATION_BUFFER_HALF_FIRST;
@@ -159,8 +159,8 @@ void CAnimsManager::LoadAnims(unsigned long p_resourceId)
 	if (resource == NULL) {
 		resource = CResZRLE::Load(resourceId);
 	}
-	if ((int) owner->m_resourceSlots[resourceId] == owner->m_resourceCapacity) {
-		owner->m_resourceSlots[resourceId] = (short) slot;
+	if (owner->m_resourceSlots[resourceId] == owner->m_resourceCapacity) {
+		owner->m_resourceSlots[resourceId] = slot;
 		owner->m_loadedResourceCount = owner->m_loadedResourceCount + 1;
 	}
 }
@@ -170,7 +170,7 @@ void CAnimsManager::UnLoadAnims(unsigned long p_resourceId)
 {
 	m_resources[m_resourceSlots[p_resourceId]]->UnLoad();
 	m_resources[m_resourceSlots[p_resourceId]] = NULL;
-	m_resourceSlots[p_resourceId] = (short) m_resourceCapacity;
+	m_resourceSlots[p_resourceId] = m_resourceCapacity;
 	m_loadedResourceCount = m_loadedResourceCount - 1;
 }
 
@@ -227,8 +227,8 @@ CVSSize CAnimsManager::GetMaxAnimSize(unsigned long p_resourceId)
 CVSSize CAnimsManager::GetMaxAnimHalfSize(unsigned long p_resourceId)
 {
 	const CVSSize& size = GetMaxAnimSize(p_resourceId);
-	short height = (short) (size.m_height / 2);
-	return CVSSize((short) (size.m_width / 2), height);
+	short height = size.m_height / 2;
+	return CVSSize(size.m_width / 2, height);
 }
 
 // FUNCTION: LEMBALL 0x004676a0
