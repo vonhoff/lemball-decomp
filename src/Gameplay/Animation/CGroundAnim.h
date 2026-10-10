@@ -38,7 +38,7 @@ public:
 	void AddStaticGroundAnim(const tCoord3d& p_coordinate);
 
 private:
-	unsigned int m_nextProcessTick;                        // 0x0000
+	unsigned long m_nextProcessTick;                       // 0x0000
 	int m_count;                                           // 0x0004
 	GroundAnimEntry m_entries[GROUND_ANIM_ENTRY_CAPACITY]; // 0x0008
 	bool m_needsValidation;                                // 0x12c8

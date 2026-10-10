@@ -1,6 +1,5 @@
 #include "CGroundAnim.h"
 
-#include "Gameplay/Animation/CGroundAnim.h"
 #include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/GameTime.h"
@@ -21,7 +20,7 @@ CGroundAnim::CGroundAnim()
 // FUNCTION: LEMBALL 0x0040cf10
 void CGroundAnim::Restart()
 {
-	unsigned int currentTick = g_dwGameTick;
+	unsigned long currentTick = g_dwGameTick;
 	m_count = 0;
 	m_needsValidation = true;
 	m_nextProcessTick = currentTick + GROUND_ANIM_PROCESS_INTERVAL_TICKS;
