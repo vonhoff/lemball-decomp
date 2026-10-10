@@ -24784,25 +24784,25 @@
       "caller": 4380000,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Switched@CIce@@QAEXXZ",
-      "size": 563,
-      "fingerprint": "1c5a07648924b27428132d3d0107cd1d045b8bb6a8f0bea491b6e3f51a7939cb",
+      "size": 556,
+      "fingerprint": "5e9cadfd075c489a4e8c53d0b17154d853274fbd029e8c79f634a14316fcc81d",
       "references": [
         {
-          "offset": 268,
+          "offset": 261,
           "original_instruction": 4380262,
           "original_bytes": "e83a53fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 489,
+          "offset": 482,
           "original_instruction": 4380490,
           "original_bytes": "e85652fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 530,
+          "offset": 523,
           "original_instruction": 4380531,
           "original_bytes": "e8a55cfdff",
           "thunk": 4207645,

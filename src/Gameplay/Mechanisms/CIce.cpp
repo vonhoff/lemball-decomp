@@ -431,15 +431,16 @@ void CIce::Switched()
 					int y = (current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 					int x = (current.m_xFixed >> FIXED_POINT_FRACTION_BITS);
 					CMap* map = g_pMap;
+					int width;
 					int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
 					int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-					if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+					if (x < 0 || y < 0 || bx >= (width = map->m_ground.m_width) || by >= g_pMap->m_ground.m_height) {
 						groundZ = 0;
 					}
 					else {
 						x &= 15;
 						y &= 15;
-						groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x, y);
+						groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
 					}
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
@@ -459,15 +460,16 @@ void CIce::Switched()
 				int y = (current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 				int x = (current.m_xFixed >> FIXED_POINT_FRACTION_BITS);
 				CMap* map = g_pMap;
+				int width;
 				int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
 				int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-				if (x < 0 || y < 0 || bx >= map->m_ground.m_width || by >= map->m_ground.m_height) {
+				if (x < 0 || y < 0 || bx >= (width = g_pMap->m_ground.m_width) || by >= g_pMap->m_ground.m_height) {
 					groundZ = 0;
 				}
 				else {
 					x &= 15;
 					y &= 15;
-					groundZ = map->m_ground.m_ground[by * map->m_ground.m_width + bx].GetZ(x, y);
+					groundZ = map->m_ground.m_ground[by * width + bx].GetZ(x, y);
 				}
 			}
 			if ((current.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
