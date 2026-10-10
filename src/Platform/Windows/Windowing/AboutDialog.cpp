@@ -76,28 +76,28 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 	int y;
 
 	GetWindowRect((HWND) p_window, &windowRect);
-	width = windowRect.right - windowRect.left;
-	height = windowRect.bottom - windowRect.top;
+	width = (int) ((unsigned int) windowRect.right - windowRect.left);
+	height = (int) ((unsigned int) windowRect.bottom - windowRect.top);
 	GetWindowRect((HWND) p_parent, &parentRect);
-	parentWidth = parentRect.right - parentRect.left;
-	parentHeight = parentRect.bottom - parentRect.top;
+	parentWidth = (int) ((unsigned int) parentRect.right - parentRect.left);
+	parentHeight = (int) ((unsigned int) parentRect.bottom - parentRect.top);
 	dc = GetDC((HWND) p_window);
 	screenWidth = GetDeviceCaps(dc, HORZRES);
 	screenHeight = GetDeviceCaps(dc, VERTRES);
 	ReleaseDC((HWND) p_window, dc);
-	x = parentRect.left + (parentWidth - width) / 2;
+	x = (int) ((unsigned int) parentRect.left + (int) ((unsigned int) parentWidth - width) / 2);
 	if (x < 0) {
 		x = 0;
 	}
-	else if (screenWidth < width + x) {
-		x = screenWidth - width;
+	else if (screenWidth < (int) ((unsigned int) width + x)) {
+		x = (int) ((unsigned int) screenWidth - width);
 	}
-	y = (parentHeight - height) / 2 + parentRect.top;
+	y = (int) ((int) ((unsigned int) parentHeight - height) / 2 + (unsigned int) parentRect.top);
 	if (y < 0) {
 		y = 0;
 	}
-	else if (screenHeight < height + y) {
-		y = screenHeight - height;
+	else if (screenHeight < (int) ((unsigned int) height + y)) {
+		y = (int) ((unsigned int) screenHeight - height);
 	}
 	SetWindowPos((HWND) p_window, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
