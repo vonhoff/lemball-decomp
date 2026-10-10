@@ -83,7 +83,7 @@ CEnemy::CEnemy(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
 		width = map->m_ground.m_width;
 		int pixelX = p_x & GROUND_BLOCK_PIXEL_MASK;
 		int pixelY = p_y & GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(pixelX, pixelY);
+		z = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(pixelX, pixelY);
 	}
 	m_initialFacingDirection = p_facingDirection;
 	m_spawnPosition.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
@@ -342,8 +342,8 @@ bool CEnemy::CheckRadius(int p_radius)
 // FUNCTION: LEMBALL 0x004202a0
 bool CEnemy::LineOfSight(AICOORD p_target)
 {
-	int deltaX = p_target.m_xFixed - m_position.m_xFixed;
-	int deltaY = p_target.m_yFixed - m_position.m_yFixed;
+	int deltaX = (unsigned int) p_target.m_xFixed - m_position.m_xFixed;
+	int deltaY = (unsigned int) p_target.m_yFixed - m_position.m_yFixed;
 	int absX = VsAbs(deltaX);
 	int absY = VsAbs(deltaY);
 	int fraction;
@@ -351,7 +351,7 @@ bool CEnemy::LineOfSight(AICOORD p_target)
 	fraction = (low * ENEMY_LOS_MIN_RATIO_FIXED) >> FIXED_POINT_FRACTION_BITS;
 	int high = absY >> FIXED_POINT_FRACTION_BITS;
 	if (high * ENEMY_LOS_MIN_RATIO_FIXED + fraction < absX) {
-		if ((high * ENEMY_LOS_MAX_RATIO_HALF_FIXED + low) * 2 + fraction > absX) {
+		if ((int) (((unsigned int) high * ENEMY_LOS_MAX_RATIO_HALF_FIXED + low) * 2 + fraction) > absX) {
 			return true;
 		}
 	}
