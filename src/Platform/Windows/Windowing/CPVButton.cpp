@@ -62,16 +62,9 @@ void CPVButton::OnVisibilityChange()
 CPVButton::CPVButton(const CVSRect& p_bounds, CPVGWnd* p_ownerWindow)
 	: CHotAreaHandler(CVSRect(0, 0, p_bounds.m_width, p_bounds.m_height))
 {
-	const CVSRect* rect = &p_bounds;
-	const short* position;
-	if (rect != NULL) {
-		position = &rect->m_x;
-	}
-	else {
-		position = NULL;
-	}
-	m_buttonPosition.m_x = *position;
-	m_buttonPosition.m_y = position[1];
+	const CVSPoint* position = &p_bounds;
+	m_buttonPosition.m_x = position->m_x;
+	m_buttonPosition.m_y = position->m_y;
 	m_ownerWindow = p_ownerWindow;
 	Initialise();
 }
