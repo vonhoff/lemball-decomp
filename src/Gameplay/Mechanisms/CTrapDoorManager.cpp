@@ -126,7 +126,7 @@ int CTrapDoorManager::GetTrapDoorPosition(AICOORD& p_position, int p_index)
 		y &= GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 	}
-	p_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
+	p_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 	return 1;
 }
 
@@ -177,7 +177,7 @@ void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 				y &= GROUND_BLOCK_PIXEL_MASK;
 				z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 			}
-			position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
+			position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 			selections[i] = *(unsigned short*) data;
 			data += sizeof(unsigned short);
 			if (p_skip == 0) {
