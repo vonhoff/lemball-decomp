@@ -25156,17 +25156,17 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?FindObjectsOnTopOfMe@CMover@@QAEXXZ",
       "size": 192,
-      "fingerprint": "4595833424c76af8b159fb28322f309eac4d13f20ae4385b413bc3278c9f3baa",
+      "fingerprint": "1b8482be174575db1dba8decdf581862be4afe79b9b45fa3eb5d8d57c1fe0a6c",
       "references": [
         {
-          "offset": 84,
+          "offset": 86,
           "original_instruction": 4385236,
           "original_bytes": "e8bb2dfdff",
           "thunk": 4200340,
           "source_symbol": "?GetId@CGameObject@@QAEFXZ"
         },
         {
-          "offset": 97,
+          "offset": 99,
           "original_instruction": 4385251,
           "original_bytes": "e8ac2dfdff",
           "thunk": 4200340,
@@ -25216,7 +25216,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?Process@CMover@@UAEHXZ",
       "size": 937,
-      "fingerprint": "cee09ae8e595df9b27e6452755cdd4e0bb669d5df0946e8808417e6903ae913e",
+      "fingerprint": "b5b2e6a0fee7b5def7abfebe6f0a48b2274c3241426474a84bda00703365d8a9",
       "references": [
         {
           "offset": 52,
@@ -25360,7 +25360,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?StopObjectsMoving@CMover@@QAEXXZ",
       "size": 73,
-      "fingerprint": "8a8414687ea50ae587841f8b7b53ad261ca3beab5a3d4e6a7af74b860e4ebf0b",
+      "fingerprint": "0db00f25c493fc7bba24bc5154371408cf533f93f91cfd17a5d4588f6f86803d",
       "references": [
         {
           "offset": 34,

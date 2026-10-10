@@ -182,21 +182,20 @@ void CMover::SetUpNextNode(unsigned long p_time)
 void CMover::FindObjectsOnTopOfMe()
 {
 	int objectCount = g_wObjectCount;
-	const int& minX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
-	CMover* const& mover = this;
-	const int& maxX = minX + 15;
+	const int minX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
+	const int maxX = minX + 15;
 	int minY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
-	const int& maxY = minY + 15;
+	const int maxY = minY + 15;
 	int index = 0;
 	if (objectCount > 0) {
 		do {
 			CGameObject* object = g_pObjects[(unsigned short) index];
-			if (object != NULL && object->GetId() != (short) INVALID_OBJECT_ID && mover->GetId() != object->GetId() &&
+			if (object != NULL && object->GetId() != (short) INVALID_OBJECT_ID && GetId() != object->GetId() &&
 				object->m_objectType != OBJECT_SHEEP) {
 				int objectX = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 				int objectY = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 				if (objectX >= minX && objectX <= maxX && minY <= objectY && maxY >= objectY) {
-					mover->GetOn(object);
+					GetOn(object);
 				}
 			}
 			index++;
