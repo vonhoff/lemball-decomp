@@ -107,9 +107,9 @@ bool CPaintGun::Process()
 		break;
 	case ACTION_READY: {
 		int direction = m_direction;
-		m_lastMovementTick = g_dwGameTick + ((28 - direction) * MILLISECONDS_PER_SECOND) / 400;
-		m_stateTimer = g_dwSimulationTimestamp + (-direction * MILLISECONDS_PER_SECOND) / 8;
-		m_actionDeadline = g_dwGameTick + ((58 - direction) * MILLISECONDS_PER_SECOND) / 400;
+		m_lastMovementTick = g_dwGameTick + (int) ((28 - (unsigned int) direction) * MILLISECONDS_PER_SECOND) / 400;
+		m_stateTimer = g_dwSimulationTimestamp + (int) ((0U - direction) * MILLISECONDS_PER_SECOND) / 8;
+		m_actionDeadline = g_dwGameTick + (int) ((58 - (unsigned int) direction) * MILLISECONDS_PER_SECOND) / 400;
 		Action(ACTION_RUNNING);
 		break;
 	}
@@ -123,24 +123,24 @@ bool CPaintGun::Process()
 		else if (m_lastMovementTick < g_dwGameTick) {
 			AICOORD position;
 			position = m_position;
-			position.m_zFixed += PAINT_GUN_PROJECTILE_HEIGHT_OFFSET_FIXED;
+			position.m_zFixed += (unsigned int) PAINT_GUN_PROJECTILE_HEIGHT_OFFSET_FIXED;
 			AICOORD start;
 			AICOORD target;
 			start = position;
 			target = position;
 			int coordinate;
 
-			start.m_xFixed = position.m_xFixed + (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
+			start.m_xFixed = (unsigned int) position.m_xFixed + (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
 			coordinate = (position.m_xFixed >> FIXED_POINT_FRACTION_BITS) + PAINT_GUN_PROJECTILE_RANGE_PIXELS;
 			ClampUpperTargetCoordinate(coordinate);
-			target.m_xFixed = coordinate << FIXED_POINT_FRACTION_BITS;
+			target.m_xFixed = (unsigned int) coordinate << FIXED_POINT_FRACTION_BITS;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 2, start, target);
 
 			start.m_yFixed = position.m_yFixed;
 			start.m_zFixed = position.m_zFixed;
 			target.m_yFixed = position.m_yFixed;
 			target.m_zFixed = position.m_zFixed;
-			start.m_xFixed = position.m_xFixed - (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
+			start.m_xFixed = (unsigned int) position.m_xFixed - (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
 			coordinate = (position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - PAINT_GUN_PROJECTILE_RANGE_PIXELS;
 			ClampLowerTargetCoordinate(coordinate);
 			target.m_xFixed = coordinate << FIXED_POINT_FRACTION_BITS;
@@ -150,17 +150,17 @@ bool CPaintGun::Process()
 			start.m_zFixed = position.m_zFixed;
 			target.m_xFixed = position.m_xFixed;
 			target.m_zFixed = position.m_zFixed;
-			start.m_yFixed = position.m_yFixed + (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
+			start.m_yFixed = (unsigned int) position.m_yFixed + (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
 			coordinate = (position.m_yFixed >> FIXED_POINT_FRACTION_BITS) + PAINT_GUN_PROJECTILE_RANGE_PIXELS;
 			ClampUpperTargetCoordinate(coordinate);
-			target.m_yFixed = coordinate << FIXED_POINT_FRACTION_BITS;
+			target.m_yFixed = (unsigned int) coordinate << FIXED_POINT_FRACTION_BITS;
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_ENEMY, 8, start, target);
 
 			start.m_xFixed = position.m_xFixed;
 			start.m_zFixed = position.m_zFixed;
 			target.m_xFixed = position.m_xFixed;
 			target.m_zFixed = position.m_zFixed;
-			start.m_yFixed = position.m_yFixed - (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
+			start.m_yFixed = (unsigned int) position.m_yFixed - (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
 			coordinate = (position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - PAINT_GUN_PROJECTILE_RANGE_PIXELS;
 			ClampLowerTargetCoordinate(coordinate);
 			target.m_yFixed = coordinate << FIXED_POINT_FRACTION_BITS;
