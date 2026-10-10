@@ -40,10 +40,10 @@ CBaseFrontendProcess::CBaseFrontendProcess(CGame* p_game)
 	m_game = p_game;
 	m_userActionMessage = new CUserActionMessage();
 	if (g_pGameStatus->m_skill == SKILL_NETWORK && g_pActiveConnection != NULL) {
-		m_networkWasActive = 1;
+		m_networkWasActive = true;
 	}
 	else {
-		m_networkWasActive = 0;
+		m_networkWasActive = false;
 	}
 	if (g_pBaseNetwork != NULL) {
 		g_pBaseNetwork->AttachMessageQueue(this);
@@ -106,7 +106,7 @@ int CBaseFrontendProcess::ProcessMsg(tagMESSAGE* p_message)
 		return 0;
 	}
 	if (ProcessMessages(message) == 0) {
-		switch ((unsigned int) message->m_type) {
+		switch (message->m_type) {
 		case NETWORK_EVENT_CRITICAL_PACKET_READY:
 			connection = (CConnect*) message->m_payload;
 			packet = (CReadPacket*) message->m_source;
