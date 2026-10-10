@@ -97,8 +97,8 @@ void CIce::Set(unsigned short p_id,
 		}
 		else {
 			minZ = map->m_ground
-					   .m_ground[(minGroundY >> GROUND_BLOCK_PIXEL_SHIFT) * width +
-								 (minGroundX >> GROUND_BLOCK_PIXEL_SHIFT)]
+					   .m_ground[(int) ((unsigned int) (minGroundY >> GROUND_BLOCK_PIXEL_SHIFT) * width +
+										(minGroundX >> GROUND_BLOCK_PIXEL_SHIFT))]
 					   .GetZ(minGroundX & GROUND_BLOCK_PIXEL_MASK, minGroundY & GROUND_BLOCK_PIXEL_MASK);
 		}
 	}
@@ -117,8 +117,8 @@ void CIce::Set(unsigned short p_id,
 		}
 		else {
 			maxZ = map->m_ground
-					   .m_ground[(maxGroundY >> GROUND_BLOCK_PIXEL_SHIFT) * width +
-								 (maxGroundX >> GROUND_BLOCK_PIXEL_SHIFT)]
+					   .m_ground[(int) ((unsigned int) (maxGroundY >> GROUND_BLOCK_PIXEL_SHIFT) * width +
+										(maxGroundX >> GROUND_BLOCK_PIXEL_SHIFT))]
 					   .GetZ(maxGroundX & GROUND_BLOCK_PIXEL_MASK, maxGroundY & GROUND_BLOCK_PIXEL_MASK);
 		}
 	}
@@ -136,7 +136,7 @@ void CIce::Set(unsigned short p_id,
 				CMap* map;
 				if (blockY >= 0 && (width = g_pMap->m_ground.m_width) > blockX &&
 					blockY < (map = g_pMap)->m_ground.m_height) {
-					CGround* ground = map->m_ground.m_ground + width * blockY + blockX;
+					CGround* ground = map->m_ground.m_ground + (int) ((unsigned int) width * blockY + blockX);
 					ground->m_collision |= GROUND_COLLISION_OBJECT_INTERACTION;
 				}
 			}
