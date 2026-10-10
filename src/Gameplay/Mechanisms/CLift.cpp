@@ -40,7 +40,8 @@ void CLift::CalculateCliff()
 	endX = (short) (m_end.m_x / GROUND_BLOCK_PIXEL_SIZE);
 	if (startY > 0) {
 		for (int x = startX; x <= endX; x++) {
-			CGround* ground = &g_pActiveMap->m_ground.m_ground[(startY - 1) * g_pActiveMap->m_ground.m_width + x];
+			CGround* ground = &g_pActiveMap->m_ground
+								   .m_ground[(int) ((unsigned int) (startY - 1) * g_pActiveMap->m_ground.m_width + x)];
 			ground->m_cliff = (short) (((short) ground->m_height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE);
 		}
 	}
@@ -48,7 +49,8 @@ void CLift::CalculateCliff()
 		if (startY <= endX) {
 			do {
 				CGround* ground =
-					&g_pActiveMap->m_ground.m_ground[startY * g_pActiveMap->m_ground.m_width + startX - 1];
+					&g_pActiveMap->m_ground
+						 .m_ground[(int) ((unsigned int) startY * g_pActiveMap->m_ground.m_width + startX - 1)];
 				ground->m_cliff =
 					(short) (((short) ground->m_height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE);
 				startY++;
@@ -109,10 +111,12 @@ void CLift::Edit(int p_height,
 				break;
 			}
 			if (bx >= 0 && by >= 0 && bx < g_pActiveMap->m_ground.m_width && by < g_pActiveMap->m_ground.m_height) {
-				CGround* ground = g_pActiveMap->m_ground.m_ground + by * g_pActiveMap->m_ground.m_width + bx;
+				CGround* ground =
+					g_pActiveMap->m_ground.m_ground + (int) ((unsigned int) by * g_pActiveMap->m_ground.m_width + bx);
 				ground->m_collision |= GROUND_COLLISION_OBJECT_INTERACTION | GROUND_COLLISION_SPECIAL_RENDER;
 			}
-			m_mapCell = g_pActiveMap->m_ground.m_ground + g_pActiveMap->m_ground.m_width * by + bx;
+			m_mapCell =
+				g_pActiveMap->m_ground.m_ground + (int) ((unsigned int) g_pActiveMap->m_ground.m_width * by + bx);
 			m_mapCell->m_height = p_height;
 			m_mapCell->m_cliff = (p_height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
 		}
@@ -238,8 +242,9 @@ bool CLift::Process()
 	int height = m_start.m_z;
 	for (int y = m_start.m_y; y <= m_end.m_y; y += 16) {
 		short startX = m_start.m_x;
-		m_mapCell = g_pActiveMap->m_ground.m_ground + g_pActiveMap->m_ground.m_width * (y / GROUND_BLOCK_PIXEL_SIZE) +
-					(short) (startX / GROUND_BLOCK_PIXEL_SIZE);
+		m_mapCell = g_pActiveMap->m_ground.m_ground +
+					(int) ((unsigned int) g_pActiveMap->m_ground.m_width * (y / GROUND_BLOCK_PIXEL_SIZE) +
+						   (short) (startX / GROUND_BLOCK_PIXEL_SIZE));
 		for (int x = startX; x <= m_end.m_x; x += 16) {
 			m_mapCell->m_height = height;
 			m_mapCell->m_cliff = (height + GROUND_BLOCK_PIXEL_MASK) / GROUND_BLOCK_PIXEL_SIZE;
@@ -294,7 +299,7 @@ int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 		else {
 			startX &= GROUND_BLOCK_PIXEL_MASK;
 			startY &= GROUND_BLOCK_PIXEL_MASK;
-			groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(startX, startY);
+			groundZ = map->m_ground.m_ground[(int) ((unsigned int) blockY * width + blockX)].GetZ(startX, startY);
 		}
 		int minZ = groundZ - 2;
 		int maxZ = groundZ + 4;

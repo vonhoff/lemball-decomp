@@ -22214,8 +22214,8 @@
       "caller": 4345328,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLift.cpp.obj",
       "symbol": "?Edit@CLift@@QAEXHFHHW4eLiftActivateType@@I@Z",
-      "size": 540,
-      "fingerprint": "2669292f2dc41559785c5d78c7ef7046e7a29152545636093231847ce532273c",
+      "size": 544,
+      "fingerprint": "9e805e2dd0699105f968cf0bae3913c46fee624032218a9b49d523da4975a27d",
       "references": [
         {
           "offset": 320,
@@ -22225,7 +22225,7 @@
           "source_symbol": "?Activate@CLift@@QAEHXZ"
         },
         {
-          "offset": 505,
+          "offset": 507,
           "original_instruction": 4345835,
           "original_bytes": "e887dafdff",
           "thunk": 4205175,
@@ -22270,7 +22270,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLift.cpp.obj",
       "symbol": "?StepOn@CLift@@QAEHABVAICOORD@@PAVCGameObject@@@Z",
       "size": 407,
-      "fingerprint": "96e90d68bc601b6c667cf49e819e2b9c3dc2d5b10ba2de30ee23a0efc72c23a6",
+      "fingerprint": "89494da57fa2c583fb7cf5466ff37c07f89c0fb54b83a42156f2b957266ede29",
       "references": [
         {
           "offset": 220,
