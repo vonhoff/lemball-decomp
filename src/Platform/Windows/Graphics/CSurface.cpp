@@ -144,7 +144,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 
 	m_flag70 = 1;
 	m_flag78 = 0;
-	m_flag74 = 0;
+	m_flag74 = false;
 	m_parentSurface = p_parentSurface;
 	parentList = (SurfaceListHead*) &m_parentSurface->m_childSurfaceHead;
 	storage = operator new(0xc);
@@ -594,7 +594,7 @@ void CSurface::AddToChangeList(const CVSRect& p_rect)
 	short originY;
 
 	parent = (CSurface*) m_parentSurface;
-	if (parent != (CSurface*) g_pGdiHelperTarget && m_flag74 != 0 && m_flag70 != 0) {
+	if (parent != (CSurface*) g_pGdiHelperTarget && m_flag74 && m_flag70 != 0) {
 		origin = &this->m_surfaceRect;
 		originX = origin->m_x;
 		originY = origin->m_y;
@@ -696,7 +696,7 @@ void CSurface::Blit(CClipRect* p_clipRect)
 void CSurface::ToScreen(CSurface* p_destinationSurface)
 {
 	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
-		if (m_flag74 == 0) {
+		if (!m_flag74) {
 			if (m_flag78 != 0) {
 				m_parentSurface->AddToChangeList(m_windowRect);
 				m_flag78 = 0;

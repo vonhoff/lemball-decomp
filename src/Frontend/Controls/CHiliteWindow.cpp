@@ -12,7 +12,7 @@ CHiliteWindow::CHiliteWindow()
 // FUNCTION: LEMBALL 0x0044f420
 void CHiliteWindow::OnCreate()
 {
-	m_gdi->m_renderTarget->m_flag74 = 1;
+	m_gdi->m_renderTarget->m_flag74 = true;
 }
 
 // GLOBAL: LEMBALL 0x004a7b64

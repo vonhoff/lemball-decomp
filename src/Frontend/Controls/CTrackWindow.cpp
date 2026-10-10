@@ -59,7 +59,7 @@ CTrackWindow::~CTrackWindow()
 // FUNCTION: LEMBALL 0x0044e940
 void CTrackWindow::OnCreate()
 {
-	m_gdi->m_renderTarget->m_flag74 = 1;
+	m_gdi->m_renderTarget->m_flag74 = true;
 }
 
 // FUNCTION: LEMBALL 0x0044e960

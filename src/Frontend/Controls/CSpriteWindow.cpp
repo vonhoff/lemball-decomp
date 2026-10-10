@@ -12,5 +12,5 @@ CSpriteWindow::CSpriteWindow()
 // FUNCTION: LEMBALL 0x0044c850
 void CSpriteWindow::OnCreate()
 {
-	m_gdi->m_renderTarget->m_flag74 = 1;
+	m_gdi->m_renderTarget->m_flag74 = true;
 }

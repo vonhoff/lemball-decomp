@@ -80,7 +80,7 @@ private:
 	short m_zoom;                 // 0x2c
 	short m_pad2e;                // 0x2e
 	unsigned int m_flag70;        // 0x30
-	unsigned int m_flag74;        // 0x34
+	bool m_flag74;                // 0x34
 	unsigned int m_flag78;        // 0x38
 	unsigned int m_updateEnabled; // 0x3c
 	int m_reserved40;             // 0x40
