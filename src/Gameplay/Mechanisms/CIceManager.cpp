@@ -166,12 +166,12 @@ void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 
 			tCoord3d cornerA;
 			tCoord3d cornerB;
-			cornerA.m_x = (short) *data++;
-			cornerA.m_y = (short) *data++;
-			cornerA.m_z = (short) *data++;
-			cornerB.m_x = (short) *data++;
-			cornerB.m_y = (short) *data++;
-			cornerB.m_z = (short) *data++;
+			cornerA.m_x = *data++;
+			cornerA.m_y = *data++;
+			cornerA.m_z = *data++;
+			cornerB.m_x = *data++;
+			cornerB.m_y = *data++;
+			cornerB.m_z = *data++;
 			int velocityX = (short) *data++;
 			int velocityY = (short) *data++;
 			unsigned int initialSwitched = 1;
