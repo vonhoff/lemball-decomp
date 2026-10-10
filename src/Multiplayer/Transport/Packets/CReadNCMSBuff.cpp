@@ -53,17 +53,17 @@ CReadMSBuff* CReadNCMSBuff::UpdateSubPacket()
 	unsigned short packetSequence;
 
 	if (messageId >= NETWORK_MESSAGE_SEQUENCE_TRACKING_START_ID &&
-		(int) g_pNetworkPacketScratch->m_packetSequence - (int) header->m_packetSequence < 0) {
+		g_pNetworkPacketScratch->m_packetSequence - header->m_packetSequence < 0) {
 		return NULL;
 	}
 
 	packetSequence = g_pNetworkPacketScratch->m_packetSequence;
-	if (m_nextExpectedSequence > (int) (unsigned int) packetSequence) {
+	if (m_nextExpectedSequence > packetSequence) {
 		return NULL;
 	}
 
 	if (header->m_packetSequence != packetSequence && message->m_receivedSubpacketCount > 0) {
-		m_nextExpectedSequence = (unsigned int) packetSequence + 1;
+		m_nextExpectedSequence = packetSequence + 1;
 		return NULL;
 	}
 

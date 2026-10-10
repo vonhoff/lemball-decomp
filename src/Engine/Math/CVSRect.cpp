@@ -16,7 +16,7 @@ CVSRect& CVSRect::operator=(const CVSRect& p_source)
 // FUNCTION: LEMBALL 0x0044c100
 CVSRect* CVSRect::ExpandToInclude(const CVSRect& p_rect)
 {
-	if ((int) p_rect.m_width * (int) p_rect.m_height == 0) {
+	if (p_rect.m_width * p_rect.m_height == 0) {
 		return this;
 	}
 	{

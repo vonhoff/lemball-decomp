@@ -82,9 +82,8 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	m_waveHeader->lpData = (char*) m_sampleData;
 	m_waveHeader->dwBufferLength = length;
 	m_waveHeader->dwUser =
-		(DWORD) ((((int) (char) p_patch[9] * 0x100 + (int) (char) p_patch[8]) * 0x100 + (int) (char) p_patch[7]) *
-					 0x100 +
-				 (int) (char) p_patch[6]);
+		(DWORD) ((((char) p_patch[9] * 0x100 + (char) p_patch[8]) * 0x100 + (char) p_patch[7]) * 0x100 +
+				 (char) p_patch[6]);
 	m_waveHeader->dwFlags = 0;
 	m_waveHeader->dwLoops = 0;
 	if (p_use16Bit == 0) {
