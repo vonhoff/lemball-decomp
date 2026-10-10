@@ -24664,8 +24664,8 @@
       "caller": 4377968,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Process@CIce@@UAEHXZ",
-      "size": 1543,
-      "fingerprint": "b688fc959dfaa3212f0ef4a89a1a8d01901c61233e80794f254e3e5d0943c846",
+      "size": 1550,
+      "fingerprint": "9eb8c12715d1b572100fc687a3fc7607b42afee26b49d7634ac7b9ba3ffd81f0",
       "references": [
         {
           "offset": 54,
@@ -24682,7 +24682,7 @@
           "source_symbol": "?Switched@CIce@@QAEXXZ"
         },
         {
-          "offset": 557,
+          "offset": 559,
           "original_instruction": 4378478,
           "original_bytes": "e8325afdff",
           "thunk": 4204965,
@@ -24696,28 +24696,28 @@
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1238,
+          "offset": 1245,
           "original_instruction": 4379204,
           "original_bytes": "e85c57fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1279,
+          "offset": 1286,
           "original_instruction": 4379245,
           "original_bytes": "e8ab61fdff",
           "thunk": 4207645,
           "source_symbol": "?StepOn@CAI@@QAEXABVAICOORD@@PAVCGameObject@@G@Z"
         },
         {
-          "offset": 1459,
+          "offset": 1466,
           "original_instruction": 4379429,
           "original_bytes": "e87b56fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1500,
+          "offset": 1507,
           "original_instruction": 4379470,
           "original_bytes": "e8ca60fdff",
           "thunk": 4207645,
@@ -24784,25 +24784,25 @@
       "caller": 4380000,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Switched@CIce@@QAEXXZ",
-      "size": 565,
-      "fingerprint": "d1215703b6ec78966a57ff0b3b32e9314e36d96e951cea68c50acc9d2dcb1410",
+      "size": 563,
+      "fingerprint": "1c5a07648924b27428132d3d0107cd1d045b8bb6a8f0bea491b6e3f51a7939cb",
       "references": [
         {
-          "offset": 263,
+          "offset": 268,
           "original_instruction": 4380262,
           "original_bytes": "e83a53fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 491,
+          "offset": 489,
           "original_instruction": 4380490,
           "original_bytes": "e85652fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 532,
+          "offset": 530,
           "original_instruction": 4380531,
           "original_bytes": "e8a55cfdff",
           "thunk": 4207645,

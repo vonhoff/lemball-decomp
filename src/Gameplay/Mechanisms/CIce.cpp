@@ -182,8 +182,8 @@ bool CIce::Process()
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
 		AICOORD position(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
-		int dx = (m_velocityX * elapsed * FIXED_POINT_ONE) / 8;
-		int dy = (m_velocityY * elapsed * FIXED_POINT_ONE) / 8;
+		int dx = (int) ((unsigned int) m_velocityX * elapsed * FIXED_POINT_ONE) / 8;
+		int dy = (int) ((unsigned int) m_velocityY * elapsed * FIXED_POINT_ONE) / 8;
 		int ax = abs(dx >> FIXED_POINT_FRACTION_BITS);
 		int ay = abs(dy >> FIXED_POINT_FRACTION_BITS);
 		while (ax > GROUND_BLOCK_PIXEL_MASK || ay > GROUND_BLOCK_PIXEL_MASK) {
@@ -192,8 +192,8 @@ bool CIce::Process()
 			dx /= 2;
 			dy /= 2;
 		}
-		position.m_xFixed += dx;
-		position.m_yFixed += dy;
+		position.m_xFixed += (unsigned int) dx;
+		position.m_yFixed += (unsigned int) dy;
 		unsigned short terrainZ;
 		{
 			CMap* map = g_pMap;
@@ -217,11 +217,11 @@ bool CIce::Process()
 			position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 		}
 		else if (groundZ < z) {
-			z -= elapsed * (GROUND_BLOCK_PIXEL_SIZE / 4);
+			z = (int) ((unsigned int) z - (unsigned int) elapsed * (GROUND_BLOCK_PIXEL_SIZE / 4));
 			if (z < groundZ) {
 				z = groundZ;
 			}
-			position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+			position.m_zFixed = (int) ((unsigned int) z << FIXED_POINT_FRACTION_BITS);
 		}
 		if (m_velocityX != 0) {
 			if (m_velocityY == 0) {
@@ -278,8 +278,8 @@ bool CIce::Process()
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
-					velocity.m_xFixed = (m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
-					velocity.m_yFixed = (m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_yFixed = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
 					velocity.m_zFixed = 0;
 					object->StartFly(velocity, NULL);
 				}
@@ -444,8 +444,8 @@ void CIce::Switched()
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
-					velocity.m_xFixed = (m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
-					velocity.m_yFixed = (m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_yFixed = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
 					velocity.m_zFixed = 0;
 					object->StartFly(velocity, NULL);
 				}
