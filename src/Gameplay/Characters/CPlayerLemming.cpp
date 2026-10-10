@@ -923,8 +923,9 @@ void CPlayerLemming::GetHit()
 	int objectCount = count;
 	if (index < objectCount) {
 		CGameObject**& objects = g_pAI->m_objects;
+		CGameObject** cursor = objects;
 		do {
-			if (objects[index] == this) {
+			if (*cursor == this) {
 				count = objectCount - 1;
 				while (index < count) {
 					objects[index] = objects[index + 1];
@@ -933,6 +934,7 @@ void CPlayerLemming::GetHit()
 				objects[count] = NULL;
 				return;
 			}
+			cursor++;
 			index++;
 		} while (index < objectCount);
 	}
