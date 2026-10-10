@@ -41,10 +41,10 @@ public:
 	friend class CTCPIPBroadcast;
 
 protected:
-	unsigned int m_runEnabled;          // 0x08
+	bool m_runEnabled;                  // 0x08
 	unsigned int m_addressMode;         // 0x0c
 	unsigned char* m_connectionData;    // 0x10
-	unsigned int m_listenEnabled;       // 0x14
+	bool m_listenEnabled;               // 0x14
 	unsigned long m_lastBroadcastTime;  // 0x18
 	CNetworkAddress* m_specificAddress; // 0x1c
 };

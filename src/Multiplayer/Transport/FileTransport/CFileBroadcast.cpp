@@ -222,13 +222,13 @@ void CFileBroadcast::ResetPort(short p_port)
 // FUNCTION: LEMBALL 0x0047aed0
 void CFileBroadcast::StartListen()
 {
-	m_listenEnabled = 1;
+	m_listenEnabled = true;
 }
 
 // FUNCTION: LEMBALL 0x0047aee0
 void CFileBroadcast::StopListen()
 {
-	m_listenEnabled = 0;
+	m_listenEnabled = false;
 }
 
 // FUNCTION: LEMBALL 0x0047aef0
@@ -236,7 +236,7 @@ void CFileBroadcast::Process()
 {
 	unsigned long currentTime = CurrentMilliTimer();
 	if (100 < currentTime - m_lastProcessTime) {
-		if (m_listenEnabled != 0) {
+		if (m_listenEnabled) {
 			CFileReadSocket::Process();
 		}
 		m_lastProcessTime = CurrentMilliTimer();

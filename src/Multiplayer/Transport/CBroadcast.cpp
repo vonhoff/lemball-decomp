@@ -32,8 +32,8 @@ CBroadcast::CBroadcast()
 {
 	int index;
 
-	m_listenEnabled = 0;
-	m_runEnabled = 0;
+	m_listenEnabled = false;
+	m_runEnabled = false;
 	m_addressMode = 0;
 	m_specificAddress = NULL;
 	g_pBroadcastAddress = g_pBaseNetwork->GetNewNetworkAddress();
@@ -167,7 +167,7 @@ void CBroadcast::Process()
 {
 	if (m_readReady != 0) {
 		CRWSocket::Process();
-		if (m_runEnabled != 0) {
+		if (m_runEnabled) {
 			unsigned long time;
 
 			time = CurrentMilliTimer();
@@ -215,14 +215,14 @@ void CBroadcast::SendFailedInit(NetworkErrors p_error)
 void CBroadcast::Run()
 {
 	unsigned long time = CurrentMilliTimer();
-	m_runEnabled = 1;
+	m_runEnabled = true;
 	m_lastBroadcastTime = time - NETWORK_BROADCAST_INTERVAL_MS;
 }
 
 // FUNCTION: LEMBALL 0x00460a40
 void CBroadcast::Suspend()
 {
-	m_runEnabled = 0;
+	m_runEnabled = false;
 }
 
 // FUNCTION: LEMBALL 0x00460a50

@@ -230,7 +230,7 @@ void CNetworkManager::Broadcast(const char* p_address)
 {
 	m_broadcastStartTime = CurrentMilliTimer();
 	CBroadcast* broadcast = g_pBaseNetwork->m_broadcast;
-	if (broadcast->m_runEnabled != 0) {
+	if (broadcast->m_runEnabled) {
 		broadcast->Suspend();
 	}
 	if (p_address == NULL || *p_address == '\0') {
@@ -240,7 +240,7 @@ void CNetworkManager::Broadcast(const char* p_address)
 		broadcast->SetSpecificAddr(p_address);
 	}
 	CBroadcast** broadcastPtr = &g_pBaseNetwork->m_broadcast;
-	if ((*broadcastPtr)->m_runEnabled == 0) {
+	if (!(*broadcastPtr)->m_runEnabled) {
 		g_pBaseNetwork->m_suspendBroadcastOnConnect = 0;
 		(*broadcastPtr)->Run();
 	}

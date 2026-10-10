@@ -220,7 +220,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 		CBroadcast::SendFailedInit(NETWORK_ERROR_BROADCAST_BIND);
 		return;
 	}
-	if (m_listenEnabled != 0) {
+	if (m_listenEnabled) {
 		selectResult = WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE);
 	}
 	else {
@@ -288,27 +288,27 @@ int CTCPIPBroadcast::Process(unsigned int p_message, unsigned int p_wParam, long
 // FUNCTION: LEMBALL 0x00470d30
 void CTCPIPBroadcast::StartListen()
 {
-	if (m_listenEnabled == 0) {
+	if (!m_listenEnabled) {
 		if (m_readReady != 0 &&
 			WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_READ | FD_WRITE) ==
 				NETWORK_SOCKET_ERROR) {
 			SocketError();
 			return;
 		}
-		m_listenEnabled = 1;
+		m_listenEnabled = true;
 	}
 }
 
 // FUNCTION: LEMBALL 0x00470d80
 void CTCPIPBroadcast::StopListen()
 {
-	if (m_listenEnabled != 0) {
+	if (m_listenEnabled) {
 		if (m_readReady != 0 && WSAAsyncSelect(m_socketHandle, m_windowHandle, TCPIP_MESSAGE_SOCKET_EVENT, FD_WRITE) ==
 									NETWORK_SOCKET_ERROR) {
 			SocketError();
 			return;
 		}
-		m_listenEnabled = 0;
+		m_listenEnabled = false;
 	}
 }
 
