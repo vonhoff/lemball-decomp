@@ -79,7 +79,7 @@ void CBullet::Set(unsigned short p_id,
 	else {
 		targetX &= GROUND_BLOCK_PIXEL_MASK;
 		targetY &= GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(targetX, targetY);
+		z = map->m_ground.m_ground[(int) ((unsigned int) blockY * width + blockX)].GetZ(targetX, targetY);
 	}
 	m_sourceObjectId = p_id;
 	m_destination.m_zFixed = (z + 12) << FIXED_POINT_FRACTION_BITS;
@@ -156,7 +156,7 @@ bool CBullet::Process()
 					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 				}
 				else {
-					collision = g_pMap->m_ground.m_ground[width * tileY + tileX].m_collision;
+					collision = g_pMap->m_ground.m_ground[(int) ((unsigned int) width * tileY + tileX)].m_collision;
 				}
 				if ((collision & GROUND_COLLISION_BLOCKS_BULLETS) != 0) {
 					return false;
@@ -174,7 +174,8 @@ bool CBullet::Process()
 					else {
 						int x = pos.m_x & GROUND_BLOCK_PIXEL_MASK;
 						int y = pos.m_y & GROUND_BLOCK_PIXEL_MASK;
-						groundZ = map->m_ground.m_ground[groundWidth * blockY + blockX].GetZ(x, y);
+						groundZ =
+							map->m_ground.m_ground[(int) ((unsigned int) groundWidth * blockY + blockX)].GetZ(x, y);
 					}
 					if (pos.m_z <= (int) groundZ) {
 						m_position.m_xFixed = pos.m_x << FIXED_POINT_FRACTION_BITS;
