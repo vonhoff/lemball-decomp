@@ -4168,7 +4168,10 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 				else {
 					int localX = gameX & GROUND_BLOCK_PIXEL_MASK;
 					int localY = gameY & GROUND_BLOCK_PIXEL_MASK;
-					groundHeight = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(localX, localY);
+					groundHeight =
+						map->m_ground.m_ground[(int) ((unsigned int) map->m_ground.m_width * blockY + blockX)].GetZ(
+							localX,
+							localY);
 				}
 				gameX = (gameX << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
 				gameY = (gameY << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
