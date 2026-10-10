@@ -4537,9 +4537,9 @@ void C2D::MarkGroundAnimAndLiftBounds()
 			view->m_map->GameToScreen(screenX, screenY);
 			int originX = view->m_viewOriginX;
 			int originY = view->m_viewOriginY;
-			screenX -= originX;
-			screenY -= originY;
-			screenY -= groundHeight;
+			screenX = (unsigned int) screenX - originX;
+			screenY = (unsigned int) screenY - originY;
+			screenY = (unsigned int) screenY - groundHeight;
 			short pixelX = (short) screenX - 16;
 			short pixelY = (short) screenY - 24;
 			short rectHeight = (short) groundHeight + 48;
@@ -4590,30 +4590,30 @@ void C2D::MarkGroundAnimAndLiftBounds()
 			int startX = endpoints->m_start.m_x;
 			int startY = endpoints->m_start.m_y;
 			m_map->GameToScreen(startX, startY);
-			startX -= m_viewOriginX;
-			startY -= m_viewOriginY;
-			startY -= groundHeight;
+			startX = (unsigned int) startX - m_viewOriginX;
+			startY = (unsigned int) startY - m_viewOriginY;
+			startY = (unsigned int) startY - groundHeight;
 
 			int rightX = endpoints->m_end.m_x;
 			int rightY = endpoints->m_start.m_y;
 			m_map->GameToScreen(rightX, rightY);
-			rightX -= m_viewOriginX;
-			rightY -= m_viewOriginY;
-			rightY -= groundHeight;
+			rightX = (unsigned int) rightX - m_viewOriginX;
+			rightY = (unsigned int) rightY - m_viewOriginY;
+			rightY = (unsigned int) rightY - groundHeight;
 
 			int endX = endpoints->m_end.m_x;
 			int endY = endpoints->m_end.m_y;
 			m_map->GameToScreen(endX, endY);
-			endX -= m_viewOriginX;
-			endY -= m_viewOriginY;
-			endY -= groundHeight;
+			endX = (unsigned int) endX - m_viewOriginX;
+			endY = (unsigned int) endY - m_viewOriginY;
+			endY = (unsigned int) endY - groundHeight;
 
 			int leftX = endpoints->m_start.m_x;
 			int leftY = endpoints->m_end.m_y;
 			m_map->GameToScreen(leftX, leftY);
-			leftX -= m_viewOriginX;
-			leftY -= m_viewOriginY;
-			leftY -= groundHeight;
+			leftX = (unsigned int) leftX - m_viewOriginX;
+			leftY = (unsigned int) leftY - m_viewOriginY;
+			leftY = (unsigned int) leftY - groundHeight;
 
 			short pixelX = (short) leftX - 16;
 			short pixelY = (short) startY - 24;
