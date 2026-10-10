@@ -21077,7 +21077,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Projectiles/CBall.cpp.obj",
       "symbol": "?Delete@CBall@@UAEXXZ",
       "size": 133,
-      "fingerprint": "a92022d7ffa051d15d10777e9952eaaee295906cf5588721deca9605f0a3c39c",
+      "fingerprint": "257c93d9db1672444b6c9ff84fcaef5b9795038fa3877e540c2b1a564b5ebb1b",
       "references": [
         {
           "offset": 111,
@@ -21099,11 +21099,11 @@
       "caller": 4332352,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Projectiles/CBall.cpp.obj",
       "symbol": "?SetHeightCorrect@CBall@@QAEXXZ",
-      "size": 128,
-      "fingerprint": "ee53539377f707151f75cba694dcf8c10afeeb30b2d7a670f1b20d9a6818b5b8",
+      "size": 114,
+      "fingerprint": "133e55fc1c29ce02fb196beba1d956cc4554514bda9592e63a974341d0e8eedc",
       "references": [
         {
-          "offset": 98,
+          "offset": 84,
           "original_instruction": 4332450,
           "original_bytes": "e8fe0dfeff",
           "thunk": 4204965,

@@ -125,8 +125,8 @@ bool CBall::Move()
 		CVector movement = m_movement.m_delta * elapsed;
 		movement.m_xFixed /= duration;
 		movement.m_yFixed /= duration;
-		x = (m_movement.m_start.m_xFixed + movement.m_xFixed) >> FIXED_POINT_FRACTION_BITS;
-		y = (m_movement.m_start.m_yFixed + movement.m_yFixed) >> FIXED_POINT_FRACTION_BITS;
+		x = (int) ((unsigned int) m_movement.m_start.m_xFixed + movement.m_xFixed) >> FIXED_POINT_FRACTION_BITS;
+		y = (int) ((unsigned int) m_movement.m_start.m_yFixed + movement.m_yFixed) >> FIXED_POINT_FRACTION_BITS;
 	}
 
 	map = g_pMap;
@@ -186,8 +186,8 @@ found:
 	}
 
 	m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
-	m_position.m_xFixed = x << FIXED_POINT_FRACTION_BITS;
-	m_position.m_yFixed = y << FIXED_POINT_FRACTION_BITS;
+	m_position.m_xFixed = x * FIXED_POINT_ONE;
+	m_position.m_yFixed = y * FIXED_POINT_ONE;
 	return true;
 }
 
