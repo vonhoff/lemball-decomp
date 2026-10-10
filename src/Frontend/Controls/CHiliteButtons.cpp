@@ -37,7 +37,7 @@ CHiliteButtons::CHiliteButtons(CGWnd* p_window,
 	m_window = p_window;
 	m_active = 1;
 	m_gdi = p_gdi;
-	count = (p_maximum - p_minimum) + 1;
+	count = (unsigned int) p_maximum - p_minimum + 1;
 	m_valueCount = count;
 	if (count <= 1) {
 		m_valueCount = 1;
@@ -102,7 +102,7 @@ int CHiliteButtons::ProcessMsg(tagMESSAGE* p_message)
 			return 0;
 		}
 		else {
-			nextValue = m_value + 1;
+			nextValue = (unsigned int) m_value + 1;
 			m_value = nextValue;
 			if (m_maximum < nextValue) {
 				m_value = m_minimum;
@@ -120,7 +120,7 @@ int CHiliteButtons::ProcessMsg(tagMESSAGE* p_message)
 					*m_binding = m_value;
 				}
 			}
-			m_button->SetAnimID(m_animIds[m_value - m_minimum]);
+			m_button->SetAnimID(m_animIds[(int) ((unsigned int) m_value - m_minimum)]);
 			return 0;
 		}
 	}
@@ -155,8 +155,10 @@ void CHiliteButtons::LoadFaces(unsigned long* p_animIds)
 		m_resources[index] = CResANIM::Load(m_animIds[index]);
 		index = index + 1;
 	}
-	m_button =
-		new CGraphicButton(CVSPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
+	m_button = new CGraphicButton(CVSPoint((short) m_x, (short) m_y),
+								  (CPVGWnd*) m_window,
+								  m_animIds[(int) ((unsigned int) m_value - m_minimum)],
+								  3);
 	CSurface* surface = m_button->m_gdi->m_renderTarget;
 	m_button->SetAutoDraw(0);
 	surface->m_flag70 = 0;
@@ -194,5 +196,5 @@ void CHiliteButtons::UpdateAnimID()
 			m_value = *m_binding;
 		}
 	}
-	m_button->SetAnimID(m_animIds[m_value - m_minimum]);
+	m_button->SetAnimID(m_animIds[(int) ((unsigned int) m_value - m_minimum)]);
 }
