@@ -798,8 +798,10 @@ bool CGameObject::Move()
 {
 	int elapsed = (int) (g_dwGameTick - m_lastMovementTick);
 	AICOORD position;
-	position.m_xFixed = m_movement.m_start.m_xFixed + (m_movement.m_delta.m_xFixed * elapsed) / m_moveDurationTicks;
-	position.m_yFixed = m_movement.m_start.m_yFixed + (m_movement.m_delta.m_yFixed * elapsed) / m_moveDurationTicks;
+	position.m_xFixed = (unsigned int) m_movement.m_start.m_xFixed +
+						(int) ((unsigned int) m_movement.m_delta.m_xFixed * elapsed) / m_moveDurationTicks;
+	position.m_yFixed = (unsigned int) m_movement.m_start.m_yFixed +
+						(int) ((unsigned int) m_movement.m_delta.m_yFixed * elapsed) / m_moveDurationTicks;
 	int x = position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	int y = position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map;
@@ -883,8 +885,8 @@ bool CGameObject::Move()
 			m_groundPosition.m_zFixed = (int) height << FIXED_POINT_FRACTION_BITS;
 			m_position.m_xFixed = position.m_xFixed;
 			m_position.m_yFixed = position.m_yFixed;
-			m_flightVelocity.m_xFixed = velocityX << FIXED_POINT_FRACTION_BITS;
-			m_flightVelocity.m_yFixed = velocityY << FIXED_POINT_FRACTION_BITS;
+			m_flightVelocity.m_xFixed = (unsigned int) velocityX << FIXED_POINT_FRACTION_BITS;
+			m_flightVelocity.m_yFixed = (unsigned int) velocityY << FIXED_POINT_FRACTION_BITS;
 			m_flightVelocity.m_zFixed = ((deltaZ / 8) + 1) * FIXED_POINT_ONE;
 			return false;
 		}

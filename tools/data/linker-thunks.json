@@ -16163,7 +16163,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?GetNextDestination@CGameObject@@QAE?AVAICOORD@@XZ",
       "size": 101,
-      "fingerprint": "88b1aabae5071638aa65186ebd4a788c518f2473787df2c54d16b3e80b5a7759",
+      "fingerprint": "e580ea674528f9ec2461b860de854e53c43e2515d266c2aaa28e5c5090d58d15",
       "references": [
         {
           "offset": 87,
@@ -16260,7 +16260,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?OnLift@CGameObject@@UAEHAAUtCoord3d@@@Z",
       "size": 207,
-      "fingerprint": "cb78d8358aab0c6971a8c0ab5a8a3f3b268c829d485b0c19665db76a76c5428f",
+      "fingerprint": "e9f3f80f1341c6366d41f072b257f4abb5a7e761273243c174e063a633c05c67",
       "references": [
         {
           "offset": 158,
@@ -16276,7 +16276,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?OnLift@CGameObject@@UAEHAAUtCoord3d@@0@Z",
       "size": 204,
-      "fingerprint": "9250726bd13b326106cc8a6642e1d18a6d5edb420ebd19faa2337f2d7ed00fe0",
+      "fingerprint": "7d94b309624b41ed3bbc73319ab0c29184732d9dad408ac5bdf878b40aa8e85d",
       "references": [
         {
           "offset": 155,
@@ -16308,7 +16308,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?RegisterId@CGameObject@@QAEXXZ",
       "size": 114,
-      "fingerprint": "1cbb487f4daa7d45657dd2b2d595228fcebb8471d25322b4008580af4d9c2600",
+      "fingerprint": "e1f2038c114390f21e8d8359e9cc7fce5987b78c9944eccbbdedc7fa7a6f6662",
       "references": [
         {
           "offset": 86,
