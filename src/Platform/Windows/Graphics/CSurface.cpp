@@ -1874,7 +1874,7 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 	int poleY;
 	int x1;
 	int x2;
-	int changed;
+	bool changed;
 	int doubleErr;
 	int yTop;
 	int yBottom;
@@ -1891,13 +1891,13 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 		clipY = m_clipRect.m_y;
 		poleY = p_centreY + p_radius;
 		if (poleY >= clipY && poleY <= (m_clipRect.m_height + clipY - 1)) {
-			*((unsigned char*) m_lines[poleY] + p_centreX) = (unsigned char) p_colour;
+			*((unsigned char*) m_lines[poleY] + p_centreX) = p_colour;
 		}
 	}
 	if (p_centreX >= m_clipRect.m_x && p_centreX <= (m_clipRect.m_width + m_clipRect.m_x - 1)) {
 		if ((p_centreY - p_radius) >= m_clipRect.m_y &&
 			(p_centreY - p_radius) <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-			*((unsigned char*) m_lines[(p_centreY - p_radius)] + p_centreX) = (unsigned char) p_colour;
+			*((unsigned char*) m_lines[(p_centreY - p_radius)] + p_centreX) = p_colour;
 		}
 	}
 	if (p_centreY >= m_clipRect.m_y && p_centreY <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
@@ -1914,19 +1914,19 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 
 	if (p_radius > 1) {
 		while (x < p_radius) {
-			changed = 0;
+			changed = false;
 			x++;
 			err += step;
 			step += 2;
 			doubleErr = err * 2;
 			if (errLimit < doubleErr) {
 				p_radius--;
-				changed = 1;
+				changed = true;
 				err -= errLimit;
 				errLimit -= 2;
 			}
 			if (x <= p_radius) {
-				if (changed != 0) {
+				if (changed) {
 					yTop = p_centreY - p_radius;
 					yBottom = p_centreY + p_radius;
 					clipY = m_clipRect.m_y;
