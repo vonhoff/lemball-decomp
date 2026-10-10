@@ -526,12 +526,14 @@ void CGameObject::Fly()
 		int x;
 		int z;
 		int y;
-		x = m_flightVelocity.m_xFixed * 2 + m_flightOrigin.m_xFixed;
-		y = m_flightVelocity.m_yFixed * 2 + m_flightOrigin.m_yFixed;
+		x = (unsigned int) m_flightVelocity.m_xFixed * 2 + m_flightOrigin.m_xFixed;
+		y = (unsigned int) m_flightVelocity.m_yFixed * 2 + m_flightOrigin.m_yFixed;
 		m_flightOrigin.m_xFixed = x;
 		m_flightOrigin.m_yFixed = y;
-		m_flightVelocity.m_zFixed -= GAME_OBJECT_FLIGHT_GRAVITY_FIXED_PER_TICK;
-		z = m_flightVelocity.m_zFixed * 2 + GAME_OBJECT_FLIGHT_POSITION_ADJUSTMENT_FIXED + m_flightOrigin.m_zFixed;
+		m_flightVelocity.m_zFixed =
+			(unsigned int) m_flightVelocity.m_zFixed - GAME_OBJECT_FLIGHT_GRAVITY_FIXED_PER_TICK;
+		z = (unsigned int) m_flightVelocity.m_zFixed * 2 + GAME_OBJECT_FLIGHT_POSITION_ADJUSTMENT_FIXED +
+			m_flightOrigin.m_zFixed;
 		m_flightOrigin.m_zFixed = z;
 		if (m_flightVelocity.m_zFixed < -GAME_OBJECT_FLIGHT_TERMINAL_DOWNWARD_SPEED_FIXED) {
 			m_flightVelocity.m_zFixed = -GAME_OBJECT_FLIGHT_TERMINAL_DOWNWARD_SPEED_FIXED;
