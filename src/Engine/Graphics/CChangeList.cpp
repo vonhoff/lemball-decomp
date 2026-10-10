@@ -132,7 +132,7 @@ void CChangeList::Add(const CVSRect& p_area)
 
 	if (m_map != NULL) {
 		cellWidth = m_cellSize.m_width;
-		const short& cellHeight = m_cellSize.m_height;
+		short cellHeight = m_cellSize.m_height;
 		cellX = (p_area.m_x / cellWidth);
 		cellY = (p_area.m_y / cellHeight);
 		spanX = (p_area.m_width + p_area.m_x - 1 + cellWidth) / cellWidth - cellX;
