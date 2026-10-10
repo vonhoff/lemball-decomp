@@ -36,7 +36,8 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 	m_totalBytes = m_blockSize * m_blockCount;
 	m_freeBytes = m_totalBytes;
 	m_peakAllocations = 0;
-	m_mapWordCount = (p_blockCount + SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD - 1) / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
+	m_mapWordCount = (int) ((unsigned int) p_blockCount + SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD - 1) /
+					 SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
 	unsigned char* memory = p_memory;
 
 	if (memory == NULL) {
