@@ -23,7 +23,7 @@
 class CGround {
 public:
 	CGround();
-	bool IsHit(int p_x, int p_y, unsigned int p_includeSpecial);
+	bool IsHit(int p_x, int p_y, bool p_includeSpecial);
 	unsigned short GetZ(int p_x, int p_y);
 	void SetCollision();
 

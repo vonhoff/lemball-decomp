@@ -1440,7 +1440,7 @@
     {
       "address": 4199835,
       "target": 4391184,
-      "target_symbol": "?IsHit@CGround@@QAEHHHI@Z"
+      "target_symbol": "?IsHit@CGround@@QAEHHHH@Z"
     },
     {
       "address": 4199840,
@@ -28812,7 +28812,7 @@
           "original_instruction": 4422394,
           "original_bytes": "e89c9afcff",
           "thunk": 4199835,
-          "source_symbol": "?IsHit@CGround@@QAEHHHI@Z"
+          "source_symbol": "?IsHit@CGround@@QAEHHHH@Z"
         }
       ]
     },

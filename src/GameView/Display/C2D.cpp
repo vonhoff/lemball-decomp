@@ -1454,7 +1454,7 @@ bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 	CGround* ground;
 	int hitX;
 	int hitY;
-	unsigned int includeSpecial;
+	bool includeSpecial;
 
 	initialMap = m_map;
 	maxGameX = initialMap->m_ground.m_width * 0x10 - 1;
