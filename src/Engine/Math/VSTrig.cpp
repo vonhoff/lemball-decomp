@@ -11,7 +11,7 @@ CVector VSTrig::Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos) const
 {
 	int sin = p_sin.m_value;
 	int cosLo = p_cos.m_value & FIXED_POINT_FRACTION_MASK;
-	int negSin = -sin;
+	int negSin = 0U - sin;
 	int xLo = p_vector.m_xFixed & FIXED_POINT_FRACTION_MASK;
 	int xHi = p_vector.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	int yLo = p_vector.m_yFixed & FIXED_POINT_FRACTION_MASK;
@@ -20,15 +20,16 @@ CVector VSTrig::Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos) const
 	int sinHi = p_sin.m_value >> FIXED_POINT_FRACTION_BITS;
 	int sinLo = p_sin.m_value & FIXED_POINT_FRACTION_MASK;
 
-	int resY = ((sinLo * xLo) >> FIXED_POINT_FRACTION_BITS) + (sinHi * xLo) +
-			   ((cosLo * yLo) >> FIXED_POINT_FRACTION_BITS) + (yLo * cosHi) + (xHi * p_sin.m_value) +
-			   (yHi * p_cos.m_value);
+	int resY = (unsigned int) ((sinLo * xLo) >> FIXED_POINT_FRACTION_BITS) + (sinHi * xLo) +
+			   ((cosLo * yLo) >> FIXED_POINT_FRACTION_BITS) + (yLo * cosHi) + ((unsigned int) xHi * p_sin.m_value) +
+			   ((unsigned int) yHi * p_cos.m_value);
 
 	int negSinHi = negSin >> FIXED_POINT_FRACTION_BITS;
 	int negSinLo = negSin & FIXED_POINT_FRACTION_MASK;
 
-	int resX = ((negSinLo * yLo) >> FIXED_POINT_FRACTION_BITS) + (negSinHi * yLo) +
-			   ((cosLo * xLo) >> FIXED_POINT_FRACTION_BITS) + (negSin * yHi) + (xLo * cosHi) + (xHi * p_cos.m_value);
+	int resX = (unsigned int) ((negSinLo * yLo) >> FIXED_POINT_FRACTION_BITS) + (negSinHi * yLo) +
+			   ((cosLo * xLo) >> FIXED_POINT_FRACTION_BITS) + ((unsigned int) negSin * yHi) + (xLo * cosHi) +
+			   ((unsigned int) xHi * p_cos.m_value);
 
 	return CVector(resX, resY);
 }
