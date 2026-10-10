@@ -1610,31 +1610,36 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 			}
 			const int x2 = p_x2;
 			const int x1 = p_x1;
-			const int dx = x2 - x1;
+			const int dx = (int) ((unsigned int) x2 - x1);
 			const int y2 = p_y2;
 			const int y1 = p_y1;
-			const int dy = y2 - y1;
+			const int dy = (int) ((unsigned int) y2 - y1);
 			if (code1 != LINE_CLIP_REGION_INSIDE) {
 				if ((code1 & LINE_CLIP_REGION_LEFT) == 0) {
 					if ((code1 & LINE_CLIP_REGION_RIGHT) != 0) {
-						p_y1 = y1 + ((m_clipRect.m_x + m_clipRect.m_width - 1 - x1) * dy) / dx;
+						p_y1 =
+							(int) ((unsigned int) y1 +
+								   (int) (((unsigned int) (m_clipRect.m_x + m_clipRect.m_width) - 1 - x1) * dy) / dx);
 						p_x1 = m_clipRect.m_x + m_clipRect.m_width - 1;
 					}
 					else {
 						if ((code1 & LINE_CLIP_REGION_TOP) == 0) {
 							if ((code1 & LINE_CLIP_REGION_BOTTOM) != 0) {
-								p_x1 = x1 + ((m_clipRect.m_y + m_clipRect.m_height - 1 - y1) * dx) / dy;
+								p_x1 = (int) ((unsigned int) x1 +
+											  (int) (((unsigned int) (m_clipRect.m_y + m_clipRect.m_height) - 1 - y1) *
+													 dx) /
+												  dy);
 								p_y1 = m_clipRect.m_y + m_clipRect.m_height - 1;
 							}
 						}
 						else {
-							p_x1 = x1 + ((m_clipRect.m_y - y1) * dx) / dy;
+							p_x1 = (int) ((unsigned int) x1 + (int) (((unsigned int) m_clipRect.m_y - y1) * dx) / dy);
 							p_y1 = m_clipRect.m_y;
 						}
 					}
 				}
 				else {
-					p_y1 = y1 + ((m_clipRect.m_x - x1) * dy) / dx;
+					p_y1 = (int) ((unsigned int) y1 + (int) (((unsigned int) m_clipRect.m_x - x1) * dy) / dx);
 					p_x1 = m_clipRect.m_x;
 				}
 				code1 = LINE_CLIP_REGION_INSIDE;
@@ -1654,24 +1659,29 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 			else {
 				if ((code2 & LINE_CLIP_REGION_LEFT) == 0) {
 					if ((code2 & LINE_CLIP_REGION_RIGHT) != 0) {
-						p_y2 = y2 + ((m_clipRect.m_x + m_clipRect.m_width - 1 - x2) * dy) / dx;
+						p_y2 =
+							(int) ((unsigned int) y2 +
+								   (int) (((unsigned int) (m_clipRect.m_x + m_clipRect.m_width) - 1 - x2) * dy) / dx);
 						p_x2 = m_clipRect.m_x + m_clipRect.m_width - 1;
 					}
 					else {
 						if ((code2 & LINE_CLIP_REGION_TOP) == 0) {
 							if ((code2 & LINE_CLIP_REGION_BOTTOM) != 0) {
-								p_x2 = x2 + ((m_clipRect.m_y + m_clipRect.m_height - 1 - y2) * dx) / dy;
+								p_x2 = (int) ((unsigned int) x2 +
+											  (int) (((unsigned int) (m_clipRect.m_y + m_clipRect.m_height) - 1 - y2) *
+													 dx) /
+												  dy);
 								p_y2 = m_clipRect.m_y + m_clipRect.m_height - 1;
 							}
 						}
 						else {
-							p_x2 = x2 + ((m_clipRect.m_y - y2) * dx) / dy;
+							p_x2 = (int) ((unsigned int) x2 + (int) (((unsigned int) m_clipRect.m_y - y2) * dx) / dy);
 							p_y2 = m_clipRect.m_y;
 						}
 					}
 				}
 				else {
-					p_y2 = y2 + ((m_clipRect.m_x - x2) * dy) / dx;
+					p_y2 = (int) ((unsigned int) y2 + (int) (((unsigned int) m_clipRect.m_x - x2) * dy) / dx);
 					p_x2 = m_clipRect.m_x;
 				}
 				code2 = LINE_CLIP_REGION_INSIDE;
