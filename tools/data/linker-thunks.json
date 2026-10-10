@@ -25118,8 +25118,8 @@
       "caller": 4384848,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?SetUpNextNode@CMover@@QAEXK@Z",
-      "size": 298,
-      "fingerprint": "b76c1f99828ce01301d183272aa8d8c2d667be588e00db8c2e97b0155009d24d",
+      "size": 292,
+      "fingerprint": "6f4ca00046bbcac5574855f23d51b085b109658729d4df92b65b79d55bd1f16f",
       "references": [
         {
           "offset": 46,
@@ -25129,21 +25129,21 @@
           "source_symbol": "?GetNodePosition@CAI@@QAE?AUCPt3@@H@Z"
         },
         {
-          "offset": 142,
+          "offset": 136,
           "original_instruction": 4384984,
           "original_bytes": "e8c840fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 238,
+          "offset": 232,
           "original_instruction": 4385080,
           "original_bytes": "e80d3cfdff",
           "thunk": 4203850,
           "source_symbol": "?Distance@@YAIHHHH@Z"
         },
         {
-          "offset": 283,
+          "offset": 277,
           "original_instruction": 4385125,
           "original_bytes": "e8743efdff",
           "thunk": 4204510,
@@ -25156,7 +25156,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?FindObjectsOnTopOfMe@CMover@@QAEXXZ",
       "size": 192,
-      "fingerprint": "1b8482be174575db1dba8decdf581862be4afe79b9b45fa3eb5d8d57c1fe0a6c",
+      "fingerprint": "c18ced349f51a8c1a762b76e98b32f37f62ee610b09bf0fc14a2b75273cf4607",
       "references": [
         {
           "offset": 86,
