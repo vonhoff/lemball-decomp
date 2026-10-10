@@ -202,7 +202,6 @@ bool CChangeList::GetNextArea(unsigned char p_findMark, bool p_itemMark, unsigne
 	int heightCells;
 	int widthCells;
 	int probeX;
-	int cell;
 	unsigned char* pixel;
 	tagCHANGERECT* item;
 
@@ -259,11 +258,9 @@ found:
 			heightCells = heightCells + 1;
 			probeX = startX;
 			if (widthCells > 0) {
-				cell = 0;
 				do {
 					row[probeX] = p_replacementMark;
 					probeX = probeX + 1;
-					cell = cell + 1;
 				} while (probeX - startX < widthCells);
 			}
 			row = row + m_mapSize.m_width;
