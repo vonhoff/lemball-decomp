@@ -22,7 +22,7 @@ CPVSurface::CPVSurface()
 	m_relOriginX = 0;
 	m_updateEnabled = 1;
 	m_clipRect.m_height = 0;
-	m_reserved40 = 0;
+	m_worldWidth = 0;
 	m_clipRect.m_width = 0;
 	m_clipRect.m_y = 0;
 	m_clipRect.m_x = 0;

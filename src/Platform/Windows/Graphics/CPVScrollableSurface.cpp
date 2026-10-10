@@ -5,8 +5,8 @@
 // FUNCTION: LEMBALL 0x004668d0
 void CPVScrollableSurface::SetWorldWidth(int p_width)
 {
-	if (m_reserved40 != p_width) {
-		m_reserved40 = p_width;
+	if (m_worldWidth != p_width) {
+		m_worldWidth = p_width;
 		CVSSize size(m_surfaceRect);
 		Resize(size);
 	}
@@ -15,5 +15,5 @@ void CPVScrollableSurface::SetWorldWidth(int p_width)
 // FUNCTION: LEMBALL 0x0046db30
 int CPVScrollableSurface::GetWorldWidth()
 {
-	return m_reserved40;
+	return m_worldWidth;
 }

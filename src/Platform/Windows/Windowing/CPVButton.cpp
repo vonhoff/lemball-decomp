@@ -52,7 +52,7 @@ void CPVButton::Move(const CVSPoint& p_point)
 void CPVButton::OnVisibilityChange()
 {
 	if (CPVWnd::m_parent != NULL) {
-		m_gdi->m_renderTarget->m_flag78 = 1;
+		m_gdi->m_renderTarget->m_fullUpdatePending = 1;
 	}
 	m_forceDrawCount = 1;
 	CHotAreaHandler::SetActive(CPVWnd::m_active);
@@ -81,7 +81,7 @@ void CPVButton::Initialise()
 {
 	m_forceDrawCount = 1;
 	m_autoDraw = true;
-	m_reserved = 1;
+	m_externalButtonUpEnabled = 1;
 	m_pressed = false;
 	m_lastDrawnPressed = false;
 	m_drawCompleted = false;
@@ -119,7 +119,7 @@ void CPVButton::CheckForceDraw()
 		m_clipRect[0].m_bounds.m_x = 0;
 		m_clipRect[0].m_bounds.m_y = 0;
 		m_clipRect[0].m_flags = CClipRect::CLIP_IGNORE_PARENT;
-		m_gdi->m_renderTarget->m_flag78 = 1;
+		m_gdi->m_renderTarget->m_fullUpdatePending = 1;
 	}
 	else {
 		m_clipRect[0].m_flags = 0;
@@ -131,7 +131,7 @@ void CPVButton::CheckForceDraw()
 void CPVButton::_DrawButton()
 {
 	if (m_pressed != m_lastDrawnPressed) {
-		m_gdi->m_renderTarget->m_flag78 = 1;
+		m_gdi->m_renderTarget->m_fullUpdatePending = 1;
 		m_lastDrawnPressed = m_pressed;
 	}
 	CheckForceDraw();

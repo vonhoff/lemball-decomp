@@ -51,7 +51,7 @@ void CDepressedButton::OnExitButton()
 void CDepressedButton::_DrawButton()
 {
 	if (m_enabled != m_state || m_gdi->m_renderTarget->HasBackBuff() != 0) {
-		m_gdi->m_renderTarget->m_flag78 = 1;
+		m_gdi->m_renderTarget->m_fullUpdatePending = 1;
 		m_state = m_enabled;
 	}
 	CheckForceDraw();

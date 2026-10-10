@@ -14,7 +14,7 @@
 void CPVGWnd::OnVisibilityChange()
 {
 	if (m_parent != NULL) {
-		m_gdi->m_renderTarget->m_flag78 = 1;
+		m_gdi->m_renderTarget->m_fullUpdatePending = 1;
 	}
 }
 

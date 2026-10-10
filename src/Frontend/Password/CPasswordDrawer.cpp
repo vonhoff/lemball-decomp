@@ -229,7 +229,7 @@ void CPasswordDrawer::Load()
 			CGDI* buttonGdi = m_buttons[*keyMap]->m_gdi;
 			CSurface* target = buttonGdi->m_renderTarget;
 			m_buttons[*keyMap]->SetAutoDraw(0);
-			target->m_flag70 = 0;
+			target->m_propagateChanges = 0;
 			gridX = gridX + m_layout->m_buttonWidth + m_layout->m_buttonGapX;
 			offsetPtr++;
 			keyMap++;

@@ -21,7 +21,7 @@ public:
 
 protected:
 	unsigned int m_frames;      // 0x04
-	unsigned int m_reserved08;  // 0x08
+	unsigned int m_lastFrame;   // 0x08
 	unsigned long m_frameState; // 0x0c
 };
 

@@ -40,7 +40,7 @@ void CHotAreaHandler::OnExit()
 	int i;
 	unsigned int* state;
 
-	if (m_reserved == 0) {
+	if (m_externalButtonUpEnabled == 0) {
 		state = m_buttonState;
 		i = 6;
 		while (i != 0) {
@@ -110,7 +110,7 @@ void CHotAreaHandler::Initialise()
 {
 	m_active = 0;
 	m_externalEnabled = 0;
-	m_reserved = 0;
+	m_externalButtonUpEnabled = 0;
 	m_parent = NULL;
 	Reset();
 }

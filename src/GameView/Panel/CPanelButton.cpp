@@ -86,7 +86,7 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVG
 	m_bounds.m_x = (short) (m_bounds.m_x + m_relativeTopLeft.m_x);
 	m_bounds.m_y = (short) (m_bounds.m_y + m_relativeTopLeft.m_y);
 	m_ownerWindow->m_hotAreaList->AddToList(static_cast<CHotAreaHandler*>(this));
-	m_gdi->m_renderTarget->m_flag70 = 0;
+	m_gdi->m_renderTarget->m_propagateChanges = 0;
 	m_externalEnabled = 1;
 	m_pressedInside = 0;
 }

@@ -45,7 +45,7 @@ CTrackWindow::CTrackWindow(const CVSRect& p_rect, int p_value, CPVGWnd* p_parent
 	m_contextId = TRACK_WINDOW_CONTEXT_ID_UNASSIGNED;
 	SetActive(1);
 	m_externalEnabled = 1;
-	m_reserved = 1;
+	m_externalButtonUpEnabled = 1;
 }
 
 // FUNCTION: LEMBALL 0x0044e8c0
@@ -59,7 +59,7 @@ CTrackWindow::~CTrackWindow()
 // FUNCTION: LEMBALL 0x0044e940
 void CTrackWindow::OnCreate()
 {
-	m_gdi->m_renderTarget->m_flag74 = true;
+	m_gdi->m_renderTarget->m_forwardChangesImmediately = true;
 }
 
 // FUNCTION: LEMBALL 0x0044e960

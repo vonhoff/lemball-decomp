@@ -12,5 +12,5 @@ CPasswordHiliteWindow::CPasswordHiliteWindow()
 // FUNCTION: LEMBALL 0x00451fd0
 void CPasswordHiliteWindow::OnCreate()
 {
-	m_gdi->m_renderTarget->m_flag74 = true;
+	m_gdi->m_renderTarget->m_forwardChangesImmediately = true;
 }

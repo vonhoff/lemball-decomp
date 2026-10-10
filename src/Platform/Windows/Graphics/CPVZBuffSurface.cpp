@@ -39,7 +39,7 @@ void CPVZBuffSurface::AllocateZBuff()
 	unsigned int neededArea;
 
 	CVSSize size = m_bitmap.SetSize(CVSRect(0, 0, (short) (m_windowRect.m_width * 2), m_windowRect.m_height),
-									(unsigned int) m_reserved40 * 2);
+									(unsigned int) m_worldWidth * 2);
 	allocatedArea = (unsigned int) m_allocatedWidth * m_allocatedHeight * 2;
 	neededArea = size.m_height * size.m_width;
 	if (allocatedArea < neededArea) {

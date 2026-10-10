@@ -176,7 +176,8 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_messag
 				handler->m_entered = 0;
 				handler->OnExit();
 			}
-			if ((type == MESSAGE_MOUSE_BUTTON_UP || type == MESSAGE_CURSOR_BUTTON_UP) && handler->m_reserved != 0) {
+			if ((type == MESSAGE_MOUSE_BUTTON_UP || type == MESSAGE_CURSOR_BUTTON_UP) &&
+				handler->m_externalButtonUpEnabled != 0) {
 				handler->ProcessArea(p_message, localPoint, m_currentHandler);
 			}
 		}
@@ -199,7 +200,7 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_messag
 			m_entered = 0;
 			OnExit();
 		}
-		if ((type == MESSAGE_MOUSE_BUTTON_UP || type == MESSAGE_CURSOR_BUTTON_UP) && m_reserved != 0) {
+		if ((type == MESSAGE_MOUSE_BUTTON_UP || type == MESSAGE_CURSOR_BUTTON_UP) && m_externalButtonUpEnabled != 0) {
 			ProcessArea(p_message, localPoint, m_currentHandler);
 			m_currentHandler = this;
 		}
@@ -280,7 +281,7 @@ void CHotAreaList::OnExit()
 	int i;
 	unsigned int* state;
 
-	if (m_reserved == 0) {
+	if (m_externalButtonUpEnabled == 0) {
 		state = m_buttonState;
 		i = 6;
 		while (i != 0) {

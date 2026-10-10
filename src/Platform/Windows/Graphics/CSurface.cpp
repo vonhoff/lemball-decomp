@@ -142,9 +142,9 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 	SurfaceListHead* parentList;
 	void* storage;
 
-	m_flag70 = 1;
-	m_flag78 = 0;
-	m_flag74 = false;
+	m_propagateChanges = 1;
+	m_fullUpdatePending = 0;
+	m_forwardChangesImmediately = false;
 	m_parentSurface = p_parentSurface;
 	parentList = (SurfaceListHead*) &m_parentSurface->m_childSurfaceHead;
 	storage = operator new(sizeof(SurfaceListNode));
@@ -203,7 +203,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 	m_zoom = 1;
 	m_platformBitmap = NULL;
 	m_drawingPort = NULL;
-	m_reserved40 = 0;
+	m_worldWidth = 0;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
 	m_lockInitialised = 1;
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
@@ -407,7 +407,7 @@ CSurface::CSurface(GrafPort* p_port)
 	m_parentSurface = NULL;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
 	m_lockInitialised = 1;
-	m_flag70 = 0;
+	m_propagateChanges = 0;
 }
 
 // FUNCTION: LEMBALL 0x0046c710
@@ -594,7 +594,7 @@ void CSurface::AddToChangeList(const CVSRect& p_rect)
 	short originY;
 
 	parent = (CSurface*) m_parentSurface;
-	if (parent != (CSurface*) g_pGdiHelperTarget && m_flag74 && m_flag70 != 0) {
+	if (parent != (CSurface*) g_pGdiHelperTarget && m_forwardChangesImmediately && m_propagateChanges != 0) {
 		origin = &this->m_surfaceRect;
 		originX = origin->m_x;
 		originY = origin->m_y;
@@ -696,12 +696,12 @@ void CSurface::Blit(CClipRect* p_clipRect)
 void CSurface::ToScreen(CSurface* p_destinationSurface)
 {
 	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
-		if (!m_flag74) {
-			if (m_flag78 != 0) {
+		if (!m_forwardChangesImmediately) {
+			if (m_fullUpdatePending != 0) {
 				m_parentSurface->AddToChangeList(m_windowRect);
-				m_flag78 = 0;
+				m_fullUpdatePending = 0;
 			}
-			else if (m_flag70 != 0) {
+			else if (m_propagateChanges != 0) {
 				CChangeList* list = GetChangeList();
 				int diff = list->GetNumItems() - list->GetDrawMark();
 				if (diff > 0) {
@@ -855,7 +855,7 @@ void CSurface::NewBitmap(const CVSRect& p_rect)
 	short width;
 	short height;
 	{
-		const CVSSize& size = SetSize(m_windowRect, m_reserved40);
+		const CVSSize& size = SetSize(m_windowRect, m_worldWidth);
 		width = size.m_width;
 		height = size.m_height;
 	}

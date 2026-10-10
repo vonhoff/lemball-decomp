@@ -53,7 +53,7 @@ void CPVBackBuffSurface::AllocateBackBuff()
 	int allocatedArea;
 	int neededArea;
 
-	const CVSSize& actualSize = m_bitmap.SetSize(size, m_reserved40);
+	const CVSSize& actualSize = m_bitmap.SetSize(size, m_worldWidth);
 	size.m_width = actualSize.m_width;
 	size.m_height = actualSize.m_height;
 	allocatedArea = (unsigned int) m_allocatedWidth * m_allocatedHeight;

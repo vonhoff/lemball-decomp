@@ -70,20 +70,20 @@ public:
 	friend class CAboutScreen;
 
 private:
-	CVSRect m_dontUpdateRect;     // 0x04
-	CVSRect m_surfaceRect;        // 0x0c
-	CVSRect m_windowRect;         // 0x14
-	short m_relOriginX;           // 0x1c
-	short m_relOriginY;           // 0x1e
-	CSurface* m_parentSurface;    // 0x20
-	CVSRect m_clipRect;           // 0x24
-	short m_zoom;                 // 0x2c
-	short m_pad2e;                // 0x2e
-	unsigned int m_flag70;        // 0x30
-	bool m_flag74;                // 0x34
-	unsigned int m_flag78;        // 0x38
-	unsigned int m_updateEnabled; // 0x3c
-	int m_reserved40;             // 0x40
+	CVSRect m_dontUpdateRect;         // 0x04
+	CVSRect m_surfaceRect;            // 0x0c
+	CVSRect m_windowRect;             // 0x14
+	short m_relOriginX;               // 0x1c
+	short m_relOriginY;               // 0x1e
+	CSurface* m_parentSurface;        // 0x20
+	CVSRect m_clipRect;               // 0x24
+	short m_zoom;                     // 0x2c
+	short m_pad2e;                    // 0x2e
+	unsigned int m_propagateChanges;  // 0x30
+	bool m_forwardChangesImmediately; // 0x34
+	unsigned int m_fullUpdatePending; // 0x38
+	unsigned int m_updateEnabled;     // 0x3c
+	int m_worldWidth;                 // 0x40
 };
 
 #endif
