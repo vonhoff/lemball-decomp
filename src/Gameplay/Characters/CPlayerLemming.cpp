@@ -716,7 +716,7 @@ void CPlayerLemming::OnBalloon()
 			int cellY = tileY & GROUND_BLOCK_PIXEL_MASK;
 			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 		}
-		m_groundPosition.m_zFixed = (int) (unsigned int) groundZ << FIXED_POINT_FRACTION_BITS;
+		m_groundPosition.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 		return;
 	}
 	int posY = m_position.m_yFixed;
@@ -735,15 +735,17 @@ void CPlayerLemming::OnBalloon()
 		int cellY = tileY & GROUND_BLOCK_PIXEL_MASK;
 		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
-	int baseZ = (int) groundZ + 32;
+	int baseZ = groundZ + 32;
 	int curZ = m_position.m_zFixed;
 	int tileZ = curZ >> FIXED_POINT_FRACTION_BITS;
 	int lowerZ = baseZ - 6;
 	int upperZ = baseZ + 6;
 	if (dist != 0) {
 		int factor = (g_dwGameTick - m_lastMovementTick) * 2;
-		m_position.m_xFixed += ((postPos.m_xFixed - m_position.m_xFixed) * factor) / dist;
-		m_position.m_yFixed += ((postPos.m_yFixed - m_position.m_yFixed) * factor) / dist;
+		m_position.m_xFixed = (unsigned int) m_position.m_xFixed +
+							  (int) (((unsigned int) postPos.m_xFixed - m_position.m_xFixed) * factor) / dist;
+		m_position.m_yFixed = (unsigned int) m_position.m_yFixed +
+							  (int) (((unsigned int) postPos.m_yFixed - m_position.m_yFixed) * factor) / dist;
 	}
 	int aboveLowerZ = tileZ >= lowerZ;
 	int belowUpperZ = tileZ <= upperZ;
