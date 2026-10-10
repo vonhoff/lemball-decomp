@@ -618,9 +618,9 @@ void CGameObject::StartMoving()
 	};
 	if (m_destinationList != NULL) {
 		CMover* mover = NULL;
-		const int& groundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
-										  m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
-										  &mover);
+		int groundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+								   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+								   &mover);
 		int objectZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		if (m_onMover == 0 && mover != NULL) {
 			mover->GetOn(this);
@@ -647,10 +647,9 @@ void CGameObject::StartMoving()
 				m_flightVelocity.m_yFixed = 0;
 				m_isFalling = true;
 				m_flightVelocity.m_xFixed = GAME_OBJECT_FALL_HORIZONTAL_SPEED_FIXED;
-				const int& fallSteps = (objectZ - groundZ) / 8;
+				int fallSteps = (objectZ - groundZ) / 8;
 				m_flightVelocity.m_zFixed = (fallSteps + 1) * FIXED_POINT_ONE;
-				short& actionArgument = m_actionArgument;
-				actionArgument = 0;
+				m_actionArgument = 0;
 				m_lastMovementTick = g_dwGameTick;
 				m_flightZ = objectZ;
 				m_groundPosition.m_xFixed = m_position.m_xFixed;
