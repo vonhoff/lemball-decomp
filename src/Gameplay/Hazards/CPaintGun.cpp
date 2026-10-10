@@ -77,7 +77,7 @@ void CPaintGun::Set(unsigned short p_id, const AICOORD& p_position, int p_direct
 		CMap* map = g_pMap;
 		int width = map->m_ground.m_width;
 		if (width > groundX && map->m_ground.m_height > groundY) {
-			CGround* ground = &g_pMap->m_ground.m_ground[groundY * width + groundX];
+			CGround* ground = &g_pMap->m_ground.m_ground[(int) ((unsigned int) groundY * width + groundX)];
 			ground->m_collision |= GROUND_COLLISION_BLOCKS_WALKING;
 		}
 	}

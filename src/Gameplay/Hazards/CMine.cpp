@@ -66,7 +66,8 @@ void CMine::Set(AICOORD p_position)
 		if (g_pMap->m_ground.m_height <= blockY) {
 			return;
 		}
-		g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_OBJECT_INTERACTION;
+		g_pMap->m_ground.m_ground[(int) ((unsigned int) width * blockY + blockX)].m_collision |=
+			GROUND_COLLISION_OBJECT_INTERACTION;
 	}
 }
 
@@ -108,7 +109,8 @@ void CMine::SetTerrain()
 			CMap* map = g_pMap;
 			width = map->m_ground.m_width;
 			if (blockX < width && blockY < map->m_ground.m_height) {
-				map->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_HAZARD;
+				map->m_ground.m_ground[(int) ((unsigned int) width * blockY + blockX)].m_collision |=
+					GROUND_COLLISION_HAZARD;
 			}
 		}
 	}
@@ -189,7 +191,8 @@ void CMine::OnGround()
 	else {
 		int groundX = x & GROUND_BLOCK_PIXEL_MASK;
 		int groundY = y & GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
+		z = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(groundX,
+																										groundY);
 	}
 	const unsigned int height = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
 	m_position.m_zFixed = height;
