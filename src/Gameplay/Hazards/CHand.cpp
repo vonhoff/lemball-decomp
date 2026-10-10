@@ -30,8 +30,8 @@ CHand::CHand() : CGlobalGameObject(OBJECT_HAND, 0, 0)
 void CHand::Initialise()
 {
 	m_stateTimer = 0;
-	m_activated = 0;
-	m_enabled = 0;
+	m_activated = false;
+	m_enabled = false;
 }
 
 // FUNCTION: LEMBALL 0x00427b10
@@ -59,10 +59,10 @@ void CHand::Set(unsigned short p_id, const AICOORD& p_position)
 	m_position.m_xFixed = p_position.m_xFixed;
 	m_position.m_yFixed = p_position.m_yFixed;
 	m_position.m_zFixed = p_position.m_zFixed;
-	m_enabled = 1;
+	m_enabled = true;
 	m_action = ACTION_READY;
 	m_actionArgument = REMOTE_PALETTE_REMAP_DISABLED;
-	m_activated = 0;
+	m_activated = false;
 
 	int blockX = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	int blockY = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
@@ -109,8 +109,8 @@ bool CHand::Process()
 		switch (m_action) {
 		case ACTION_RECOVERY:
 			if (m_actionDeadline < g_dwGameTick) {
-				m_enabled = 1;
-				m_activated = 0;
+				m_enabled = true;
+				m_activated = false;
 				Action(ACTION_READY);
 				return true;
 			}
@@ -126,7 +126,7 @@ bool CHand::Process()
 			break;
 		case ACTION_ACTIVATED:
 			if (m_actionDeadline < g_dwGameTick) {
-				m_enabled = 1;
+				m_enabled = true;
 				m_actionDeadline = g_dwGameTick + HAND_RECOVERY_DURATION_TICKS;
 				Action(ACTION_RECOVERY);
 			}
@@ -164,7 +164,7 @@ bool CHand::StepOn(const AICOORD& p_position, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00427e10
 void CHand::DoActivate()
 {
-	m_activated = 1;
+	m_activated = true;
 	m_target = m_activator;
 	m_lastMovementTick = g_dwGameTick;
 	m_actionPhase1Deadline += g_dwGameTick;

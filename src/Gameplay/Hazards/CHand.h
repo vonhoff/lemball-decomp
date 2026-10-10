@@ -21,9 +21,9 @@ public:
 	friend class CHandManager;
 
 private:
-	unsigned int m_activated; // 0x138
-	unsigned int m_enabled;   // 0x13c
-	CGameObject* m_target;    // 0x140
+	bool m_activated;      // 0x138
+	bool m_enabled;        // 0x13c
+	CGameObject* m_target; // 0x140
 };
 
 // SYNTHETIC: LEMBALL 0x00428800
