@@ -1,10 +1,7 @@
 #include "CPVSurface.h"
 
+#include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-
-#include <stddef.h>
-
-struct CVSSize;
 
 // FUNCTION: LEMBALL 0x004663d0
 CPVSurface::CPVSurface()
@@ -39,20 +36,12 @@ CPVSurface::~CPVSurface()
 // FUNCTION: LEMBALL 0x00466880
 void CPVSurface::SetDontUpdateRect(const CVSRect& p_rect)
 {
-	const short* coords;
-
-	if ((int) m_dontUpdateRect.m_width * (int) m_dontUpdateRect.m_height == 0 ||
-		(int) p_rect.m_height * (int) p_rect.m_width == 0) {
+	if (m_dontUpdateRect.m_width * m_dontUpdateRect.m_height == 0 || p_rect.m_height * p_rect.m_width == 0) {
 		m_dontUpdateRect.m_width = p_rect.m_width;
 		m_dontUpdateRect.m_height = p_rect.m_height;
-		if (&p_rect != NULL) {
-			coords = &p_rect.m_x;
-		}
-		else {
-			coords = NULL;
-		}
-		m_dontUpdateRect.m_x = *coords;
-		m_dontUpdateRect.m_y = coords[1];
+		const CVSPoint* position = &p_rect;
+		m_dontUpdateRect.m_x = position->m_x;
+		m_dontUpdateRect.m_y = position->m_y;
 	}
 }
 
