@@ -64,20 +64,21 @@ void CFormationManager::TransformFormation(int p_formationIndex, int p_angle)
 		VSTrig* trig = g_pVSTrig;
 		int sine;
 		if (angle < 0) {
-			sine = -trig->m_sine[(-angle) % TRIG_ANGLE_FULL_TURN].m_value;
+			sine = -trig->m_sine[(int) (0U - angle) % TRIG_ANGLE_FULL_TURN].m_value;
 		}
 		else {
 			sine = g_pVSTrig->m_sine[angle % TRIG_ANGLE_FULL_TURN].m_value;
 		}
 		CFixed sin(sine);
 		unsigned int cosStorage;
-		if (angle + TRIG_ANGLE_QUARTER_TURN < 0) {
+		if ((int) ((unsigned int) angle + TRIG_ANGLE_QUARTER_TURN) < 0) {
 			new (&cosStorage)
-				CFixed(-g_pVSTrig->m_sine[(-TRIG_ANGLE_QUARTER_TURN - angle) % TRIG_ANGLE_FULL_TURN].m_value);
+				CFixed(-g_pVSTrig->m_sine[(int) (0U - TRIG_ANGLE_QUARTER_TURN - angle) % TRIG_ANGLE_FULL_TURN].m_value);
 		}
 		else {
 			new (&cosStorage)
-				CFixed(g_pVSTrig->m_sine[(angle + TRIG_ANGLE_QUARTER_TURN) % TRIG_ANGLE_FULL_TURN].m_value);
+				CFixed(g_pVSTrig->m_sine[(int) ((unsigned int) angle + TRIG_ANGLE_QUARTER_TURN) % TRIG_ANGLE_FULL_TURN]
+						   .m_value);
 		}
 		CFixed& cos = *static_cast<CFixed*>(static_cast<void*>(&cosStorage));
 		CVector rotated = trig->Rotate(*source, sin, cos);

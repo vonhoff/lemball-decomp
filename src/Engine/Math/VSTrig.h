@@ -33,7 +33,7 @@ extern unsigned int g_dwVSTrigInitialised;
 inline CVector VSTrig::Rotate(CVector& p_vector, int p_angle)
 {
 	CFixed sine = Sin(p_angle);
-	CFixed cosine = Sin(p_angle + TRIG_ANGLE_QUARTER_TURN);
+	CFixed cosine = Sin((unsigned int) p_angle + TRIG_ANGLE_QUARTER_TURN);
 	return Rotate(p_vector, sine, cosine);
 }
 
