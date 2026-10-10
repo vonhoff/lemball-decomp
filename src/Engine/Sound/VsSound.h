@@ -17,5 +17,5 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 					   unsigned int p_useMusicCD,
 					   unsigned int* p_musicAvailable,
 					   CPVMusicDevice** p_musicDevice,
-					   int p_deviceParameter);
+					   int p_effectCapacity);
 #endif

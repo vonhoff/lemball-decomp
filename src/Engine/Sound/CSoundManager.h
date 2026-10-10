@@ -17,7 +17,7 @@ public:
 	CSoundManager(unsigned int p_musicEnabled,
 				  unsigned int p_effectsEnabled,
 				  unsigned int p_useMusicCD,
-				  int p_deviceParameter,
+				  int p_effectCapacity,
 				  CWnd* p_window);
 	unsigned char GetEffectVolume();
 	unsigned long PrepareEffect(unsigned long p_resourceId);

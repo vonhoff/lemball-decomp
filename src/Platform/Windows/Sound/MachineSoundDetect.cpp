@@ -7,6 +7,10 @@
 
 #include <stddef.h>
 
+enum {
+	DIRECT_SOUND_BUFFERS_PER_EFFECT = 5
+};
+
 // FUNCTION: LEMBALL 0x00473390
 int MachineSoundDetect(CBaseSoundDevice** p_devices,
 					   unsigned char p_musicEnabled,
@@ -14,7 +18,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 					   unsigned int p_useMusicCD,
 					   unsigned int* p_musicAvailable,
 					   CPVMusicDevice** p_musicDevice,
-					   int p_deviceParameter)
+					   int p_effectCapacity)
 {
 	unsigned int* musicAvailable = p_musicAvailable;
 	int count = 0;
@@ -30,7 +34,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 			delete music;
 		}
 		if (p_effectsEnabled == 1) {
-			CBaseSoundDevice* device = new CDirectSoundDevice(p_deviceParameter, 5);
+			CBaseSoundDevice* device = new CDirectSoundDevice(p_effectCapacity, DIRECT_SOUND_BUFFERS_PER_EFFECT);
 			if (device->IsEffectAvailable() == 1) {
 				*p_devices = device;
 				return 1;
@@ -38,7 +42,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 			if (device != NULL) {
 				delete device;
 			}
-			CBaseSoundDevice* wave = new CWaveSoundDevice(p_deviceParameter);
+			CBaseSoundDevice* wave = new CWaveSoundDevice(p_effectCapacity);
 			if (wave->IsEffectAvailable() == 1) {
 				*p_devices = wave;
 				return 1;
@@ -48,7 +52,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 		return 0;
 	}
 	if (p_effectsEnabled == 1) {
-		CBaseSoundDevice* wave = new CWaveSoundDevice(p_deviceParameter);
+		CBaseSoundDevice* wave = new CWaveSoundDevice(p_effectCapacity);
 		if (wave->IsEffectAvailable() == 1) {
 			count = 1;
 			*p_devices = wave;

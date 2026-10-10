@@ -12,7 +12,7 @@
 CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 							 unsigned int p_effectsEnabled,
 							 unsigned int p_useMusicCD,
-							 int p_deviceParameter,
+							 int p_effectCapacity,
 							 CWnd* p_window)
 {
 	unsigned int detectedCd;
@@ -36,7 +36,7 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 									   p_useMusicCD,
 									   &detectedCd,
 									   &m_musicDevice,
-									   p_deviceParameter);
+									   p_effectCapacity);
 	m_musicOutput = NULL;
 	m_effectOutput = NULL;
 	if (i < m_deviceCount) {
