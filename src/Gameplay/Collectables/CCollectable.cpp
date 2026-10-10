@@ -17,9 +17,9 @@
 // FUNCTION: LEMBALL 0x00422870
 CCollectable::CCollectable(int p_x, int p_y, int p_z, eObjectType p_objectType) : CGlobalGameObject(p_objectType, 0, 0)
 {
-	m_spawnPosition.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
-	m_spawnPosition.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
-	m_spawnPosition.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_xFixed = (unsigned int) p_x << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_yFixed = (unsigned int) p_y << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_zFixed = (unsigned int) p_z << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x004228b0
@@ -72,7 +72,9 @@ bool CCollectable::Process()
 					if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 						int cellX = x & GROUND_BLOCK_PIXEL_MASK;
 						int cellY = y & GROUND_BLOCK_PIXEL_MASK;
-						z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
+						z = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(
+							cellX,
+							cellY);
 					}
 					else {
 						z = 0;

@@ -34,7 +34,7 @@ bool CKey::Process()
 	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 		int localX = x & GROUND_BLOCK_PIXEL_MASK;
 		int localY = y & GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(localX, localY);
+		z = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(localX, localY);
 	}
 	else {
 		z = 0;
@@ -80,6 +80,6 @@ AICOORD CKey::ActivatePosition()
 {
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	int x = m_position.m_xFixed + KEY_ACTIVATION_POSITION_X_OFFSET_FIXED;
+	int x = (unsigned int) m_position.m_xFixed + KEY_ACTIVATION_POSITION_X_OFFSET_FIXED;
 	return AICOORD(x, y, z);
 }

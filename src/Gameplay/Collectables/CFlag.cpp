@@ -36,7 +36,7 @@ bool CFlag::Process()
 			if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 				x &= GROUND_BLOCK_PIXEL_MASK;
 				y &= GROUND_BLOCK_PIXEL_MASK;
-				z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(x, y);
+				z = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(x, y);
 			}
 			else {
 				z = 0;
