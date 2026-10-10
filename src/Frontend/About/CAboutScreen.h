@@ -43,7 +43,7 @@ private:
 	CGDI* m_gdi;                    // 0x20
 	CSolidRect m_line;              // 0x24
 	CDrawingMark m_drawingMark;     // 0x34
-	unsigned int m_complete;        // 0x38
+	bool m_complete;                // 0x38
 	CBigBitmap m_bitmap;            // 0x3c
 	CResBITMAP* m_backgroundBitmap; // 0x60
 	CClipRect m_rects[2];           // 0x64

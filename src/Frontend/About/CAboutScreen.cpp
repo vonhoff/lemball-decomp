@@ -58,7 +58,7 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect
 
 	m_returnState = FLOW_NONE;
 	g_pCursor->SetActive(0);
-	m_complete = 0;
+	m_complete = false;
 	g_pMasterInputQueue->Attach(this, 0);
 	m_display = p_display;
 	m_gdi = p_gdi;
@@ -280,7 +280,7 @@ int CAboutScreen::ProcessMsg(tagMESSAGE* p_message)
 bool CAboutScreen::QuitYet()
 {
 	if (m_endTime < CurrentMilliTimer()) {
-		m_complete = 1;
+		m_complete = true;
 		m_returnState = FLOW_INTRO_ANIM;
 	}
 	return m_complete;
