@@ -632,7 +632,8 @@ void CGameObject::StartMoving()
 									m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 									m_destination.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 			m_lastMovementTick = g_dwGameTick;
-			m_moveDurationTicks = (g_anTurnDelayCursor[m_objectType] * distance) / GAME_TICK_MILLISECONDS;
+			m_moveDurationTicks =
+				(int) ((unsigned int) g_anTurnDelayCursor[m_objectType] * distance) / GAME_TICK_MILLISECONDS;
 			if (m_moveDurationTicks == 0) {
 				m_moveDurationTicks = 1;
 			}
@@ -688,7 +689,7 @@ unsigned short CGameObject::MapCheck(int p_x, int p_y)
 			CMap* map;
 			unsigned short cellCollision;
 			if (x >= 0 && y >= 0 && x < (width = g_pMap->m_ground.m_width) && y < (map = g_pMap)->m_ground.m_height) {
-				cellCollision = map->m_ground.m_ground[y * width + x].m_collision;
+				cellCollision = map->m_ground.m_ground[(int) ((unsigned int) y * width + x)].m_collision;
 			}
 			else {
 				cellCollision = GROUND_COLLISION_OUT_OF_BOUNDS;

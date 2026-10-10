@@ -16008,7 +16008,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?Move@CGameObject@@UAEHXZ",
       "size": 829,
-      "fingerprint": "95babce05b1152ca65cf1e4f4c3774674db87eda474d140b0b3a21d4a694ee7f",
+      "fingerprint": "ab0bf8dbc36779b95a3a8d3d3d7b7720dc0940fdebddc1d009b6fae541ff6100",
       "references": [
         {
           "offset": 154,
@@ -16163,7 +16163,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?GetNextDestination@CGameObject@@QAE?AVAICOORD@@XZ",
       "size": 101,
-      "fingerprint": "88b1aabae5071638aa65186ebd4a788c518f2473787df2c54d16b3e80b5a7759",
+      "fingerprint": "e580ea674528f9ec2461b860de854e53c43e2515d266c2aaa28e5c5090d58d15",
       "references": [
         {
           "offset": 87,
@@ -16259,11 +16259,11 @@
       "caller": 4285248,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?OnLift@CGameObject@@UAEHAAUtCoord3d@@@Z",
-      "size": 193,
-      "fingerprint": "827d997f146372597bdaa5f7c75c7ce99e473cc7039b9fac647008242ac460e7",
+      "size": 207,
+      "fingerprint": "83b07fe9993565927ed83fd700bdc8b39f43bb20f482d783246f797a785c146c",
       "references": [
         {
-          "offset": 144,
+          "offset": 158,
           "original_instruction": 4285406,
           "original_bytes": "e8c2c5feff",
           "thunk": 4204965,
@@ -16276,7 +16276,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?OnLift@CGameObject@@UAEHAAUtCoord3d@@0@Z",
       "size": 204,
-      "fingerprint": "f042cc3fd7b13aea3e6475784816f43fa59881c8835ae01fc2072e61d8019ffc",
+      "fingerprint": "b6fa8e2b4858170769e44ca7390c78e77debcfe7e8ad734378272eba3fd896af",
       "references": [
         {
           "offset": 155,
@@ -16308,7 +16308,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?RegisterId@CGameObject@@QAEXXZ",
       "size": 114,
-      "fingerprint": "e1f2038c114390f21e8d8359e9cc7fce5987b78c9944eccbbdedc7fa7a6f6662",
+      "fingerprint": "bcb00af97134d0bd08f9629e66d97ac227a5839e548dccd2620d3dfb5a4a40e9",
       "references": [
         {
           "offset": 86,
