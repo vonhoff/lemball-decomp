@@ -69,7 +69,7 @@ void CFileWriteSocket::SetDestAddr(CNetworkAddress* p_address)
 // FUNCTION: LEMBALL 0x0047a0b0
 bool CFileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 {
-	int error = 0;
+	bool error = false;
 	CHeaderMessage* header;
 	unsigned int headerOffset;
 	int lockLength;
@@ -83,17 +83,17 @@ bool CFileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 	header = &m_file->m_headers[m_nextWriteSlot];
 	strcpy(header->m_text0, g_pBroadcastAddress->GetStr());
 	strcpy(header->m_text1, m_destinationAddress->GetStr());
-	header->m_headerValue = (unsigned long) p_size;
+	header->m_headerValue = p_size;
 
 	lockLength = Write(m_file->m_headers[m_nextWriteSlot], 1, 0);
 	if (lockLength != 0) {
 		Seek(m_dataOffset + m_nextWriteSlot * g_networkPacketSize);
 		if (!CNetworkFile::Write(p_data, p_size)) {
-			error = 1;
+			error = true;
 		}
 	}
 	else {
-		error = 1;
+		error = true;
 	}
 
 	if (error == 0) {
