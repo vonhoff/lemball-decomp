@@ -50,8 +50,8 @@ CTextButton::CTextButton(const CVSRect& p_rect,
 void CTextButton::ExpandToFitText(const CVSSize& p_textSize)
 {
 	if (m_textMargins.m_width * m_textMargins.m_height != 0) {
-		short width = (short) (p_textSize.m_width + 2 * m_textMargins.m_width);
-		short height = (short) (p_textSize.m_height + 2 * m_textMargins.m_height);
+		short width = p_textSize.m_width + 2 * m_textMargins.m_width;
+		short height = p_textSize.m_height + 2 * m_textMargins.m_height;
 		if (m_bounds.m_width < width) {
 			m_bounds.m_width = width;
 		}
@@ -65,16 +65,16 @@ void CTextButton::ExpandToFitText(const CVSSize& p_textSize)
 void CTextButton::AlignTextPosition(CVSPoint& p_position, const CVSSize& p_textSize)
 {
 	if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_RIGHT) != 0) {
-		p_position.m_x = (short) (m_bounds.m_width - p_textSize.m_width);
+		p_position.m_x = m_bounds.m_width - p_textSize.m_width;
 	}
 	else if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_HORIZONTAL_CENTER) != 0) {
-		p_position.m_x = (short) ((m_bounds.m_width - p_textSize.m_width) / 2);
+		p_position.m_x = (m_bounds.m_width - p_textSize.m_width) / 2;
 	}
 	if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_BOTTOM) != 0) {
-		p_position.m_y = (short) (m_bounds.m_height - p_textSize.m_height);
+		p_position.m_y = m_bounds.m_height - p_textSize.m_height;
 	}
 	else if ((m_alignmentFlags & TEXT_BUTTON_ALIGN_VERTICAL_CENTER) != 0) {
-		p_position.m_y = (short) ((m_bounds.m_height - p_textSize.m_height) / 2);
+		p_position.m_y = (m_bounds.m_height - p_textSize.m_height) / 2;
 	}
 	m_forceDrawCount = 1;
 }
@@ -112,7 +112,7 @@ void CTextButton::SetText(char* p_normalText, char* p_pressedText)
 		CHotAreaHandler* area = this;
 		m_ownerWindow->m_hotAreaList->AddToList(area);
 		SetActive(1);
-		m_nativeButtonCreated = 1;
+		m_nativeButtonCreated = true;
 	}
 	m_forceDrawCount = 1;
 }
@@ -128,7 +128,7 @@ void CTextButton::Initialize()
 	m_lastDrawnRemap = NULL;
 	m_remap = NULL;
 	m_font = CResFONT::Load(m_fontResourceId);
-	m_nativeButtonCreated = 0;
+	m_nativeButtonCreated = false;
 }
 
 // FUNCTION: LEMBALL 0x00469440
