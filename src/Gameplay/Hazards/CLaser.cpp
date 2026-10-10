@@ -85,7 +85,7 @@ void CLaser::Set(unsigned short p_id, const AICOORD& p_position, eObjectType p_o
 			int collisionX = blockX + i;
 			if (collisionX >= 0 && blockY >= 0 && collisionX < g_pMap->m_ground.m_width &&
 				blockY < g_pMap->m_ground.m_height) {
-				g_pMap->m_ground.m_ground[g_pMap->m_ground.m_width * blockY + collisionX].m_collision |=
+				g_pMap->m_ground.m_ground[(unsigned int) g_pMap->m_ground.m_width * blockY + collisionX].m_collision |=
 					GROUND_COLLISION_OBJECT_INTERACTION;
 			}
 		}
@@ -99,7 +99,7 @@ void CLaser::Set(unsigned short p_id, const AICOORD& p_position, eObjectType p_o
 			int collisionY = blockY + i;
 			if (blockX >= 0 && collisionY >= 0 && blockX < g_pMap->m_ground.m_width &&
 				collisionY < g_pMap->m_ground.m_height) {
-				g_pMap->m_ground.m_ground[g_pMap->m_ground.m_width * collisionY + blockX].m_collision |=
+				g_pMap->m_ground.m_ground[(unsigned int) g_pMap->m_ground.m_width * collisionY + blockX].m_collision |=
 					GROUND_COLLISION_OBJECT_INTERACTION;
 			}
 		}
@@ -152,7 +152,7 @@ bool CLaser::CheckHits()
 				int cellX = x & GROUND_BLOCK_PIXEL_MASK;
 				int cellY = y;
 				cellY &= GROUND_BLOCK_PIXEL_MASK;
-				groundZ = map->m_ground.m_ground[blockY * width + blockX].GetZ(cellX, cellY);
+				groundZ = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(cellX, cellY);
 			}
 			else {
 				groundZ = 0;
