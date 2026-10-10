@@ -177,11 +177,11 @@ bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 		data += dataSize;
 		remaining -= dataSize;
 	}
-	m_packetHeader->m_packetSequence = (unsigned short) m_segmentSequence;
+	m_packetHeader->m_packetSequence = m_segmentSequence;
 	while (segmentCount > m_segmentIndex && sendCount++ < MAX_SEGMENTS_PER_CALL) {
 		int sendSize;
 
-		m_packetHeader->m_subpacketSequence = (unsigned short) m_segmentIndex;
+		m_packetHeader->m_subpacketSequence = m_segmentIndex;
 		sendSize = g_networkPacketSize;
 		if (remaining < (int) g_networkPacketSize) {
 			sendSize = remaining;
@@ -229,7 +229,7 @@ bool CWriteSocket::Send(CNetworkMessage& p_message)
 	}
 	m_packetHeader->m_packetSize = p_message.m_writeCursor - p_message.m_buffer;
 	data = p_message.m_buffer;
-	m_packetHeader->m_messageId = (unsigned short) p_message.m_messageId;
+	m_packetHeader->m_messageId = p_message.m_messageId;
 	if (g_networkPacketSize < m_packetHeader->m_packetSize) {
 		if (m_segmentIndex != NETWORK_SEGMENT_INDEX_INACTIVE) {
 			p_message.m_pendingSendCount = 0;
