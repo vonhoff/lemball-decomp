@@ -1,21 +1,14 @@
 #include "CPVScrollableSurface.h"
 
-#include "Engine/Math/CVSRect.h"
-
-struct CVSSize;
+#include "Engine/Math/CVSSize.h"
 
 // FUNCTION: LEMBALL 0x004668d0
 void CPVScrollableSurface::SetWorldWidth(int p_width)
 {
-	short size[2];
-	CVSRect* rect;
-
 	if (m_reserved40 != p_width) {
 		m_reserved40 = p_width;
-		rect = &m_surfaceRect;
-		size[0] = rect->m_width;
-		size[1] = rect->m_height;
-		Resize(*(CVSSize*) size);
+		CVSSize size(m_surfaceRect);
+		Resize(size);
 	}
 }
 
