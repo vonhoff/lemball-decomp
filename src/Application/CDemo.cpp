@@ -107,8 +107,8 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 						  (short) ((unsigned int) message.m_code >> PACK_PARAM_HIGH_WORD_SHIFT));
 		CVSPoint& point = position;
 		zoom = m_window->m_zoom;
-		point.m_x = (short) (zoom * point.m_x);
-		point.m_y = (short) (zoom * point.m_y);
+		point.m_x = (short) ((unsigned int) zoom * point.m_x);
+		point.m_y = (short) ((unsigned int) zoom * point.m_y);
 		point.m_x += m_window->m_rect.m_x;
 		point.m_y += m_window->m_rect.m_y;
 		position.m_x += m_offsetX;
