@@ -64,7 +64,7 @@ bool CCatapult::Process()
 	else {
 		z = 0;
 	}
-	m_position.m_zFixed = (int) z * FIXED_POINT_ONE;
+	m_position.m_zFixed = z * FIXED_POINT_ONE;
 	if (m_isRemoteObject != 0) {
 		m_actionArgument = REMOTE_PALETTE_REMAP_ENABLED;
 		if (m_pendingAction != m_action) {
@@ -85,8 +85,8 @@ bool CCatapult::Process()
 	case ACTION_ACTIVATED: {
 		if (g_dwGameTick > m_actionPhase2Deadline) {
 			C3DVector pos;
-			pos.m_xFixed = m_position.m_xFixed - CATAPULT_LAUNCH_ORIGIN_OFFSET_FIXED;
-			pos.m_yFixed = m_position.m_yFixed - CATAPULT_LAUNCH_ORIGIN_OFFSET_FIXED;
+			pos.m_xFixed = (unsigned int) m_position.m_xFixed - CATAPULT_LAUNCH_ORIGIN_OFFSET_FIXED;
+			pos.m_yFixed = (unsigned int) m_position.m_yFixed - CATAPULT_LAUNCH_ORIGIN_OFFSET_FIXED;
 			pos.m_zFixed = m_position.m_zFixed + CATAPULT_LAUNCH_HEIGHT_OFFSET_FIXED;
 
 			C3DVector vel;
@@ -157,7 +157,7 @@ AICOORD CCatapult::ActivatePosition()
 {
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	y -= CATAPULT_ACTIVATION_POSITION_Y_OFFSET_FIXED;
-	int x = m_position.m_xFixed - CATAPULT_ACTIVATION_POSITION_X_OFFSET_FIXED;
+	y = (unsigned int) y - CATAPULT_ACTIVATION_POSITION_Y_OFFSET_FIXED;
+	int x = (unsigned int) m_position.m_xFixed - CATAPULT_ACTIVATION_POSITION_X_OFFSET_FIXED;
 	return AICOORD(x, y, z);
 }
