@@ -2373,8 +2373,8 @@ int C2D::DrawClippedRectangle(const CVSRect& p_rect)
 	CClipRect& clipRect = m_clipRects[m_primitiveCount++];
 	clipRect.m_bounds.m_width = clippedRect.m_width;
 	clipRect.m_bounds.m_height = clippedRect.m_height;
-	memcpy(&clipRect.m_bounds.m_x, &clippedRect.m_x, sizeof(short));
-	memcpy(&clipRect.m_bounds.m_y, &clippedRect.m_y, sizeof(short));
+	clipRect.m_bounds.m_x = clippedRect.m_x;
+	clipRect.m_bounds.m_y = clippedRect.m_y;
 	clipRect.m_flags = 0;
 	clipRect.Draw(m_gdi);
 
