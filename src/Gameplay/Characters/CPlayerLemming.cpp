@@ -747,8 +747,8 @@ void CPlayerLemming::OnBalloon()
 		m_position.m_yFixed = (unsigned int) m_position.m_yFixed +
 							  (int) (((unsigned int) postPos.m_yFixed - m_position.m_yFixed) * factor) / dist;
 	}
-	int aboveLowerZ = tileZ >= lowerZ;
-	int belowUpperZ = tileZ <= upperZ;
+	bool aboveLowerZ = tileZ >= lowerZ;
+	bool belowUpperZ = tileZ <= upperZ;
 	if ((aboveLowerZ & belowUpperZ) == 0) {
 		if (tileZ > baseZ) {
 			curZ -= PLAYER_LEMMING_VERTICAL_CORRECTION_STEP_FIXED;

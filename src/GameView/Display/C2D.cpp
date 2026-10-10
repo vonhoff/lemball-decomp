@@ -4007,9 +4007,9 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 		}
 		diagonalCollision &= 1;
 
-		int shiftY = yHeight <= p_groundHeight && yCollision == 0;
-		int shiftX = xHeight <= p_groundHeight && xCollision == 0;
-		int shiftDiagonal = diagonalHeight <= p_groundHeight && diagonalCollision == 0;
+		bool shiftY = yHeight <= p_groundHeight && yCollision == 0;
+		bool shiftX = xHeight <= p_groundHeight && xCollision == 0;
+		bool shiftDiagonal = diagonalHeight <= p_groundHeight && diagonalCollision == 0;
 		if (shiftDiagonal && shiftX) {
 			if (shiftY) {
 				p_x += GROUND_BLOCK_PIXEL_SIZE;
@@ -5337,7 +5337,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 	}
 
 	{
-		int southWithinZ = p_z >= southZ;
+		bool southWithinZ = p_z >= southZ;
 		bool eastWithinZ = p_z >= eastZ;
 		bool southeastWithinZ = p_z >= southeastZ;
 		int threshold = p_z - 0x18;
