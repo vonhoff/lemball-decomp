@@ -120,8 +120,8 @@ int CRocket::StepOn(const AICOORD& p_position, CGameObject* p_object)
 					   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
 					   p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 					   p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) < ROCKET_ACTIVATION_RADIUS_PIXELS) {
-		m_position.m_xFixed = p_position.m_xFixed + ROCKET_ACTIVATION_POSITION_XY_OFFSET_FIXED;
-		m_position.m_yFixed = p_position.m_yFixed + ROCKET_ACTIVATION_POSITION_XY_OFFSET_FIXED;
+		m_position.m_xFixed = (unsigned int) p_position.m_xFixed + ROCKET_ACTIVATION_POSITION_XY_OFFSET_FIXED;
+		m_position.m_yFixed = (unsigned int) p_position.m_yFixed + ROCKET_ACTIVATION_POSITION_XY_OFFSET_FIXED;
 		m_position.m_zFixed = p_position.m_zFixed;
 		m_launchBaseZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		m_activator = p_object;
