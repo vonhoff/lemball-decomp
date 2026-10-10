@@ -92,7 +92,7 @@ void CBall::StartMovement(unsigned int p_direction)
 							targetX >> FIXED_POINT_FRACTION_BITS,
 							targetY >> FIXED_POINT_FRACTION_BITS);
 	m_lastMovementTick = g_dwGameTick;
-	m_moveDurationTicks = (m_speed * distance) / GAME_TICK_MILLISECONDS;
+	m_moveDurationTicks = (int) ((unsigned int) m_speed * distance) / GAME_TICK_MILLISECONDS;
 	if (m_moveDurationTicks == 0) {
 		m_moveDurationTicks = 1;
 	}
@@ -138,7 +138,8 @@ bool CBall::Move()
 	else {
 		groundX = x & GROUND_BLOCK_PIXEL_MASK;
 		groundY = y & GROUND_BLOCK_PIXEL_MASK;
-		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
+		groundZ = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(groundX,
+																											  groundY);
 	}
 	z = groundZ;
 
@@ -231,7 +232,7 @@ void CBall::SetHeightCorrect()
 	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 		int cellX = x & GROUND_BLOCK_PIXEL_MASK;
 		int cellY = y & GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
+		z = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(cellX, cellY);
 	}
 	else {
 		z = 0;
