@@ -161,8 +161,8 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_messag
 	}
 	type = p_message->m_type;
 	origin = &m_bounds;
-	CVSPoint localPointValue((short) ((short) (p_point.m_x - origin->m_x) / m_scale),
-							 (short) ((short) (p_point.m_y - origin->m_y) / m_scale));
+	CVSPoint localPointValue((short) (p_point.m_x - origin->m_x) / m_scale,
+							 (short) (p_point.m_y - origin->m_y) / m_scale);
 	CVSPoint& localPoint = localPointValue;
 	entry = m_tail;
 	for (;;) {
@@ -187,13 +187,13 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_messag
 	short heightValue = m_bounds.m_height;
 	short& height = heightValue;
 	const CVSPoint* boundsOrigin = &m_bounds;
-	short scale = (short) m_scale;
-	short xValue = (short) (m_relativeTopLeft.m_x * (scale - 1) + boundsOrigin->m_x);
+	short scale = m_scale;
+	short xValue = m_relativeTopLeft.m_x * (scale - 1) + boundsOrigin->m_x;
 	short& x = xValue;
-	short yValue = (short) (m_relativeTopLeft.m_y * (scale - 1) + boundsOrigin->m_y);
+	short yValue = m_relativeTopLeft.m_y * (scale - 1) + boundsOrigin->m_y;
 	short& y = yValue;
-	width = (short) (width * scale);
-	height = (short) (height * scale);
+	width = width * scale;
+	height = height * scale;
 	if (p_point.m_x < x || (short) (x + width) <= p_point.m_x || p_point.m_y < y ||
 		(short) (height + y) <= p_point.m_y) {
 		if (m_entered != 0) {
