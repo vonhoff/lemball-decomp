@@ -70,9 +70,9 @@ CEnemy::CEnemy(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
 	CMap* map;
 
 	g_pAI = p_ai;
-	m_spawnPosition.m_xFixed = p_x << FIXED_POINT_FRACTION_BITS;
-	m_spawnPosition.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
-	m_spawnPosition.m_zFixed = p_z << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_xFixed = (unsigned int) p_x << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_yFixed = (unsigned int) p_y << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_zFixed = (unsigned int) p_z << FIXED_POINT_FRACTION_BITS;
 	map = g_pMap;
 	blockX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
 	blockY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
