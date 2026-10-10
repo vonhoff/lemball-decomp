@@ -24,7 +24,7 @@ void CMessReqConnect::GetData()
 // FUNCTION: LEMBALL 0x0045f460
 void CMessReqConnect::AddData()
 {
-	Add((unsigned long) (int) (short) m_requestedPort);
+	Add((unsigned long) (short) m_requestedPort);
 	Add(m_connectionData, NETWORK_PORT_COUNT);
 	Add(m_peerName);
 }

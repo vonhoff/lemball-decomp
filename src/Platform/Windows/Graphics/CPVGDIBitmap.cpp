@@ -225,7 +225,7 @@ void CPVGDIBitmap::GetRects(const CVSRect& p_rect, CVSRect*& p_rect0, CVSRect*& 
 	m_rect0.m_y = position->m_y;
 	p_rect0 = &m_rect0;
 	p_rect1 = NULL;
-	if ((int) m_firstLine < (int) (short) (p_rect.m_height + p_rect.m_y) && (int) p_rect.m_y < (int) m_firstLine) {
+	if ((int) m_firstLine < (short) (p_rect.m_height + p_rect.m_y) && p_rect.m_y < (int) m_firstLine) {
 		m_rect0.m_height = (short) m_firstLine - m_rect0.m_y;
 		m_rect1.m_width = p_rect.m_width;
 		m_rect1.m_height = p_rect.m_height;

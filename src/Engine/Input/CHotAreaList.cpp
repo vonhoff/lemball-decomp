@@ -161,8 +161,8 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_messag
 	}
 	type = p_message->m_type;
 	origin = &m_bounds;
-	CVSPoint localPointValue((short) ((int) (short) (p_point.m_x - origin->m_x) / m_scale),
-							 (short) ((int) (short) (p_point.m_y - origin->m_y) / m_scale));
+	CVSPoint localPointValue((short) ((short) (p_point.m_x - origin->m_x) / m_scale),
+							 (short) ((short) (p_point.m_y - origin->m_y) / m_scale));
 	CVSPoint& localPoint = localPointValue;
 	entry = m_tail;
 	for (;;) {
