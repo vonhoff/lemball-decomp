@@ -138,8 +138,7 @@ bool CBall::Move()
 	else {
 		groundX = x & GROUND_BLOCK_PIXEL_MASK;
 		groundY = y & GROUND_BLOCK_PIXEL_MASK;
-		groundZ = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(groundX,
-																											  groundY);
+		groundZ = map->m_ground.m_ground[(unsigned int) blockY * map->m_ground.m_width + blockX].GetZ(groundX, groundY);
 	}
 	z = groundZ;
 
@@ -232,12 +231,12 @@ void CBall::SetHeightCorrect()
 	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 		int cellX = x & GROUND_BLOCK_PIXEL_MASK;
 		int cellY = y & GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[(int) ((unsigned int) blockY * map->m_ground.m_width + blockX)].GetZ(cellX, cellY);
+		z = map->m_ground.m_ground[(unsigned int) blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	else {
 		z = 0;
 	}
-	m_position.m_zFixed = (unsigned int) z << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
 }
 
 // FUNCTION: LEMBALL 0x00421bc0
