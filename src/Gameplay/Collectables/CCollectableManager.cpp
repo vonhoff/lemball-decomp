@@ -80,7 +80,7 @@ void CCollectableManager::Clear()
 void CCollectableManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
-		m_collectables[i]->m_requestEnabled = 1;
+		m_collectables[i]->m_stateProcessed = true;
 		m_collectables[i]->Process();
 	}
 }

@@ -93,7 +93,7 @@ void CTrapDoorManager::Process()
 {
 	if (m_count != 0) {
 		for (int i = 0; i < m_count; i++) {
-			m_doors[i]->m_requestEnabled = 1;
+			m_doors[i]->m_stateProcessed = true;
 			if (m_doors[i]->m_active != 0) {
 				if (!m_doors[i]->Process()) {
 					m_doors[i]->m_active = 0;

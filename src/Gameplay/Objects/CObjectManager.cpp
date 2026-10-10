@@ -279,7 +279,7 @@ void CObjectManager::Process()
 {
 	int i = 0;
 	while (i < m_count) {
-		m_objects[i]->m_requestEnabled = 1;
+		m_objects[i]->m_stateProcessed = true;
 		CGlobalGameObject* object = m_objects[i];
 		if (object->m_objectActive != 0) {
 			object->Process();

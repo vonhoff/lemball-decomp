@@ -85,7 +85,7 @@ void CPaintGunManager::RemovePaintGun(CPaintGun* p_paintGun)
 void CPaintGunManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
-		m_paintGuns[i].m_requestEnabled = 1;
+		m_paintGuns[i].m_stateProcessed = true;
 		if (m_paintGuns[i].m_enabled != 0) {
 			m_paintGuns[i].Process();
 		}

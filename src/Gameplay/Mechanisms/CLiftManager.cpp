@@ -136,7 +136,7 @@ void CLiftManager::Process()
 	int i = 0;
 	CLiftManager* self = this;
 	for (; i < self->m_count; i++) {
-		self->m_lifts[i].m_requestEnabled = 1;
+		self->m_lifts[i].m_stateProcessed = true;
 		self->m_lifts[i].Process();
 		self->m_lifts[i].CheckObjects();
 	}

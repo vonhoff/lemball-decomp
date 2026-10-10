@@ -94,7 +94,7 @@ bool CLaserManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 void CLaserManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
-		m_lasers[i].m_requestEnabled = 1;
+		m_lasers[i].m_stateProcessed = true;
 		if (m_lasers[i].m_active != 0 || m_lasers[i].m_isRemoteObject != 0) {
 			m_lasers[i].Process();
 		}

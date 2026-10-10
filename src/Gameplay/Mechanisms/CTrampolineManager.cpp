@@ -96,7 +96,7 @@ int CTrampolineManager::TryEnableNear(const AICOORD& p_position, CGameObject* p_
 void CTrampolineManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
-		m_trampolines[i].m_requestEnabled = 1;
+		m_trampolines[i].m_stateProcessed = true;
 		if (m_trampolines[i].m_enabled != 0) {
 			m_trampolines[i].Process();
 		}

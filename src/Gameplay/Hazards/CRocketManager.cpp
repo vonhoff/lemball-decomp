@@ -99,7 +99,7 @@ int CRocketManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 void CRocketManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
-		m_rockets[i].m_requestEnabled = 1;
+		m_rockets[i].m_stateProcessed = true;
 		m_rockets[i].Process();
 	}
 }

@@ -172,7 +172,7 @@ void CMineManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
 		m_mines[i].OnGround();
-		m_mines[i].m_requestEnabled = 1;
+		m_mines[i].m_stateProcessed = true;
 		if (m_mines[i].m_enabled != 0) {
 			m_mines[i].Process();
 		}

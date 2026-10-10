@@ -27,8 +27,8 @@ void CObjectChangeStateMess::GetData()
 {
 	unsigned long time = GetDWORD();
 	SetRemoteGameTimeReal(time);
-	if (m_object->m_requestEnabled == 0) {
-		m_object->m_requestEnabled = 1;
+	if (m_object->m_stateProcessed == 0) {
+		m_object->m_stateProcessed = true;
 		CGlobalGameObject* obj = m_object;
 		obj->Process();
 		m_object = obj;
@@ -36,7 +36,7 @@ void CObjectChangeStateMess::GetData()
 	m_object->m_action = (eAction) GetDWORD();
 	m_object->m_stateTimer = GetDWORD();
 	m_object->m_actionArgument = (short) GetWORD();
-	m_object->m_requestEnabled = 0;
+	m_object->m_stateProcessed = false;
 	m_object->m_requestActive = 0;
 	if (!m_object->IsUsable(m_object->m_action) && m_object->m_action != ACTION_LOCAL_CONTROL) {
 		m_object->m_isRemoteObject = 1;

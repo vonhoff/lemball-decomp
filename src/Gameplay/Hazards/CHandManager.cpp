@@ -100,7 +100,7 @@ bool CHandManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 void CHandManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
-		m_hands[i].m_requestEnabled = 1;
+		m_hands[i].m_stateProcessed = true;
 		if (m_hands[i].m_activated != 0 || m_hands[i].m_isRemoteObject != 0) {
 			m_hands[i].Process();
 		}

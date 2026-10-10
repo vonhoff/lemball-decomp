@@ -42,7 +42,7 @@ void CGlobalGameObject::Restart()
 	m_requestedAction = ACTION_READY;
 	m_pendingAction = ACTION_READY;
 	m_usableState = GROUP_OBJECT_REQUEST_NONE;
-	m_requestEnabled = 1;
+	m_stateProcessed = true;
 }
 
 // FUNCTION: LEMBALL 0x00416d90

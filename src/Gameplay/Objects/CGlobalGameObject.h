@@ -58,11 +58,11 @@ public:
 	friend class CHandManager;
 
 protected:
-	unsigned int m_requestEnabled; // 0x124
-	eAction m_pendingAction;       // 0x128
-	eAction m_requestedAction;     // 0x12c
-	unsigned int m_requestActive;  // 0x130
-	unsigned int m_usableState;    // 0x134
+	bool m_stateProcessed;        // 0x124
+	eAction m_pendingAction;      // 0x128
+	eAction m_requestedAction;    // 0x12c
+	unsigned int m_requestActive; // 0x130
+	unsigned int m_usableState;   // 0x134
 };
 
 extern CTransportObjectMess* g_pTransportObjectMessage;

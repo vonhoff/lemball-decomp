@@ -132,7 +132,7 @@ int CDoorManager::Open(const AICOORD& p_position, CGameObject* p_object)
 void CDoorManager::Process()
 {
 	for (int i = 0; i < m_count; i++) {
-		m_doors[i].m_requestEnabled = 1;
+		m_doors[i].m_stateProcessed = true;
 		if (m_doors[i].m_activationPending != 0 || m_doors[i].m_isRemoteObject != 0) {
 			m_doors[i].Process();
 		}
