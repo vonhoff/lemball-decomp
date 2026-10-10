@@ -43,8 +43,8 @@ void CLaser::Initialise()
 {
 	m_action = ACTION_READY;
 	m_stateTimer = 0;
-	m_active = 0;
-	m_enabled = 0;
+	m_active = false;
+	m_enabled = false;
 }
 
 // FUNCTION: LEMBALL 0x004288f0
@@ -63,24 +63,24 @@ void CLaser::Set(unsigned short p_id, const AICOORD& p_position, eObjectType p_o
 	m_position.m_zFixed = p_position.m_zFixed;
 	int blockX = (x >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	m_objectType = p_orientation;
-	m_enabled = 1;
+	m_enabled = true;
 	int blockY = (y >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 
 	switch (p_orientation) {
 	case OBJECT_LASER_HORIZONTAL:
 		m_action = ACTION_READY;
-		m_autoActivate = 1;
-		m_active = 1;
+		m_autoActivate = true;
+		m_active = true;
 		break;
 	case OBJECT_LASER_VERTICAL:
 		m_action = ACTION_READY;
-		m_autoActivate = 1;
-		m_active = 1;
+		m_autoActivate = true;
+		m_active = true;
 		break;
 	case OBJECT_LASER_EMITTER_H: {
-		m_autoActivate = 0;
+		m_autoActivate = false;
 		m_action = ACTION_READY;
-		m_active = 1;
+		m_active = true;
 		for (int i = 1; i < 8; i++) {
 			int collisionX = blockX + i;
 			if (collisionX >= 0 && blockY >= 0 && collisionX < g_pMap->m_ground.m_width &&
@@ -92,9 +92,9 @@ void CLaser::Set(unsigned short p_id, const AICOORD& p_position, eObjectType p_o
 		break;
 	}
 	case OBJECT_LASER_EMITTER_V: {
-		m_autoActivate = 0;
+		m_autoActivate = false;
 		m_action = ACTION_READY;
-		m_active = 1;
+		m_active = true;
 		for (int i = 1; i < 8; i++) {
 			int collisionY = blockY + i;
 			if (blockX >= 0 && collisionY >= 0 && blockX < g_pMap->m_ground.m_width &&
@@ -256,7 +256,7 @@ bool CLaser::Process()
 				CheckHits();
 			}
 			if (m_actionDeadline < g_dwGameTick) {
-				m_enabled = 1;
+				m_enabled = true;
 				m_active = m_autoActivate;
 				m_actionDeadline = g_dwGameTick + LASER_REACTIVATION_DELAY_TICKS;
 				if (m_target != NULL) {
@@ -273,7 +273,7 @@ bool CLaser::Process()
 // FUNCTION: LEMBALL 0x00428ec0
 bool CLaser::Activate()
 {
-	m_active = 1;
+	m_active = true;
 	if (g_pActiveConnection != NULL && g_pActiveConnection->m_isHost != 0) {
 		return false;
 	}

@@ -26,10 +26,10 @@ public:
 	friend class CLaserManager;
 
 private:
-	unsigned int m_active;       // 0x138
-	unsigned int m_enabled;      // 0x13c
-	unsigned int m_autoActivate; // 0x140
-	CGameObject* m_target;       // 0x144
+	bool m_active;         // 0x138
+	bool m_enabled;        // 0x13c
+	bool m_autoActivate;   // 0x140
+	CGameObject* m_target; // 0x144
 };
 
 // SYNTHETIC: LEMBALL 0x00429ed0
