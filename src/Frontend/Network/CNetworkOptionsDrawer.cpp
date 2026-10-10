@@ -273,12 +273,12 @@ CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_
 	m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
 	m_broadcasting = 0;
 	m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
-	m_redrawPending = 0;
+	m_redrawPending = false;
 	m_lastDrawTime = CurrentMilliTimer();
 	m_localAddressText = NULL;
 	m_localComputerName = NULL;
 	m_locked = 0;
-	m_startPending = 0;
+	m_startPending = false;
 	m_pendingStage = NETWORK_OPTIONS_EDIT_NONE;
 	m_visibleEntryCount = 0;
 	m_editor = new CEditString(NETWORK_OPTIONS_EDIT_BUFFER_CAPACITY);
@@ -594,7 +594,7 @@ void CNetworkOptionsDrawer::DrawText()
 			else if (special) {
 				remap = (CRemap*) m_remaps[5];
 			}
-			if (m_redrawPending != 0 || !special) {
+			if (m_redrawPending || !special) {
 				CResFONT* font = m_textManager->GetFont(m_chalkFontId);
 				msgPos.m_x -= font->GetSize(msgText.m_text, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
 				m_textManager
@@ -630,11 +630,11 @@ void CNetworkOptionsDrawer::DrawText()
 						isAccepted = 1;
 					}
 					if (m_acceptedPlayer != idx) {
-						if (m_playerEntries[idx].m_activationState != 0 && m_redrawPending == 0) {
+						if (m_playerEntries[idx].m_activationState != 0 && !m_redrawPending) {
 							state = 3;
 						}
 					}
-					else if (m_playerEntries[idx].m_activationState == 0 || m_redrawPending != 0) {
+					else if (m_playerEntries[idx].m_activationState == 0 || m_redrawPending) {
 						state = 3;
 					}
 					state += isAccepted;
@@ -653,7 +653,7 @@ void CNetworkOptionsDrawer::DrawText()
 
 		if (m_editingActive != 0) {
 			CString editText = m_editor->m_text;
-			if (m_redrawPending == 0) {
+			if (!m_redrawPending) {
 				editText += g_szNetworkOptionsCursor;
 			}
 			if (editText.getlength() > 0) {
@@ -676,7 +676,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(tagMESSAGE* p_message)
 	bool handled;
 	unsigned int code;
 
-	if (m_startPending != 0 || m_message != m_drawnMessage) {
+	if (m_startPending || m_message != m_drawnMessage) {
 		return false;
 	}
 
@@ -765,7 +765,7 @@ bool CNetworkOptionsDrawer::ProcessMessages(tagMESSAGE* p_message)
 		input_done:
 			if (handled) {
 				m_lastDrawTime = CurrentMilliTimer();
-				m_redrawPending = 0;
+				m_redrawPending = false;
 				g_pSoundView->PlayEffect(SFX_DRUM1);
 				return true;
 			}
@@ -906,7 +906,7 @@ void CNetworkOptionsDrawer::SetMessage(eNetOptsMessages p_message)
 	m_messageDuration = 0;
 	m_backBufferNeeded = true;
 	now = CurrentMilliTimer();
-	m_redrawPending = 1;
+	m_redrawPending = true;
 	m_lastDrawTime = now;
 }
 
@@ -960,7 +960,7 @@ void CNetworkOptionsDrawer::StopEditing()
 		}
 		else {
 			g_szNetworkBroadcastAddress[0] = 0;
-			m_startPending = 1;
+			m_startPending = true;
 		}
 		if (((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started == 0 ||
 			((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed != 0) {
@@ -970,7 +970,7 @@ void CNetworkOptionsDrawer::StopEditing()
 		break;
 	case NETWORK_OPTIONS_EDIT_BROADCAST_ADDRESS:
 		strcpy(g_szNetworkBroadcastAddress, m_editor->m_text);
-		m_startPending = 1;
+		m_startPending = true;
 		break;
 	}
 }
@@ -999,7 +999,7 @@ void CNetworkOptionsDrawer::StartMessageTimeout(eNetOptsMessages p_message, unsi
 	m_messageStartTime = now;
 	m_messageDuration = p_duration;
 	now = CurrentMilliTimer();
-	m_redrawPending = 1;
+	m_redrawPending = true;
 	m_lastDrawTime = now;
 }
 
@@ -1019,9 +1019,9 @@ void CNetworkOptionsDrawer::Processing()
 	if (m_drawnMessage != m_message) {
 		return;
 	}
-	if (m_startPending != 0) {
+	if (m_startPending) {
 		StartBroadcast();
-		m_startPending = 0;
+		m_startPending = false;
 	}
 	if (m_pendingStage != NETWORK_OPTIONS_EDIT_NONE) {
 		StartEditing(m_pendingStage, 1);
@@ -1032,7 +1032,7 @@ void CNetworkOptionsDrawer::Processing()
 	}
 	now = CurrentMilliTimer();
 	if (now - m_lastDrawTime >= NETWORK_OPTIONS_REDRAW_INTERVAL_MS) {
-		m_redrawPending = m_redrawPending == 0;
+		m_redrawPending = !m_redrawPending;
 		now = CurrentMilliTimer();
 		m_lastDrawTime = now;
 	}

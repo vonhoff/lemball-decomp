@@ -126,7 +126,7 @@ private:
 	unsigned long m_messageDuration;            // 0x3b4
 	unsigned int m_broadcasting;                // 0x3b8
 	unsigned int m_networkMode;                 // 0x3bc
-	unsigned int m_redrawPending;               // 0x3c0
+	bool m_redrawPending;                       // 0x3c0
 	eNetworkOptionsHandlerState m_networkState; // 0x3c4
 	unsigned long m_lastDrawTime;               // 0x3c8
 	CEntryHandler* m_playerEntries;             // 0x3cc
@@ -134,7 +134,7 @@ private:
 	int m_highlightedPlayer;                    // 0x3d4
 	int m_visibleEntryCount;                    // 0x3d8
 	unsigned int m_locked;                      // 0x3dc
-	unsigned int m_startPending;                // 0x3e0
+	bool m_startPending;                        // 0x3e0
 	char* m_localAddressText;                   // 0x3e4
 	char* m_localComputerName;                  // 0x3e8
 	CBigBitmap m_bitmap;                        // 0x3ec
