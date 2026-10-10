@@ -22,9 +22,8 @@ CGameStatus::CGameStatus()
 	m_levelState = zero;
 	m_skill = zero;
 	m_skillState = zero;
-	p = (int*) &m_bulletHitHandlingDisabled;
-	p[0] = zero;
-	p[1] = zero;
+	m_bulletHitHandlingDisabled = zero;
+	m_unlimitedAmmo = zero;
 	p = m_maxLevels;
 	p[0] = zero;
 	p[1] = zero;
