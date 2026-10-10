@@ -659,10 +659,10 @@ void CMap::CalculateCliff()
 				if (x >= width) {
 					break;
 				}
-				ground = m_ground.m_ground + m_ground.m_width * y + x;
+				ground = m_ground.m_ground + (int) ((unsigned int) m_ground.m_width * y + x);
 				int height = ground->m_height;
 				if (x < width - 1 && y < m_walkHeight - 1) {
-					CGround* below = m_ground.m_ground + (y + 1) * m_ground.m_width + x;
+					CGround* below = m_ground.m_ground + (int) ((unsigned int) (y + 1) * m_ground.m_width + x);
 					CGround* right = ground + 1;
 					int lowerHeight;
 					if (right->m_height > below->m_height) {
