@@ -25,7 +25,6 @@ private:
 	unsigned long m_headerValue;         // 0x30
 	char m_text0[21];                    // 0x34
 	char m_text1[21];                    // 0x49
-	unsigned short m_padding;            // 0x5e
 };
 
 // SYNTHETIC: LEMBALL 0x0047b7f0
