@@ -24,7 +24,7 @@ CResBITMAP* CResBITMAP::Load(unsigned long p_resourceId)
 void CResBITMAP::SetHeader()
 {
 	BitmapHeader* header = (BitmapHeader*) m_name;
-	unsigned short height = header->m_height;
+	unsigned short height = (unsigned short) header->m_height;
 	unsigned int width = header->m_width;
 	m_rasterPoint.m_x = (unsigned short) width;
 	m_rasterPoint.m_y = height;

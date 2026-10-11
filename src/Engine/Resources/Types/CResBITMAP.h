@@ -6,8 +6,7 @@
 // SIZE 0x0c
 struct BitmapHeader {
 	unsigned int m_width;
-	unsigned short m_height;
-	unsigned short m_pad0x06;
+	unsigned int m_height;
 	unsigned char m_depth;
 	unsigned char m_flags;
 };
