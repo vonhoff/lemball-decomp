@@ -24318,8 +24318,8 @@
       "caller": 4373296,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CPaintGun.cpp.obj",
       "symbol": "?Set@CPaintGun@@QAEXGABVAICOORD@@H@Z",
-      "size": 171,
-      "fingerprint": "e1cacc76c5f44f21b14af0504b54c3a990542dcdabf8a592b692ba0bfe802e64",
+      "size": 164,
+      "fingerprint": "d282daf796d4c009dd9e497e9dddb75b4308b04f3088c9c6726024be530043c6",
       "references": [
         {
           "offset": 9,

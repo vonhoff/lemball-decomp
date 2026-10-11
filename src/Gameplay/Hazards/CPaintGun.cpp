@@ -1,7 +1,7 @@
 #include "CPaintGun.h"
 
 #include "Application/SoundEffects.h"
-#include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Engine/Time/VsTime.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
@@ -21,7 +21,7 @@ enum {
 	PAINT_GUN_MOVEMENT_INTERVAL_TICKS = 70,
 	PAINT_GUN_FIRE_INTERVAL_TICKS = 145,
 	PAINT_GUN_PROJECTILE_RANGE_PIXELS = 200,
-	PAINT_GUN_PROJECTILE_HEIGHT_OFFSET_FIXED = GROUND_BLOCK_PIXEL_SIZE / 2 * FIXED_POINT_ONE
+	PAINT_GUN_PROJECTILE_HEIGHT_OFFSET_PIXELS = GROUND_BLOCK_PIXEL_SIZE / 2
 };
 
 inline static void ClampUpperTargetCoordinate(int& p_coordinate)
@@ -123,14 +123,14 @@ bool CPaintGun::Process()
 		else if (m_lastMovementTick < g_dwGameTick) {
 			AICOORD position;
 			position = m_position;
-			position.m_zFixed += (unsigned int) PAINT_GUN_PROJECTILE_HEIGHT_OFFSET_FIXED;
+			position.m_zFixed += (unsigned int) IntegerToFixed(PAINT_GUN_PROJECTILE_HEIGHT_OFFSET_PIXELS);
 			AICOORD start;
 			AICOORD target;
 			start = position;
 			target = position;
 			int coordinate;
 
-			start.m_xFixed = (unsigned int) position.m_xFixed + (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
+			start.m_xFixed = (unsigned int) position.m_xFixed + IntegerToFixed(GROUND_BLOCK_PIXEL_SIZE);
 			coordinate = (position.m_xFixed >> FIXED_POINT_FRACTION_BITS) + PAINT_GUN_PROJECTILE_RANGE_PIXELS;
 			ClampUpperTargetCoordinate(coordinate);
 			target.m_xFixed = (unsigned int) coordinate << FIXED_POINT_FRACTION_BITS;
@@ -140,7 +140,7 @@ bool CPaintGun::Process()
 			start.m_zFixed = position.m_zFixed;
 			target.m_yFixed = position.m_yFixed;
 			target.m_zFixed = position.m_zFixed;
-			start.m_xFixed = (unsigned int) position.m_xFixed - (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
+			start.m_xFixed = (unsigned int) position.m_xFixed - IntegerToFixed(GROUND_BLOCK_PIXEL_SIZE);
 			coordinate = (position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - PAINT_GUN_PROJECTILE_RANGE_PIXELS;
 			ClampLowerTargetCoordinate(coordinate);
 			target.m_xFixed = coordinate << FIXED_POINT_FRACTION_BITS;
@@ -150,7 +150,7 @@ bool CPaintGun::Process()
 			start.m_zFixed = position.m_zFixed;
 			target.m_xFixed = position.m_xFixed;
 			target.m_zFixed = position.m_zFixed;
-			start.m_yFixed = (unsigned int) position.m_yFixed + (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
+			start.m_yFixed = (unsigned int) position.m_yFixed + IntegerToFixed(GROUND_BLOCK_PIXEL_SIZE);
 			coordinate = (position.m_yFixed >> FIXED_POINT_FRACTION_BITS) + PAINT_GUN_PROJECTILE_RANGE_PIXELS;
 			ClampUpperTargetCoordinate(coordinate);
 			target.m_yFixed = (unsigned int) coordinate << FIXED_POINT_FRACTION_BITS;
@@ -160,7 +160,7 @@ bool CPaintGun::Process()
 			start.m_zFixed = position.m_zFixed;
 			target.m_xFixed = position.m_xFixed;
 			target.m_zFixed = position.m_zFixed;
-			start.m_yFixed = (unsigned int) position.m_yFixed - (GROUND_BLOCK_PIXEL_SIZE * FIXED_POINT_ONE);
+			start.m_yFixed = (unsigned int) position.m_yFixed - IntegerToFixed(GROUND_BLOCK_PIXEL_SIZE);
 			coordinate = (position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - PAINT_GUN_PROJECTILE_RANGE_PIXELS;
 			ClampLowerTargetCoordinate(coordinate);
 			target.m_yFixed = coordinate << FIXED_POINT_FRACTION_BITS;
