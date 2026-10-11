@@ -388,8 +388,8 @@ int INIT_Main(char* p_commandLine)
 	return mainResult;
 }
 
-#define SMALL_MEMORY_DEFAULT_BUCKET_BLOCKS_REQUESTED 0x100
 enum {
+	SMALL_MEMORY_DEFAULT_BLOCKS = 0x100,
 	MEMORY_BUDGET_CONFIG_TO_BYTES_SHIFT = 19
 };
 // FUNCTION: LEMBALL 0x004727b0
@@ -402,7 +402,7 @@ void INIT_PreInit()
 
 	capability = g_anPreInitCapabilities;
 	for (i = SMALL_MEMORY_BUCKET_COUNT; i != 0; i = i - 1) {
-		*capability = SMALL_MEMORY_DEFAULT_BUCKET_BLOCKS_REQUESTED;
+		*capability = SMALL_MEMORY_DEFAULT_BLOCKS;
 		capability = capability + 1;
 	}
 	g_preInitActive.m_memoryBudget = g_preInitActive.m_memoryBudget << MEMORY_BUDGET_CONFIG_TO_BYTES_SHIFT;
@@ -445,4 +445,3 @@ void INIT_PreInit()
 		return;
 	}
 }
-#undef SMALL_MEMORY_DEFAULT_BUCKET_BLOCKS_REQUESTED
