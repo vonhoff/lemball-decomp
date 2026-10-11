@@ -416,7 +416,7 @@ void CGunController::DrawSpriteWindow()
 		previousGdi = CAnimsManager::m_gdi;
 		CAnimsManager::m_gdi = m_spriteSurface;
 		if (m_targetSide == GUN_SIDE_LEFT) {
-			CAnimsManager::DrawAnim(CVSPoint((short) m_projectileX, (short) m_projectileY),
+			CAnimsManager::DrawAnim(CVSPoint(m_projectileX, m_projectileY),
 									g_gunBulletLeftResourceId,
 									0,
 									(CAnimFrameBASE*) m_cursorAnim,
@@ -442,7 +442,7 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		else {
-			CAnimsManager::DrawAnim(CVSPoint((short) m_projectileX, (short) m_projectileY),
+			CAnimsManager::DrawAnim(CVSPoint(m_projectileX, m_projectileY),
 									g_gunBulletRightResourceId,
 									0,
 									(CAnimFrameBASE*) m_cursorAnim,
@@ -472,7 +472,7 @@ void CGunController::DrawSpriteWindow()
 		if (m_targetSide == GUN_SIDE_LEFT) {
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
-			CAnimsManager::DrawAnim(CVSPoint((short) m_projectileEndX, (short) m_projectileEndY),
+			CAnimsManager::DrawAnim(CVSPoint(m_projectileEndX, m_projectileEndY),
 									g_gunSplatLeftResourceId,
 									0,
 									(CAnimFrameBASE*) m_rightShotAnim,
@@ -489,7 +489,7 @@ void CGunController::DrawSpriteWindow()
 			CAnimsManager::m_gdi = previousGdi;
 		}
 		else {
-			CVSPoint position((short) m_projectileEndX, (short) m_projectileEndY);
+			CVSPoint position(m_projectileEndX, m_projectileEndY);
 			previousGdi = CAnimsManager::m_gdi;
 			CAnimsManager::m_gdi = m_spriteSurface;
 			CVSRect drawn = CAnimsManager::DrawAnim(position,
