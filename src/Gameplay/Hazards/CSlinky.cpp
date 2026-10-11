@@ -95,10 +95,10 @@ bool CSlinky::Move()
 		STEP_PIXELS = 16,
 		MAX_ATTEMPTS = 8
 	};
-	int dx;
 	int count = 0;
-	int dy;
 	do {
+		int dx;
+		int dy;
 		int random = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 		*g_pRandomSeed = random;
 		m_actionArgument = random % SLINKY_DIRECTION_COUNT;
