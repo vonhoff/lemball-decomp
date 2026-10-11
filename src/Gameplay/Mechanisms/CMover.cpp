@@ -74,7 +74,8 @@ void CMover::SetPos()
 		for (int groundX = x; groundX <= maxX; groundX++) {
 			if (groundX >= 0 && groundY >= 0 && groundX < g_pMap->m_ground.m_width &&
 				groundY < g_pMap->m_ground.m_height) {
-				CGround* ground = &g_pMap->m_ground.m_ground[groundY * g_pMap->m_ground.m_width + groundX];
+				CGround* ground =
+					&g_pMap->m_ground.m_ground[(unsigned int) groundY * g_pMap->m_ground.m_width + groundX];
 				ground->m_collision |= GROUND_COLLISION_MOVER_PRESENT;
 			}
 		}
@@ -117,7 +118,7 @@ void CMover::Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode,
 	else {
 		x &= GROUND_BLOCK_PIXEL_MASK;
 		y &= GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
+		z = map->m_ground.m_ground[(unsigned int) groundY * map->m_ground.m_width + groundX].GetZ(x, y);
 	}
 
 	m_active = true;
@@ -154,7 +155,7 @@ void CMover::SetUpNextNode(unsigned long p_time)
 	else {
 		x &= 15;
 		y &= 15;
-		z = map->m_ground.m_ground[blockY * width + blockX].GetZ(x, y);
+		z = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(x, y);
 	}
 	const unsigned int height = z;
 	nextPosition.m_z = height << FIXED_POINT_FRACTION_BITS;
@@ -285,7 +286,7 @@ bool CMover::Process()
 		else {
 			x &= GROUND_BLOCK_PIXEL_MASK;
 			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(x, y);
+			z = map->m_ground.m_ground[(unsigned int) groundY * map->m_ground.m_width + groundX].GetZ(x, y);
 		}
 		const unsigned int height = z;
 		m_position.m_zFixed = height << FIXED_POINT_FRACTION_BITS;

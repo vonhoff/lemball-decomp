@@ -25132,8 +25132,8 @@
       "caller": 4384848,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?SetUpNextNode@CMover@@QAEXK@Z",
-      "size": 292,
-      "fingerprint": "6f4ca00046bbcac5574855f23d51b085b109658729d4df92b65b79d55bd1f16f",
+      "size": 298,
+      "fingerprint": "dfcb52368a680157a9dba1be5e2f959d4148d2a2f9369056fdd3ba614528070a",
       "references": [
         {
           "offset": 46,
@@ -25143,21 +25143,21 @@
           "source_symbol": "?GetNodePosition@CAI@@QAE?AUCPt3@@H@Z"
         },
         {
-          "offset": 136,
+          "offset": 142,
           "original_instruction": 4384984,
           "original_bytes": "e8c840fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 232,
+          "offset": 238,
           "original_instruction": 4385080,
           "original_bytes": "e80d3cfdff",
           "thunk": 4203850,
           "source_symbol": "?Distance@@YAIHHHH@Z"
         },
         {
-          "offset": 277,
+          "offset": 283,
           "original_instruction": 4385125,
           "original_bytes": "e8743efdff",
           "thunk": 4204510,
@@ -25170,7 +25170,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?FindObjectsOnTopOfMe@CMover@@QAEXXZ",
       "size": 192,
-      "fingerprint": "c18ced349f51a8c1a762b76e98b32f37f62ee610b09bf0fc14a2b75273cf4607",
+      "fingerprint": "1b8482be174575db1dba8decdf581862be4afe79b9b45fa3eb5d8d57c1fe0a6c",
       "references": [
         {
           "offset": 86,
@@ -25337,7 +25337,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?GetOn@CMover@@QAEHPAVCGameObject@@@Z",
       "size": 334,
-      "fingerprint": "553cd7185f47980c39b4a0003eedec73d8391624f4fbe74e5c069f7a7b4e889b",
+      "fingerprint": "915f22fa3ce096e6ee354a8f4e88f38bf383d40c3355e1c15f65825766d56987",
       "references": [
         {
           "offset": 84,
