@@ -829,10 +829,12 @@ void CPlayerLemming::StartStanding()
 	}
 	m_actionDeadline = g_dwGameTick;
 	if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
-		m_flightVelocity.m_yFixed = 0;
 		m_isFalling = true;
-		m_flightVelocity.m_xFixed = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
-		m_flightVelocity.m_zFixed = (((tileZ - (int) groundZ) / 8) + 1) * FIXED_POINT_ONE;
+		C3DVector velocity;
+		velocity.m_xFixed = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
+		velocity.m_yFixed = 0;
+		velocity.m_zFixed = (((tileZ - (int) groundZ) / 8) + 1) * FIXED_POINT_ONE;
+		m_flightVelocity = velocity;
 		unsigned int now = g_dwGameTick;
 		int posY = m_position.m_yFixed;
 		m_actionArgument = 0;
