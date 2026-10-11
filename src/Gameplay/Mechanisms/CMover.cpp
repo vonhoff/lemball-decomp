@@ -460,7 +460,8 @@ bool CMover::GetOn(CGameObject* p_object)
 			p_object->StartMoving();
 		}
 		else {
-			objectPosition.m_zFixed = m_position.m_zFixed + (MOVER_SURFACE_Z_OFFSET << FIXED_POINT_FRACTION_BITS);
+			objectPosition.m_zFixed =
+				(unsigned int) m_position.m_zFixed + (MOVER_SURFACE_Z_OFFSET << FIXED_POINT_FRACTION_BITS);
 			p_object->m_position.m_xFixed = objectPosition.m_xFixed;
 			p_object->m_position.m_yFixed = objectPosition.m_yFixed;
 			p_object->m_position.m_zFixed = objectPosition.m_zFixed;
