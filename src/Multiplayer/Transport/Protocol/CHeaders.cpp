@@ -32,13 +32,12 @@ CHeaders::~CHeaders()
 CHeaderMessage* CHeaders::GetNextHeaderBySequence()
 {
 	int index = m_currentIndex;
-	int count = m_count;
-	for (; index < count; index++) {
+	for (; index < m_count; index++) {
 		if (m_sequences[index] < m_headers[index].m_sequenceState.m_sequence) {
 			break;
 		}
 	}
-	if (index == count) {
+	if (index == m_count) {
 		m_currentIndex = HEADER_SEQUENCE_ITERATION_EXHAUSTED;
 		return NULL;
 	}
