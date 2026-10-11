@@ -47,10 +47,6 @@ enum {
 	GAME_SOUND_CHANNEL_COUNT = 50
 };
 
-#ifndef LEMBALL_ENFORCE_STARTUP_CHECKS
-#define LEMBALL_ENFORCE_STARTUP_CHECKS 1
-#endif
-
 #pragma intrinsic(strcpy, strcat, strcmp)
 
 enum eEventPumpResult {
