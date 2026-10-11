@@ -59,7 +59,7 @@ void CPVZBuffSurface::AllocateZBuff()
 }
 
 // FUNCTION: LEMBALL 0x00466840
-void CPVZBuffSurface::EnableZBuff(int p_enabled)
+void CPVZBuffSurface::EnableZBuff(bool p_enabled)
 {
 	if (p_enabled == 0) {
 		FreeZBuff();

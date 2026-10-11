@@ -76,7 +76,7 @@ void CPVBackBuffSurface::AllocateBackBuff()
 }
 
 // FUNCTION: LEMBALL 0x00466630
-void CPVBackBuffSurface::EnableBackBuff(unsigned int p_enabled)
+void CPVBackBuffSurface::EnableBackBuff(bool p_enabled)
 {
 	if (p_enabled == 0) {
 		FreeBackBuff();

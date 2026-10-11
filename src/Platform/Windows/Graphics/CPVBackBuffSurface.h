@@ -19,7 +19,7 @@ public:
 	virtual void CopyBackBuffToScreen(const CVSRect& p_bounds) = 0; // vtable+0x08
 	virtual bool HasBackBuff();                                     // vtable+0x3c
 	void AllocateBackBuff();
-	void EnableBackBuff(unsigned int p_enabled);
+	void EnableBackBuff(bool p_enabled);
 	void FreeBackBuff();
 	void ResizeBackBuff();
 	~CPVBackBuffSurface();
@@ -27,7 +27,7 @@ public:
 
 private:
 	CPVGDIBitmap m_bitmap;            // 0x08
-	unsigned int m_enabled;           // 0x48
+	bool m_enabled;                   // 0x48
 	unsigned char* m_buffer;          // 0x4c
 	unsigned short m_allocatedWidth;  // 0x50
 	unsigned short m_allocatedHeight; // 0x52
