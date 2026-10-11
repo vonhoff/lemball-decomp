@@ -135,8 +135,6 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 	QueueHandlerNode* node;
 	QueueHandlerNode* current;
 	QueueHandlerNode* previous;
-	unsigned int index;
-	unsigned int count;
 
 	EnterCritical();
 	node = (QueueHandlerNode*) operator new(sizeof(QueueHandlerNode));
@@ -151,40 +149,35 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 		return true;
 	}
 	previous = current;
-	count = m_handlerCount;
-	if (count == 0) {
+	if (m_handlerCount == 0) {
 		m_handlerList = node;
-		m_handlerCount = count + 1;
+		m_handlerCount = m_handlerCount + 1;
 		LeaveCritical();
 		return true;
 	}
-	index = 0;
-	if (count != 0) {
-		do {
-			if (p_priority < current->m_priority) {
-				if (index == 0) {
-					node->m_next = m_handlerList;
-					m_handlerList = node;
-				}
-				else {
-					node->m_next = previous->m_next;
-					previous->m_next = node;
-				}
-				m_handlerCount = m_handlerCount + 1;
-				LeaveCritical();
-				return true;
+	for (unsigned int index = 0; index < m_handlerCount; index++) {
+		if (p_priority < current->m_priority) {
+			if (index == 0) {
+				node->m_next = m_handlerList;
+				m_handlerList = node;
 			}
-			previous = current;
-			current = current->m_next;
-			if (current == NULL) {
-				node->m_next = NULL;
+			else {
+				node->m_next = previous->m_next;
 				previous->m_next = node;
-				m_handlerCount = m_handlerCount + 1;
-				LeaveCritical();
-				return true;
 			}
-			index = index + 1;
-		} while (index < count);
+			m_handlerCount = m_handlerCount + 1;
+			LeaveCritical();
+			return true;
+		}
+		previous = current;
+		current = current->m_next;
+		if (current == NULL) {
+			node->m_next = NULL;
+			previous->m_next = node;
+			m_handlerCount = m_handlerCount + 1;
+			LeaveCritical();
+			return true;
+		}
 	}
 	LeaveCritical();
 	return false;
@@ -195,33 +188,28 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 {
 	QueueHandlerNode* current;
 	QueueHandlerNode* previous;
-	unsigned int index;
 
 	EnterCritical();
 	current = m_handlerList;
-	index = 0;
 	previous = current;
 	const unsigned int count = m_handlerCount;
-	if (count != 0) {
-		do {
-			if (current->m_priority == p_priority && current->m_handler == p_handler) {
-				if (index == 0) {
-					m_handlerList = current->m_next;
-					operator delete(current);
-					m_handlerCount = m_handlerCount - 1;
-					LeaveCritical();
-					return true;
-				}
-				previous->m_next = current->m_next;
+	for (unsigned int index = 0; index < count; index++) {
+		if (current->m_priority == p_priority && current->m_handler == p_handler) {
+			if (index == 0) {
+				m_handlerList = current->m_next;
 				operator delete(current);
 				m_handlerCount = m_handlerCount - 1;
 				LeaveCritical();
 				return true;
 			}
-			previous = current;
-			index = index + 1;
-			current = current->m_next;
-		} while (count > index);
+			previous->m_next = current->m_next;
+			operator delete(current);
+			m_handlerCount = m_handlerCount - 1;
+			LeaveCritical();
+			return true;
+		}
+		previous = current;
+		current = current->m_next;
 	}
 	LeaveCritical();
 	return false;
