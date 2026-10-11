@@ -79,7 +79,8 @@ bool CCollectable::Process()
 					else {
 						z = 0;
 					}
-					m_position.m_zFixed = IntegerToFixed(z);
+					const int& groundHeight = z;
+					m_position.m_zFixed = IntegerToFixed(groundHeight);
 				}
 				CPt3 pt;
 				pt.m_x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;

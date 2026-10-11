@@ -6,6 +6,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Gameplay/Behavior/StateMachine.h"
 #include "Gameplay/Characters/EnemyBehavior.h"
@@ -85,8 +86,9 @@ CEnemy::CEnemy(CAI* p_ai, int p_x, int p_y, int p_z, int p_facingDirection)
 		int pixelY = p_y & GROUND_BLOCK_PIXEL_MASK;
 		z = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(pixelX, pixelY);
 	}
+	const int& groundHeight = z;
 	m_initialFacingDirection = p_facingDirection;
-	m_spawnPosition.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+	m_spawnPosition.m_zFixed = IntegerToFixed(groundHeight);
 	SetId(NextLoadingId());
 	m_state2Action = ENEMY_ACTION_STOP;
 	m_state1Action = ENEMY_ACTION_STOP;

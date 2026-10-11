@@ -83,7 +83,8 @@ void CBullet::Set(unsigned short p_id,
 		z = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(targetX, targetY);
 	}
 	m_sourceObjectId = p_id;
-	m_destination.m_zFixed = (z + 12) << FIXED_POINT_FRACTION_BITS;
+	const int& destinationHeight = z + 12;
+	m_destination.m_zFixed = IntegerToFixed(destinationHeight);
 	m_facingDirection = (short) ReturnFacingDirection(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 													  m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
 													  m_destination.m_xFixed >> FIXED_POINT_FRACTION_BITS,

@@ -42,7 +42,8 @@ bool CFlag::Process()
 			else {
 				z = 0;
 			}
-			const int height = IntegerToFixed(z);
+			const int& groundHeight = z;
+			const int height = IntegerToFixed(groundHeight);
 			m_position.m_zFixed = height;
 		}
 		return true;

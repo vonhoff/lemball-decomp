@@ -18275,7 +18275,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Projectiles/CBullet.cpp.obj",
       "symbol": "?Set@CBullet@@QAEXGW4eBulletType@@W4eOwner@@HVAICOORD@@2@Z",
       "size": 268,
-      "fingerprint": "3990f6cd397a65f9cdbef58f86a7a2d4cde4481ba9d74190a6deffca879d0c3a",
+      "fingerprint": "eef7af2db8c3730092a0e097a515038bf786621b5fd721c185dc8062ad0c3e27",
       "references": [
         {
           "offset": 166,
@@ -18344,7 +18344,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Projectiles/CBullet.cpp.obj",
       "symbol": "?Process@CBullet@@UAEHXZ",
       "size": 761,
-      "fingerprint": "f4d609b178eaee0b2975b68988fea3d65544426f8a67bdb95c919698d72f67d3",
+      "fingerprint": "414b0ee8533a12b6444bda010ef3ebbdb99814828564b594a43f3688077f15c6",
       "references": [
         {
           "offset": 119,
@@ -20152,7 +20152,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CEnemy.cpp.obj",
       "symbol": "??0CEnemy@@QAE@PAVCAI@@HHHH@Z",
       "size": 302,
-      "fingerprint": "96a3b8760af202980d10d18365e444dac2baf906589e82d11dea98b1222a63a0",
+      "fingerprint": "9500ad21fc52d73d80326ab8940f1fa0c549cf2bb4b49213eb3b2be0e75daf33",
       "references": [
         {
           "offset": 18,
@@ -20546,7 +20546,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CEnemy.cpp.obj",
       "symbol": "?EndFiring@CEnemy@@UAEXXZ",
       "size": 280,
-      "fingerprint": "adb38e0228fadc338bbaa2d7feb8764f36178cb2f09677fd4fcc42dfc17c2367",
+      "fingerprint": "e267b0948e9586c1ddfceeb6c6b6f0b097a673775cf635d205373d5e37b60ba1",
       "references": [
         {
           "offset": 222,
@@ -21418,7 +21418,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Collectables/CCollectable.cpp.obj",
       "symbol": "?Process@CCollectable@@UAEHXZ",
       "size": 551,
-      "fingerprint": "dcce2994e3aa24d4fd97ae8f1d32a7148d35b361ab1320a995114d11333010ac",
+      "fingerprint": "afe5e44e308d051c7e0fa894cf0e4785faa9b37e177130c1c0646742e2a97d5b",
       "references": [
         {
           "offset": 269,
@@ -21441,7 +21441,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Collectables/CFlag.cpp.obj",
       "symbol": "?Process@CFlag@@UAEHXZ",
       "size": 189,
-      "fingerprint": "ff1477309de72ccf2831fdc83ea0ee100df9db98d2ae72cd09c6c01a94934692",
+      "fingerprint": "af1824ffdfb9a52a91033107bdef153b306a25cfc4d0ee85178ac5bcc85817aa",
       "references": [
         {
           "offset": 139,
