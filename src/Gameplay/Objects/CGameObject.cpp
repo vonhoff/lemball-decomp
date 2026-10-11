@@ -488,15 +488,10 @@ void CGameObject::StartFly(C3DVector& p_velocity, C3DVector* p_origin)
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
 	if (p_origin != NULL) {
-		int x = p_origin->m_xFixed;
-		m_flightOrigin.m_xFixed = x;
-		int y = p_origin->m_yFixed;
-		m_flightOrigin.m_yFixed = y;
-		int z = p_origin->m_zFixed;
-		m_flightOrigin.m_zFixed = z;
-		m_position.m_xFixed = x;
-		m_position.m_yFixed = y;
-		m_position.m_zFixed = z;
+		m_flightOrigin = *p_origin;
+		m_position.m_xFixed = m_flightOrigin.m_xFixed;
+		m_position.m_yFixed = m_flightOrigin.m_yFixed;
+		m_position.m_zFixed = m_flightOrigin.m_zFixed;
 	}
 	else {
 		m_flightOrigin.m_xFixed = m_position.m_xFixed;
@@ -504,9 +499,7 @@ void CGameObject::StartFly(C3DVector& p_velocity, C3DVector* p_origin)
 		m_flightOrigin.m_zFixed = m_position.m_zFixed;
 	}
 	m_isFlying = true;
-	m_flightVelocity.m_xFixed = p_velocity.m_xFixed;
-	m_flightVelocity.m_yFixed = p_velocity.m_yFixed;
-	m_flightVelocity.m_zFixed = p_velocity.m_zFixed;
+	m_flightVelocity = p_velocity;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_lastMovementTick = g_dwGameTick;
 	m_actionDeadline = g_dwGameTick + GAME_OBJECT_FLIGHT_START_DELAY_TICKS;
@@ -738,31 +731,25 @@ bool CGameObject::SearchRoute()
 			g_pMaze->BSolution(solutionCount, solutions);
 			m_destinationList->m_count = 0;
 			if (solutionCount < GAME_OBJECT_ROUTE_MAX_ACCEPTED_SOLUTIONS) {
-				int index = solutionCount - 1;
-				if (index >= 0) {
+				for (int index = solutionCount - 1; index >= 0; index--) {
 					tSolution* solution = &solutions[index];
-					do {
-						CAiDestinationList* list;
-						AICOORD coordinate;
-						coordinate.m_xFixed = ((unsigned int) (unsigned short) solution->m_x
-											   << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
-											  (GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
-						list = m_destinationList;
-						coordinate.m_yFixed = ((unsigned int) (unsigned short) solution->m_y
-											   << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
-											  (GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
-						coordinate.m_zFixed = 0;
-						unsigned short count = list->m_count;
-						if (count < list->m_capacity) {
-							list->m_count = count + 1;
-							CAiDestinationEntry* entry = &list->m_entries[count];
-							entry->m_type = DESTINATION_COORD;
-							entry->m_coordinate.m_xFixed = coordinate.m_xFixed;
-							entry->m_coordinate.m_yFixed = coordinate.m_yFixed;
-							entry->m_coordinate.m_zFixed = coordinate.m_zFixed;
-						}
-						solution--;
-					} while (solution >= solutions);
+					CAiDestinationList* list;
+					AICOORD coordinate;
+					coordinate.m_xFixed =
+						((unsigned int) (unsigned short) solution->m_x << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
+						(GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
+					list = m_destinationList;
+					coordinate.m_yFixed =
+						((unsigned int) (unsigned short) solution->m_y << GAME_OBJECT_ROUTE_COORDINATE_FIXED_SHIFT) +
+						(GROUND_BLOCK_PIXEL_SIZE / 2) * FIXED_POINT_ONE;
+					coordinate.m_zFixed = 0;
+					unsigned short count = list->m_count;
+					if (count < list->m_capacity) {
+						list->m_count = count + 1;
+						CAiDestinationEntry* entry = &list->m_entries[count];
+						entry->m_type = DESTINATION_COORD;
+						entry->m_coordinate = coordinate;
+					}
 				}
 			}
 		}
