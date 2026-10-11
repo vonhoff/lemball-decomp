@@ -105,20 +105,21 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 		int zoom;
 		CVSPoint position((short) message.m_code,
 						  (short) ((unsigned int) message.m_code >> PACK_PARAM_HIGH_WORD_SHIFT));
-		CVSPoint& point = position;
 		zoom = m_window->m_zoom;
-		point.m_x = (short) ((unsigned int) zoom * point.m_x);
-		point.m_y = (short) ((unsigned int) zoom * point.m_y);
-		point.m_x += m_window->m_rect.m_x;
-		point.m_y += m_window->m_rect.m_y;
+		position.m_x = (short) ((unsigned int) zoom * position.m_x);
+		position.m_y = (short) ((unsigned int) zoom * position.m_y);
+		position.m_x += m_window->m_rect.m_x;
+		position.m_y += m_window->m_rect.m_y;
 		position.m_x += m_offsetX;
 		position.m_y += m_offsetY;
 		const CPVWnd* window = m_window;
-		if (point.m_x < window->m_rect.m_x || (short) (window->m_rect.m_width + window->m_rect.m_x) <= point.m_x ||
-			point.m_y < window->m_rect.m_y || (short) (window->m_rect.m_height + window->m_rect.m_y) <= point.m_y) {
+		if (position.m_x < window->m_rect.m_x ||
+			(short) (window->m_rect.m_width + window->m_rect.m_x) <= position.m_x ||
+			position.m_y < window->m_rect.m_y ||
+			(short) (window->m_rect.m_height + window->m_rect.m_y) <= position.m_y) {
 			return false;
 		}
-		message.m_code = PackParam(point.m_x, point.m_y);
+		message.m_code = PackParam(position.m_x, position.m_y);
 		break;
 	}
 	}
