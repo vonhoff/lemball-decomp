@@ -27,11 +27,25 @@ constants, algorithms, virtual tables, object layouts, and call relationships.
 
 ## Building
 
-Requires Python 3.10+ and the MSVC 4.00 toolchain:
+Requires Python 3.10+ and Git. Run commands from the repository root in PowerShell.
 
-```bash
-pip install -r requirements.txt
+### Setup
+
+Create the Python environment, install dependencies, and download the MSVC 4.00 toolchain once:
+
+```powershell
+python -m venv .decomp-venv
+.\.decomp-venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 git clone https://github.com/vonhoff/MSVC400 msvc400
+```
+
+### Build
+
+Activate the environment in each new shell, then build:
+
+```powershell
+.\.decomp-venv\Scripts\Activate.ps1
 python tools/make_binary.py
 ```
 
