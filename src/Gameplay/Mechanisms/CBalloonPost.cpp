@@ -95,7 +95,7 @@ void CBalloonPost::Process()
 		else {
 			z = 0;
 		}
-		int height = z << FIXED_POINT_FRACTION_BITS;
+		int height = IntegerToFixed(z);
 		m_positions[0].m_zFixed = height;
 		m_posts[0]->m_position.m_zFixed = height;
 	}
@@ -115,7 +115,7 @@ void CBalloonPost::Process()
 		else {
 			z = 0;
 		}
-		int height = z << FIXED_POINT_FRACTION_BITS;
+		int height = IntegerToFixed(z);
 		m_positions[1].m_zFixed = height;
 		m_posts[1]->m_position.m_zFixed = height;
 	}
@@ -135,7 +135,7 @@ void CBalloonPost::Process()
 		else {
 			z = 0;
 		}
-		int height = z << FIXED_POINT_FRACTION_BITS;
+		int height = IntegerToFixed(z);
 		m_positions[2].m_zFixed = height;
 		m_posts[2]->m_position.m_zFixed = height;
 	}
@@ -155,7 +155,7 @@ void CBalloonPost::Process()
 		else {
 			z = 0;
 		}
-		int height = z << FIXED_POINT_FRACTION_BITS;
+		int height = IntegerToFixed(z);
 		m_positions[3].m_zFixed = height;
 		m_posts[3]->m_position.m_zFixed = height;
 	}
@@ -210,13 +210,13 @@ void CBalloonPost::ActivatePostAtPosition(int p_x, int p_y, int p_z, eObjectType
 		return;
 	}
 	m_activeMask |= mask;
-	m_positions[index].m_xFixed = (unsigned int) p_x << FIXED_POINT_FRACTION_BITS;
-	m_positions[index].m_yFixed = (unsigned int) p_y << FIXED_POINT_FRACTION_BITS;
-	m_positions[index].m_zFixed = (unsigned int) p_z << FIXED_POINT_FRACTION_BITS;
+	m_positions[index].m_xFixed = IntegerToFixed(p_x);
+	m_positions[index].m_yFixed = IntegerToFixed(p_y);
+	m_positions[index].m_zFixed = IntegerToFixed(p_z);
 	CTheBalloonPost* post = m_posts[index];
-	post->m_position.m_xFixed = (unsigned int) p_x << FIXED_POINT_FRACTION_BITS;
-	post->m_position.m_yFixed = (unsigned int) p_y << FIXED_POINT_FRACTION_BITS;
-	post->m_position.m_zFixed = (unsigned int) p_z << FIXED_POINT_FRACTION_BITS;
+	post->m_position.m_xFixed = IntegerToFixed(p_x);
+	post->m_position.m_yFixed = IntegerToFixed(p_y);
+	post->m_position.m_zFixed = IntegerToFixed(p_z);
 	m_posts[index]->m_active = 1;
 }
 
