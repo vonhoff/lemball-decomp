@@ -345,26 +345,18 @@ bool CBaseQueue::ProcessNMsgs(unsigned int p_count)
 {
 	tagMESSAGE message;
 	unsigned int available;
-	unsigned int index;
 
-	index = 0;
 	EnterCritical();
 	available = m_messageCount;
-	if (p_count != 0) {
-		do {
-			if (index >= available) {
-				break;
-			}
-			if (GetNth(&message, 0) == 0) {
-				LeaveCritical();
-				return false;
-			}
-			if (Process(&message) == 0) {
-				LeaveCritical();
-				return false;
-			}
-			index = index + 1;
-		} while (index < p_count);
+	for (unsigned int index = 0; index < p_count && index < available; index++) {
+		if (GetNth(&message, 0) == 0) {
+			LeaveCritical();
+			return false;
+		}
+		if (Process(&message) == 0) {
+			LeaveCritical();
+			return false;
+		}
 	}
 	LeaveCritical();
 	return true;
