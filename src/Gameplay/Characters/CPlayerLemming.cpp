@@ -681,9 +681,6 @@ void CPlayerLemming::ExternalControlEnd()
 void CPlayerLemming::OnBalloon()
 {
 	AICOORD postPos;
-	postPos.m_xFixed = DEBUG_SENTINEL;
-	postPos.m_yFixed = DEBUG_SENTINEL;
-	postPos.m_zFixed = DEBUG_SENTINEL;
 	g_pAI->m_balloonPost->FindPost(m_balloonObjectType, postPos);
 	int dist = Distance(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 						m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
@@ -714,7 +711,7 @@ void CPlayerLemming::OnBalloon()
 		else {
 			int cellX = tileX & GROUND_BLOCK_PIXEL_MASK;
 			int cellY = tileY & GROUND_BLOCK_PIXEL_MASK;
-			groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
+			groundZ = map->m_ground.m_ground[(unsigned int) blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 		}
 		m_groundPosition.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 		return;
@@ -733,7 +730,7 @@ void CPlayerLemming::OnBalloon()
 	else {
 		int cellX = tileX & GROUND_BLOCK_PIXEL_MASK;
 		int cellY = tileY & GROUND_BLOCK_PIXEL_MASK;
-		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
+		groundZ = map->m_ground.m_ground[(unsigned int) blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	int baseZ = groundZ + 32;
 	int curZ = m_position.m_zFixed;

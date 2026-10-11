@@ -13367,7 +13367,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
       "symbol": "?OnBalloon@CPlayerLemming@@UAEXXZ",
       "size": 592,
-      "fingerprint": "52bcba2617405ac75c07d70f1c586809ffae58702ba0ab740dcc93e934062f08",
+      "fingerprint": "84c8c83a0b181597242e57d042d1069dece29e86086dab5239add581d5cade2e",
       "references": [
         {
           "offset": 49,
