@@ -11,7 +11,6 @@ struct CVSPoint {
 
 	CVSPoint& operator=(const CVSPoint& p_source);
 	CVSPoint* AddInPlace(CVSPoint* p_delta);
-	CVSPoint* SubtractInPlace(CVSPoint* p_delta);
 	int Equals(const CVSPoint& p_other);
 
 	short m_x; // 0x00

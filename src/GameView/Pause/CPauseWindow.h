@@ -87,7 +87,7 @@ private:
 	CSolidRect m_borderLine[1];            // 0x138
 	CVSPoint m_windowPadding;              // 0x148
 	CVSPoint m_textSpacing;                // 0x14c
-	CVSPoint m_borderPadding;              // 0x150
+	CVSSize m_borderPadding;               // 0x150
 	CResANIM* m_horizontalBorderAnim;      // 0x154
 	CResANIM* m_verticalBorderAnim;        // 0x158
 	CAnim m_cornerAnims[4];                // 0x15c

@@ -264,18 +264,18 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 	borderRect.m_height = size.m_height;
 	borderRect.m_y = 0;
 	borderRect.m_x = 0;
-	m_borderPadding.m_x = 4;
-	m_borderPadding.m_y = 4;
+	m_borderPadding.m_width = 4;
+	m_borderPadding.m_height = 4;
 	if (m_lowResolution == 0) {
-		m_borderPadding.m_x = 8;
-		m_borderPadding.m_y = 8;
+		m_borderPadding.m_width = 8;
+		m_borderPadding.m_height = 8;
 	}
-	size.m_width = m_borderPadding.m_x;
-	size.m_height = m_borderPadding.m_y;
+	size.m_width = m_borderPadding.m_width;
+	size.m_height = m_borderPadding.m_height;
 	((CVSPoint*) &borderRect.m_x)->AddInPlace((CVSPoint*) &size);
-	size.m_width = (short) (m_borderPadding.m_x * 2);
-	size.m_height = (short) (m_borderPadding.m_y * 2);
-	((CVSPoint*) &borderRect.m_width)->SubtractInPlace((CVSPoint*) &size);
+	size.m_width = (short) (m_borderPadding.m_width * 2);
+	size.m_height = (short) (m_borderPadding.m_height * 2);
+	static_cast<CVSSize&>(borderRect) -= size;
 	m_borderLine[0].m_bounds.m_width = borderRect.m_width;
 	m_borderLine[0].m_bounds.m_height = borderRect.m_height;
 	m_borderLine[0].m_bounds.m_x = borderRect.m_x;

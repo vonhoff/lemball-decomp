@@ -9,6 +9,7 @@ struct CVSSize {
 	// FUNCTION: LEMBALL 0x0046db10
 	CVSSize(const CVSSize& p_source) : m_width(p_source.m_width), m_height(p_source.m_height) {}
 	CVSSize& operator=(const CVSSize& p_source);
+	CVSSize& operator-=(const CVSSize& p_delta);
 
 	short m_width;  // 0x00
 	short m_height; // 0x02
