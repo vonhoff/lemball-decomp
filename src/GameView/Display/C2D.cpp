@@ -5140,13 +5140,13 @@ void C2D::DrawZBuff_Anim(int p_index, unsigned short p_z)
 	int screenY;
 
 	m_map->GameToScreen(gameX, gameY, screenX, screenY);
-	screenX -= m_viewOriginX;
-	screenY -= m_viewOriginY;
+	screenX = (unsigned int) screenX - m_viewOriginX;
+	screenY = (unsigned int) screenY - m_viewOriginY;
 	m_lemmingAnims->m_primitiveSequence = p_z;
 	if ((collision & GROUND_COLLISION_SPECIAL_RENDER) != 0 && height > 0) {
 		DrawCliff(screenX, screenY, height, cliff);
 	}
-	DrawGround(screenX, screenY - height, groundType, frame);
+	DrawGround(screenX, (unsigned int) screenY - height, groundType, frame);
 }
 
 // FUNCTION: LEMBALL 0x00440560
