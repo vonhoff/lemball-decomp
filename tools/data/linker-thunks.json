@@ -16314,8 +16314,8 @@
       "caller": 4286272,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?RegisterId@CGameObject@@QAEXXZ",
-      "size": 114,
-      "fingerprint": "bcb00af97134d0bd08f9629e66d97ac227a5839e548dccd2620d3dfb5a4a40e9",
+      "size": 112,
+      "fingerprint": "a60ff6dca0e4a1e53ce30351fdf832060e953d0723b76051d3a84c4eaee16136",
       "references": [
         {
           "offset": 86,

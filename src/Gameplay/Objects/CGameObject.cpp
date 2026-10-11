@@ -1359,8 +1359,11 @@ void CGameObject::RegisterId()
 		unsigned char* bitmapBytePtr = &g_abObjectIdBitmap[byteIndex];
 		unsigned char bitmapByte = *bitmapBytePtr;
 		if (((unsigned int) mask & (unsigned int) bitmapByte) != 0) {
-			unsigned int objectCount = g_wObjectCount;
-			for (unsigned int objectIndex = 0; (int) objectIndex < (int) objectCount; objectIndex++) {
+			int objectCount = g_wObjectCount;
+			for (int objectIndex = 0;; objectIndex++) {
+				if (objectIndex >= objectCount) {
+					break;
+				}
 				if (g_pObjects[(unsigned short) objectIndex] != NULL) {
 					g_pObjects[(unsigned short) objectIndex]->GetId();
 				}
