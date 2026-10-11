@@ -2223,7 +2223,7 @@ void C2D::DoClipWidthSearch(int p_mapX, int p_mapY, int p_count)
 			 processed < p_count && p_mapX >= 0 && p_mapY >= 0 && p_mapX < m_groundWidth && p_mapY < m_groundHeight;) {
 			if ((ground->m_collision & GROUND_COLLISION_SPECIAL_RENDER) == 0) {
 				groundData = ground->m_objectData;
-				memcpy(&height, &ground->m_height, sizeof(height));
+				height = ground->m_height;
 				cliff = ground->m_cliff;
 				groundType = ground->m_objectType;
 				if (height < 0) {
