@@ -183,8 +183,8 @@ bool CIce::Process()
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
 		AICOORD position(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
-		int dx = IntegerToFixed((int) ((unsigned int) m_velocityX * elapsed)) / 8;
-		int dy = IntegerToFixed((int) ((unsigned int) m_velocityY * elapsed)) / 8;
+		int dx = (int) ((unsigned int) m_velocityX * elapsed * FIXED_POINT_ONE) / 8;
+		int dy = (int) ((unsigned int) m_velocityY * elapsed * FIXED_POINT_ONE) / 8;
 		int ax = abs(dx >> FIXED_POINT_FRACTION_BITS);
 		int ay = abs(dy >> FIXED_POINT_FRACTION_BITS);
 		while (ax > GROUND_BLOCK_PIXEL_MASK || ay > GROUND_BLOCK_PIXEL_MASK) {
@@ -215,24 +215,24 @@ bool CIce::Process()
 		int groundZ = terrainZ;
 		int z = position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		if (z < groundZ) {
-			position.m_zFixed = IntegerToFixed(groundZ);
+			position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
 		}
 		else if (groundZ < z) {
 			z = (int) ((unsigned int) z - (unsigned int) elapsed * (GROUND_BLOCK_PIXEL_SIZE / 4));
 			if (z < groundZ) {
 				z = groundZ;
 			}
-			position.m_zFixed = IntegerToFixed(z);
+			position.m_zFixed = (int) ((unsigned int) z << FIXED_POINT_FRACTION_BITS);
 		}
 		if (m_velocityX != 0) {
 			if (m_velocityY == 0) {
 				int fraction = (position.m_yFixed & (GROUND_BLOCK_PIXEL_MASK << FIXED_POINT_FRACTION_BITS)) >>
 							   FIXED_POINT_FRACTION_BITS;
 				if (fraction > GROUND_BLOCK_PIXEL_SIZE / 2) {
-					position.m_yFixed -= FIXED_POINT_ONE;
+					position.m_yFixed -= IntegerToFixed(1);
 				}
 				else if (fraction < GROUND_BLOCK_PIXEL_SIZE / 2) {
-					position.m_yFixed += FIXED_POINT_ONE;
+					position.m_yFixed += IntegerToFixed(1);
 				}
 			}
 		}
@@ -240,10 +240,10 @@ bool CIce::Process()
 			int fraction = (position.m_xFixed & (GROUND_BLOCK_PIXEL_MASK << FIXED_POINT_FRACTION_BITS)) >>
 						   FIXED_POINT_FRACTION_BITS;
 			if (fraction > GROUND_BLOCK_PIXEL_SIZE / 2) {
-				position.m_xFixed -= FIXED_POINT_ONE;
+				position.m_xFixed -= IntegerToFixed(1);
 			}
 			else if (fraction < GROUND_BLOCK_PIXEL_SIZE / 2) {
-				position.m_xFixed += FIXED_POINT_ONE;
+				position.m_xFixed += IntegerToFixed(1);
 			}
 		}
 		object->m_position = position;
@@ -279,8 +279,8 @@ bool CIce::Process()
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
-					velocity.m_xFixed = IntegerToFixed(m_velocityX) / 6;
-					velocity.m_yFixed = IntegerToFixed(m_velocityY) / 6;
+					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_yFixed = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
 					velocity.m_zFixed = 0;
 					object->StartFly(velocity, NULL);
 				}
@@ -446,8 +446,8 @@ void CIce::Switched()
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
-					velocity.m_xFixed = IntegerToFixed(m_velocityX) / 6;
-					velocity.m_yFixed = IntegerToFixed(m_velocityY) / 6;
+					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_yFixed = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
 					velocity.m_zFixed = 0;
 					object->StartFly(velocity, NULL);
 				}

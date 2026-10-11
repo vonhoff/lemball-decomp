@@ -24678,8 +24678,8 @@
       "caller": 4377968,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Process@CIce@@UAEHXZ",
-      "size": 1567,
-      "fingerprint": "4a0405507915c7e40875905b9d376f7a54ef5c218aa4c656f7a731b3afc505dd",
+      "size": 1541,
+      "fingerprint": "ca7f1bc3a5e1178dcf4d340921e0f76f39911fb963a910db822ff65d57868f11",
       "references": [
         {
           "offset": 54,
@@ -24696,42 +24696,42 @@
           "source_symbol": "?Switched@CIce@@QAEXXZ"
         },
         {
-          "offset": 543,
+          "offset": 557,
           "original_instruction": 4378478,
           "original_bytes": "e8325afdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1034,
+          "offset": 1015,
           "original_instruction": 4378983,
           "original_bytes": "e83958fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1262,
+          "offset": 1236,
           "original_instruction": 4379204,
           "original_bytes": "e85c57fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1303,
+          "offset": 1277,
           "original_instruction": 4379245,
           "original_bytes": "e8ab61fdff",
           "thunk": 4207645,
           "source_symbol": "?StepOn@CAI@@QAEXABVAICOORD@@PAVCGameObject@@G@Z"
         },
         {
-          "offset": 1483,
+          "offset": 1457,
           "original_instruction": 4379429,
           "original_bytes": "e87b56fdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1524,
+          "offset": 1498,
           "original_instruction": 4379470,
           "original_bytes": "e8ca60fdff",
           "thunk": 4207645,
@@ -24799,7 +24799,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIce.cpp.obj",
       "symbol": "?Switched@CIce@@QAEXXZ",
       "size": 556,
-      "fingerprint": "9cec4073e0977614596b0ea30d5ef5c2c018041a330aa95fa2c6ba8fd9b24690",
+      "fingerprint": "74b3fb0dfb005bda788ef6554d1f732f67b17267a78ed1767e89d0dfe412594a",
       "references": [
         {
           "offset": 261,
