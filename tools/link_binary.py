@@ -231,9 +231,24 @@ class CoffObject:
         return bytes(data[: self.string_start] + symbols + strings + tail)
 
 
+def run_librarian(linker, args, build):
+    """Invoke LINK's librarian directly; retain diagnostics on failure."""
+    result = subprocess.run(
+        [str(linker), "/lib", "/nologo", *args],
+        cwd=build,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        errors="replace",
+        check=False,
+    )
+    if result.returncode:
+        sys.stdout.write(result.stdout)
+        result.check_returncode()
+
+
 def prepare_runtime(linker, build):
     """Link CRT members with their private function symbols visible to the PDB."""
-    manager = linker.parent / "LIB.EXE"
     library = linker.parent.parent / "lib/LIBCMT.LIB"
     members = (
         "aw_map",
@@ -253,36 +268,31 @@ def prepare_runtime(linker, build):
     for member in members:
         name = Path("build/intel/mt_obj") / (member + ".obj")
         path = build / name
-        subprocess.run(
+        run_librarian(
+            linker,
             [
-                str(manager),
-                "/nologo",
                 "/extract:" + str(name),
-                "/out:" + str(path),
+                "/out:" + str(name),
                 str(library),
             ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            check=True,
+            build,
         )
         obj = CoffObject(path.read_bytes())
         path.write_bytes(obj.publish_static_symbols())
         objects.append(str(name))
     runtime = build / "runtime"
     runtime.mkdir(exist_ok=True)
-    subprocess.run(
-        [
-            str(manager),
-            "/nologo",
-            "/out:" + str(runtime / "LIBCMT.LIB"),
-            *["/remove:" + name for name in objects],
-            str(library),
-            *objects,
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        check=True,
+    response = runtime / "library.rsp"
+    # Adding members with their original names replaces them in the archive.
+    response.write_text(
+        "\n".join(
+            subprocess.list2cmdline([arg])
+            for arg in ["/out:runtime/LIBCMT.LIB", str(library), *objects]
+        )
+        + "\n",
+        encoding="utf-8",
     )
+    run_librarian(linker, ["@runtime/library.rsp"], build)
     return runtime
 
 
