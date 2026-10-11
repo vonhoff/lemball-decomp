@@ -4719,8 +4719,8 @@ void C2D::DrawObjects()
 	SetOrigin();
 	owner.m_backBufferCopyCount = 0;
 	owner.m_lemmingAnims->m_drawFlags = ZRLE_DRAW_FLAG_Z_BUFFER;
-	int scrollX = abs((int) owner.m_scrollDeltaX);
-	int scrollY = abs((int) owner.m_scrollDeltaY);
+	int scrollX = abs(owner.m_scrollDeltaX);
+	int scrollY = abs(owner.m_scrollDeltaY);
 	CVSRect borders[4];
 
 	if (owner.m_scrollPending != 0 && owner.m_redrawPending == 0 && scrollX < owner.m_clipSize.m_width &&
@@ -4731,75 +4731,60 @@ void C2D::DrawObjects()
 		short destinationX = 0;
 		short destinationY = 0;
 		CVSRect retained;
-		switch ((unsigned int) direction) {
+		switch (direction) {
 		case SCROLL_OFFSET_NONE:
-			retained = CVSRect((short) scrollX,
-							   (short) scrollY,
-							   owner.m_clipSize.m_width - (short) scrollX,
-							   owner.m_clipSize.m_height - (short) scrollY);
+			retained =
+				CVSRect(scrollX, scrollY, owner.m_clipSize.m_width - scrollX, owner.m_clipSize.m_height - scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_width, (short) scrollY);
+				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_width, scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(0, (short) scrollY, (short) scrollX, owner.m_clipSize.m_height - (short) scrollY);
+				exposed[1] = CVSRect(0, scrollY, scrollX, owner.m_clipSize.m_height - scrollY);
 			}
 			break;
 		case SCROLL_OFFSET_X:
-			destinationX = (short) scrollX;
+			destinationX = scrollX;
 			destinationY = 0;
-			retained = CVSRect(0,
-							   (short) scrollY,
-							   owner.m_clipSize.m_width - (short) scrollX,
-							   owner.m_clipSize.m_height - (short) scrollY);
+			retained = CVSRect(0, scrollY, owner.m_clipSize.m_width - scrollX, owner.m_clipSize.m_height - scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_width, (short) scrollY);
+				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_width, scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(owner.m_clipSize.m_width - (short) scrollX,
-									 (short) scrollY,
-									 (short) scrollX,
-									 owner.m_clipSize.m_height - (short) scrollY);
+				exposed[1] =
+					CVSRect(owner.m_clipSize.m_width - scrollX, scrollY, scrollX, owner.m_clipSize.m_height - scrollY);
 			}
 			if (owner.m_clipOffsetX > 0 || owner.m_clipOffsetY > 0) {
-				borders[0] = CVSRect((short) owner.m_clipOffsetX - (short) scrollX,
+				borders[0] = CVSRect((short) owner.m_clipOffsetX - scrollX,
 									 (short) owner.m_clipOffsetY,
-									 (short) scrollX,
-									 owner.m_clipSize.m_height + (short) scrollY);
+									 scrollX,
+									 owner.m_clipSize.m_height + scrollY);
 				borders[1] = CVSRect((short) owner.m_clipOffsetX,
 									 owner.m_clipSize.m_height + (short) owner.m_clipOffsetY,
 									 owner.m_clipSize.m_width,
-									 (short) scrollY);
+									 scrollY);
 			}
 			break;
 		case SCROLL_OFFSET_Y:
-			destinationY = (short) scrollY;
+			destinationY = scrollY;
 			destinationX = 0;
-			retained = CVSRect((short) scrollX,
-							   0,
-							   owner.m_clipSize.m_width - (short) scrollX,
-							   owner.m_clipSize.m_height - (short) scrollY);
+			retained = CVSRect(scrollX, 0, owner.m_clipSize.m_width - scrollX, owner.m_clipSize.m_height - scrollY);
 			if (scrollY != 0) {
-				exposed[0] =
-					CVSRect(0, owner.m_clipSize.m_height - (short) scrollY, owner.m_clipSize.m_width, (short) scrollY);
+				exposed[0] = CVSRect(0, owner.m_clipSize.m_height - scrollY, owner.m_clipSize.m_width, scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(0, 0, (short) scrollX, owner.m_clipSize.m_height - (short) scrollY);
+				exposed[1] = CVSRect(0, 0, scrollX, owner.m_clipSize.m_height - scrollY);
 			}
 			break;
 		case SCROLL_OFFSET_XY:
-			destinationX = (short) scrollX;
-			destinationY = (short) scrollY;
-			retained =
-				CVSRect(0, 0, owner.m_clipSize.m_width - (short) scrollX, owner.m_clipSize.m_height - (short) scrollY);
+			destinationX = scrollX;
+			destinationY = scrollY;
+			retained = CVSRect(0, 0, owner.m_clipSize.m_width - scrollX, owner.m_clipSize.m_height - scrollY);
 			if (scrollY != 0) {
-				exposed[0] =
-					CVSRect(0, owner.m_clipSize.m_height - (short) scrollY, owner.m_clipSize.m_width, (short) scrollY);
+				exposed[0] = CVSRect(0, owner.m_clipSize.m_height - scrollY, owner.m_clipSize.m_width, scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(owner.m_clipSize.m_width - (short) scrollX,
-									 0,
-									 (short) scrollX,
-									 owner.m_clipSize.m_height - (short) scrollY);
+				exposed[1] =
+					CVSRect(owner.m_clipSize.m_width - scrollX, 0, scrollX, owner.m_clipSize.m_height - scrollY);
 			}
 			break;
 		}
@@ -4809,7 +4794,7 @@ void C2D::DrawObjects()
 		owner.m_screenScroll.Draw(owner.m_gdi);
 		CVSRect* strip = exposed;
 		do {
-			if ((int) strip->m_width * (int) strip->m_height != 0) {
+			if (strip->m_width * strip->m_height != 0) {
 				CVSRect copyRect = *strip;
 				owner.m_scrollDepthClears[0].m_bounds = copyRect;
 				owner.m_scrollDepthClears[0].m_depth = 0;
