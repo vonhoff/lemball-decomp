@@ -2,6 +2,7 @@
 
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Geometry/tCoord3d.h"
@@ -124,9 +125,9 @@ void CIce::Set(unsigned short p_id,
 	}
 	m_max.m_z = (short) maxZ;
 
-	m_position.m_xFixed = (int) p_cornerA.m_x * FIXED_POINT_ONE;
-	m_position.m_yFixed = (int) p_cornerA.m_y * FIXED_POINT_ONE;
-	m_position.m_zFixed = (int) p_cornerA.m_z * FIXED_POINT_ONE;
+	m_position.m_xFixed = IntegerToFixed(p_cornerA.m_x);
+	m_position.m_yFixed = IntegerToFixed(p_cornerA.m_y);
+	m_position.m_zFixed = IntegerToFixed(p_cornerA.m_z);
 	for (int y = minY; y <= maxY; y += GROUND_BLOCK_PIXEL_SIZE) {
 		for (int x = minX; x <= maxX; x += GROUND_BLOCK_PIXEL_SIZE) {
 			int blockX = x / GROUND_BLOCK_PIXEL_SIZE;
@@ -182,8 +183,8 @@ bool CIce::Process()
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
 		AICOORD position(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
-		int dx = (int) ((unsigned int) m_velocityX * elapsed * FIXED_POINT_ONE) / 8;
-		int dy = (int) ((unsigned int) m_velocityY * elapsed * FIXED_POINT_ONE) / 8;
+		int dx = IntegerToFixed((int) ((unsigned int) m_velocityX * elapsed)) / 8;
+		int dy = IntegerToFixed((int) ((unsigned int) m_velocityY * elapsed)) / 8;
 		int ax = abs(dx >> FIXED_POINT_FRACTION_BITS);
 		int ay = abs(dy >> FIXED_POINT_FRACTION_BITS);
 		while (ax > GROUND_BLOCK_PIXEL_MASK || ay > GROUND_BLOCK_PIXEL_MASK) {
@@ -214,14 +215,14 @@ bool CIce::Process()
 		int groundZ = terrainZ;
 		int z = position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		if (z < groundZ) {
-			position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
+			position.m_zFixed = IntegerToFixed(groundZ);
 		}
 		else if (groundZ < z) {
 			z = (int) ((unsigned int) z - (unsigned int) elapsed * (GROUND_BLOCK_PIXEL_SIZE / 4));
 			if (z < groundZ) {
 				z = groundZ;
 			}
-			position.m_zFixed = (int) ((unsigned int) z << FIXED_POINT_FRACTION_BITS);
+			position.m_zFixed = IntegerToFixed(z);
 		}
 		if (m_velocityX != 0) {
 			if (m_velocityY == 0) {
@@ -278,8 +279,8 @@ bool CIce::Process()
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
-					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
-					velocity.m_yFixed = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_xFixed = IntegerToFixed(m_velocityX) / 6;
+					velocity.m_yFixed = IntegerToFixed(m_velocityY) / 6;
 					velocity.m_zFixed = 0;
 					object->StartFly(velocity, NULL);
 				}
@@ -445,8 +446,8 @@ void CIce::Switched()
 				}
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
-					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
-					velocity.m_yFixed = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_xFixed = IntegerToFixed(m_velocityX) / 6;
+					velocity.m_yFixed = IntegerToFixed(m_velocityY) / 6;
 					velocity.m_zFixed = 0;
 					object->StartFly(velocity, NULL);
 				}
