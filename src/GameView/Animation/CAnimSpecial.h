@@ -7,11 +7,10 @@ class CMap;
 class CGround;
 // SIZE 0x0c
 struct AnimSpecialEntry {
-	short m_x;                         // 0x00
-	short m_y;                         // 0x02
-	unsigned short m_sortKey;          // 0x04
-	unsigned short m_alignmentPadding; // 0x06
-	CGround* m_groundEntry;            // 0x08
+	short m_x;                // 0x00
+	short m_y;                // 0x02
+	unsigned short m_sortKey; // 0x04
+	CGround* m_groundEntry;   // 0x08
 };
 // SIZE 0x08
 class CAnimSpecial {
