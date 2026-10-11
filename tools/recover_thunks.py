@@ -13,7 +13,6 @@ from functools import cache
 from itertools import chain
 from typing import cast
 
-from reccmp.compare import Compare
 from reccmp.compare.diff import RawDiffOutput
 from reccmp.compare.ingest import load_cvdump_lines
 from reccmp.compare.lines import LinesDb
@@ -26,6 +25,7 @@ from reccmp.types import EntityType, ImageId
 
 from link_binary import CoffObject, DIR32, REL32, read_jump_target
 from lib import BUILD, ROOT, TARGET_ID, thunk_symbol
+from lib.compare import Compare
 from lib.names import check_names
 from lib.progress import load_progress
 from triage_targets import rank_functions

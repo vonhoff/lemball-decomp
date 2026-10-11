@@ -637,6 +637,9 @@
 // GLOBAL: LEMBALL 0x004a4ec8
 // __cflush
 
+// GLOBAL: LEMBALL 0x004a4ed0 SYMBOL
+// _errtable$S7672
+
 // GLOBAL: LEMBALL 0x004a509c
 // __commode
 

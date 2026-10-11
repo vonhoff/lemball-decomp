@@ -5,7 +5,6 @@ from collections import defaultdict
 from pathlib import PureWindowsPath
 from typing import Any, cast
 
-from reccmp.compare import Compare
 from reccmp.compare.db import ReccmpMatch
 from reccmp.formats.pe import PEImage
 from reccmp.project.detect import DetectWhat, detect_project
@@ -14,6 +13,7 @@ from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType, ImageId
 
 from lib import BUILD, ROOT, TARGET_ID
+from lib.compare import Compare
 from lib.progress import effective_code_percent, save_progress
 
 

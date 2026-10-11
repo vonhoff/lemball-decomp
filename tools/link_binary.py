@@ -86,11 +86,15 @@ class CoffObject:
             name = self.symbols[self.weak_defaults[name]][0]
         return name
 
-    def publish_static_functions(self):
-        """Expose existing private function symbols; retain code and relocations."""
+    def publish_static_symbols(self):
+        """Expose private functions and the CRT error table; retain code and relocations."""
         data = bytearray(self.data)
-        for index, (_, _, section, kind, storage) in self.symbols.items():
-            if section > 0 and kind == 0x20 and storage == 3:
+        for index, (name, _, section, kind, storage) in self.symbols.items():
+            if (
+                section > 0
+                and storage == 3
+                and (kind == 0x20 or name == "_errtable$S7672")
+            ):
                 data[self.symbol_start + index * SYMBOL_SIZE + 16] = 2
         return bytes(data)
 
@@ -233,6 +237,7 @@ def prepare_runtime(linker, build):
     members = (
         "aw_map",
         "crt0dat",
+        "dosmap",
         "fflush",
         "ismbbyte",
         "mbctype",
@@ -260,7 +265,7 @@ def prepare_runtime(linker, build):
             check=True,
         )
         obj = CoffObject(path.read_bytes())
-        path.write_bytes(obj.publish_static_functions())
+        path.write_bytes(obj.publish_static_symbols())
         objects.append(str(name))
     runtime = build / "runtime"
     runtime.mkdir(exist_ok=True)
