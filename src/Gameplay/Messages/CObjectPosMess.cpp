@@ -2,6 +2,7 @@
 
 #include "CGameObjectMess.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "GameMessageIds.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
@@ -25,11 +26,8 @@ void CObjectPosMess::AddData()
 // FUNCTION: LEMBALL 0x00416c30
 void CObjectPosMess::GetData()
 {
-	const unsigned long& x = GetDWORD() << FIXED_POINT_FRACTION_BITS;
-	m_object->m_position.m_xFixed = x;
-	const unsigned long& y = GetDWORD() << FIXED_POINT_FRACTION_BITS;
-	m_object->m_position.m_yFixed = y;
-	const unsigned long& z = GetDWORD() << FIXED_POINT_FRACTION_BITS;
-	m_object->m_position.m_zFixed = z;
+	m_object->m_position.m_xFixed = IntegerToFixed(GetDWORD());
+	m_object->m_position.m_yFixed = IntegerToFixed(GetDWORD());
+	m_object->m_position.m_zFixed = IntegerToFixed(GetDWORD());
 	m_object->m_objectActive = GetDWORD();
 }

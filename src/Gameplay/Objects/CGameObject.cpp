@@ -24,6 +24,7 @@
 #define PLAYER_TWO_RUNTIME_FLAGS 0x100
 
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Geometry/CRect3.h"
@@ -557,14 +558,14 @@ void CGameObject::Fly()
 					m_groundPosition.m_yFixed = m_position.m_yFixed;
 					m_groundPosition.m_xFixed = m_position.m_xFixed;
 					m_actionArgument = 0;
-					m_groundPosition.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
+					m_groundPosition.m_zFixed = IntegerToFixed(groundZ);
 				}
 			}
 			else {
 				m_position.m_xFixed = x;
 				m_position.m_yFixed = y;
 				m_position.m_zFixed = z;
-				m_position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
+				m_position.m_zFixed = IntegerToFixed(groundZ);
 				if (g_pAI->HitTrampoline(m_position, this) == 0) {
 					m_flightVelocity.m_xFixed = 0;
 					m_flightVelocity.m_yFixed = 0;
@@ -655,11 +656,11 @@ void CGameObject::StartMoving()
 				m_flightZ = objectZ;
 				m_groundPosition.m_xFixed = m_position.m_xFixed;
 				m_groundPosition.m_yFixed = m_position.m_yFixed;
-				m_groundPosition.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
+				m_groundPosition.m_zFixed = IntegerToFixed(groundZ);
 			}
 		}
 		else {
-			m_position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
+			m_position.m_zFixed = IntegerToFixed(groundZ);
 		}
 	}
 }
@@ -820,9 +821,9 @@ bool CGameObject::Move()
 			mover->GetOn(this);
 		}
 		if ((MapCheck(x, y) & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
-			position.m_xFixed = x << FIXED_POINT_FRACTION_BITS;
-			position.m_yFixed = y << FIXED_POINT_FRACTION_BITS;
-			position.m_zFixed = height << FIXED_POINT_FRACTION_BITS;
+			position.m_xFixed = IntegerToFixed(x);
+			position.m_yFixed = IntegerToFixed(y);
+			position.m_zFixed = IntegerToFixed(height);
 			if (g_pAI->OpenDoor(position, this, m_collisionFlags)) {
 				m_actionDeadline = g_dwGameTick;
 				return false;
@@ -848,7 +849,7 @@ bool CGameObject::Move()
 			m_flightZ = currentGroundZ;
 			m_groundPosition.m_xFixed = position.m_xFixed;
 			m_groundPosition.m_yFixed = position.m_yFixed;
-			m_groundPosition.m_zFixed = (int) height << FIXED_POINT_FRACTION_BITS;
+			m_groundPosition.m_zFixed = IntegerToFixed(height);
 			m_actionArgument = 0;
 			return false;
 		}
@@ -882,11 +883,11 @@ bool CGameObject::Move()
 			m_position.m_yFixed = position.m_yFixed;
 			m_groundPosition.m_xFixed = position.m_xFixed;
 			m_groundPosition.m_yFixed = position.m_yFixed;
-			m_groundPosition.m_zFixed = (int) height << FIXED_POINT_FRACTION_BITS;
+			m_groundPosition.m_zFixed = IntegerToFixed(height);
 			m_position.m_xFixed = position.m_xFixed;
 			m_position.m_yFixed = position.m_yFixed;
-			m_flightVelocity.m_xFixed = (unsigned int) velocityX << FIXED_POINT_FRACTION_BITS;
-			m_flightVelocity.m_yFixed = (unsigned int) velocityY << FIXED_POINT_FRACTION_BITS;
+			m_flightVelocity.m_xFixed = IntegerToFixed(velocityX);
+			m_flightVelocity.m_yFixed = IntegerToFixed(velocityY);
 			m_flightVelocity.m_zFixed = ((deltaZ / 8) + 1) * FIXED_POINT_ONE;
 			return false;
 		}
@@ -896,7 +897,7 @@ bool CGameObject::Move()
 
 	m_position.m_xFixed = position.m_xFixed;
 	m_position.m_yFixed = position.m_yFixed;
-	m_position.m_zFixed = (int) height << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = IntegerToFixed(height);
 	g_pAI->StepOn(m_position, this, m_collisionFlags);
 	return true;
 }
@@ -1071,8 +1072,8 @@ void CGameObject::Jump()
 												  &mover);
 	const unsigned int& groundHeight = groundHeightValue;
 	int& positionZ = m_position.m_zFixed;
-	unsigned int groundZ = groundHeight << FIXED_POINT_FRACTION_BITS;
-	positionZ = ((unsigned int) elapsed * 3 + m_flightZ) << FIXED_POINT_FRACTION_BITS;
+	unsigned int groundZ = IntegerToFixed(groundHeight);
+	positionZ = IntegerToFixed((unsigned int) elapsed * 3 + m_flightZ);
 	if (m_position.m_zFixed >= (int) groundZ) {
 		AICOORD* position = &m_position;
 		m_position = m_groundPosition;
@@ -1101,7 +1102,7 @@ bool CGameObject::Fall()
 		AICOORD* position = &m_position;
 		int x = position->m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int y = position->m_yFixed >> FIXED_POINT_FRACTION_BITS;
-		m_position.m_zFixed = ((m_lastMovementTick - g_dwGameTick) * 3 + m_flightZ) << FIXED_POINT_FRACTION_BITS;
+		m_position.m_zFixed = IntegerToFixed((m_lastMovementTick - g_dwGameTick) * 3 + m_flightZ);
 
 		if ((x & GROUND_BLOCK_PIXEL_MASK) != GROUND_BLOCK_PIXEL_HALF_SIZE) {
 			int centreedX;
@@ -1125,7 +1126,7 @@ bool CGameObject::Fall()
 			m_position.m_yFixed = centreedY * FIXED_POINT_ONE;
 		}
 
-		int groundZ = (int) g_pMap->GetZ(x, y, &mover) << FIXED_POINT_FRACTION_BITS;
+		int groundZ = IntegerToFixed((int) g_pMap->GetZ(x, y, &mover));
 		if (m_position.m_zFixed <= groundZ) {
 			m_position.m_zFixed = groundZ;
 			m_flightVelocity.m_xFixed = 0;
@@ -1175,7 +1176,7 @@ bool CGameObject::OnLift(tCoord3d& p_liftPosition)
 		int offsetY = top & GROUND_BLOCK_PIXEL_MASK;
 		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(offsetX, offsetY);
 	}
-	m_position.m_zFixed = (unsigned int) groundZ << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = IntegerToFixed(groundZ);
 	return true;
 }
 
@@ -1215,7 +1216,7 @@ bool CGameObject::OnLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax)
 		top &= GROUND_BLOCK_PIXEL_MASK;
 		groundZ = map->m_ground.m_ground[width * blockY + blockX].GetZ(left, top);
 	}
-	m_position.m_zFixed = (unsigned int) groundZ << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = IntegerToFixed(groundZ);
 	return true;
 }
 
