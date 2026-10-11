@@ -1,9 +1,7 @@
 #ifndef LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 #define LEMBALL_PLATFORM_WINSOCK_WINSOCK_H
 
-struct in_addr {
-	unsigned long s_addr;
-};
+#include "in_addr.h"
 
 struct TcpIpSocketAddress {
 	unsigned short m_family;

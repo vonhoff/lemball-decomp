@@ -2,12 +2,19 @@
 #define LEMBALL_VISOS_NETWORK_CTCPIPNETWORKADDRESS_H
 
 #include "Multiplayer/Transport/CNetworkAddress.h"
+#include "Platform/Windows/WinSock/in_addr.h"
 
 // SIZE 0x18
 // VTABLE: LEMBALL 0x0049a290
 class CTCPIPNetworkAddress : public CNetworkAddress {
 public:
 	CTCPIPNetworkAddress() { m_text[0] = '\0'; }
+	in_addr Get()
+	{
+		in_addr address;
+		address.s_addr = m_ipv4Address;
+		return address;
+	}
 	virtual char* GetStr();                              // vtable+0x00
 	virtual void operator=(CNetworkAddress& p_address);  // vtable+0x0c
 	virtual void operator=(const char* p_text);          // vtable+0x08

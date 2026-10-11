@@ -18,7 +18,7 @@ CTCPIPWriteSocket::CTCPIPWriteSocket()
 void CTCPIPWriteSocket::SetDestAddr(CNetworkAddress* p_address)
 {
 	_SetDestAddr(p_address);
-	m_destination.m_address.s_addr = ((CTCPIPNetworkAddress*) p_address)->m_ipv4Address;
+	m_destination.m_address = ((CTCPIPNetworkAddress*) p_address)->Get();
 }
 
 // FUNCTION: LEMBALL 0x00470120
