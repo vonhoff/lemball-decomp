@@ -23,18 +23,16 @@
 CVSPoint CPanel::GetPausePos()
 {
 	CVSPoint result;
-	short& x = result.m_x;
-	short& y = result.m_y;
 	short width = m_window->m_innerRect.m_width;
 	short height = m_window->m_innerRect.m_height;
-	int zoom = (int) m_window->m_zoom;
+	int zoom = m_window->m_zoom;
 	if (width * height == 0) {
 		width = m_window->m_rect.m_width;
 		height = m_window->m_rect.m_height;
 	}
 	width = width / zoom;
-	y = height / zoom - m_pauseSize.m_height;
-	x = (width - m_panelSize.m_width) / 2;
+	result.m_y = height / zoom - m_pauseSize.m_height;
+	result.m_x = (width - m_panelSize.m_width) / 2;
 	return result;
 }
 
