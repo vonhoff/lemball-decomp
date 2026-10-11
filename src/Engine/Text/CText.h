@@ -55,7 +55,7 @@ protected:
 	short m_offsetY;           // 0x1a
 	short m_startX;            // 0x1c
 	short m_startY;            // 0x1e
-	unsigned int m_useAdvance; // 0x20
+	bool m_useAdvance;         // 0x20
 	short m_advanceX;          // 0x24
 	short m_advanceY;          // 0x26
 	CResZRLE* m_glyph;         // 0x28
