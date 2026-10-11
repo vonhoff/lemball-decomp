@@ -150,15 +150,17 @@ int CIceManager::ExportIceRecords(tCoord3d p_records[][2])
 // FUNCTION: LEMBALL 0x0042dea0
 void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
 {
-	unsigned short* data = (unsigned short*) p_data;
-	unsigned short count = *data++;
+	unsigned char* data = p_data;
+	unsigned short count = *(const unsigned short*) data;
+	data += sizeof(unsigned short);
 	unsigned int remaining = count;
 	Initialise(remaining);
 	if (count != 0) {
 		do {
 			unsigned short id;
 			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
-				id = *data++;
+				id = *(const unsigned short*) data;
+				data += sizeof(unsigned short);
 			}
 			else {
 				id = (unsigned short) CGameObject::NextId();
@@ -166,17 +168,26 @@ void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char
 
 			tCoord3d cornerA;
 			tCoord3d cornerB;
-			cornerA.m_x = *data++;
-			cornerA.m_y = *data++;
-			cornerA.m_z = *data++;
-			cornerB.m_x = *data++;
-			cornerB.m_y = *data++;
-			cornerB.m_z = *data++;
-			int velocityX = (short) *data++;
-			int velocityY = (short) *data++;
+			cornerA.m_x = *(const unsigned short*) data;
+			data += sizeof(unsigned short);
+			cornerA.m_y = *(const unsigned short*) data;
+			data += sizeof(unsigned short);
+			cornerA.m_z = *(const unsigned short*) data;
+			data += sizeof(unsigned short);
+			cornerB.m_x = *(const unsigned short*) data;
+			data += sizeof(unsigned short);
+			cornerB.m_y = *(const unsigned short*) data;
+			data += sizeof(unsigned short);
+			cornerB.m_z = *(const unsigned short*) data;
+			data += sizeof(unsigned short);
+			int velocityX = (short) *(const unsigned short*) data;
+			data += sizeof(unsigned short);
+			int velocityY = (short) *(const unsigned short*) data;
+			data += sizeof(unsigned short);
 			unsigned int initialSwitched = 1;
 			if (m_ai->m_levelVersion >= LEVEL_VERSION_WITH_INITIAL_ICE_SWITCH_STATE) {
-				initialSwitched = *data++;
+				initialSwitched = *(const unsigned short*) data;
+				data += sizeof(unsigned short);
 			}
 			Add(id, cornerA, cornerB, velocityX, velocityY, initialSwitched);
 			remaining--;
