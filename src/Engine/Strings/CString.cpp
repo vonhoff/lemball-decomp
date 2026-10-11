@@ -114,7 +114,7 @@ CString operator+(CString& p_left, CString& p_right)
 	CString result;
 	delete[] result.GetText();
 	int length = p_right.getlength();
-	length = length + p_left.getlength() + 1;
+	length = (unsigned int) length + p_left.getlength() + 1;
 	result.SetTextPointer(new char[length]);
 	result.SetCapacity(length);
 	strcpy(result.GetText(), p_left.GetText());
