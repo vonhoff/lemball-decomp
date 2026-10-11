@@ -1116,12 +1116,7 @@ void C2D::AddObjectToGroup(int p_objectNo, int p_markSelection)
 // FUNCTION: LEMBALL 0x00437170
 void C2D::FormGroup()
 {
-	tagMESSAGE message;
-	message.m_type = AI_MESSAGE_FORM_GROUP;
-	message.m_code = m_groupCount;
-	message.m_time = 0;
-	message.m_payload = m_groupObjectIds;
-	message.m_source = NULL;
+	tagMESSAGE message = {AI_MESSAGE_FORM_GROUP, 0, m_groupCount, m_groupObjectIds, NULL};
 
 	CheckValidFormGroup();
 	if (m_groupCount > 0) {
