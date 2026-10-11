@@ -203,10 +203,10 @@ bool CWriteSocket::SendNCMS(CNetworkMessage& p_message)
 				break;
 			}
 		}
-		remaining -= sendSize;
-		data += sendSize - HEADER_SIZE;
-		remaining += HEADER_SIZE;
-		m_segmentIndex++;
+		remaining = (int) ((unsigned int) remaining - sendSize);
+		data += (int) ((unsigned int) sendSize - HEADER_SIZE);
+		remaining = (int) ((unsigned int) remaining + HEADER_SIZE);
+		m_segmentIndex = (int) ((unsigned int) m_segmentIndex + 1);
 	}
 	if (m_segmentIndex != segmentCount) {
 		return false;
