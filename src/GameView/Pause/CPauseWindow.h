@@ -95,7 +95,7 @@ private:
 	CBaseRemap* m_remaps[4];               // 0x1e0
 	CResFONT* m_font;                      // 0x1f0
 	CPauseVramHandler* m_vramSurface;      // 0x1f4
-	CVSPoint* m_menuItemRects;             // 0x1f8
+	CVSRect* m_menuItemRects;              // 0x1f8
 	unsigned int m_horizontalBorderAnimId; // 0x1fc
 	unsigned int m_verticalBorderAnimId;   // 0x200
 	unsigned int m_fontId;                 // 0x204

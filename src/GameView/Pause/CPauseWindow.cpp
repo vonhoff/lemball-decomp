@@ -163,7 +163,7 @@ void CPauseWindow::Initialise()
 	m_initialSelection = m_selection;
 	g_pMasterInputQueue->Attach(this, 0);
 	m_vramSurface = NULL;
-	m_menuItemRects = (CVSPoint*) (void*) new CVSRect[m_menuItemCount];
+	m_menuItemRects = new CVSRect[m_menuItemCount];
 	RegisterRemaps();
 	m_loaded = 0;
 	m_borderAnims = NULL;
@@ -221,25 +221,25 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 	if (m_pauseMessage != PAUSE_MSG_ARE_YOU_SURE) {
 		if (m_menuItemCount > 0) {
 			int item = 0;
-			CVSPoint* textSize = m_menuItemRects;
+			CVSRect* textRect = m_menuItemRects;
 			do {
 				item++;
-				textSize[1].m_x = (short) ((p_rect.m_width - textSize->m_x) / 2);
-				textSize[1].m_y = verticalOffset;
-				verticalOffset = (short) (verticalOffset + textSize->m_y + m_textSpacing.m_y);
-				textSize += 2;
+				textRect->m_x = (short) ((p_rect.m_width - textRect->m_width) / 2);
+				textRect->m_y = verticalOffset;
+				verticalOffset = (short) (verticalOffset + textRect->m_height + m_textSpacing.m_y);
+				textRect++;
 			} while (item < m_menuItemCount);
 		}
 	}
 	else {
-		short x = (short) ((p_rect.m_width - m_menuItemRects[0].m_x) / 2);
+		short x = (short) ((p_rect.m_width - m_menuItemRects[0].m_width) / 2);
+		m_menuItemRects[0].m_x = x;
+		m_menuItemRects[0].m_y = verticalOffset;
+		verticalOffset = (short) (verticalOffset + m_menuItemRects[0].m_height + m_textSpacing.m_y);
 		m_menuItemRects[1].m_x = x;
 		m_menuItemRects[1].m_y = verticalOffset;
-		verticalOffset = (short) (verticalOffset + m_menuItemRects[0].m_y + m_textSpacing.m_y);
-		m_menuItemRects[3].m_x = x;
-		m_menuItemRects[3].m_y = verticalOffset;
-		m_menuItemRects[5].m_x = (short) (x + m_menuItemRects[0].m_x - m_menuItemRects[4].m_x);
-		m_menuItemRects[5].m_y = verticalOffset;
+		m_menuItemRects[2].m_x = (short) (x + m_menuItemRects[0].m_width - m_menuItemRects[2].m_width);
+		m_menuItemRects[2].m_y = verticalOffset;
 	}
 
 	m_bounds.m_width = p_rect.m_width;
@@ -322,9 +322,9 @@ CVSRect CPauseWindow::CalculateWindow()
 	}
 	for (i = 0; i < m_menuItemCount; i++) {
 		CVSSize measuredTextSize = m_font->GetSize(m_menuLabels[i], TEXT_ADVANCE_X_POSITIVE);
-		CVSPoint* storedTextSize = m_menuItemRects + i * 2;
-		storedTextSize->m_x = measuredTextSize.m_width;
-		storedTextSize->m_y = measuredTextSize.m_height;
+		CVSRect& storedTextRect = m_menuItemRects[i];
+		storedTextRect.m_width = measuredTextSize.m_width;
+		storedTextRect.m_height = measuredTextSize.m_height;
 		if (itemCount > i) {
 			maxTextSize.m_height += measuredTextSize.m_height + m_textSpacing.m_y;
 		}
@@ -574,7 +574,7 @@ void CPauseWindow::OnPaint(const CVSRect& p_rect)
 		corner++;
 	} while (--count != 0);
 	for (i = 0; i < m_menuItemCount; i++) {
-		CVSPoint* position = (CVSRect*) (void*) m_menuItemRects + i;
+		CVSPoint* position = m_menuItemRects + i;
 		CVSSize advance;
 		advance.m_height = 0;
 		advance.m_width = 0;
@@ -597,15 +597,15 @@ void CPauseWindow::OnInside(const CVSPoint& p_point)
 	if (selection < m_menuItemCount) {
 		short relX = p_point.m_x - m_relativeTopLeft.m_x;
 		short relY = p_point.m_y - m_relativeTopLeft.m_y;
-		CVSPoint* textSizes = m_menuItemRects + selection * 2 + 1;
+		CVSRect* menuItem = m_menuItemRects + selection;
 		do {
-			short textX = textSizes->m_x;
+			short textX = menuItem->m_x;
 			if (textX <= relX) {
-				short boundX = textSizes[-1].m_x + textX;
+				short boundX = menuItem->m_width + textX;
 				if (boundX > relX) {
-					short textY = textSizes->m_y;
+					short textY = menuItem->m_y;
 					if (textY <= relY) {
-						short boundY = textSizes[-1].m_y + textY;
+						short boundY = menuItem->m_height + textY;
 						if (boundY > relY) {
 							m_cursorState = CURSOR_HAND_FRAME_HOVER;
 							m_selection = selection;
@@ -614,7 +614,7 @@ void CPauseWindow::OnInside(const CVSPoint& p_point)
 					}
 				}
 			}
-			textSizes += 2;
+			menuItem++;
 			selection++;
 		} while (selection < m_menuItemCount);
 	}
@@ -628,15 +628,15 @@ void CPauseWindow::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 	if (selection < m_menuItemCount) {
 		short relX = p_point.m_x - m_relativeTopLeft.m_x;
 		short relY = p_point.m_y - m_relativeTopLeft.m_y;
-		CVSPoint* textSizes = m_menuItemRects + selection * 2 + 1;
+		CVSRect* menuItem = m_menuItemRects + selection;
 		do {
-			short textX = textSizes->m_x;
+			short textX = menuItem->m_x;
 			if (textX <= relX) {
-				short boundX = textSizes[-1].m_x + textX;
+				short boundX = menuItem->m_width + textX;
 				if (boundX > relX) {
-					short textY = textSizes->m_y;
+					short textY = menuItem->m_y;
 					if (textY <= relY) {
-						short boundY = textSizes[-1].m_y + textY;
+						short boundY = menuItem->m_height + textY;
 						if (boundY > relY) {
 							m_receiverState->SetOptionSelection((eOptionSelections) (m_selection + 1));
 							m_selection = selection;
@@ -648,7 +648,7 @@ void CPauseWindow::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 					}
 				}
 			}
-			textSizes += 2;
+			menuItem++;
 			selection++;
 		} while (selection < m_menuItemCount);
 	}
