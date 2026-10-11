@@ -97,9 +97,7 @@ CPVButton::~CPVButton()
 	if (m_ownerWindow->m_lifecycleRefs == 1) {
 		Destroy();
 	}
-	if (m_primitive != NULL) {
-		delete m_primitive;
-	}
+	delete m_primitive;
 }
 
 // FUNCTION: LEMBALL 0x00467e40
