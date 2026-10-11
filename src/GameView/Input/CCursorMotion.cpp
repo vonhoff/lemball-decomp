@@ -121,8 +121,8 @@ void CCursorMotion::SetPosition(const CVSPoint& p_position)
 	m_positionDirty = 1;
 	m_horizontalActive = 0;
 	m_verticalActive = 0;
-	m_fixedY = p_position.m_y << FIXED_POINT_FRACTION_BITS;
-	m_fixedX = p_position.m_x << FIXED_POINT_FRACTION_BITS;
+	m_fixedY = p_position.m_y * FIXED_POINT_ONE;
+	m_fixedX = p_position.m_x * FIXED_POINT_ONE;
 }
 
 // FUNCTION: LEMBALL 0x00432840
