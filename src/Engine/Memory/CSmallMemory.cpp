@@ -65,12 +65,11 @@ unsigned char* CSmallMemory::Allocate(int p_size, char* p_description)
 	int prevLimit = 0;
 	int i = g_preInitActive.m_startBucket;
 	int bucketLimit = m_bucketLimit;
-	CBucket* emptyBucket = NULL;
 	if (i < bucketLimit) {
 		do {
-			if (prevLimit < p_size && p_size <= m_sizeLimits[i] && m_buckets[i] != emptyBucket) {
+			if (prevLimit < p_size && p_size <= m_sizeLimits[i] && m_buckets[i] != NULL) {
 				unsigned char* result;
-				if (m_buckets[i] == emptyBucket || !m_buckets[i]->Allocate(&result)) {
+				if (m_buckets[i] == NULL || !m_buckets[i]->Allocate(&result)) {
 					break;
 				}
 				return result;
