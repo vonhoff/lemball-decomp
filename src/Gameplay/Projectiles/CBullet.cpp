@@ -179,9 +179,9 @@ bool CBullet::Process()
 						groundZ = map->m_ground.m_ground[(unsigned int) groundWidth * blockY + blockX].GetZ(x, y);
 					}
 					if (pos.m_z <= (int) groundZ) {
-						m_position.m_xFixed = pos.m_x << FIXED_POINT_FRACTION_BITS;
-						m_position.m_yFixed = pos.m_y << FIXED_POINT_FRACTION_BITS;
-						m_position.m_zFixed = pos.m_z << FIXED_POINT_FRACTION_BITS;
+						m_position.m_xFixed = IntegerToFixed(pos.m_x);
+						m_position.m_yFixed = IntegerToFixed(pos.m_y);
+						m_position.m_zFixed = IntegerToFixed(pos.m_z);
 						g_pAI->StepOn(m_position, this, m_collisionFlags);
 						return false;
 					}
@@ -211,9 +211,9 @@ bool CBullet::Process()
 				tick++;
 			} while ((int) currentTick >= (int) tick);
 		}
-		m_position.m_xFixed = pos.m_x << FIXED_POINT_FRACTION_BITS;
-		m_position.m_yFixed = pos.m_y << FIXED_POINT_FRACTION_BITS;
-		m_position.m_zFixed = pos.m_z << FIXED_POINT_FRACTION_BITS;
+		m_position.m_xFixed = IntegerToFixed(pos.m_x);
+		m_position.m_yFixed = IntegerToFixed(pos.m_y);
+		m_position.m_zFixed = IntegerToFixed(pos.m_z);
 		m_lastMovementTick = currentTick;
 		return true;
 	}
