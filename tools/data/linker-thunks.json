@@ -37524,7 +37524,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CFramedButton.cpp.obj",
       "symbol": "?InitializeFramePrimitives@CFramedButton@@QAEXXZ",
       "size": 144,
-      "fingerprint": "8789776a47dd847d9e5eb6f1c83c132191e8f3ad38a8b20104c51b8181a52f16",
+      "fingerprint": "0f44af0b86407212d875aaafba31d82c395954a0084863009e3af030d592c4df",
       "references": [
         {
           "offset": 38,
