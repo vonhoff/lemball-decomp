@@ -40,7 +40,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_effectCapacity = p_effectCapacity;
 	m_platform.m_buffersPerEffect = p_buffersPerEffect;
 	m_platform.m_nativeWindow = NULL;
-	m_platform.m_effects = new CDirectSoundEffect*[p_effectCapacity + 1];
+	m_platform.m_effects = new CDirectSoundEffect*[(unsigned int) p_effectCapacity + 1];
 	m_platform.m_open = false;
 	m_platform.m_musicAvailable = false;
 	m_platform.m_available = false;
