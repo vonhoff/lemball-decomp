@@ -12945,6 +12945,13 @@
           "original_bytes": "e8e334ffff",
           "thunk": 4200615,
           "source_symbol": "??4C3DVector@@QAEAAV0@ABV0@@Z"
+        },
+        {
+          "offset": 17,
+          "original_instruction": 4251985,
+          "original_bytes": "e83e36ffff",
+          "thunk": 4200340,
+          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
         }
       ]
     },
@@ -23254,6 +23261,13 @@
           "original_bytes": "e8e38dfdff",
           "thunk": 4198470,
           "source_symbol": "??4AICOORD@@QAEAAV0@ABV0@@Z"
+        },
+        {
+          "offset": 17,
+          "original_instruction": 4358113,
+          "original_bytes": "e8ae97fdff",
+          "thunk": 4200340,
+          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
         }
       ]
     },
@@ -29628,6 +29642,41 @@
           "original_bytes": "e8a765fcff",
           "thunk": 4200925,
           "source_symbol": "?DrawGround@C2D@@QAEXHHW4eObjectType@@G@Z"
+        },
+        {
+          "offset": 745,
+          "original_instruction": 4436932,
+          "original_bytes": "e81466fcff",
+          "thunk": 4200925,
+          "source_symbol": "?DrawGround@C2D@@QAEXHHW4eObjectType@@G@Z"
+        },
+        {
+          "offset": 567,
+          "original_instruction": 4436758,
+          "original_bytes": "e87081fcff",
+          "thunk": 4207755,
+          "source_symbol": "?DrawCliff@C2D@@QAEXHHHH@Z"
+        },
+        {
+          "offset": 621,
+          "original_instruction": 4436811,
+          "original_bytes": "e83b81fcff",
+          "thunk": 4207755,
+          "source_symbol": "?DrawCliff@C2D@@QAEXHHHH@Z"
+        },
+        {
+          "offset": 685,
+          "original_instruction": 4436874,
+          "original_bytes": "e8fc80fcff",
+          "thunk": 4207755,
+          "source_symbol": "?DrawCliff@C2D@@QAEXHHHH@Z"
+        },
+        {
+          "offset": 722,
+          "original_instruction": 4436909,
+          "original_bytes": "e8d980fcff",
+          "thunk": 4207755,
+          "source_symbol": "?DrawCliff@C2D@@QAEXHHHH@Z"
         }
       ]
     },
@@ -29919,6 +29968,34 @@
           "original_bytes": "e82451fcff",
           "thunk": 4200105,
           "source_symbol": "?DrawAnim@CLemmingAnimsManager@@QAEXFFKKKPAVCRemap@@@Z"
+        },
+        {
+          "offset": 474,
+          "original_instruction": 4441056,
+          "original_bytes": "e86255fcff",
+          "thunk": 4200775,
+          "source_symbol": "?DrawLemmingJump@C2D@@QAEXAAVCViewData@@I@Z"
+        },
+        {
+          "offset": 496,
+          "original_instruction": 4441078,
+          "original_bytes": "e85173fcff",
+          "thunk": 4208460,
+          "source_symbol": "?DrawLemmingFall@C2D@@QAEXAAVCViewData@@I@Z"
+        },
+        {
+          "offset": 591,
+          "original_instruction": 4441173,
+          "original_bytes": "e8f259fcff",
+          "thunk": 4202060,
+          "source_symbol": "?DrawLemmingOnBalloon@C2D@@QAEXAAVCViewData@@HH@Z"
+        },
+        {
+          "offset": 613,
+          "original_instruction": 4441195,
+          "original_bytes": "e80a68fcff",
+          "thunk": 4205690,
+          "source_symbol": "?DrawLemmingLanding@C2D@@QAEXAAVCViewData@@I@Z"
         }
       ]
     },
@@ -31625,6 +31702,20 @@
           "original_bytes": "e89b1ffcff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
+        },
+        {
+          "offset": 278,
+          "original_instruction": 4458834,
+          "original_bytes": "e84e20fcff",
+          "thunk": 4204965,
+          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
+        },
+        {
+          "offset": 383,
+          "original_instruction": 4458930,
+          "original_bytes": "e8ee1ffcff",
+          "thunk": 4204965,
+          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         }
       ]
     },
@@ -31754,6 +31845,13 @@
           "original_bytes": "e8a1fafbff",
           "thunk": 4202500,
           "source_symbol": "??4CVSPoint@@QAEAAU0@ABU0@@Z"
+        },
+        {
+          "offset": 408,
+          "original_instruction": 4465940,
+          "original_bytes": "e82ffdfbff",
+          "thunk": 4203080,
+          "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         }
       ]
     },
@@ -36553,6 +36651,20 @@
           "original_bytes": "e85ae9faff",
           "thunk": 4205770,
           "source_symbol": "?Stop@CNetworkOptionsDrawer@@QAEXXZ"
+        },
+        {
+          "offset": 183,
+          "original_instruction": 4538642,
+          "original_bytes": "e857defaff",
+          "thunk": 4202350,
+          "source_symbol": "??YCEditString@@QAEAAV0@D@Z"
+        },
+        {
+          "offset": 223,
+          "original_instruction": 4538697,
+          "original_bytes": "e820defaff",
+          "thunk": 4202350,
+          "source_symbol": "??YCEditString@@QAEAAV0@D@Z"
         }
       ]
     },

@@ -10,6 +10,7 @@ import sys
 from bisect import bisect_left
 from dataclasses import replace
 from functools import cache
+from itertools import chain
 from typing import cast
 
 from reccmp.compare import Compare
@@ -210,6 +211,64 @@ def aligned_instructions(diff: RawDiffOutput, route, previous, rebuilt_address):
                     yield int(original[0], 16), int(rebuilt[0], 16)
 
 
+def unique_thunk_calls(
+    diff, original_image, rebuilt_image, functions, entries, aliases
+):
+    """Pair complete call groups using one native thunk and equal call counts."""
+    original_calls = {}
+    for address, instruction in diff.orig_inst:
+        if not address or not instruction.startswith("call "):
+            continue
+        address = int(address, 16)
+        raw = original_image.read(address, 5)
+        if len(raw) != 5 or raw[0] != 0xE8:
+            continue
+        entry = instruction_target(raw, address)
+        destination = (
+            read_jump_target(original_image, entry) if entry in entries else entry
+        )
+        if destination in functions:
+            original_calls.setdefault(destination, []).append((address, entry))
+
+    body_addresses = {
+        destination: {functions[destination].recomp_addr}
+        | set(aliases.get(destination, {}))
+        for destination in original_calls
+    }
+    rebuilt_calls = {}
+    ambiguous = set()
+    for address, instruction in diff.recomp_inst:
+        if not address or not instruction.startswith("call "):
+            continue
+        address = int(address, 16)
+        raw = rebuilt_image.read(address, 5)
+        if len(raw) != 5 or raw[0] != 0xE8:
+            continue
+        target = instruction_target(raw, address)
+        destination = read_jump_target(rebuilt_image, target)
+        matches = {
+            original
+            for original, bodies in body_addresses.items()
+            if target in bodies or destination in bodies
+        }
+        if len(matches) == 1:
+            original = next(iter(matches))
+            rebuilt_calls.setdefault(original, []).append(address)
+        else:
+            ambiguous.update(matches)
+
+    for destination, calls in original_calls.items():
+        native_entries = {entry for _, entry in calls}
+        rebuilt = rebuilt_calls.get(destination, [])
+        if destination in ambiguous or len(native_entries) != 1:
+            continue
+        entry = next(iter(native_entries))
+        if entry not in entries or entry in functions or len(calls) != len(rebuilt):
+            continue
+        for (original, _), rebuilt_address in zip(calls, rebuilt, strict=True):
+            yield original, rebuilt_address
+
+
 @cache
 def load_object(name) -> CoffObject:
     """Read each native compiler object once in this process."""
@@ -404,9 +463,13 @@ def recover_references(
     caller_symbol = route["symbol"]
     diff = engine.function_comparator.compare_function(function).diff
     seen_offsets = set()
-    for original_addr, rebuilt_addr in aligned_instructions(
-        diff, route, previous, function.recomp_addr
-    ):
+    pairs = chain(
+        aligned_instructions(diff, route, previous, function.recomp_addr),
+        unique_thunk_calls(
+            diff, engine.orig_bin, engine.recomp_bin, functions, entries, aliases
+        ),
+    )
+    for original_addr, rebuilt_addr in pairs:
         offset = rebuilt_addr - function.recomp_addr
         if offset in seen_offsets:
             continue
