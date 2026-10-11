@@ -13373,8 +13373,8 @@
       "caller": 4259088,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
       "symbol": "?OnBalloon@CPlayerLemming@@UAEXXZ",
-      "size": 592,
-      "fingerprint": "84c8c83a0b181597242e57d042d1069dece29e86086dab5239add581d5cade2e",
+      "size": 578,
+      "fingerprint": "c5b45d1981d7480efa523320f513b0ed56363b58dd5a03d69affdaa6ce865715",
       "references": [
         {
           "offset": 49,
@@ -13405,7 +13405,7 @@
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 405,
+          "offset": 391,
           "original_instruction": 4259493,
           "original_bytes": "e8fb2affff",
           "thunk": 4204965,

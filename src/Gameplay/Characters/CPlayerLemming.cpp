@@ -575,8 +575,7 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_ice = NULL;
 	m_onConveyor = 0;
 	m_hasDestination = 0;
-	short& resetFlags = m_unk0xc4;
-	resetFlags = 0;
+	m_unk0xc4 = 0;
 	m_fireRequestState = FIRE_REQUEST_NONE;
 	m_isFlying = false;
 	m_hidden = 0;
@@ -591,11 +590,9 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_balloonPostId = 0;
 	m_flightVelocity.m_xFixed = 0;
 	m_flightVelocity.m_yFixed = 0;
-	unsigned short& switchId = m_invisibleSwitchId;
-	switchId = INVALID_OBJECT_ID;
+	m_invisibleSwitchId = INVALID_OBJECT_ID;
 	m_flightVelocity.m_zFixed = 0;
-	short& facing = m_desiredFacingDirection;
-	facing = 0;
+	m_desiredFacingDirection = 0;
 	m_unk0x58 = 0;
 	m_onMover = false;
 	m_ammoCount = PLAYER_START_AMMO;
