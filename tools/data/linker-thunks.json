@@ -36066,7 +36066,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Password/CPasswordDrawer.cpp.obj",
       "symbol": "?ButtonNumeric@CPasswordDrawer@@QAEXH@Z",
       "size": 284,
-      "fingerprint": "8994d8ebf16493e7e0b37917c21662d2ab05d1f7a4ab7042f99622af9f8a8c1a",
+      "fingerprint": "5c95f096bb0a2649051e8db41b7d58c4a0d69ea763e0c4f7f11fa707494e6a0e",
       "references": [
         {
           "offset": 83,
@@ -36110,7 +36110,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Password/CPasswordDrawer.cpp.obj",
       "symbol": "?SetHiliteWindow@CPasswordDrawer@@QAEXXZ",
       "size": 146,
-      "fingerprint": "051d880605d84f8e9199bb611323503dffb1886d9d5ef1613b7ea15dc3b54f1e",
+      "fingerprint": "f497bbc37fd7a5feee2968c7f223bf78aab36de391e0fae2f452e85cb395ec20",
       "references": [
         {
           "offset": 45,

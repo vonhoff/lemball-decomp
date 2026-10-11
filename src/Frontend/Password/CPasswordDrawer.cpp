@@ -433,7 +433,7 @@ void CPasswordDrawer::DrawText()
 	skillIndex = 0;
 	do {
 		CVSSize advance;
-		CVSPoint position((short) labelPos->m_x, (short) labelPos->m_y);
+		CVSPoint position(labelPos->m_x, labelPos->m_y);
 		m_textManager->DrawString(m_gdi,
 								  position,
 								  advance,
@@ -444,7 +444,7 @@ void CPasswordDrawer::DrawText()
 		strcpy(textPtr, g_szPasswordLevelFormat);
 		vsLtoa(g_pGameStatus->m_maxLevels[skillIndex] + 1, textPtr + 2, 10);
 		CVSSize countAdvance;
-		CVSPoint countPosition((short) countPos->m_x, (short) countPos->m_y);
+		CVSPoint countPosition(countPos->m_x, countPos->m_y);
 		m_textManager
 			->DrawString(m_gdi, countPosition, countAdvance, m_chalkFontId, textPtr, TEXT_ADVANCE_X_POSITIVE, NULL);
 		countPos++;
@@ -455,13 +455,13 @@ void CPasswordDrawer::DrawText()
 	if (m_passwordSubmitted == true) {
 		if (m_passwordValid == true) {
 			CVSSize advance;
-			CVSPoint position((short) m_layout->m_resultPosition.m_x, (short) m_layout->m_resultPosition.m_y);
+			CVSPoint position(m_layout->m_resultPosition.m_x, m_layout->m_resultPosition.m_y);
 			m_textManager
 				->DrawString(m_gdi, position, advance, m_chalkFontId, g_szPasswordOk, TEXT_ADVANCE_X_POSITIVE, NULL);
 		}
 		else {
 			CVSSize advance;
-			CVSPoint position((short) m_layout->m_resultPosition.m_x, (short) m_layout->m_resultPosition.m_y);
+			CVSPoint position(m_layout->m_resultPosition.m_x, m_layout->m_resultPosition.m_y);
 			m_textManager->DrawString(m_gdi,
 									  position,
 									  advance,
@@ -481,7 +481,7 @@ void CPasswordDrawer::DrawPassword()
 	int x = m_size.m_width - layout->m_passwordRightMargin;
 	CVSSize textSize = m_textManager->GetFont(m_chalkFontId)->GetSize(m_password, TEXT_ADVANCE_X_POSITIVE);
 	x -= textSize.m_width;
-	CVSPoint position((short) x, (short) y);
+	CVSPoint position(x, y);
 	textSize.m_height = 0;
 	textSize.m_width = 0;
 	m_textManager->DrawString(m_gdi, position, textSize, m_chalkFontId, m_password, TEXT_ADVANCE_X_POSITIVE, NULL);
@@ -561,7 +561,7 @@ void CPasswordDrawer::DrawHilite()
 	m_hiliteRect.m_bounds.m_x = 0;
 	m_hiliteRect.m_bounds.m_y = 0;
 	m_hiliteRect.Draw(m_hiliteGdi);
-	CVSPoint position((short) m_hiliteX, (short) m_hiliteY);
+	CVSPoint position(m_hiliteX, m_hiliteY);
 	savedGdi = CAnimsManager::m_gdi;
 	m_hiliteAnim.m_frameState = 0;
 	CAnimsManager::m_gdi = m_hiliteGdi;
@@ -573,16 +573,13 @@ void CPasswordDrawer::DrawHilite()
 void CPasswordDrawer::SetHiliteWindow()
 {
 	PasswordTextLayout* layout;
-	int pitch;
+	unsigned int pitch;
 
 	layout = m_layout;
 	pitch = layout->m_buttonWidth + layout->m_buttonGapX;
 	m_hiliteWindow = new CPasswordHiliteWindow();
 	layout = m_layout;
-	CVSRect rect((short) (layout->m_keypadX - 1),
-				 (short) (layout->m_keypadY - 1),
-				 (short) (pitch * 3),
-				 (short) (pitch * 4));
+	CVSRect rect(layout->m_keypadX - 1, layout->m_keypadY - 1, pitch * 3, pitch * 4);
 	m_hiliteWindow->Create(rect, (CPVGWnd*) m_display, NULL);
 	m_hiliteGdi = m_hiliteWindow->m_gdi;
 }
