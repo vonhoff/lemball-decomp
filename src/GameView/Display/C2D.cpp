@@ -4169,9 +4169,8 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 					int localX = gameX & GROUND_BLOCK_PIXEL_MASK;
 					int localY = gameY & GROUND_BLOCK_PIXEL_MASK;
 					groundHeight =
-						map->m_ground.m_ground[(int) ((unsigned int) map->m_ground.m_width * blockY + blockX)].GetZ(
-							localX,
-							localY);
+						map->m_ground.m_ground[(unsigned int) map->m_ground.m_width * blockY + blockX].GetZ(localX,
+																											localY);
 				}
 				gameX = (gameX << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
 				gameY = (gameY << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
@@ -5297,7 +5296,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			int cellX = p_x;
 			cellY = p_y;
 			cellY &= GROUND_BLOCK_PIXEL_MASK;
-			width = (int) ((unsigned int) width * southTileY);
+			width = (unsigned int) width * southTileY;
 			cellX &= GROUND_BLOCK_PIXEL_MASK;
 			southZ = (map->m_ground.m_ground + width + southTileX)->GetZ(cellX, cellY);
 		}
@@ -5317,7 +5316,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			int cellX = p_x;
 			cellY = p_y;
 			cellY &= GROUND_BLOCK_PIXEL_MASK;
-			eastTileY = (int) ((unsigned int) eastTileY * map->m_ground.m_width);
+			eastTileY = (unsigned int) eastTileY * map->m_ground.m_width;
 			cellX &= GROUND_BLOCK_PIXEL_MASK;
 			eastZ = (map->m_ground.m_ground + eastTileY + eastTileX)->GetZ(cellX, cellY);
 		}
@@ -5334,7 +5333,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 		else {
 			p_x &= GROUND_BLOCK_PIXEL_MASK;
 			p_y &= GROUND_BLOCK_PIXEL_MASK;
-			width = (int) ((unsigned int) width * southTileY);
+			width = (unsigned int) width * southTileY;
 			southeastZ = (map->m_ground.m_ground + width + eastTileX)->GetZ(p_x, p_y);
 		}
 	}
@@ -5363,8 +5362,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 				}
 				else {
-					collision =
-						map->m_ground.m_ground[(int) ((unsigned int) width * collisionY + collisionX)].m_collision;
+					collision = map->m_ground.m_ground[(unsigned int) width * collisionY + collisionX].m_collision;
 				}
 			}
 			if ((collision & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
@@ -5391,8 +5389,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 				}
 				else {
-					collision =
-						map->m_ground.m_ground[(int) ((unsigned int) width * tileY + collisionX + 1)].m_collision;
+					collision = map->m_ground.m_ground[(unsigned int) width * tileY + collisionX + 1].m_collision;
 				}
 			}
 			if ((collision & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
@@ -5420,8 +5417,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 				}
 				else {
-					collision =
-						map->m_ground.m_ground[(int) ((unsigned int) width * collisionY + collisionX + 1)].m_collision;
+					collision = map->m_ground.m_ground[(unsigned int) width * collisionY + collisionX + 1].m_collision;
 				}
 			}
 			if ((collision & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
