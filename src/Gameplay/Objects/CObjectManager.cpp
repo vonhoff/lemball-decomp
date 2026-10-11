@@ -85,7 +85,7 @@ void CObjectManager::Restart()
 // FUNCTION: LEMBALL 0x0041b0c0
 void CObjectManager::Initialise(int p_objectCount)
 {
-	int capacity = p_objectCount + 4;
+	int capacity = p_objectCount + 4U;
 	m_capacity = capacity;
 	if (m_objects == NULL) {
 		m_objects = new CGlobalGameObject*[(unsigned short) capacity];
