@@ -3589,7 +3589,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 			}
 			CVSSize clippedSize;
 			clippedSize = clip;
-			(CVSSize&) dest = clippedSize;
+			dest.CVSSize::operator=(clippedSize);
 		}
 		AddToChangeList(dest);
 		int destX = dest.m_x;
