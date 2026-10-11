@@ -19346,8 +19346,8 @@
       "caller": 4313472,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CSwitch.cpp.obj",
       "symbol": "?Process@CSwitch@@UAEHXZ",
-      "size": 240,
-      "fingerprint": "2a8921e65ca87ff62547ec4755af0b9f196924978410b3d56cfeecef1763b1ad",
+      "size": 245,
+      "fingerprint": "c49ee811576d092a87fefeec8db016e4722e1a044e910162f78f9e957c3fb718",
       "references": [
         {
           "offset": 98,
@@ -19357,7 +19357,7 @@
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 196,
+          "offset": 201,
           "original_instruction": 4313673,
           "original_bytes": "e8815ffeff",
           "thunk": 4207055,

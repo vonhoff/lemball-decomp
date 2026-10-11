@@ -108,12 +108,16 @@ bool CSwitch::Process()
 		Throw();
 		Action(ACTION_READY);
 		break;
+	case ACTION_READY:
+		break;
 	case ACTION_ACTIVATING:
 		break;
 	case ACTION_ACTIVATED:
 		if (m_actionPhase2Deadline < g_dwGameTick) {
 			Action(ACTION_HIT);
 		}
+		break;
+	case ACTION_RUNNING:
 		break;
 	}
 	return true;
