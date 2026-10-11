@@ -13215,7 +13215,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
       "symbol": "?TurnToFaceCursor@CPlayerLemming@@UAEXXZ",
       "size": 178,
-      "fingerprint": "fb13958f84a3875657e7fa22ff481287f9ee2c7f215c5d8002f35969e89aaa83",
+      "fingerprint": "73bb869ee426700865c00628af61f36019a7348471bbe1385f3965b739c1530d",
       "references": [
         {
           "offset": 43,
@@ -13252,7 +13252,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
       "symbol": "?TurnToFaceTarget@CPlayerLemming@@UAEXXZ",
       "size": 140,
-      "fingerprint": "51413a6b2fa194055903a6dd024d701e8e37b81153617f8d898ffa64105b6b32",
+      "fingerprint": "fe48acc96c07f7076083927bfd663a636eae8698ab7389d4e7638473ac5a7963",
       "references": [
         {
           "offset": 43,
@@ -13351,7 +13351,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
       "symbol": "?Die@CPlayerLemming@@UAEXXZ",
       "size": 241,
-      "fingerprint": "7ee57345b5d65bd5dedf0fec2d1c22e21fae44e0eaa6002016ba1e3994be49f1",
+      "fingerprint": "61c06518d40b5f464c2ac22058a7e14154fdc0aa458e1cc0dab6f6941bc4f100",
       "references": [
         {
           "offset": 49,
@@ -13373,8 +13373,8 @@
       "caller": 4259088,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
       "symbol": "?OnBalloon@CPlayerLemming@@UAEXXZ",
-      "size": 578,
-      "fingerprint": "c5b45d1981d7480efa523320f513b0ed56363b58dd5a03d69affdaa6ce865715",
+      "size": 592,
+      "fingerprint": "c37b824787ef0f0198e8b7ad54d671671eb7ef9beeecd64a1bd76608c852cc56",
       "references": [
         {
           "offset": 49,
@@ -13405,7 +13405,7 @@
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 391,
+          "offset": 405,
           "original_instruction": 4259493,
           "original_bytes": "e8fb2affff",
           "thunk": 4204965,
@@ -13475,25 +13475,25 @@
       "caller": 4260096,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
       "symbol": "?StartStanding@CPlayerLemming@@UAEXXZ",
-      "size": 263,
-      "fingerprint": "750350d74dcd385c94482b04485be159b8f96f953b246b83301913d2a4bb5459",
+      "size": 278,
+      "fingerprint": "a7b668775c7ebd54742e7186e424dc911514b56ce849c0286e59fec41a9e5448",
       "references": [
         {
-          "offset": 50,
+          "offset": 49,
           "original_instruction": 4260145,
           "original_bytes": "e82a13ffff",
           "thunk": 4199520,
           "source_symbol": "?GetZ@CMap@@QAEGHHPAPAVCMover@@@Z"
         },
         {
-          "offset": 88,
+          "offset": 91,
           "original_instruction": 4260187,
           "original_bytes": "e85135ffff",
           "thunk": 4208305,
           "source_symbol": "?GetOn@CMover@@QAEHPAVCGameObject@@@Z"
         },
         {
-          "offset": 129,
+          "offset": 140,
           "original_instruction": 4260236,
           "original_bytes": "e88c32ffff",
           "thunk": 4207645,

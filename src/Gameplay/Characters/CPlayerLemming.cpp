@@ -5,6 +5,7 @@
 #include "Application/GameMain.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Gameplay/Behavior/StateMachine.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -813,16 +814,16 @@ void CPlayerLemming::SetBored(unsigned long p_minimumDelay)
 void CPlayerLemming::StartStanding()
 {
 	CMover* mover = NULL;
-	unsigned int groundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
-										m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
-										&mover);
+	int groundZ = g_pMap->GetZ(m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+							   m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+							   &mover);
 	int tileZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	if (m_onMover == 0 && mover != NULL) {
 		mover->GetOn(this);
 	}
-	if (tileZ <= (int) groundZ + 2) {
+	if (tileZ <= groundZ + 2) {
 		if (mover == NULL) {
-			m_position.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
+			m_position.m_zFixed = IntegerToFixed(groundZ);
 		}
 		g_pAI->StepOn(m_position, this, m_collisionFlags);
 		return;
@@ -833,7 +834,7 @@ void CPlayerLemming::StartStanding()
 		C3DVector velocity;
 		velocity.m_xFixed = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
 		velocity.m_yFixed = 0;
-		velocity.m_zFixed = (((tileZ - (int) groundZ) / 8) + 1) * FIXED_POINT_ONE;
+		velocity.m_zFixed = (((tileZ - groundZ) / 8) + 1) * FIXED_POINT_ONE;
 		m_flightVelocity = velocity;
 		unsigned int now = g_dwGameTick;
 		int posY = m_position.m_yFixed;
@@ -843,7 +844,7 @@ void CPlayerLemming::StartStanding()
 		m_flightZ = tileZ;
 		m_groundPosition.m_xFixed = posX;
 		m_groundPosition.m_yFixed = posY;
-		m_groundPosition.m_zFixed = groundZ << FIXED_POINT_FRACTION_BITS;
+		m_groundPosition.m_zFixed = IntegerToFixed(groundZ);
 	}
 }
 
