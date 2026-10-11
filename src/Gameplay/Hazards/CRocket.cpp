@@ -72,22 +72,20 @@ void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 bool CRocket::Process()
 {
 	unsigned long tick;
-	unsigned int remoteObject = m_isRemoteObject;
-	if (remoteObject != 0) {
+	if (m_isRemoteObject != 0) {
 		tick = g_dwRemoteGameTick;
 	}
 	else {
 		tick = g_dwGameTick;
 	}
-	eAction action = m_action;
-	if (action == ACTION_FLYING) {
+	if (m_action == ACTION_FLYING) {
 		const int height = IntegerToFixed((int) ((tick - m_lastMovementTick) * 10 + m_launchBaseZ));
 		m_position.m_zFixed = height;
 	}
 
-	if (remoteObject != 0) {
-		if (m_pendingAction != action) {
-			if (action == ACTION_RUNNING) {
+	if (m_isRemoteObject != 0) {
+		if (m_pendingAction != m_action) {
+			if (m_action == ACTION_RUNNING) {
 				m_lastMovementTick = tick + ROCKET_LAUNCH_MOVEMENT_DELAY_TICKS;
 				m_launchBaseZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 				SetSndEffect(SFX_ROCKET);
@@ -97,7 +95,7 @@ bool CRocket::Process()
 		return true;
 	}
 
-	switch (action) {
+	switch (m_action) {
 	case ACTION_FLYING:
 		if ((int) (m_position.m_zFixed & FIXED_POINT_INTEGER_MASK) > 200 * FIXED_POINT_ONE) {
 			Action(ACTION_READY);
