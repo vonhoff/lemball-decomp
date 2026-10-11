@@ -12782,7 +12782,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CDoor.cpp.obj",
       "symbol": "?Hits@CDoor@@QAEHABVAICOORD@@PAVCGameObject@@@Z",
       "size": 320,
-      "fingerprint": "dae3cf203a83d794c500def91bf16d5f09c876b488e8cf4b8b9fad38f9b4bf99",
+      "fingerprint": "4bec6252adb8e87a8cfdb5c6be4bdaf7e41b8a42446e4b93bb130a766be02ed8",
       "references": [
         {
           "offset": 165,

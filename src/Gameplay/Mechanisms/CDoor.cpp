@@ -184,9 +184,12 @@ void CDoor::SetCollision()
 	switch (m_objectType) {
 	case OBJECT_DOOR_1:
 		if (blockX >= 0) {
-			if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-				g_pMap->m_ground.m_ground[(unsigned int) blockY * g_pMap->m_ground.m_width + blockX].m_collision |=
-					GROUND_COLLISION_BLOCKS_WALKING;
+			if (blockY >= 0) {
+				int width = g_pMap->m_ground.m_width;
+				if (blockX < width && g_pMap->m_ground.m_height > blockY) {
+					g_pMap->m_ground.m_ground[(unsigned int) blockY * width + blockX].m_collision |=
+						GROUND_COLLISION_BLOCKS_WALKING;
+				}
 			}
 			if (blockX >= 0 && --blockY >= 0) {
 				CMap* map = g_pMap;
@@ -199,14 +202,19 @@ void CDoor::SetCollision()
 		}
 		break;
 	case OBJECT_DOOR_2:
-		if (blockX >= 0 && blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[(unsigned int) blockY * g_pMap->m_ground.m_width + blockX].m_collision |=
-				GROUND_COLLISION_BLOCKS_WALKING;
+		if (blockX >= 0 && blockY >= 0) {
+			int width = g_pMap->m_ground.m_width;
+			if (blockX < width && g_pMap->m_ground.m_height > blockY) {
+				g_pMap->m_ground.m_ground[(unsigned int) blockY * width + blockX].m_collision |=
+					GROUND_COLLISION_BLOCKS_WALKING;
+			}
 		}
-		if (blockX - 1 >= 0 && blockY >= 0 && g_pMap->m_ground.m_width > blockX - 1 &&
-			g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[(unsigned int) blockY * g_pMap->m_ground.m_width + blockX - 1].m_collision |=
-				GROUND_COLLISION_BLOCKS_WALKING;
+		if (blockX - 1 >= 0 && blockY >= 0) {
+			int width = g_pMap->m_ground.m_width;
+			if (width > blockX - 1 && g_pMap->m_ground.m_height > blockY) {
+				g_pMap->m_ground.m_ground[(unsigned int) blockY * width + blockX - 1].m_collision |=
+					GROUND_COLLISION_BLOCKS_WALKING;
+			}
 		}
 		break;
 	}
