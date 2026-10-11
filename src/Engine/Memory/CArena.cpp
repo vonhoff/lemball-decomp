@@ -86,8 +86,8 @@ bool CArena::AddToFreeList(CMBlock* p_block)
 	else {
 		m_firstFreeBlock->m_previousFree = p_block;
 	}
-	p_block->m_previousFree = NULL;
 	p_block->m_nextFree = m_firstFreeBlock;
+	p_block->m_previousFree = NULL;
 	m_firstFreeBlock = p_block;
 	return true;
 }
