@@ -1270,7 +1270,6 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 				 m_layoutTable->m_entryY,
 				 (short) m_layoutTable->m_entryWidth,
 				 m_layoutTable->m_entryHeight);
-	short& rowY = rect.m_y;
 	index = 0;
 	m_visibleEntryCount = 0;
 	do {
@@ -1280,9 +1279,9 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 			entry->m_bounds.m_width = rect.m_width;
 			entry->m_bounds.m_height = rect.m_height;
 			entry->m_bounds.m_x = rect.m_x;
-			entry->m_bounds.m_y = rowY;
+			entry->m_bounds.m_y = rect.m_y;
 			entry->SetActive(1);
-			rowY += (short) m_layoutTable->m_rowStride;
+			rect.m_y += (short) m_layoutTable->m_rowStride;
 			m_visibleEntryCount++;
 		}
 		else {

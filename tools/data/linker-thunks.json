@@ -36956,11 +36956,11 @@
       "caller": 4541936,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
       "symbol": "?InitialiseHandlers@CNetworkOptionsDrawer@@QAEXXZ",
-      "size": 265,
-      "fingerprint": "de4c067bba30e9f5b13249779476396e182ab5b9f436966d98ca01059bb32d68",
+      "size": 262,
+      "fingerprint": "4ed479c0d58e38e1dc387904a9203b24b5c16bd827acb3f532c23dab1da14407",
       "references": [
         {
-          "offset": 252,
+          "offset": 249,
           "original_instruction": 4542188,
           "original_bytes": "e87ddafaff",
           "thunk": 4204910,
