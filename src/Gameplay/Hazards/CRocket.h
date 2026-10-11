@@ -23,7 +23,7 @@ public:
 
 private:
 	unsigned int m_enabled; // 0x138
-	unsigned int m_active;  // 0x13c
+	bool m_active;          // 0x13c
 	int m_launchBaseZ;      // 0x140
 };
 

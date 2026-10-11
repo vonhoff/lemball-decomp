@@ -27,7 +27,7 @@ void CRocket::Initialise()
 {
 	m_stateTimer = 0;
 	m_enabled = 0;
-	m_active = 0;
+	m_active = false;
 }
 
 // FUNCTION: LEMBALL 0x00426810
@@ -47,7 +47,7 @@ void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 {
 	SetId(p_id);
 	m_position = p_position;
-	m_active = 1;
+	m_active = true;
 	m_action = ACTION_READY;
 	int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	int y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
@@ -59,7 +59,8 @@ void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 		}
 		int width = g_pMap->m_ground.m_width;
 		if (blockX < width && g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_OBJECT_INTERACTION;
+			g_pMap->m_ground.m_ground[(unsigned int) width * blockY + blockX].m_collision |=
+				GROUND_COLLISION_OBJECT_INTERACTION;
 		}
 	}
 }
