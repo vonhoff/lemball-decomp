@@ -86,7 +86,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	unsigned int length;
 	unsigned int downsample;
 	unsigned long audioBytes[2];
-	unsigned char* audio[2];
+	void* audio[2];
 	DSBUFFERDESC description;
 	WAVEFORMATEX format;
 	EffPatchHeader patchHeader;
@@ -153,7 +153,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 						<< DescribeDirectSoundError(result & DIRECT_SOUND_ERROR_CODE_MASK) << "\n";
 		return;
 	}
-	result = m_buffers[0]->Lock(0, length, (void**) &audio[0], &audioBytes[0], (void**) &audio[1], &audioBytes[1], 0);
+	result = m_buffers[0]->Lock(0, length, &audio[0], &audioBytes[0], &audio[1], &audioBytes[1], 0);
 	if (result != 0) {
 		// STRING: LEMBALL 0x004a354c
 		*g_pErrorOutput << "Effect Buffer Lock failed: "
@@ -162,7 +162,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	}
 	source = wave + sizeof(EffWaveHeader);
 	for (index = 0; index < 2; index++) {
-		unsigned char* dest = audio[index];
+		unsigned char* dest = (unsigned char*) audio[index];
 		if (audioBytes[index] != 0) {
 			if (downsample == 0) {
 				if ((length >> 1) > 0) {
