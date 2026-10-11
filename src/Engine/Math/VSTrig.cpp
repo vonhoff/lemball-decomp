@@ -61,7 +61,7 @@ VSTrig::VSTrig()
 		CFixed* pTable = m_sine;
 		do {
 			int val = *pSource++;
-			int fixedVal = val << FIXED_POINT_FRACTION_BITS;
+			int fixedVal = (unsigned int) val << FIXED_POINT_FRACTION_BITS;
 			pTable->m_value = fixedVal / 4096;
 			pTable++;
 		} while (pSource < g_nVSTrigSource + TRIG_TABLE_SIZE);
