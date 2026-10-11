@@ -1049,20 +1049,17 @@ void CGameObject::GetBoundingBox(CVSRect& p_rect)
 void CGameObject::Jump()
 {
 	CMover* mover = NULL;
-	unsigned int actionArgumentValue = (unsigned short) m_actionArgument;
-	const unsigned int& actionArgument = actionArgumentValue;
+	unsigned int actionArgument = (unsigned short) m_actionArgument;
 	if (actionArgument != 0) {
 		return;
 	}
 
 	int elapsed = g_dwGameTick - m_lastMovementTick;
-	unsigned int groundHeightValue = g_pMap->GetZ(m_groundPosition.m_xFixed >> FIXED_POINT_FRACTION_BITS,
-												  m_groundPosition.m_yFixed >> FIXED_POINT_FRACTION_BITS,
-												  &mover);
-	const unsigned int& groundHeight = groundHeightValue;
-	int& positionZ = m_position.m_zFixed;
+	int groundHeight = g_pMap->GetZ(m_groundPosition.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+									m_groundPosition.m_yFixed >> FIXED_POINT_FRACTION_BITS,
+									&mover);
+	m_position.m_zFixed = IntegerToFixed((unsigned int) elapsed * 3 + m_flightZ);
 	unsigned int groundZ = IntegerToFixed(groundHeight);
-	positionZ = IntegerToFixed((unsigned int) elapsed * 3 + m_flightZ);
 	if (m_position.m_zFixed >= (int) groundZ) {
 		AICOORD* position = &m_position;
 		m_position = m_groundPosition;
