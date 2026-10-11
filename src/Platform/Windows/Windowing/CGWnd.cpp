@@ -18,7 +18,6 @@
 #include <stddef.h>
 #include <windows.h>
 
-#define WIN32_LEAN_AND_MEAN
 #include "Engine/Resources/Types/CResPALETTE.h"
 
 // FUNCTION: LEMBALL 0x0043a510
