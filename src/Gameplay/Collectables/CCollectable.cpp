@@ -1,6 +1,7 @@
 #include "CCollectable.h"
 
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Objects/CGameObject.h"
@@ -78,7 +79,7 @@ bool CCollectable::Process()
 					else {
 						z = 0;
 					}
-					m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+					m_position.m_zFixed = IntegerToFixed(z);
 				}
 				CPt3 pt;
 				pt.m_x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;

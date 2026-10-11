@@ -2,6 +2,7 @@
 
 #include "CTrapDoor.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/CGameObject.h"
@@ -156,9 +157,9 @@ void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 				id = CGameObject::NextLoadingId();
 			}
 			AICOORD position;
-			position.m_xFixed = *(unsigned short*) data << FIXED_POINT_FRACTION_BITS;
+			position.m_xFixed = IntegerToFixed(*(unsigned short*) data);
 			data += sizeof(unsigned short);
-			position.m_yFixed = *(unsigned short*) data << FIXED_POINT_FRACTION_BITS;
+			position.m_yFixed = IntegerToFixed(*(unsigned short*) data);
 			data += sizeof(unsigned short);
 			data += sizeof(unsigned short);
 			int y;
@@ -177,7 +178,7 @@ void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned
 				y &= GROUND_BLOCK_PIXEL_MASK;
 				z = map->m_ground.m_ground[(unsigned int) blockY * map->m_ground.m_width + blockX].GetZ(x, y);
 			}
-			position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+			position.m_zFixed = IntegerToFixed(z);
 			selections[i] = *(unsigned short*) data;
 			data += sizeof(unsigned short);
 			if (p_skip == 0) {

@@ -2,6 +2,7 @@
 
 #include "CTheBalloonPost.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Gameplay/Objects/ObjectTypes.h"
@@ -273,9 +274,9 @@ void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned cha
 		z = data->z;
 		p_data += sizeof(*data);
 
-		position->m_xFixed = x << FIXED_POINT_FRACTION_BITS;
-		position->m_yFixed = y << FIXED_POINT_FRACTION_BITS;
-		position->m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+		position->m_xFixed = IntegerToFixed(x);
+		position->m_yFixed = IntegerToFixed(y);
+		position->m_zFixed = IntegerToFixed(z);
 		CTheBalloonPost* currentPost = *post;
 		currentPost->m_position.m_xFixed = x << FIXED_POINT_FRACTION_BITS;
 		currentPost->m_position.m_yFixed = y << FIXED_POINT_FRACTION_BITS;

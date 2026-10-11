@@ -1,6 +1,7 @@
 #include "CFlag.h"
 
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
 
@@ -41,7 +42,7 @@ bool CFlag::Process()
 			else {
 				z = 0;
 			}
-			const int height = z << FIXED_POINT_FRACTION_BITS;
+			const int height = IntegerToFixed(z);
 			m_position.m_zFixed = height;
 		}
 		return true;

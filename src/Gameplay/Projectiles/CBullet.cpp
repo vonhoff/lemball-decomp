@@ -4,6 +4,7 @@
 #include "CBulletManager.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/Facing.h"
@@ -244,18 +245,12 @@ void CBullet::AddData()
 void CBullet::GetData()
 {
 	SetRemoteGameTimeReal(GetDWORD());
-	const int x = (short) GetWORD() * FIXED_POINT_ONE;
-	m_position.m_xFixed = x;
-	const int y = (short) GetWORD() * FIXED_POINT_ONE;
-	m_position.m_yFixed = y;
-	const int z = (short) GetWORD() * FIXED_POINT_ONE;
-	m_position.m_zFixed = z;
-	const int destinationX = (short) GetWORD() * FIXED_POINT_ONE;
-	m_destination.m_xFixed = destinationX;
-	const int destinationY = (short) GetWORD() * FIXED_POINT_ONE;
-	m_destination.m_yFixed = destinationY;
-	const int destinationZ = (short) GetWORD() * FIXED_POINT_ONE;
-	m_destination.m_zFixed = destinationZ;
+	m_position.m_xFixed = IntegerToFixed((short) GetWORD());
+	m_position.m_yFixed = IntegerToFixed((short) GetWORD());
+	m_position.m_zFixed = IntegerToFixed((short) GetWORD());
+	m_destination.m_xFixed = IntegerToFixed((short) GetWORD());
+	m_destination.m_yFixed = IntegerToFixed((short) GetWORD());
+	m_destination.m_zFixed = IntegerToFixed((short) GetWORD());
 	m_facingDirection = (short) GetWORD();
 	m_soundEffect = (eSoundEffect) GetDWORD();
 	m_lastMovementTick = GetDWORD();

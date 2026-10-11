@@ -12393,7 +12393,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTrapDoorManager.cpp.obj",
       "symbol": "?AddNewDoor@CTrapDoorManager@@QAEXGAAVAICOORD@@IK@Z",
       "size": 128,
-      "fingerprint": "fe89f1ff92456fed622ae1ca5fa16d1a3744feda9816eab6e2aae492b00c8927",
+      "fingerprint": "bae23c64daeb868eb1a30ecd9a08ed341ea4ad9a30df848fb18cb7a96a3ce599",
       "references": [
         {
           "offset": 32,
@@ -12447,8 +12447,8 @@
       "caller": 4246080,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTrapDoorManager.cpp.obj",
       "symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHI@Z",
-      "size": 360,
-      "fingerprint": "743a59de35f32ed107441bceb4a321440ae3572bc3fd80f857e83026149e239a",
+      "size": 371,
+      "fingerprint": "22437ada58511a27087d753f092240f04157836b976f92ee42a36aebe000995d",
       "references": [
         {
           "offset": 61,
@@ -12458,28 +12458,28 @@
           "source_symbol": "?NextLoadingId@CGameObject@@SAFXZ"
         },
         {
-          "offset": 204,
+          "offset": 215,
           "original_instruction": 4246295,
           "original_bytes": "e8895effff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 262,
+          "offset": 273,
           "original_instruction": 4246353,
           "original_bytes": "e83d48ffff",
           "thunk": 4199315,
           "source_symbol": "?AddNewDoor@CTrapDoorManager@@QAEXGAAVAICOORD@@IK@Z"
         },
         {
-          "offset": 299,
+          "offset": 310,
           "original_instruction": 4246390,
           "original_bytes": "e80245ffff",
           "thunk": 4198525,
           "source_symbol": "?AddANetworkStart@CAI@@QAEXHHHH@Z"
         },
         {
-          "offset": 345,
+          "offset": 356,
           "original_instruction": 4246436,
           "original_bytes": "e87c51ffff",
           "thunk": 4201765,
@@ -18344,7 +18344,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Projectiles/CBullet.cpp.obj",
       "symbol": "?Process@CBullet@@UAEHXZ",
       "size": 761,
-      "fingerprint": "961657d9ad806530cbddcefe288b983e521257bbb84e5a3cb970c1bdb3dccc88",
+      "fingerprint": "f4d609b178eaee0b2975b68988fea3d65544426f8a67bdb95c919698d72f67d3",
       "references": [
         {
           "offset": 119,
@@ -18380,11 +18380,11 @@
       "caller": 4303744,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Projectiles/CBullet.cpp.obj",
       "symbol": "?GetData@CBullet@@UAEXXZ",
-      "size": 223,
-      "fingerprint": "c75c1741936f578dcc8010be1248d7dfc8f147782d606d9bafebdaeef3c04677",
+      "size": 229,
+      "fingerprint": "1e6e754a6138cfe2d5b47c005e74acbb01e3026af236ec262467d6ce2556dd2a",
       "references": [
         {
-          "offset": 9,
+          "offset": 12,
           "original_instruction": 4303756,
           "original_bytes": "e87685feff",
           "thunk": 4206855,
@@ -21440,18 +21440,18 @@
       "caller": 4336448,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Collectables/CFlag.cpp.obj",
       "symbol": "?Process@CFlag@@UAEHXZ",
-      "size": 175,
-      "fingerprint": "ed4a6d28019d75e8cfa4ae98e29e224b5d9297162d29ac0cf99923fc475aed45",
+      "size": 189,
+      "fingerprint": "ff1477309de72ccf2831fdc83ea0ee100df9db98d2ae72cd09c6c01a94934692",
       "references": [
         {
-          "offset": 125,
+          "offset": 139,
           "original_instruction": 4336587,
           "original_bytes": "e8d5fdfdff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 162,
+          "offset": 176,
           "original_instruction": 4336624,
           "original_bytes": "e8f3ecfdff",
           "thunk": 4200680,
@@ -23817,7 +23817,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CBalloonPost.cpp.obj",
       "symbol": "?Process@CBalloonPost@@QAEXXZ",
       "size": 411,
-      "fingerprint": "aad6ed7036eae9ae25f229e062b98267e63f7f0ab37264035df2394beebb29f0",
+      "fingerprint": "493c9f954613ac69059ca8a349269b37a0387b46b58b26bc5c3f91b0aef59717",
       "references": [
         {
           "offset": 78,
