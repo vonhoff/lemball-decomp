@@ -1,7 +1,7 @@
 #include "CSlinky.h"
 
 #include "Application/GameMain.h"
-#include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CRect3.h"
@@ -120,19 +120,10 @@ bool CSlinky::Move()
 			dy = -STEP_PIXELS;
 			break;
 		}
-		{
-			const int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-			count++;
-			m_destination.m_xFixed = (int) ((unsigned int) (x + dx) << FIXED_POINT_FRACTION_BITS);
-		}
-		{
-			const int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-			m_destination.m_yFixed = (int) ((unsigned int) (y + dy) << FIXED_POINT_FRACTION_BITS);
-		}
-		{
-			const int z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
-			m_destination.m_zFixed = (int) ((unsigned int) z << FIXED_POINT_FRACTION_BITS);
-		}
+		m_destination.m_xFixed = IntegerToFixed((m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) + dx);
+		m_destination.m_yFixed = IntegerToFixed((m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) + dy);
+		m_destination.m_zFixed = IntegerToFixed(m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS);
+		count++;
 	} while (count < MAX_ATTEMPTS && !GoodEndPt(m_destination));
 	return true;
 }

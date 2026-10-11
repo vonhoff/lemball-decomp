@@ -12134,11 +12134,11 @@
       "caller": 4241008,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CSlinky.cpp.obj",
       "symbol": "?Move@CSlinky@@UAEHXZ",
-      "size": 240,
-      "fingerprint": "1b995e4d8c385a4bfbea492b024832eb53a5bd3c07adb8061ce75043147a90b7",
+      "size": 232,
+      "fingerprint": "cdfea453df34fec77f3d8b4ab5ee2e1a5f01e736bf1b73aea309bf40d9aa4103",
       "references": [
         {
-          "offset": 196,
+          "offset": 189,
           "original_instruction": 4241197,
           "original_bytes": "e8f77affff",
           "thunk": 4207145,
