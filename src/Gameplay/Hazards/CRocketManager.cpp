@@ -2,6 +2,7 @@
 
 #include "CRocket.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/CGameObject.h"
@@ -128,9 +129,9 @@ void CRocketManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 {
 	if (m_count < m_capacity) {
 		AICOORD position;
-		position.m_xFixed = (unsigned int) p_x << FIXED_POINT_FRACTION_BITS;
-		position.m_yFixed = (unsigned int) p_y << FIXED_POINT_FRACTION_BITS;
-		position.m_zFixed = (unsigned int) p_z << FIXED_POINT_FRACTION_BITS;
+		position.m_xFixed = IntegerToFixed(p_x);
+		position.m_yFixed = IntegerToFixed(p_y);
+		position.m_zFixed = IntegerToFixed(p_z);
 		m_rockets[m_count].Set(p_id, position);
 		m_count++;
 	}

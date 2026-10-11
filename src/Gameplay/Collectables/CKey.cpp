@@ -2,6 +2,7 @@
 
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
@@ -39,7 +40,7 @@ bool CKey::Process()
 	else {
 		z = 0;
 	}
-	m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = IntegerToFixed(z);
 	if (m_isRemoteObject != 0) {
 		if (m_pendingAction != m_action) {
 			if (m_action == ACTION_ACTIVATED) {

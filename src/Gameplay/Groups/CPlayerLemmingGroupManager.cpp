@@ -9,6 +9,7 @@ enum {
 #include "CFormationManager.h"
 #include "CPlayerLemmingGroup.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Groups/CGenericGroup.h"
@@ -340,11 +341,11 @@ CPlayerLemmingGroup* CPlayerLemmingGroupManager::GetPlayerControlledGroup()
 // FUNCTION: LEMBALL 0x00418a30
 void CPlayerLemmingGroupManager::AddNewWaypointToCurrentGroup(int p_x, int p_y)
 {
-	int x = p_x << FIXED_POINT_FRACTION_BITS;
+	int x = IntegerToFixed(p_x);
 	AICOORD coordinate;
 	coordinate.m_zFixed = 0;
 	coordinate.m_xFixed = x;
-	coordinate.m_yFixed = p_y << FIXED_POINT_FRACTION_BITS;
+	coordinate.m_yFixed = IntegerToFixed(p_y);
 	CPlayerLemmingGroup* group = GetPlayerControlledGroup();
 	if (group != NULL) {
 		group->AddNewWaypoint(coordinate, g_pGenericGroupFormationManager);
@@ -410,9 +411,9 @@ void CPlayerLemmingGroupManager::PlayerGroupRequestFire(int p_x, int p_y)
 // FUNCTION: LEMBALL 0x00418ba0
 void CPlayerLemmingGroupManager::GetPlayerStartPosition(AICOORD& p_position, int p_index)
 {
-	p_position.m_xFixed = m_startX[p_index] << FIXED_POINT_FRACTION_BITS;
-	p_position.m_yFixed = m_startY[p_index] << FIXED_POINT_FRACTION_BITS;
-	p_position.m_zFixed = m_startZ[p_index] << FIXED_POINT_FRACTION_BITS;
+	p_position.m_xFixed = IntegerToFixed(m_startX[p_index]);
+	p_position.m_yFixed = IntegerToFixed(m_startY[p_index]);
+	p_position.m_zFixed = IntegerToFixed(m_startZ[p_index]);
 }
 
 // FUNCTION: LEMBALL 0x00418be0

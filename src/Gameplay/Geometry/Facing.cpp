@@ -4,6 +4,7 @@
 #include "Application/GameMain.h"
 #include "Engine/Math/CVSMath.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 
 #include <stdlib.h>
 
@@ -18,8 +19,8 @@ unsigned int g_anFacingDirectionYFlip[FACING_DIRECTION_COUNT] = {4, 3, 2, 3, 4, 
 // FUNCTION: LEMBALL 0x00413e80
 unsigned int ReturnFacingDirection(int p_fromX, int p_fromY, int p_toX, int p_toY)
 {
-	int nDeltaX = ((unsigned int) p_toX - p_fromX) << FIXED_POINT_FRACTION_BITS;
-	int nDeltaY = ((unsigned int) p_toY - p_fromY) << FIXED_POINT_FRACTION_BITS;
+	int nDeltaX = IntegerToFixed((unsigned int) p_toX - p_fromX);
+	int nDeltaY = IntegerToFixed((unsigned int) p_toY - p_fromY);
 
 	int nAbsX = VsAbs(nDeltaX);
 	int nFraction;
