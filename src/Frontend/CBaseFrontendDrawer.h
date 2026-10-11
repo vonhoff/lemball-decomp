@@ -92,7 +92,7 @@ protected:
 	bool m_drawSolid;                      // 0xb0
 	unsigned int m_desiredPalette;         // 0xb4
 	unsigned int m_activePalette;          // 0xb8
-	unsigned int m_createdAt;              // 0xbc
+	unsigned long m_createdAt;             // 0xbc
 	CResBITMAP* m_backgroundBitmap;        // 0xc0
 	CResBITMAP* m_tileBitmap;              // 0xc4
 	tagPRIMS m_primitiveBundle[1];         // 0xc8
@@ -102,7 +102,7 @@ protected:
 	CGunController* m_gunController;       // 0x334
 	CHiliteController* m_hiliteController; // 0x338
 	unsigned int m_ambientDelay;           // 0x33c
-	unsigned int m_ambientUpdatedAt;       // 0x340
+	unsigned long m_ambientUpdatedAt;      // 0x340
 	char m_unknown344[8];                  // 0x344
 	CPlayThruAnim* m_ambientAnim;          // 0x34c
 	CStaticAnim m_staticAnim;              // 0x350
