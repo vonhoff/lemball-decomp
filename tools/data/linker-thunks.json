@@ -16283,7 +16283,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?OnLift@CGameObject@@UAEHAAUtCoord3d@@0@Z",
       "size": 204,
-      "fingerprint": "b9c713023eb9ab669eba528f66da47b0d8d6be2aea0c47d9c8d54dff95997f8c",
+      "fingerprint": "4dcdd2ee95a71f249cdadafa32a7f1abc7774f14233a83e7b0bbacf493e8bbf7",
       "references": [
         {
           "offset": 155,

@@ -886,9 +886,11 @@ bool CGameObject::Move()
 			m_groundPosition.m_zFixed = IntegerToFixed(height);
 			m_position.m_xFixed = position.m_xFixed;
 			m_position.m_yFixed = position.m_yFixed;
-			m_flightVelocity.m_xFixed = IntegerToFixed(velocityX);
-			m_flightVelocity.m_yFixed = IntegerToFixed(velocityY);
-			m_flightVelocity.m_zFixed = ((deltaZ / 8) + 1) * FIXED_POINT_ONE;
+			C3DVector velocity;
+			velocity.m_xFixed = IntegerToFixed(velocityX);
+			velocity.m_yFixed = IntegerToFixed(velocityY);
+			velocity.m_zFixed = ((deltaZ / 8) + 1) * FIXED_POINT_ONE;
+			m_flightVelocity = velocity;
 			return false;
 		}
 		Blocked();
