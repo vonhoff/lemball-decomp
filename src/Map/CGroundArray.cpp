@@ -6,14 +6,14 @@
 // FUNCTION: LEMBALL 0x0040eb70
 CGround* CGroundArray::GetGroundCell(int p_x, int p_y)
 {
-	return &m_ground[m_width * p_y + p_x];
+	return &m_ground[(unsigned int) m_width * p_y + p_x];
 }
 
 // FUNCTION: LEMBALL 0x0040eb90
 void CGroundArray::SetCollision(int p_x, int p_y, int p_collision)
 {
 	if (p_x >= 0 && p_y >= 0 && p_x < m_width && p_y < m_height) {
-		m_ground[p_y * m_width + p_x].m_collision |= (unsigned short) p_collision;
+		m_ground[(unsigned int) p_y * m_width + p_x].m_collision |= (unsigned short) p_collision;
 	}
 }
 
@@ -29,7 +29,7 @@ void CGroundArray::Clear()
 				if (x >= m_width) {
 					break;
 				}
-				ground = m_ground + y * m_width + x;
+				ground = m_ground + ((unsigned int) y * m_width + x);
 				ground->m_objectType = TERRAIN_BLOX_4;
 				ground->m_objectData = 0;
 				ground->m_collision = GROUND_COLLISION_NONE;
@@ -50,7 +50,7 @@ unsigned short CGroundArray::GetZ(int p_x, int p_y)
 	if (p_x >= 0 && p_y >= 0 && blockX < m_width && m_height > blockY) {
 		p_x &= GROUND_BLOCK_PIXEL_MASK;
 		p_y &= GROUND_BLOCK_PIXEL_MASK;
-		return m_ground[blockY * m_width + blockX].GetZ(p_x, p_y);
+		return m_ground[(unsigned int) blockY * m_width + blockX].GetZ(p_x, p_y);
 	}
 	return 0;
 }
