@@ -1,6 +1,7 @@
 #include "CRocket.h"
 
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "Map/CGround.h"
 #include "Map/CMap.h"
@@ -80,7 +81,7 @@ bool CRocket::Process()
 	}
 	eAction action = m_action;
 	if (action == ACTION_FLYING) {
-		const unsigned long height = ((tick - m_lastMovementTick) * 10 + m_launchBaseZ) << FIXED_POINT_FRACTION_BITS;
+		const int height = IntegerToFixed((int) ((tick - m_lastMovementTick) * 10 + m_launchBaseZ));
 		m_position.m_zFixed = height;
 	}
 
