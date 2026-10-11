@@ -62,8 +62,7 @@ SHA-256: `d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63`
 
 ## AI Disclosure
 
-This project uses AI for tooling, research, and code reconstruction. All code is linted, formatted, and manually
-reviewed for correctness and maintainability.
+This project uses AI for tooling, research, and code reconstruction. All code is manually reviewed.
 
 ## References
 
