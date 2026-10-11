@@ -70,9 +70,6 @@ class Parser(ParseAsm):
                 and self.is_addr(addr)
                 and self.db.get(self.image_id, addr, exact=True) is None
             ):
-                # max_size bounds the next symbol; it need not be the array size.
-                # Preserve the existing adjacent-global case, or a relocated end
-                # within that bound with no competing exact symbol.
                 return entity.match_name(f"+{offset}")
         return super().hex_replace_annotated(match)
 
