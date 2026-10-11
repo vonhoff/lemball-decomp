@@ -1,8 +1,9 @@
 #include "CHotAreaList.h"
 
 #include "CHotAreaHandler.h"
-#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSPointArithmetic.h"
 #include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
@@ -141,6 +142,16 @@ int CHotAreaList::ProcessMsg(tagMESSAGE* p_message)
 	return 0;
 }
 
+inline CVSPoint operator*(const CVSPoint& p_point, int p_scale)
+{
+	return CVSPoint((unsigned int) p_point.m_x * p_scale, (unsigned int) p_point.m_y * p_scale);
+}
+
+inline CVSSize operator*(const CVSSize& p_size, int p_scale)
+{
+	return CVSSize((unsigned int) p_size.m_width * p_scale, (unsigned int) p_size.m_height * p_scale);
+}
+
 // FUNCTION: LEMBALL 0x0046a770
 void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_message)
 {
@@ -149,7 +160,6 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_messag
 	CHotAreaElement* previous;
 	tagMESSAGE fallback;
 	unsigned int type;
-	const CVSPoint* origin;
 
 	fallback.m_type = MESSAGE_MOUSE_MOVED;
 	fallback.m_time = 0;
@@ -160,10 +170,7 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_messag
 		p_message = &fallback;
 	}
 	type = p_message->m_type;
-	origin = &m_bounds;
-	CVSPoint localPointValue((short) (p_point.m_x - origin->m_x) / m_scale,
-							 (short) (p_point.m_y - origin->m_y) / m_scale);
-	CVSPoint& localPoint = localPointValue;
+	CVSPoint localPoint = (p_point - m_bounds) / m_scale;
 	entry = m_tail;
 	for (;;) {
 		if (entry == NULL) {
@@ -182,20 +189,16 @@ void CHotAreaList::ProcessHandlers(const CVSPoint& p_point, tagMESSAGE* p_messag
 			}
 		}
 	}
-	short widthValue = m_bounds.m_width;
-	short& width = widthValue;
-	short heightValue = m_bounds.m_height;
-	short& height = heightValue;
-	const CVSPoint* boundsOrigin = &m_bounds;
-	short scale = m_scale;
-	short xValue = m_relativeTopLeft.m_x * (scale - 1) + boundsOrigin->m_x;
-	short& x = xValue;
-	short yValue = m_relativeTopLeft.m_y * (scale - 1) + boundsOrigin->m_y;
-	short& y = yValue;
-	width = width * scale;
-	height = height * scale;
-	if (p_point.m_x < x || (short) (x + width) <= p_point.m_x || p_point.m_y < y ||
-		(short) (height + y) <= p_point.m_y) {
+	CVSRect bounds(m_bounds);
+	CVSPoint offset = m_relativeTopLeft * m_scale - m_relativeTopLeft;
+	bounds.m_x += offset.m_x;
+	bounds.m_y += offset.m_y;
+	CVSSize size(bounds);
+	CVSSize scaledSize = size * m_scale;
+	bounds.m_width = scaledSize.m_width;
+	bounds.m_height = scaledSize.m_height;
+	if (p_point.m_x < bounds.m_x || (short) (bounds.m_x + bounds.m_width) <= p_point.m_x || p_point.m_y < bounds.m_y ||
+		(short) (bounds.m_height + bounds.m_y) <= p_point.m_y) {
 		if (m_entered != 0) {
 			m_entered = 0;
 			OnExit();

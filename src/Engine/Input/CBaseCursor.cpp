@@ -4,7 +4,7 @@
 #include "Engine/Graphics/Primitives/CPushActive.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Input/CMasterInput.h"
-#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSPointArithmetic.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Math/CVector.h"
@@ -328,16 +328,6 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 		return true;
 	}
 	return false;
-}
-
-inline CVSPoint operator-(const CVSPoint& p_left, const CVSPoint& p_right)
-{
-	return CVSPoint((short) (p_left.m_x - p_right.m_x), (short) (p_left.m_y - p_right.m_y));
-}
-
-inline CVSPoint operator/(const CVSPoint& p_point, int p_divisor)
-{
-	return CVSPoint((short) (p_point.m_x / p_divisor), (short) (p_point.m_y / p_divisor));
 }
 
 // FUNCTION: LEMBALL 0x0046b5c0
