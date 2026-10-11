@@ -28054,7 +28054,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "??0C2D@@QAE@PAVCMain2DDisplay@@PAVCAI@@PAVCGDI@@PAVCMap@@ABVCVSRect@@@Z",
       "size": 1906,
-      "fingerprint": "3e7fe5570920228d1234f3464686866777e2794ca2bb2bf7690c5aa2066bfd8a",
+      "fingerprint": "a3a81e70bed7d57adb44e72ab381b54360ebfa31ad80d8939855b1e838b339c5",
       "references": [
         {
           "offset": 538,
@@ -28168,7 +28168,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "??1C2D@@UAE@XZ",
       "size": 333,
-      "fingerprint": "7c9f9ae0546fabd73125b73ce027af27dfc4ff053a1eba3de6ea3bfa5e5ba671",
+      "fingerprint": "837e59f8b302ba074660262fcb899a5f36d1b2fb0edcb4aaf0e4b5be49b391fa",
       "references": [
         {
           "offset": 76,
@@ -31357,8 +31357,8 @@
       "caller": 4453920,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?DrawObjects@C2D@@QAEXXZ",
-      "size": 1556,
-      "fingerprint": "316aefe74cb79d46fe63d2f56438f6d5a179fa108e1023a7088e98cac43494bc",
+      "size": 1540,
+      "fingerprint": "849b264f6e34baec9e9df748c2135222b1bb676099fcc6e56edac2c9ad0e1723",
       "references": [
         {
           "offset": 9,
@@ -31382,56 +31382,42 @@
           "source_symbol": "??0CVSRect@@QAE@XZ"
         },
         {
-          "offset": 1100,
+          "offset": 1098,
           "original_instruction": 4455216,
           "original_bytes": "e89b17fcff",
           "thunk": 4199120,
           "source_symbol": "??4CVSRect@@QAEAAV0@ABV0@@Z"
         },
         {
-          "offset": 1130,
+          "offset": 1128,
           "original_instruction": 4455246,
           "original_bytes": "e87d17fcff",
           "thunk": 4199120,
           "source_symbol": "??4CVSRect@@QAEAAV0@ABV0@@Z"
         },
         {
-          "offset": 1227,
+          "offset": 1225,
           "original_instruction": 4455336,
           "original_bytes": "e82317fcff",
           "thunk": 4199120,
           "source_symbol": "??4CVSRect@@QAEAAV0@ABV0@@Z"
         },
         {
-          "offset": 1259,
+          "offset": 1257,
           "original_instruction": 4455368,
           "original_bytes": "e83639fcff",
           "thunk": 4207875,
           "source_symbol": "?DrawClippedRectangle@C2D@@QAEHABVCVSRect@@@Z"
         },
         {
-          "offset": 1398,
-          "original_instruction": 4455495,
-          "original_bytes": "e88416fcff",
-          "thunk": 4199120,
-          "source_symbol": "??4CVSRect@@QAEAAV0@ABV0@@Z"
-        },
-        {
-          "offset": 1416,
-          "original_instruction": 4455513,
-          "original_bytes": "e87216fcff",
-          "thunk": 4199120,
-          "source_symbol": "??4CVSRect@@QAEAAV0@ABV0@@Z"
-        },
-        {
-          "offset": 1486,
+          "offset": 1470,
           "original_instruction": 4455579,
           "original_bytes": "e86338fcff",
           "thunk": 4207875,
           "source_symbol": "?DrawClippedRectangle@C2D@@QAEHABVCVSRect@@@Z"
         },
         {
-          "offset": 1509,
+          "offset": 1493,
           "original_instruction": 4455602,
           "original_bytes": "e8262cfcff",
           "thunk": 4204765,
@@ -31467,7 +31453,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?Draw@C2D@@UAEXABVCVSRect@@@Z",
       "size": 1023,
-      "fingerprint": "df25e3f374a06e3c5b87384708a2761a0b6ea1e2b61385787c063f4994220914",
+      "fingerprint": "fedff29406ece2a4fcf96372bf91b2c8dead5c88dbdf556a0b99a6268ea412c7",
       "references": [
         {
           "offset": 65,
@@ -31694,7 +31680,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?CalcGroundCode@C2D@@QAEGW4eObjectType@@HHG@Z",
       "size": 941,
-      "fingerprint": "cbe6e6376c2596ff26845452e84136d2bca8e79c65fc35d245a3b663fe94b357",
+      "fingerprint": "432355ecedd245aae61374ee7a0a690c964df0e4c45a87e085faab47442e1a10",
       "references": [
         {
           "offset": 268,

@@ -4715,110 +4715,105 @@ void C2D::DrawObjects()
 	enum {
 		ZRLE_DRAW_FLAG_Z_BUFFER = 0x40000
 	};
-	C2D& owner = *this;
 	SetOrigin();
-	owner.m_backBufferCopyCount = 0;
-	owner.m_lemmingAnims->m_drawFlags = ZRLE_DRAW_FLAG_Z_BUFFER;
-	int scrollX = abs(owner.m_scrollDeltaX);
-	int scrollY = abs(owner.m_scrollDeltaY);
+	m_backBufferCopyCount = 0;
+	m_lemmingAnims->m_drawFlags = ZRLE_DRAW_FLAG_Z_BUFFER;
+	int scrollX = abs(m_scrollDeltaX);
+	int scrollY = abs(m_scrollDeltaY);
 	CVSRect borders[4];
 
-	if (owner.m_scrollPending != 0 && owner.m_redrawPending == 0 && scrollX < owner.m_clipSize.m_width &&
-		scrollY < owner.m_clipSize.m_height) {
-		unsigned char direction = (unsigned char) ((owner.m_scrollDeltaX < 0 ? SCROLL_OFFSET_X : 0) |
-												   (owner.m_scrollDeltaY < 0 ? SCROLL_OFFSET_Y : 0));
+	if (m_scrollPending != 0 && m_redrawPending == 0 && scrollX < m_clipSize.m_width && scrollY < m_clipSize.m_height) {
+		unsigned char direction =
+			(unsigned char) ((m_scrollDeltaX < 0 ? SCROLL_OFFSET_X : 0) | (m_scrollDeltaY < 0 ? SCROLL_OFFSET_Y : 0));
 		CVSRect exposed[2];
 		short destinationX = 0;
 		short destinationY = 0;
 		CVSRect retained;
 		switch (direction) {
 		case SCROLL_OFFSET_NONE:
-			retained =
-				CVSRect(scrollX, scrollY, owner.m_clipSize.m_width - scrollX, owner.m_clipSize.m_height - scrollY);
+			retained = CVSRect(scrollX, scrollY, m_clipSize.m_width - scrollX, m_clipSize.m_height - scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_width, scrollY);
+				exposed[0] = CVSRect(0, 0, m_clipSize.m_width, scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(0, scrollY, scrollX, owner.m_clipSize.m_height - scrollY);
+				exposed[1] = CVSRect(0, scrollY, scrollX, m_clipSize.m_height - scrollY);
 			}
 			break;
 		case SCROLL_OFFSET_X:
 			destinationX = scrollX;
 			destinationY = 0;
-			retained = CVSRect(0, scrollY, owner.m_clipSize.m_width - scrollX, owner.m_clipSize.m_height - scrollY);
+			retained = CVSRect(0, scrollY, m_clipSize.m_width - scrollX, m_clipSize.m_height - scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, 0, owner.m_clipSize.m_width, scrollY);
+				exposed[0] = CVSRect(0, 0, m_clipSize.m_width, scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] =
-					CVSRect(owner.m_clipSize.m_width - scrollX, scrollY, scrollX, owner.m_clipSize.m_height - scrollY);
+				exposed[1] = CVSRect(m_clipSize.m_width - scrollX, scrollY, scrollX, m_clipSize.m_height - scrollY);
 			}
-			if (owner.m_clipOffsetX > 0 || owner.m_clipOffsetY > 0) {
-				borders[0] = CVSRect((short) owner.m_clipOffsetX - scrollX,
-									 (short) owner.m_clipOffsetY,
+			if (m_clipOffsetX > 0 || m_clipOffsetY > 0) {
+				borders[0] = CVSRect((short) m_clipOffsetX - scrollX,
+									 (short) m_clipOffsetY,
 									 scrollX,
-									 owner.m_clipSize.m_height + scrollY);
-				borders[1] = CVSRect((short) owner.m_clipOffsetX,
-									 owner.m_clipSize.m_height + (short) owner.m_clipOffsetY,
-									 owner.m_clipSize.m_width,
+									 m_clipSize.m_height + scrollY);
+				borders[1] = CVSRect((short) m_clipOffsetX,
+									 m_clipSize.m_height + (short) m_clipOffsetY,
+									 m_clipSize.m_width,
 									 scrollY);
 			}
 			break;
 		case SCROLL_OFFSET_Y:
 			destinationY = scrollY;
 			destinationX = 0;
-			retained = CVSRect(scrollX, 0, owner.m_clipSize.m_width - scrollX, owner.m_clipSize.m_height - scrollY);
+			retained = CVSRect(scrollX, 0, m_clipSize.m_width - scrollX, m_clipSize.m_height - scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, owner.m_clipSize.m_height - scrollY, owner.m_clipSize.m_width, scrollY);
+				exposed[0] = CVSRect(0, m_clipSize.m_height - scrollY, m_clipSize.m_width, scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] = CVSRect(0, 0, scrollX, owner.m_clipSize.m_height - scrollY);
+				exposed[1] = CVSRect(0, 0, scrollX, m_clipSize.m_height - scrollY);
 			}
 			break;
 		case SCROLL_OFFSET_XY:
 			destinationX = scrollX;
 			destinationY = scrollY;
-			retained = CVSRect(0, 0, owner.m_clipSize.m_width - scrollX, owner.m_clipSize.m_height - scrollY);
+			retained = CVSRect(0, 0, m_clipSize.m_width - scrollX, m_clipSize.m_height - scrollY);
 			if (scrollY != 0) {
-				exposed[0] = CVSRect(0, owner.m_clipSize.m_height - scrollY, owner.m_clipSize.m_width, scrollY);
+				exposed[0] = CVSRect(0, m_clipSize.m_height - scrollY, m_clipSize.m_width, scrollY);
 			}
 			if (scrollX != 0) {
-				exposed[1] =
-					CVSRect(owner.m_clipSize.m_width - scrollX, 0, scrollX, owner.m_clipSize.m_height - scrollY);
+				exposed[1] = CVSRect(m_clipSize.m_width - scrollX, 0, scrollX, m_clipSize.m_height - scrollY);
 			}
 			break;
 		}
-		owner.m_screenScroll.m_destination.m_x = destinationX;
-		owner.m_screenScroll.m_destination.m_y = destinationY;
-		owner.m_screenScroll.m_rect = retained;
-		owner.m_screenScroll.Draw(owner.m_gdi);
+		m_screenScroll.m_destination.m_x = destinationX;
+		m_screenScroll.m_destination.m_y = destinationY;
+		m_screenScroll.m_rect = retained;
+		m_screenScroll.Draw(m_gdi);
 		CVSRect* strip = exposed;
 		do {
 			if (strip->m_width * strip->m_height != 0) {
 				CVSRect copyRect = *strip;
-				owner.m_scrollDepthClears[0].m_bounds = copyRect;
-				owner.m_scrollDepthClears[0].m_depth = 0;
-				owner.m_scrollDepthClears[0].Draw(owner.m_gdi);
+				m_scrollDepthClears[0].m_bounds = copyRect;
+				m_scrollDepthClears[0].m_depth = 0;
+				m_scrollDepthClears[0].Draw(m_gdi);
 				DrawClippedRectangle(*strip);
 			}
 			strip++;
 		} while (strip < exposed + 2);
 	}
-	else if (owner.m_scrollPending != 0 || owner.m_redrawPending != 0) {
-		owner.m_gdi->m_renderTarget->ResetScroll();
-		CVSRect fullRect(0, 0, &owner.m_clipSize);
-		if (owner.m_redrawPending != 0) {
-			fullRect = CVSRect(0, 0, owner.m_clipSize.m_width, owner.m_clipSize.m_height);
+	else if (m_scrollPending != 0 || m_redrawPending != 0) {
+		m_gdi->m_renderTarget->ResetScroll();
+		CVSRect fullRect(0, 0, &m_clipSize);
+		if (m_redrawPending != 0) {
+			fullRect = CVSRect(0, 0, m_clipSize.m_width, m_clipSize.m_height);
 		}
-		owner.m_depthClear.m_bounds = fullRect;
-		owner.m_depthClear.m_depth = 0;
-		owner.m_depthClear.Draw(owner.m_gdi);
-		DrawClippedRectangle(CVSRect(0, 0, owner.m_clipSize.m_width, owner.m_clipSize.m_height));
-		owner.m_redrawPending = 0;
+		m_depthClear.m_bounds = fullRect;
+		m_depthClear.m_depth = 0;
+		m_depthClear.Draw(m_gdi);
+		DrawClippedRectangle(CVSRect(0, 0, m_clipSize.m_width, m_clipSize.m_height));
+		m_redrawPending = 0;
 	}
-	owner.m_scrollPending = 0;
+	m_scrollPending = 0;
 	DrawObjectsZBuff();
-	owner.m_lemmingAnims->m_drawFlags = 0;
+	m_lemmingAnims->m_drawFlags = 0;
 }
 
 // FUNCTION: LEMBALL 0x0043fce0
