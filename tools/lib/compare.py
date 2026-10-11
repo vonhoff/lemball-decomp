@@ -58,11 +58,22 @@ class Parser(ParseAsm):
             self.image_id
         ):
             return entity.match_name(f"+{offset}")
-        if entity.entity_type == EntityType.DATA and offset == entity.max_size(
-            ImageId.ORIG
-        ) == entity.size(ImageId.RECOMP):
-            # A one-past pointer can coincide with an unrelated next global.
-            return entity.match_name(f"+{offset}")
+        if (
+            entity.entity_type == EntityType.DATA
+            and 0 < offset == entity.size(ImageId.RECOMP)
+            and entity.size(ImageId.ORIG) in (None, offset)
+        ):
+            limit = entity.max_size(ImageId.ORIG)
+            if limit == offset or (
+                limit is not None
+                and offset < limit
+                and self.is_addr(addr)
+                and self.db.get(self.image_id, addr, exact=True) is None
+            ):
+                # max_size bounds the next symbol; it need not be the array size.
+                # Preserve the existing adjacent-global case, or a relocated end
+                # within that bound with no competing exact symbol.
+                return entity.match_name(f"+{offset}")
         return super().hex_replace_annotated(match)
 
     def parse_asm(self, data, start_addr):
