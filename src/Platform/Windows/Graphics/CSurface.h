@@ -139,7 +139,7 @@ private:
 	SurfaceListNode* m_childSurfaceTail; // 0x52c
 	unsigned int m_childSurfaceCount;    // 0x530
 	char m_lock[0x18];                   // 0x534
-	unsigned int m_lockInitialised;      // 0x54c
+	bool m_lockInitialised;              // 0x54c
 	CChangeList* m_changeList;           // 0x550
 	void* m_currDb;                      // 0x554
 };

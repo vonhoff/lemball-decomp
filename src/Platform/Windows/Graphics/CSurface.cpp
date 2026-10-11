@@ -205,7 +205,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 	m_drawingPort = NULL;
 	m_worldWidth = 0;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
-	m_lockInitialised = 1;
+	m_lockInitialised = true;
 	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
 		m_changeList = new CChangeList(
 			GDI_HELPER_CHANGE_LIST_CAPACITY,
@@ -406,7 +406,7 @@ CSurface::CSurface(GrafPort* p_port)
 	m_changeList = NULL;
 	m_parentSurface = NULL;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
-	m_lockInitialised = 1;
+	m_lockInitialised = true;
 	m_propagateChanges = false;
 }
 
@@ -473,7 +473,7 @@ CSurface::~CSurface()
 	if (locked != 0) {
 		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
 		DeleteCriticalSection((CRITICAL_SECTION*) m_lock);
-		m_lockInitialised = 0;
+		m_lockInitialised = false;
 		if (g_pSurfaceList != NULL) {
 			node = (SurfaceListNode*) g_pSurfaceList->m_first;
 			while (node != NULL) {
