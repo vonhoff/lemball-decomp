@@ -22,14 +22,12 @@ def stale_link_inputs(build_dir: Path) -> list[Path]:
     if not executable.exists():
         return []
     target_dir = build_dir / "CMakeFiles" / "LEMBALL.dir"
-    inputs = list(target_dir.rglob("*.obj"))
-    inputs.extend(
-        (
-            build_dir / "LEMBALL.RES",
-            target_dir / "build.make",
-            target_dir / "objects1.rsp",
-        )
-    )
+    inputs = [
+        *target_dir.rglob("*.obj"),
+        build_dir / "LEMBALL.RES",
+        target_dir / "build.make",
+        target_dir / "objects1.rsp",
+    ]
     timestamp = executable.stat().st_mtime_ns
     return [
         path for path in inputs if path.exists() and path.stat().st_mtime_ns > timestamp
@@ -55,19 +53,22 @@ def build_with_link_check(
         if proc.returncode:
             return proc.returncode, output
         stale = stale_link_inputs(build_dir)
-        if not stale:
-            if all(
-                (build_dir / name).exists() for name in ("LEMBALL.EXE", "LEMBALL.pdb")
-            ):
-                return 0, output
+        if stale:
+            if attempt == 0:
+                output += (
+                    f"\nLink output is stale; forcing one relink after {stale[0]}\n"
+                )
+                (build_dir / "LEMBALL.EXE").unlink()
+            continue
+        if not all(
+            (build_dir / name).exists() for name in ("LEMBALL.EXE", "LEMBALL.pdb")
+        ):
             return (
                 1,
                 output
                 + "\nerror: build did not produce both LEMBALL.EXE and LEMBALL.pdb\n",
             )
-        if attempt == 0:
-            output += f"\nLink output is stale; forcing one relink after {stale[0]}\n"
-            (build_dir / "LEMBALL.EXE").unlink()
+        return 0, output
     return (
         1,
         output
@@ -118,10 +119,10 @@ def main() -> int:
     LOG_PATH.write_text(output, encoding="utf-8")
     if returncode:
         print(output)
-    else:
-        for line in output.splitlines():
-            if MSVC_DIAGNOSTIC.search(line):
-                print(line)
+    elif diagnostics := [
+        line for line in output.splitlines() if MSVC_DIAGNOSTIC.search(line)
+    ]:
+        print("\n".join(diagnostics))
 
     print(f"build: exit={returncode}; log={LOG_PATH}")
     return returncode

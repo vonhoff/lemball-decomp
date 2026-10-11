@@ -43,10 +43,8 @@ def windows_identity(symbol):
     owner = match["owner"] or ""
     method = re.sub(r"\s+", "", match["method"])
     leaf = owner.split("::")[-1]
-    if owner and method == leaf:
-        method = "<constructor>"
-    elif owner and method == "~" + leaf:
-        method = "<destructor>"
+    if owner:
+        method = {leaf: "<constructor>", "~" + leaf: "<destructor>"}.get(method, method)
     return owner, method
 
 

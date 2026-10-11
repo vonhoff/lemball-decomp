@@ -41,18 +41,17 @@ def load_progress(*, exact: bool = False) -> tuple[dict[str, Any], set[int]]:
     try:
         raw = REPORT_JSON.read_bytes()
         report = json.loads(raw)
-        accepted = set()
-        if not exact:
-            snapshot = json.loads(EFFECTIVE_JSON.read_text(encoding="utf-8"))
-            if snapshot["report_sha256"] != hashlib.sha256(raw).hexdigest():
-                raise ValueError("Effective addresses do not belong to this report")
-            addresses = snapshot["addresses"]
-            if not isinstance(addresses, list) or any(
-                type(address) is not int for address in addresses
-            ):
-                raise ValueError("Invalid Effective addresses")
-            accepted = set(addresses)
-        return report, accepted
+        if exact:
+            return report, set()
+        snapshot = json.loads(EFFECTIVE_JSON.read_text(encoding="utf-8"))
+        if snapshot["report_sha256"] != hashlib.sha256(raw).hexdigest():
+            raise ValueError("Effective addresses do not belong to this report")
+        addresses = snapshot["addresses"]
+        if not isinstance(addresses, list) or any(
+            type(address) is not int for address in addresses
+        ):
+            raise ValueError("Invalid Effective addresses")
+        return report, set(addresses)
     except (OSError, ValueError, KeyError, TypeError) as exc:
         raise ValueError(
             f"Cannot read saved progress: {exc}. Run python tools/make_report.py first."

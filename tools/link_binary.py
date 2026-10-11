@@ -9,6 +9,7 @@ import re
 import struct
 import subprocess
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 from lib import thunk_symbol
@@ -35,6 +36,12 @@ def read_jump_target(image, address: int) -> int | None:
 I386 = 0x14C
 REL32 = 0x14
 DIR32 = 6
+INSTRUCTION_RELOCATIONS = {
+    0xE8: REL32,
+    0xE9: REL32,
+    0x68: DIR32,
+    **dict.fromkeys(range(0xB8, 0xC0), DIR32),
+}
 SYMBOL_SIZE = 18
 SECTION_SIZE = 40
 
@@ -68,13 +75,14 @@ class CoffObject:
                 name = self.strings[offset : self.strings.index(0, offset)]
             else:
                 name = name.split(b"\0", 1)[0]
-            self.symbols[index] = (name.decode("ascii"), value, section, kind, storage)
+            name = name.decode("ascii")
+            self.symbols[index] = (name, value, section, kind, storage)
             if storage == 105 and aux == 1:
                 target, search = struct.unpack_from(
                     "<II", data, self.symbol_start + (index + 1) * SYMBOL_SIZE
                 )
                 if search in (1, 2, 3):
-                    self.weak_defaults[name.decode("ascii")] = target
+                    self.weak_defaults[name] = target
             index += aux + 1
 
     def canonical_name(self, name):
@@ -141,19 +149,62 @@ class CoffObject:
         raw = bytearray(self.data[descriptor[4] + value : descriptor[4] + value + size])
         evidence = bytearray()
         for _, (address, index, kind) in self.relocations(section):
-            if value <= address < value + size:
-                if kind not in (REL32, DIR32) or address + 4 > value + size:
-                    raise ValueError(f"Unsupported relocation: {kind:#x}")
-                if include_symbols:
-                    evidence += struct.pack("<II", address - value, kind)
-                    evidence += raw[address - value : address - value + 4]
-                    evidence += self.symbols[index][0].encode("ascii") + b"\0"
-                    evidence += (
-                        self.canonical_name(self.symbols[index][0]).encode("ascii")
-                        + b"\0"
-                    )
-                raw[address - value : address - value + 4] = bytes(4)
+            if not value <= address < value + size:
+                continue
+            if kind not in (REL32, DIR32) or address + 4 > value + size:
+                raise ValueError(f"Unsupported relocation: {kind:#x}")
+            offset = address - value
+            if include_symbols:
+                name = self.symbols[index][0]
+                evidence += struct.pack("<II", offset, kind)
+                evidence += raw[offset : offset + 4]
+                evidence += name.encode("ascii") + b"\0"
+                evidence += self.canonical_name(name).encode("ascii") + b"\0"
+            raw[offset : offset + 4] = bytes(4)
         return hashlib.sha256(raw + evidence).hexdigest()
+
+    def reference_location(self, route, ref, thunk):
+        """Validate the saved instruction, relocation, addend, and destination."""
+        _, value, section, _, _ = self.definition(route["symbol"])
+        descriptor = self.sections[section - 1]
+        original = bytes.fromhex(ref["original_bytes"])
+        pointer = route.get("kind") == "data"
+        length, operand_offset = (4, 0) if pointer else (5, 1)
+        if len(original) != length or not 0 <= ref["offset"] <= route["size"] - length:
+            raise ValueError("Reference exceeds its recorded symbol extent")
+        instruction = value + ref["offset"]
+        operand = instruction + operand_offset
+        matches = [
+            (location, index, kind)
+            for location, (address, index, kind) in self.relocations(section)
+            if address == operand
+        ]
+        if len(matches) != 1:
+            raise ValueError("Missing or ambiguous COFF relocation")
+        location, index, kind = matches[0]
+        if pointer:
+            allowed = (
+                kind == DIR32 and int.from_bytes(original, "little") == ref["thunk"]
+            )
+        else:
+            opcode = original[0]
+            allowed = (
+                self.data[descriptor[4] + instruction] == opcode
+                and INSTRUCTION_RELOCATIONS.get(opcode) == kind
+            )
+        target_symbols = {thunk["target_symbol"]} | {
+            alias["symbol"] for alias in thunk.get("folded_aliases", [])
+        }
+        source = ref["source_symbol"]
+        if (
+            not allowed
+            or self.data[descriptor[4] + operand : descriptor[4] + operand + 4]
+            != bytes(4)
+            or self.symbols[index][0] != source
+            or not target_symbols.intersection((source, self.canonical_name(source)))
+        ):
+            raise ValueError(f"Unverified linker-thunk reference: {route['symbol']}")
+        return location
 
     def redirect(self, routes, thunks):
         """Change only evidenced relocation symbol indices; reject stale references."""
@@ -164,59 +215,9 @@ class CoffObject:
         for route in routes:
             if self.fingerprint(route["symbol"], route["size"]) != route["fingerprint"]:
                 raise ValueError(f"Stale linker-thunk routes: {route['symbol']}")
-            _, value, section, _, _ = self.definition(route["symbol"])
-            descriptor = self.sections[section - 1]
             for ref in route["references"]:
                 thunk = thunks[ref["thunk"]]
-                original = bytes.fromhex(ref["original_bytes"])
-                pointer = route.get("kind") == "data"
-                length = 4 if pointer else 5
-                if len(original) != length or not (
-                    0 <= ref["offset"] <= route["size"] - length
-                ):
-                    raise ValueError("Reference exceeds its recorded symbol extent")
-                instruction = value + ref["offset"]
-                operand = instruction if pointer else instruction + 1
-                matches = [
-                    (location, index, kind)
-                    for location, (address, index, kind) in self.relocations(section)
-                    if address == operand
-                ]
-                if len(matches) != 1:
-                    raise ValueError("Missing or ambiguous COFF relocation")
-                location, index, kind = matches[0]
-                raw_offset = descriptor[4] + instruction
-                if pointer:
-                    allowed = (
-                        kind == DIR32
-                        and int.from_bytes(original, "little") == ref["thunk"]
-                    )
-                else:
-                    opcode = original[0]
-                    allowed = data[raw_offset] == opcode and (
-                        (kind == REL32 and opcode in (0xE8, 0xE9))
-                        or (
-                            kind == DIR32 and (opcode == 0x68 or 0xB8 <= opcode <= 0xBF)
-                        )
-                    )
-                target_symbols = {thunk["target_symbol"]} | {
-                    alias["symbol"] for alias in thunk.get("folded_aliases", [])
-                }
-                if (
-                    not allowed
-                    or data[descriptor[4] + operand : descriptor[4] + operand + 4]
-                    != bytes(4)
-                    or self.symbols[index][0] != ref["source_symbol"]
-                    or not target_symbols.intersection(
-                        (
-                            ref["source_symbol"],
-                            self.canonical_name(ref["source_symbol"]),
-                        )
-                    )
-                ):
-                    raise ValueError(
-                        f"Unverified linker-thunk reference: {route['symbol']}"
-                    )
+                location = self.reference_location(route, ref, thunk)
                 symbol = thunk_symbol(thunk["address"])
                 if symbol not in added:
                     added[symbol] = self.symbol_count + len(added)
@@ -327,8 +328,8 @@ def make_thunk_object(thunks):
     return bytes(header + sections + contents + symbols + strings)
 
 
-def prepare_link(objects, build, manifest_path):
-    """Produce overlays; never mutate the compiler's object files."""
+def load_manifest(manifest_path, build):
+    """Reject stale original-image and folded-alias evidence before linking."""
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest["version"] != 4:
         raise ValueError("Unsupported linker-thunk manifest version")
@@ -345,13 +346,30 @@ def prepare_link(objects, build, manifest_path):
     original = root / "data/LEMBALL.EXE"
     if hashlib.sha256(original.read_bytes()).hexdigest() != manifest["original_sha256"]:
         raise ValueError("Linker-thunk evidence belongs to a different original image")
+    return manifest
+
+
+def current_routes(obj, routes):
+    """Keep routes whose native symbol extent and fingerprint still match."""
+    for route in routes:
+        try:
+            if obj.fingerprint(route["symbol"], route["size"]) == route["fingerprint"]:
+                yield route
+                continue
+        except ValueError:
+            pass
+        print(f"linker thunks: stale routes for {route['symbol']}")
+
+
+def prepare_link(objects, build, manifest_path):
+    """Produce overlays; never mutate the compiler's object files."""
+    manifest = load_manifest(manifest_path, build)
+    thunks = {thunk["address"]: thunk for thunk in manifest["thunks"]}
     output = build / "linker-thunks"
     output.mkdir(parents=True, exist_ok=True)
-    grouped = {}
+    grouped = defaultdict(list)
     for route in manifest["routes"]:
-        grouped.setdefault(route["object"].replace("\\", "/").casefold(), []).append(
-            route
-        )
+        grouped[route["object"].replace("\\", "/").casefold()].append(route)
     linked = []
     applied = 0
     skipped = 0
@@ -363,20 +381,8 @@ def prepare_link(objects, build, manifest_path):
             continue
         path = build / name
         obj = CoffObject(path.read_bytes())
-        current = []
-        for route in routes:
-            try:
-                valid = (
-                    obj.fingerprint(route["symbol"], route["size"])
-                    == route["fingerprint"]
-                )
-            except ValueError:
-                valid = False
-            if valid:
-                current.append(route)
-            else:
-                print(f"linker thunks: stale routes for {route['symbol']}")
-                skipped += 1
+        current = list(current_routes(obj, routes))
+        skipped += len(routes) - len(current)
         if current:
             overlay = output / "objects" / name
             overlay.parent.mkdir(parents=True, exist_ok=True)
@@ -424,27 +430,26 @@ def main(args: list[str]) -> int:
                 win_short_path(p) for p in val.split(";") if p
             )
 
-    for arg in link_args:
-        if arg.startswith("@"):
-            rsp_path = Path(arg[1:])
-            content = rsp_path.read_text(encoding="utf-8")
-            # LINK 4.00 limits lines to 16383 characters; multiple response files crash it.
-            rsp_path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
+    responses = {
+        i: Path(arg[1:]) for i, arg in enumerate(link_args) if arg.startswith("@")
+    }
+    for path in responses.values():
+        content = path.read_text(encoding="utf-8")
+        # LINK 4.00 limits lines to 16383 characters; multiple response files crash it.
+        path.write_text("\n".join(content.split()) + "\n", encoding="utf-8")
 
     runtime = prepare_runtime(Path(linker), Path.cwd())
     os.environ["LIB"] = win_short_path(str(runtime)) + ";" + os.environ.get("LIB", "")
 
     manifest = Path(__file__).resolve().parent / "data/linker-thunks.json"
     output = next((arg[5:] for arg in link_args if arg.upper().startswith("/OUT:")), "")
-    if manifest.exists() and Path(output).name.upper() == "LEMBALL.EXE":
-        for i, arg in enumerate(link_args):
-            if arg.startswith("@"):
-                objects = Path(arg[1:]).read_text(encoding="utf-8").split()
-                linked = prepare_link(objects, Path.cwd(), manifest)
-                response = Path("linker-thunks/link.rsp")
-                response.write_text("\n".join(linked) + "\n", encoding="utf-8")
-                link_args[i] = "@" + str(response)
-                break
+    if responses and manifest.exists() and Path(output).name.upper() == "LEMBALL.EXE":
+        i, path = next(iter(responses.items()))
+        objects = path.read_text(encoding="utf-8").split()
+        linked = prepare_link(objects, Path.cwd(), manifest)
+        response = Path("linker-thunks/link.rsp")
+        response.write_text("\n".join(linked) + "\n", encoding="utf-8")
+        link_args[i] = "@" + str(response)
 
     res = subprocess.run(
         [linker, *link_args],

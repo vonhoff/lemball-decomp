@@ -47,12 +47,28 @@ FUNCTIONAL = re.compile(
 )
 
 
+def annotation(value):
+    """Accept exact reccmp markers with supported extra fields."""
+    if not is_marker_exact(value):
+        return None
+    marker = match_marker(value)
+    if marker is None or marker.type == MarkerType.UNKNOWN:
+        return None
+    if marker.extra in (None, "FOLDED", "SYMBOL"):
+        return marker
+    if marker.type == MarkerType.VTABLE and re.fullmatch(
+        r"[A-Za-z_]\w*(?:'s `[A-Za-z_]\w*)?", marker.extra or ""
+    ):
+        return marker
+    return None
+
+
 def violations(text: str) -> Iterator[tuple[int, str]]:
     code = mask_comments_and_strings(text)
     for pattern, message in RULES:
         for match in re.finditer(pattern, code):
             yield text.count("\n", 0, match.start()) + 1, message
-    previous_line, by_name = 0, False
+    symbol_line = 0
     for token in TOKENS.finditer(text):
         value = token[0]
         if not value.startswith(("//", "/*")):
@@ -61,36 +77,22 @@ def violations(text: str) -> Iterator[tuple[int, str]]:
         standalone = not text[
             text.rfind("\n", 0, token.start()) + 1 : token.start()
         ].strip()
-        marker = match_marker(value) if standalone and is_marker_exact(value) else None
-        annotation = (
-            marker
-            if marker
-            and marker.type != MarkerType.UNKNOWN
-            and (
-                marker.extra in (None, "FOLDED", "SYMBOL")
-                or marker.type == MarkerType.VTABLE
-                and re.fullmatch(
-                    r"[A-Za-z_]\w*(?:'s `[A-Za-z_]\w*)?", marker.extra or ""
-                )
-            )
-            else None
-        )
+        marker = annotation(value) if standalone else None
         symbol = (
             standalone
-            and by_name
-            and line == previous_line + 1
+            and line == symbol_line
             and re.fullmatch(r"// (?:\S+|\S+::.+|\"(?:\\.|[^\"\\])*\")", value)
         )
         functional = FUNCTIONAL.fullmatch(value) and (
             standalone or "clang-format" not in value
         )
-        if not (annotation or symbol or functional):
+        if not (marker or symbol or functional):
             yield (
                 line,
                 "comment: use a reccmp annotation, symbol, layout note, or format control",
             )
-        previous_line = line
-        by_name = annotation and annotation.type not in (
-            MarkerType.VTABLE,
-            MarkerType.LINE,
+        symbol_line = (
+            line + 1
+            if marker and marker.type not in (MarkerType.VTABLE, MarkerType.LINE)
+            else 0
         )

@@ -60,6 +60,16 @@ def module_name(path):
     return PureWindowsPath(path.stem).stem or "Unknown"
 
 
+def entity_unit(entity, modules):
+    """Assign imports and unmatched entities without a PDB module lookup."""
+    if entity.entity_type == EntityType.IMPORT_THUNK:
+        return "Import Thunks"
+    if entity.recomp_addr is None:
+        return "Unknown"
+    module = modules.get_module(entity.recomp_addr)
+    return module_name(module[1]) if module is not None else "Unknown"
+
+
 def build_report(
     engine: Compare, modules: ModuleMap
 ) -> tuple[dict[str, Any], set[int]]:
@@ -90,17 +100,7 @@ def build_report(
             and comparison.is_effective_match
         ):
             accepted.add(address)
-        if entity.entity_type == EntityType.IMPORT_THUNK:
-            unit_name = "Import Thunks"
-        else:
-            recomp_address = entity.recomp_addr
-            module = (
-                modules.get_module(recomp_address)
-                if recomp_address is not None
-                else None
-            )
-            unit_name = module_name(module[1]) if module is not None else "Unknown"
-        groups[unit_name].append(
+        groups[entity_unit(entity, modules)].append(
             {
                 "name": f"0x{address:08x}",
                 "size": str(size),

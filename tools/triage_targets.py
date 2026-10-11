@@ -44,9 +44,7 @@ def main() -> int:
     except ValueError as exc:
         parser.error(str(exc))
     functions = rank_functions(report, accepted, args.min_size, args.sort)
-    if args.limit > 0:
-        functions = functions[: args.limit]
-    for function in functions:
+    for function in functions[: args.limit or None]:
         address = int(function["metadata"]["virtual_address"])
         print(
             f"0x{address:08x} {function['fuzzy_match_percent']:6.2f}% "

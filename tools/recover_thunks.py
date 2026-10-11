@@ -8,6 +8,7 @@ import os
 import subprocess
 import sys
 from bisect import bisect_left
+from collections import defaultdict
 from dataclasses import replace
 from functools import cache
 from itertools import chain
@@ -23,7 +24,7 @@ from reccmp.parser.codebase import DecompCodebase
 from reccmp.tools.roadmap import ModuleMap
 from reccmp.types import EntityType, ImageId
 
-from link_binary import CoffObject, DIR32, REL32, read_jump_target
+from link_binary import CoffObject, DIR32, INSTRUCTION_RELOCATIONS, read_jump_target
 from lib import BUILD, ROOT, TARGET_ID, thunk_symbol
 from lib.compare import Compare
 from lib.names import check_names
@@ -199,61 +200,57 @@ def aligned_instructions(diff: RawDiffOutput, route, previous, rebuilt_address):
                 rebuilt_address + reference["offset"],
             )
     for tag, first, last, rebuilt_first, rebuilt_last in diff.codes:
-        if tag == "equal" or (
+        aligned = tag == "equal" or (
             tag == "replace" and last - first == rebuilt_last - rebuilt_first == 1
+        )
+        if not aligned:
+            continue
+        for original, rebuilt in zip(
+            diff.orig_inst[first:last],
+            diff.recomp_inst[rebuilt_first:rebuilt_last],
+            strict=True,
         ):
-            for original, rebuilt in zip(
-                diff.orig_inst[first:last],
-                diff.recomp_inst[rebuilt_first:rebuilt_last],
-                strict=True,
-            ):
-                if original[0] and rebuilt[0]:
-                    yield int(original[0], 16), int(rebuilt[0], 16)
+            if original[0] and rebuilt[0]:
+                yield int(original[0], 16), int(rebuilt[0], 16)
+
+
+def direct_calls(image, instructions):
+    """Yield complete E8 calls; diff labels alone are insufficient evidence."""
+    for address, instruction in instructions:
+        if not address or not instruction.startswith("call "):
+            continue
+        address = int(address, 16)
+        raw = image.read(address, 5)
+        if len(raw) == 5 and raw[0] == 0xE8:
+            yield address, instruction_target(raw, address)
 
 
 def unique_thunk_calls(
     diff, original_image, rebuilt_image, functions, entries, aliases
 ):
     """Pair complete call groups using one native thunk and equal call counts."""
-    original_calls = {}
-    for address, instruction in diff.orig_inst:
-        if not address or not instruction.startswith("call "):
-            continue
-        address = int(address, 16)
-        raw = original_image.read(address, 5)
-        if len(raw) != 5 or raw[0] != 0xE8:
-            continue
-        entry = instruction_target(raw, address)
+    original_calls = defaultdict(list)
+    for address, entry in direct_calls(original_image, diff.orig_inst):
         destination = (
             read_jump_target(original_image, entry) if entry in entries else entry
         )
         if destination in functions:
-            original_calls.setdefault(destination, []).append((address, entry))
+            original_calls[destination].append((address, entry))
 
-    body_addresses = {
-        destination: {functions[destination].recomp_addr}
-        | set(aliases.get(destination, {}))
-        for destination in original_calls
-    }
-    rebuilt_calls = {}
+    body_owners = defaultdict(set)
+    for destination in original_calls:
+        for body in {functions[destination].recomp_addr} | set(
+            aliases.get(destination, {})
+        ):
+            body_owners[body].add(destination)
+    rebuilt_calls = defaultdict(list)
     ambiguous = set()
-    for address, instruction in diff.recomp_inst:
-        if not address or not instruction.startswith("call "):
-            continue
-        address = int(address, 16)
-        raw = rebuilt_image.read(address, 5)
-        if len(raw) != 5 or raw[0] != 0xE8:
-            continue
-        target = instruction_target(raw, address)
+    for address, target in direct_calls(rebuilt_image, diff.recomp_inst):
         destination = read_jump_target(rebuilt_image, target)
-        matches = {
-            original
-            for original, bodies in body_addresses.items()
-            if target in bodies or destination in bodies
-        }
+        matches = body_owners[target] | body_owners[destination]
         if len(matches) == 1:
             original = next(iter(matches))
-            rebuilt_calls.setdefault(original, []).append(address)
+            rebuilt_calls[original].append(address)
         else:
             ambiguous.update(matches)
 
@@ -292,16 +289,11 @@ def relocation_symbols(
     """Resolve a COFF relocation to the linked callee, including strong overrides."""
     source = obj.reference_target(caller_symbol, offset, relocation)
     target = obj.canonical_name(source)
-    if public_addresses.get(target) != callee_address:
-        if (
-            public_addresses.get(source) != callee_address
-            or source not in strong_symbols()
-        ):
-            raise ValueError(
-                "COFF call target does not match the linked callee address"
-            )
-        target = source
-    return source, target
+    if public_addresses.get(target) == callee_address:
+        return source, target
+    if public_addresses.get(source) == callee_address and source in strong_symbols():
+        return source, source
+    raise ValueError("COFF call target does not match the linked callee address")
 
 
 def folded_aliases(engine, functions, modules):
@@ -315,7 +307,7 @@ def folded_aliases(engine, functions, modules):
     rebuilt = {
         entity.recomp_addr: entity for entity in engine.get_all() if entity.recomp_addr
     }
-    groups = {}
+    groups = defaultdict(dict)
     for annotation in codebase.iter_line_functions():
         if not annotation.is_folded or annotation.should_skip():
             continue
@@ -336,13 +328,8 @@ def folded_aliases(engine, functions, modules):
             body.recomp_addr, size
         ):
             continue
-        module = modules.get_module(address)
-        if module is None:
-            continue
-        object_name = module[1].replace("\\", "/")
-        if not object_name.startswith("CMakeFiles/LEMBALL.dir/"):
-            continue
         try:
+            object_name = project_object(modules, address)
             obj = load_object(object_name)
             symbol = obj.function(entity.get("symbol"))[0]
             definition = {
@@ -353,7 +340,7 @@ def folded_aliases(engine, functions, modules):
             }
         except (ValueError, OSError):
             continue
-        groups.setdefault(annotation.offset, {})[address] = definition
+        groups[annotation.offset][address] = definition
     return {
         address: definitions
         for address, definitions in groups.items()
@@ -367,11 +354,10 @@ def make_thunk(callee, entry, target_symbol, aliases):
     thunk = {
         "address": entry,
         "target": callee.orig_addr,
-        "target_symbol": definitions[callee.recomp_addr]["symbol"]
-        if definitions
-        else target_symbol,
+        "target_symbol": target_symbol,
     }
     if definitions:
+        thunk["target_symbol"] = definitions[callee.recomp_addr]["symbol"]
         thunk["folded_aliases"] = sorted(
             definitions.values(), key=lambda definition: definition["symbol"]
         )
@@ -400,25 +386,30 @@ def native_context(engine, target):
     """Locate native objects and exact public addresses in the unrouted image."""
     image = cast(PEImage, engine.recomp_bin)
     modules = ModuleMap(target.recompiled_pdb, image)
-    public_addresses = {}
-    for public in engine.cvdump_analysis.parser.publics:
-        if image.is_valid_section(public.section):
-            public_addresses[public.name] = image.get_abs_addr(
-                public.section, public.offset
-            )
+    public_addresses = {
+        public.name: image.get_abs_addr(public.section, public.offset)
+        for public in engine.cvdump_analysis.parser.publics
+        if image.is_valid_section(public.section)
+    }
     return modules, public_addresses
+
+
+def project_object(modules, address):
+    """Locate a project object, excluding library and generated modules."""
+    module = modules.get_module(address)
+    if module is None:
+        raise ValueError("No native object module")
+    object_name = module[1].replace("\\", "/")
+    if not object_name.startswith("CMakeFiles/LEMBALL.dir/"):
+        raise ValueError("Definition is outside the project objects")
+    return object_name
 
 
 def native_definition(callee, modules, public_addresses):
     """Require a real project COFF function at its exact PDB public address."""
     if not callee.get("symbol"):
         raise ValueError("No paired native symbol")
-    module = modules.get_module(callee.recomp_addr)
-    if module is None:
-        raise ValueError("No native object module")
-    object_name = module[1].replace("\\", "/")
-    if not object_name.startswith("CMakeFiles/LEMBALL.dir/"):
-        raise ValueError("Definition is outside the project objects")
+    object_name = project_object(modules, callee.recomp_addr)
     definition = load_object(object_name).function(callee.get("symbol"))
     symbol = definition[0]
     if definition[4] != 2:
@@ -446,6 +437,27 @@ def recover_table_entries(
         thunks[address] = make_thunk(callee, address, target_symbol, aliases)
 
 
+def decode_reference(original, rebuilt, original_addr, rebuilt_addr, *, data):
+    """Decode matching instructions or complete four-byte data pointers."""
+    length = 4 if data else 5
+    if len(original) != length or len(rebuilt) != length:
+        return None
+    if data:
+        return (
+            int.from_bytes(original, "little"),
+            int.from_bytes(rebuilt, "little"),
+            DIR32,
+        )
+    relocation = INSTRUCTION_RELOCATIONS.get(original[0])
+    if relocation is None or rebuilt[0] != original[0]:
+        return None
+    return (
+        instruction_target(original, original_addr),
+        instruction_target(rebuilt, rebuilt_addr),
+        relocation,
+    )
+
+
 def recover_references(
     engine,
     functions,
@@ -456,69 +468,74 @@ def recover_references(
     route,
     previous,
     aliases,
+    original_relocations=(),
 ):
-    """Recover relocation-backed references to unpaired original jump entries."""
+    """Recover code and data references backed by native COFF relocations."""
     references = []
     thunks = {}
-    caller_symbol = route["symbol"]
-    diff = engine.function_comparator.compare_function(function).diff
-    seen_offsets = set()
-    pairs = chain(
-        aligned_instructions(diff, route, previous, function.recomp_addr),
-        unique_thunk_calls(
-            diff, engine.orig_bin, engine.recomp_bin, functions, entries, aliases
-        ),
+    data = route.get("kind") == "data"
+    length, original_key, operand_offset = (
+        (4, "original_pointer", 0) if data else (5, "original_instruction", 1)
     )
+    seen_offsets = set()
+    if data:
+        pairs = (
+            (address, function.recomp_addr + address - function.orig_addr)
+            for address in data_pointer_addresses(
+                function, original_relocations, route["size"]
+            )
+        )
+    else:
+        diff = engine.function_comparator.compare_function(function).diff
+        pairs = chain(
+            aligned_instructions(diff, route, previous, function.recomp_addr),
+            unique_thunk_calls(
+                diff, engine.orig_bin, engine.recomp_bin, functions, entries, aliases
+            ),
+        )
     for original_addr, rebuilt_addr in pairs:
         offset = rebuilt_addr - function.recomp_addr
         if offset in seen_offsets:
             continue
-        original = engine.orig_bin.read(original_addr, 5)
-        rebuilt = engine.recomp_bin.read(rebuilt_addr, 5)
-        relative = original[0] in (0xE8, 0xE9)
-        pointer = original[0] == 0x68 or 0xB8 <= original[0] <= 0xBF
-        if not (relative or pointer) or rebuilt[0] != original[0]:
+        original = engine.orig_bin.read(original_addr, length)
+        rebuilt = engine.recomp_bin.read(rebuilt_addr, length)
+        decoded = decode_reference(
+            original, rebuilt, original_addr, rebuilt_addr, data=data
+        )
+        if decoded is None:
             continue
-        relocation = REL32 if relative else DIR32
-        entry = instruction_target(original, original_addr)
+        entry, rebuilt_target, relocation = decoded
         if entry in functions or entry not in entries:
             continue
         destination = cast(int, read_jump_target(engine.orig_bin, entry))
         callee = functions.get(destination)
         if callee is None:
             continue
-        rebuilt_target = instruction_target(rebuilt, rebuilt_addr)
         body_addresses = {callee.recomp_addr} | set(aliases.get(destination, {}))
-        if (
-            rebuilt_target not in body_addresses
-            and read_jump_target(engine.recomp_bin, rebuilt_target)
-            not in body_addresses
-        ):
+        if not data and rebuilt_target not in body_addresses:
+            rebuilt_target = read_jump_target(engine.recomp_bin, rebuilt_target)
+        if rebuilt_target not in body_addresses:
             continue
-        callee_address = (
-            rebuilt_target
-            if rebuilt_target in body_addresses
-            else read_jump_target(engine.recomp_bin, rebuilt_target)
-        )
         try:
             source_symbol, target_symbol = relocation_symbols(
                 obj,
-                caller_symbol,
-                offset + 1,
+                route["symbol"],
+                offset + operand_offset,
                 relocation,
-                callee_address,
+                rebuilt_target,
                 public_addresses,
             )
         except ValueError:
             continue
-        reference = {
-            "offset": offset,
-            "original_instruction": original_addr,
-            "original_bytes": original.hex(),
-            "thunk": entry,
-            "source_symbol": source_symbol,
-        }
-        references.append(reference)
+        references.append(
+            {
+                "offset": offset,
+                original_key: original_addr,
+                "original_bytes": original.hex(),
+                "thunk": entry,
+                "source_symbol": source_symbol,
+            }
+        )
         seen_offsets.add(offset)
         thunks[entry] = make_thunk(callee, entry, target_symbol, aliases)
     return references, thunks
@@ -534,64 +551,8 @@ def data_pointer_addresses(owner, original_relocations, size):
     return original_relocations[first:last]
 
 
-def recover_data_references(
-    engine,
-    functions,
-    entries,
-    public_addresses,
-    obj,
-    owner,
-    route,
-    original_relocations,
-    aliases,
-):
-    """Recover original PE pointers backed by native zero-addend DIR32 relocations."""
-    references, thunks = [], {}
-    for original_address in data_pointer_addresses(
-        owner, original_relocations, route["size"]
-    ):
-        original = engine.orig_bin.read(original_address, 4)
-        entry = int.from_bytes(original, "little")
-        if entry not in entries or entry in functions:
-            continue
-        destination = read_jump_target(engine.orig_bin, entry)
-        callee = functions.get(destination)
-        if callee is None:
-            continue
-        offset = original_address - owner.orig_addr
-        rebuilt_target = int.from_bytes(
-            engine.recomp_bin.read(owner.recomp_addr + offset, 4), "little"
-        )
-        if rebuilt_target not in {callee.recomp_addr} | set(
-            aliases.get(destination, {})
-        ):
-            continue
-        try:
-            source_symbol, target_symbol = relocation_symbols(
-                obj, route["symbol"], offset, DIR32, rebuilt_target, public_addresses
-            )
-        except ValueError:
-            continue
-        references.append(
-            {
-                "offset": offset,
-                "original_pointer": original_address,
-                "original_bytes": original.hex(),
-                "thunk": entry,
-                "source_symbol": source_symbol,
-            }
-        )
-        thunks[entry] = make_thunk(callee, entry, target_symbol, aliases)
-    return references, thunks
-
-
-def recover_routes(
-    engine: Compare, target, addresses, functions, entries, previous_routes
-):
-    """Recover code and data routes that the native COFF objects can redirect."""
-    modules, public_addresses = native_context(engine, target)
-    aliases = folded_aliases(engine, functions, modules)
-    name_jump_destinations(engine, functions, entries)
+def route_owners(engine: Compare, addresses, entries, original_relocations):
+    """Extend ranked addresses with data owners, then select recoverable symbols."""
     entities = {
         entity.orig_addr: entity for entity in engine.get_all() if entity.orig_addr
     }
@@ -609,10 +570,6 @@ def recover_routes(
             and any(address in region for region in data_regions)
         )
     )
-    original_relocations = sorted(cast(PEImage, engine.orig_bin).relocations)
-    thunks = {}
-    routes = []
-    unresolved = []
     for address in addresses:
         function = entities.get(address)
         if function is None or function.get("stub") or not function.get("symbol"):
@@ -628,11 +585,26 @@ def recover_routes(
             )
         ):
             continue
-        module = modules.get_module(recomp_address)
-        if module is None:
-            continue
-        object_name = module[1].replace("\\", "/")
-        if not object_name.startswith("CMakeFiles/LEMBALL.dir/"):
+        yield function
+
+
+def recover_routes(
+    engine: Compare, target, addresses, functions, entries, previous_routes
+):
+    """Recover code and data routes that the native COFF objects can redirect."""
+    modules, public_addresses = native_context(engine, target)
+    aliases = folded_aliases(engine, functions, modules)
+    name_jump_destinations(engine, functions, entries)
+    original_relocations = sorted(cast(PEImage, engine.orig_bin).relocations)
+    thunks = {}
+    routes = []
+    unresolved = []
+    for function in route_owners(engine, addresses, entries, original_relocations):
+        address = function.orig_addr
+        data = function.entity_type in (EntityType.DATA, EntityType.VTABLE)
+        try:
+            object_name = project_object(modules, function.recomp_addr)
+        except ValueError:
             continue
         try:
             obj = load_object(object_name)
@@ -659,29 +631,18 @@ def recover_routes(
         }
         if data:
             route["kind"] = "data"
-            references, found = recover_data_references(
-                engine,
-                functions,
-                entries,
-                public_addresses,
-                obj,
-                function,
-                route,
-                original_relocations,
-                aliases,
-            )
-        else:
-            references, found = recover_references(
-                engine,
-                functions,
-                entries,
-                public_addresses,
-                obj,
-                function,
-                route,
-                previous_routes.get(address),
-                aliases,
-            )
+        references, found = recover_references(
+            engine,
+            functions,
+            entries,
+            public_addresses,
+            obj,
+            function,
+            route,
+            previous_routes.get(address),
+            aliases,
+            original_relocations,
+        )
         if not references:
             continue
         route["references"] = references

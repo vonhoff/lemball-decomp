@@ -35,32 +35,34 @@ class Parser(ParseAsm):
         self.image_id = image_id
 
     def lookup(self, addr, exact=False, indirect=False):
-        if not exact and not indirect:
-            entity = self.db.get(self.image_id, addr, exact=False)
-            while entity is not None and not entity.matched:
-                entity = self.db.get(
-                    self.image_id, entity.addr(self.image_id) - 1, exact=False
-                )
-            if entity is not None and entity.entity_type == EntityType.STRING:
-                offset = addr - entity.addr(self.image_id)
-                if 0 < offset < entity.any_size(self.image_id):
-                    return entity.match_name(f"+{offset}")
+        if exact or indirect:
+            return super().lookup(addr, exact, indirect)
+        entity = self.db.get(self.image_id, addr, exact=False)
+        while entity is not None and not entity.matched:
+            entity = self.db.get(
+                self.image_id, entity.addr(self.image_id) - 1, exact=False
+            )
+        if entity is not None and entity.entity_type == EntityType.STRING:
+            offset = addr - entity.addr(self.image_id)
+            if 0 < offset < entity.any_size(self.image_id):
+                return entity.match_name(f"+{offset}")
         return super().lookup(addr, exact, indirect)
 
     def hex_replace_annotated(self, match):
         addr = int(match.group(1), 16)
         entity = self.db.get(self.image_id, addr - 1, exact=False)
-        if entity is not None and entity.matched:
-            offset = addr - entity.addr(self.image_id)
-            if entity.entity_type == EntityType.FUNCTION and offset < entity.any_size(
-                self.image_id
-            ):
-                return entity.match_name(f"+{offset}")
-            if entity.entity_type == EntityType.DATA and offset == entity.max_size(
-                ImageId.ORIG
-            ) == entity.size(ImageId.RECOMP):
-                # A one-past pointer can coincide with an unrelated next global.
-                return entity.match_name(f"+{offset}")
+        if entity is None or not entity.matched:
+            return super().hex_replace_annotated(match)
+        offset = addr - entity.addr(self.image_id)
+        if entity.entity_type == EntityType.FUNCTION and offset < entity.any_size(
+            self.image_id
+        ):
+            return entity.match_name(f"+{offset}")
+        if entity.entity_type == EntityType.DATA and offset == entity.max_size(
+            ImageId.ORIG
+        ) == entity.size(ImageId.RECOMP):
+            # A one-past pointer can coincide with an unrelated next global.
+            return entity.match_name(f"+{offset}")
         return super().hex_replace_annotated(match)
 
     def parse_asm(self, data, start_addr):

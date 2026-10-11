@@ -16,20 +16,18 @@ def display_comparison(address, comparison, summary):
     if comparison is None:
         print(f"0x{address:08x}: NOT_FOUND")
         return
-    if comparison.is_stub:
-        if summary:
-            print(
-                f"0x{address:08x} Raw: 0.00%  Effective: 0.00% STUB {comparison.name}"
-            )
-        else:
-            print_match_oneline(comparison)
-        return
     scores = (
-        f"Raw: {comparison.accuracy * 100:.2f}%  "
-        f"Effective: {comparison.effective_accuracy * 100:.2f}%"
+        "Raw: 0.00%  Effective: 0.00% STUB"
+        if comparison.is_stub
+        else (
+            f"Raw: {comparison.accuracy * 100:.2f}%  "
+            f"Effective: {comparison.effective_accuracy * 100:.2f}%"
+        )
     )
     if summary:
         print(f"0x{address:08x} {scores} {comparison.name}")
+    elif comparison.is_stub:
+        print_match_oneline(comparison)
     else:
         print(scores)
         print_match_verbose(comparison)
