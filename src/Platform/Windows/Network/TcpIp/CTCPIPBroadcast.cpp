@@ -96,9 +96,8 @@ void CTCPIPBroadcast::GotName(int p_failed)
 			address = NULL;
 		}
 		m_specificAddress = address;
-		in_addr hostAddress = lookupAddress;
-		address->m_ipv4Address = hostAddress.s_addr;
-		strcpy(address->m_text, inet_ntoa(hostAddress));
+		address->m_ipv4Address = lookupAddress.s_addr;
+		strcpy(address->m_text, inet_ntoa(address->Get()));
 		address->GetStr();
 	}
 	else {
@@ -156,9 +155,8 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 		hostEntry = (TcpIpHostEntry*) m_asyncBuffer;
 		memcpy(&lookupAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
 		address = (CTCPIPNetworkAddress*) g_pBroadcastAddress;
-		in_addr hostAddress = lookupAddress;
-		address->m_ipv4Address = hostAddress.s_addr;
-		strcpy(address->m_text, inet_ntoa(hostAddress));
+		address->m_ipv4Address = lookupAddress.s_addr;
+		strcpy(address->m_text, inet_ntoa(address->Get()));
 		g_pBroadcastAddress->GetStr();
 	}
 	g_localHostLookupComplete = 1;
