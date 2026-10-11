@@ -24,6 +24,8 @@ enum {
 #include <stddef.h>
 #include <windows.h>
 
+struct IUnknown;
+
 // FUNCTION: LEMBALL 0x00457410
 CDirectDrawDriver::CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen)
 {
@@ -45,7 +47,7 @@ CDirectDrawDriver::CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen)
 	if (m_driverModule == NULL) {
 		return;
 	}
-	typedef long(__stdcall * CreateFunction)(void*, IDirectDraw**, void*);
+	typedef long(__stdcall * CreateFunction)(GUID*, IDirectDraw**, IUnknown*);
 	m_contextSurfaces[0] = (void*) GetProcAddress((HMODULE) m_driverModule, "DirectDrawCreate");
 	if (m_contextSurfaces[0] == NULL) {
 		return;
