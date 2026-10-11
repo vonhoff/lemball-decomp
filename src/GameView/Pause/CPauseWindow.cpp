@@ -349,8 +349,7 @@ CVSRect CPauseWindow::CalculateWindow()
 	}
 	parentHeight = (short) ((int) parentHeight / zoom);
 
-	CVSSize paddedTextSizeValue(maxTextSize);
-	CVSSize& paddedTextSize = paddedTextSizeValue;
+	CVSSize paddedTextSize(maxTextSize);
 	paddedTextSize.m_height += m_windowPadding.m_y;
 	positionX = (short) (parentWidth - paddedTextSize.m_width) / 2;
 	CVSSize windowSize;
@@ -419,11 +418,9 @@ CVSRect CPauseWindow::CalculateWindow()
 		} while (--cornerBatchCount != 0);
 	}
 
-	CVSPoint firstPositionValue(0, 0);
-	CVSPoint& firstBorderPosition = firstPositionValue;
+	CVSPoint firstBorderPosition(0, 0);
 	firstBorderPosition.m_x = horizontalBorder->m_width;
-	CVSPoint secondPositionValue(firstBorderPosition);
-	CVSPoint& secondBorderPosition = secondPositionValue;
+	CVSPoint secondBorderPosition(firstBorderPosition);
 	secondBorderPosition.m_y += (short) (windowSize.m_height - verticalBorder->m_height);
 	for (i = 0; i < m_borderTiles.m_width; i++) {
 		int pair = 0;

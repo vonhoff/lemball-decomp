@@ -32373,18 +32373,18 @@
       "caller": 4472912,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?CalculateWindow@CPauseWindow@@QAE?AVCVSRect@@XZ",
-      "size": 1488,
-      "fingerprint": "a49e4ef4e052b278d21fb481b1982e0586b5485bc41bfe0ffae7f9c10783b003",
+      "size": 1409,
+      "fingerprint": "9fd9715f4d40d661764965c911f49fa09035a036a027dfba8d2cc0e27eef2ea4",
       "references": [
         {
-          "offset": 411,
+          "offset": 392,
           "original_instruction": 4473301,
           "original_bytes": "e86ee0fbff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 691,
+          "offset": 674,
           "original_instruction": 4473597,
           "original_bytes": "e863effbff",
           "thunk": 4207205,
@@ -32434,7 +32434,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "??1CPauseWindow@@UAE@XZ",
       "size": 291,
-      "fingerprint": "e8106eee1723c2c04201260b4c499850122974c4484e7676ce469c6afeaa8dcf",
+      "fingerprint": "61607cd7955b72b38e227bf51c0cd798856a9334881d928fa5cb284456f901e7",
       "references": [
         {
           "offset": 102,
@@ -32486,11 +32486,11 @@
       "caller": 4475536,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?OnInside@CPauseWindow@@UAEXABUCVSPoint@@@Z",
-      "size": 143,
-      "fingerprint": "a605e1ea1143d19dd556c4a3341edb8284ac037cac0f0be84e3dc5264f79735a",
+      "size": 139,
+      "fingerprint": "a76747e5946e41616f28c8e00c4a42fc4e564b9fad7bac9ce0cc5aba72e72db2",
       "references": [
         {
-          "offset": 128,
+          "offset": 124,
           "original_instruction": 4475661,
           "original_bytes": "e860d0fbff",
           "thunk": 4201330,
@@ -32503,7 +32503,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?OnButtonDown@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 170,
-      "fingerprint": "28a3b64cb52739a2272cc3b9e10e3b228affcccf9bcd5b99b522338b8aa2a5d9",
+      "fingerprint": "0bc8bfd34daa58c37d6528dc50dd1267675855a649c0335c2aaa53e289410f1e",
       "references": [
         {
           "offset": 142,
