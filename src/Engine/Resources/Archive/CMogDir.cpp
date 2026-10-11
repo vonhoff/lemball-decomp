@@ -23,25 +23,19 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 {
 	tagCHUNK chunk;
 	unsigned int directoryDataSize;
-	int* firstIndex;
-	int* iteratorIndex;
-	int* currentDirIndex;
 
 	int chunkIndex = g_emptyChunkIndex;
 	tagChunkInfo* chunkInfo = g_pEmptyChunkInfo;
-	firstIndex = &m_first.m_index;
-	iteratorIndex = &m_iterator.m_index;
 	m_loadedChunkCount = 0;
-	*firstIndex = chunkIndex;
-	*iteratorIndex = chunkIndex;
+	m_first.m_index = chunkIndex;
+	m_iterator.m_index = chunkIndex;
 	m_first.m_info = chunkInfo;
 	m_iterator.m_info = chunkInfo;
 	chunkIndex = g_emptyChunkIndex;
 	chunkInfo = g_pEmptyChunkInfo;
 	m_root.m_index = chunkIndex;
 	m_root.m_info = chunkInfo;
-	currentDirIndex = &m_currentDir.m_index;
-	*currentDirIndex = chunkIndex;
+	m_currentDir.m_index = chunkIndex;
 	m_currentDir.m_info = chunkInfo;
 	vsSeek(g_pMogFile, p_fileOffset, MOG_SEEK_FROM_START);
 	if (p_fileOffset == 0) {
@@ -62,12 +56,11 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	if (m_chunkCount != 0) {
 		tagChunkInfo* info = (tagChunkInfo*) CMogloadArena::operator new(sizeof(tagChunkInfo));
 		m_first.m_info = info;
-		*firstIndex = 0;
+		m_first.m_index = 0;
 		GetChunkInfo(info);
 		m_loadedChunkCount += 1U;
 	}
-	*iteratorIndex = *firstIndex;
-	m_iterator.m_info = m_first.m_info;
+	m_iterator = m_first;
 	do {
 		FindNext(chunk, RESOURCE_CHUNK_ANY_TYPE);
 		if (chunk.m_info == NULL) {
@@ -77,10 +70,8 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 			GetNextDir();
 		}
 	} while (chunk.m_info != NULL);
-	*iteratorIndex = *firstIndex;
-	m_iterator.m_info = m_first.m_info;
-	m_currentDir.m_index = m_root.m_index;
-	m_currentDir.m_info = m_root.m_info;
+	m_iterator = m_first;
+	m_currentDir = m_root;
 }
 
 // FUNCTION: LEMBALL 0x0045bf10
