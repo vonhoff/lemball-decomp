@@ -64,13 +64,14 @@ void CDuplicator::Set(const AICOORD& p_position)
 	int blockY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (blockX >= 0) {
 		if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].m_collision |=
+			g_pMap->m_ground.m_ground[(unsigned int) blockY * g_pMap->m_ground.m_width + blockX].m_collision |=
 				GROUND_COLLISION_BLOCKS_WALKING;
 		}
 		if (blockX >= 0 && --blockY >= 0) {
 			int width = g_pMap->m_ground.m_width;
 			if (blockX < width && g_pMap->m_ground.m_height > blockY) {
-				g_pMap->m_ground.m_ground[width * blockY + blockX].m_collision |= GROUND_COLLISION_BLOCKS_WALKING;
+				g_pMap->m_ground.m_ground[(unsigned int) width * blockY + blockX].m_collision |=
+					GROUND_COLLISION_BLOCKS_WALKING;
 			}
 		}
 	}
@@ -86,14 +87,16 @@ void CDuplicator::Delete()
 			CMap* map = g_pMap;
 			int width = map->m_ground.m_width;
 			if (blockX < width && map->m_ground.m_height > blockY) {
-				map->m_ground.m_ground[blockY * width + blockX].m_collision &= ~GROUND_COLLISION_BLOCKS_WALKING;
+				map->m_ground.m_ground[(unsigned int) blockY * width + blockX].m_collision &=
+					~GROUND_COLLISION_BLOCKS_WALKING;
 			}
 		}
 		if (blockX >= 0 && --blockY >= 0) {
 			CMap* map = g_pMap;
 			int width = map->m_ground.m_width;
 			if (blockX < width && map->m_ground.m_height > blockY) {
-				map->m_ground.m_ground[blockY * width + blockX].m_collision &= ~GROUND_COLLISION_BLOCKS_WALKING;
+				map->m_ground.m_ground[(unsigned int) blockY * width + blockX].m_collision &=
+					~GROUND_COLLISION_BLOCKS_WALKING;
 			}
 		}
 	}

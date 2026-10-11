@@ -48,7 +48,7 @@ void CSlinky::Set(int p_minX, int p_maxX, int p_minY, int p_maxY)
 		else {
 			p_minX &= 15;
 			p_minY &= 15;
-			z = map->m_ground.m_ground[width * by + bx].GetZ(p_minX, p_minY);
+			z = map->m_ground.m_ground[(unsigned int) width * by + bx].GetZ(p_minX, p_minY);
 		}
 	}
 	int positionZ = z << FIXED_POINT_FRACTION_BITS;
