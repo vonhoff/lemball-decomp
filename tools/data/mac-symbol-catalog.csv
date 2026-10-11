@@ -893,7 +893,7 @@ mac_address,symbol,windows_address
 1011cd5e,__dt__17CPanelPauseButtonFv,4438f0
 1011cde6,OnEnterButton__12CPanelButtonFv,443930
 1011ce10,OnExitButton__12CPanelButtonFv,443940
-1011ce3a,GetBL__7CVSRectCFv,
+1011ce84,GetBL__7CVSRectCFv,
 1011cede,GetTR__7CVSRectCFv,
 1011cf38,SetTableEntry__10CSoundViewFR11tEffectSpec,
 1020000c,GetFrameNo__10CTimedAnimFv,467170
