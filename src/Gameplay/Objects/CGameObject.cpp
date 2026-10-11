@@ -1105,25 +1105,21 @@ bool CGameObject::Fall()
 		m_position.m_zFixed = IntegerToFixed((m_lastMovementTick - g_dwGameTick) * 3 + m_flightZ);
 
 		if ((x & GROUND_BLOCK_PIXEL_MASK) != GROUND_BLOCK_PIXEL_HALF_SIZE) {
-			int centreedX;
 			if ((x & GROUND_BLOCK_PIXEL_MASK) < GROUND_BLOCK_PIXEL_HALF_SIZE) {
-				centreedX = x + 1;
+				position->m_xFixed = IntegerToFixed(x + 1);
 			}
 			else {
-				centreedX = x - 1;
+				position->m_xFixed = IntegerToFixed(x - 1);
 			}
-			position->m_xFixed = centreedX * FIXED_POINT_ONE;
 		}
 
 		if ((y & GROUND_BLOCK_PIXEL_MASK) != GROUND_BLOCK_PIXEL_HALF_SIZE) {
-			int centreedY;
 			if ((y & GROUND_BLOCK_PIXEL_MASK) < GROUND_BLOCK_PIXEL_HALF_SIZE) {
-				centreedY = y + 1;
+				m_position.m_yFixed = IntegerToFixed(y + 1);
 			}
 			else {
-				centreedY = y - 1;
+				m_position.m_yFixed = IntegerToFixed(y - 1);
 			}
-			m_position.m_yFixed = centreedY * FIXED_POINT_ONE;
 		}
 
 		int groundZ = IntegerToFixed((int) g_pMap->GetZ(x, y, &mover));
