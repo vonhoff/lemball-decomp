@@ -37,6 +37,11 @@ CTrackerButton::~CTrackerButton()
 	delete m_trackWindow;
 }
 
+inline CVSPoint operator+(const CVSPoint& p_left, const CVSPoint& p_right)
+{
+	return CVSPoint(p_left.m_x + p_right.m_x, p_left.m_y + p_right.m_y);
+}
+
 // FUNCTION: LEMBALL 0x0044ed70
 void CTrackerButton::Move(const CVSPoint& p_point)
 {
@@ -46,6 +51,6 @@ void CTrackerButton::Move(const CVSPoint& p_point)
 	CGWnd::Move(p_point);
 	m_bounds.m_x += m_relativeTopLeft.m_x;
 	m_bounds.m_y += m_relativeTopLeft.m_y;
-	m_trackWindow->Move(CVSPoint(m_buttonPosition.m_x + m_trackOffset.m_x, m_buttonPosition.m_y + m_trackOffset.m_y));
-	m_trackWindow->Move(CVSPoint(p_point.m_x + m_trackOffset.m_x, p_point.m_y + m_trackOffset.m_y));
+	m_trackWindow->Move(m_buttonPosition + m_trackOffset);
+	m_trackWindow->Move(p_point + m_trackOffset);
 }
