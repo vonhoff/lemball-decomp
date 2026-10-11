@@ -63,5 +63,5 @@ void CReadMSBuff::FillPacket()
 		m_assembledSize += g_receivedPacketSize - sizeof(BasePacketHeader);
 	}
 
-	m_receivedSubpacketCount++;
+	m_receivedSubpacketCount = (unsigned int) m_receivedSubpacketCount + 1;
 }
