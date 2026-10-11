@@ -16,7 +16,7 @@ extern char g_szPasswordCheatMessage[31];
 CGameStatus::CGameStatus()
 {
 	int zero = 0;
-	int* p;
+	int index;
 
 	m_level = zero;
 	m_levelState = zero;
@@ -24,18 +24,12 @@ CGameStatus::CGameStatus()
 	m_skillState = zero;
 	m_bulletHitHandlingDisabled = zero;
 	m_unlimitedAmmo = zero;
-	p = m_maxLevels;
-	p[0] = zero;
-	p[1] = zero;
-	p[2] = zero;
-	p[3] = zero;
-	p[4] = zero;
-	p = m_lastLevels;
-	p[0] = zero;
-	p[1] = zero;
-	p[2] = zero;
-	p[3] = zero;
-	p[4] = zero;
+	for (index = 0; index < 5; index++) {
+		m_maxLevels[index] = zero;
+	}
+	for (index = 0; index < 5; index++) {
+		m_lastLevels[index] = zero;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00406ad0

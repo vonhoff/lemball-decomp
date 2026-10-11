@@ -10487,7 +10487,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGameStatus.cpp.obj",
       "symbol": "?UnJiggleLevelData@CGameStatus@@QAEXK@Z",
       "size": 107,
-      "fingerprint": "d3327d033903e98833f3a2d73310a086c935023d635023196faa33420a56136c",
+      "fingerprint": "3936e29121092c0cf370bed9b60c0d5f4ad483b1054615085b37de6e4ab2f2dc",
       "references": [
         {
           "offset": 85,
