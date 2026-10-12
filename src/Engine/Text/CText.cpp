@@ -3,6 +3,7 @@
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSSize.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Engine/Streams/CVSOStream.h"
@@ -71,37 +72,46 @@ void CText::Draw(CGDI* p_gdi)
 	p_gdi->AddToList(this);
 }
 
+inline static void CopyAdvance(CVSSize& p_destination, const CVSSize& p_source)
+{
+	p_destination.m_width = p_source.m_width;
+	p_destination.m_height = p_source.m_height;
+}
+
+inline static void AddAdvance(CVSSize& p_destination, const CVSSize& p_delta)
+{
+	p_destination.m_width += p_delta.m_width;
+	p_destination.m_height += p_delta.m_height;
+}
+
 // FUNCTION: LEMBALL 0x004749c0
 void CText::NextPos()
 {
-	short stepY;
-	short stepX;
+	CVSSize step;
 	if (m_useAdvance != 0) {
-		stepX = m_advanceX;
-		stepY = m_advanceY;
+		CopyAdvance(step, CVSSize(m_advanceX, m_advanceY));
 	}
 	else {
-		stepY = m_glyph->m_size.m_height + 1;
-		stepX = m_glyph->m_size.m_width + 1;
+		CopyAdvance(step, m_glyph->m_size);
+		AddAdvance(step, CVSSize(1, 1));
 	}
 	unsigned int flags = m_flags;
 	if ((flags & TEXT_ADVANCE_USE_CUSTOM_OFFSETS) != 0) {
-		stepX = stepX + m_offsetX;
-		stepY = stepY + m_offsetY;
+		AddAdvance(step, CVSSize(m_offsetX, m_offsetY));
 	}
 	if ((flags & TEXT_ADVANCE_X_NEGATIVE) != 0) {
-		m_x = m_x - stepX;
+		m_x = m_x - step.m_width;
 	}
 	else if ((flags & TEXT_ADVANCE_X_POSITIVE) != 0) {
-		m_x = m_x + stepX;
+		m_x = m_x + step.m_width;
 	}
 	flags = m_flags;
 	if ((flags & TEXT_ADVANCE_Y_NEGATIVE) != 0) {
-		m_y = m_y - stepY;
+		m_y = m_y - step.m_height;
 		return;
 	}
 	if ((flags & TEXT_ADVANCE_Y_POSITIVE) != 0) {
-		m_y = m_y + stepY;
+		m_y = m_y + step.m_height;
 	}
 }
 
