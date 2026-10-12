@@ -11,6 +11,7 @@
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Input/CHotAreaList.h"
 #include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSPointArithmetic.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
@@ -194,14 +195,12 @@ BUTTON_FLAGS CPVButton::ConvertDoubleClick(BUTTON_FLAGS p_flags)
 void CPVButton::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	BUTTON_FLAGS converted;
-	CVSPoint clickPos;
 
 	if (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK) {
 		m_pressed = true;
 	}
 	converted = ConvertDoubleClick(p_flags);
-	clickPos.m_y = p_point.m_y - m_relativeTopLeft.m_y;
-	clickPos.m_x = p_point.m_x - m_relativeTopLeft.m_x;
+	CVSPoint clickPos = p_point - CVSRect(m_relativeTopLeft, m_rect);
 	m_clickPosition.m_x = clickPos.m_x;
 	m_clickPosition.m_y = clickPos.m_y;
 	_OnPressed(converted);
@@ -215,9 +214,7 @@ void CPVButton::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 
 	if (m_pressed != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		CVSPoint clickPos;
-		clickPos.m_y = p_point.m_y - m_relativeTopLeft.m_y;
-		clickPos.m_x = p_point.m_x - m_relativeTopLeft.m_x;
+		CVSPoint clickPos = p_point - CVSRect(m_relativeTopLeft, m_rect);
 		m_clickPosition.m_x = clickPos.m_x;
 		m_clickPosition.m_y = clickPos.m_y;
 		m_pressed = false;
@@ -232,10 +229,7 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags
 	int i;
 	unsigned int* state;
 
-	CVSPoint relativeValue(m_relativeTopLeft);
-	CVSPoint originValue(m_relativeTopLeft);
-	relativeValue.m_y = p_point.m_y - originValue.m_y;
-	relativeValue.m_x = p_point.m_x - originValue.m_x;
+	CVSPoint relativeValue = p_point - CVSRect(m_relativeTopLeft, m_rect);
 	m_clickPosition.m_x = relativeValue.m_x;
 	m_clickPosition.m_y = relativeValue.m_y;
 	state = m_buttonState;
