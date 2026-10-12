@@ -4,42 +4,9 @@
 
 #include <string.h>
 
-extern "C" __declspec(dllimport) void* __stdcall CreateFileA(const char* p_name,
-															 unsigned long p_access,
-															 unsigned long p_share,
-															 void* p_security,
-															 unsigned long p_creation,
-															 unsigned long p_flags,
-															 void* p_template);
-extern "C" __declspec(dllimport) int __stdcall CloseHandle(void* p_handle);
-extern "C" __declspec(dllimport) int __stdcall DeleteFileA(const char* p_name);
-extern "C" __declspec(dllimport) int __stdcall WriteFile(void* p_handle,
-														 const void* p_buffer,
-														 unsigned long p_bytes,
-														 unsigned long* p_written,
-														 void* p_overlapped);
-extern "C" __declspec(dllimport) int __stdcall ReadFile(void* p_handle,
-														void* p_buffer,
-														unsigned long p_bytes,
-														unsigned long* p_read,
-														void* p_overlapped);
-extern "C" __declspec(dllimport) unsigned long __stdcall SetFilePointer(void* p_handle,
-																		long p_distance,
-																		long* p_distanceHigh,
-																		unsigned long p_method);
-extern "C" __declspec(dllimport) unsigned long __stdcall GetFileSize(void* p_handle, unsigned long* p_sizeHigh);
-extern "C" __declspec(dllimport) int __stdcall LockFile(void* p_handle,
-														unsigned long p_offsetLow,
-														unsigned long p_offsetHigh,
-														unsigned long p_lengthLow,
-														unsigned long p_lengthHigh);
-extern "C" __declspec(dllimport) int __stdcall UnlockFile(void* p_handle,
-														  unsigned long p_offsetLow,
-														  unsigned long p_offsetHigh,
-														  unsigned long p_lengthLow,
-														  unsigned long p_lengthHigh);
-extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError();
-extern "C" int __stdcall WSAGetLastError();
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winsock.h>
 
 enum eSetFilePointerResult {
 	SET_FILE_POINTER_FAILURE = 0xffffffffUL
