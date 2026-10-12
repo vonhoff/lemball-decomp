@@ -34,9 +34,7 @@ CGroundAnim::~CGroundAnim()
 // FUNCTION: LEMBALL 0x0040cf40
 bool CGroundAnim::CheckAllAnims()
 {
-	int next;
-	int index = 0;
-	while (index < m_count) {
+	for (int index = 0; index < m_count; index++) {
 		bool& active = m_entries[index].m_active;
 		if (active != 0) {
 			switch (m_entries[index].m_mapCell->m_objectType) {
@@ -50,11 +48,9 @@ bool CGroundAnim::CheckAllAnims()
 				active = false;
 				break;
 			default: {
-				next = index + 1;
 				active = false;
-				while (next < m_count) {
+				for (int next = index + 1; next < m_count; next++) {
 					m_entries[next - 1] = m_entries[next];
-					next++;
 				}
 				index--;
 				m_count--;
@@ -62,7 +58,6 @@ bool CGroundAnim::CheckAllAnims()
 			}
 			}
 		}
-		index++;
 	}
 	return true;
 }
