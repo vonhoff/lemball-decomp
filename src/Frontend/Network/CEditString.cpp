@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strcpy, strlen)
-
 // FUNCTION: LEMBALL 0x00453150
 CEditString::CEditString(int p_capacity)
 {

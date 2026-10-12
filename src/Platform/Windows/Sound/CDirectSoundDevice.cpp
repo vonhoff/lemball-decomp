@@ -11,8 +11,6 @@
 #include <windows.h>
 #include <winver.h>
 
-#pragma intrinsic(memset, memcpy, strlen)
-
 enum {
 	DIRECT_SOUND_DEFAULT_SAMPLE_RATE_HZ = 22050,
 	DSOUND_MIN_MAJOR_VERSION = 4,

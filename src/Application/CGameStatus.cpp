@@ -6,8 +6,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strlen, strcpy, strcmp, memcpy)
-
 extern char g_szPasswordZeroes[9];
 extern char g_szUnlockPassword[11];
 extern char g_szPasswordCheatMessage[31];

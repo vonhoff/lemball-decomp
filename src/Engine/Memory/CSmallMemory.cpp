@@ -6,8 +6,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memset)
-
 // GLOBAL: LEMBALL 0x004a1174
 char* g_pCurrentAllocDescription = "new";
 

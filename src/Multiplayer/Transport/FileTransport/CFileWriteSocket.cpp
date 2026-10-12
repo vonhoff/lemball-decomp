@@ -15,8 +15,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strcpy)
-
 // FUNCTION: LEMBALL 0x00479e20
 CFileWriteSocket::CFileWriteSocket() : CFileBaseSocket(), CWriteSocket(), CFileCommonSocket()
 {

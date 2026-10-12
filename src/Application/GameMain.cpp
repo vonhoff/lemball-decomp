@@ -16,8 +16,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memcpy, strcpy)
-
 enum {
 	GAME_GDI_SURFACE_SLOT_CAPACITY = 80,
 	GAME_MEMORY_BUDGET_BYTES = 3 * 1024 * 1024,

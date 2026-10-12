@@ -24,8 +24,6 @@ enum ePreInitDisplayMode {
 	PREINIT_DISPLAY_MODE_GDK = 2
 };
 
-#pragma intrinsic(memcpy, memset)
-
 // SIZE 0x08
 struct InitCmdOption {
 	char* m_name; // 0x00

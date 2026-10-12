@@ -22,8 +22,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memcpy, strcpy, strlen, strcat)
-
 // FUNCTION: LEMBALL 0x0046f4f0
 void CFileBroadcast::Setup(const char* p_peerName, const char* p_path)
 {

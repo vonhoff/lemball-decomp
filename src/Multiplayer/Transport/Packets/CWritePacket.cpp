@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memcpy)
-
 // FUNCTION: LEMBALL 0x00461190
 CWritePacket::CWritePacket(unsigned short p_capacity)
 {

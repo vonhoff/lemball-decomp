@@ -4,8 +4,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memcpy)
-
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/Archive/CVSRange.h"
 

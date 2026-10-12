@@ -17,8 +17,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memcpy, strcpy, strlen)
-
 // FUNCTION: LEMBALL 0x0047af30
 CFileConnect::CFileConnect()
 {

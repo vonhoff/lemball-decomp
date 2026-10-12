@@ -11,8 +11,6 @@
 #include <string.h>
 
 #define GENERIC_GROUP_ELEMENT_CAPACITY 10
-#pragma intrinsic(memset)
-
 // FUNCTION: LEMBALL 0x00414c60
 eGroupState CGenericGroup::GetGroupState()
 {

@@ -18,8 +18,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memcpy, memset)
-
 #define PLAYER_ONE_RUNTIME_FLAGS 0x200
 #define PLAYER_TWO_RUNTIME_FLAGS 0x100
 

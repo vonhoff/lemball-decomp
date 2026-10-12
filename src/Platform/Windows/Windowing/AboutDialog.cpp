@@ -103,8 +103,6 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 }
 
 #include <string.h>
-#pragma intrinsic(strcat)
-
 // FUNCTION: LEMBALL 0x00455ff0
 char* BuildAboutSystemInfo()
 {

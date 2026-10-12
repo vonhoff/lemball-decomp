@@ -45,8 +45,6 @@
 
 #include <windows.h>
 
-#pragma intrinsic(strcpy, strcat)
-
 extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int p_index);
 enum eDisplayStyleThreshold {
 	DISPLAY_STYLE_WIDTH_THRESHOLD_PX = 640,

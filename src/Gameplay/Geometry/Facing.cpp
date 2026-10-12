@@ -8,8 +8,6 @@
 
 #include <stdlib.h>
 
-#pragma intrinsic(abs)
-
 // GLOBAL: LEMBALL 0x0049d020
 int g_anRotationDirections[FACING_DIRECTION_COUNT] = {0, 1, 1, 1, 1, -1, -1, -1};
 

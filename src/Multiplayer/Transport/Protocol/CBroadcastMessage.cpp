@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strcmp, strlen)
-
 // FUNCTION: LEMBALL 0x0045f360
 void CBroadcastMessage::AddHeader()
 {

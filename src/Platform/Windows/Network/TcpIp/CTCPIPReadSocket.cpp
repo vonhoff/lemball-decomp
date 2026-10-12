@@ -9,8 +9,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strcpy)
-
 #include "Engine/Time/VsTime.h"
 #include "Platform/Windows/WinSock/WinSock.h"
 

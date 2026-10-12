@@ -6,8 +6,6 @@
 
 struct _Filet;
 
-#pragma intrinsic(strlen, strcpy, strcat)
-
 enum ePlatformApiValue {
 	REGISTRY_HIVE_LOCAL_MACHINE = 0x80000002,
 	REGISTRY_ACCESS_ALL = 0xf003f,

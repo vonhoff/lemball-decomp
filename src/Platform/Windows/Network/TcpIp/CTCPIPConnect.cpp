@@ -13,8 +13,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma intrinsic(memcpy, strcpy, strlen)
-
 // FUNCTION: LEMBALL 0x00470dd0
 bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)
 {

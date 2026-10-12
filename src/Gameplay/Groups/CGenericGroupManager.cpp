@@ -11,8 +11,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memset)
-
 // FUNCTION: LEMBALL 0x0041e8f0
 CGenericGroupManager::CGenericGroupManager(CAI* p_ai,
 										   CObjectManager* p_objectManager,

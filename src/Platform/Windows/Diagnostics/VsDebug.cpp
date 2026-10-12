@@ -31,8 +31,6 @@ extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_hWnd,
 extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError();
 extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
 
-#pragma intrinsic(strlen)
-
 #include "Platform/Windows/ThreadConstants.h"
 
 // GLOBAL: LEMBALL 0x004a071c

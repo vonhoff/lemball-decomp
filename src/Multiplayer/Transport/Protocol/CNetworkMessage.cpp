@@ -10,8 +10,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strcpy, strlen, memcpy, strcmp)
-
 // FUNCTION: LEMBALL 0x0040abd0
 bool CNetworkMessage::CheckMessage(const unsigned char* p_arg0)
 {

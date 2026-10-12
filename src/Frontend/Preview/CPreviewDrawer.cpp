@@ -29,8 +29,6 @@
 
 class CGWnd;
 
-#pragma intrinsic(strcpy, strlen)
-
 enum {
 	PREVIEW_ANIMATION_CYCLE_DURATION_MS = 500,
 	PREVIEW_TEXT_POSITION_UNSET = -1

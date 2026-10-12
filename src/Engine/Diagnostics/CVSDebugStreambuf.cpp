@@ -82,8 +82,6 @@ void CVSDebugStreambuf::sputc(char p_c)
 	}
 }
 
-#pragma intrinsic(strlen)
-
 // FUNCTION: LEMBALL 0x0045af20
 void CVSDebugStreambuf::sputs(char* p_text)
 {

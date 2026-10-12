@@ -5,8 +5,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memcpy)
-
 // FUNCTION: LEMBALL 0x004613d0
 CReadMSBuff::CReadMSBuff(int p_messageSlots, int p_messageCapacity, unsigned short p_packetSize)
 {

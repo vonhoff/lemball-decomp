@@ -5,8 +5,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strlen)
-
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498ea0
 class CBroadcastMessage : public CNetworkMessage {

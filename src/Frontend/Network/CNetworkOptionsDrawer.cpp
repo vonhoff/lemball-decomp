@@ -29,8 +29,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strcpy)
-
 extern char* g_szBroadcastPeerName;
 
 #define NETWORK_OPTIONS_MODE_LAN 0
