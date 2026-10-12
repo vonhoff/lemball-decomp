@@ -360,8 +360,8 @@ CNetworkOptionsDrawer::~CNetworkOptionsDrawer()
 	delete[] m_playerEntries;
 	editor = m_editor;
 	if (editor != NULL) {
-		operator delete(editor->m_text);
-		operator delete(editor);
+		delete[] editor->m_text;
+		delete editor;
 	}
 	UnRegisterRemaps();
 	if (m_loaded != 0) {

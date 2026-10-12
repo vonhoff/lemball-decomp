@@ -7,7 +7,7 @@
 // FUNCTION: LEMBALL 0x00453150
 CEditString::CEditString(int p_capacity)
 {
-	m_text = (char*) operator new(p_capacity + 1);
+	m_text = new char[p_capacity + 1];
 	m_capacity = p_capacity;
 	m_maxLength = p_capacity;
 	m_length = 0;
