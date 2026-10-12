@@ -127,7 +127,7 @@ bool CBucket::Free(unsigned char* p_memory)
 	while (true) {
 		current->EnterCritical();
 		if ((unsigned long) current->m_memory > (unsigned long) p_memory ||
-			(unsigned long) (current->m_totalBytes + current->m_memory) <= (unsigned long) p_memory) {
+			current->m_totalBytes + (unsigned long) current->m_memory <= (unsigned long) p_memory) {
 			current->LeaveCritical();
 			current = current->m_child;
 		}
@@ -220,7 +220,8 @@ void CBucket::RemoveThis()
 // FUNCTION: LEMBALL 0x00473140
 bool CBucket::CheckValidPointer(unsigned char* p_memory)
 {
-	if (p_memory >= m_memory && m_totalBytes + m_memory > p_memory) {
+	if ((unsigned long) p_memory >= (unsigned long) m_memory &&
+		m_totalBytes + (unsigned long) m_memory > (unsigned long) p_memory) {
 		return true;
 	}
 	if (m_child != NULL) {
