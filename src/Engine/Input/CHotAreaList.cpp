@@ -26,18 +26,11 @@ int g_nHotAreaListCount = 0;
 // FUNCTION: LEMBALL 0x00466370
 void CHotAreaList::Set(const CVSRect& p_rect, CVSPoint p_relativeTopLeft, const CVSPoint& p_innerOrigin)
 {
-	const short* coords;
-
 	m_bounds.m_width = p_rect.m_width;
 	m_bounds.m_height = p_rect.m_height;
-	if (&p_rect != NULL) {
-		coords = &p_rect.m_x;
-	}
-	else {
-		coords = NULL;
-	}
-	m_bounds.m_x = coords[0];
-	m_bounds.m_y = coords[1];
+	const CVSPoint& position = p_rect;
+	m_bounds.m_x = position.m_x;
+	m_bounds.m_y = position.m_y;
 	m_relativeTopLeft.m_x = p_relativeTopLeft.m_x;
 	m_relativeTopLeft.m_y = p_relativeTopLeft.m_y;
 	m_innerOrigin.m_x = p_innerOrigin.m_x;
