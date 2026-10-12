@@ -741,7 +741,6 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 	}
 }
 
-#pragma warning(disable : 4146)
 #define WINDOW_STYLE_INPUT_OVERLAPPED_FRAME 8
 #define WINDOW_STYLE_INPUT_CAPTION 2
 #define WINDOW_STYLE_INPUT_THICK_FRAME 0x400
@@ -782,7 +781,6 @@ unsigned int ConvertWindowStyleFlags(unsigned int p_style)
 	style |= (p_style & WINDOW_STYLE_INPUT_SYSTEM_MENU) << WINDOW_STYLE_SYSTEM_MENU_SHIFT;
 	return style;
 }
-#pragma warning(default : 4146)
 
 // FUNCTION: LEMBALL 0x00465570
 CWnd::~CWnd()
