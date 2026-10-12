@@ -191,6 +191,12 @@ BUTTON_FLAGS CPVButton::ConvertDoubleClick(BUTTON_FLAGS p_flags)
 	}
 }
 
+inline static void SetClickPosition(CVSPoint& p_destination, const CVSPoint& p_position)
+{
+	p_destination.m_x = p_position.m_x;
+	p_destination.m_y = p_position.m_y;
+}
+
 // FUNCTION: LEMBALL 0x00468050
 void CPVButton::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
@@ -200,9 +206,7 @@ void CPVButton::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 		m_pressed = true;
 	}
 	converted = ConvertDoubleClick(p_flags);
-	CVSPoint clickPos = p_point - CVSRect(m_relativeTopLeft, m_rect);
-	m_clickPosition.m_x = clickPos.m_x;
-	m_clickPosition.m_y = clickPos.m_y;
+	SetClickPosition(m_clickPosition, p_point - CVSRect(m_relativeTopLeft, m_rect));
 	_OnPressed(converted);
 	OnPressed(converted);
 }
@@ -214,9 +218,7 @@ void CPVButton::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 
 	if (m_pressed != 0) {
 		converted = ConvertDoubleClick(p_flags);
-		CVSPoint clickPos = p_point - CVSRect(m_relativeTopLeft, m_rect);
-		m_clickPosition.m_x = clickPos.m_x;
-		m_clickPosition.m_y = clickPos.m_y;
+		SetClickPosition(m_clickPosition, p_point - CVSRect(m_relativeTopLeft, m_rect));
 		m_pressed = false;
 		_OnReleased(converted);
 		OnReleased(converted);
@@ -229,9 +231,7 @@ void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags
 	int i;
 	unsigned int* state;
 
-	CVSPoint relativeValue = p_point - CVSRect(m_relativeTopLeft, m_rect);
-	m_clickPosition.m_x = relativeValue.m_x;
-	m_clickPosition.m_y = relativeValue.m_y;
+	SetClickPosition(m_clickPosition, p_point - CVSRect(m_relativeTopLeft, m_rect));
 	state = m_buttonState;
 	i = 6;
 	while (i != 0) {
