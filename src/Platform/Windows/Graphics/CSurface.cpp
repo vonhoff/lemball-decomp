@@ -543,7 +543,7 @@ void CSurface::SetLinePtrs()
 	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
 		parentStride = m_parentSurface->m_stride;
 		m_stride = parentStride;
-		bits = (unsigned char*) m_parentSurface->m_lines[(int) m_windowRect.m_y] + (int) m_windowRect.m_x;
+		bits = m_parentSurface->m_lines[(int) m_windowRect.m_y] + (int) m_windowRect.m_x;
 		m_bitsBase = bits;
 		m_bits = bits;
 		m_xOffset = 0;
@@ -569,7 +569,7 @@ void CSurface::SetLinePtrs()
 		y = 0;
 		if (0 < m_size.m_height) {
 			do {
-				m_lines[y] = (void*) ((int) m_parentSurface->m_lines[parentY] + (int) m_windowRect.m_x);
+				m_lines[y] = m_parentSurface->m_lines[parentY] + m_windowRect.m_x;
 				y = y + 1;
 				parentY = parentY + 1;
 			} while (y < m_size.m_height);
@@ -1127,7 +1127,7 @@ bool CSurface::BeginRender()
 		if (!m_parentSurface->BeginRender()) {
 			return false;
 		}
-		unsigned char* expected = (unsigned char*) m_parentSurface->m_lines[m_windowRect.m_y] + m_windowRect.m_x;
+		unsigned char* expected = m_parentSurface->m_lines[m_windowRect.m_y] + m_windowRect.m_x;
 		if (expected != m_bitsBase) {
 			CreateLinePtrs();
 			return true;
@@ -1234,8 +1234,8 @@ void CSurface::Blit(CCopyToBackBuff* p_copy)
 		if (height > 0) {
 			int count = height;
 			do {
-				unsigned char* dst = (unsigned char*) CPVBackBuffSurface::m_bitmap.m_lines[dstY] + dstX;
-				unsigned char* src = (unsigned char*) m_lines[srcY] + srcX;
+				unsigned char* dst = CPVBackBuffSurface::m_bitmap.m_lines[dstY] + dstX;
+				unsigned char* src = m_lines[srcY] + srcX;
 				memcpy(dst, src, width);
 				srcY++;
 				dstY++;
@@ -1263,7 +1263,7 @@ void CSurface::Blit(CCopyColourToBackBuff* p_fill)
 		return;
 	}
 	do {
-		unsigned char* dest = (unsigned char*) CPVBackBuffSurface::m_bitmap.m_lines[startY] + startX;
+		unsigned char* dest = CPVBackBuffSurface::m_bitmap.m_lines[startY] + startX;
 		memset(dest, colour, width);
 		startY++;
 		height--;
@@ -1288,9 +1288,7 @@ void CSurface::CopyBackBuffToScreen(const CVSRect& p_rect)
 		int x = origin->m_x;
 		int y = origin->m_y;
 		for (int i = 0; i < rect.m_height; i++) {
-			memcpy((unsigned char*) m_lines[y + i] + x,
-				   (unsigned char*) CPVBackBuffSurface::m_bitmap.m_lines[y + i] + x,
-				   rect.m_width);
+			memcpy(m_lines[y + i] + x, CPVBackBuffSurface::m_bitmap.m_lines[y + i] + x, rect.m_width);
 		}
 	}
 }
@@ -1317,7 +1315,7 @@ void CSurface::Blit(CPoint* p_point)
 	int colour = p_point->m_colour;
 	if (m_clipRect.m_x <= x && x < (short) (m_clipRect.m_width + m_clipRect.m_x)) {
 		if (m_clipRect.m_y <= p_point->m_y && p_point->m_y < (short) (m_clipRect.m_height + m_clipRect.m_y)) {
-			*((unsigned char*) m_lines[p_point->m_y] + x) = (unsigned char) colour;
+			*(m_lines[p_point->m_y] + x) = (unsigned char) colour;
 			CVSRect rect(p_point->m_x, p_point->m_y, 1, 1);
 			AddToChangeList(rect);
 		}
@@ -1374,7 +1372,7 @@ void CSurface::Blit(CLine* p_line)
 				remaining = remaining - 1;
 				x = x + 1;
 				err = err + doubleDy;
-				*((unsigned char*) m_lines[y] + (x - 1)) = (unsigned char) colour;
+				*(m_lines[y] + (x - 1)) = (unsigned char) colour;
 				if (dx < err) {
 					y = y + stepY;
 					err = err - doubleDx;
@@ -1393,7 +1391,7 @@ void CSurface::Blit(CLine* p_line)
 			do {
 				remaining = remaining - 1;
 				err = err + doubleDx;
-				*((unsigned char*) m_lines[y] + x) = (unsigned char) colour;
+				*(m_lines[y] + x) = (unsigned char) colour;
 				y = y + stepY;
 				if (absDy < err) {
 					x = x + 1;
@@ -1425,11 +1423,11 @@ void CSurface::Blit(CCircle* p_circle)
 			int err = 0;
 			int step = 1;
 			int errLimit = radius * 2 - 1;
-			*((unsigned char*) m_lines[centreY + radius] + centreX) = (unsigned char) colour;
-			*((unsigned char*) m_lines[centreY - radius] + centreX) = (unsigned char) colour;
-			unsigned char* centrePixel = (unsigned char*) m_lines[centreY] + centreX;
+			*(m_lines[centreY + radius] + centreX) = (unsigned char) colour;
+			*(m_lines[centreY - radius] + centreX) = (unsigned char) colour;
+			unsigned char* centrePixel = m_lines[centreY] + centreX;
 			centrePixel[radius] = (unsigned char) colour;
-			*((unsigned char*) m_lines[centreY] - radius + centreX) = (unsigned char) colour;
+			*(m_lines[centreY] - radius + centreX) = (unsigned char) colour;
 			while (curX < curY) {
 				curX++;
 				err += step;
@@ -1494,9 +1492,9 @@ void CSurface::Blit(CFilledCircle* p_circle)
 			int err = 0;
 			int step = 1;
 			int errLimit = radius * 2 - 1;
-			*((unsigned char*) m_lines[y + radius] + x) = (unsigned char) colour;
-			*((unsigned char*) m_lines[y - radius] + x) = (unsigned char) colour;
-			memset((unsigned char*) m_lines[y] - radius + x, colour, radius * 2 + 1);
+			*(m_lines[y + radius] + x) = (unsigned char) colour;
+			*(m_lines[y - radius] + x) = (unsigned char) colour;
+			memset(m_lines[y] - radius + x, colour, radius * 2 + 1);
 			if (radius > 1) {
 				while (curX < curRadius) {
 					int changed = 0;
@@ -1559,7 +1557,7 @@ void CSurface::BlitRect(CVSRect p_rect, int p_colour)
 		p_rect.m_height = clipped.m_height;
 	}
 	for (int y = 0; y < p_rect.m_height; y++) {
-		memset((unsigned char*) m_lines[p_rect.m_y + y] + p_rect.m_x, p_colour, p_rect.m_width);
+		memset(m_lines[p_rect.m_y + y] + p_rect.m_x, p_colour, p_rect.m_width);
 	}
 	AddToChangeList(p_rect);
 }
@@ -1738,26 +1736,26 @@ void CSurface::DrawClippedCircleOutline(int p_centreX, int p_centreY, int p_radi
 	if (m_clipRect.m_x <= p_centreX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX) {
 		if (m_clipRect.m_y <= p_centreY + p_radius &&
 			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centreY + p_radius) {
-			*((unsigned char*) m_lines[p_centreY + p_radius] + p_centreX) = p_colour;
+			*(m_lines[p_centreY + p_radius] + p_centreX) = p_colour;
 		}
 	}
 	if (m_clipRect.m_x <= p_centreX && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX) {
 		if (m_clipRect.m_y <= p_centreY - p_radius &&
 			m_clipRect.m_y + m_clipRect.m_height - 1 >= p_centreY - p_radius) {
-			*((unsigned char*) m_lines[p_centreY - p_radius] + p_centreX) = p_colour;
+			*(m_lines[p_centreY - p_radius] + p_centreX) = p_colour;
 		}
 	}
 	if (m_clipRect.m_x <= p_centreX + p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX + p_radius) {
 		int clipY = m_clipRect.m_y;
 		if (clipY <= p_centreY && clipY + m_clipRect.m_height - 1 >= p_centreY) {
-			unsigned char* destination = (unsigned char*) m_lines[p_centreY] + p_centreX;
+			unsigned char* destination = m_lines[p_centreY] + p_centreX;
 			destination[p_radius] = p_colour;
 		}
 	}
 	if (m_clipRect.m_x <= p_centreX - p_radius && m_clipRect.m_x + m_clipRect.m_width - 1 >= p_centreX - p_radius) {
 		int clipY = m_clipRect.m_y;
 		if (clipY <= p_centreY && clipY + m_clipRect.m_height - 1 >= p_centreY) {
-			*((unsigned char*) m_lines[p_centreY] + p_centreX - p_radius) = p_colour;
+			*(m_lines[p_centreY] + p_centreX - p_radius) = p_colour;
 		}
 	}
 	if (p_radius <= 0) {
@@ -1776,18 +1774,18 @@ void CSurface::DrawClippedCircleOutline(int p_centreX, int p_centreY, int p_radi
 			continue;
 		}
 		if (ClipCirclePoint(p_centreX + x, p_centreY + y) != 0) {
-			unsigned char* destination = (unsigned char*) m_lines[p_centreY + y] + p_centreX;
+			unsigned char* destination = m_lines[p_centreY + y] + p_centreX;
 			destination[x] = p_colour;
 		}
 		if (ClipCirclePoint(p_centreX - x, p_centreY + y) != 0) {
-			*((unsigned char*) m_lines[p_centreY + y] + p_centreX - x) = p_colour;
+			*(m_lines[p_centreY + y] + p_centreX - x) = p_colour;
 		}
 		if (ClipCirclePoint(p_centreX + x, p_centreY - y) != 0) {
-			unsigned char* destination = (unsigned char*) m_lines[p_centreY - y] + p_centreX;
+			unsigned char* destination = m_lines[p_centreY - y] + p_centreX;
 			destination[x] = p_colour;
 		}
 		if (ClipCirclePoint(p_centreX - x, p_centreY - y) != 0) {
-			*((unsigned char*) m_lines[p_centreY - y] + p_centreX - x) = p_colour;
+			*(m_lines[p_centreY - y] + p_centreX - x) = p_colour;
 		}
 		if (y > x) {
 			DrawClippedCirclePoint(p_centreX, p_centreY, y, x, p_colour);
@@ -1830,28 +1828,28 @@ void CSurface::DrawClippedCirclePoint(int p_centreX,
 		(p_centreX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
 		if (m_clipRect.m_y <= (p_centreY + p_yOffset) &&
 			(p_centreY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[(p_centreY + p_yOffset)] + (p_centreX + p_xOffset)) = p_colour;
+			*(m_lines[(p_centreY + p_yOffset)] + (p_centreX + p_xOffset)) = p_colour;
 		}
 	}
 	if (m_clipRect.m_x <= (p_centreX - p_xOffset) &&
 		(p_centreX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
 		if (m_clipRect.m_y <= (p_centreY + p_yOffset) &&
 			(p_centreY + p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[(p_centreY + p_yOffset)] + (p_centreX - p_xOffset)) = p_colour;
+			*(m_lines[(p_centreY + p_yOffset)] + (p_centreX - p_xOffset)) = p_colour;
 		}
 	}
 	if (m_clipRect.m_x <= (p_centreX + p_xOffset) &&
 		(p_centreX + p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
 		if (m_clipRect.m_y <= (p_centreY - p_yOffset) &&
 			(p_centreY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[(p_centreY - p_yOffset)] + (p_centreX + p_xOffset)) = p_colour;
+			*(m_lines[(p_centreY - p_yOffset)] + (p_centreX + p_xOffset)) = p_colour;
 		}
 	}
 	if (m_clipRect.m_x <= (p_centreX - p_xOffset) &&
 		(p_centreX - p_xOffset) <= m_clipRect.m_x + m_clipRect.m_width - 1) {
 		if (m_clipRect.m_y <= (p_centreY - p_yOffset) &&
 			(p_centreY - p_yOffset) <= m_clipRect.m_y + m_clipRect.m_height - 1) {
-			*((unsigned char*) m_lines[(p_centreY - p_yOffset)] + (p_centreX - p_xOffset)) = p_colour;
+			*(m_lines[(p_centreY - p_yOffset)] + (p_centreX - p_xOffset)) = p_colour;
 		}
 	}
 }
@@ -1860,8 +1858,8 @@ void CSurface::DrawClippedCirclePoint(int p_centreX,
 void CSurface::DrawCircleSpans(int p_centreX, int p_centreY, int p_halfWidth, int p_yOffset, int p_colour)
 {
 	int spanWidth = p_halfWidth * 2 + 1;
-	unsigned char* negativeSpan = (unsigned char*) m_lines[p_centreY - p_yOffset] + p_centreX - p_halfWidth;
-	memset((unsigned char*) m_lines[p_centreY + p_yOffset] + p_centreX - p_halfWidth, p_colour, spanWidth);
+	unsigned char* negativeSpan = m_lines[p_centreY - p_yOffset] + p_centreX - p_halfWidth;
+	memset(m_lines[p_centreY + p_yOffset] + p_centreX - p_halfWidth, p_colour, spanWidth);
 	memset(negativeSpan, p_colour, spanWidth);
 }
 
@@ -1892,13 +1890,13 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 		clipY = m_clipRect.m_y;
 		poleY = p_centreY + p_radius;
 		if (poleY >= clipY && poleY <= (m_clipRect.m_height + clipY - 1)) {
-			*((unsigned char*) m_lines[poleY] + p_centreX) = p_colour;
+			*(m_lines[poleY] + p_centreX) = p_colour;
 		}
 	}
 	if (p_centreX >= m_clipRect.m_x && p_centreX <= (m_clipRect.m_width + m_clipRect.m_x - 1)) {
 		if ((p_centreY - p_radius) >= m_clipRect.m_y &&
 			(p_centreY - p_radius) <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-			*((unsigned char*) m_lines[(p_centreY - p_radius)] + p_centreX) = p_colour;
+			*(m_lines[(p_centreY - p_radius)] + p_centreX) = p_colour;
 		}
 	}
 	if (p_centreY >= m_clipRect.m_y && p_centreY <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
@@ -1910,7 +1908,7 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 		if ((m_clipRect.m_width + m_clipRect.m_x - 1) < x2) {
 			x2 = m_clipRect.m_width + m_clipRect.m_x - 1;
 		}
-		memset((unsigned char*) m_lines[p_centreY] + x1, p_colour, x2 - x1 + 1);
+		memset(m_lines[p_centreY] + x1, p_colour, x2 - x1 + 1);
 	}
 
 	if (p_radius > 1) {
@@ -1943,10 +1941,10 @@ void CSurface::DrawClippedFilledCircle(int p_centreX, int p_centreY, int p_radiu
 								xLeft = clipX;
 							}
 							if (yTop >= clipY) {
-								memset((unsigned char*) m_lines[yTop] + xLeft, p_colour, xRight - xLeft + 1);
+								memset(m_lines[yTop] + xLeft, p_colour, xRight - xLeft + 1);
 							}
 							if (yBottom <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-								memset((unsigned char*) m_lines[yBottom] + xLeft, p_colour, xRight - xLeft + 1);
+								memset(m_lines[yBottom] + xLeft, p_colour, xRight - xLeft + 1);
 							}
 						}
 					}
@@ -1976,10 +1974,10 @@ void CSurface::FilledCircleClipPoints(int p_centreX, int p_centreY, int p_xOffse
 				x1 = clipX;
 			}
 			if (m_clipRect.m_y <= y1) {
-				memset((unsigned char*) m_lines[y1] + x1, p_colour, x2 - x1 + 1);
+				memset(m_lines[y1] + x1, p_colour, x2 - x1 + 1);
 			}
 			if (y2 <= (m_clipRect.m_height + m_clipRect.m_y - 1)) {
-				memset((unsigned char*) m_lines[y2] + x1, p_colour, x2 - x1 + 1);
+				memset(m_lines[y2] + x1, p_colour, x2 - x1 + 1);
 			}
 		}
 	}
@@ -2078,7 +2076,7 @@ void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZR
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2176,7 +2174,7 @@ void CSurface::BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, C
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
 			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2296,7 +2294,7 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
 			zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2469,7 +2467,7 @@ void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZ
 		do {
 			int width = p_rect.m_width;
 			int skipX = sourceWidth - p_clip.m_x - width;
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2572,7 +2570,7 @@ void CSurface::BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_re
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2601,7 +2599,7 @@ void CSurface::BlitZRLENoClipZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsi
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2639,7 +2637,7 @@ void CSurface::BlitZRLENoClipZBuffRemap(const CVSRect& p_rect,
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2680,7 +2678,7 @@ void CSurface::BlitZRLENoClipQZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, uns
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2727,7 +2725,7 @@ void CSurface::BlitZRLENoClipQZBuffRemap(const CVSRect& p_rect,
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			unsigned char run;
 			do {
@@ -2775,7 +2773,7 @@ void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_r
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
+			unsigned char* dst = m_lines[y] + startX;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2850,7 +2848,7 @@ void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 		do {
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -2965,7 +2963,7 @@ void CSurface::BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
 			unsigned short* zlines = (unsigned short*) CPVZBuffSurface::m_bitmap.m_lines[y] + x;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -3092,7 +3090,7 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
 			int copyLen;
 			int width = p_rect.m_width;
 			int clipX = p_clip.m_x;
-			unsigned char* dst = (unsigned char*) m_lines[lineIndex] + x;
+			unsigned char* dst = m_lines[lineIndex] + x;
 			do {
 				run = *src++;
 				if (clipX > 0) {
@@ -3261,7 +3259,7 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 		do {
 			int width = p_rect.m_width;
 			int skipX = (zrleWidth - p_clip.m_x) - width;
-			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
+			unsigned char* dst = m_lines[y] + startX;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -3361,7 +3359,7 @@ void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect, CResZRLE* p_zrle, bool
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + x;
+			unsigned char* dst = m_lines[y] + x;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -3401,7 +3399,7 @@ void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect, CResZRLE* p_zrle, boo
 	int row = 0;
 	if (p_rect.m_height > 0) {
 		do {
-			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
+			unsigned char* dst = m_lines[y] + startX;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -3484,7 +3482,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 			int i = 0;
 			if (dest.m_height > 0) {
 				do {
-					unsigned char* dst = (unsigned char*) m_lines[destY] + destX;
+					unsigned char* dst = m_lines[destY] + destX;
 					int j = 0;
 					if (dest.m_width > 0) {
 						do {
@@ -3507,7 +3505,7 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 			int i = 0;
 			if (dest.m_height > 0) {
 				do {
-					memcpy((unsigned char*) m_lines[destY] + destX, source, dest.m_width);
+					memcpy(m_lines[destY] + destX, source, dest.m_width);
 					destY += yStep;
 					source += bitmapWidth;
 					i++;

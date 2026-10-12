@@ -61,7 +61,7 @@ void CPVGDIBitmap::CreateLinePtrs()
 			heightWord = m_size.m_height;
 			size = (unsigned int) heightWord;
 			size = size * sizeof(*m_lines);
-			m_lines = (void**) operator new(size);
+			m_lines = (unsigned char**) operator new(size);
 			ResetLinePtrs();
 		}
 		m_lineCapacity = (unsigned int) m_size.m_height;
@@ -146,7 +146,7 @@ void CPVGDIBitmap::Scroll(const CVSRect& p_rect, const CVSPoint& p_destination)
 			int srcY = rectY;
 			int dstY = destinationY;
 			do {
-				memmove((unsigned char*) m_lines[srcY] + rectX, (unsigned char*) m_lines[dstY] + destinationX, width);
+				memmove(m_lines[srcY] + rectX, m_lines[dstY] + destinationX, width);
 				height = height - 1;
 				srcY = srcY + 1;
 				dstY = dstY + 1;
@@ -159,7 +159,7 @@ void CPVGDIBitmap::Scroll(const CVSRect& p_rect, const CVSPoint& p_destination)
 			int srcY = rectY;
 			int dstY = destinationY;
 			do {
-				memcpy((unsigned char*) m_lines[srcY] + rectX, (unsigned char*) m_lines[dstY] + destinationX, width);
+				memcpy(m_lines[srcY] + rectX, m_lines[dstY] + destinationX, width);
 				srcY = srcY + 1;
 				dstY = dstY + 1;
 				height = height - 1;
@@ -171,7 +171,7 @@ void CPVGDIBitmap::Scroll(const CVSRect& p_rect, const CVSPoint& p_destination)
 	int dstY = height - 1 + destinationY;
 	if (0 < height) {
 		do {
-			memcpy((unsigned char*) m_lines[srcY] + rectX, (unsigned char*) m_lines[dstY] + destinationX, width);
+			memcpy(m_lines[srcY] + rectX, m_lines[dstY] + destinationX, width);
 			srcY = srcY - 1;
 			dstY = dstY - 1;
 			height = height - 1;
@@ -247,8 +247,8 @@ void CPVGDIBitmap::ResetScroll()
 // FUNCTION: LEMBALL 0x00475c80
 void CPVGDIBitmap::DrawCircleSymmetricPoints(int p_centreX, int p_centreY, int p_xOffset, int p_yOffset, int p_colour)
 {
-	*((unsigned char*) m_lines[p_yOffset + p_centreY] + p_centreX + p_xOffset) = (unsigned char) p_colour;
-	*((unsigned char*) m_lines[p_yOffset + p_centreY] + p_centreX - p_xOffset) = (unsigned char) p_colour;
-	*((unsigned char*) m_lines[p_centreY - p_yOffset] + p_centreX - p_xOffset) = (unsigned char) p_colour;
-	*((unsigned char*) m_lines[p_centreY - p_yOffset] + p_centreX + p_xOffset) = (unsigned char) p_colour;
+	*(m_lines[p_yOffset + p_centreY] + p_centreX + p_xOffset) = (unsigned char) p_colour;
+	*(m_lines[p_yOffset + p_centreY] + p_centreX - p_xOffset) = (unsigned char) p_colour;
+	*(m_lines[p_centreY - p_yOffset] + p_centreX - p_xOffset) = (unsigned char) p_colour;
+	*(m_lines[p_centreY - p_yOffset] + p_centreX + p_xOffset) = (unsigned char) p_colour;
 }

@@ -104,7 +104,7 @@ int CPlanarDibDriver::BitBltContexts(CDrawingContext* p_destination,
 		if (i >= rows) {
 			break;
 		}
-		unsigned char* source = (unsigned char*) m_currentBitmap->m_lines[row];
+		unsigned char* source = m_currentBitmap->m_lines[row];
 		int plane = 0;
 		do {
 			int x = destinationX + plane;

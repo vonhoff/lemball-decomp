@@ -34,7 +34,7 @@ public:
 	friend class CGWnd;
 
 private:
-	void** m_lines;              // 0x04
+	unsigned char** m_lines;     // 0x04
 	unsigned char* m_bits;       // 0x08
 	unsigned char* m_bitsBase;   // 0x0c
 	unsigned int m_directScroll; // 0x10
