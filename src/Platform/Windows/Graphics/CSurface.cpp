@@ -3268,12 +3268,10 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 	}
 	int row = 0;
 	if (p_rect.m_height > 0) {
-		int lineOffset = y * 4;
-		int stepOffset = step * 4;
 		do {
 			int width = p_rect.m_width;
 			int skipX = (zrleWidth - p_clip.m_x) - width;
-			unsigned char* dst = *(unsigned char**) ((unsigned char*) m_lines + lineOffset) + startX;
+			unsigned char* dst = (unsigned char*) m_lines[y] + startX;
 			unsigned char run;
 			do {
 				run = *src++;
@@ -3353,7 +3351,7 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 					}
 				}
 			} while (run != ZRLE_ROW_END_MARKER);
-			lineOffset += stepOffset;
+			y += step;
 			row++;
 		} while (row < p_rect.m_height);
 	}
@@ -3439,132 +3437,22 @@ void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect, CResZRLE* p_zrle, boo
 	}
 }
 
-#pragma inline_depth(0)
 // FUNCTION: LEMBALL 0x004783c0
 void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 {
-	unsigned int flags = p_primitive->m_flags;
-	if ((flags & (ZRLE_DRAW_FLAG_Z_BUFFER | ZRLE_DRAW_FLAG_QUICK_Z_BUFFER)) == 0) {
-		BlitZRLE((int) p_primitive->m_x, (int) p_primitive->m_y, p_zrle, flags, p_primitive->m_remap, 0);
-		return;
+	unsigned long flags = p_primitive->m_flags;
+	if ((flags & (ZRLE_DRAW_FLAG_Z_BUFFER | ZRLE_DRAW_FLAG_QUICK_Z_BUFFER)) != 0) {
+		BlitZRLE(p_primitive->m_x,
+				 p_primitive->m_y,
+				 p_zrle,
+				 flags,
+				 p_primitive->m_remap,
+				 (unsigned short) p_primitive->m_state);
 	}
-	{
-		unsigned short stateDepth = (unsigned short) p_primitive->m_state;
-		CRemap* remap = p_primitive->m_remap;
-		int primitiveY = (int) p_primitive->m_y;
-		int primitiveX = (int) p_primitive->m_x;
-
-		if ((int) p_zrle->m_size.m_height * (int) p_zrle->m_size.m_width == 0) {
-			return;
-		}
-		{
-			CVSRect dest((short) primitiveX, (short) primitiveY, &p_zrle->m_size);
-			if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
-				static_cast<CVSPoint&>(dest).AddInPlace(&p_zrle->m_rasterPoint);
-			}
-			{
-				CVSRect clipped;
-
-				if (dest.m_width > ZRLE_CLIPPED_DIMENSION_MAX || dest.m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
-					short warningWidth = dest.m_width;
-					CVSOStream& warningStream = *g_pDebugOutput << g_szWarningZrleIs;
-					short warningHeight = dest.m_height;
-					CVSOStream& widthStream = warningStream << (int) warningWidth << g_szClippingWideAnd;
-					widthStream << (int) warningHeight << g_szClippingHighNewline;
-					if (dest.m_width > ZRLE_CLIPPED_DIMENSION_MAX) {
-						*g_pDebugOutput << g_szClippingWidthTo << (int) ZRLE_CLIPPED_DIMENSION_MAX
-										<< g_szClippingDotNewline;
-						dest.m_width = ZRLE_CLIPPED_DIMENSION_MAX;
-					}
-					if (dest.m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
-						*g_pDebugOutput << g_szClippingHeightTo << (int) ZRLE_CLIPPED_DIMENSION_MAX
-										<< g_szClippingDotNewline;
-						dest.m_height = ZRLE_CLIPPED_DIMENSION_MAX;
-					}
-				}
-				if (ClipRect(dest, &clipped) == 0) {
-					AddToChangeList(dest);
-					if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
-						if (remap == NULL) {
-							BlitZRLENoClipZBuff(dest, p_zrle, stateDepth);
-							return;
-						}
-						BlitZRLENoClipZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
-						return;
-					}
-					if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
-						if (remap == NULL) {
-							BlitZRLENoClipQZBuff(dest, p_zrle, stateDepth);
-							return;
-						}
-						BlitZRLENoClipQZBuffRemap(dest, p_zrle, stateDepth, remap->m_remap);
-						return;
-					}
-					if (remap == NULL) {
-						if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
-							BlitZRLENoClipR(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
-							return;
-						}
-						BlitZRLENoClip(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
-						return;
-					}
-					if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
-						BlitZRLENoClipRemapR(dest,
-											 p_zrle,
-											 ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
-											 remap->m_remap);
-						return;
-					}
-					BlitZRLENoClipRemap(dest, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
-					return;
-				}
-				if (clipped.m_width <= 0 || clipped.m_height <= 0) {
-					return;
-				}
-				AddToChangeList(dest);
-				if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
-					if (remap == NULL) {
-						BlitZRLEClipZBuff(dest, clipped, p_zrle, stateDepth);
-						return;
-					}
-					BlitZRLEClipZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
-					return;
-				}
-				if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
-					if (remap == NULL) {
-						BlitZRLEClipQZBuff(dest, clipped, p_zrle, stateDepth);
-						return;
-					}
-					BlitZRLEClipQZBuffRemap(dest, clipped, p_zrle, stateDepth, remap->m_remap);
-					return;
-				}
-				if (remap == NULL) {
-					if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
-						BlitZRLEClipR(dest, clipped, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
-						return;
-					}
-					BlitZRLEClip(dest, clipped, p_zrle, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
-					return;
-				}
-				if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
-					BlitZRLEClipRemapR(dest,
-									   clipped,
-									   p_zrle,
-									   ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
-									   remap->m_remap);
-					return;
-				}
-				BlitZRLEClipRemap(dest,
-								  clipped,
-								  p_zrle,
-								  ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
-								  remap->m_remap);
-			}
-		}
+	else {
+		BlitZRLE(p_primitive->m_x, p_primitive->m_y, p_zrle, flags, p_primitive->m_remap, 0);
 	}
 }
-
-#pragma inline_depth(255)
 
 // FUNCTION: LEMBALL 0x004787f0
 void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
@@ -3640,123 +3528,107 @@ void CSurface::Blit(CBitmap* p_primitive, CResBITMAP* p_bitmap)
 }
 
 // FUNCTION: LEMBALL 0x00478bb0
-void CSurface::BlitZRLE(int p_x,
-						int p_y,
-						CResZRLE* p_zrle,
-						unsigned long p_flags,
-						CRemap* p_remap,
-						unsigned short p_depth)
+inline void CSurface::BlitZRLE(int p_x,
+							   int p_y,
+							   CResZRLE* p_zrle,
+							   unsigned long p_flags,
+							   CRemap* p_remap,
+							   unsigned short p_depth)
 {
-	short warningHeight;
-	CResZRLE* resource;
-	short zHeight;
-	short zWidth;
-	unsigned long flags;
-	int width;
-
-	resource = p_zrle;
-	zWidth = resource->m_size.m_width;
-	zHeight = resource->m_size.m_height;
-	width = (int) zWidth;
-	if ((int) zHeight * width == 0) {
+	if (p_zrle->m_size.m_height * p_zrle->m_size.m_width == 0) {
 		return;
 	}
-	CVSRect destination((short) p_x, (short) p_y, zWidth, zHeight);
-	flags = p_flags;
-	CVSRect* dest = &destination;
-	if ((flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
-		dest->m_x = (short) (dest->m_x + resource->m_rasterPoint.m_x);
-		dest->m_y = (short) (dest->m_y + resource->m_rasterPoint.m_y);
+	CVSRect destination((short) p_x, (short) p_y, &p_zrle->m_size);
+	if ((p_flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
+		static_cast<CVSPoint&>(destination).AddInPlace(&p_zrle->m_rasterPoint);
 	}
 	CVSRect clip;
-	CVSRect* clipped = &clip;
-	if (dest->m_width > ZRLE_CLIPPED_DIMENSION_MAX || dest->m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+	if (destination.m_width > ZRLE_CLIPPED_DIMENSION_MAX || destination.m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+		short warningWidth = destination.m_width;
 		CVSOStream& warning = *g_pDebugOutput << g_szWarningZrleIs;
-		warningHeight = dest->m_height;
-		CVSOStream& heightOutput = warning << width << g_szClippingWideAnd;
-		heightOutput << (int) warningHeight << g_szClippingHighNewline;
-		if (dest->m_width > ZRLE_CLIPPED_DIMENSION_MAX) {
+		short warningHeight = destination.m_height;
+		CVSOStream& widthOutput = warning << (int) warningWidth << g_szClippingWideAnd;
+		widthOutput << (int) warningHeight << g_szClippingHighNewline;
+		if (destination.m_width > ZRLE_CLIPPED_DIMENSION_MAX) {
 			*g_pDebugOutput << g_szClippingWidthTo << (int) ZRLE_CLIPPED_DIMENSION_MAX << g_szClippingDotNewline;
-			dest->m_width = ZRLE_CLIPPED_DIMENSION_MAX;
+			destination.m_width = ZRLE_CLIPPED_DIMENSION_MAX;
 		}
-		if (dest->m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
+		if (destination.m_height > ZRLE_CLIPPED_DIMENSION_MAX) {
 			*g_pDebugOutput << g_szClippingHeightTo << (int) ZRLE_CLIPPED_DIMENSION_MAX << g_szClippingDotNewline;
-			dest->m_height = ZRLE_CLIPPED_DIMENSION_MAX;
+			destination.m_height = ZRLE_CLIPPED_DIMENSION_MAX;
 		}
 	}
-	{
-		CRemap* remap;
-
-		remap = p_remap;
-		if (ClipRect(*dest, clipped) == 0) {
-			AddToChangeList(*dest);
-			if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
-				if (remap == NULL) {
-					BlitZRLENoClipZBuff(*dest, resource, p_depth);
-					return;
-				}
-				BlitZRLENoClipZBuffRemap(*dest, resource, p_depth, remap->m_remap);
+	if (ClipRect(destination, &clip) == 0) {
+		AddToChangeList(destination);
+		if ((p_flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
+			if (p_remap == NULL) {
+				BlitZRLENoClipZBuff(destination, p_zrle, p_depth);
 				return;
 			}
-			if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
-				if (remap == NULL) {
-					BlitZRLENoClipQZBuff(*dest, resource, p_depth);
-					return;
-				}
-				BlitZRLENoClipQZBuffRemap(*dest, resource, p_depth, remap->m_remap);
-				return;
-			}
-			if (remap == NULL) {
-				if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
-					BlitZRLENoClipR(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
-					return;
-				}
-				BlitZRLENoClip(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
-				return;
-			}
-			if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
-				BlitZRLENoClipRemapR(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
-				return;
-			}
-			BlitZRLENoClipRemap(*dest, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
+			BlitZRLENoClipZBuffRemap(destination, p_zrle, p_depth, p_remap->m_remap);
 			return;
 		}
-		if (clipped->m_width <= 0 || clipped->m_height <= 0) {
-			return;
-		}
-		AddToChangeList(*dest);
-		if ((flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
-			if (remap == NULL) {
-				BlitZRLEClipZBuff(*dest, *clipped, resource, p_depth);
+		if ((p_flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
+			if (p_remap == NULL) {
+				BlitZRLENoClipQZBuff(destination, p_zrle, p_depth);
 				return;
 			}
-			BlitZRLEClipZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
+			BlitZRLENoClipQZBuffRemap(destination, p_zrle, p_depth, p_remap->m_remap);
 			return;
 		}
-		if ((flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
-			if (remap == NULL) {
-				BlitZRLEClipQZBuff(*dest, *clipped, resource, p_depth);
+		if (p_remap == NULL) {
+			if ((p_flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+				BlitZRLENoClipR(destination, p_zrle, ((p_flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 				return;
 			}
-			BlitZRLEClipQZBuffRemap(*dest, *clipped, resource, p_depth, remap->m_remap);
+			BlitZRLENoClip(destination, p_zrle, ((p_flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
 			return;
 		}
-		if (remap == NULL) {
-			if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
-				BlitZRLEClipR(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
-				return;
-			}
-			BlitZRLEClip(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+		if ((p_flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+			BlitZRLENoClipRemapR(destination,
+								 p_zrle,
+								 ((p_flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+								 p_remap->m_remap);
 			return;
 		}
-		if ((flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
-			BlitZRLEClipRemapR(*dest,
-							   *clipped,
-							   resource,
-							   ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
-							   remap->m_remap);
-			return;
-		}
-		BlitZRLEClipRemap(*dest, *clipped, resource, ((flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), remap->m_remap);
+		BlitZRLENoClipRemap(destination, p_zrle, ((p_flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), p_remap->m_remap);
+		return;
 	}
+	if (clip.m_width <= 0 || clip.m_height <= 0) {
+		return;
+	}
+	AddToChangeList(destination);
+	if ((p_flags & ZRLE_DRAW_FLAG_Z_BUFFER) != 0) {
+		if (p_remap == NULL) {
+			BlitZRLEClipZBuff(destination, clip, p_zrle, p_depth);
+			return;
+		}
+		BlitZRLEClipZBuffRemap(destination, clip, p_zrle, p_depth, p_remap->m_remap);
+		return;
+	}
+	if ((p_flags & ZRLE_DRAW_FLAG_QUICK_Z_BUFFER) != 0) {
+		if (p_remap == NULL) {
+			BlitZRLEClipQZBuff(destination, clip, p_zrle, p_depth);
+			return;
+		}
+		BlitZRLEClipQZBuffRemap(destination, clip, p_zrle, p_depth, p_remap->m_remap);
+		return;
+	}
+	if (p_remap == NULL) {
+		if ((p_flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+			BlitZRLEClipR(destination, clip, p_zrle, ((p_flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+			return;
+		}
+		BlitZRLEClip(destination, clip, p_zrle, ((p_flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0));
+		return;
+	}
+	if ((p_flags & ZRLE_DRAW_FLAG_MIRROR_HORIZONTAL) != 0) {
+		BlitZRLEClipRemapR(destination,
+						   clip,
+						   p_zrle,
+						   ((p_flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0),
+						   p_remap->m_remap);
+		return;
+	}
+	BlitZRLEClipRemap(destination, clip, p_zrle, ((p_flags & ZRLE_DRAW_FLAG_REVERSE_VERTICAL) != 0), p_remap->m_remap);
 }
