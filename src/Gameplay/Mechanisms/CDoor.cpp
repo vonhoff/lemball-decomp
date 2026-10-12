@@ -60,7 +60,7 @@ void CDoor::Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, in
 	if (m_doorType != DOOR_LOCK_NONE) {
 		m_action = ACTION_DOOR_LOCKED;
 	}
-	switch ((unsigned short) m_doorType) {
+	switch (m_doorType) {
 	case DOOR_LOCK_NONE:
 		m_actionArgument = (short) OBJECT_INVALID;
 		break;
