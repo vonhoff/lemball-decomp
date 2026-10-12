@@ -20,7 +20,6 @@
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "Engine/Time/VsTime.h"
-#include "Frontend/Controls/CGunController.h"
 #include "Frontend/Controls/ControlMessages.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "Frontend/tagCoordPair.h"
