@@ -13,8 +13,6 @@
 #include "GameView/Loading/CCDLoadAnim.h"
 #include "GameView/Sound/CSoundView.h"
 
-#include <new.h>
-
 class CCdLoadAnimDraw;
 
 // GLOBAL: LEMBALL 0x0049f1c0
@@ -230,19 +228,13 @@ CFrontendResourceLoader::CFrontendResourceLoader(CMain2DDisplay* p_display, int 
 	m_totalResources += FRONTEND_PALETTE_COUNT + FRONTEND_STRING_COUNT;
 	m_totalResources += FRONTEND_SUCCESS_MOVIE_COUNT;
 	m_totalResources += FRONTEND_FAILURE_MOVIE_COUNT;
-	m_anims = (CResANIM**) operator new(m_animCapacity * sizeof(*m_anims));
-	m_fonts = (CResFONT**) operator new(m_fontCapacity * sizeof(*m_fonts));
-	m_bitmaps = (CResBITMAP**) operator new(m_bitmapCapacity * sizeof(*m_bitmaps));
-	m_palettes = (CResPALETTE**) operator new(FRONTEND_PALETTE_COUNT * sizeof(*m_palettes));
-	m_strings = (CResSTRING**) operator new(FRONTEND_STRING_COUNT * sizeof(*m_strings));
-	m_movies = (CResMOVIE**) operator new(FRONTEND_MOVIE_COUNT * sizeof(*m_movies));
-	CCDLoadAnim* loadAnim = (CCDLoadAnim*) operator new(sizeof(CCDLoadAnim));
-	if (loadAnim == NULL) {
-		m_loadAnim = NULL;
-	}
-	else {
-		m_loadAnim = new (loadAnim) CCDLoadAnim(p_display->m_gdi, p_display);
-	}
+	m_anims = new CResANIM*[m_animCapacity];
+	m_fonts = new CResFONT*[m_fontCapacity];
+	m_bitmaps = new CResBITMAP*[m_bitmapCapacity];
+	m_palettes = new CResPALETTE*[FRONTEND_PALETTE_COUNT];
+	m_strings = new CResSTRING*[FRONTEND_STRING_COUNT];
+	m_movies = new CResMOVIE*[FRONTEND_MOVIE_COUNT];
+	m_loadAnim = new CCDLoadAnim(p_display->m_gdi, p_display);
 	CCdLoadAnimDraw* loadingDraw = static_cast<CCdLoadAnimDraw*>(m_loadAnim);
 	p_display->m_loadingDraw = loadingDraw;
 	m_totalResources += g_pSoundView->GetnEffects((unsigned short) p_soundState);
@@ -310,12 +302,12 @@ CFrontendResourceLoader::~CFrontendResourceLoader()
 		m_movies[i]->UnLoad();
 		m_movies[i] = NULL;
 	}
-	operator delete(m_movies);
-	operator delete(m_strings);
-	operator delete(m_palettes);
-	operator delete(m_bitmaps);
-	operator delete(m_fonts);
-	operator delete(m_anims);
+	delete[] m_movies;
+	delete[] m_strings;
+	delete[] m_palettes;
+	delete[] m_bitmaps;
+	delete[] m_fonts;
+	delete[] m_anims;
 	g_pMogRes->CleanUpResources();
 }
 
