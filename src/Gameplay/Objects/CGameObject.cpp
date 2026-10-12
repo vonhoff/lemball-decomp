@@ -358,9 +358,10 @@ int CGameObject::UsableState()
 // FUNCTION: LEMBALL 0x00413050
 void ReindexAllObjects()
 {
-	unsigned int count = g_wObjectCount;
-	for (unsigned int index = 0; index < count; ++index) {
-		CGameObject* object = g_pObjects[index & OBJECT_ID_MASK];
+	int index = 0;
+	int count = g_wObjectCount;
+	for (; index < count; ++index) {
+		CGameObject* object = g_pObjects[(unsigned short) index];
 		if (object != 0 && object->m_objectId != index) {
 			object->m_objectId = (unsigned short) index;
 		}
