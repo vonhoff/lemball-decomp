@@ -252,7 +252,6 @@ void CMain2DDisplay::KillDrawer(eFlowProcesses p_flow)
 // FUNCTION: LEMBALL 0x00431990
 void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 {
-	void* storage;
 	CChangeList* changeList;
 	unsigned char variant;
 
@@ -273,37 +272,17 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 	m_currentFlow = p_flow;
 	switch (p_flow) {
 	case FLOW_INTRO_ANIM:
-		storage = operator new(sizeof(CIntroAnimDrawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
 		variant = 0;
-		m_drawer = new (storage) CIntroAnimDrawer(this, m_gdi, localRect, variant);
+		m_drawer = new CIntroAnimDrawer(this, m_gdi, localRect, variant);
 		break;
 	case FLOW_MAIN_OPTIONS_1:
-		storage = operator new(sizeof(CMainOptions1Drawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) CMainOptions1Drawer(this, m_gdi, localRect);
+		m_drawer = new CMainOptions1Drawer(this, m_gdi, localRect);
 		break;
 	case FLOW_MAIN_OPTIONS_2:
-		storage = operator new(sizeof(CMainOptions2Drawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) CMainOptions2Drawer(this, m_gdi, localRect);
+		m_drawer = new CMainOptions2Drawer(this, m_gdi, localRect);
 		break;
 	case FLOW_PREVIEW:
-		storage = operator new(sizeof(CPreviewDrawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) CPreviewDrawer(this, m_gdi, localRect);
+		m_drawer = new CPreviewDrawer(this, m_gdi, localRect);
 		break;
 	case FLOW_GAMEPLAY:
 	case FLOW_DEMO: {
@@ -312,62 +291,27 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		m_ai = (CAI*) m_game->m_process;
 		ai = (CAI*) m_game->m_process;
 		m_map = ai->m_map;
-		storage = operator new(sizeof(C2D));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) C2D(this, (CAI*) m_ai, m_gdi, (CMap*) m_map, localRect);
+		m_drawer = new C2D(this, (CAI*) m_ai, m_gdi, (CMap*) m_map, localRect);
 		break;
 	}
 	case FLOW_ABOUT:
-		storage = operator new(sizeof(CAboutScreen));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) CAboutScreen(this, m_gdi, localRect);
+		m_drawer = new CAboutScreen(this, m_gdi, localRect);
 		break;
 	case FLOW_NETWORK_OPTIONS:
-		storage = operator new(sizeof(CNetworkOptionsDrawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) CNetworkOptionsDrawer(this, m_gdi, localRect);
+		m_drawer = new CNetworkOptionsDrawer(this, m_gdi, localRect);
 		break;
 	case FLOW_SUCCESS:
-		storage = operator new(sizeof(CSuccFailDrawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) CSuccFailDrawer(this, m_gdi, localRect, 1);
+		m_drawer = new CSuccFailDrawer(this, m_gdi, localRect, 1);
 		break;
 	case FLOW_FAILURE:
-		storage = operator new(sizeof(CSuccFailDrawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) CSuccFailDrawer(this, m_gdi, localRect, 0);
+		m_drawer = new CSuccFailDrawer(this, m_gdi, localRect, 0);
 		break;
 	case FLOW_PASSWORD:
-		storage = operator new(sizeof(CPasswordDrawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
-		m_drawer = new (storage) CPasswordDrawer(this, m_gdi, localRect);
+		m_drawer = new CPasswordDrawer(this, m_gdi, localRect);
 		break;
 	case FLOW_LEVEL_INTRO:
-		storage = operator new(sizeof(CIntroAnimDrawer));
-		if (storage == NULL) {
-			m_drawer = NULL;
-			break;
-		}
 		variant = 1;
-		m_drawer = new (storage) CIntroAnimDrawer(this, m_gdi, localRect, variant);
+		m_drawer = new CIntroAnimDrawer(this, m_gdi, localRect, variant);
 		break;
 	}
 
