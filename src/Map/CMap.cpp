@@ -116,11 +116,11 @@ void CMap::ReSize(int p_width, int p_height)
 		}
 		m_ground.m_width = p_width;
 		m_ground.m_height = p_height;
-		m_ground.m_ground = new CGround[p_width * p_height];
+		m_ground.m_ground = new CGround[(unsigned int) p_width * p_height];
 		if (m_walkBits != NULL) {
 			delete[] m_walkBits;
 		}
-		m_walkBits = new unsigned char[m_walkWidth * m_walkHeight];
+		m_walkBits = new unsigned char[(unsigned int) m_walkWidth * m_walkHeight];
 	}
 }
 
@@ -130,7 +130,8 @@ unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 	if (p_mover != NULL) {
 		int blockX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
 		int blockY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
-		if ((m_ground.m_ground[blockY * m_ground.m_width + blockX].m_collision & GROUND_COLLISION_MOVER_PRESENT) != 0) {
+		if ((m_ground.m_ground[(unsigned int) blockY * m_ground.m_width + blockX].m_collision &
+			 GROUND_COLLISION_MOVER_PRESENT) != 0) {
 			int height;
 			CMover* mover = m_ai->FindMoverHeight(p_x, p_y, height);
 			if (mover != NULL) {
@@ -144,7 +145,7 @@ unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 	if (p_x >= 0 && p_y >= 0 && blockX < m_ground.m_width && blockY < m_ground.m_height) {
 		p_x &= GROUND_BLOCK_PIXEL_MASK;
 		p_y &= GROUND_BLOCK_PIXEL_MASK;
-		return m_ground.m_ground[blockY * m_ground.m_width + blockX].GetZ(p_x, p_y);
+		return m_ground.m_ground[(unsigned int) blockY * m_ground.m_width + blockX].GetZ(p_x, p_y);
 	}
 	return 0;
 }
@@ -335,7 +336,8 @@ void CMap::CreateWalkBits()
 							collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 						}
 						else {
-							collision = m_ground.m_ground[blockCoordinate * blockY + blockX - 1].m_collision;
+							collision =
+								m_ground.m_ground[(unsigned int) blockCoordinate * blockY + blockX - 1].m_collision;
 						}
 						if ((collision & WALK_BLOCKING_COLLISION_MASK) == 0) {
 							nextBlock = (x - GROUND_BLOCK_PIXEL_HALF_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
@@ -363,7 +365,7 @@ void CMap::CreateWalkBits()
 								int cellY = y;
 								cellX &= GROUND_BLOCK_PIXEL_MASK;
 								cellY &= GROUND_BLOCK_PIXEL_MASK;
-								z = (m_ground.m_ground + blockCoordinate * currentBlockY + nextBlock)
+								z = (m_ground.m_ground + (unsigned int) blockCoordinate * currentBlockY + nextBlock)
 										->GetZ(cellX, cellY);
 							}
 							secondHeight = z;
@@ -390,7 +392,7 @@ void CMap::CreateWalkBits()
 // FUNCTION: LEMBALL 0x00430a20
 void CMap::SetTerrain(int p_x, int p_y, eObjectType p_objectType, int p_data)
 {
-	CGround* ground = m_ground.m_ground + m_ground.m_width * p_y + p_x;
+	CGround* ground = m_ground.m_ground + (unsigned int) m_ground.m_width * p_y + p_x;
 	ground->m_objectType = p_objectType;
 	ground->m_objectData = p_data;
 	ground->SetCollision();
@@ -509,12 +511,12 @@ void CMap::LoadLevel(tagLoadGroundSurfaceData* p_data, unsigned long p_dataSize,
 			unsigned short objectData = *data++;
 			unsigned short groundHeight = *data++;
 
-			CGround* ground = m_ground.m_ground + m_ground.m_width * y + x;
+			CGround* ground = m_ground.m_ground + (unsigned int) m_ground.m_width * y + x;
 			ground->m_objectType = objectType;
 			ground->m_objectData = objectData;
 			ground->SetCollision();
 
-			m_ground.m_ground[m_ground.m_width * y + x].m_height = groundHeight;
+			m_ground.m_ground[(unsigned int) m_ground.m_width * y + x].m_height = groundHeight;
 		}
 	}
 
