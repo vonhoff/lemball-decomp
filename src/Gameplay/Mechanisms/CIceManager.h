@@ -27,7 +27,7 @@ public:
 			 int p_velocityY,
 			 unsigned int p_initialSwitched);
 	void Initialise(int p_capacity);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Switch(swMessage p_message, int p_id);
 	int ExportIceRecords(tCoord3d p_records[][2]);
 	void ResetCount();

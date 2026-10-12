@@ -77,7 +77,7 @@ int CNodeManager::AddNode(int p_x, int p_y)
 }
 
 // FUNCTION: LEMBALL 0x00421470
-void CNodeManager::LoadLevel(tagLoadNodeInformation* p_information, unsigned long p_dataSize, unsigned int p_skip)
+void CNodeManager::LoadLevel(tagLoadNodeInformation* p_information, unsigned long p_dataSize, bool p_skip)
 {
 	unsigned char* p_data = (unsigned char*) p_information;
 	unsigned char* end = p_data + p_dataSize;

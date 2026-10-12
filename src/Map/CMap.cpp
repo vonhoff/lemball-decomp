@@ -491,7 +491,7 @@ void CMap::GameToScreen(int& p_x, int& p_y)
 }
 
 // FUNCTION: LEMBALL 0x00430db0
-void CMap::LoadLevel(tagLoadGroundSurfaceData* p_data, unsigned long p_dataSize, unsigned char p_skip)
+void CMap::LoadLevel(tagLoadGroundSurfaceData* p_data, unsigned long p_dataSize, bool p_skip)
 {
 	unsigned short* data;
 	int x;

@@ -173,7 +173,7 @@ void CMoverManager::Switch(swMessage p_message, int p_id)
 }
 
 // FUNCTION: LEMBALL 0x0042f680
-void CMoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CMoverManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned char* cursor = p_data;
 	unsigned short count = *(unsigned short*) cursor;

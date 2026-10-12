@@ -18,7 +18,7 @@ public:
 	CEnemyGroupManager(CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager);
 	tagLoadEnemyDataAdditionalAction* LoadLevelAdditional_Waypoint(tagLoadEnemyDataAdditionalAction* p_data,
 																   tagWaypointInformation*& p_waypointInfo);
-	void LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip);
+	void LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, bool p_skip);
 	void Restart();
 	void RemoveEnemyGroup(CEnemyGroup* p_group);
 	void AddEnemyGroup(int p_x,

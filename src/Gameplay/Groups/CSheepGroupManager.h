@@ -16,7 +16,7 @@ public:
 	void AddSheepGroup(int p_x, int p_y, int p_z);
 	void RemoveSheepGroup(CSheepGroup* p_group);
 	int Process();
-	void LoadLevel(tagLoadSheepData* p_data, unsigned long p_dataSize, unsigned int p_skip);
+	void LoadLevel(tagLoadSheepData* p_data, unsigned long p_dataSize, bool p_skip);
 	void Restart();
 };
 

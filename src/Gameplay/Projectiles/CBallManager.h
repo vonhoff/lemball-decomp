@@ -10,7 +10,7 @@ public:
 	int Process();
 	void Delete(CBall* p_ball);
 	void Initialise(int p_capacity);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Restart();
 	~CBallManager();
 	void Clear();

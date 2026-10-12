@@ -120,7 +120,7 @@ void CSlinkyManager::Process()
 }
 
 // FUNCTION: LEMBALL 0x0040be50
-void CSlinkyManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CSlinkyManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short* data = (unsigned short*) p_data;
 	unsigned short count = *data++;

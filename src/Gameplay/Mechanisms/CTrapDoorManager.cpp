@@ -140,7 +140,7 @@ void CTrapDoorManager::SetTrapDoorPosition(int p_x, int p_y, int p_z, int p_inde
 }
 
 // FUNCTION: LEMBALL 0x0040ca40
-void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip)
+void CTrapDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned char* data = p_data;
 	int count = *(unsigned short*) data;

@@ -89,7 +89,7 @@ void CInvisibleSwitchManager::AddPointSwitch(unsigned short p_id, short p_x, sho
 }
 
 // FUNCTION: LEMBALL 0x0040a490
-void CInvisibleSwitchManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CInvisibleSwitchManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short count;
 	int i;

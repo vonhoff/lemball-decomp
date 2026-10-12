@@ -169,7 +169,7 @@ unsigned short CDoorManager::Id(int p_index)
 }
 
 // FUNCTION: LEMBALL 0x0040e630
-void CDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CDoorManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short* data;
 	unsigned short count;

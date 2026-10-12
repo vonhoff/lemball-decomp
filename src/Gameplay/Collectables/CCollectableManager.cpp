@@ -130,7 +130,7 @@ void CCollectableManager::RemoveCollectable(CGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x00422790
-void CCollectableManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip)
+void CCollectableManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short count = *(unsigned short*) p_data;
 	p_data += 2;

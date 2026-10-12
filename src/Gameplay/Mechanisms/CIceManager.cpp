@@ -148,7 +148,7 @@ int CIceManager::ExportIceRecords(tCoord3d p_records[][2])
 }
 
 // FUNCTION: LEMBALL 0x0042dea0
-void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CIceManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned char* data = p_data;
 	unsigned short count = *(const unsigned short*) data;

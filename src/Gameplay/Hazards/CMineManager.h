@@ -18,7 +18,7 @@ public:
 	virtual ~CMineManager(); // vtable+0x14
 	void Add(unsigned short p_id, AICOORD p_position);
 	void Initialise(int p_capacity);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Process();
 	void Restart();
 	void RemoveMine(CMine* p_mine);

@@ -19,7 +19,7 @@ public:
 	static tagLoadBlockHeader* GetNextBlockHeader(tagLoadBlockHeader* p_header);
 	static bool LocateStartOfLevelFile();
 	static unsigned int CalcLevelID(eSkill p_skill, int p_level);
-	void LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip);
+	void LoadLevel(eSkill p_skill, int p_level, bool p_skip);
 	static void RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData* p_preview);
 
 private:

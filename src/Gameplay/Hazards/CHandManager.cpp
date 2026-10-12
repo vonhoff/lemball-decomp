@@ -133,7 +133,7 @@ void CHandManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 }
 
 // FUNCTION: LEMBALL 0x004284c0
-void CHandManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CHandManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short count = *(unsigned short*) p_data;
 	p_data += 2;

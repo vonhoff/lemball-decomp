@@ -474,7 +474,7 @@ void CPlayerLemmingGroupManager::InitialiseNetwork()
 }
 
 // FUNCTION: LEMBALL 0x00418d20
-void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p_dataSize, unsigned int p_skip)
+void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p_dataSize, bool p_skip)
 {
 	unsigned short* data = (unsigned short*) p_data;
 	m_startPositionCount = 1;
@@ -583,7 +583,7 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 // FUNCTION: LEMBALL 0x00419060
 void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned char* p_data,
 																	unsigned long p_dataSize,
-																	unsigned int p_skip)
+																	bool p_skip)
 {
 	CMap* map = g_pMap;
 	unsigned short* data = (unsigned short*) p_data;

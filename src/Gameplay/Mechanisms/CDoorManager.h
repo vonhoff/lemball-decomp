@@ -24,7 +24,7 @@ public:
 	unsigned short Id(int p_index);
 	virtual ~CDoorManager(); // vtable+0x14
 	void Initialise(int p_capacity);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Process();
 	void Restart();
 	void RemoveDoorByObject(CDoor* p_door);

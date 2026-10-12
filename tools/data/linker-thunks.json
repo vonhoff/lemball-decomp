@@ -55,7 +55,7 @@
     {
       "address": 4198450,
       "target": 4388480,
-      "target_symbol": "?LoadLevel@CMoverManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CMoverManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4198455,
@@ -300,7 +300,7 @@
     {
       "address": 4198695,
       "target": 4364624,
-      "target_symbol": "?LoadLevel@CLaserManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CLaserManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4198700,
@@ -600,7 +600,7 @@
     {
       "address": 4198995,
       "target": 4322016,
-      "target_symbol": "?LoadLevel@CSheepGroupManager@@QAEXPAUtagLoadSheepData@@KI@Z"
+      "target_symbol": "?LoadLevel@CSheepGroupManager@@QAEXPAUtagLoadSheepData@@KH@Z"
     },
     {
       "address": 4199000,
@@ -660,7 +660,7 @@
     {
       "address": 4199055,
       "target": 4371968,
-      "target_symbol": "?LoadLevel@CTrampolineManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CTrampolineManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4199060,
@@ -695,7 +695,7 @@
     {
       "address": 4199090,
       "target": 4330608,
-      "target_symbol": "?LoadLevel@CNodeManager@@QAEXPAUtagLoadNodeInformation@@KI@Z"
+      "target_symbol": "?LoadLevel@CNodeManager@@QAEXPAUtagLoadNodeInformation@@KH@Z"
     },
     {
       "address": 4199095,
@@ -1055,7 +1055,7 @@
     {
       "address": 4199450,
       "target": 4246080,
-      "target_symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHI@Z"
+      "target_symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4199455,
@@ -1820,12 +1820,12 @@
     {
       "address": 4200215,
       "target": 4328912,
-      "target_symbol": "?LoadLevel@CEnemyGroupManager@@QAEXPAUtagLoadEnemyData@@KI@Z"
+      "target_symbol": "?LoadLevel@CEnemyGroupManager@@QAEXPAUtagLoadEnemyData@@KH@Z"
     },
     {
       "address": 4200220,
       "target": 4349888,
-      "target_symbol": "?LoadLevel@CLiftManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CLiftManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4200225,
@@ -1975,7 +1975,7 @@
     {
       "address": 4200370,
       "target": 4227648,
-      "target_symbol": "?LoadLevel@CLevelLoader@@QAEXW4eSkill@@HI@Z"
+      "target_symbol": "?LoadLevel@CLevelLoader@@QAEXW4eSkill@@HH@Z"
     },
     {
       "address": 4200375,
@@ -2340,7 +2340,7 @@
     {
       "address": 4200735,
       "target": 4243024,
-      "target_symbol": "?LoadLevel@CSlinkyManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CSlinkyManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4200740,
@@ -2475,7 +2475,7 @@
     {
       "address": 4200870,
       "target": 4343888,
-      "target_symbol": "?LoadLevel@CMineManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CMineManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4200875,
@@ -2845,7 +2845,7 @@
     {
       "address": 4201240,
       "target": 4307904,
-      "target_symbol": "?LoadLevel@CObjectManager@@QAEXPAEKI@Z"
+      "target_symbol": "?LoadLevel@CObjectManager@@QAEXPAEKH@Z"
     },
     {
       "address": 4201245,
@@ -4315,7 +4315,7 @@
     {
       "address": 4202710,
       "target": 4376080,
-      "target_symbol": "?LoadLevel@CPaintGunManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CPaintGunManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4202715,
@@ -5330,7 +5330,7 @@
     {
       "address": 4203725,
       "target": 4335504,
-      "target_symbol": "?LoadLevel@CCollectableManager@@QAEXPAEHI@Z"
+      "target_symbol": "?LoadLevel@CCollectableManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4203730,
@@ -5345,7 +5345,7 @@
     {
       "address": 4203740,
       "target": 4236432,
-      "target_symbol": "?LoadLevel@CInvisibleSwitchManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CInvisibleSwitchManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4203745,
@@ -5875,7 +5875,7 @@
     {
       "address": 4204270,
       "target": 4248288,
-      "target_symbol": "?LoadLevel@CGroundAnim@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CGroundAnim@@QAEXPAEHH@Z"
     },
     {
       "address": 4204275,
@@ -6989,7 +6989,7 @@
     {
       "address": 4205370,
       "target": 4359360,
-      "target_symbol": "?LoadLevel@CHandManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CHandManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4205375,
@@ -8379,7 +8379,7 @@
     {
       "address": 4206760,
       "target": 4271888,
-      "target_symbol": "?LoadLevel@CAI@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CAI@@QAEXPAEHH@Z"
     },
     {
       "address": 4206765,
@@ -8939,7 +8939,7 @@
     {
       "address": 4207320,
       "target": 4295968,
-      "target_symbol": "?LoadLevel@CPlayerLemmingGroupManager@@QAEXPAEKI@Z"
+      "target_symbol": "?LoadLevel@CPlayerLemmingGroupManager@@QAEXPAEKH@Z"
     },
     {
       "address": 4207325,
@@ -9519,7 +9519,7 @@
     {
       "address": 4207900,
       "target": 4382368,
-      "target_symbol": "?LoadLevel@CIceManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CIceManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4207905,
@@ -9599,7 +9599,7 @@
     {
       "address": 4207980,
       "target": 4354320,
-      "target_symbol": "?LoadLevel@CRocketManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CRocketManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4207985,
@@ -9764,7 +9764,7 @@
     {
       "address": 4208145,
       "target": 4333664,
-      "target_symbol": "?LoadLevel@CBallManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CBallManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4208150,
@@ -9784,7 +9784,7 @@
     {
       "address": 4208165,
       "target": 4296800,
-      "target_symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKI@Z"
+      "target_symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKH@Z"
     },
     {
       "address": 4208170,
@@ -9799,7 +9799,7 @@
     {
       "address": 4208180,
       "target": 4367584,
-      "target_symbol": "?LoadLevel@CBalloonPost@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CBalloonPost@@QAEXPAEHH@Z"
     },
     {
       "address": 4208185,
@@ -9909,7 +9909,7 @@
     {
       "address": 4208290,
       "target": 4394416,
-      "target_symbol": "?LoadLevel@CMap@@QAEXPAUtagLoadGroundSurfaceData@@KE@Z"
+      "target_symbol": "?LoadLevel@CMap@@QAEXPAUtagLoadGroundSurfaceData@@KH@Z"
     },
     {
       "address": 4208295,
@@ -10299,7 +10299,7 @@
     {
       "address": 4208680,
       "target": 4253232,
-      "target_symbol": "?LoadLevel@CDoorManager@@QAEXPAEHE@Z"
+      "target_symbol": "?LoadLevel@CDoorManager@@QAEXPAEHH@Z"
     },
     {
       "address": 4208685,
@@ -11143,7 +11143,7 @@
     {
       "caller": 4227648,
       "object": "CMakeFiles/LEMBALL.dir/src/Level/CLevelLoader.cpp.obj",
-      "symbol": "?LoadLevel@CLevelLoader@@QAEXW4eSkill@@HI@Z",
+      "symbol": "?LoadLevel@CLevelLoader@@QAEXW4eSkill@@HH@Z",
       "size": 1387,
       "fingerprint": "c6dacb78582aca1ada2c03daa2c703359efd716be062c88fbca7e5b8edcd6be6",
       "references": [
@@ -11173,35 +11173,35 @@
           "original_instruction": 4228212,
           "original_bytes": "e82facffff",
           "thunk": 4206760,
-          "source_symbol": "?LoadLevel@CAI@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CAI@@QAEXPAEHH@Z"
         },
         {
           "offset": 588,
           "original_instruction": 4228236,
           "original_bytes": "e85da2ffff",
           "thunk": 4204270,
-          "source_symbol": "?LoadLevel@CGroundAnim@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CGroundAnim@@QAEXPAEHH@Z"
         },
         {
           "offset": 612,
           "original_instruction": 4228260,
           "original_bytes": "e868b1ffff",
           "thunk": 4208145,
-          "source_symbol": "?LoadLevel@CBallManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CBallManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 636,
           "original_instruction": 4228284,
           "original_bytes": "e873b1ffff",
           "thunk": 4208180,
-          "source_symbol": "?LoadLevel@CBalloonPost@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CBalloonPost@@QAEXPAEHH@Z"
         },
         {
           "offset": 660,
           "original_instruction": 4228308,
           "original_bytes": "e8f49fffff",
           "thunk": 4203725,
-          "source_symbol": "?LoadLevel@CCollectableManager@@QAEXPAEHI@Z"
+          "source_symbol": "?LoadLevel@CCollectableManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 683,
@@ -11215,14 +11215,14 @@
           "original_instruction": 4228355,
           "original_bytes": "e820b3ffff",
           "thunk": 4208680,
-          "source_symbol": "?LoadLevel@CDoorManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CDoorManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 744,
           "original_instruction": 4228392,
           "original_bytes": "e8ea91ffff",
           "thunk": 4200215,
-          "source_symbol": "?LoadLevel@CEnemyGroupManager@@QAEXPAUtagLoadEnemyData@@KI@Z"
+          "source_symbol": "?LoadLevel@CEnemyGroupManager@@QAEXPAUtagLoadEnemyData@@KH@Z"
         },
         {
           "offset": 761,
@@ -11236,63 +11236,63 @@
           "original_instruction": 4228433,
           "original_bytes": "e84cb1ffff",
           "thunk": 4208290,
-          "source_symbol": "?LoadLevel@CMap@@QAEXPAUtagLoadGroundSurfaceData@@KE@Z"
+          "source_symbol": "?LoadLevel@CMap@@QAEXPAUtagLoadGroundSurfaceData@@KH@Z"
         },
         {
           "offset": 809,
           "original_instruction": 4228457,
           "original_bytes": "e8aa95ffff",
           "thunk": 4201240,
-          "source_symbol": "?LoadLevel@CObjectManager@@QAEXPAEKI@Z"
+          "source_symbol": "?LoadLevel@CObjectManager@@QAEXPAEKH@Z"
         },
         {
           "offset": 833,
           "original_instruction": 4228481,
           "original_bytes": "e8b4a5ffff",
           "thunk": 4205370,
-          "source_symbol": "?LoadLevel@CHandManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CHandManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 857,
           "original_instruction": 4228505,
           "original_bytes": "e87eafffff",
           "thunk": 4207900,
-          "source_symbol": "?LoadLevel@CIceManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CIceManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 881,
           "original_instruction": 4228529,
           "original_bytes": "e8269fffff",
           "thunk": 4203740,
-          "source_symbol": "?LoadLevel@CInvisibleSwitchManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CInvisibleSwitchManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 905,
           "original_instruction": 4228553,
           "original_bytes": "e8598bffff",
           "thunk": 4198695,
-          "source_symbol": "?LoadLevel@CLaserManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CLaserManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 929,
           "original_instruction": 4228577,
           "original_bytes": "e83691ffff",
           "thunk": 4200220,
-          "source_symbol": "?LoadLevel@CLiftManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CLiftManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 953,
           "original_instruction": 4228601,
           "original_bytes": "e8a893ffff",
           "thunk": 4200870,
-          "source_symbol": "?LoadLevel@CMineManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CMineManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 977,
           "original_instruction": 4228625,
           "original_bytes": "e81c8affff",
           "thunk": 4198450,
-          "source_symbol": "?LoadLevel@CMoverManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CMoverManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 1000,
@@ -11306,91 +11306,91 @@
           "original_instruction": 4228678,
           "original_bytes": "e8cf8dffff",
           "thunk": 4199450,
-          "source_symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHI@Z"
+          "source_symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 1058,
           "original_instruction": 4228706,
           "original_bytes": "e8beafffff",
           "thunk": 4208165,
-          "source_symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKI@Z"
+          "source_symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKH@Z"
         },
         {
           "offset": 1074,
           "original_instruction": 4228722,
           "original_bytes": "e8a38dffff",
           "thunk": 4199450,
-          "source_symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHI@Z"
+          "source_symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 1098,
           "original_instruction": 4228746,
           "original_bytes": "e8238cffff",
           "thunk": 4199090,
-          "source_symbol": "?LoadLevel@CNodeManager@@QAEXPAUtagLoadNodeInformation@@KI@Z"
+          "source_symbol": "?LoadLevel@CNodeManager@@QAEXPAUtagLoadNodeInformation@@KH@Z"
         },
         {
           "offset": 1122,
           "original_instruction": 4228770,
           "original_bytes": "e82f9affff",
           "thunk": 4202710,
-          "source_symbol": "?LoadLevel@CPaintGunManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CPaintGunManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 1146,
           "original_instruction": 4228794,
           "original_bytes": "e819acffff",
           "thunk": 4207320,
-          "source_symbol": "?LoadLevel@CPlayerLemmingGroupManager@@QAEXPAEKI@Z"
+          "source_symbol": "?LoadLevel@CPlayerLemmingGroupManager@@QAEXPAEKH@Z"
         },
         {
           "offset": 1176,
           "original_instruction": 4228824,
           "original_bytes": "e848afffff",
           "thunk": 4208165,
-          "source_symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKI@Z"
+          "source_symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKH@Z"
         },
         {
           "offset": 1201,
           "original_instruction": 4228849,
           "original_bytes": "e82fafffff",
           "thunk": 4208165,
-          "source_symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKI@Z"
+          "source_symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKH@Z"
         },
         {
           "offset": 1214,
           "original_instruction": 4228862,
           "original_bytes": "e8178dffff",
           "thunk": 4199450,
-          "source_symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHI@Z"
+          "source_symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 1235,
           "original_instruction": 4228883,
           "original_bytes": "e854aeffff",
           "thunk": 4207980,
-          "source_symbol": "?LoadLevel@CRocketManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CRocketManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 1256,
           "original_instruction": 4228904,
           "original_bytes": "e8268bffff",
           "thunk": 4198995,
-          "source_symbol": "?LoadLevel@CSheepGroupManager@@QAEXPAUtagLoadSheepData@@KI@Z"
+          "source_symbol": "?LoadLevel@CSheepGroupManager@@QAEXPAUtagLoadSheepData@@KH@Z"
         },
         {
           "offset": 1277,
           "original_instruction": 4228925,
           "original_bytes": "e8dd91ffff",
           "thunk": 4200735,
-          "source_symbol": "?LoadLevel@CSlinkyManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CSlinkyManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 1298,
           "original_instruction": 4228946,
           "original_bytes": "e8388bffff",
           "thunk": 4199055,
-          "source_symbol": "?LoadLevel@CTrampolineManager@@QAEXPAEHE@Z"
+          "source_symbol": "?LoadLevel@CTrampolineManager@@QAEXPAEHH@Z"
         },
         {
           "offset": 1304,
@@ -11897,7 +11897,7 @@
     {
       "caller": 4236432,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CInvisibleSwitchManager.cpp.obj",
-      "symbol": "?LoadLevel@CInvisibleSwitchManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CInvisibleSwitchManager@@QAEXPAEHH@Z",
       "size": 70,
       "fingerprint": "700e88add812107242c3ebf68e69c5db321243de35f6427b643f752431dd5866",
       "references": [
@@ -12274,7 +12274,7 @@
     {
       "caller": 4243024,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CSlinkyManager.cpp.obj",
-      "symbol": "?LoadLevel@CSlinkyManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CSlinkyManager@@QAEXPAEHH@Z",
       "size": 125,
       "fingerprint": "502bc7281598601cafc75c4017fc4759530ba04eaaa60a668a7c3fc5d935c22c",
       "references": [
@@ -12446,7 +12446,7 @@
     {
       "caller": 4246080,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTrapDoorManager.cpp.obj",
-      "symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHI@Z",
+      "symbol": "?LoadLevel@CTrapDoorManager@@QAEXPAEHH@Z",
       "size": 371,
       "fingerprint": "22437ada58511a27087d753f092240f04157836b976f92ee42a36aebe000995d",
       "references": [
@@ -12586,7 +12586,7 @@
     {
       "caller": 4248288,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Animation/CGroundAnim.cpp.obj",
-      "symbol": "?LoadLevel@CGroundAnim@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CGroundAnim@@QAEXPAEHH@Z",
       "size": 105,
       "fingerprint": "1c9374539a23659f4e46ae0be68992ee76b649225071d22c6be92884d89b7c43",
       "references": [
@@ -13013,7 +13013,7 @@
     {
       "caller": 4253232,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CDoorManager.cpp.obj",
-      "symbol": "?LoadLevel@CDoorManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CDoorManager@@QAEXPAEHH@Z",
       "size": 156,
       "fingerprint": "c4c571a88db550e1d45a98694036603977512965f1e014e5b3b90f476201b4b5",
       "references": [
@@ -14043,7 +14043,7 @@
           "original_instruction": 4265668,
           "original_bytes": "e8e900ffff",
           "thunk": 4200370,
-          "source_symbol": "?LoadLevel@CLevelLoader@@QAEXW4eSkill@@HI@Z"
+          "source_symbol": "?LoadLevel@CLevelLoader@@QAEXW4eSkill@@HH@Z"
         },
         {
           "offset": 2511,
@@ -15023,7 +15023,7 @@
     {
       "caller": 4271888,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
-      "symbol": "?LoadLevel@CAI@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CAI@@QAEXPAEHH@Z",
       "size": 150,
       "fingerprint": "a4f9adfdb45fedf5fe55c4b31a676f8a6fe55ff62cea56e182b177c6cfc09c10",
       "references": [
@@ -17674,7 +17674,7 @@
     {
       "caller": 4295968,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CPlayerLemmingGroupManager.cpp.obj",
-      "symbol": "?LoadLevel@CPlayerLemmingGroupManager@@QAEXPAEKI@Z",
+      "symbol": "?LoadLevel@CPlayerLemmingGroupManager@@QAEXPAEKH@Z",
       "size": 826,
       "fingerprint": "97bdc06569321eaba49bbd78230ce686ef413ed68adc23618436d07664667dad",
       "references": [
@@ -17732,7 +17732,7 @@
     {
       "caller": 4296800,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CPlayerLemmingGroupManager.cpp.obj",
-      "symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKI@Z",
+      "symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKH@Z",
       "size": 899,
       "fingerprint": "c8bbef8dd845d046ba5dafb6757ff0d0c0a6e01b2b753ba47d4aca08546e34a0",
       "references": [
@@ -18744,7 +18744,7 @@
     {
       "caller": 4307904,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CObjectManager.cpp.obj",
-      "symbol": "?LoadLevel@CObjectManager@@QAEXPAEKI@Z",
+      "symbol": "?LoadLevel@CObjectManager@@QAEXPAEKH@Z",
       "size": 762,
       "fingerprint": "ae3c6466216512e2fd5d810f9f0830213b15fb9daa15d569cfd8e3b4bc57cb90",
       "references": [
@@ -19832,7 +19832,7 @@
     {
       "caller": 4322016,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CSheepGroupManager.cpp.obj",
-      "symbol": "?LoadLevel@CSheepGroupManager@@QAEXPAUtagLoadSheepData@@KI@Z",
+      "symbol": "?LoadLevel@CSheepGroupManager@@QAEXPAUtagLoadSheepData@@KH@Z",
       "size": 313,
       "fingerprint": "85e42bb7cba8f8dfeef4b04c7b07f5a265b11b84ac9de53ad3eb544cd725c337",
       "references": [
@@ -20739,7 +20739,7 @@
     {
       "caller": 4328912,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CEnemyGroupManager.cpp.obj",
-      "symbol": "?LoadLevel@CEnemyGroupManager@@QAEXPAUtagLoadEnemyData@@KI@Z",
+      "symbol": "?LoadLevel@CEnemyGroupManager@@QAEXPAUtagLoadEnemyData@@KH@Z",
       "size": 432,
       "fingerprint": "1b96f3d217261d840dfe4f08c274ee310a9e1f8871b98ae854f7021a59a1ada3",
       "references": [
@@ -20923,7 +20923,7 @@
     {
       "caller": 4330608,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Navigation/CNodeManager.cpp.obj",
-      "symbol": "?LoadLevel@CNodeManager@@QAEXPAUtagLoadNodeInformation@@KI@Z",
+      "symbol": "?LoadLevel@CNodeManager@@QAEXPAUtagLoadNodeInformation@@KH@Z",
       "size": 139,
       "fingerprint": "d3ade060aa35ecd955e601a7ed87a7f75940b9c590fa7c854c1d1b72b7948534",
       "references": [
@@ -21239,7 +21239,7 @@
     {
       "caller": 4333664,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Projectiles/CBallManager.cpp.obj",
-      "symbol": "?LoadLevel@CBallManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CBallManager@@QAEXPAEHH@Z",
       "size": 69,
       "fingerprint": "c04e2cc75c7ac8b7cb826a65c91ace7759787631619d8ee56e4ab2436d819845",
       "references": [
@@ -21338,7 +21338,7 @@
     {
       "caller": 4335504,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Collectables/CCollectableManager.cpp.obj",
-      "symbol": "?LoadLevel@CCollectableManager@@QAEXPAEHI@Z",
+      "symbol": "?LoadLevel@CCollectableManager@@QAEXPAEHH@Z",
       "size": 217,
       "fingerprint": "875c377490ad1c74d8f4a6b81e4e54a3bc2cd5e67d2af3e0508d9c9f03de8872",
       "references": [
@@ -22096,7 +22096,7 @@
     {
       "caller": 4343888,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CMineManager.cpp.obj",
-      "symbol": "?LoadLevel@CMineManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CMineManager@@QAEXPAEHH@Z",
       "size": 147,
       "fingerprint": "02719bd6094a941147f7e9afe5689a47cc082216f41e5cb5d1d9ad23287699af",
       "references": [
@@ -22549,7 +22549,7 @@
     {
       "caller": 4349888,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLiftManager.cpp.obj",
-      "symbol": "?LoadLevel@CLiftManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CLiftManager@@QAEXPAEHH@Z",
       "size": 474,
       "fingerprint": "e2e5097aa3c08f1b51e6c46e18dd98b8e0b7f29f966140e2b231782122ae31eb",
       "references": [
@@ -22862,7 +22862,7 @@
     {
       "caller": 4354320,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CRocketManager.cpp.obj",
-      "symbol": "?LoadLevel@CRocketManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CRocketManager@@QAEXPAEHH@Z",
       "size": 101,
       "fingerprint": "968eeadb15545dd22949084f2b4f1b070b6f6d8c200743fa5ea2b2ca384ccc6f",
       "references": [
@@ -23306,7 +23306,7 @@
     {
       "caller": 4359360,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CHandManager.cpp.obj",
-      "symbol": "?LoadLevel@CHandManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CHandManager@@QAEXPAEHH@Z",
       "size": 101,
       "fingerprint": "46c98470076676b0ce2cac1cd6d60660b1d04f2983a1a80189ed47f9ea69c3e7",
       "references": [
@@ -23702,7 +23702,7 @@
     {
       "caller": 4364624,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaserManager.cpp.obj",
-      "symbol": "?LoadLevel@CLaserManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CLaserManager@@QAEXPAEHH@Z",
       "size": 142,
       "fingerprint": "4f243ea100c387c55ba283e7532bb114fa5c477dba2c8d49c34908bda5731c23",
       "references": [
@@ -24200,7 +24200,7 @@
     {
       "caller": 4371968,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTrampolineManager.cpp.obj",
-      "symbol": "?LoadLevel@CTrampolineManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CTrampolineManager@@QAEXPAEHH@Z",
       "size": 101,
       "fingerprint": "4923163cb289db38b950eb06972ac3cc5f2f37df43fd615465b5ca1bdf191641",
       "references": [
@@ -24523,7 +24523,7 @@
     {
       "caller": 4376080,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CPaintGunManager.cpp.obj",
-      "symbol": "?LoadLevel@CPaintGunManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CPaintGunManager@@QAEXPAEHH@Z",
       "size": 142,
       "fingerprint": "73a992cfbeb270449af18f160eae1eabf8808d986f9497d87ebbd8de3b33feff",
       "references": [
@@ -24977,7 +24977,7 @@
     {
       "caller": 4382368,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CIceManager.cpp.obj",
-      "symbol": "?LoadLevel@CIceManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CIceManager@@QAEXPAEHH@Z",
       "size": 214,
       "fingerprint": "04a6da2816c9e5a98605a3fcb069f58ee73496c86535229e871013ccec33630c",
       "references": [
@@ -25505,7 +25505,7 @@
     {
       "caller": 4388480,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMoverManager.cpp.obj",
-      "symbol": "?LoadLevel@CMoverManager@@QAEXPAEHE@Z",
+      "symbol": "?LoadLevel@CMoverManager@@QAEXPAEHH@Z",
       "size": 150,
       "fingerprint": "9133873879f142c34307cb4e54cf37b56a22eed976c4d4aa14a8680ba57fe5ed",
       "references": [
@@ -25773,7 +25773,7 @@
     {
       "caller": 4394416,
       "object": "CMakeFiles/LEMBALL.dir/src/Map/CMap.cpp.obj",
-      "symbol": "?LoadLevel@CMap@@QAEXPAUtagLoadGroundSurfaceData@@KE@Z",
+      "symbol": "?LoadLevel@CMap@@QAEXPAUtagLoadGroundSurfaceData@@KH@Z",
       "size": 201,
       "fingerprint": "2d40374fdf31ac48d43566f486e0698cbf52f50c48d35378d22efbcd79836f99",
       "references": [

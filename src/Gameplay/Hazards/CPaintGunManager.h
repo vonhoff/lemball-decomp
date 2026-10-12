@@ -14,7 +14,7 @@ public:
 	virtual ~CPaintGunManager(); // vtable+0x14
 	void Add(unsigned short p_id, int p_x, int p_y, int p_z, int p_direction);
 	void Initialise(int p_capacity);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Process();
 	void Restart();
 	void RemovePaintGun(CPaintGun* p_paintGun);

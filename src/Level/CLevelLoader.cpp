@@ -59,7 +59,7 @@ CLevelLoader::CLevelLoader(CAI* p_ai)
 }
 
 // FUNCTION: LEMBALL 0x00408240
-void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, unsigned int p_skip)
+void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, bool p_skip)
 {
 	bool endFound = false;
 	CResBIN* binResource = NULL;

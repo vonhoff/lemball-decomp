@@ -19,7 +19,7 @@ public:
 	virtual ~CMoverManager();                       // vtable+0x14
 	void Add(unsigned short p_id, int p_pathId, unsigned int p_movementMode, int p_startNode, int p_nodeCount);
 	void Initialise(int p_capacity);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Switch(swMessage p_message, int p_id);
 	void RemoveMover(CMover* p_mover);
 

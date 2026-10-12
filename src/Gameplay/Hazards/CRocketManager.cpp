@@ -138,7 +138,7 @@ void CRocketManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 }
 
 // FUNCTION: LEMBALL 0x00427110
-void CRocketManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CRocketManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short count = *(unsigned short*) p_data;
 	p_data += 2;

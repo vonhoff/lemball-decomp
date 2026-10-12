@@ -181,7 +181,7 @@ int CGroundAnim::ExportCoordinates(tCoord3d* p_records)
 }
 
 // FUNCTION: LEMBALL 0x0040d2e0
-void CGroundAnim::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CGroundAnim::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short count = *(unsigned short*) p_data;
 	p_data += 2;

@@ -215,7 +215,7 @@ unsigned short CLiftManager::Id(int p_index)
 }
 
 // FUNCTION: LEMBALL 0x00425fc0
-void CLiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CLiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	tCoord3d start;
 	tCoord3d end;

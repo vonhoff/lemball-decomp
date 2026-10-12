@@ -13,7 +13,7 @@ public:
 	void GetNodeIntegerPosition(int p_node, int* p_x, int* p_y);
 	int AddNode(int p_x, int p_y);
 	void Initialise(int p_count);
-	void LoadLevel(tagLoadNodeInformation* p_data, unsigned long p_dataSize, unsigned int p_skip);
+	void LoadLevel(tagLoadNodeInformation* p_data, unsigned long p_dataSize, bool p_skip);
 	void Restart();
 	~CNodeManager();
 

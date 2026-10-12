@@ -17,7 +17,7 @@ public:
 	void Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectType p_type);
 	void Clear();
 	void Initialise(int p_capacity);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned int p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Process();
 	void Restart();
 	void RemoveCollectable(CGameObject* p_object);

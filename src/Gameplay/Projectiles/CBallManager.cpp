@@ -97,7 +97,7 @@ void CBallManager::Clear()
 }
 
 // FUNCTION: LEMBALL 0x00422060
-void CBallManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CBallManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short count = *(unsigned short*) p_data;
 	p_data += 2;

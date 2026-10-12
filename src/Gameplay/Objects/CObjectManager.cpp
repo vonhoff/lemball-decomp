@@ -452,7 +452,7 @@ CGlobalGameObject* CObjectManager::FindObjectInBounds(CVSRect* p_bounds, eObject
 }
 
 // FUNCTION: LEMBALL 0x0041bbc0
-void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, unsigned int p_append)
+void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, bool p_append)
 {
 	int switchIndex = 0;
 	unsigned short count = *(unsigned short*) p_data;

@@ -43,7 +43,7 @@ public:
 	void GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY);
 	void GameToScreen(int& p_x, int& p_y);
 	void LoadDefaultBlox(tagLoadDefaultBlox* p_data, unsigned long p_dataSize);
-	void LoadLevel(tagLoadGroundSurfaceData* p_data, unsigned long p_dataSize, unsigned char p_skip);
+	void LoadLevel(tagLoadGroundSurfaceData* p_data, unsigned long p_dataSize, bool p_skip);
 	void LoadLevelName(tagLoadGroundName* p_data, unsigned long p_dataSize);
 	void ReSize(int p_width, int p_height);
 	void Restart();

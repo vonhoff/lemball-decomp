@@ -17,7 +17,7 @@ public:
 	virtual ~CInvisibleSwitchManager(); // vtable+0x14
 	void Restart();
 	void Initialise(int p_capacity);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void StepOn(const AICOORD& p_position, CGameObject* p_object);
 	void AddSwitch(unsigned short p_id, const tCoord3d& p_min, const tCoord3d& p_max);
 	void AddPointSwitch(unsigned short p_id, short p_x, short p_y, short p_z);

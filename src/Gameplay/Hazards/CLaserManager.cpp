@@ -139,7 +139,7 @@ void CLaserManager::Add(unsigned short p_id, int p_x, int p_y, int p_z, eObjectT
 #include "Gameplay/Simulation/CAI.h"
 
 // FUNCTION: LEMBALL 0x00429950
-void CLaserManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CLaserManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short* data = (unsigned short*) p_data;
 	unsigned short count = *data++;

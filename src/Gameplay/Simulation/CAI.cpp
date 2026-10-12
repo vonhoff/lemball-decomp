@@ -1241,7 +1241,7 @@ CGame* CAI::LevelName()
 }
 
 // FUNCTION: LEMBALL 0x00412f10
-void CAI::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CAI::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned short* data;
 	if (p_dataSize > 4) {

@@ -118,7 +118,7 @@ void CEnemyGroupManager::RemoveEnemyGroup(CEnemyGroup* p_group)
 }
 
 // FUNCTION: LEMBALL 0x00420dd0
-void CEnemyGroupManager::LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip)
+void CEnemyGroupManager::LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, bool p_skip)
 {
 	const unsigned int ENEMY_LEVEL_HEADER_BYTES = (2 * sizeof(unsigned short));
 

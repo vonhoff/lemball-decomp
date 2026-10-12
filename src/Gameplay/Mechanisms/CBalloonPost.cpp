@@ -250,7 +250,7 @@ void CBalloonPost::DeactivatePost(CTheBalloonPost* p_post)
 }
 
 // FUNCTION: LEMBALL 0x0042a4e0
-void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CBalloonPost::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	m_activeMask = *reinterpret_cast<unsigned short*>(p_data);
 	p_data += 2;

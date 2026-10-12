@@ -19,7 +19,7 @@ public:
 	bool FindPost(eObjectType p_objectType, AICOORD& p_position);
 	int GetViewData(CViewData* p_viewData);
 	void Process();
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Restart();
 	~CBalloonPost();
 	void ActivatePostAtPosition(int p_x, int p_y, int p_z, eObjectType p_type);

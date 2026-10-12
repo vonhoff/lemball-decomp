@@ -138,7 +138,7 @@ public:
 	void GetPlayerPos(int p_id, AICOORD& p_position);
 	int HitTrampoline(const AICOORD& p_position, CGameObject* p_object);
 	void LoadFlagInfo(unsigned char* p_data, int p_size);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void NLemmings(int p_count);
 	virtual void Process(); // vtable+0x04
 	void Process(int p_paused);

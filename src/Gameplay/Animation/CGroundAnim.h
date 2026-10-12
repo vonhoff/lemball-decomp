@@ -30,7 +30,7 @@ public:
 	bool CheckAllAnims();
 	int ExportCoordinates(tCoord3d* p_records);
 	void Add(const tCoord3d& p_coordinate, unsigned short p_startFrame, unsigned short p_endFrame);
-	void LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip);
+	void LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip);
 	void Process();
 	void Restart();
 	~CGroundAnim();

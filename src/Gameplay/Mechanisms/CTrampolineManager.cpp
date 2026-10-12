@@ -143,7 +143,7 @@ void CTrampolineManager::Add(unsigned short p_id, int p_x, int p_y, int p_z)
 }
 
 // FUNCTION: LEMBALL 0x0042b600
-void CTrampolineManager::LoadLevel(unsigned char* p_data, int p_dataSize, unsigned char p_skip)
+void CTrampolineManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 {
 	unsigned char* cursor = p_data;
 	unsigned short count = *(unsigned short*) cursor;
