@@ -15,8 +15,6 @@
 #include <windowsx.h>
 #include <dispdib.h>
 
-#pragma intrinsic(_outp)
-
 enum {
 	VGA_DAC_INDEX_PORT = 0x3c8,
 	VGA_DAC_COMPONENT_SHIFT = 2,

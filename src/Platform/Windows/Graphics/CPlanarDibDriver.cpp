@@ -19,8 +19,6 @@ enum {
 	VGA_SEQUENCER_MAP_MASK_REGISTER_INDEX = 2
 };
 
-#pragma intrinsic(_outpw)
-
 // FUNCTION: LEMBALL 0x00457070
 void CPlanarDibDriver::SetPlaneWriteMask(unsigned char p_mask)
 {

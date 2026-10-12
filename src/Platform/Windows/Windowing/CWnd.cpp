@@ -24,8 +24,6 @@
 #include <windowsx.h>
 #include <dispdib.h>
 
-#pragma intrinsic(_outpw)
-
 extern unsigned int g_windowDispatchDisabled;
 extern int(__stdcall* g_pDisplayDib)(void*, void*, unsigned short);
 
