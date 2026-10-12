@@ -131,7 +131,7 @@ void CPanelButton::DrawButton()
 		frame = 1;
 	}
 	m_gdi->m_renderTarget->GetCurrDB();
-	const CVSPoint* position = (const CVSPoint*) &m_statusRect;
+	const CVSPoint* position = &m_statusRect;
 	CResANIM* resource = m_lemming->m_panel->m_resources[1];
 	m_statusAnim[0].m_x = position->m_x;
 	m_statusAnim[0].m_y = position->m_y;
@@ -143,7 +143,7 @@ void CPanelButton::DrawButton()
 	lemming = m_lemming;
 	if (lemming->m_balloonRemap != PANEL_REMAP_INDEX_NONE && m_unavailable == 0) {
 		CResANIM* resource;
-		const CVSPoint* position = (const CVSPoint*) &m_inventoryRect;
+		const CVSPoint* position = &m_inventoryRect;
 		resource = lemming->m_panel->m_resources[3];
 		m_inventoryAnim[0].m_x = position->m_x;
 		m_inventoryAnim[0].m_y = position->m_y;
@@ -157,7 +157,7 @@ void CPanelButton::DrawButton()
 			frame += 3;
 		}
 		CResANIM* resource;
-		const CVSPoint* position = (const CVSPoint*) &m_inventoryRect;
+		const CVSPoint* position = &m_inventoryRect;
 		resource = lemming->m_panel->m_resources[2];
 		m_inventoryAnim[0].m_x = position->m_x;
 		m_inventoryAnim[0].m_y = position->m_y;
