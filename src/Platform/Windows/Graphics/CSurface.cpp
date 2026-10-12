@@ -26,6 +26,7 @@
 #include "Engine/Graphics/Primitives/CZBuffClear.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSPointArithmetic.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
@@ -942,11 +943,16 @@ void CSurface::MoveRel(const CVSPoint& p_delta)
 	Move(*rect);
 }
 
+inline bool operator!=(const CVSSize& p_left, const CVSSize& p_right)
+{
+	return p_left.m_width != p_right.m_width || p_left.m_height != p_right.m_height;
+}
+
 // FUNCTION: LEMBALL 0x0046d5b0
 void CSurface::Move(const CVSPoint& p_position)
 {
 	const CVSPoint& position = m_surfaceRect;
-	CVSPoint delta(p_position.m_x - position.m_x, p_position.m_y - position.m_y);
+	CVSPoint delta = p_position - position;
 
 	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
 		CRITICAL_SECTION* lock = (CRITICAL_SECTION*) m_lock;
@@ -1004,8 +1010,7 @@ void CSurface::Move(const CVSPoint& p_position)
 			clipSize.m_height = height;
 		}
 		const CVSSize& newSize = m_windowRect;
-		short height = newSize.m_height;
-		if (newSize.m_width != oldRect.m_width || oldRect.m_height != height) {
+		if (CVSSize(newSize) != CVSSize(oldRect)) {
 			Resize(newSize);
 		}
 		if (m_platformBitmap != NULL) {
