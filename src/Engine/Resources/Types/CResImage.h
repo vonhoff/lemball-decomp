@@ -15,7 +15,6 @@ public:
 private:
 	unsigned char m_depth;     // 0x4c
 	unsigned char m_flags;     // 0x4d
-	char m_padding[2];         // 0x4e
 	unsigned int m_imageState; // 0x50
 };
 

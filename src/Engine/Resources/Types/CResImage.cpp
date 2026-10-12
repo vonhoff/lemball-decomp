@@ -48,5 +48,5 @@ void CResImage::SetHeader()
 void CResImage::SetType()
 {
 	m_chunkType = RESOURCE_CHUNK_IMAGE;
-	m_headerSkip = 0x10;
+	m_headerSkip = sizeof(ImageResourceHeader);
 }
