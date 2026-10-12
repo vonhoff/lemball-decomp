@@ -105,7 +105,7 @@ void CWnd::SetFocusWindow()
 }
 
 // FUNCTION: LEMBALL 0x004324c0
-void CWnd::Dummy94()
+void CWnd::BeforeFocusLost()
 {
 }
 
@@ -294,7 +294,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 	}
 	case WM_SETFOCUS: {
 		if (g_hFocusWindow != NULL) {
-			g_pFocusWindow->Dummy94();
+			g_pFocusWindow->BeforeFocusLost();
 			g_pFocusWindow->OnFocusLost();
 		}
 		window->SetFocusWindow();
@@ -305,7 +305,7 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 		if (g_pTargetGraphicsSystem->m_driverMode < GFX_MODE_DD_FS_640X480 ||
 			g_pTargetGraphicsSystem->m_driverMode > GFX_MODE_DD_FS_320X200) {
 			if (g_hFocusWindow != NULL) {
-				g_pFocusWindow->Dummy94();
+				g_pFocusWindow->BeforeFocusLost();
 				g_pFocusWindow->OnFocusLost();
 			}
 			g_hFocusWindow = NULL;

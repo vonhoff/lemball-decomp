@@ -28,7 +28,7 @@ public:
 	virtual void Resize(CVSSize p_size);                                         // vtable+0x88
 	virtual void MoveAbsolute(const CVSPoint& p_point);                          // vtable+0x8c
 	virtual void SetFocusWindow();                                               // vtable+0x90
-	virtual void Dummy94();                                                      // vtable+0x94
+	virtual void BeforeFocusLost();                                              // vtable+0x94
 	virtual void OnFocusGained();                                                // vtable+0x98
 	virtual void OnFocusLost();                                                  // vtable+0x9c
 	virtual int ProcessOtherMessages(unsigned int p_message,
