@@ -4471,9 +4471,9 @@ void C2D::TransformAndSortViewData()
 
 			CPt3 position = m_viewData[viewIndex].Coord();
 			m_map->GameToScreen(position.m_x, position.m_y);
-			position.m_y -= position.m_z;
-			position.m_x -= m_viewOriginX;
-			position.m_y -= m_viewOriginY;
+			position.m_y = (unsigned int) position.m_y - position.m_z;
+			position.m_x = (unsigned int) position.m_x - m_viewOriginX;
+			position.m_y = (unsigned int) position.m_y - m_viewOriginY;
 			m_viewData[viewIndex].m_position = position;
 			viewIndex++;
 		} while ((int) m_viewDataCount > viewIndex);
@@ -5103,9 +5103,9 @@ void C2D::DrawObjectsZBuff()
 			viewData->m_gameY = (short) viewData->m_position.m_y;
 			position = m_viewData[viewIndex].Coord();
 			m_map->GameToScreen(position.m_x, position.m_y);
-			position.m_y -= position.m_z;
-			position.m_x -= m_viewOriginX;
-			position.m_y -= m_viewOriginY;
+			position.m_y = (unsigned int) position.m_y - position.m_z;
+			position.m_x = (unsigned int) position.m_x - m_viewOriginX;
+			position.m_y = (unsigned int) position.m_y - m_viewOriginY;
 			m_viewData[viewIndex].m_position = position;
 			viewIndex++;
 		}
