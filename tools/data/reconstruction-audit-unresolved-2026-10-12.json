@@ -1,0 +1,987 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "03f96bbd",
+  "source_commit": "d80cbd3d",
+  "previous_audit": "tools/data/reconstruction-audit-2026-10-12.json",
+  "goal": "Review every queued unresolved finding; correct supported source hypotheses, validate matching and ABI, commit logical batches; document evidence and prerequisites for findings that cannot safely be corrected.",
+  "scope": {
+    "queued_categories_reviewed": 10,
+    "workers": [
+      "surface_geometry",
+      "lists_palettes",
+      "interfaces_allocations"
+    ],
+    "root_work": "Coordinate/scalar-copy storage, opaque display fields, integration and full report audit.",
+    "limits": "All queued categories reviewed. Deferred findings remain open; this review does not claim complete source recovery or semantic proof of all5958functions.",
+    "graph": "Tier2 search/trace/snippets and coverage. Main-root graph underreports virtual/overload edges; stale/partial paths and isolated worktree changes verified directly from source."
+  },
+  "verified_commits": [
+    "0023b386 Initialize file addresses during typed construction",
+    "74efa079 Use the rectangle size base in pause layout",
+    "d25441b5 Remove obsolete file-address factory friendship",
+    "3e7cf592 Use typed child nodes during graphics window callbacks",
+    "d80cbd3d Use typed window geometry and child list nodes"
+  ],
+  "verified_improvements": {
+    "file_address": [
+      {
+        "finding": "remaining file-address explicit construction46f860",
+        "correction": "CFileNetworkAddress inline constructor owns empty-text initialization; factory ordinary typed new; unused placement-new include and obsolete friendship removed.",
+        "windows_evidence": "46f860..46f87b: guarded32byte allocation; derivedvtable49a030; byte+4=0; returns allocation start or0.",
+        "mac_evidence": "Mac GetNewNetworkAddress__12CFileNetworkFv10107920..1010794e: guarded30byte allocation; basevtable1010793c+derivedvtable10107942; CLR.B4(A2)10107944. CTCPIPNetworkAddress existing inline initialization provides corroborating source structure, not original spelling proof.",
+        "validation": "All5958 report rows and effective.json byte-identical fresh worktree baseline. Build0; source0;2698/2698catalog;2079thunks7218references0errors;7focused functions raw100.",
+        "memory_attempts": [
+          12393,
+          12395,
+          12404
+        ]
+      }
+    ],
+    "pause_geometry": {
+      "change": "CreateTheWindow size=p_rect removes zero-offset CVSSize storage cast through public base conversion. No temporary/API/ABI changes.",
+      "trial": 12399,
+      "report_changes": [
+        {
+          "address": "0x00444050",
+          "before": 27.26045883940621,
+          "after": 28.34008097165992
+        }
+      ],
+      "exact_bytes": 249904,
+      "exact_functions": 5314,
+      "effective_address_set_unchanged": true,
+      "matching_decreases": 0
+    },
+    "window_geometry_and_lists": [
+      {
+        "commit": "0ebfc2eb",
+        "change": "CGWnd Render/Flush use existing WindowOwnerNode typed window/next fields instead of raw void** slots. No header/layout/include changes.",
+        "evidence": [
+          "Mac10104b34 symbol is FindElement on CList<CPVWnd,CListElement<CPVWnd>>; value+0,next+4,prev+8.",
+          "Windows4641d9..e3 and464268..272 call child then reload next. Existing owner and child records share allocation/init/append protocol. Historical field spelling inferred."
+        ],
+        "validation": "Targets raw100; full report.json/effective.json byte-identical baseline; build, policy, thunks, catalog0."
+      },
+      {
+        "commit": "b2844d41",
+        "change": "Coherent CPVWnd cleanup: AddChild/RemoveChild/destructor reuse existing WindowOwnerNode typed window/next/prev fields and sizeof(*node), preserving allocation failure, next snapshots, free-before-relink and count/tail semantics. SetInnerWindow465db0/_SetRect466300 copy through const CVSPoint& base conversion; manual null-reference branch and cross-member short indexing removed. No header/layout/ABI changes.",
+        "evidence": [
+          "Windows465db4..dc1 size WORD copies;465dc5..dce nullable derived-to-base+4;465dd1..ddb point WORD copies and virtualsizecallback.",
+          "Windows466304..32d identical size/point copy sequence. CVSRect inherits CVSSize then CVSPoint; existing assignment442190/trial8995 uses same typed source exactly.",
+          "Windows4323d1alloc12;4323e7..ecfield0/4/8;43244f/452snapshotneighborsbeforefree432456;465d93nextsnapshotbeforefree465d97. Mac CListElement specialization and shared owner/child protocols support record reuse."
+        ],
+        "validation": "All five edited functions raw100; build/policy/thunks/catalog0. Complete final report.json and effective.json byte-identical original goal baseline03f96bbd. Geometry-only provisional2277cf25 produced incidental SetZoom+47ExactB; final coherent batch returns that row to original95.652/E100 without any baseline decrease.2277cf25 superseded by amended b2844d41; no source compensation variant."
+      }
+    ]
+  },
+  "surface_findings": [
+    {
+      "address": "0x004783c0",
+      "finding": "inline_depth(0/255) remains artificial compiler control.",
+      "evidence": [
+        "Windows478440->478b80 is sole direct helper caller;47845b->4017c6->442170. Default constructor thunk also called443c1f,43f674,43f6e4.",
+        "Mac1011534a delegates both depth/no-depth branches to BlitZRLE, unlike Windows; no constructor visibility inference follows.",
+        "Prior12347 removal loses native calls/helper coverage; prior global-out-of-line trials15/474/878/2069 lose matching. No repeated trial."
+      ],
+      "next_prerequisite": "Recover original Windows geometry declaration/definition boundaries or an evidence-supported constructor body causing the native selective inlining. Current Mac primitive path does not resolve this.",
+      "observations": [
+        2224
+      ]
+    },
+    {
+      "address": "0x00477f50",
+      "finding": "Byte row-table offset remains instead of typed indexing.",
+      "evidence": [
+        "Windows478010/478017 scale row/step4;47804f..478053 reload row table per iteration;4781c0 advances.",
+        "Mac10114ed8..10114f12 indexes rows[y] and calls named ClipZRLELineRemapR10114f72; row skips call GetZRLEEndLine10114126.",
+        "Helper10114f72..101150fe agrees with native inlined signed-positive loops, bounded copies/full overshoot subtraction, remap and terminator semantics.",
+        "New ordinary-helper12400 remains primary-negative; standalone indexing10460/12328 closed."
+      ],
+      "next_prerequisite": "Recover coherent original shared decoder helper definitions and surrounding compilation context. Do not vary declarations/register-shaped locals or add forced-inline controls.",
+      "observations": [
+        2223
+      ]
+    },
+    {
+      "address": "0x0044aec0",
+      "finding": "Short arrays viewed as CVSPoint endpoints remain.",
+      "evidence": [
+        "Windows44b23d..44b278 and44b296..44b2d1 store converted X, then start pair, then converted Y, then outlined assignment442130; no default-zero stores.",
+        "Mac108022ce Draw calls named CVector::operator CVSPoint101164fc for all three rotations and point addition101111fe for endpoint expressions.",
+        "Mac101164fc..10116538 constructs shifted short pair and copies it into returned value.",
+        "Prior10936/10937 typed point locals add zeros or change scheduling; shared conversion/operator/lifetime families already rejected. No repeated trial."
+      ],
+      "next_prerequisite": "Recover coherent typed conversion/addition and aggregate return/assignment lifetimes compatible with Windows WORD scheduling. Adding a helper solely to suppress zero stores is not evidence."
+    },
+    {
+      "address": "0x004642c0",
+      "finding": "Four scalar refresh fields viewed as CVSRect remain.",
+      "evidence": [
+        "Windows4642ef..46431d copies extent pair and nullable +4 point-base adjustment from this+88; strongly supports original rectangle representation.",
+        "Current CPVGWnd inline constructor initializes only height; CGWnd constructor initializes remaining refresh fields.",
+        "Prior10039 actual CVSRect member preserves target73.74 but constructor92.68/E100->69.14 through additional construction/vtable/scheduling changes.",
+        "Mac1010adb8 differs substantially: parameter/global damage paths and Mac invalidation; cannot import its layout/control flow."
+      ],
+      "next_prerequisite": "Resolve original geometry default-construction boundary and derived dead-store elimination before a real refresh rectangle member. Preserve Render/Flush virtual dispatch and copy-after-render timing."
+    },
+    {
+      "address": "0x00443db0",
+      "finding": "One redundant size-base cast removed; size-to-point scratch/receiver casts remain.",
+      "evidence": [
+        "Windows443f74..443f79 passes incoming rectangle unchanged to CVSSize assignment442150.",
+        "Windows443fca..443feb copies owned padding pair into four-byte point argument to4452a0; later same scratch holds doubled size.",
+        "Mac toPoint10115bc8..10115bfa returns copied pair. Native endpoint/window constructor lifetimes differ from current source.",
+        "Prior12139/12298/12305 point temporaries/conversions/API changes lose matching; two-base subset12394 also decreases neighboring score."
+      ],
+      "next_prerequisite": "Recover typed size-to-point value construction preserving stack reuse, without changing AddInPlace ABI or broader point API speculatively."
+    }
+  ],
+  "list_palette_input_findings": [
+    {
+      "item": "CPVWnd raw child head/tail declarations and embedded CList source structure; CWnd Move/MoveAbsolute/Destroy raw traversal",
+      "status": "Partially resolved: CPVWnd AddChild/RemoveChild/destructor and CGWnd Render/Flush now use typed existing records. Head/tail fields stillvoid*; original CList embedded lifetime recovery and CWnd callbacks remain blocked by matching losses.",
+      "prior_exhausted_families": [
+        11086,
+        12396,
+        12398,
+        12405
+      ],
+      "prerequisite": "Recover original Windows generic-container declaration/inline visibility and instantiation boundaries to replace void* head/tail with embedded CList while preserving compiled lifetimes and collateral exact rows. No need to retry already retained local CPVWnd/CGWnd field access. CWnd callback cleanup still loses838Exact/EffectiveB; preserve before/after callback next-read timing, null allocation behavior, and Destroy/unlink sequencing."
+    },
+    {
+      "item": "CMasterInput duplicated local records and raw destructor/IsEmpty slots",
+      "status": "Unresolved; no new original single-list template identity recovered. Existing8-byte {item,next} layout and count-bounded traversal authoritative. Mac ctor10201326 installs two vtable values at+4, suggesting a base class, but original base identity not recovered.",
+      "prior_exhausted_families": [
+        11026,
+        11041
+      ],
+      "prerequisite": "Recover original input collection/base class and item/node type from additional symbols or Windows/Mac callers; retain uninitialized tailnext, dynamic count reload across callbacks, and next snapshot before nodefree. Broad shared-record and destructor-only trials already declined; no repeat on identical evidence."
+    },
+    {
+      "item": "CBasePalManager destructor alias/index/byte-offset scaffolding",
+      "status": "Confirmed artificial; actual Mac indexed source structure corroborated. Raw Windows table reload/clearing/count semantics preserved. No source edit retained.",
+      "prior_exhausted_families": [
+        3950,
+        7361,
+        7362,
+        7363,
+        7364,
+        11082
+      ],
+      "prerequisite": "Recover original Windows ownership/statictype and container/allocation form permitting ordinary typed array delete/indexing while preserving Windows raw100. Mac uses typed indexing but compiler scheduling alone is not source evidence. No unsigned-offset/division/register tricks."
+    },
+    {
+      "item": "CNetworkOptionsDrawer ResetHandlers cross-record validity cursor",
+      "status": "Confirmed typed indexed array is plausible original source, supported by actual Mac code. Existing Windows typed-index trial already failed full-report collateral coverage; not repeated.",
+      "prior_exhausted_families": [
+        10442,
+        10444,
+        10445
+      ],
+      "prerequisite": "Recover Windows inline/declaration and frontend-handler type context so typed captured-array indexing preserves CEntryHandler vector deleting destructor455e10 andDrawEntry scores. Preserve two captured arrays across Reset; Windows m_valid width4 differs fromMac1."
+    },
+    {
+      "item": "CBasePalManager()/CBaseRemap() undefined public default constructor declarations",
+      "status": "No observed definitions/uses; Mac catalog onlyparameterizedctors10200c72(int)/10200920(ulong,uchar*,paletteenum). Cannot prove original Windows publicAPIabsence. Prior19-declaration removal12388 lost9018Exact/12102EffectiveB. No narrower subset retry.",
+      "prior_exhausted_families": [
+        12388
+      ],
+      "prerequisite": "Authoritative Windows class/API or original header evidence establishing redundant declarations and a supported compilation context preserving existing code. Catalog absence alone insufficient; compiler sensitivity does not establish semantic necessity."
+    }
+  ],
+  "default_constructor_review": [
+    {
+      "class": "CBaseFrontendProcess",
+      "header": "src/Frontend/CBaseFrontendProcess.h",
+      "implemented_constructor_parameters": [
+        "CGame* p_game"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "10801930",
+          "symbol": "__ct__20CBaseFrontendProcessFP5CGame",
+          "windows_address": "446720"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Frontend/CBaseFrontendProcess.h",
+          "line": 25
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CGameFlaggedMessage",
+      "header": "src/Multiplayer/CGameFlaggedMessage.h",
+      "implemented_constructor_parameters": [
+        "unsigned long p_messageId"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "10a001da",
+          "symbol": "__ct__19CGameFlaggedMessageFUl",
+          "windows_address": "4524b0"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Multiplayer/CGameFlaggedMessage.h",
+          "line": 20
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: no definition or observed construction; Windows public API cannot be recovered from absence of machine-code uses; broad removal12388 regressed. Localized CGameFlaggedMessage trial12401 also regressed."
+    },
+    {
+      "class": "CBasePacketBuff",
+      "header": "src/Multiplayer/Transport/Packets/CBasePacketBuff.h",
+      "implemented_constructor_parameters": [
+        "int p_packetCount, unsigned short p_packetSize"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "1020d9a0",
+          "symbol": "__ct__15CBasePacketBuffFiUs",
+          "windows_address": "461210"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Multiplayer/Transport/Packets/CBasePacketBuff.h",
+          "line": 11
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CReadPacketBuff",
+      "header": "src/Multiplayer/Transport/Packets/CReadPacketBuff.h",
+      "implemented_constructor_parameters": [
+        "int p_packetCount, unsigned short p_packetSize"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "1020da8a",
+          "symbol": "__ct__15CReadPacketBuffFiUs",
+          "windows_address": "461290"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Multiplayer/Transport/Packets/CReadPacketBuff.h",
+          "line": 12
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CWritePacketBuff",
+      "header": "src/Multiplayer/Transport/Packets/CWritePacketBuff.h",
+      "implemented_constructor_parameters": [
+        "int p_packetCount, unsigned short p_packetSize"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "1020dbb0",
+          "symbol": "__ct__16CWritePacketBuffFiUs",
+          "windows_address": "461340"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Multiplayer/Transport/Packets/CWritePacketBuff.h",
+          "line": 13
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CCollectable",
+      "header": "src/Gameplay/Collectables/CCollectable.h",
+      "implemented_constructor_parameters": [
+        "int p_x, int p_y, int p_z, eObjectType p_objectType"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "10605b0e",
+          "symbol": "__ct__12CCollectableFiii11eObjectType",
+          "windows_address": "422870"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Gameplay/Collectables/CCollectable.h",
+          "line": 18
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CGenericGroup",
+      "header": "src/Gameplay/Groups/CGenericGroup.h",
+      "implemented_constructor_parameters": [
+        "CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "1060c298",
+          "symbol": "__ct__13CGenericGroupFP3CAIP14CObjectManagerP17CFormationManagerii",
+          "windows_address": "41dda0"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Gameplay/Groups/CGenericGroup.h",
+          "line": 58
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CGenericGroupManager",
+      "header": "src/Gameplay/Groups/CGenericGroupManager.h",
+      "implemented_constructor_parameters": [
+        "CAI* p_ai, CObjectManager* p_objectManager, CFormationManager* p_formationManager"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "1060d1da",
+          "symbol": "__ct__20CGenericGroupManagerFP3CAIP14CObjectManagerP17CFormationManager",
+          "windows_address": "41e8f0"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Gameplay/Groups/CGenericGroupManager.h",
+          "line": 48
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CGameObjectMess",
+      "header": "src/Gameplay/Messages/CGameObjectMess.h",
+      "implemented_constructor_parameters": [
+        "unsigned long p_messageId"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "1060b23a",
+          "symbol": "__ct__15CGameObjectMessFUl",
+          "windows_address": "416850"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Gameplay/Messages/CGameObjectMess.h",
+          "line": 15
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CGameObject",
+      "header": "src/Gameplay/Objects/CGameObject.h",
+      "implemented_constructor_parameters": [
+        "eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "10608fec",
+          "symbol": "__ct__11CGameObjectF11eObjectTypeUsUs",
+          "windows_address": "414f30"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Gameplay/Objects/CGameObject.h",
+          "line": 149
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CGlobalGameObject",
+      "header": "src/Gameplay/Objects/CGlobalGameObject.h",
+      "implemented_constructor_parameters": [
+        "eObjectType p_objectType, unsigned short p_collisionFlags, unsigned short p_destinationCapacity"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "1060bb8e",
+          "symbol": "__ct__17CGlobalGameObjectF11eObjectTypeUsUs",
+          "windows_address": "416d20"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Gameplay/Objects/CGlobalGameObject.h",
+          "line": 36
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CAnimsManager",
+      "header": "src/Engine/Animation/CAnimsManager.h",
+      "implemented_constructor_parameters": [
+        "CGDI* p_gdi, unsigned long p_resourceIdCount, int p_resourceCapacity, int p_animCapacity, int p_zrleCapacity, unsigned int p_doubleBuffered"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "1020019c",
+          "symbol": "__ct__13CAnimsManagerFP4CGDIUliiiUc",
+          "windows_address": "467260"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Engine/Animation/CAnimsManager.h",
+          "line": 50
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CArena",
+      "header": "src/Engine/Memory/CArena.h",
+      "implemented_constructor_parameters": [
+        "unsigned long p_arenaSize, char* p_description, CArena* p_parentArena, CArena* p_arenaLink"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "102147c2",
+          "symbol": "__ct__6CArenaFUlPcP6CArenaP6CArena",
+          "windows_address": "4599f0"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Engine/Memory/CArena.h",
+          "line": 56
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CMBlock",
+      "header": "src/Engine/Memory/CMBlock.h",
+      "implemented_constructor_parameters": [
+        "CArena* p_arena, CMBlock* p_previous, char* p_description, unsigned long p_size"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "10215938",
+          "symbol": "__ct__7CMBlockFP6CArenaP7CMBlockPcUl",
+          "windows_address": "45a540"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Engine/Memory/CMBlock.h",
+          "line": 24
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CBaseQueue",
+      "header": "src/Engine/Queues/CBaseQueue.h",
+      "implemented_constructor_parameters": [
+        "unsigned int p_capacity",
+        "unsigned int p_capacity, char* p_name"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "102049f4",
+          "symbol": "__ct__10CBaseQueueFUi",
+          "windows_address": "463020"
+        },
+        {
+          "mac_address": "10204aac",
+          "symbol": "__ct__10CBaseQueueFUiPc",
+          "windows_address": "4630a0"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Engine/Queues/CBaseQueue.h",
+          "line": 36
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CVSIOs",
+      "header": "src/Engine/Streams/CVSIOs.h",
+      "implemented_constructor_parameters": [
+        "CVSStreambuf* p_streamBuffer"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "10213cca",
+          "symbol": "__ct__6CVSIOsFP12CVSStreambuf",
+          "windows_address": "458410"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Engine/Streams/CVSIOs.h",
+          "line": 23
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    },
+    {
+      "class": "CVSStreambuf",
+      "header": "src/Engine/Streams/CVSStreambuf.h",
+      "implemented_constructor_parameters": [
+        "char* p_buffer, int p_size"
+      ],
+      "mac_constructor_symbols": [
+        {
+          "mac_address": "10213c52",
+          "symbol": "__ct__12CVSStreambufFPci",
+          "windows_address": "4583e0"
+        }
+      ],
+      "observed_direct_zero_argument_spellings": [
+        {
+          "path": "src/Engine/Streams/CVSStreambuf.h",
+          "line": 13
+        }
+      ],
+      "observed_unparenthesized_default_new": [],
+      "disposition": "retained unresolved: same absence finding, no new evidence to justify repeating broad removal12388 or arbitrary declaration subsets."
+    }
+  ],
+  "localized_constructor_trial": {
+    "class": "CGameFlaggedMessage",
+    "address": "0x004524b0",
+    "memory_attempt": 12401,
+    "result": "reverted entire single-header+regenerated-ledger trial",
+    "evidence": "Native ctor consumes messageID; Mac10a001da __ct__19CGameFlaggedMessageFUl. Derived accept/reject Windows452530/452510 explicitly forward7/6. Own constructor, derived constructors and scalar deleting destructor remainraw100 after removal.",
+    "full_report_changes": [
+      {
+        "address": "0x00452550",
+        "name": "CNetworkManager::CNetworkManager",
+        "size": 398,
+        "raw_before": 100,
+        "raw_after": 74.59016393442623,
+        "effective_before": 100,
+        "effective_after": 100
+      },
+      {
+        "address": "0x00452bc0",
+        "name": "CNetworkManager::CountActiveGames",
+        "size": 47,
+        "raw_before": 100,
+        "raw_after": 72,
+        "effective_before": 100,
+        "effective_after": 72
+      }
+    ],
+    "exact_bytes_delta": -445,
+    "effective_bytes_delta": -47,
+    "interpretation": "Declaration affects compiler register assignment/scheduling in another TU despite no runtime use. Matching sensitivity is not semantic justification for unsupported declaration. New supported original API/compilation evidence needed; no compensating tricks."
+  },
+  "sound_placeholders": [
+    {
+      "class": "CWaveSoundDevice",
+      "method": "Dummy10",
+      "address": "0x0047cbe0",
+      "declaration_parameters": "unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId",
+      "original_x86": [
+        "0047cbe0: mov eax, 1",
+        "0047cbe5: ret 0xc"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CWaveSoundDevice",
+      "method": "Dummy2c",
+      "address": "0x0047cbf0",
+      "declaration_parameters": "",
+      "original_x86": [
+        "0047cbf0: xor eax, eax",
+        "0047cbf2: ret"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CWaveSoundDevice",
+      "method": "Dummy1c",
+      "address": "0x0047cdf0",
+      "declaration_parameters": "",
+      "original_x86": [
+        "0047cdf0: mov eax, 1",
+        "0047cdf5: ret"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CWaveSoundDevice",
+      "method": "Dummy34",
+      "address": "0x0047cef0",
+      "declaration_parameters": "unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3",
+      "original_x86": [
+        "0047cef0: xor eax, eax",
+        "0047cef2: ret 0x10"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CWaveSoundDevice",
+      "method": "Dummy38",
+      "address": "0x0047cf00",
+      "declaration_parameters": "unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3",
+      "original_x86": [
+        "0047cf00: xor eax, eax",
+        "0047cf02: ret 0x10"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CWaveSoundDevice",
+      "method": "Dummy40",
+      "address": "0x0047cfe0",
+      "declaration_parameters": "unsigned int p_arg0",
+      "original_x86": [
+        "0047cfe0: xor eax, eax",
+        "0047cfe2: ret 4"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CWaveSoundDevice",
+      "method": "Dummy44",
+      "address": "0x0047cff0",
+      "declaration_parameters": "unsigned int p_arg0",
+      "original_x86": [
+        "0047cff0: xor eax, eax",
+        "0047cff2: ret 4"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CWaveSoundDevice",
+      "method": "Dummy4c",
+      "address": "0x0047d000",
+      "declaration_parameters": "",
+      "original_x86": [
+        "0047d000: xor eax, eax",
+        "0047d002: ret"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CDirectSoundDevice",
+      "method": "Dummy10",
+      "address": "0x0047e350",
+      "declaration_parameters": "unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId",
+      "original_x86": [
+        "0047e350: mov eax, 1",
+        "0047e355: ret 0xc"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CDirectSoundDevice",
+      "method": "Dummy2c",
+      "address": "0x0047e360",
+      "declaration_parameters": "",
+      "original_x86": [
+        "0047e360: xor eax, eax",
+        "0047e362: ret"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CDirectSoundDevice",
+      "method": "Dummy1c",
+      "address": "0x0047e490",
+      "declaration_parameters": "",
+      "original_x86": [
+        "0047e490: mov eax, 1",
+        "0047e495: ret"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CDirectSoundDevice",
+      "method": "Dummy34",
+      "address": "0x0047e500",
+      "declaration_parameters": "unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3",
+      "original_x86": [
+        "0047e500: xor eax, eax",
+        "0047e502: ret 0x10"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CDirectSoundDevice",
+      "method": "Dummy38",
+      "address": "0x0047e510",
+      "declaration_parameters": "unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3",
+      "original_x86": [
+        "0047e510: xor eax, eax",
+        "0047e512: ret 0x10"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CDirectSoundDevice",
+      "method": "Dummy40",
+      "address": "0x0047e5b0",
+      "declaration_parameters": "unsigned int p_arg0",
+      "original_x86": [
+        "0047e5b0: xor eax, eax",
+        "0047e5b2: ret 4"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CDirectSoundDevice",
+      "method": "Dummy44",
+      "address": "0x0047e5c0",
+      "declaration_parameters": "unsigned int p_arg0",
+      "original_x86": [
+        "0047e5c0: xor eax, eax",
+        "0047e5c2: ret 4"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    },
+    {
+      "class": "CDirectSoundDevice",
+      "method": "Dummy4c",
+      "address": "0x0047e5d0",
+      "declaration_parameters": "",
+      "original_x86": [
+        "0047e5d0: xor eax, eax",
+        "0047e5d2: ret"
+      ],
+      "disposition": "preserve placeholder; inert implementation proves return/stack cleanup, not historical name or distinct C++ parameter types"
+    }
+  ],
+  "sound_cross_platform_evidence": {
+    "status": "unresolved; candidates supported semantically, exact slot?symbol evidence unavailable",
+    "mac_symbols": [
+      "Reinitialise__12CMacSoundDevFUcUcUl10102bf8",
+      "StopAllMusic__12CMacSoundDevFv10102d28",
+      "GetNumMusicChannels__12CMacSoundDevFv10103298",
+      "AllocatePatch__12CMacSoundDevFP7VSPATCHPUlUcUc10102df2",
+      "AllocateDrumPatch__12CMacSoundDevFP7VSPATCHPUlUcUc10102e2e",
+      "FreePatch__12CMacSoundDevFUl10102f5e",
+      "FreeDrumPatch__12CMacSoundDevFUl10102f88",
+      "FreeAllPatches__12CMacSoundDevFv10102fc6"
+    ],
+    "call_correspondence": [
+      "CSoundManager Mac destructor10218396 music virtual+24; effects102183b2+28. Windows corresponding1c/20.",
+      "Mac SetResId10218492 callsvirtual+18 with0,effects,resourceId. Windows corresponding10.",
+      "Mac ctor102182ce callsvirtual+34 for musicchannelcapability; Windows corresponding2c."
+    ],
+    "limitation": "Mac table pointer set toA5+0xd24 in CMacSoundDev ctor101027f6/fA. Loaded Ghidra image has CODEsegments only; A5/DATA vtable bytes absent. Caller offset correspondence plus candidate symbol roles insufficient to establish historical Windows-specific name/type mapping.",
+    "resource_probe": "Existing Downloads ISO HFS readable with isolated machfs1.3/macresources1.2. Install Paintball datafork is MSF1 tiny/gzip installer with compressed68Kgame; not decoded. Extracted installer artifacts kept only in ignored build folder. No binary changes/import mutations.",
+    "prerequisite": "Recover original68Kgame DATA0/A5vtable with jump-table relocations; map exact table slots to MacsBug names; corroborate corresponding Windows callers/cleanup before rename or payload-type edits."
+  },
+  "focus_placeholder": {
+    "path": "src/Platform/Windows/Windowing/CWnd.cpp",
+    "address": "0x004324c0",
+    "finding": "CWnd::Dummy94",
+    "original_x86": "RET",
+    "caller_context": "ProcessMessage464520 invokes slot94 on previousfocuswindow beforeOnFocusLost in WM_SETFOCUS and conditional WM_KILLFOCUS paths.",
+    "disposition": "unresolved; source and x86 establish callback order, no unique operation semantics or historical name. BareRET insufficient to recover full ABI alone.",
+    "prerequisite": "OriginalWindows source/symbol or corroborating meaningful override/caller; Mac catalog has no focus-equivalent name mapping. Do not guess ClearFocus because callback body clears nothing."
+  },
+  "related_wave_allocation": {
+    "address": "0x0047cf10",
+    "status": "unresolved; not retried",
+    "evidence": "Original guarded24byteCWaveEffect allocation, constructor47c260, nullstore then virtualOpen; owner table/counter reloads after callbacks.",
+    "history": "Prior ordinary typed-new trial11728 preserves targetraw100 but regresses FreeAllEffects47d080100?57.14; no new source/ABI evidence. Prior delete-effect trials10148/10149 and owneralias trials10412/10951 exhausted.",
+    "prerequisite": "Supported original type/lifetime/compilation-boundary evidence; avoid register permutations or scope-only score tricks."
+  },
+  "root_findings": [
+    {
+      "item": "CViewData coordinate storage and C2D scalar-copy scaffolding",
+      "status": "Reviewed; unresolved. New coherent typed-owner/accessor trial rejected.",
+      "paths": [
+        "src/Gameplay/Objects/CViewData.h",
+        "src/GameView/Display/C2D.cpp",
+        "src/Gameplay/Hazards/CLaser.cpp"
+      ],
+      "evidence": [
+        "Windows43efcc..43efe1 and43f023..43f032 copy three DWORD integer coordinates. 439340 leaves position+4/+8/+c untouched;429e50 writes three signed fixed>>12 values.",
+        "Mac Coord__9CViewDataFv1011c8ee returns three DWORDs from view+1a via hidden result. DrawObjectsZBuff10b0623e..10b06264 calls it then copies an integer-coordinate local.",
+        "CPt3 ownership and Coord accessor are supported source hypotheses, not a unique proof of original Windows type spelling. Shared owner/type context affects unrelated inlining."
+      ],
+      "actual_trial": {
+        "memory_id": 12397,
+        "change": "Owned CPt3 member, Mac-evidenced Coord value getter, typed projection copies, typed laser initializer receivers, mechanical field-user updates; ABI unchanged.",
+        "result": "Build0. Both C2D projection functions and CViewData constructor remain raw100. CLaser54.48029->approximately32.62 after thunk recovery/rebuild; auxiliary-vector assignment inlining and register/scheduling changes. Entire five-file trial and ledger restored; no source retained."
+      },
+      "next_prerequisite": "Recover coherent Windows view-record API/definition visibility and copy boundaries, including laser auxiliary-vector assignment. Do not add alias unions, forced-inline controls or register-shaped locals."
+    },
+    {
+      "item": "CPVGWnd short-field memcpy scaffolding",
+      "status": "Reviewed; unresolved. Existing rejected assignment family not repeated.",
+      "address": "0x00465aa0",
+      "evidence": [
+        "Native465b4e..465b71,465b9a..465bc4,465bed..465c19 copy four WORDs for each primitive after drawing-mark dispatch; virtual back/Z-buffer tests and target reloads preserved.",
+        "Trial12387 direct scalar assignments89.55->37.60. Explicit whole-rectangle assignment introduces442190 calls absent at these sites; inline assignment2675 loses standalone symbol.",
+        "Implicit-copy hypothesis contradicted by prior46db10 trial1921: generated DWORD copy where original uses two WORD copies. No new source trial for that contradicted family."
+      ],
+      "next_prerequisite": "Evidence for original rectangle copy/setter definition boundaries and MSVC4 visibility. Current memcpy syntax remains an explicit unresolved issue."
+    },
+    {
+      "item": "CMain2DDisplay opaque AI/map fields",
+      "status": "Reviewed; unresolved. Type identities established; broader compiler context missing.",
+      "paths": [
+        "src/GameView/Display/CMain2DDisplay.h",
+        "src/GameView/Display/CMain2DDisplay.cpp"
+      ],
+      "evidence": [
+        "Windows431abc..431ae5 performs two independently reloaded null-preserving CBaseProcess to complete CAI conversions, storesdisplay+c4 andCAI+110 map into display+b4. 431b05/431b10 reload both after allocation for C2D;435cac..435cd0 stores AI/map arguments.",
+        "Prior10986 CAI*/CMap* correction lost741EffectiveB in other translation units. The native facts support field types; collateral register/initialization scheduling does not establish semantic necessity of void*. No arbitrary declaration variants retried."
+      ],
+      "next_prerequisite": "Supported original shared frontend declaration/constructor visibility and inline context preserving existing code; retain process and allocation reloads."
+    },
+    {
+      "item": "CPanelButton packed ammo-size fallback",
+      "status": "Reviewed exception; original Windows bug retained; storage pun still unresolved.",
+      "address": "0x00442690",
+      "evidence": "Windows4428c1 loads the packed size DWORD on the null-remap branch. Replacing it with a normal colour changes behavior; Mac path differs. Prior packing/memcpy alternatives lost matching; no new supporting layout evidence.",
+      "next_prerequisite": "Behavior-preserving original packed storage representation. Do not silently repair the native bug."
+    }
+  ],
+  "additional_rejected_trials": [
+    {
+      "id": 12394,
+      "change": "Two ordinary pause base conversions, preserving point scratch/API.",
+      "result": "Target unchanged58.93417; sole collateral CalculateWindow27.26046->26.99055. Reverted combined trial."
+    },
+    {
+      "id": 12400,
+      "change": "Mac-evidenced static inline ClipZRLELineRemapR per-row helper plus typed row indexing.",
+      "result": "Build0, helper fully inlined; target92.76018->88.29 from compare/register changes. Other canaries unchanged. Reverted before speculative full report."
+    },
+    {
+      "memory_id": 12396,
+      "hypothesis": "Recover embedded CList plus shared append/remove/find/lifetimes and typed callbacks.",
+      "result": "Build0. AddChild100,dtor100,ctor90.24?100;RemoveChild100?74.36 due loopnode/argument register allocation and prologue scheduling after inlineFindElement. Whole family rejected; no register variants."
+    },
+    {
+      "memory_id": 12398,
+      "hypothesis": "Narrow CList to ctor/dtor/typedrecord; keep direct CPVWnd append/remove native control shape.",
+      "result": "Build0. Add/Remove100,ctor90.24?100;dtor100?80.56. Whole narrowed family rejected; no scope/register tuning."
+    },
+    {
+      "memory_id": 12402,
+      "hypothesis": "Use new generic CListElement header only in CGWnd Render/Flush; no class layout changes.",
+      "result": "Both targets100; source/thunks0 afterroute refresh. Full report collateral AttachPalette464490100?60 loses90Exact/EffectiveB;ProcessOtherMessages463f7096.753?98.052. Rejected redundant template addition; existing node reuse retained independently in12403."
+    },
+    {
+      "memory_id": 12405,
+      "hypothesis": "Focused CWnd MoveAbsolute/Move/Destroy use existing typed WindowOwnerNode; no header/layout changes.",
+      "result": "Focused92.93/100/100 unchanged; build/policy/thunks0. Full report Create465200100?94.8875(-752B) andSetMenu4656f0100?81.8182(-86B). Exact/Effective?838B. Reverted entire family; no subsets/register/scope variants."
+    },
+    {
+      "memory_id": 12408,
+      "hypothesis": "CPVWnd cpp-only typed WindowOwnerNode in AddChild/RemoveChild/destructor; header and head/tail field types unchanged.",
+      "result": "Build/thunks0; primary three targets100. But SetZoom4662b0 incidental gain from2277cf25 regresses100?95.65/E100 (-47Exactbytes); stop under no collateral declines. Whole family reverted without register/scope variants. Parent explicitly requested combined comparison against original03f96bbd: exact same source + typed geometry yields full report/effective byte identity; retained in amended b2844d41. No source variants to keep incidental score.",
+      "status": "Provisional rejection superseded by retained combined trial12409."
+    }
+  ],
+  "new_list_observations": [
+    {
+      "memory_id": 2220,
+      "address": "0x004323d0",
+      "finding": "Actual Macintosh child container is CList<CPVWnd,CListElement<CPVWnd>>, embedded12-byte head/tail/count atMacCPVWnd+20; Windows+24.",
+      "citations": [
+        "mac-symbol-catalog.csv209:FindElement__38CList_6CPVWnd_21CListElement_6CPVWnd__10104b34",
+        "Mac10104abe passeslist+20 toFindElement;10104b3e..54 readsnodevalue/next;10104a38allocates12.",
+        "Mac102169e2..ec initializesembeddedlist;10216aa0..be destroyslistnodes after CPVWndbody."
+      ]
+    },
+    {
+      "memory_id": 2221,
+      "address": "0x00454f00",
+      "finding": "Mac ResetHandlers indexes captured CNetworkGameMessage array; Windows biased validity cursor is compiler induction. Mac byte validity/stride44 cannot replace Windows DWORD validity+4c/stride50.",
+      "citations": [
+        "Mac108087a6..ba capturesconnectionarray+20 and messagearray+14;108087c4 ordinal*44;108087caTST.B+42;108087f0..f4tenentries.",
+        "Windows454f25..28 capturesmessages thenbiases+4c;454f30CMPDWORD;454f5cadds50."
+      ]
+    },
+    {
+      "memory_id": 2222,
+      "address": "0x0046ad10",
+      "finding": "Mac palette destructor uses one typed array ordinal; raw Windows second byte offset is compiler strength reduction. Both reload table after destructor/free, then clear current slot and compare dynamic count.",
+      "citations": [
+        "Mac10200cea..cec table/ordinal*4;10200cf8base destructor;10200cfe free;10200d08table reload;10200d0aclearindex;10200d0einc;10200d10dynamiccount.",
+        "Windows46ad23/3ctable reload;46ad3e/41offset/indexadvance;46ad42previousslotclear;46ad4adynamiccount."
+      ]
+    }
+  ],
+  "validation": {
+    "build": "tools/make_binary.py exit0",
+    "source_policy": "tools/check_source.py:0violations",
+    "catalog": "2698/2698 mapped implementations;0errors",
+    "thunks": "2079jump entries;7218references;0errors",
+    "format": "clang-format touched C/C++; preserve existing include order in CGWnd.cpp.",
+    "whitespace": "git -c core.whitespace=cr-at-eol diff --check clean",
+    "report": {
+      "changed_rows": [
+        {
+          "address": "0x00444050",
+          "name": "CPauseWindow::CalculateWindow",
+          "before": 27.26045883940621,
+          "after": 28.34008097165992
+        }
+      ],
+      "rows": 5958,
+      "matching_decreases": 0,
+      "inventory_metadata_extent_changes": 0,
+      "exact_bytes_before": "249904",
+      "exact_bytes_after": "249904",
+      "exact_functions_before": 5314,
+      "exact_functions_after": 5314,
+      "effective_bytes_before_and_after": 308339,
+      "effective_functions_before_and_after": 5571,
+      "additional_effective_before": 257,
+      "additional_effective_after": 257,
+      "measures": {
+        "total_units": 368,
+        "total_code": "433937",
+        "matched_code": "249904",
+        "fuzzy_match_percent": 91.99364399245373,
+        "matched_code_percent": 57.58992664833835,
+        "total_functions": 5958,
+        "matched_functions": 5314,
+        "matched_functions_percent": 89.19100369251427
+      }
+    },
+    "existing_warning": "Match(40a830,440c90) staged-match collision; present at baseline.",
+    "artifacts": [
+      "build-msvc400/report-goal-before.json",
+      "build-msvc400/effective-goal-before.json",
+      "build-msvc400/report-goal-final.json",
+      "build-msvc400/effective-goal-final.json",
+      "build-msvc400/goal-integration-diff.json"
+    ]
+  }
+}

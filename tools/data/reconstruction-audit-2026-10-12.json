@@ -2,6 +2,7 @@
   "date": "2026-10-12",
   "baseline_commit": "4127862d",
   "source_commit": "80fe8809",
+  "follow_up": "tools/data/reconstruction-audit-unresolved-2026-10-12.json",
   "authority": "data/LEMBALL.EXE; original Windows x86. Macintosh catalog and disassembly corroborate names and source structure; Windows ABI takes precedence.",
   "scope": {
     "screened_files": 801,
