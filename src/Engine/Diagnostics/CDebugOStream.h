@@ -7,7 +7,6 @@
 
 #include <stddef.h>
 
-#pragma warning(disable : 4355)
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x00493020
 class CDebugOStream : public virtual CVSOStream {
@@ -21,7 +20,6 @@ public:
 private:
 	CVSDebugStreambuf m_buffer; // 0x04
 };
-#pragma warning(default : 4355)
 
 // SYNTHETIC: LEMBALL 0x00407e80
 // CDebugOStream::`scalar deleting destructor'

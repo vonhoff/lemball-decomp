@@ -10,7 +10,6 @@
 // VTABLE: LEMBALL 0x0049a1e8 CBaseSocket
 // VTABLE: LEMBALL 0x0049a210 CTCPIPReadSocket
 #pragma warning(disable : 4250)
-#pragma vtordisp(off)
 class CTCPIPReadSocket : public virtual CBaseCommonSocket,
 						 public virtual CReadSocket,
 						 public virtual CTCPIPCommonSocket {
@@ -20,7 +19,6 @@ public:
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
 	virtual void Closed(int p_notifyPeer);                                             // vtable+0x0c
 };
-#pragma vtordisp(on)
 #pragma warning(default : 4250)
 
 // SYNTHETIC: LEMBALL 0x00471dc0 SYMBOL
