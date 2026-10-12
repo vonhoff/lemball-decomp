@@ -1,6 +1,4 @@
 #include "CBasePalManager.h"
-
-#include "CBaseRemap.h"
 #include "CRemap.h"
 
 #include <new.h>
