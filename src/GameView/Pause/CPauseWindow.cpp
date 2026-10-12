@@ -257,7 +257,7 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 		CPVWnd::SetRect(p_rect);
 	}
 
-	size = *(const CVSSize*) &p_rect;
+	size = p_rect;
 	borderRect.m_width = size.m_width;
 	borderRect.m_height = size.m_height;
 	borderRect.m_y = 0;

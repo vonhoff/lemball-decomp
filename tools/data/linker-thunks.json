@@ -32374,7 +32374,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?CalculateWindow@CPauseWindow@@QAE?AVCVSRect@@XZ",
       "size": 1410,
-      "fingerprint": "7fd66df503c223255deaa701c09db4931ccc8a5c7b33b8f276a6b16764ea37d0",
+      "fingerprint": "3b1a96cdcda16152513ce4732e957c3c3410aa44d2e0919ff4cda0f250805a8a",
       "references": [
         {
           "offset": 393,
