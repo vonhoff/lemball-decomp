@@ -15,7 +15,6 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
 #include "Platform/Windows/WinSock/WinSock.h"
 
-#include <new.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy, strcpy, strlen)
@@ -39,16 +38,9 @@ CTCPIPBroadcast::~CTCPIPBroadcast()
 void CTCPIPBroadcast::GetSpecificAddr(const char* p_name)
 {
 	CTCPIPNetworkAddress* address;
-	void* storage;
 
 	if (inet_addr(p_name) != INADDR_NONE) {
-		storage = operator new(sizeof(CTCPIPNetworkAddress));
-		if (storage != NULL) {
-			address = new (storage) CTCPIPNetworkAddress;
-		}
-		else {
-			address = NULL;
-		}
+		address = new CTCPIPNetworkAddress;
 		m_specificAddress = address;
 		address->operator=(p_name);
 		address->GetStr();
@@ -83,18 +75,11 @@ void CTCPIPBroadcast::GotName(int p_failed)
 	if (p_failed == 0) {
 		CTCPIPNetworkAddress* address;
 		TcpIpHostEntry* hostEntry;
-		void* storage;
 		in_addr lookupAddress;
 
 		hostEntry = (TcpIpHostEntry*) m_specificNameBuffer;
 		memcpy(&lookupAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
-		storage = operator new(sizeof(CTCPIPNetworkAddress));
-		if (storage != NULL) {
-			address = new (storage) CTCPIPNetworkAddress;
-		}
-		else {
-			address = NULL;
-		}
+		address = new CTCPIPNetworkAddress;
 		m_specificAddress = address;
 		address->m_ipv4Address = lookupAddress.s_addr;
 		strcpy(address->m_text, inet_ntoa(address->Get()));
