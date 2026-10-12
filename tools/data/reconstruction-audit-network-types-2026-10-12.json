@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-12",
+  "status": "Goal active. Three verified improvements retained; all nine broader categories remain open.",
+  "baseline_commit": "118e4ac428f55b2684e9eae15cd5899ce7a3a446",
+  "previous_review": "tools/data/reconstruction-audit-shared-helper-2026-10-12.json",
+  "unresolved_scope": "tools/data/reconstruction-audit-unresolved-2026-10-12.json",
+  "retained": [
+    {
+      "commit": "694f4b73",
+      "attempt": 12440,
+      "observation": 2243,
+      "change": "CNetworkGameMessage validity becomes bool. Three stores use false/true; the existing validity cursor uses bool*. Traversal unchanged.",
+      "windows": "452400 clears DWORD +4c; 4524a7 stores one after two GetCopy calls; 4529b6 clears a slot before connection removal and callback.",
+      "macintosh": "Named 68K constructor 10a00094 clears byte +42; GetData 10a001a6 stores one at +42.",
+      "inference": "Boolean domain supported by both platforms. Historical typedef spelling inferred. Existing project bool=int preserves the Windows four-byte field.",
+      "artifact": "build-msvc400/network-validity-verification.json"
+    },
+    {
+      "commit": "cde861f3",
+      "attempt": 12441,
+      "change": "Remove redundant CNetworkMessage.h include from CNetworkGameMessage.cpp.",
+      "evidence": "The source first includes its own class header, which requires and includes the complete CNetworkMessage base definition. Same guarded header was repeated below CString.h. Other include placement unchanged."
+    },
+    {
+      "commit": "3aed85a1",
+      "attempt": 12442,
+      "observation": 2244,
+      "change": "Remove unused explicit m_padding member; use ordinary compiler alignment.",
+      "windows": "Name arrays occupy +2c through +49; validity accesses use DWORD +4c. Vector destructor 452f67..452f76 computes count times 0x50 and steps by 0x50.",
+      "source": "No padding-member access beyond its declaration. Existing arrays and method bodies unchanged. Historical absence of an explicit member is inferred, not proven by disassembly.",
+      "compiled_layout": "MSVC 4.00 probe includes the actual edited header. Emitted constants: validity offset 76, class size 80, bool size 4.",
+      "artifact": "build-msvc400/network-padding-verification.json",
+      "probe_source": "build-msvc400/network-padding-layout.cpp",
+      "probe_assembly": "build-msvc400/network-padding-layout.asm",
+      "probe_source_sha256": "152e9bc832e31d51c2deeb358171c397e7eeae7ab298a4c1fd29279cb2f49aea",
+      "probe_assembly_sha256": "de2531e070c0019df4b10080f33bdbbc2e489e5cc4d7a233253366cc5cf3402c",
+      "probe_limit": "Ignored diagnostic only. Existing friend name provides private-member access in a standalone compile; no probe declarations enter reconstructed code. Legacy PDB unsupported by llvm-pdbutil, so layout verified through compiler output."
+    }
+  ],
+  "integration": {
+    "source_commit": "3aed85a1",
+    "build_exit": 0,
+    "source_violations": 0,
+    "catalog": "2698/2698 mapped implementations; zero errors",
+    "thunks": "2079 entries; 7218 references; zero errors",
+    "report_scope": "5958 functions, 368 units, 433937 original bytes",
+    "report_comparison": "After each trial and final main-checkout integration, report.json and effective.json are byte-identical to baseline.",
+    "exact_bytes": 249904,
+    "exact_functions": 5314,
+    "effective_bytes": 308339,
+    "effective_functions": 5571,
+    "report_sha256": "ed69098f10969c86d3ad84ec41b657a447571d1c4661e375225ea327f53fb88f",
+    "effective_sha256": "d4111c6756d8ee2bc20396b55641ba2b4c1cc253796aede98c30c4cc8a13ec5d",
+    "known_diagnostic": "Existing staged-match collision 40a830/440c90 unchanged.",
+    "impact_check": "Main-root detect_changes since 118e4ac4 identifies all four changed files and eight seed symbols. Zero graph callers is not completeness proof; source consumers and full report checked.",
+    "coverage_limit": "Tier 2 graph metadata changed; source read directly. Network drawer partial lines 365, 366 and 1126 inspected. Virtual and overload graph edges remain incomplete."
+  },
+  "remaining": {
+    "categories_open": 9,
+    "partial_progress": "Boolean field and natural padding improve type/layout recovery. Raw cross-record validity traversal remains.",
+    "review": "Three independent agents challenged prior blockers. No additional supported untried change identified in compiler controls, palette ownership, list/input structure, geometry casts, surface rows, scalar/coordinate copies, default constructor declarations or remaining names. This is a bounded review, not proof that no solution exists.",
+    "constraint": "Known clean structural hypotheses regress matching. Do not repeat rejected families through declaration, branch, register or scope permutations without new evidence.",
+    "useful_evidence": "Original Windows headers/preprocessed units, symbol-bearing object/library files, original debug records or alternate Windows implementations may clarify construction, inline boundaries and identities. Exact historical spelling is not required for a coherent validated reconstruction.",
+    "constructor_declarations": "Nineteen audited declarations remain; emitted binaries cannot establish whether unused declarations existed in original headers."
+  }
+}

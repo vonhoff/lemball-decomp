@@ -162,5 +162,6 @@
     },
     "candidate_full_report": "Not run after focused matching losses. Restored baseline canonical report regenerated and compared."
   },
+  "next_review": "tools/data/reconstruction-audit-network-types-2026-10-12.json",
   "verification_limits": "Graph Tier2 generation2026-10-12T15:07:31Z; stale/partial cited source read directly. Graph detect_changes targets main, so isolated-worktree source search and full restoration comparison provide impact verification. Diagnostic artifacts reside in retained ignored build outputs; probe source and hashes embedded here for reproducibility."
 }
