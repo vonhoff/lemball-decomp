@@ -189,6 +189,7 @@
       "prerequisite": "Authoritative Windows class/API or original header evidence establishing redundant declarations and a supported compilation context preserving existing code. Catalog absence alone insufficient; compiler sensitivity does not establish semantic necessity."
     }
   ],
+  "default_constructor_review_scope": "The following 17 interface-review classes exclude the two palette defaults listed separately above. The complete audited cohort remains 19 declarations at f5765aae; no declaration removal is implied by the split review.",
   "default_constructor_review": [
     {
       "class": "CBaseFrontendProcess",

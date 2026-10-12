@@ -1079,6 +1079,7 @@
       }
     ],
     "unresolved": {
+      "default_constructor_scope": "The following 17 interface-review classes exclude CBasePalManager and CBaseRemap, reviewed separately under palette findings. Together they form the 19-declaration cohort of trial 12388; all remain in source at f5765aae.",
       "default_constructors": [
         {
           "class": "CBaseFrontendProcess",

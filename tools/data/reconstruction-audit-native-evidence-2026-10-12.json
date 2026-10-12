@@ -289,7 +289,22 @@
         }
       ],
       "positive_parameterized_classes": 15,
-      "unused_defaults_remaining": 17,
+      "reviewed_interface_defaults": 17,
+      "audited_defaults_remaining": 19,
+      "cohort_verified_at_commit": "f5765aae",
+      "additional_palette_defaults": [
+        {
+          "class": "CBasePalManager",
+          "header": "src/Engine/Graphics/Palettes/CBasePalManager.h",
+          "declaration_line": 13
+        },
+        {
+          "class": "CBaseRemap",
+          "header": "src/Engine/Graphics/Palettes/CBaseRemap.h",
+          "declaration_line": 19
+        }
+      ],
+      "scope": "The 17-class interface review above excludes the two palette classes reviewed separately in the unresolved audit. All 19 declarations from trial 12388 remain in current source; this count is the audited cohort, not a claim that no other unsupported declaration exists.",
       "limit": "Emitted constructor bodies cannot establish absence of unused public declarations. No symbol-absence removal trial."
     },
     "geometry_helpers": {
@@ -451,7 +466,7 @@
     },
     {
       "item": "Unsupported constructor declarations",
-      "status": "Open:17 public defaults reviewed.15 parameterized PPC body identities recovered; this does not establish unused declaration absence. No declaration-removal retry."
+      "status": "Open: 19 audited public default declarations remain: 17 interface-review classes plus CBasePalManager and CBaseRemap. Parameterized PPC bodies were identified for 15 of the 17 interface classes; this does not establish unused declaration absence. No declaration-removal retry."
     },
     {
       "item": "Incomplete type/name recovery",
