@@ -5,7 +5,6 @@
 #include "Engine/Streams/CVSOStream.h"
 
 #include <mmsystem.h>
-#include <new.h>
 #include <stddef.h>
 #include <windows.h>
 
@@ -322,19 +321,10 @@ int CWaveSoundDevice::AllocateDrumPatch(VSPATCH* p_patch,
 // FUNCTION: LEMBALL 0x0047cf10
 int CWaveSoundDevice::AllocateEffect(unsigned char* p_data, unsigned long* p_handle)
 {
-	void* storage;
-
 	for (unsigned int i = 0; i < m_channelCount; i++) {
 		if (m_effectUsed[i] == 0) {
 			ShutDown();
-			storage = operator new(sizeof(CWaveEffect));
-			if (storage == NULL) {
-				m_effects[i] = NULL;
-			}
-			else {
-				m_effects[i] =
-					new (storage) CWaveEffect(p_data, m_waveOut, m_sampleRate, (int) m_use16Bit, (int) m_stereo);
-			}
+			m_effects[i] = new CWaveEffect(p_data, m_waveOut, m_sampleRate, m_use16Bit, m_stereo);
 			Initialise(0, 1, 0);
 			m_effectUsed[i] = true;
 			m_effectHandles[i] = m_nextHandle;
@@ -400,10 +390,7 @@ int CWaveSoundDevice::FreeAllEffects()
 		do {
 			if (device->m_effectUsed[i] == 1) {
 				effect = device->m_effects[i];
-				if (effect != NULL) {
-					effect->~CWaveEffect();
-					operator delete(effect);
-				}
+				delete effect;
 				device->m_effectUsed[i] = false;
 				device->m_effectHandles[i] = 0;
 			}
