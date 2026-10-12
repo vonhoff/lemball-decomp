@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "f210616e",
+  "source_commit": "699ba07d",
+  "route_commit": "33afe2c6",
+  "previous_review": "tools/data/reconstruction-audit-coordinate-values-2026-10-12.json",
+  "attempt": 12534,
+  "change": "Defined stream defaults; construct debug buffer before attaching it. Existing parameterized constructors unchanged.",
+  "evidence": "Windows45b606..650 initializes virtual bases;45b667 constructs buffer;45b68f attaches through virtual bases. FatalWin32Error4737a7..47383e repeats this order. Default leaves state, precision and buffer pointer untouched until their evidenced initialization. Setter name/source form inferred; no compiler controls or declaration-order tuning.",
+  "validation": {
+    "build": "pass; regenerated routes and normal rebuild passed",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7199 references;0 errors",
+    "vtables": "412;100%",
+    "layout": "CVSIOs32, CVSOStream332, CDebugOStream364 bytes; all nonforward PDB versions agree. Member offsets and virtual-base indices unchanged.",
+    "native_fixtures": 39527,
+    "scope": "23 sequential scripts on same final EXE:564 stream/OS-error/parameterized-constructor cases plus affected graphics, decoding, ownership, statistics and sound regressions. Guard mapping independently verified.",
+    "limits": "Finite native comparisons; documented external leaves intercepted. No whole-game/OS execution or formal equivalence claim. Static review of compiler output supplements fixtures.",
+    "report": {
+      "functions": 5958,
+      "original_bytes": 433937,
+      "inventory_extents_unchanged": true,
+      "changed_rows": 117,
+      "before": {"exact_bytes": 231148, "effective_bytes": 284652, "exact_functions": 5231, "effective_functions": 5503},
+      "after": {"exact_bytes": 229933, "effective_bytes": 284804, "exact_functions": 5242, "effective_functions": 5504}
+    },
+    "matching_review": "Exact-1215 bytes; Effective+152. All50 raw/Effective decreases reviewed:29 instruction pairs equal prior review;21 fresh integration reviews. Register roles, scheduling and equivalent comparisons; no behavior concern identified. DrawObjects ILT/direct labels resolve same442190. Fatal intentionally removes premature parameterized-base calls. BuildDriverInfo60.23->96.74.",
+    "graph": "4files including ledger;6seeds;0reportedimpacts. Constructor/virtual/header edges underreported; direct source, full117-row comparison, PDB and native tests provide fallback.",
+    "whitespace": "pass",
+    "known_warning": "Existing staged-match collision40a830"
+  },
+  "artifacts": {
+    "snapshot": "build-msvc400/clean-wave15-evidence/final",
+    "snapshot_files": 91,
+    "workers": "build-msvc400/clean-wave15-evidence/workers",
+    "worker_files": 29,
+    "exe_sha256": "1a8ef82249cef5ce3d42241ab60b01559b0f7bac183271b12fe4fd567f7cf1dc",
+    "reproduction": "validate-clean-wave15.py; sequential. save-wave15.py verifies result hashes/counts; per-row static loss review saved. Local ignored artifacts; hashes.json records contents."
+  },
+  "remaining": "Final queued-item matrix reconciliation and completion audit. Historical names/opaque field roles remain explicitly qualified."
+}
