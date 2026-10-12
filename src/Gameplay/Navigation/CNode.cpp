@@ -1,5 +1,6 @@
 #include "CNode.h"
 
+#include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/CPt3.h"
 
@@ -11,15 +12,11 @@ struct NodeNeighbour {
 	int m_cost; // 0x04
 };
 
-enum {
-	NODE_UNINITIALIZED_FIXED_COORDINATE = 0xaa55aa55
-};
-
 // FUNCTION: LEMBALL 0x004212e0
 CNode::CNode()
 {
-	m_xFixed = NODE_UNINITIALIZED_FIXED_COORDINATE;
-	m_yFixed = NODE_UNINITIALIZED_FIXED_COORDINATE;
+	m_xFixed = DEBUG_SENTINEL;
+	m_yFixed = DEBUG_SENTINEL;
 	m_neighbours = NULL;
 }
 
@@ -73,7 +70,7 @@ void CNode::AddANeighbour(int p_node, int p_cost)
 // FUNCTION: LEMBALL 0x004213d0
 CPt3 CNode::Position()
 {
-	return CPt3(m_xFixed, m_yFixed, NODE_UNINITIALIZED_FIXED_COORDINATE);
+	return CPt3(m_xFixed, m_yFixed, DEBUG_SENTINEL);
 }
 
 // FUNCTION: LEMBALL 0x004213f0
