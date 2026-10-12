@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CMBLOCK_H
 #define LEMBALL_VISOS_FOUNDATION_CMBLOCK_H
 
-#include <stddef.h>
+#include "CArenaBase.h"
 
-class CVSOStream;
+#include <stddef.h>
 
 enum {
 	MEMORY_BLOCK_FLAG_FREE = 0x01,
@@ -12,7 +12,7 @@ enum {
 
 // SIZE 0x28
 // VTABLE: LEMBALL 0x00498940
-class CMBlock {
+class CMBlock : public CArenaBase {
 public:
 	CMBlock(class CArena* p_arena, class CMBlock* p_previous, char* p_description, unsigned long p_size);
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
@@ -26,7 +26,6 @@ public:
 	friend class CRAMArena;
 
 protected:
-	unsigned int m_signature;       // 0x04
 	unsigned char* m_data;          // 0x08
 	unsigned int m_size;            // 0x0c
 	class CArena* m_ownerArena;     // 0x10

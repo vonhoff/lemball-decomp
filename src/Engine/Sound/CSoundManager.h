@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_SOUND_CSOUNDMANAGER_H
 #define LEMBALL_VISOS_SOUND_CSOUNDMANAGER_H
 
+#include "Engine/Memory/CArenaBase.h"
+
 class CWnd;
-class CVSOStream;
 class CBaseSoundDevice;
 class CPVMusicDevice;
 
@@ -12,7 +13,7 @@ enum {
 
 // SIZE 0xc90
 // VTABLE: LEMBALL 0x00498978
-class CSoundManager {
+class CSoundManager : public CArenaBase {
 public:
 	CSoundManager(unsigned int p_musicEnabled,
 				  unsigned int p_effectsEnabled,
@@ -44,7 +45,6 @@ public:
 	~CSoundManager();
 
 private:
-	unsigned int m_signature;          // 0x04
 	bool m_background;                 // 0x08
 	bool m_musicAvailable;             // 0x0c
 	bool m_effectsAvailable;           // 0x10

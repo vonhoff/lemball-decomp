@@ -1,13 +1,14 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CBASEQUEUEHANDLER_H
 #define LEMBALL_VISOS_FOUNDATION_CBASEQUEUEHANDLER_H
 
+#include "Engine/Memory/CArenaBase.h"
+
 class CBaseQueue;
-class CVSOStream;
 struct tagMESSAGE;
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x00493110
-class CBaseQueueHandler {
+class CBaseQueueHandler : public CArenaBase {
 public:
 	CBaseQueueHandler();
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
@@ -32,7 +33,6 @@ public:
 	friend class CAICursor;
 
 private:
-	unsigned int m_signature;     // 0x04
 	unsigned int m_dispatchState; // 0x08
 
 protected:

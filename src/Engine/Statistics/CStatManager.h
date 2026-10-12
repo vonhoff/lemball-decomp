@@ -1,12 +1,13 @@
 #ifndef LEMBALL_VISOS_ANIMATION_CSTATMANAGER_H
 #define LEMBALL_VISOS_ANIMATION_CSTATMANAGER_H
 
-class CVSOStream;
+#include "Engine/Memory/CArenaBase.h"
+
 class CBaseStat;
 
 // SIZE 0x14
 // VTABLE: LEMBALL 0x00498958
-class CStatManager {
+class CStatManager : public CArenaBase {
 public:
 	CStatManager(int p_capacity);
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
@@ -14,10 +15,9 @@ public:
 	~CStatManager();
 
 private:
-	unsigned int m_signature; // 0x04
-	CBaseStat** m_stats;      // 0x08
-	int m_capacity;           // 0x0c
-	int m_statCount;          // 0x10
+	CBaseStat** m_stats; // 0x08
+	int m_capacity;      // 0x0c
+	int m_statCount;     // 0x10
 };
 
 extern CStatManager* g_pStatManager;

@@ -1,8 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CMASTERINPUT_H
 #define LEMBALL_VISOS_FOUNDATION_CMASTERINPUT_H
 
+#include "Engine/Memory/CArenaBase.h"
+
 class CBaseQueue;
-class CVSOStream;
 
 enum {
 	MASTER_INPUT_ACTIVE_STATE_MASK = 0x03
@@ -10,7 +11,7 @@ enum {
 
 // SIZE 0x18
 // VTABLE: LEMBALL 0x0049a468
-class CMasterInput {
+class CMasterInput : public CArenaBase {
 public:
 	CMasterInput(CBaseQueue* p_queue);
 	bool AddItem(void* p_item);
@@ -31,7 +32,6 @@ private:
 		CNode* m_next;
 	};
 
-	unsigned int m_signature; // 0x04
 	unsigned int m_itemCount; // 0x08
 	CBaseQueue* m_queue;      // 0x0c
 	CNode* m_firstItem;       // 0x10
