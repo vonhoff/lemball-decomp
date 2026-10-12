@@ -26,8 +26,6 @@ enum {
 
 #define TRACK_WINDOW_MESSAGE_SOURCE_ID 100
 
-#define TRACK_WINDOW_INIT_HOT_AREA_LIST_STYLE 0x800
-
 // FUNCTION: LEMBALL 0x0044e790
 CTrackWindow::CTrackWindow(const CVSRect& p_rect, int p_value, CPVGWnd* p_parent) : CHotAreaHandler(p_rect)
 {
@@ -169,8 +167,7 @@ void CTrackWindow::OnDriverChange()
 // FUNCTION: LEMBALL 0x0044efe0
 unsigned int CTrackWindow::GetStyle()
 {
-	return (unsigned int) (WINDOW_STYLE_DIRECT_SCROLL | TRACK_WINDOW_INIT_HOT_AREA_LIST_STYLE |
-						   WINDOW_STYLE_SHOW_ON_CREATE);
+	return (unsigned int) (WINDOW_STYLE_DIRECT_SCROLL | WINDOW_STYLE_HOT_AREA_LIST | WINDOW_STYLE_SHOW_ON_CREATE);
 }
 
 #undef TRACK_PROGRESS_COLOUR_INDEX
@@ -178,4 +175,3 @@ unsigned int CTrackWindow::GetStyle()
 #undef TRACK_BEVEL_DARK_COLOUR_INDEX
 #undef TRACK_WINDOW_MESSAGE_SOURCE_ID
 #undef TRACK_VALUE_PERCENT_SCALE
-#undef TRACK_WINDOW_INIT_HOT_AREA_LIST_STYLE

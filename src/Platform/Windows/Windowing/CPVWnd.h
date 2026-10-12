@@ -8,6 +8,8 @@ struct tagMenuList;
 class CHotAreaList;
 struct CVSSize;
 
+#define WINDOW_STYLE_HOT_AREA_LIST 0x800
+
 // SIZE 0x0c
 struct WindowOwnerNode {
 	class CPVWnd* m_window;  // 0x00

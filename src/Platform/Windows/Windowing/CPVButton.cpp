@@ -29,14 +29,11 @@ void CPVButton::Destroy()
 	CWnd::Destroy();
 }
 
-#define CPV_BUTTON_INIT_HOT_AREA_LIST_STYLE 0x800
 // FUNCTION: LEMBALL 0x0043a570
 unsigned int CPVButton::GetStyle()
 {
-	return (unsigned int) (WINDOW_STYLE_DIRECT_SCROLL | CPV_BUTTON_INIT_HOT_AREA_LIST_STYLE |
-						   WINDOW_STYLE_SHOW_ON_CREATE);
+	return (unsigned int) (WINDOW_STYLE_DIRECT_SCROLL | WINDOW_STYLE_HOT_AREA_LIST | WINDOW_STYLE_SHOW_ON_CREATE);
 }
-#undef CPV_BUTTON_INIT_HOT_AREA_LIST_STYLE
 
 // FUNCTION: LEMBALL 0x0043a580
 void CPVButton::Move(const CVSPoint& p_point)

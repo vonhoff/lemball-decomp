@@ -197,14 +197,13 @@ void CPVWnd::SetRectInnerZoom(const CVSRect& p_rect, const CVSRect& p_innerRect,
 	_SetRect(p_rect);
 }
 
-#define CPVWND_INIT_HOT_AREA_LIST_STYLE 0x800
 // FUNCTION: LEMBALL 0x00465e60
 void CPVWnd::InitHotAreaList()
 {
 	unsigned int style;
 
 	style = GetStyle();
-	if ((style & CPVWND_INIT_HOT_AREA_LIST_STYLE) != 0 && m_hotAreaList == NULL) {
+	if ((style & WINDOW_STYLE_HOT_AREA_LIST) != 0 && m_hotAreaList == NULL) {
 		CVSRect listRect;
 		if (m_innerRect.m_width * m_innerRect.m_height != 0) {
 			listRect.m_width = m_innerRect.m_width;
@@ -232,7 +231,6 @@ void CPVWnd::InitHotAreaList()
 		m_hotAreaList = new CHotAreaList(listRect, offset, *static_cast<CVSPoint*>(&m_innerRect));
 	}
 }
-#undef CPVWND_INIT_HOT_AREA_LIST_STYLE
 
 // FUNCTION: LEMBALL 0x00465f80
 void CPVWnd::_OnCreate()
