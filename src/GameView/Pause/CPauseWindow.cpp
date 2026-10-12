@@ -163,7 +163,7 @@ void CPauseWindow::Initialise()
 	m_vramSurface = NULL;
 	m_menuItemRects = new CVSRect[m_menuItemCount];
 	RegisterRemaps();
-	m_loaded = 0;
+	m_loaded = false;
 	m_borderAnims = NULL;
 }
 
@@ -171,13 +171,13 @@ void CPauseWindow::Initialise()
 void CPauseWindow::Load()
 {
 	if (g_nCompactPrimaryContextLayout == 0 && g_nZoomEnabled != 0) {
-		m_lowResolution = 0;
+		m_lowResolution = false;
 		m_horizontalBorderAnimId = RES_BORDERS_HIRES_BORDERCORNERS;
 		m_verticalBorderAnimId = RES_BORDERS_HIRES_BORDEREDGES;
 		m_fontId = RES_BORDERS_HIRES_CUTFONT;
 	}
 	else {
-		m_lowResolution = 1;
+		m_lowResolution = true;
 		m_horizontalBorderAnimId = RES_BORDERS_LORES_BORDERCORNERS;
 		m_verticalBorderAnimId = RES_BORDERS_LORES_BORDEREDGES;
 		m_fontId = RES_BORDERS_LORES_CUTFONT;
@@ -186,7 +186,7 @@ void CPauseWindow::Load()
 	m_verticalBorderAnim = CResANIM::Load(m_verticalBorderAnimId);
 	CTextManager::LoadFont(m_fontId);
 	m_font = CTextManager::GetFont(m_fontId);
-	m_loaded = 1;
+	m_loaded = true;
 }
 
 // FUNCTION: LEMBALL 0x00443d40
@@ -196,7 +196,7 @@ void CPauseWindow::UnLoad()
 		CTextManager::UnLoadFont(m_fontId);
 		m_verticalBorderAnim->UnLoad();
 		m_horizontalBorderAnim->UnLoad();
-		m_loaded = 0;
+		m_loaded = false;
 	}
 }
 
@@ -294,7 +294,7 @@ CVSRect CPauseWindow::CalculateWindow()
 	CVSSize* horizontalBorder;
 	CVSSize* verticalBorder;
 	CVSSize* verticalCorner;
-	int lowResolution;
+	bool lowResolution;
 	int itemCount;
 	int i;
 

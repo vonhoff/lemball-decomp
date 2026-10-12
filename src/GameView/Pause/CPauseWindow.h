@@ -73,7 +73,7 @@ private:
 	char** m_menuLabels;                   // 0x100
 	ePauseWindowMessages m_pauseMessage;   // 0x104
 	unsigned int m_cursorState;            // 0x108
-	unsigned int m_lowResolution;          // 0x10c
+	bool m_lowResolution;                  // 0x10c
 	CReceiveWindowState* m_receiverState;  // 0x110
 	CPVGWnd* m_parentWindow;               // 0x114
 	int m_selection;                       // 0x118
@@ -99,7 +99,7 @@ private:
 	unsigned int m_horizontalBorderAnimId; // 0x1fc
 	unsigned int m_verticalBorderAnimId;   // 0x200
 	unsigned int m_fontId;                 // 0x204
-	unsigned int m_loaded;                 // 0x208
+	bool m_loaded;                         // 0x208
 };
 
 // SYNTHETIC: LEMBALL 0x00445350
