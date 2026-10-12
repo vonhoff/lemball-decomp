@@ -9,7 +9,7 @@
 
 struct tagMenuList;
 
-extern int g_cursorState;
+extern int g_windowInstanceCount;
 extern int g_nNativeWindowCount;
 
 // FUNCTION: LEMBALL 0x004323b0
@@ -109,12 +109,10 @@ CPVWnd::CPVWnd()
 	m_childList = NULL;
 	m_childListTail = NULL;
 	m_childCount = 0;
-	m_relativeTopLeft.m_y = 0;
-	m_relativeTopLeft.m_x = 0;
 	m_hotAreaList = NULL;
 	m_active = 1;
-	previous = g_cursorState;
-	g_cursorState = g_cursorState + 1;
+	previous = g_windowInstanceCount;
+	g_windowInstanceCount = g_windowInstanceCount + 1;
 	if (previous == 0) {
 		WindowOwnerList* list = (WindowOwnerList*) operator new(sizeof(WindowOwnerList));
 		if (list != NULL) {
@@ -134,7 +132,7 @@ CPVWnd::CPVWnd()
 // FUNCTION: LEMBALL 0x00465d50
 CPVWnd::~CPVWnd()
 {
-	if (--g_cursorState == 0) {
+	if (--g_windowInstanceCount == 0) {
 		WindowOwnerList* list = g_pWindowOwnerList;
 		if (list != NULL) {
 			WindowOwnerNode* node = list->m_head;

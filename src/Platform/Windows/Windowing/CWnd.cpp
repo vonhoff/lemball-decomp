@@ -62,7 +62,7 @@ int g_nLastCursorX = -1;
 int g_nLastCursorY = -1;
 
 // GLOBAL: LEMBALL 0x004a1fec
-int g_cursorState = 0;
+int g_windowInstanceCount = 0;
 
 // GLOBAL: LEMBALL 0x004a1fe8
 int g_nNativeWindowCount = 0;
@@ -603,7 +603,7 @@ static bool RegisterBaseWindowClass()
 // FUNCTION: LEMBALL 0x004651d0
 CWnd::CWnd()
 {
-	if (g_cursorState == 1) {
+	if (g_windowInstanceCount == 1) {
 		RegisterBaseWindowClass();
 	}
 	m_nativeWindow = NULL;
@@ -787,7 +787,7 @@ unsigned int ConvertWindowStyleFlags(unsigned int p_style)
 // FUNCTION: LEMBALL 0x00465570
 CWnd::~CWnd()
 {
-	if (g_cursorState == 1) {
+	if (g_windowInstanceCount == 1) {
 		ShowCursor(0);
 	}
 }
