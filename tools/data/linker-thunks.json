@@ -10579,7 +10579,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
       "symbol": "??0CGame@@QAE@PAD@Z",
       "size": 944,
-      "fingerprint": "fee74d5f40685e69e16902b6b38fc3218ea0e329ba03b8a3946fd8ee6b701431",
+      "fingerprint": "f6972894ff663126c63187a54e9a9cd1cb1e4f8680995385cd05244b2619303e",
       "references": [
         {
           "offset": 173,
@@ -32726,7 +32726,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "??1CBaseFrontendDrawer@@UAE@XZ",
       "size": 324,
-      "fingerprint": "e1c65f663bb7b4fd93fcc16ce14ee3f6196a183ba558116b3ffa919bdcd72790",
+      "fingerprint": "0ab1d6916720b77c3f72fb6f4935df716dba264ceaa6446969d366d7de84fcb2",
       "references": [
         {
           "offset": 71,
@@ -32756,7 +32756,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?InitialiseBackBuffer@CBaseFrontendDrawer@@QAEXXZ",
       "size": 345,
-      "fingerprint": "aa957a15801b8e149e013a2ffeb18ed4bb29b622a199808d71063a27b024ce9e",
+      "fingerprint": "dd837e7c049fd768f43718398cc83c437044079659904fbdadfe50a03b03df7e",
       "references": [
         {
           "offset": 51,
@@ -32859,18 +32859,18 @@
       "caller": 4480016,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?_DrawBackGround@CBaseFrontendDrawer@@QAEXXZ",
-      "size": 601,
-      "fingerprint": "13ebc32b5440a9168ab668fed845eb3aaa197104231a57f25b9022873c87319d",
+      "size": 604,
+      "fingerprint": "975082822fac0e4f5c5c946b2d44c9f839ec2a0896b5dd0f586ba218b3f853bc",
       "references": [
         {
-          "offset": 530,
+          "offset": 533,
           "original_instruction": 4480544,
           "original_bytes": "e8a6b4fbff",
           "thunk": 4199115,
           "source_symbol": "?DrawButtons@CGunController@@QAEXHH@Z"
         },
         {
-          "offset": 547,
+          "offset": 550,
           "original_instruction": 4480561,
           "original_bytes": "e8a8d8fbff",
           "thunk": 4208350,
@@ -32936,7 +32936,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?Process@CBaseFrontendDrawer@@UAEXXZ",
       "size": 230,
-      "fingerprint": "997872214f0d9baaa88648cbea685b6145e5e3eb5c1fa856c69008e1372a2d7b",
+      "fingerprint": "a92bf57e3d866a7ce5449e48d5567face83c1b47e77c1da7521cf411d9ceee5c",
       "references": [
         {
           "offset": 67,
@@ -33386,7 +33386,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Loading/CFrontendResourceLoader.cpp.obj",
       "symbol": "??0CFrontendResourceLoader@@QAE@PAVCMain2DDisplay@@H@Z",
       "size": 609,
-      "fingerprint": "1b412aa6e24ec5b030aebf9aa68452b85c425ad4cfafa43e4d87c9f8a8303934",
+      "fingerprint": "f757978a0d4895c6238e57d77be1498cde2b763e21996e86a109dc18f436e1b3",
       "references": [
         {
           "offset": 338,
@@ -33479,7 +33479,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Loading/CFrontendResourceLoader.cpp.obj",
       "symbol": "??1CFrontendResourceLoader@@QAE@XZ",
       "size": 295,
-      "fingerprint": "77dadacb636653167cb96e49cf0492439c9ca0315869c2efa9ed63f121f6df6d",
+      "fingerprint": "ac2145b04cac99dda957f5b70b9cb32b6387ec5b1cc1d62841102a2dced030d9",
       "references": [
         {
           "offset": 47,
@@ -34658,7 +34658,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/About/CAboutScreen.cpp.obj",
       "symbol": "??0CAboutScreen@@QAE@PAVCMain2DDisplay@@PAVCGDI@@ABVCVSRect@@@Z",
       "size": 404,
-      "fingerprint": "ab62eb5d05b47cef876b064a7f6e02afb1be7304ee117316065e5a2dd0e897c2",
+      "fingerprint": "a20ac317f54b21a1c7c83082b4ac5f4228aba4ce86e2bba770035a249ace31c7",
       "references": [
         {
           "offset": 128,
@@ -34706,7 +34706,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/About/CAboutScreen.cpp.obj",
       "symbol": "?DrawChangedRegion@CAboutScreen@@QAEXXZ",
       "size": 472,
-      "fingerprint": "1c8b514a43412c201b7c639485aca5e25b152e95f19030e32625d8d2f29fc9cb",
+      "fingerprint": "96489373f066bb83eb9439d62f26b3e16f8319fe544fae575a095695c9a6318b",
       "references": [
         {
           "offset": 120,
