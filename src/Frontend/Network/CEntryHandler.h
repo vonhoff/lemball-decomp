@@ -2,7 +2,6 @@
 #define LEMBALL_FRONTEND_SUPPORT_CENTRYHANDLER_H
 
 #include "Engine/Input/CHotAreaHandler.h"
-#include "Engine/Queues/tagMESSAGE.h"
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x004986b0
