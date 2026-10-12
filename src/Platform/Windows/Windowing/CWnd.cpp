@@ -65,7 +65,7 @@ int g_windowInstanceCount = 0;
 int g_nNativeWindowCount = 0;
 
 // GLOBAL: LEMBALL 0x004a1ff0
-WindowOwnerList* g_pWindowOwnerList = NULL;
+CList<CPVWnd, CListElement<CPVWnd> >* g_pWindowOwnerList = NULL;
 
 // GLOBAL: LEMBALL 0x004a8188
 void* g_pApplicationInstance;
@@ -500,15 +500,12 @@ long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsign
 // FUNCTION: LEMBALL 0x00464f10
 void CWnd::MoveAbsolute(const CVSPoint& p_point)
 {
-	void** node = (void**) m_childList;
+	CListElement<CPVWnd>* node = m_childList.m_head;
 	CVSPoint* position = &m_rect;
 	CVSPoint delta((short) (p_point.m_x - position->m_x), (short) (p_point.m_y - position->m_y));
-	for (;;) {
-		if (node == NULL) {
-			break;
-		}
-		((CPVWnd*) node[0])->_OnMove(delta);
-		node = (void**) node[1];
+	while (node != NULL) {
+		node->m_object->_OnMove(delta);
+		node = node->m_next;
 	}
 	m_rect.m_x = p_point.m_x;
 	m_rect.m_y = p_point.m_y;
@@ -520,16 +517,13 @@ void CWnd::MoveAbsolute(const CVSPoint& p_point)
 // FUNCTION: LEMBALL 0x00464fa0
 void CWnd::Move(const CVSPoint& p_point)
 {
-	void** node = (void**) m_childList;
+	CListElement<CPVWnd>* node = m_childList.m_head;
 	CVSPoint delta((short) (p_point.m_x - m_relativeTopLeft.m_x), (short) (p_point.m_y - m_relativeTopLeft.m_y));
-	for (;;) {
-		if (node == NULL) {
-			break;
-		}
-		CPVWnd* child = (CPVWnd*) node[0];
+	while (node != NULL) {
+		CPVWnd* child = node->m_object;
 		child->_OnMove(delta);
 		child->OnMove();
-		node = (void**) node[1];
+		node = node->m_next;
 	}
 	m_rect.m_x = (short) (m_rect.m_x + delta.m_x);
 	m_rect.m_y = (short) (m_rect.m_y + delta.m_y);
@@ -792,16 +786,13 @@ CWnd::~CWnd()
 void CWnd::Destroy()
 {
 	CPVWnd* child;
-	void** childNode;
+	CListElement<CPVWnd>* childNode;
 
 	if (m_lifecycleRefs != 0) {
-		childNode = (void**) m_childList;
-		for (;;) {
-			if (childNode == NULL) {
-				break;
-			}
-			child = (CPVWnd*) childNode[0];
-			childNode = (void**) childNode[1];
+		childNode = m_childList.m_head;
+		while (childNode != NULL) {
+			child = childNode->m_object;
+			childNode = childNode->m_next;
 			child->Destroy();
 		}
 		OnDestroy();

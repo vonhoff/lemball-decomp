@@ -1,6 +1,7 @@
 #ifndef LEMBALL_VISOS_GRAPHICS_CPVWND_H
 #define LEMBALL_VISOS_GRAPHICS_CPVWND_H
 
+#include "Engine/Containers/CList.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 
@@ -10,21 +11,8 @@ struct CVSSize;
 
 #define WINDOW_STYLE_HOT_AREA_LIST 0x800
 
-// SIZE 0x0c
-struct WindowOwnerNode {
-	class CPVWnd* m_window;  // 0x00
-	WindowOwnerNode* m_next; // 0x04
-	WindowOwnerNode* m_prev; // 0x08
-};
-
-// SIZE 0x0c
-struct WindowOwnerList {
-	WindowOwnerNode* m_head; // 0x00
-	WindowOwnerNode* m_tail; // 0x04
-	int m_count;             // 0x08
-};
-
-extern WindowOwnerList* g_pWindowOwnerList;
+class CPVWnd;
+extern CList<CPVWnd, CListElement<CPVWnd> >* g_pWindowOwnerList;
 
 // SIZE 0x3c
 // VTABLE: LEMBALL 0x00499478
@@ -101,18 +89,16 @@ public:
 	friend int __stdcall WinGDrawFrame(struct WinGDrawState* p_state, void* p_request, long p_param2);
 
 private:
-	unsigned int m_lifecycleRefs; // 0x04
-	CVSRect m_rect;               // 0x08
-	CVSRect m_innerRect;          // 0x10
-	CVSPoint m_relativeTopLeft;   // 0x18
-	CHotAreaList* m_hotAreaList;  // 0x1c
-	class CPVWnd* m_parent;       // 0x20
-	void* m_childList;            // 0x24
-	void* m_childListTail;        // 0x28
-	unsigned int m_childCount;    // 0x2c
-	unsigned int m_sizeStatus;    // 0x30
-	unsigned int m_active;        // 0x34
-	int m_zoom;                   // 0x38
+	unsigned int m_lifecycleRefs;                     // 0x04
+	CVSRect m_rect;                                   // 0x08
+	CVSRect m_innerRect;                              // 0x10
+	CVSPoint m_relativeTopLeft;                       // 0x18
+	CHotAreaList* m_hotAreaList;                      // 0x1c
+	class CPVWnd* m_parent;                           // 0x20
+	CList<CPVWnd, CListElement<CPVWnd> > m_childList; // 0x24
+	unsigned int m_sizeStatus;                        // 0x30
+	unsigned int m_active;                            // 0x34
+	int m_zoom;                                       // 0x38
 };
 
 #endif

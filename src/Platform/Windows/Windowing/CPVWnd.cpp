@@ -27,62 +27,13 @@ void CPVWnd::SetSizeStatus(unsigned int p_status)
 // FUNCTION: LEMBALL 0x004323d0
 void CPVWnd::AddChild(CPVWnd* p_child)
 {
-	WindowOwnerNode* node;
-
-	node = (WindowOwnerNode*) operator new(sizeof(*node));
-	if (node != NULL) {
-		node->m_window = p_child;
-		node->m_next = NULL;
-		node->m_prev = NULL;
-	}
-	else {
-		node = NULL;
-	}
-	node->m_prev = (WindowOwnerNode*) m_childListTail;
-	if (m_childListTail != NULL) {
-		((WindowOwnerNode*) m_childListTail)->m_next = node;
-	}
-	m_childListTail = node;
-	if (m_childList == NULL) {
-		m_childList = node;
-	}
-	m_childCount++;
+	m_childList.Add(p_child);
 }
 
 // FUNCTION: LEMBALL 0x00432430
 void CPVWnd::RemoveChild(CPVWnd* p_child)
 {
-	WindowOwnerNode* node;
-	WindowOwnerNode* nextNode;
-	WindowOwnerNode* prevNode;
-
-	node = (WindowOwnerNode*) m_childList;
-	if (node != NULL) {
-		do {
-			if (node->m_window == p_child) {
-				break;
-			}
-			node = node->m_next;
-		} while (node != NULL);
-		if (node != NULL) {
-			nextNode = node->m_next;
-			prevNode = node->m_prev;
-			operator delete(node);
-			if (nextNode != NULL) {
-				nextNode->m_prev = prevNode;
-			}
-			else {
-				m_childListTail = prevNode;
-			}
-			if (prevNode != NULL) {
-				prevNode->m_next = nextNode;
-				m_childCount = m_childCount - 1;
-				return;
-			}
-			m_childList = nextNode;
-			m_childCount = m_childCount - 1;
-		}
-	}
+	m_childList.Remove(p_child);
 }
 
 // FUNCTION: LEMBALL 0x0043a4c0
@@ -104,26 +55,10 @@ void CPVWnd::SetDontUpdateRect(const CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x00465cc0
 CPVWnd::CPVWnd()
 {
-	int previous;
-
-	m_childList = NULL;
-	m_childListTail = NULL;
-	m_childCount = 0;
 	m_hotAreaList = NULL;
 	m_active = 1;
-	previous = g_windowInstanceCount;
-	g_windowInstanceCount = g_windowInstanceCount + 1;
-	if (previous == 0) {
-		WindowOwnerList* list = (WindowOwnerList*) operator new(sizeof(WindowOwnerList));
-		if (list != NULL) {
-			list->m_head = NULL;
-			list->m_tail = NULL;
-			list->m_count = 0;
-			g_pWindowOwnerList = list;
-		}
-		else {
-			g_pWindowOwnerList = NULL;
-		}
+	if (g_windowInstanceCount++ == 0) {
+		g_pWindowOwnerList = new CList<CPVWnd, CListElement<CPVWnd> >;
 	}
 	m_zoom = 1;
 	m_lifecycleRefs = 0;
@@ -133,25 +68,7 @@ CPVWnd::CPVWnd()
 CPVWnd::~CPVWnd()
 {
 	if (--g_windowInstanceCount == 0) {
-		WindowOwnerList* list = g_pWindowOwnerList;
-		if (list != NULL) {
-			WindowOwnerNode* node = list->m_head;
-			for (;;) {
-				if (node == NULL) {
-					break;
-				}
-				WindowOwnerNode* next = node->m_next;
-				operator delete(node);
-				node = next;
-			}
-			operator delete(list);
-		}
-	}
-	WindowOwnerNode* child = (WindowOwnerNode*) m_childList;
-	while (child != NULL) {
-		WindowOwnerNode* next = child->m_next;
-		operator delete(child);
-		child = next;
+		delete g_pWindowOwnerList;
 	}
 }
 
@@ -228,76 +145,27 @@ void CPVWnd::InitHotAreaList()
 // FUNCTION: LEMBALL 0x00465f80
 void CPVWnd::_OnCreate()
 {
-	g_nNativeWindowCount++;
+	++g_nNativeWindowCount;
 	if (m_parent == NULL) {
-		WindowOwnerList* list = g_pWindowOwnerList;
-		WindowOwnerNode* node = (WindowOwnerNode*) operator new(sizeof(WindowOwnerNode));
-		if (node != NULL) {
-			node->m_window = this;
-			node->m_next = NULL;
-			node->m_prev = NULL;
-		}
-		else {
-			node = NULL;
-		}
-		node->m_prev = list->m_tail;
-		if (list->m_tail != NULL) {
-			list->m_tail->m_next = node;
-		}
-		list->m_tail = node;
-		if (list->m_head == NULL) {
-			list->m_head = node;
-		}
-		list->m_count++;
+		g_pWindowOwnerList->Add(this);
 	}
-	m_lifecycleRefs++;
+	++m_lifecycleRefs;
 }
 
 // FUNCTION: LEMBALL 0x00465fe0
 void CPVWnd::_OnDestroy()
 {
-	WindowOwnerList* ownerList;
-	WindowOwnerNode* node;
-	WindowOwnerNode* nextNode;
-	WindowOwnerNode* prevNode;
-
-	g_nNativeWindowCount = g_nNativeWindowCount - 1;
-	m_lifecycleRefs = m_lifecycleRefs - 1;
+	--g_nNativeWindowCount;
+	--m_lifecycleRefs;
 	if (m_hotAreaList != NULL) {
 		delete m_hotAreaList;
 		m_hotAreaList = NULL;
 	}
 	if (m_parent != NULL) {
 		m_parent->RemoveChild(this);
-		return;
 	}
-	ownerList = g_pWindowOwnerList;
-	node = ownerList->m_head;
-	if (node != NULL) {
-		do {
-			if (node->m_window == this) {
-				break;
-			}
-			node = node->m_next;
-		} while (node != NULL);
-		if (node != NULL) {
-			nextNode = node->m_next;
-			prevNode = node->m_prev;
-			operator delete(node);
-			if (nextNode != NULL) {
-				nextNode->m_prev = prevNode;
-			}
-			else {
-				ownerList->m_tail = prevNode;
-			}
-			if (prevNode != NULL) {
-				prevNode->m_next = nextNode;
-				ownerList->m_count = ownerList->m_count - 1;
-				return;
-			}
-			ownerList->m_head = nextNode;
-			ownerList->m_count = ownerList->m_count - 1;
-		}
+	else {
+		g_pWindowOwnerList->Remove(this);
 	}
 }
 
@@ -396,9 +264,9 @@ void CPVWnd::_OnZoom(int p_oldZoom)
 	if (m_hotAreaList != NULL) {
 		m_hotAreaList->m_scale = m_zoom;
 	}
-	WindowOwnerNode* child = (WindowOwnerNode*) m_childList;
+	CListElement<CPVWnd>* child = m_childList.m_head;
 	while (child != NULL) {
-		child->m_window->SetZoom(m_zoom);
+		child->m_object->SetZoom(m_zoom);
 		child = child->m_next;
 	}
 }

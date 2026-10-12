@@ -129,9 +129,9 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 void CGraphicsState::NotifyDriverChange()
 {
 	if (g_pWindowOwnerList != NULL) {
-		WindowOwnerNode* node = g_pWindowOwnerList->m_head;
+		CListElement<CPVWnd>* node = g_pWindowOwnerList->m_head;
 		while (node != NULL) {
-			CWnd* window = (CWnd*) node->m_window;
+			CWnd* window = (CWnd*) node->m_object;
 			HWND nativeWindow = (HWND) window->m_nativeWindow;
 			if (nativeWindow != NULL) {
 				if ((window->GetStyle() & WINDOW_STYLE_DIRECT_SCROLL) != 0) {
