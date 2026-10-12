@@ -382,7 +382,6 @@ extern const short g_groundOffset[] = {0x10, 0x10};
 C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const CVSRect& p_rect)
 	: CHotAreaHandler(p_rect)
 {
-	void* storage;
 	CBaseQueueHandler* queueHandler;
 	ObjectClipGrid* objectClipGrid;
 	unsigned int cellCount;
@@ -425,21 +424,9 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 
 	m_display->m_hotAreaList->AddToList(this);
 
-	storage = operator new(sizeof(CLemmingAnimsManager));
-	if (storage != NULL) {
-		m_lemmingAnims = new (storage) CLemmingAnimsManager(m_gdi, m_display, m_ai);
-	}
-	else {
-		m_lemmingAnims = NULL;
-	}
+	m_lemmingAnims = new CLemmingAnimsManager(m_gdi, m_display, m_ai);
 
-	storage = operator new(sizeof(CTextManager));
-	if (storage != NULL) {
-		m_textManager = new (storage) CTextManager(RESOURCE_ID_COUNT, 2, 2, 10);
-	}
-	else {
-		m_textManager = NULL;
-	}
+	m_textManager = new CTextManager(RESOURCE_ID_COUNT, 2, 2, 10);
 
 	ResetPrimitives();
 	RegisterRemaps();
@@ -449,18 +436,12 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 
 	m_viewData = new CViewData[C2D_VIEW_DATA_CAPACITY];
 
-	m_zBuffer = (unsigned char*) operator new(0x800);
+	m_zBuffer = new unsigned char[0x800];
 	queueHandler = this;
 	g_pMasterInputQueue->Attach(queueHandler, 0);
 	ClockEditMode(0);
 
-	storage = operator new(sizeof(CPadToButton));
-	if (storage != NULL) {
-		m_padToButton = new (storage) CPadToButton(3);
-	}
-	else {
-		m_padToButton = NULL;
-	}
+	m_padToButton = new CPadToButton(3);
 
 	m_unk0xc90 = 0;
 	m_primitiveCount = 0;
@@ -471,7 +452,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	}
 
 	m_spriteGroundLookup = NULL;
-	objectClipGrid = (ObjectClipGrid*) operator new(sizeof(ObjectClipGrid));
+	objectClipGrid = new ObjectClipGrid;
 	if (objectClipGrid != NULL) {
 		groundHeight = m_map->m_ground.m_height << GROUND_BLOCK_PIXEL_SHIFT;
 		groundWidth = m_map->m_ground.m_width << GROUND_BLOCK_PIXEL_SHIFT;
@@ -479,10 +460,6 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 		objectClipGrid->m_cells = NULL;
 		objectClipGrid->m_cellWidth = 0x10;
 		objectClipGrid->m_cellHeight = 0x10;
-		if (objectClipGrid->m_cells != NULL) {
-			operator delete(objectClipGrid->m_cells);
-			objectClipGrid->m_cells = NULL;
-		}
 		objectClipGrid->m_width =
 			(short) ((groundWidth + objectClipGrid->m_cellWidth - 1) / objectClipGrid->m_cellWidth);
 		objectClipGrid->m_height =
@@ -547,8 +524,8 @@ void C2D::ShutDown()
 	KillRemapPalettes();
 	objectClipGrid = m_objectClipGrid;
 	if (objectClipGrid != NULL) {
-		operator delete(objectClipGrid->m_cells);
-		operator delete(objectClipGrid);
+		delete[] objectClipGrid->m_cells;
+		delete objectClipGrid;
 	}
 	spriteGroundLookup = m_spriteGroundLookup;
 	if (spriteGroundLookup != NULL) {
@@ -564,8 +541,8 @@ void C2D::ShutDown()
 	if (display.m_lifecycleRefs == 1) {
 		display.m_hotAreaList->RemoveFromList(this);
 	}
-	operator delete(m_zBuffer);
-	operator delete(m_viewData);
+	delete[] m_zBuffer;
+	delete[] m_viewData;
 	CursorChangeType(CURSOR_DISPLAY_NONE, 0);
 	delete m_lemmingAnims;
 	UnRegisterRemaps();
