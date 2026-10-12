@@ -13,6 +13,7 @@
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Input/CHotAreaList.h"
 #include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSPointArithmetic.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Queues/CBaseQueue.h"
@@ -586,34 +587,23 @@ void CPauseWindow::OnPaint(const CVSRect& p_rect)
 	CTextManager::ResetPrimitives();
 }
 
+inline static bool ContainsMenuPoint(const CVSRect& p_rect, const CVSPoint& p_point)
+{
+	return p_point.m_x >= p_rect.m_x && p_point.m_x < (short) (p_rect.m_width + p_rect.m_x) &&
+		   p_point.m_y >= p_rect.m_y && p_point.m_y < (short) (p_rect.m_height + p_rect.m_y);
+}
+
 // FUNCTION: LEMBALL 0x00444a90
 void CPauseWindow::OnInside(const CVSPoint& p_point)
 {
 	int selection = m_minimumSelection;
 	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
-	if (selection < m_menuItemCount) {
-		short relX = p_point.m_x - m_relativeTopLeft.m_x;
-		short relY = p_point.m_y - m_relativeTopLeft.m_y;
-		CVSRect* menuItem = m_menuItemRects + selection;
-		do {
-			short textX = menuItem->m_x;
-			if (textX <= relX) {
-				short boundX = menuItem->m_width + textX;
-				if (boundX > relX) {
-					short textY = menuItem->m_y;
-					if (textY <= relY) {
-						short boundY = menuItem->m_height + textY;
-						if (boundY > relY) {
-							m_cursorState = CURSOR_HAND_FRAME_HOVER;
-							m_selection = selection;
-							break;
-						}
-					}
-				}
-			}
-			menuItem++;
-			selection++;
-		} while (selection < m_menuItemCount);
+	for (; selection < m_menuItemCount; selection++) {
+		if (ContainsMenuPoint(m_menuItemRects[selection], p_point - m_relativeTopLeft)) {
+			m_cursorState = CURSOR_HAND_FRAME_HOVER;
+			m_selection = selection;
+			break;
+		}
 	}
 	CursorChangeType(CURSOR_DISPLAY_HAND, m_cursorState);
 }
@@ -621,33 +611,15 @@ void CPauseWindow::OnInside(const CVSPoint& p_point)
 // FUNCTION: LEMBALL 0x00444b20
 void CPauseWindow::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
-	int selection = m_minimumSelection;
-	if (selection < m_menuItemCount) {
-		short relX = p_point.m_x - m_relativeTopLeft.m_x;
-		short relY = p_point.m_y - m_relativeTopLeft.m_y;
-		CVSRect* menuItem = m_menuItemRects + selection;
-		do {
-			short textX = menuItem->m_x;
-			if (textX <= relX) {
-				short boundX = menuItem->m_width + textX;
-				if (boundX > relX) {
-					short textY = menuItem->m_y;
-					if (textY <= relY) {
-						short boundY = menuItem->m_height + textY;
-						if (boundY > relY) {
-							m_receiverState->SetOptionSelection((eOptionSelections) (m_selection + 1));
-							m_selection = selection;
-							m_cursorState = CURSOR_HAND_FRAME_PRESSED;
-							CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_PRESSED);
-							g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
-							return;
-						}
-					}
-				}
-			}
-			menuItem++;
-			selection++;
-		} while (selection < m_menuItemCount);
+	for (int selection = m_minimumSelection; selection < m_menuItemCount; selection++) {
+		if (ContainsMenuPoint(m_menuItemRects[selection], p_point - m_relativeTopLeft)) {
+			m_receiverState->SetOptionSelection((eOptionSelections) (m_selection + 1));
+			m_selection = selection;
+			m_cursorState = CURSOR_HAND_FRAME_PRESSED;
+			CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_PRESSED);
+			g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
+			return;
+		}
 	}
 }
 
