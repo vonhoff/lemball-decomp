@@ -1,7 +1,7 @@
 #include "CVSStreambuf.h"
 
 // FUNCTION: LEMBALL 0x004583e0
-CVSStreambuf::CVSStreambuf(char* p_arg0, int p_arg1)
+CVSStreambuf::CVSStreambuf(char* p_buffer, int p_size)
 {
 }
 

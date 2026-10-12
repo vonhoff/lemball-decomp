@@ -24,13 +24,13 @@ class CVSRect;
 // VTABLE: LEMBALL 0x00497ad8 CAnimsManager
 class CMainOptions1Drawer : public CBaseFrontendDrawer {
 public:
-	CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2);
+	CMainOptions1Drawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect);
 	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
-	virtual void DrawBackGround();                    // vtable+0x50
-	virtual void Load();                              // vtable+0x40
-	virtual void Processing();                        // vtable+0x38
-	virtual void UnLoad();                            // vtable+0x44
-	virtual ~CMainOptions1Drawer();                   // vtable+0x00
+	virtual void DrawBackGround();                       // vtable+0x50
+	virtual void Load();                                 // vtable+0x40
+	virtual void Processing();                           // vtable+0x38
+	virtual void UnLoad();                               // vtable+0x44
+	virtual ~CMainOptions1Drawer();                      // vtable+0x00
 
 private:
 	unsigned long m_idleDeadline;          // 0x398

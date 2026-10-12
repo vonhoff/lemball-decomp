@@ -39,7 +39,7 @@ struct PasswordTextLayout {
 // VTABLE: LEMBALL 0x004983f0 CAnimsManager
 class CPasswordDrawer : public CBaseFrontendDrawer {
 public:
-	CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2);
+	CPasswordDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect);
 	void ButtonNumeric(int p_button);
 	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
 	virtual void DrawAnims();                            // vtable+0x48

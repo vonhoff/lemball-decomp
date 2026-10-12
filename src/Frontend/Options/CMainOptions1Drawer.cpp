@@ -57,8 +57,8 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 #include "Engine/Queues/tagMESSAGE.h"
 
 // FUNCTION: LEMBALL 0x00448200
-CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
-	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_MAIN_OPTIONS_1, 0, 0, 0, 0, 0)
+CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
+	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_MAIN_OPTIONS_1, 0, 0, 0, 0, 0)
 {
 	m_idleDeadline = CurrentMilliTimer() + MAIN_OPTIONS1_IDLE_TIMEOUT_MS;
 	m_toggleResolutionButton = 0;

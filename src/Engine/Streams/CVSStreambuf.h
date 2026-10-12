@@ -5,7 +5,7 @@
 // VTABLE: LEMBALL 0x00498888
 class CVSStreambuf {
 public:
-	CVSStreambuf(char* p_arg0, int p_arg1);
+	CVSStreambuf(char* p_buffer, int p_size);
 	virtual ~CVSStreambuf();           // vtable+0x00
 	virtual void flush() = 0;          // vtable+0x04
 	virtual void sputc(char p_c) = 0;  // vtable+0x08

@@ -152,8 +152,8 @@ char* g_apPasswordSkillLabels[4] = {
 };
 
 // FUNCTION: LEMBALL 0x00451210
-CPasswordDrawer::CPasswordDrawer(CMain2DDisplay* p_arg0, CGDI* p_arg1, const CVSRect& p_arg2)
-	: CBaseFrontendDrawer(p_arg0, p_arg1, p_arg2, FLOW_PASSWORD, 10, 10, 0, 0x28, 0x30)
+CPasswordDrawer::CPasswordDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
+	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_PASSWORD, 10, 10, 0, 0x28, 0x30)
 {
 	char* encoded;
 
