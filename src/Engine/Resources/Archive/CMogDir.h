@@ -17,7 +17,6 @@ struct tagChunkInfo;
 class CMogDir : public CRawRead {
 public:
 	void* operator new(size_t p_size) { return CMogloadArena::operator new(p_size); }
-	void* operator new(size_t, void* p_ptr) { return p_ptr; }
 	void operator delete(void* p_data) { CMogloadArena::operator delete(p_data); }
 
 	tagChunkInfo* NewChunkInfo();

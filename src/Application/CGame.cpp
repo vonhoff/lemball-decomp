@@ -7,7 +7,6 @@
 #include "Engine/Diagnostics/CDebugOStream.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Resources/Archive/CMogRes.h"
-#include "Engine/Resources/Archive/CMogloadArena.h"
 #include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResSTRING.h"
 #include "Engine/Sound/CSoundManager.h"
@@ -38,7 +37,6 @@
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
 
-#include <new.h>
 #include <string.h>
 
 enum {
@@ -122,7 +120,6 @@ extern CStatManager* g_pStatManager;
 // FUNCTION: LEMBALL 0x00406df0
 CGame::CGame(char* p_runtimeFileName)
 {
-	void* storage;
 	char titleBuf[80];
 
 	m_frontendResources = NULL;
@@ -165,13 +162,7 @@ CGame::CGame(char* p_runtimeFileName)
 	g_pStatManager->Register(m_processingStat);
 	g_pStatManager->Register(m_refreshingStat);
 
-	storage = CMogloadArena::operator new(sizeof(CMogRes));
-	if (storage != NULL) {
-		g_pMogRes = new (storage) CMogRes(g_szPbaimogVsr, GAME_RESOURCE_ARENA_SIZE_BYTES);
-	}
-	else {
-		g_pMogRes = NULL;
-	}
+	g_pMogRes = new CMogRes(g_szPbaimogVsr, GAME_RESOURCE_ARENA_SIZE_BYTES);
 
 	if (IsValidResource() == 0) {
 		_VSRELassert(g_szIsValidResourceFile, g_szGameCpp, 0x16e);
@@ -214,7 +205,6 @@ CGame::~CGame()
 {
 	CFrontendResourceLoader* resources;
 	CSoundView* soundView;
-	CMogRes* mogRes;
 	unsigned long started;
 	unsigned long now;
 
@@ -253,9 +243,7 @@ CGame::~CGame()
 		EndSound();
 	}
 	if (g_pMogRes != NULL) {
-		mogRes = g_pMogRes;
-		mogRes->~CMogRes();
-		CMogloadArena::operator delete(mogRes);
+		delete g_pMogRes;
 		g_pMogRes = NULL;
 	}
 	if (g_pGameStatus != NULL) {

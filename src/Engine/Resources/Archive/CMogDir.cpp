@@ -139,7 +139,6 @@ CMogDir* CMogDir::GetNextDir()
 {
 	tagCHUNK chunk;
 	tagCHUNK* current;
-	CMogDir* dir;
 
 	chunk.m_info = NULL;
 	if (m_root.m_info == NULL) {
@@ -149,13 +148,7 @@ CMogDir* CMogDir::GetNextDir()
 			return NULL;
 		}
 		if (chunk.m_info->m_type == RESOURCE_CHUNK_DIRECTORY) {
-			dir = (CMogDir*) CMogloadArena::operator new(sizeof(CMogDir));
-			if (dir == NULL) {
-				chunk.m_info->m_directory = NULL;
-			}
-			else {
-				chunk.m_info->m_directory = new (dir) CMogDir(chunk.m_info->m_fileOffset);
-			}
+			chunk.m_info->m_directory = new CMogDir(chunk.m_info->m_fileOffset);
 			m_root = chunk;
 		}
 		else {

@@ -1,8 +1,11 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CMOGRES_H
 #define LEMBALL_VISOS_RESOURCES_CMOGRES_H
 
+#include "CMogloadArena.h"
 #include "CRawRead.h"
 #include "RECURSE.h"
+
+#include <stddef.h>
 
 class CResBase;
 class CMogDir;
@@ -14,6 +17,9 @@ struct tagCHUNK;
 
 class CMogRes : public CRawRead {
 public:
+	void* operator new(size_t p_size) { return CMogloadArena::operator new(p_size); }
+	void operator delete(void* p_data) { CMogloadArena::operator delete(p_data); }
+
 	CMogRes(char* p_path, unsigned long p_arenaSize);
 	CResBase* Find(unsigned long p_resourceId);
 	bool CheckAllUnloaded();
