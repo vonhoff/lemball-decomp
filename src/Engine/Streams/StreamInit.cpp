@@ -3,7 +3,6 @@
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Startup/VsInit.h"
 
-#include <new.h>
 #include <stddef.h>
 
 // GLOBAL: LEMBALL 0x004a93b0
@@ -12,58 +11,15 @@ char g_szStreamFixedBuffer[0x400];
 // FUNCTION: LEMBALL 0x00458f70
 bool _STRM_Init()
 {
-	void* storage;
+	g_pDebugStreambuf =
+		new CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_DebugString);
+	g_pSysStreambuf = new CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_SysString);
+	g_pErrorStreambuf =
+		new CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_ErrorString);
 
-	storage = operator new(sizeof(CVSDebugStreambuf));
-	if (storage != NULL) {
-		g_pDebugStreambuf =
-			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_DebugString);
-	}
-	else {
-		g_pDebugStreambuf = NULL;
-	}
-
-	storage = operator new(sizeof(CVSDebugStreambuf));
-	if (storage != NULL) {
-		g_pSysStreambuf =
-			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_SysString);
-	}
-	else {
-		g_pSysStreambuf = NULL;
-	}
-
-	storage = operator new(sizeof(CVSDebugStreambuf));
-	if (storage != NULL) {
-		g_pErrorStreambuf =
-			new (storage) CVSDebugStreambuf(g_szStreamFixedBuffer, sizeof(g_szStreamFixedBuffer), _RAWOUT_ErrorString);
-	}
-	else {
-		g_pErrorStreambuf = NULL;
-	}
-
-	storage = operator new(sizeof(CVSOStream));
-	if (storage != NULL) {
-		g_pDebugOutput = new (storage) CVSOStream(g_pDebugStreambuf);
-	}
-	else {
-		g_pDebugOutput = NULL;
-	}
-
-	storage = operator new(sizeof(CVSOStream));
-	if (storage != NULL) {
-		g_pSysOutput = new (storage) CVSOStream(g_pSysStreambuf);
-	}
-	else {
-		g_pSysOutput = NULL;
-	}
-
-	storage = operator new(sizeof(CVSOStream));
-	if (storage != NULL) {
-		g_pErrorOutput = new (storage) CVSOStream(g_pErrorStreambuf);
-	}
-	else {
-		g_pErrorOutput = NULL;
-	}
+	g_pDebugOutput = new CVSOStream(g_pDebugStreambuf);
+	g_pSysOutput = new CVSOStream(g_pSysStreambuf);
+	g_pErrorOutput = new CVSOStream(g_pErrorStreambuf);
 
 	return true;
 }

@@ -110,25 +110,13 @@ CNetworkAddress* CFileNetwork::GetNewNetworkAddress()
 // FUNCTION: LEMBALL 0x0046f930
 void* CFileNetwork::GetNewConnect()
 {
-	void* storage;
-
-	storage = operator new(sizeof(CFileConnect));
-	if (storage != NULL) {
-		return new (storage) CFileConnect();
-	}
-	return NULL;
+	return new CFileConnect();
 }
 
 // FUNCTION: LEMBALL 0x0046f950
 void* CFileNetwork::GetNewBroadcast()
 {
-	void* storage;
-
-	storage = operator new(sizeof(CFileBroadcast));
-	if (storage != NULL) {
-		return new (storage) CFileBroadcast();
-	}
-	return NULL;
+	return new CFileBroadcast();
 }
 
 // GLOBAL: LEMBALL 0x004a2260

@@ -10,7 +10,6 @@
 #include "Platform/Windows/ThreadConstants.h"
 #include "Platform/Windows/WinSock/WinSock.h"
 
-#include <new.h>
 #include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
@@ -79,15 +78,7 @@ void CTCPIPNetwork::ForceProcess()
 // FUNCTION: LEMBALL 0x004715c0
 CNetworkAddress* CTCPIPNetwork::GetNewNetworkAddress()
 {
-	void* storage;
-	CTCPIPNetworkAddress* address;
-
-	storage = operator new(sizeof(CTCPIPNetworkAddress));
-	if (storage != NULL) {
-		address = new (storage) CTCPIPNetworkAddress();
-		return address;
-	}
-	return NULL;
+	return new CTCPIPNetworkAddress();
 }
 
 // FUNCTION: LEMBALL 0x004715e0
