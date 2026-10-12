@@ -130,8 +130,6 @@ void CCDLoadAnim::Draw()
 	enum {
 		CCD_LOAD_ANIM_PROGRESS_PERCENT_MAX = 100
 	};
-	short tipY;
-	short tipX;
 	int angle;
 	CChangeList* changeList;
 
@@ -167,11 +165,7 @@ void CCDLoadAnim::Draw()
 			 0,
 			 (CAnimFrameBASE*) m_repeatAnim,
 			 NULL);
-	short originStorage[2];
-	originStorage[0] = m_points[2].m_x + m_centre.m_x;
-	originStorage[1] = m_points[2].m_y + m_centre.m_y;
-	const short& originX = originStorage[0];
-	const short& originY = originStorage[1];
+	CVSPoint origin(m_points[2].m_x + m_centre.m_x, m_points[2].m_y + m_centre.m_y);
 	CVector radius((long) (short) -m_points[3].m_x, 0L);
 	const CVSPoint& thickness = m_points[4];
 	int thicknessY = thickness.m_y * FIXED_POINT_ONE;
@@ -186,46 +180,35 @@ void CCDLoadAnim::Draw()
 	}
 	angle = (angle * TRIG_ANGLE_HALF_TURN) / CCD_LOAD_ANIM_PROGRESS_PERCENT_MAX;
 	VSTrig* trig = g_pVSTrig;
-	short radiusPoint[2];
-	{
-		CFixed sine = trig->Sin(angle);
-		CFixed cosine = trig->Cos(angle);
-		CVector rotated = trig->Rotate(radius, sine, cosine);
-		radiusPoint[0] = rotated.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-		radiusPoint[1] = rotated.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-	}
-	const short& radiusX = radiusPoint[0];
-	const short& radiusY = radiusPoint[1];
+	CFixed sine = trig->Sin(angle);
+	CFixed cosine = trig->Cos(angle);
+	CVector rotated = trig->Rotate(radius, sine, cosine);
+	CVSPoint radiusPoint(rotated.m_xFixed >> FIXED_POINT_FRACTION_BITS, rotated.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 	trig = g_pVSTrig;
 	CVector rotatedLeft = CVector(trig->Rotate(left, angle));
 	trig = g_pVSTrig;
 	CVector rotatedRight = CVector(trig->Rotate(right, angle));
-	tipX = originX + radiusX;
-	tipY = originY + radiusY;
-	m_needle0[0].m_start.m_x = originX;
-	m_needle0[0].m_start.m_y = originY;
-	m_needle0[0].m_end.operator=(CVSPoint(tipX, tipY));
+	CVSPoint tip(origin.m_x + radiusPoint.m_x, origin.m_y + radiusPoint.m_y);
+	m_needle0[0].m_start.m_x = origin.m_x;
+	m_needle0[0].m_start.m_y = origin.m_y;
+	m_needle0[0].m_end = tip;
 	m_needle0[0].m_colour = 0x66;
 	m_needle0[0].Draw(m_gdi);
 	{
-		short pointStorage[2];
-		CVSPoint& point = *(CVSPoint*) pointStorage;
-		point.m_x = (rotatedLeft.m_xFixed >> FIXED_POINT_FRACTION_BITS) + originX;
-		m_needle1[0].m_start.m_x = tipX;
-		m_needle1[0].m_start.m_y = tipY;
-		point.m_y = (rotatedLeft.m_yFixed >> FIXED_POINT_FRACTION_BITS) + originY;
-		m_needle1[0].m_end.operator=(point);
+		CVSPoint point((rotatedLeft.m_xFixed >> FIXED_POINT_FRACTION_BITS) + origin.m_x,
+					   (rotatedLeft.m_yFixed >> FIXED_POINT_FRACTION_BITS) + origin.m_y);
+		m_needle1[0].m_start.m_x = tip.m_x;
+		m_needle1[0].m_start.m_y = tip.m_y;
+		m_needle1[0].m_end = point;
 		m_needle1[0].m_colour = 0xba;
 		m_needle1[0].Draw(m_gdi);
 	}
 	{
-		short pointStorage[2];
-		CVSPoint& point = *(CVSPoint*) pointStorage;
-		point.m_x = (rotatedRight.m_xFixed >> FIXED_POINT_FRACTION_BITS) + originX;
-		m_needle2[0].m_start.m_x = tipX;
-		m_needle2[0].m_start.m_y = tipY;
-		point.m_y = (rotatedRight.m_yFixed >> FIXED_POINT_FRACTION_BITS) + originY;
-		m_needle2[0].m_end.operator=(point);
+		CVSPoint point((rotatedRight.m_xFixed >> FIXED_POINT_FRACTION_BITS) + origin.m_x,
+					   (rotatedRight.m_yFixed >> FIXED_POINT_FRACTION_BITS) + origin.m_y);
+		m_needle2[0].m_start.m_x = tip.m_x;
+		m_needle2[0].m_start.m_y = tip.m_y;
+		m_needle2[0].m_end = point;
 		m_needle2[0].m_colour = 0xbf;
 		m_needle2[0].Draw(m_gdi);
 	}
