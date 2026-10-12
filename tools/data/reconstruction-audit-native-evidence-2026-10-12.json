@@ -529,5 +529,6 @@
     ],
     "vtables": "vtable-conveyor-final.txt",
     "limit": "Original binaries and trial outputs retained in ignored build directories; committed audit records provenance/facts. Original-symbol and Mac-symbol catalogs and compiler flags unchanged. Generated thunk ledger updated for the two conveyor signatures."
-  }
+  },
+  "follow_up": "tools/data/reconstruction-audit-typed-geometry-2026-10-12.json"
 }

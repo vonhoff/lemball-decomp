@@ -169,5 +169,6 @@
       "progress": "Original metadata inventory supplies bounded negative evidence; rejected DIB formal and activation type families remain unresolved."
     }
   ],
-  "follow_up": "Continue from unresolved and prior native-evidence audits. Investigate new native evidence before changing source; do not repeat rejected families without new evidence. This artifact does not claim goal completion."
+  "follow_up": "Continue from unresolved and prior native-evidence audits. Investigate new native evidence before changing source; do not repeat rejected families without new evidence. This artifact does not claim goal completion.",
+  "next_review": "tools/data/reconstruction-audit-shared-helper-2026-10-12.json"
 }
