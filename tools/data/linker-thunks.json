@@ -34658,7 +34658,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/About/CAboutScreen.cpp.obj",
       "symbol": "??0CAboutScreen@@QAE@PAVCMain2DDisplay@@PAVCGDI@@ABVCVSRect@@@Z",
       "size": 404,
-      "fingerprint": "11d8b585ede04b4e47c019273f55fe5125483c3e3dd924f07c92f22fe652937d",
+      "fingerprint": "7a8f226871f4c49c6ceffe944d3439fb179deffef49280f0a55c12bac6231497",
       "references": [
         {
           "offset": 128,
@@ -34706,7 +34706,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/About/CAboutScreen.cpp.obj",
       "symbol": "?DrawChangedRegion@CAboutScreen@@QAEXXZ",
       "size": 472,
-      "fingerprint": "96489373f066bb83eb9439d62f26b3e16f8319fe544fae575a095695c9a6318b",
+      "fingerprint": "1c8b514a43412c201b7c639485aca5e25b152e95f19030e32625d8d2f29fc9cb",
       "references": [
         {
           "offset": 120,

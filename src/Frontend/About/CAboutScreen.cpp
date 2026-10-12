@@ -2,6 +2,7 @@
 
 #include "Application/FlowProcesses.h"
 #include "Engine/Graphics/CChangeList.h"
+#include "Engine/Graphics/tagCHANGERECT.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
@@ -33,8 +34,6 @@
 enum {
 	ABOUT_SCREEN_DISPLAY_DURATION_MS = 5 * MILLISECONDS_PER_SECOND
 };
-
-class tagCHANGERECT;
 
 // GLOBAL: LEMBALL 0x0049f9e4
 char g_szRegisteredTo[] = "Registered to";
@@ -216,11 +215,11 @@ void CAboutScreen::DrawChangedRegion()
 	index = changes->GetDrawMark();
 	if (index < itemCount) {
 		item = changes->GetNItem(index);
-		CVSRect area = *(CVSRect*) item;
+		CVSRect area = *item;
 		index = index + 1;
 		while (index < itemCount) {
 			item = changes->GetNItem(index);
-			area.ExpandToInclude(*(CVSRect*) item);
+			area.ExpandToInclude(*item);
 			index = index + 1;
 		}
 		if (0 < area.m_height * area.m_width) {
