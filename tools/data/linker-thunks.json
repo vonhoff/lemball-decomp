@@ -12071,7 +12071,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CGodManager.cpp.obj",
       "symbol": "?Process@CGodManager@@QAEXXZ",
       "size": 77,
-      "fingerprint": "66d4ed4daaee0b6be489b1e6288d1e6a49a7e2f04521618c5c26f81ed262045d",
+      "fingerprint": "4a7439db94899a178f063d6fd386477a2ca7f932905340f159fee0f21bd6df9b",
       "references": [
         {
           "offset": 63,
@@ -14335,7 +14335,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?DecideAnimsRequired@CAI@@QAEXXZ",
       "size": 221,
-      "fingerprint": "e0ea2989388e0e27c73a44f2441ce2624a76667e9602414e724ffcdeb88aa300",
+      "fingerprint": "14105c38a4934f36e88fbb66dc2be5a1b354f255991c33affca24e91374e17d6",
       "references": [
         {
           "offset": 49,
@@ -21340,7 +21340,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Collectables/CCollectableManager.cpp.obj",
       "symbol": "?LoadLevel@CCollectableManager@@QAEXPAEHH@Z",
       "size": 217,
-      "fingerprint": "cb1700966f43ede78acfcc94a61d0a0e9bc417d3e4f52dc64e7f4bd41205d8f6",
+      "fingerprint": "94aa819dda262d95ac108a7f34f362f4f539e9eb4ebf8d0757e4290090e51010",
       "references": [
         {
           "offset": 32,
