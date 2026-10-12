@@ -26,10 +26,15 @@ public:
 	friend class CBaseCursor;
 
 private:
+	struct CNode {
+		void* m_item;
+		CNode* m_next;
+	};
+
 	unsigned int m_signature; // 0x04
 	unsigned int m_itemCount; // 0x08
 	CBaseQueue* m_queue;      // 0x0c
-	void* m_firstItem;        // 0x10
+	CNode* m_firstItem;       // 0x10
 	unsigned int m_state;     // 0x14
 };
 

@@ -16,10 +16,10 @@ CMasterInput::CMasterInput(CBaseQueue* p_queue)
 // FUNCTION: LEMBALL 0x00472090
 CMasterInput::~CMasterInput()
 {
-	void* item = m_firstItem;
+	CNode* item = m_firstItem;
 	for (unsigned int i = 0; i < m_itemCount; i++) {
-		void* next = ((void**) item)[1];
-		operator delete(item);
+		CNode* next = item->m_next;
+		delete item;
 		item = next;
 	}
 }
@@ -27,12 +27,8 @@ CMasterInput::~CMasterInput()
 // FUNCTION: LEMBALL 0x004720c0
 bool CMasterInput::AddItem(void* p_item)
 {
-	struct CNode {
-		void* m_item;
-		CNode* m_next;
-	};
 	CNode* added = new CNode;
-	CNode* last = (CNode*) m_firstItem;
+	CNode* last = m_firstItem;
 	if (m_itemCount == 0) {
 		added->m_item = p_item;
 		m_firstItem = added;
@@ -51,14 +47,9 @@ bool CMasterInput::AddItem(void* p_item)
 // FUNCTION: LEMBALL 0x00472110
 bool CMasterInput::RemoveItem(void* p_item)
 {
-	struct CNode {
-		void* m_item;
-		CNode* m_next;
-	};
-
 	unsigned int index;
 	unsigned int count = m_itemCount;
-	CNode* node = (CNode*) m_firstItem;
+	CNode* node = m_firstItem;
 	CNode* previous;
 	for (index = 0; index < count; ++index) {
 		if (node->m_item == p_item) {
@@ -87,14 +78,10 @@ bool CMasterInput::ProcessItems()
 	if (m_itemCount == 0) {
 		return false;
 	}
-	struct CNode {
-		CMasterInputItem* m_item;
-		CNode* m_next;
-	};
-	CNode* node = (CNode*) m_firstItem;
+	CNode* node = m_firstItem;
 	for (unsigned int i = 0; i < m_itemCount; i++) {
-		if (node->m_item->IsReady() == 1) {
-			if (node->m_item->ProcessQueue(m_queue) == 0) {
+		if (static_cast<CMasterInputItem*>(node->m_item)->IsReady() == 1) {
+			if (static_cast<CMasterInputItem*>(node->m_item)->ProcessQueue(m_queue) == 0) {
 				return false;
 			}
 		}
@@ -110,15 +97,15 @@ bool CMasterInput::IsEmpty()
 	if (count == 0) {
 		return true;
 	}
-	void** item = (void**) m_firstItem;
+	CNode* item = m_firstItem;
 	for (unsigned int i = 0; i < count; i++) {
 		if (item == NULL) {
 			return false;
 		}
-		if (*item == NULL) {
+		if (item->m_item == NULL) {
 			return false;
 		}
-		item = (void**) item[1];
+		item = item->m_next;
 	}
 	return false;
 }
