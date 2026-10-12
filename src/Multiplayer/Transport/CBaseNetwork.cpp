@@ -213,7 +213,7 @@ void CBaseNetwork::ShutDown()
 			delete m_broadcast;
 		}
 		if (g_pNetworkPacketScratch != NULL) {
-			operator delete(g_pNetworkPacketScratch);
+			delete[] (unsigned char*) g_pNetworkPacketScratch;
 		}
 		g_pNetworkPacketScratch = NULL;
 		if (g_pBroadcastReceiveAddress != NULL) {

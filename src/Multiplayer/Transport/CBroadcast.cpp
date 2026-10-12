@@ -47,10 +47,10 @@ CBroadcast::CBroadcast()
 CBroadcast::~CBroadcast()
 {
 	if (m_specificAddress != NULL) {
-		operator delete(m_specificAddress);
+		delete m_specificAddress;
 	}
 	delete[] m_connectionData;
-	operator delete(g_pBroadcastAddress);
+	delete g_pBroadcastAddress;
 	g_pBroadcastAddress = NULL;
 	if (g_szBroadcastPeerName != NULL) {
 		delete[] g_szBroadcastPeerName;
@@ -96,7 +96,7 @@ void CBroadcast::SetSpecificAddr(const char* p_address)
 
 		address = m_specificAddress;
 		m_specificAddress = NULL;
-		operator delete(address);
+		delete address;
 	}
 	m_addressMode = BROADCAST_ADDRESS_SPECIFIC;
 	GetSpecificAddr(p_address);
@@ -194,7 +194,7 @@ void CBroadcast::Process()
 				if (send) {
 					Send(address, *g_pMessReqConnect);
 				}
-				operator delete(address);
+				delete address;
 				m_lastBroadcastTime = time;
 			}
 		}

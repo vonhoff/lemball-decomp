@@ -47,8 +47,7 @@ void CReadSocket::DeleteNCBuffers()
 
 	nc = m_nonCriticalBuffer;
 	if (nc != NULL) {
-		nc->CBasePacketBuff::~CBasePacketBuff();
-		operator delete(nc);
+		delete nc;
 	}
 	ncms = m_nonCriticalMultiBuffer;
 	if (ncms != NULL) {
@@ -64,8 +63,7 @@ void CReadSocket::DeleteCBuffers()
 
 	critical = m_criticalBuffer;
 	if (critical != NULL) {
-		critical->CBasePacketBuff::~CBasePacketBuff();
-		operator delete(critical);
+		delete critical;
 	}
 	criticalMulti = m_criticalMultiBuffer;
 	if (criticalMulti != NULL) {
@@ -91,7 +89,7 @@ void CReadSocket::SetCBuffers(int p_packetCount, int p_messageCapacity)
 	m_criticalBuffer = new CReadCBuff(p_packetCount, g_networkPacketSize);
 	m_criticalMultiBuffer = new CReadCMSBuff(p_packetCount, p_messageCapacity, g_networkPacketSize);
 	if (g_pNetworkPacketScratch == NULL) {
-		g_pNetworkPacketScratch = (BasePacketHeader*) operator new(g_networkPacketSize);
+		g_pNetworkPacketScratch = (BasePacketHeader*) new unsigned char[g_networkPacketSize];
 	}
 }
 

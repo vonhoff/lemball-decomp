@@ -40,7 +40,7 @@ CWriteSocket::CWriteSocket()
 // FUNCTION: LEMBALL 0x0045fd80
 CWriteSocket::~CWriteSocket()
 {
-	operator delete(m_destinationAddress);
+	delete m_destinationAddress;
 	m_destinationAddress = NULL;
 	delete m_packetHeader;
 	DeleteNCBuffers();
@@ -60,8 +60,7 @@ void CWriteSocket::DeleteNCBuffers()
 
 	buffer = m_nonCriticalBuffer;
 	if (buffer != NULL) {
-		buffer->CBasePacketBuff::~CBasePacketBuff();
-		operator delete(buffer);
+		delete buffer;
 	}
 }
 
@@ -73,13 +72,11 @@ void CWriteSocket::DeleteCBuffers()
 
 	critical = m_criticalBuffer;
 	if (critical != NULL) {
-		critical->CBasePacketBuff::~CBasePacketBuff();
-		operator delete(critical);
+		delete critical;
 	}
 	secondary = m_secondaryCriticalBuffer;
 	if (secondary != NULL) {
-		secondary->CBasePacketBuff::~CBasePacketBuff();
-		operator delete(secondary);
+		delete secondary;
 	}
 }
 
