@@ -15350,7 +15350,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CPlayerLemmingGroup.cpp.obj",
       "symbol": "?Process@CPlayerLemmingGroup@@UAEHXZ",
       "size": 1184,
-      "fingerprint": "92a96f9e2245aa6744100cc9af55b0c31dd098a4f2c276ece988b312b8eda949",
+      "fingerprint": "7229cd8e49031048927c510537608f83d42714d22571afca0f41b09e8215f57d",
       "references": [
         {
           "offset": 44,
@@ -15656,7 +15656,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CPlayerLemmingGroup.cpp.obj",
       "symbol": "?ClearExistingWaypoints@CPlayerLemmingGroup@@UAEXXZ",
       "size": 104,
-      "fingerprint": "b3911ee2ca894745b7d40f64ea9745fe31d8707bc20f3217a0db4eb54d8b48a7",
+      "fingerprint": "0eb8031b134d31e997bb4ab2ee0e29ef79b99f68c8fa9cae8746605ba4f97097",
       "references": [
         {
           "offset": 4,

@@ -75,9 +75,6 @@ bool CPlayerLemmingGroup::Process()
 	int moving = 0;
 	AICOORD position;
 	AICOORD memberPosition;
-	int x;
-	int y;
-	int z;
 	CGenericGroup::CalculateBoundingBox(GROUP_BOUNDING_BOX_RADIUS_PIXELS);
 	CGameObject* member = CGenericGroup::GetFirstElementInGroup();
 	while (member != NULL) {
@@ -103,36 +100,21 @@ bool CPlayerLemmingGroup::Process()
 					CGameObject* object = g_pGroupObjectManager->FindObject(id);
 					if (object != NULL) {
 						if (object->m_activationReserved != 0) {
-							const AICOORD& activation = object->ActivatePosition();
-							position.m_xFixed = activation.m_xFixed;
-							position.m_yFixed = activation.m_yFixed;
-							position.m_zFixed = activation.m_zFixed;
+							position = object->ActivatePosition();
 							list = m_destinationList;
 							if (list->m_capacity > list->m_count) {
 								list->PrependSlot();
 								CAiDestinationEntry* dest = list->m_entries;
 								dest->m_type = DESTINATION_OBJECT;
-								dest->m_coordinate.m_xFixed = position.m_xFixed;
-								dest->m_coordinate.m_yFixed = position.m_yFixed;
-								dest->m_coordinate.m_zFixed = position.m_zFixed;
+								dest->m_coordinate = position;
 								dest->m_metadata = id;
 							}
 						}
 						else {
 							member = CGenericGroup::GetNthElementInGroup(0);
 							if (member != NULL) {
-								const AICOORD& activation = object->ActivatePosition();
-								position.m_xFixed = activation.m_xFixed;
-								position.m_yFixed = activation.m_yFixed;
-								position.m_zFixed = activation.m_zFixed;
-								{
-									y = member->m_position.m_yFixed;
-									z = member->m_position.m_zFixed;
-									x = member->m_position.m_xFixed;
-									memberPosition.m_xFixed = x;
-									memberPosition.m_yFixed = y;
-									memberPosition.m_zFixed = z;
-								}
+								position = object->ActivatePosition();
+								memberPosition = member->m_position;
 								if (CloseTo(memberPosition, position)) {
 									m_useObject = object;
 									object->m_activationReserved = 1;
@@ -167,25 +149,11 @@ bool CPlayerLemmingGroup::Process()
 				switch (m_useObject->Usage()) {
 				case GROUP_OBJECT_USAGE_GROUP:
 					m_currentUseElement++;
-					{
-						y = member->m_position.m_yFixed;
-						z = member->m_position.m_zFixed;
-						x = member->m_position.m_xFixed;
-						position.m_xFixed = x;
-						position.m_yFixed = y;
-						position.m_zFixed = z;
-					}
+					position = member->m_position;
 					member = CGenericGroup::GetNextElementInGroup();
 					while (member != NULL) {
 						member->AddDestination(position);
-						{
-							y = member->m_position.m_yFixed;
-							z = member->m_position.m_zFixed;
-							x = member->m_position.m_xFixed;
-							position.m_xFixed = x;
-							position.m_yFixed = y;
-							position.m_zFixed = z;
-						}
+						position = member->m_position;
 						member = CGenericGroup::GetNextElementInGroup();
 					}
 					SetGroupState(GROUP_STATE_ATTACKING);
@@ -217,19 +185,14 @@ bool CPlayerLemmingGroup::Process()
 			case GROUP_OBJECT_REQUEST_REJECTED:
 				m_useObject->m_activationReserved = 0;
 				if (m_useObject->m_objectActive != 0) {
-					const AICOORD& activation = m_useObject->ActivatePosition();
-					position.m_xFixed = activation.m_xFixed;
-					position.m_yFixed = activation.m_yFixed;
-					position.m_zFixed = activation.m_zFixed;
+					position = m_useObject->ActivatePosition();
 					int id = m_useObject->m_objectId;
 					CAiDestinationList* list = m_destinationList;
 					if (list->m_capacity > list->m_count) {
 						list->PrependSlot();
 						CAiDestinationEntry* dest = list->m_entries;
 						dest->m_type = DESTINATION_OBJECT;
-						dest->m_coordinate.m_xFixed = position.m_xFixed;
-						dest->m_coordinate.m_yFixed = position.m_yFixed;
-						dest->m_coordinate.m_zFixed = position.m_zFixed;
+						dest->m_coordinate = position;
 						dest->m_metadata = id;
 					}
 					SetGroupState(GROUP_STATE_IDLE);
