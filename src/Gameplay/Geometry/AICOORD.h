@@ -27,7 +27,13 @@ public:
 		m_zFixed = p_other.m_zFixed;
 		return *this;
 	}
-	AICOORD(const AICOORD& p_other);
+	// FUNCTION: LEMBALL 0x00410b50
+	AICOORD(const AICOORD& p_other)
+	{
+		m_xFixed = p_other.m_xFixed;
+		m_yFixed = p_other.m_yFixed;
+		m_zFixed = p_other.m_zFixed;
+	}
 
 	int m_xFixed; // 0x00
 	int m_yFixed; // 0x04
