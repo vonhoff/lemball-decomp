@@ -657,7 +657,6 @@ void C2D::OnLoaded()
 	int zoom;
 	unsigned int zoomDivisor;
 	unsigned int oldZoom;
-	CPanel* panel;
 
 	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);
 	if (g_nCompactPrimaryContextLayout != 0 || g_nEditLevelMode != 0 || g_nZoomEnabled != 0) {
@@ -682,13 +681,7 @@ void C2D::OnLoaded()
 		m_display->SetInnerWindow(innerRect);
 	}
 
-	panel = (CPanel*) operator new(0x58);
-	if (panel != NULL) {
-		m_panel = new (panel) CPanel(this);
-	}
-	else {
-		m_panel = NULL;
-	}
+	m_panel = new CPanel(this);
 
 	if (oldZoom != (unsigned int) zoom) {
 		m_display->SetZoom(m_zoom);
