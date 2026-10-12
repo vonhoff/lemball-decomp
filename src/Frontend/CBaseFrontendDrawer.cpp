@@ -355,11 +355,11 @@ void CBaseFrontendDrawer::_DrawBackGround()
 		tiles.m_x /= tilePoint.m_x;
 		tiles.m_height -= tiles.m_y;
 		tiles.m_width -= tiles.m_x;
-		unsigned int oddRow = BACKGROUND_ROW_PARITY_EVEN;
+		int oddRow = BACKGROUND_ROW_PARITY_EVEN;
 		int recordIndex = 0;
 		for (int row = start.m_y; (short) (count.m_height + start.m_y) > row; row++) {
 			oddRow ^= BACKGROUND_ROW_PARITY_TOGGLE_MASK;
-			for (int col = start.m_x; (int) ((short) (start.m_x + count.m_width) + oddRow) > col; col++) {
+			for (int col = start.m_x; (short) (start.m_x + count.m_width) + oddRow > col; col++) {
 				CResBITMAP* bitmap = m_tileBitmap;
 				rec = &m_primitiveBundle[m_primitiveBank].m_records[recordIndex];
 				int y = tilePoint.m_y * row;
