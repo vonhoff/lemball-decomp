@@ -72,7 +72,7 @@ public:
 protected:
 	void* m_driverModule;          // 0x04
 	void* m_palette;               // 0x08
-	unsigned int m_ready;          // 0x0c
+	bool m_ready;                  // 0x0c
 	void* m_window;                // 0x10
 	CVSSize m_screenSize;          // 0x14
 	CPVGDIBitmap* m_currentBitmap; // 0x18
