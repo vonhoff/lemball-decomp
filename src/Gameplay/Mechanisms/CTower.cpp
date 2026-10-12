@@ -37,7 +37,7 @@ bool CTower::Process()
 	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
 		int cellX = x & GROUND_BLOCK_PIXEL_MASK;
 		int cellY = y & GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
+		z = map->m_ground.m_ground[(unsigned int) blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
 	}
 	else {
 		z = 0;
@@ -57,7 +57,7 @@ AICOORD CTower::ActivatePosition()
 {
 	int y = m_position.m_yFixed;
 	int z = m_position.m_zFixed;
-	y += TOWER_ACTIVATION_POSITION_Y_OFFSET_FIXED;
-	int x = m_position.m_xFixed + TOWER_ACTIVATION_POSITION_X_OFFSET_FIXED;
+	y = (unsigned int) y + TOWER_ACTIVATION_POSITION_Y_OFFSET_FIXED;
+	int x = (unsigned int) m_position.m_xFixed + TOWER_ACTIVATION_POSITION_X_OFFSET_FIXED;
 	return AICOORD(x, y, z);
 }
