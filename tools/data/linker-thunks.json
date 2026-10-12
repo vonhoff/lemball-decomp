@@ -17733,67 +17733,67 @@
       "caller": 4296800,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CPlayerLemmingGroupManager.cpp.obj",
       "symbol": "?LoadAdditionalPlayerStartPositions@CPlayerLemmingGroupManager@@QAEXPAEKI@Z",
-      "size": 898,
-      "fingerprint": "9fc07f645cb174ed11f349ee4f9aca3d7ddfcbb18e771d557e855265c3e27575",
+      "size": 899,
+      "fingerprint": "c8bbef8dd845d046ba5dafb6757ff0d0c0a6e01b2b753ba47d4aca08546e34a0",
       "references": [
         {
-          "offset": 178,
+          "offset": 179,
           "original_instruction": 4296980,
           "original_bytes": "e88c98feff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 246,
+          "offset": 247,
           "original_instruction": 4297048,
           "original_bytes": "e8a180feff",
           "thunk": 4198910,
           "source_symbol": "?NLemmings@CAI@@QAEXH@Z"
         },
         {
-          "offset": 354,
+          "offset": 355,
           "original_instruction": 4297156,
           "original_bytes": "e8bf8cfeff",
           "thunk": 4202120,
           "source_symbol": "??0CPlayerLemming@@QAE@HHHHIK@Z"
         },
         {
-          "offset": 667,
+          "offset": 668,
           "original_instruction": 4297469,
           "original_bytes": "e8868bfeff",
           "thunk": 4202120,
           "source_symbol": "??0CPlayerLemming@@QAE@HHHHIK@Z"
         },
         {
-          "offset": 718,
+          "offset": 719,
           "original_instruction": 4297520,
           "original_bytes": "e8849bfeff",
           "thunk": 4206265,
           "source_symbol": "?GetNthGroup@CGenericGroupManager@@UAEPAVCGenericGroup@@H@Z"
         },
         {
-          "offset": 727,
+          "offset": 728,
           "original_instruction": 4297529,
           "original_bytes": "e87691feff",
           "thunk": 4203700,
           "source_symbol": "?AddPlayerLemmingToGroup@CPlayerLemmingGroupManager@@QAEXPAVCPlayerLemming@@PAVCPlayerLemmingGroup@@@Z"
         },
         {
-          "offset": 845,
+          "offset": 846,
           "original_instruction": 4297647,
           "original_bytes": "e805a0feff",
           "thunk": 4207545,
           "source_symbol": "?AddNewTrapDoor@CAI@@QAEXHHHK@Z"
         },
         {
-          "offset": 875,
+          "offset": 876,
           "original_instruction": 4297677,
           "original_bytes": "e8a67cfeff",
           "thunk": 4198520,
           "source_symbol": "?GetFirstGroup@CGenericGroupManager@@UAEPAVCGenericGroup@@XZ"
         },
         {
-          "offset": 883,
+          "offset": 884,
           "original_instruction": 4297685,
           "original_bytes": "e81f7efeff",
           "thunk": 4198905,
