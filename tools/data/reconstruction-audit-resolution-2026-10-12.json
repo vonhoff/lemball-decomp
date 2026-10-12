@@ -2425,5 +2425,6 @@
       "build-msvc400/mac-recovered/mac-recovery-evidence.json"
     ],
     "existing_warning": "Match40a830/440c90 collides with previous staged match; present at baseline."
-  }
+  },
+  "follow_up": "tools/data/reconstruction-audit-native-evidence-2026-10-12.json"
 }
