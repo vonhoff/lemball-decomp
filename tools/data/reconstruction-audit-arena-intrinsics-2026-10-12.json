@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "d9cbd472",
+  "source_commits": ["794eade4", "53c484e8"],
+  "route_commit": "487b226f",
+  "previous_review": "tools/data/reconstruction-audit-cleanup-intrinsics-2026-10-12.json",
+  "goal_status": "active",
+  "changes": [
+    {"commit": "794eade4", "attempts": [12515], "change": "Ordinary CMogDir/CMogRes construction through class arena allocators; remove obsolete placement overload.", "evidence": "Native45baf0/45bb70 select global or active arena allocation/free; retain live global reads. Resource owners preserve allocation guards and initialization. Child directory cleanup45bf10 deliberately omits recursive destruction; retain raw release. Arena byte buffers and POD records retain their allocation domain."},
+    {"commit": "53c484e8", "attempts": [12516, 12517], "change": "Remove31 redundant libc intrinsic directives.", "evidence": "Actual MSVC4 flags already generate identical intrinsics. Dynamic-argument probes; /Oi- library-call negative control. Worker entire462336-byte code section and canonical reports identical. Historical option/pragma provenance unknown."}
+  ],
+  "validation": {
+    "build": "pass; routes refreshed and normal rebuild passed",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7201 references;0 errors",
+    "vtables": "412;100%",
+    "native_fixtures": {"mog_ownership": 218, "draw_anim": 3624, "frontend_owners": 237, "frontend_loader": 258, "resource_loaders": 3072, "total": 7409},
+    "scope": "Same final EXE; allocation failures, callback mutation, owner reloads, native faults, stack and saved registers. DrawAnim: IDs0..300 andffffffff; signed/wrap coordinates; callback mutations.",
+    "limits": "Finite native fixtures; renderer, allocator and selected service leaves intercepted. CGame constructor prefix through resource validation only. No pixel or whole-game test.",
+    "report": {
+      "functions": 5958,
+      "original_bytes": 433937,
+      "inventory_extents_unchanged": true,
+      "changed_rows": 35,
+      "before": {"exact_bytes": 230936, "effective_bytes": 287544, "exact_functions": 5229, "effective_functions": 5508},
+      "after": {"exact_bytes": 230663, "effective_bytes": 284569, "exact_functions": 5229, "effective_functions": 5502}
+    },
+    "matching_review": "Exact-273 bytes; Effective-2975 bytes/-6 functions.34 worker rows reproduced exactly. Additional CResBIN::Load45e540100->73.6842: ESI/EDI role swap; same guards, initialization, load/error calls, null fault and cache path. DrawAnim loss: register roles and repeated-block alignment; all switch IDs covered by fixtures. Other losses inspected for scheduling/address forms.",
+    "graph": "35files;560seeds;337impacts; both pages saved. Partial/stale, virtual and overload gaps: source/native/full-report fallback.",
+    "whitespace": "pass",
+    "known_warning": "Existing staged-match collision40a830"
+  },
+  "evidence": {
+    "snapshot": "build-msvc400/clean-wave10-evidence/final",
+    "snapshot_files": 27,
+    "workers": "build-msvc400/clean-wave10-evidence/workers",
+    "worker_files": 28,
+    "exe_sha256": "cba4319edc6fa9c30f83921c02670594f063cb16779704a1a87b4e2406b07246",
+    "reproduction": "validate-clean-wave10.py; sequential. save-wave10.py verifies executable/result hashes and34 worker rows plus reviewed BIN row. Local ignored artifacts; hashes.json records contents."
+  },
+  "remaining": [
+    "Transport, formation and hardware pragma batches: worker-verified; integration pending.",
+    "Four libc directives; C4355 and vtordisp controls; score-driven C2D/ground-lookup references and deletion alias.",
+    "Nine-category completion matrix and unresolved type/producer provenance. No claim of complete semantic recovery."
+  ]
+}
