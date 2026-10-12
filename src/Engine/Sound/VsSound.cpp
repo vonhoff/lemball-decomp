@@ -18,10 +18,6 @@ bool InitSound(unsigned int p_musicEnabled,
 // FUNCTION: LEMBALL 0x0045b7c0
 void EndSound()
 {
-	CSoundManager* manager = g_pSoundManager;
-	if (manager != NULL) {
-		manager->~CSoundManager();
-		operator delete(manager);
-	}
+	delete g_pSoundManager;
 	g_pSoundManager = NULL;
 }
