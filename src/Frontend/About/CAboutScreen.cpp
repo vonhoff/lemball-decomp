@@ -28,7 +28,6 @@
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CPVButton.h"
 
-#include <new.h>
 #include <string.h>
 
 enum {
@@ -53,8 +52,6 @@ char g_szVisosBuildBuffer[80];
 // FUNCTION: LEMBALL 0x0044b750
 CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 {
-	void* storage;
-
 	m_returnState = FLOW_NONE;
 	g_pCursor->SetActive(0);
 	m_complete = false;
@@ -66,13 +63,7 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect
 	p_display->AttachPalette(RES_REGISTRATION_VISOS_PALETTE);
 	m_backgroundBitmap = CResBITMAP::Load(RES_REGISTRATION_VISOS_LOGO);
 	m_textWindow = NULL;
-	storage = operator new(sizeof(CTextManager));
-	if (storage != NULL) {
-		m_textManager = new (storage) CTextManager(RESOURCE_ID_COUNT, 1, 10, 0);
-	}
-	else {
-		m_textManager = NULL;
-	}
+	m_textManager = new CTextManager(RESOURCE_ID_COUNT, 1, 10, 0);
 	m_textManager->LoadFont(RES_GAME_FONT3);
 	m_aboutString = CResSTRING::Load(RES_REGISTRATION_FINGERPRINT);
 	CResSTRING* aboutString = m_aboutString;
