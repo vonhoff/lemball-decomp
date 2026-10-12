@@ -1275,25 +1275,17 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 // FUNCTION: LEMBALL 0x00454f00
 void CNetworkOptionsDrawer::ResetHandlers()
 {
-	CConnect** connections;
-	bool* valid;
-	int index;
-
 	if (g_pNetworkManager != NULL) {
-		connections = g_pNetworkManager->m_connections;
-		index = 0;
-		valid = &g_pNetworkManager->m_gameMessages->m_valid;
-		do {
-			if (*connections == NULL || *valid == 0) {
+		CConnect** connections = g_pNetworkManager->m_connections;
+		CNetworkGameMessage* messages = g_pNetworkManager->m_gameMessages;
+		for (int index = 0; index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT; index++) {
+			if (connections[index] == NULL || !messages[index].m_valid) {
 				m_playerEntries[index].Reset();
 				if (m_acceptedPlayer == index) {
 					m_acceptedPlayer = NETWORK_OPTIONS_NO_PLAYER_INDEX;
 				}
 			}
-			valid = (bool*) ((char*) valid + sizeof(CNetworkGameMessage));
-			connections++;
-			index++;
-		} while (index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
+		}
 	}
 	InitialiseHandlers();
 }
