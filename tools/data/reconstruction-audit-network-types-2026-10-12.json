@@ -55,6 +55,7 @@
     "impact_check": "Main-root detect_changes since 118e4ac4 identifies all four changed files and eight seed symbols. Zero graph callers is not completeness proof; source consumers and full report checked.",
     "coverage_limit": "Tier 2 graph metadata changed; source read directly. Network drawer partial lines 365, 366 and 1126 inspected. Virtual and overload graph edges remain incomplete."
   },
+  "next_review": "tools/data/reconstruction-audit-comparison-evidence-2026-10-12.json",
   "remaining": {
     "categories_open": 9,
     "partial_progress": "Boolean field and natural padding improve type/layout recovery. Raw cross-record validity traversal remains.",
