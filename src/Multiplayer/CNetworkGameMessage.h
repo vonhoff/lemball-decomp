@@ -16,10 +16,9 @@ public:
 	friend class CSuccFailDrawer;
 
 private:
-	char m_gameName[9];       // 0x2c
-	char m_peerName[21];      // 0x35
-	unsigned short m_padding; // 0x4a
-	bool m_valid;             // 0x4c
+	char m_gameName[9];  // 0x2c
+	char m_peerName[21]; // 0x35
+	bool m_valid;        // 0x4c
 };
 
 // SYNTHETIC: LEMBALL 0x00452f50
