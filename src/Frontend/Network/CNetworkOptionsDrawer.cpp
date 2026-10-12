@@ -6,8 +6,8 @@
 #include "CEditString.h"
 #include "CEntryHandler.h"
 #include "CNetworkOptionsProc.h"
-#include "Engine/Graphics/Palettes/CBasePalManager.h"
-#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Graphics/Palettes/CPaletteManager.h"
+#include "Engine/Graphics/Palettes/CRemap.h"
 #include "Engine/Input/CHotAreaList.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
@@ -28,8 +28,6 @@
 #include "Platform/Windows/Windowing/CGWnd.h"
 
 #include <string.h>
-
-class CRemap;
 
 #pragma intrinsic(strcpy)
 
@@ -415,7 +413,7 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 			posPeer.m_y += yOffset;
 			remap = NULL;
 			if (p_remap != NETWORK_OPTIONS_REMAP_NONE) {
-				remap = (CRemap*) m_remaps[p_remap];
+				remap = m_remaps[p_remap];
 			}
 			gameName = entries[p_index].m_gameName;
 			addressStr = connections[p_index]->m_destinationAddress->GetStr();
@@ -499,24 +497,14 @@ void CNetworkOptionsDrawer::DrawText()
 			CVSPoint posMyIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_localPlayerY);
 			CVSPoint posMyComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_localPlayerY);
 			posMyName.m_x -= font->GetSize(g_szNetworkGameName, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
-			m_textManager->DrawString(m_gdi,
-									  posMyName,
-									  CVSSize(),
-									  m_chalkFontId,
-									  g_szNetworkGameName,
-									  0x20,
-									  (CRemap*) m_remaps[0]);
+			m_textManager
+				->DrawString(m_gdi, posMyName, CVSSize(), m_chalkFontId, g_szNetworkGameName, 0x20, m_remaps[0]);
 
 			char* myIp = m_localAddressText;
 			if (myIp != NULL && *myIp != 0) {
 				posMyIp.m_x -= font->GetSize(myIp, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
-				m_textManager->DrawString(m_gdi,
-										  posMyIp,
-										  CVSSize(),
-										  m_chalkFontId,
-										  m_localAddressText,
-										  0x20,
-										  (CRemap*) m_remaps[0]);
+				m_textManager
+					->DrawString(m_gdi, posMyIp, CVSSize(), m_chalkFontId, m_localAddressText, 0x20, m_remaps[0]);
 			}
 
 			char* myPeer = m_localComputerName;
@@ -531,13 +519,7 @@ void CNetworkOptionsDrawer::DrawText()
 				CString lowerPeer(trimmed);
 				lowerPeer.lower();
 				posMyComputer.m_x -= font->GetSize(trimmed, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
-				m_textManager->DrawString(m_gdi,
-										  posMyComputer,
-										  CVSSize(),
-										  m_chalkFontId,
-										  lowerPeer,
-										  0x20,
-										  (CRemap*) m_remaps[0]);
+				m_textManager->DrawString(m_gdi, posMyComputer, CVSSize(), m_chalkFontId, lowerPeer, 0x20, m_remaps[0]);
 			}
 		}
 
@@ -568,11 +550,11 @@ void CNetworkOptionsDrawer::DrawText()
 			}
 			CRemap* remap = NULL;
 			if (m_message >= NETWORK_OPTIONS_MESSAGE_FIRST_ERROR) {
-				remap = (CRemap*) m_remaps[3];
+				remap = m_remaps[3];
 				special = true;
 			}
 			else if (special) {
-				remap = (CRemap*) m_remaps[5];
+				remap = m_remaps[5];
 			}
 			if (m_redrawPending || !special) {
 				CResFONT* font = m_textManager->GetFont(m_chalkFontId);
@@ -637,7 +619,7 @@ void CNetworkOptionsDrawer::DrawText()
 				editText += g_szNetworkOptionsCursor;
 			}
 			if (editText.getlength() > 0) {
-				CRemap* remap = (CRemap*) m_remaps[1];
+				CRemap* remap = m_remaps[1];
 				m_textManager
 					->DrawString(m_gdi, pos, CVSSize(), m_chalkFontId, editText, TEXT_ADVANCE_X_POSITIVE, remap);
 			}
@@ -1083,7 +1065,7 @@ void CNetworkOptionsDrawer::Processing()
 // FUNCTION: LEMBALL 0x00454ad0
 void CNetworkOptionsDrawer::RegisterRemaps()
 {
-	CBaseRemap** remaps;
+	CRemap** remaps;
 	unsigned char** mappings;
 
 	remaps = m_remaps;
@@ -1100,7 +1082,7 @@ void CNetworkOptionsDrawer::RegisterRemaps()
 void CNetworkOptionsDrawer::UnRegisterRemaps()
 {
 	int i;
-	CBaseRemap** remaps;
+	CRemap** remaps;
 
 	remaps = m_remaps;
 	i = 6;

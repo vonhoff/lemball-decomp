@@ -10,7 +10,7 @@
 #define PREVIEW_LEVEL_NAME_LINE_BUFFER_SIZE_BYTES 32
 #define PREVIEW_TEXT_MAX_CHARACTERS 32
 
-class CBaseRemap;
+class CRemap;
 class CGDI;
 class CMain2DDisplay;
 class CRepeatAnim;
@@ -93,7 +93,7 @@ private:
 	CRepeatAnim* m_lemmingAnim;                                                                      // 0x3c4
 	CRepeatAnim* m_opponentAnim;                                                                     // 0x3c8
 	unsigned char* m_remapTable;                                                                     // 0x3cc
-	CBaseRemap* m_remap;                                                                             // 0x3d0
+	CRemap* m_remap;                                                                                 // 0x3d0
 	PreviewLayout* m_layout;                                                                         // 0x3d4
 	unsigned long m_lemmingAnimId;                                                                   // 0x3d8
 	unsigned long m_teamAnimId;                                                                      // 0x3dc

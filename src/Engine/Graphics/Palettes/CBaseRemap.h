@@ -16,7 +16,6 @@ public:
 	void CalculateGreyScale();
 	void MapRemap(const unsigned char* p_mapping);
 	~CBaseRemap();
-	CBaseRemap();
 
 	friend class CSurface;
 	unsigned char* m_remap;         // 0x00

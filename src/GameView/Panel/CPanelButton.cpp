@@ -4,7 +4,7 @@
 #include "CPanel.h"
 #include "CPanelLemming.h"
 #include "Engine/Animation/CAnim.h"
-#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Graphics/Palettes/CRemap.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Input/CBaseCursor.h"
@@ -26,7 +26,6 @@
 
 #include <stddef.h>
 
-class CRemap;
 class CResANIM;
 class CHotAreaHandler;
 
@@ -106,8 +105,8 @@ void CPanelButton::OnInside(const CVSPoint& p_point)
 // FUNCTION: LEMBALL 0x00442690
 void CPanelButton::DrawButton()
 {
-	CBaseRemap* playerRemap;
-	CBaseRemap* balloonRemap = NULL;
+	CRemap* playerRemap;
+	CRemap* balloonRemap = NULL;
 	CPanelLemming* lemming = m_lemming;
 	if ((int) lemming->m_playerIndex < 4) {
 		playerRemap = lemming->m_panel->m_game->m_remaps[lemming->m_playerIndex];
@@ -138,7 +137,7 @@ void CPanelButton::DrawButton()
 	m_statusAnim[0].m_animResource = resource;
 	m_statusAnim[0].m_animIndex = frame;
 	m_statusAnim[0].m_flags = 0;
-	m_statusAnim[0].m_remap = (CRemap*) playerRemap;
+	m_statusAnim[0].m_remap = playerRemap;
 	m_statusAnim[0].Draw(m_gdi);
 	lemming = m_lemming;
 	if (lemming->m_balloonRemap != PANEL_REMAP_INDEX_NONE && m_unavailable == 0) {
@@ -165,7 +164,7 @@ void CPanelButton::DrawButton()
 	}
 	m_inventoryAnim[0].m_animIndex = frame;
 	m_inventoryAnim[0].m_flags = 0;
-	m_inventoryAnim[0].m_remap = (CRemap*) balloonRemap;
+	m_inventoryAnim[0].m_remap = balloonRemap;
 	m_inventoryAnim[0].Draw(m_gdi);
 	int ammo = m_lemming->m_lemming->m_ammoCount;
 	CVSRect ammoRect(7, 11, 27, 9);
@@ -201,7 +200,7 @@ void CPanelButton::DrawButton()
 		for (int i = 0; i < (int) m_lemming->m_inventoryCount; i++) {
 			CSolidRect* line = &m_inventoryLines[i];
 			int type = m_lemming->m_inventoryRemaps[i];
-			CBaseRemap* remap;
+			CRemap* remap;
 			if (type < 4) {
 				remap = m_lemming->m_panel->m_game->m_remaps[type];
 			}

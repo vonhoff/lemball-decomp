@@ -68,7 +68,7 @@ extern const short g_groundOffset[];
 
 class CAI;
 class CBaseQueue;
-class CBaseRemap;
+class CRemap;
 class CGameObject;
 class CGDI;
 class CLemmingAnimsManager;
@@ -214,7 +214,7 @@ public:
 
 private:
 	unsigned char* m_remapTables[4];             // 0x54
-	CBaseRemap* m_remaps[5];                     // 0x64
+	CRemap* m_remaps[5];                         // 0x64
 	CTextManager* m_textManager;                 // 0x78
 	CViewData m_unk0x7c;                         // 0x7c
 	CViewData m_unk0xc8;                         // 0xc8
@@ -272,7 +272,7 @@ private:
 	CViewData* m_viewData;                       // 0x95c
 	unsigned char* m_zBuffer;                    // 0x960
 	unsigned short m_viewDataCount;              // 0x964
-	CBaseRemap* m_paletteRemap;                  // 0x968
+	CRemap* m_paletteRemap;                      // 0x968
 	CAI* m_ai;                                   // 0x96c
 	CGDI* m_gdi;                                 // 0x970
 	CBaseQueue* m_lemmingManager;                // 0x974

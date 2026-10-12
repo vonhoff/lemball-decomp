@@ -5,8 +5,8 @@
 #include "Application/SoundEffects.h"
 #include "CReceiveWindowState.h"
 #include "Engine/Animation/CAnim.h"
-#include "Engine/Graphics/Palettes/CBasePalManager.h"
-#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Graphics/Palettes/CPaletteManager.h"
+#include "Engine/Graphics/Palettes/CRemap.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Input/CBaseCursor.h"
@@ -514,7 +514,7 @@ CPauseWindow::~CPauseWindow()
 void CPauseWindow::RegisterRemaps()
 {
 	CPauseWindow* window = this;
-	CBaseRemap** remaps = window->m_remaps;
+	CRemap** remaps = window->m_remaps;
 	unsigned char** mappings = g_apPauseRemaps;
 	do {
 		*remaps =
@@ -528,7 +528,7 @@ void CPauseWindow::RegisterRemaps()
 void CPauseWindow::UnRegisterRemaps()
 {
 	int i;
-	CBaseRemap** remaps = m_remaps;
+	CRemap** remaps = m_remaps;
 
 	i = 4;
 	do {
@@ -539,7 +539,7 @@ void CPauseWindow::UnRegisterRemaps()
 }
 
 // FUNCTION: LEMBALL 0x00444930
-CBaseRemap* CPauseWindow::Remap(int p_item)
+CRemap* CPauseWindow::Remap(int p_item)
 {
 	if (m_selection == p_item) {
 		return m_remaps[2];
@@ -579,7 +579,7 @@ void CPauseWindow::OnPaint(const CVSRect& p_rect)
 								 m_fontId,
 								 m_menuLabels[i],
 								 TEXT_ADVANCE_X_POSITIVE,
-								 (CRemap*) Remap(i));
+								 Remap(i));
 	}
 	CTextManager::ResetPrimitives();
 }

@@ -19,7 +19,7 @@ public:
 	virtual void FreeVram() = 0; // vtable+0x00
 };
 
-class CBaseRemap;
+class CRemap;
 class CPVGWnd;
 class CReceiveWindowState;
 class CResANIM;
@@ -49,7 +49,7 @@ class CPauseWindow : public CGWnd,
 					 public CPauseVramHandler,
 					 public CHotAreaHandler {
 public:
-	CBaseRemap* Remap(int p_item);
+	CRemap* Remap(int p_item);
 	CPauseWindow(CReceiveWindowState* p_receiverState, CPVGWnd* p_parentWindow, ePauseWindowMessages p_pauseMessage);
 	CVSRect CalculateWindow();
 	virtual int ProcessMsg(tagMESSAGE* p_message);                                  // vtable+0x08
@@ -92,7 +92,7 @@ private:
 	CResANIM* m_verticalBorderAnim;        // 0x158
 	CAnim m_cornerAnims[4];                // 0x15c
 	CAnim* m_borderAnims;                  // 0x1dc
-	CBaseRemap* m_remaps[4];               // 0x1e0
+	CRemap* m_remaps[4];                   // 0x1e0
 	CResFONT* m_font;                      // 0x1f0
 	CPauseVramHandler* m_vramSurface;      // 0x1f4
 	CVSRect* m_menuItemRects;              // 0x1f8

@@ -3,7 +3,7 @@
 #include "Application/CDemo.h"
 #include "Application/GameMain.h"
 #include "CObjSq.h"
-#include "Engine/Graphics/Palettes/CBasePalManager.h"
+#include "Engine/Graphics/Palettes/CPaletteManager.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Input/CHotAreaList.h"
 #include "Engine/Queues/CBaseQueue.h"
@@ -44,7 +44,7 @@ struct ObjectClipGrid {
 #include "CMain2DDisplay.h"
 #include "CPBButton.h"
 #include "Engine/Graphics/CChangeList.h"
-#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Graphics/Palettes/CRemap.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Input/CBaseCursor.h"
 #include "Engine/Math/CFixed.h"
@@ -75,8 +75,6 @@ struct ObjectClipGrid {
 #include <new.h>
 #include <stdlib.h>
 #include <string.h>
-
-class CRemap;
 
 enum eLemmingPaletteIndex {
 	LEMMING_RED_SHADOW = 0x37,
@@ -628,7 +626,7 @@ void C2D::RegisterRemaps()
 			targets = targets + 1;
 		} while (sources < g_anC2DRemapSourceIndices + 17);
 
-		CBaseRemap* remap =
+		CRemap* remap =
 			g_pBasePalManager->RegisterRemap(RES_GAME_GAMEPALETTE, m_remapTables[remapIndex], PALETTE_DEFAULT);
 		m_remaps[remapIndex] = remap;
 		remapIndex = remapIndex + 1;
@@ -2571,7 +2569,7 @@ void C2D::DrawLemmingJump(CViewData& p_viewData, unsigned int p_remapped)
 	}
 
 	if (p_remapped != 0) {
-		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, (CRemap*) m_paletteRemap);
+		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, m_paletteRemap);
 	}
 	else {
 		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, NULL);
@@ -2599,7 +2597,7 @@ void C2D::DrawLemmingLanding(CViewData& p_viewData, unsigned int p_remapped)
 	}
 
 	if (p_remapped != 0) {
-		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, (CRemap*) m_paletteRemap);
+		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, m_paletteRemap);
 	}
 	else {
 		m_lemmingAnims->DrawAnim(x, y, resource, frame, 0, NULL);
@@ -2627,7 +2625,7 @@ void C2D::DrawLemmingExternal(CViewData& p_viewData, unsigned int p_remapped)
 		frame = 0;
 	}
 	if (p_remapped != 0) {
-		remap = (CRemap*) m_paletteRemap;
+		remap = m_paletteRemap;
 	}
 	else {
 		remap = NULL;
@@ -2658,7 +2656,7 @@ void C2D::DrawLemmingOnConveyor(CViewData& p_viewData, int p_remapped)
 	int x;
 	int y;
 	int frame;
-	CBaseRemap* remap;
+	CRemap* remap;
 
 	frame = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 	x = p_viewData.m_positionX;
@@ -2670,7 +2668,7 @@ void C2D::DrawLemmingOnConveyor(CViewData& p_viewData, int p_remapped)
 	else {
 		remap = NULL;
 	}
-	m_lemmingAnims->DrawAnim(x - 15, y - 22, RES_GAME_LEMMING_SPIN, frame, 0, (CRemap*) remap);
+	m_lemmingAnims->DrawAnim(x - 15, y - 22, RES_GAME_LEMMING_SPIN, frame, 0, remap);
 }
 
 // FUNCTION: LEMBALL 0x0043c200
@@ -2791,7 +2789,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 									 RES_GAME_CIRCLES,
 									 0,
 									 0,
-									 (CRemap*) m_remaps[playerIndex]);
+									 m_remaps[playerIndex]);
 		}
 		else if ((unsigned short) p_viewData.m_statusFlags & LEMMING_VIEW_STATUS_IN_GROUP) {
 			m_lemmingAnims->DrawAnim((short) x - g_lemmingStandOffset[0] - 5,
@@ -2799,7 +2797,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 									 RES_GAME_FILLED_STARS,
 									 0,
 									 0,
-									 (CRemap*) m_remaps[playerIndex]);
+									 m_remaps[playerIndex]);
 		}
 		else {
 			m_lemmingAnims->DrawAnim((short) x - g_lemmingStandOffset[0] - 5,
@@ -2807,7 +2805,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 									 RES_GAME_STARS,
 									 0,
 									 0,
-									 (CRemap*) m_remaps[playerIndex]);
+									 m_remaps[playerIndex]);
 		}
 	}
 	if (drawBody) {
@@ -2825,7 +2823,7 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 									 animationResourceId,
 									 animationFrame,
 									 p_viewData.m_animationTime,
-									 (CRemap*) m_paletteRemap);
+									 m_paletteRemap);
 		}
 	}
 	if (drawEquipment && p_remapped == 0 && InGroupByObjectNo(p_objectNo)) {
@@ -2940,7 +2938,7 @@ void C2D::DrawHand(CViewData& p_viewData)
 	int drawX;
 	int drawY;
 	int frame;
-	CBaseRemap* remap;
+	CRemap* remap;
 	eAction action = p_viewData.m_action;
 
 	drawX = p_viewData.m_positionX - 0x31;
@@ -2962,7 +2960,7 @@ void C2D::DrawHand(CViewData& p_viewData)
 		if (frame > 11) {
 			frame = 11;
 		}
-		m_lemmingAnims->DrawAnim(drawX, drawY, g_anGroundStyleResourceIds[2], frame, 0, (CRemap*) remap);
+		m_lemmingAnims->DrawAnim(drawX, drawY, g_anGroundStyleResourceIds[2], frame, 0, remap);
 		break;
 	}
 }
@@ -2975,8 +2973,8 @@ void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_r
 	int y;
 	int xOffset;
 	int yOffset;
-	CBaseRemap* remap;
-	CBaseRemap* balloonRemap;
+	CRemap* remap;
+	CRemap* balloonRemap;
 
 	x = p_viewData.m_positionX;
 	y = p_viewData.m_positionY;
@@ -3011,19 +3009,15 @@ void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_r
 		balloonRemap = NULL;
 	}
 
-	m_lemmingAnims->DrawAnim(x - 16, y - 64, RES_GAME_BALLOON, 0, 0, (CRemap*) balloonRemap);
-	m_lemmingAnims->DrawAnim(x - g_lemmingStandOffset[0] - 14,
-							 y - g_lemmingStandOffset[1] - 12,
-							 RES_GAME_ONBALLOON,
-							 0,
-							 0,
-							 (CRemap*) remap);
+	m_lemmingAnims->DrawAnim(x - 16, y - 64, RES_GAME_BALLOON, 0, 0, balloonRemap);
+	m_lemmingAnims
+		->DrawAnim(x - g_lemmingStandOffset[0] - 14, y - g_lemmingStandOffset[1] - 12, RES_GAME_ONBALLOON, 0, 0, remap);
 }
 
 // FUNCTION: LEMBALL 0x0043c940
 void C2D::DrawBalloon(CViewData& p_viewData, int p_playerIndex)
 {
-	CBaseRemap* remap;
+	CRemap* remap;
 	short x = p_viewData.m_positionX;
 	short y = p_viewData.m_positionY;
 	int xOffset;
@@ -3050,7 +3044,7 @@ void C2D::DrawBalloon(CViewData& p_viewData, int p_playerIndex)
 		remap = NULL;
 	}
 
-	m_lemmingAnims->DrawAnim(x + xOffset - 16, y + yOffset / 4 - 64, RES_GAME_BALLOON, 0, 0, (CRemap*) remap);
+	m_lemmingAnims->DrawAnim(x + xOffset - 16, y + yOffset / 4 - 64, RES_GAME_BALLOON, 0, 0, remap);
 	m_lemmingAnims->DrawAnim(x + xOffset - 9, y + yOffset / 4 - 9, RES_GAME_BALLOON_SHADOW, 0, 0, NULL);
 }
 
@@ -3059,7 +3053,7 @@ void C2D::DrawBalloonPost(CViewData& p_viewData, int p_playerIndex)
 {
 	int x;
 	int y;
-	CBaseRemap* remap;
+	CRemap* remap;
 
 	x = p_viewData.m_positionX - 0x10;
 	y = p_viewData.m_positionY - 0x40;
@@ -3069,7 +3063,7 @@ void C2D::DrawBalloonPost(CViewData& p_viewData, int p_playerIndex)
 	else {
 		remap = NULL;
 	}
-	m_lemmingAnims->DrawAnim(x, y, RES_GAME_BALLOON_POST, 0, 0, (CRemap*) remap);
+	m_lemmingAnims->DrawAnim(x, y, RES_GAME_BALLOON_POST, 0, 0, remap);
 }
 
 // FUNCTION: LEMBALL 0x0043ca30
@@ -3274,7 +3268,7 @@ void C2D::DrawDuplicator(CViewData& p_viewData)
 {
 	int x;
 	int y;
-	CBaseRemap* remap;
+	CRemap* remap;
 	eAction action;
 	unsigned int elapsed;
 	int frame;
@@ -3288,18 +3282,18 @@ void C2D::DrawDuplicator(CViewData& p_viewData)
 	if (p_viewData.m_actionArgument != REMOTE_PALETTE_REMAP_DISABLED) {
 		remap = m_paletteRemap;
 	}
-	m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, 0, 0, (CRemap*) remap);
+	m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, 0, 0, remap);
 
 	switch (action) {
 	case ACTION_READY:
-		m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, 0x3f, 0, (CRemap*) remap);
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, 0x3f, 0, remap);
 		break;
 	case ACTION_ACTIVATED:
 		frame = elapsed * ANIMATION_FRAME_RATE_FPS / MILLISECONDS_PER_SECOND;
 		if (frame > 0x3e) {
 			frame = 0x3e;
 		}
-		m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, frame + 1, 0, (CRemap*) remap);
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_DUPLICATOR, frame + 1, 0, remap);
 		break;
 	}
 }
@@ -3353,7 +3347,7 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 	};
 	int x;
 	int y;
-	CBaseRemap* remap;
+	CRemap* remap;
 	eAction action;
 	unsigned int stateTimer;
 	C2D& owner = *this;
@@ -3386,7 +3380,7 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 									   RES_GAME_CATMOUNT_SE,
 									   stateTimer,
 									   p_viewData.m_animationTime,
-									   (CRemap*) remap);
+									   remap);
 		break;
 
 	case ACTION_ACTIVATED:
@@ -3403,7 +3397,7 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 									   RES_GAME_CATMOUNT_SE,
 									   stateTimer,
 									   p_viewData.m_animationTime,
-									   (CRemap*) remap);
+									   remap);
 		break;
 
 	case ACTION_RUNNING:
@@ -3509,7 +3503,7 @@ void C2D::DrawBall(CViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043d4b0
 void C2D::DrawKey(CViewData& p_viewData, int p_playerIndex)
 {
-	CBaseRemap* remap;
+	CRemap* remap;
 
 	if (p_playerIndex < 4) {
 		remap = m_remaps[p_playerIndex];
@@ -3523,7 +3517,7 @@ void C2D::DrawKey(CViewData& p_viewData, int p_playerIndex)
 							 RES_GAME_KEYS,
 							 0,
 							 0,
-							 (CRemap*) remap);
+							 remap);
 }
 
 // FUNCTION: LEMBALL 0x0043d500
@@ -3568,7 +3562,7 @@ void C2D::DrawDoor(CViewData& p_viewData)
 	eObjectType objectType;
 	unsigned long resourceId;
 	int playerIndex;
-	CBaseRemap* remap;
+	CRemap* remap;
 	int frame;
 
 	x = p_viewData.m_positionX - g_doorOffset[0];
@@ -3610,7 +3604,7 @@ void C2D::DrawDoor(CViewData& p_viewData)
 			else {
 				remap = NULL;
 			}
-			m_lemmingAnims->DrawAnim(x + 16, y - 20, RES_GAME_KEYS, 0, 0, (CRemap*) remap);
+			m_lemmingAnims->DrawAnim(x + 16, y - 20, RES_GAME_KEYS, 0, 0, remap);
 		}
 
 		m_lemmingAnims->DrawAnim(x, y, resourceId, 0, 0, NULL);
@@ -3700,11 +3694,11 @@ void C2D::DrawFlag(CViewData& p_viewData, eObjectType p_objectType)
 
 	switch (p_objectType) {
 	case OBJECT_FLAG_1:
-		m_lemmingAnims->DrawAnim(x, y, RES_GAME_FLAG_GREEN, 0, p_viewData.m_animationTime, (CRemap*) m_remaps[3]);
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_FLAG_GREEN, 0, p_viewData.m_animationTime, m_remaps[3]);
 		break;
 
 	case OBJECT_FLAG_2:
-		m_lemmingAnims->DrawAnim(x, y, RES_GAME_FLAG_GREEN, 0, p_viewData.m_animationTime, (CRemap*) m_remaps[1]);
+		m_lemmingAnims->DrawAnim(x, y, RES_GAME_FLAG_GREEN, 0, p_viewData.m_animationTime, m_remaps[1]);
 		break;
 	}
 }
@@ -4835,7 +4829,7 @@ void C2D::DrawDemo()
 								  RES_BORDERS_LORES_CUTFONT,
 								  g_demoText,
 								  TEXT_ADVANCE_X_POSITIVE,
-								  (CRemap*) m_remaps[4]);
+								  m_remaps[4]);
 	}
 }
 

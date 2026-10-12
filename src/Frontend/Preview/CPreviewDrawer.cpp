@@ -6,7 +6,7 @@
 #include "Engine/Animation/AnimationConstants.h"
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Animation/CRepeatAnim.h"
-#include "Engine/Graphics/Palettes/CBasePalManager.h"
+#include "Engine/Graphics/Palettes/CPaletteManager.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Math/CVSPoint.h"
@@ -28,7 +28,6 @@
 #include <string.h>
 
 class CGWnd;
-class CRemap;
 
 #pragma intrinsic(strcpy, strlen)
 
@@ -108,7 +107,7 @@ char g_szPreviewNone[] = "None";
 // GLOBAL: LEMBALL 0x0049f910
 char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 
-#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Engine/Graphics/Palettes/CRemap.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 
 // FUNCTION: LEMBALL 0x004491b0
@@ -404,7 +403,7 @@ void CPreviewDrawer::DrawAnims()
 								m_lemmingAnimId,
 								0,
 								m_lemmingAnim,
-								(CRemap*) m_remap);
+								m_remap);
 		width = CAnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
 		x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
 			m_layout->m_positions[PreviewFormationOffset].m_x;
@@ -414,7 +413,7 @@ void CPreviewDrawer::DrawAnims()
 			do {
 				x = x - ((short) (width / 8) + width);
 				CVSPoint point((short) x, (short) y);
-				CAnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, (CRemap*) m_remap);
+				CAnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, m_remap);
 				i = i + 1;
 			} while (i < m_lemmingCount);
 		}

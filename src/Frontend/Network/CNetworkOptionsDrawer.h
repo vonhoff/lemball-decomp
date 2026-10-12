@@ -43,7 +43,7 @@ enum eEditingStage {
 
 class CEntryHandler;
 
-class CBaseRemap;
+class CRemap;
 class CEditString;
 class CGDI;
 class CMain2DDisplay;
@@ -139,7 +139,7 @@ private:
 	char* m_localComputerName;                  // 0x3e8
 	CBigBitmap m_bitmap;                        // 0x3ec
 	unsigned int m_unknown410;                  // 0x410
-	CBaseRemap* m_remaps[6];                    // 0x414
+	CRemap* m_remaps[6];                        // 0x414
 	NetworkOptionsLayout* m_layoutTable;        // 0x42c
 	eNetOptsMessages m_pendingEvent;            // 0x430
 	unsigned int m_handlerCount;                // 0x434
