@@ -18,15 +18,11 @@
 
 ## Reconstruction priorities
 
-- Target: plausible original source; clean, idiomatic MSVC 4.00 C++. Preserve Windows behavior and ABI.
-- Infer from evidence; record uncertainty. Unknown roles stay unknown.
-- Matching: diagnostic, not objective. Accept explained score losses for supported source improvements.
-- No score-driven assembly, register assignments, compiler controls, branches, aliases, casts, padding, lifetime scaffolding, or duplicate code.
-- No syntax, declaration-order, or visibility tuning for scores. Special compiler/ABI mechanisms require independent evidence.
-- Recover typed fields, arrays, inheritance, ownership, and shared operations. No instruction transcription or raw offsets into known objects.
-- Meaningful names; supported constants. Numerical coincidence alone proves no shared meaning.
-- Remove redundancy; preserve narrowing, signedness, overflow, access timing, and serialized layouts.
-- Validate behavior, ABI, and matching; record test limits and trade-offs. Commit verified batches.
+- Target: plausible original source; idiomatic MSVC 4.00 C++. Preserve Windows behavior and ABI.
+- Evidence-backed inference; explicit uncertainty. No invented semantics or constants.
+- Clean source over scores; explain losses. No score-driven assembly, registers, compiler controls, or source shaping.
+- Recover types, ownership, shared operations. Remove raw object offsets, scaffolding, and redundancy.
+- Preserve narrowing, signedness, overflow, access timing, serialized layouts. Validate; record limits; commit verified batches.
 
 ## Commands
 
