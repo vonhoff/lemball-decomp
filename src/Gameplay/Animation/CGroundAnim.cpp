@@ -153,7 +153,8 @@ void CGroundAnim::Add(const tCoord3d& p_coordinate, unsigned short p_startFrame,
 
 	int blockY = p_coordinate.m_y / GROUND_BLOCK_PIXEL_SIZE;
 	int blockX = p_coordinate.m_x / GROUND_BLOCK_PIXEL_SIZE;
-	m_entries[m_count].m_mapCell = &g_pCurrentMap->m_ground.m_ground[blockY * g_pCurrentMap->m_ground.m_width + blockX];
+	m_entries[m_count].m_mapCell =
+		&g_pCurrentMap->m_ground.m_ground[(unsigned int) blockY * g_pCurrentMap->m_ground.m_width + blockX];
 
 	m_count++;
 	for (int i = 0; i < m_count; i++) {
