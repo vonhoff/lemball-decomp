@@ -19,7 +19,7 @@ enum {
 // VTABLE: LEMBALL 0x00499260
 class CPVGWnd : public CWnd {
 public:
-	CPVGWnd();
+	CPVGWnd() {}
 	virtual void Create(const CVSRect& p_rect,
 						CPVWnd* p_parent,
 						char* p_title,
@@ -74,10 +74,7 @@ private:
 	CSolidRect m_clearRectangle[1];      // 0x58
 	CCopyToBackBuff m_backBufferCopy[1]; // 0x68
 	CZBuffClear m_zBufferClear[1];       // 0x78
-	short m_refreshWidth;                // 0x88
-	short m_refreshHeight;               // 0x8a
-	short m_refreshX;                    // 0x8c
-	short m_refreshY;                    // 0x8e
+	CVSRect m_refreshRect;               // 0x88
 };
 
 #endif
