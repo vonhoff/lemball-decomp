@@ -6,7 +6,7 @@
 CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(GAME_MESSAGE_GAME_INFO)
 {
 	m_gameName[0] = '\0';
-	m_valid = 0;
+	m_valid = false;
 	m_payloadCapacity += sizeof(m_gameName) + sizeof(m_peerName);
 	m_headerEnabled = 1;
 }
@@ -37,5 +37,5 @@ void CNetworkGameMessage::GetData()
 {
 	GetCopy(m_gameName);
 	GetCopy(m_peerName);
-	m_valid = 1;
+	m_valid = true;
 }

@@ -203,7 +203,7 @@ int CNetworkManager::ProcessMsg(tagMESSAGE* p_message)
 			index++;
 		} while (index < NETWORK_GAME_SLOT_COUNT);
 		if (index != NETWORK_GAME_SLOT_COUNT) {
-			m_gameMessages[index].m_valid = 0;
+			m_gameMessages[index].m_valid = false;
 			m_connections[index] = NULL;
 			if (g_pNetworkOptionsProc != NULL) {
 				g_pNetworkOptionsProc->NetworkEvent((NetworkEvents) p_message->m_type);

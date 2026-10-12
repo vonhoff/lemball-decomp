@@ -1276,7 +1276,7 @@ void CNetworkOptionsDrawer::InitialiseHandlers()
 void CNetworkOptionsDrawer::ResetHandlers()
 {
 	CConnect** connections;
-	unsigned int* valid;
+	bool* valid;
 	int index;
 
 	if (g_pNetworkManager != NULL) {
@@ -1290,7 +1290,7 @@ void CNetworkOptionsDrawer::ResetHandlers()
 					m_acceptedPlayer = NETWORK_OPTIONS_NO_PLAYER_INDEX;
 				}
 			}
-			valid = (unsigned int*) ((char*) valid + sizeof(CNetworkGameMessage));
+			valid = (bool*) ((char*) valid + sizeof(CNetworkGameMessage));
 			connections++;
 			index++;
 		} while (index < NETWORK_OPTIONS_PLAYER_ENTRY_COUNT);
