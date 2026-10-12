@@ -16,7 +16,7 @@ CBaseQueue::CBaseQueue(unsigned int p_capacity)
 {
 	tagMESSAGE* buffer;
 
-	buffer = (tagMESSAGE*) operator new(p_capacity * sizeof(*buffer));
+	buffer = new tagMESSAGE[p_capacity];
 	m_messageBuffer = buffer;
 	m_capacity = p_capacity;
 	m_messageBufferEnd = buffer + p_capacity;
@@ -38,7 +38,7 @@ CBaseQueue::CBaseQueue(unsigned int p_capacity, char* p_name)
 	tagMESSAGE* buffer;
 
 	(void) p_name;
-	buffer = (tagMESSAGE*) operator new(p_capacity * sizeof(*buffer));
+	buffer = new tagMESSAGE[p_capacity];
 	m_messageBuffer = buffer;
 	m_capacity = p_capacity;
 	m_messageBufferEnd = buffer + p_capacity;
@@ -63,13 +63,13 @@ CBaseQueue::~CBaseQueue()
 
 	node = m_handlerList;
 	if (ProcessNMsgs(m_messageCount) == 1) {
-		operator delete(m_messageBuffer);
+		delete[] m_messageBuffer;
 	}
 	index = 0;
 	if (index < m_handlerCount) {
 		do {
 			next = node->m_next;
-			operator delete(node);
+			delete node;
 			node = next;
 			index = index + 1;
 		} while (index < m_handlerCount);
@@ -137,7 +137,7 @@ bool CBaseQueue::Attach(CBaseQueueHandler* p_handler, int p_priority)
 	QueueHandlerNode* previous;
 
 	EnterCritical();
-	node = (QueueHandlerNode*) operator new(sizeof(QueueHandlerNode));
+	node = new QueueHandlerNode;
 	current = m_handlerList;
 	node->m_handler = p_handler;
 	node->m_priority = p_priority;
@@ -197,13 +197,13 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 		if (current->m_priority == p_priority && current->m_handler == p_handler) {
 			if (index == 0) {
 				m_handlerList = current->m_next;
-				operator delete(current);
+				delete current;
 				m_handlerCount = m_handlerCount - 1;
 				LeaveCritical();
 				return true;
 			}
 			previous->m_next = current->m_next;
-			operator delete(current);
+			delete current;
 			m_handlerCount = m_handlerCount - 1;
 			LeaveCritical();
 			return true;
