@@ -8,7 +8,6 @@
 
 #include <stddef.h>
 #include <string.h>
-
 #include <windows.h>
 #include <winver.h>
 
@@ -194,19 +193,19 @@ int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsig
 }
 
 // FUNCTION: LEMBALL 0x0047e350
-int CDirectSoundDevice::Dummy10(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
+int CDirectSoundDevice::Reinitialise(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
 	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0047e360
-int CDirectSoundDevice::Dummy2c()
+int CDirectSoundDevice::GetNumMusicChannels()
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e370
-int CDirectSoundDevice::GetBuffersPerEffect()
+int CDirectSoundDevice::GetNumEffectsChannels()
 {
 	return m_platform.m_buffersPerEffect;
 }
@@ -253,7 +252,7 @@ int CDirectSoundDevice::IsAnyEffectPlaying()
 }
 
 // FUNCTION: LEMBALL 0x0047e490
-int CDirectSoundDevice::Dummy1c()
+int CDirectSoundDevice::StopAllMusic()
 {
 	return 1;
 }
@@ -270,25 +269,31 @@ int CDirectSoundDevice::StopAllEffects()
 }
 
 // FUNCTION: LEMBALL 0x0047e4e0
-int CDirectSoundDevice::IsMusicAvailable()
+int CDirectSoundDevice::IsMusicCapable()
 {
 	return m_platform.m_musicAvailable;
 }
 
 // FUNCTION: LEMBALL 0x0047e4f0
-int CDirectSoundDevice::IsEffectAvailable()
+int CDirectSoundDevice::IsEffectCapable()
 {
 	return m_platform.m_available;
 }
 
 // FUNCTION: LEMBALL 0x0047e500
-int CDirectSoundDevice::Dummy34(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3)
+int CDirectSoundDevice::AllocatePatch(unsigned int p_arg0,
+									  unsigned int p_arg1,
+									  unsigned int p_arg2,
+									  unsigned int p_arg3)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e510
-int CDirectSoundDevice::Dummy38(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3)
+int CDirectSoundDevice::AllocateDrumPatch(unsigned int p_arg0,
+										  unsigned int p_arg1,
+										  unsigned int p_arg2,
+										  unsigned int p_arg3)
 {
 	return 0;
 }
@@ -315,19 +320,19 @@ bool CDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_h
 }
 
 // FUNCTION: LEMBALL 0x0047e5b0
-int CDirectSoundDevice::Dummy40(unsigned int p_arg0)
+int CDirectSoundDevice::FreePatch(unsigned int p_arg0)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e5c0
-int CDirectSoundDevice::Dummy44(unsigned int p_arg0)
+int CDirectSoundDevice::FreeDrumPatch(unsigned int p_arg0)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e5d0
-int CDirectSoundDevice::Dummy4c()
+int CDirectSoundDevice::FreeAllPatches()
 {
 	return 0;
 }

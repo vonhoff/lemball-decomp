@@ -41,10 +41,10 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 	m_effectOutput = NULL;
 	if (i < m_deviceCount) {
 		do {
-			if (m_devices[i]->IsMusicAvailable() == 1) {
+			if (m_devices[i]->IsMusicCapable() == 1) {
 				m_musicOutput = m_devices[i];
 			}
-			if (m_devices[i]->IsEffectAvailable() == 1) {
+			if (m_devices[i]->IsEffectCapable() == 1) {
 				m_effectOutput = m_devices[i];
 			}
 			++i;
@@ -72,7 +72,7 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 		m_musicRequested = 1;
 		m_musicCapability = 1;
 		if (m_musicOutput != NULL) {
-			m_musicCapability = m_musicOutput->Dummy2c();
+			m_musicCapability = m_musicOutput->GetNumMusicChannels();
 		}
 	}
 	else {
@@ -81,7 +81,7 @@ CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 	}
 	if (m_effectsAvailable == true) {
 		m_effectsRequested = 1;
-		m_effectsCapability = m_effectOutput->GetBuffersPerEffect();
+		m_effectsCapability = m_effectOutput->GetNumEffectsChannels();
 	}
 	else {
 		m_effectsRequested = 0;
@@ -102,7 +102,7 @@ CSoundManager::~CSoundManager()
 	unsigned int i;
 
 	if (m_musicAvailable != false && m_musicOutput != NULL) {
-		m_musicOutput->Dummy1c();
+		m_musicOutput->StopAllMusic();
 	}
 	if (m_effectsAvailable != false && m_effectOutput != NULL) {
 		m_effectOutput->StopAllEffects();
@@ -129,7 +129,7 @@ void CSoundManager::SetResId(unsigned long p_resourceId)
 	m_resourceId = p_resourceId;
 	if (m_background == false) {
 		if (m_effectOutput != NULL) {
-			if (m_effectOutput->Dummy10(0, m_requestedEffects, p_resourceId) == 0) {
+			if (m_effectOutput->Reinitialise(0, m_requestedEffects, p_resourceId) == 0) {
 				m_requestedEffects = false;
 			}
 		}

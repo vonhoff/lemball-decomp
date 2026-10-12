@@ -35,7 +35,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 		}
 		if (p_effectsEnabled == 1) {
 			CBaseSoundDevice* device = new CDirectSoundDevice(p_effectCapacity, DIRECT_SOUND_BUFFERS_PER_EFFECT);
-			if (device->IsEffectAvailable() == 1) {
+			if (device->IsEffectCapable() == 1) {
 				*p_devices = device;
 				return 1;
 			}
@@ -43,7 +43,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 				delete device;
 			}
 			CBaseSoundDevice* wave = new CWaveSoundDevice(p_effectCapacity);
-			if (wave->IsEffectAvailable() == 1) {
+			if (wave->IsEffectCapable() == 1) {
 				*p_devices = wave;
 				return 1;
 			}
@@ -53,7 +53,7 @@ int MachineSoundDetect(CBaseSoundDevice** p_devices,
 	}
 	if (p_effectsEnabled == 1) {
 		CBaseSoundDevice* wave = new CWaveSoundDevice(p_effectCapacity);
-		if (wave->IsEffectAvailable() == 1) {
+		if (wave->IsEffectCapable() == 1) {
 			count = 1;
 			*p_devices = wave;
 		}

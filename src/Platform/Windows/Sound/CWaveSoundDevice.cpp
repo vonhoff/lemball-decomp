@@ -162,19 +162,19 @@ int CWaveSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigne
 }
 
 // FUNCTION: LEMBALL 0x0047cbe0
-int CWaveSoundDevice::Dummy10(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
+int CWaveSoundDevice::Reinitialise(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
 	return 1;
 }
 
 // FUNCTION: LEMBALL 0x0047cbf0
-int CWaveSoundDevice::Dummy2c()
+int CWaveSoundDevice::GetNumMusicChannels()
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047cc00
-int CWaveSoundDevice::GetBuffersPerEffect()
+int CWaveSoundDevice::GetNumEffectsChannels()
 {
 	return 1;
 }
@@ -255,7 +255,7 @@ int CWaveSoundDevice::IsAnyEffectPlaying()
 }
 
 // FUNCTION: LEMBALL 0x0047cdf0
-int CWaveSoundDevice::Dummy1c()
+int CWaveSoundDevice::StopAllMusic()
 {
 	return 1;
 }
@@ -290,25 +290,28 @@ int CWaveSoundDevice::StopAllEffects()
 }
 
 // FUNCTION: LEMBALL 0x0047ced0
-int CWaveSoundDevice::IsMusicAvailable()
+int CWaveSoundDevice::IsMusicCapable()
 {
 	return (int) m_musicDevice;
 }
 
 // FUNCTION: LEMBALL 0x0047cee0
-int CWaveSoundDevice::IsEffectAvailable()
+int CWaveSoundDevice::IsEffectCapable()
 {
 	return (int) m_available;
 }
 
 // FUNCTION: LEMBALL 0x0047cef0
-int CWaveSoundDevice::Dummy34(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3)
+int CWaveSoundDevice::AllocatePatch(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047cf00
-int CWaveSoundDevice::Dummy38(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3)
+int CWaveSoundDevice::AllocateDrumPatch(unsigned int p_arg0,
+										unsigned int p_arg1,
+										unsigned int p_arg2,
+										unsigned int p_arg3)
 {
 	return 0;
 }
@@ -344,19 +347,19 @@ int CWaveSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_hand
 }
 
 // FUNCTION: LEMBALL 0x0047cfe0
-int CWaveSoundDevice::Dummy40(unsigned int p_arg0)
+int CWaveSoundDevice::FreePatch(unsigned int p_arg0)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047cff0
-int CWaveSoundDevice::Dummy44(unsigned int p_arg0)
+int CWaveSoundDevice::FreeDrumPatch(unsigned int p_arg0)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047d000
-int CWaveSoundDevice::Dummy4c()
+int CWaveSoundDevice::FreeAllPatches()
 {
 	return 0;
 }
