@@ -1,6 +1,8 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CVSSIZE_H
 #define LEMBALL_VISOS_FOUNDATION_CVSSIZE_H
 
+#include "CVSPoint.h"
+
 // SIZE 0x04
 struct CVSSize {
 	CVSSize() { m_width = m_height = 0; }
@@ -10,6 +12,13 @@ struct CVSSize {
 	CVSSize(const CVSSize& p_source) : m_width(p_source.m_width), m_height(p_source.m_height) {}
 	CVSSize& operator=(const CVSSize& p_source);
 	CVSSize& operator-=(const CVSSize& p_delta);
+	CVSSize& operator+=(const CVSSize& p_delta)
+	{
+		m_width += p_delta.m_width;
+		m_height += p_delta.m_height;
+		return *this;
+	}
+	CVSPoint toPoint() { return CVSPoint(m_width, m_height); }
 
 	short m_width;  // 0x00
 	short m_height; // 0x02

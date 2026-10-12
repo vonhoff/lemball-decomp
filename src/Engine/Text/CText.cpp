@@ -68,12 +68,6 @@ void CText::Draw(CGDI* p_gdi)
 	p_gdi->AddToList(this);
 }
 
-inline static void AddAdvance(CVSSize& p_destination, const CVSSize& p_delta)
-{
-	p_destination.m_width += p_delta.m_width;
-	p_destination.m_height += p_delta.m_height;
-}
-
 // FUNCTION: LEMBALL 0x004749c0
 void CText::NextPos()
 {
@@ -83,11 +77,11 @@ void CText::NextPos()
 	}
 	else {
 		step = m_glyph->m_size;
-		AddAdvance(step, CVSSize(1, 1));
+		step += CVSSize(1, 1);
 	}
 	unsigned int flags = m_flags;
 	if ((flags & TEXT_ADVANCE_USE_CUSTOM_OFFSETS) != 0) {
-		AddAdvance(step, CVSSize(m_offsetX, m_offsetY));
+		step += CVSSize(m_offsetX, m_offsetY);
 	}
 	if ((flags & TEXT_ADVANCE_X_NEGATIVE) != 0) {
 		m_x = m_x - step.m_width;

@@ -39,6 +39,7 @@
 #include "Engine/Input/CBaseCursor.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
+#include "Engine/Math/CVSSizeArithmetic.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "GameView/Loading/LoadAnimCallbacks.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
@@ -432,21 +433,6 @@ int CMain2DDisplay::GetReturnState()
 	return 0;
 }
 
-inline static CVSSize operator-(const CVSSize& p_left, const CVSSize& p_right)
-{
-	return CVSSize((short) (p_left.m_width - p_right.m_width), (short) (p_left.m_height - p_right.m_height));
-}
-
-inline static CVSSize operator/(const CVSSize& p_size, int p_divisor)
-{
-	return CVSSize((short) (p_size.m_width / p_divisor), (short) (p_size.m_height / p_divisor));
-}
-
-inline static CVSPoint SizeToPoint(const CVSSize& p_size)
-{
-	return CVSPoint(p_size.m_width, p_size.m_height);
-}
-
 // FUNCTION: LEMBALL 0x00431f30
 CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 {
@@ -460,7 +446,7 @@ CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 	else {
 		static_cast<CVSSize&>(result) = m_highResolutionSize;
 	}
-	static_cast<CVSPoint&>(result) = SizeToPoint((screenSize - result) / 2);
+	static_cast<CVSPoint&>(result) = ((screenSize - result) / 2).toPoint();
 	if (p_x != DISPLAY_COORDINATE_AUTO_CENTER) {
 		result.m_x = (short) p_x;
 	}
