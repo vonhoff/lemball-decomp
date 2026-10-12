@@ -11506,8 +11506,8 @@
       "caller": 4231760,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CDemo.cpp.obj",
       "symbol": "?SendNextPacket@CDemo@@QAEHH@Z",
-      "size": 460,
-      "fingerprint": "9f428bc04469cd48e541684e7b880781c6bfd6fc243b270486f24537d69f5731",
+      "size": 456,
+      "fingerprint": "e4a34ef8da34fc0851c1458ad0d0e4931cff9ec886becb6e825fde77f765403e",
       "references": [
         {
           "offset": 15,
@@ -11601,10 +11601,10 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CDemo.cpp.obj",
       "symbol": "?ProcessMsg@CDemo@@UAEHPAUtagMESSAGE@@@Z",
       "size": 115,
-      "fingerprint": "14f8848e831ee775b0f9406a4e20779943c6766d56878e4f264087618dc26a1a",
+      "fingerprint": "cd68107f1c3c2a93309b46d600356977d729e60f8ca93ff82ee0cd362de777a1",
       "references": [
         {
-          "offset": 62,
+          "offset": 63,
           "original_instruction": 4232942,
           "original_bytes": "e8b797ffff",
           "thunk": 4206250,
@@ -12071,7 +12071,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CGodManager.cpp.obj",
       "symbol": "?Process@CGodManager@@QAEXXZ",
       "size": 77,
-      "fingerprint": "fdf7804c3a52129612aca174a724b393032b248ed01468977534fa62cff6e13b",
+      "fingerprint": "66d4ed4daaee0b6be489b1e6288d1e6a49a7e2f04521618c5c26f81ed262045d",
       "references": [
         {
           "offset": 63,
@@ -14101,7 +14101,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "??1CAI@@UAE@XZ",
       "size": 873,
-      "fingerprint": "a50908e60b9a0a256a2758ef9693068744acf6178006ea31f463c794fa6cb3db",
+      "fingerprint": "51dccc7949c80bacdecf7f24b6ae63bedbcba390ab2628ea9765abdd4db37253",
       "references": [
         {
           "offset": 47,
@@ -14210,7 +14210,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?RemoteGameState@CAI@@QAEXPAVCGameStateMessage@@@Z",
       "size": 772,
-      "fingerprint": "50f84e8898a5f7aef3aea1810729efb95e5f1e3ba0a7bb21ebf66c7f50aed6d9",
+      "fingerprint": "20dd03f6a23b3f7b075965443a723bd607dc19e44e41124d722e2292c2987208",
       "references": [
         {
           "offset": 120,
@@ -14742,7 +14742,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?StepOn@CAI@@QAEXABVAICOORD@@PAVCGameObject@@G@Z",
       "size": 564,
-      "fingerprint": "94084e3a9804ad6daf6b147dd230eddea2499a0e7bd35afe2d5750bfbb2b384f",
+      "fingerprint": "6625a5910f0257a1861d47360d8731a6d676db327634d31a75d7f917eda156a9",
       "references": [
         {
           "offset": 155,
@@ -14807,7 +14807,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?OpenDoor@CAI@@QAEHABVAICOORD@@PAVCGameObject@@G@Z",
       "size": 129,
-      "fingerprint": "4704f743bd51ec6a4cde2c6b9e57ffa8a3335fb5c34ac51fa0a0664d3febae4f",
+      "fingerprint": "1391bbf6c2d948448f3800cc73412abb8db46b0cb7f86cb7ef564ead315fe574",
       "references": [
         {
           "offset": 110,
@@ -14887,7 +14887,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?SwitchMessage@CAI@@QAEXW4swMessage@@HHH@Z",
       "size": 196,
-      "fingerprint": "a7ac3d9f98e6874491e28d6d8736b7afea939c7ea2d801d3ca9979e5f5d82347",
+      "fingerprint": "28c66508628ac067016918d62b6cdfeac6d9cc42c15a60baca3af2445c32b853",
       "references": [
         {
           "offset": 50,
@@ -25993,25 +25993,25 @@
       "caller": 4398288,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/CMain2DDisplay.cpp.obj",
       "symbol": "?ProcessMsg@CMain2DDisplay@@UAEHPAUtagMESSAGE@@@Z",
-      "size": 480,
-      "fingerprint": "26c718118fcbbd27209dc9c736c1010b58791905963c624a14494101b5f97779",
+      "size": 476,
+      "fingerprint": "a7b3fd7b9bef22e5281fc7e40da5e9916837f4c6bc4e311f3576099368e48f1a",
       "references": [
         {
-          "offset": 54,
+          "offset": 51,
           "original_instruction": 4398339,
           "original_bytes": "e8c205fdff",
           "thunk": 4203210,
           "source_symbol": "?ToggleResolution@CMain2DDisplay@@QAEXXZ"
         },
         {
-          "offset": 365,
+          "offset": 362,
           "original_instruction": 4398640,
           "original_bytes": "68f1284000",
           "thunk": 4204785,
           "source_symbol": "?AboutDialogProc@@YGHPAXIIJ@Z"
         },
         {
-          "offset": 397,
+          "offset": 394,
           "original_instruction": 4398672,
           "original_bytes": "e87504fdff",
           "thunk": 4203210,
@@ -28054,8 +28054,22 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "??0C2D@@QAE@PAVCMain2DDisplay@@PAVCAI@@PAVCGDI@@PAVCMap@@ABVCVSRect@@@Z",
       "size": 1906,
-      "fingerprint": "db2fd975768ffb94ae12612cb850e1a88cce26517e64495919a49eb5a57cabd1",
+      "fingerprint": "0ebcf9ea9cf1ded181a7defcc553debef9973c30c83e58de1e0e0e559135fcd5",
       "references": [
+        {
+          "offset": 538,
+          "original_instruction": 4414186,
+          "original_bytes": "e840ccfcff",
+          "thunk": 4204335,
+          "source_symbol": "??0CSolidRect@@QAE@XZ"
+        },
+        {
+          "offset": 562,
+          "original_instruction": 4414210,
+          "original_bytes": "e8c2befcff",
+          "thunk": 4200905,
+          "source_symbol": "??0CCopyColourToBackBuff@@QAE@XZ"
+        },
         {
           "offset": 586,
           "original_instruction": 4414234,
@@ -28069,20 +28083,6 @@
           "original_bytes": "e805d6fcff",
           "thunk": 4206905,
           "source_symbol": "??0CClipRect@@QAE@XZ"
-        },
-        {
-          "offset": 805,
-          "original_instruction": 4414453,
-          "original_bytes": "e8cebefcff",
-          "thunk": 4201160,
-          "source_symbol": "??0CZBuffClear@@QAE@XZ"
-        },
-        {
-          "offset": 829,
-          "original_instruction": 4414477,
-          "original_bytes": "e84ab7fcff",
-          "thunk": 4199260,
-          "source_symbol": "??0CCopyToBackBuff@@QAE@XZ"
         },
         {
           "offset": 926,
@@ -28148,18 +28148,18 @@
           "source_symbol": "??0CObjSq@@QAE@XZ"
         },
         {
-          "offset": 538,
-          "original_instruction": 4414186,
-          "original_bytes": "e840ccfcff",
-          "thunk": 4204335,
-          "source_symbol": "??0CSolidRect@@QAE@XZ"
+          "offset": 805,
+          "original_instruction": 4414453,
+          "original_bytes": "e8cebefcff",
+          "thunk": 4201160,
+          "source_symbol": "??0CZBuffClear@@QAE@XZ"
         },
         {
-          "offset": 562,
-          "original_instruction": 4414210,
-          "original_bytes": "e8c2befcff",
-          "thunk": 4200905,
-          "source_symbol": "??0CCopyColourToBackBuff@@QAE@XZ"
+          "offset": 829,
+          "original_instruction": 4414477,
+          "original_bytes": "e84ab7fcff",
+          "thunk": 4199260,
+          "source_symbol": "??0CCopyToBackBuff@@QAE@XZ"
         }
       ]
     },
@@ -28758,8 +28758,8 @@
       "caller": 4421776,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?NoStateRightClick@C2D@@QAEXABUCVSPoint@@0@Z",
-      "size": 147,
-      "fingerprint": "b48d21e199facb144d7c6e78b2c633d8bfd42ce932f43df429d634f33e2791a2",
+      "size": 145,
+      "fingerprint": "c49e2951ff93296902f39ea04ef159f47ebc85a5f3d163374b8221a9dde2780c",
       "references": [
         {
           "offset": 42,
@@ -28769,7 +28769,7 @@
           "source_symbol": "?FindGameObject@C2D@@QAEHABUCVSPoint@@AAHH@Z"
         },
         {
-          "offset": 83,
+          "offset": 81,
           "original_instruction": 4421859,
           "original_bytes": "e835a2fcff",
           "thunk": 4201245,
@@ -28805,7 +28805,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?ScreenToGame@C2D@@QAEHHHAAH0@Z",
       "size": 494,
-      "fingerprint": "004eebba10f391d21eaa999252a9f6a4069e498338d772e0ca664c4380dfa7f6",
+      "fingerprint": "2f723f1430fb74a2f609829bc225163f540a62df6e84858afd2b0114177f0b7c",
       "references": [
         {
           "offset": 116,
@@ -29069,7 +29069,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?SendCursorMsg@C2D@@QAEXXZ",
       "size": 162,
-      "fingerprint": "b7edad8105be5103dc975a3429d3b405d173cdaa6a54113399585edd67e78f45",
+      "fingerprint": "8919c3aa0b1e0bd52d0310dea3c6e952f02783fb47292426a34a4c454a2ed8b1",
       "references": [
         {
           "offset": 91,
@@ -29124,7 +29124,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?OnButtonDown@C2D@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 280,
-      "fingerprint": "806d0c971d83e0fe3a34803959cdb46fa13502a302de04b4b389870b0a66e65b",
+      "fingerprint": "7ff76a8791cbfb7999dd57a2fd1b65283d9aff3c04eb340217a9bb73372b0a16",
       "references": [
         {
           "offset": 128,
@@ -29562,7 +29562,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?DoClipWidth@C2D@@QAEXHHH@Z",
       "size": 929,
-      "fingerprint": "e4e1703627d74e3cb0b0a531d420f2b7280c121ee3f8e954fa4fb766d6025e43",
+      "fingerprint": "75bda2d71195ccb26b5ac9f2decc6ecd5ba9cbdde02b59de098ff50070fb69aa",
       "references": [
         {
           "offset": 163,
@@ -29685,7 +29685,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?DrawClippedRectangle@C2D@@QAEHABVCVSRect@@@Z",
       "size": 987,
-      "fingerprint": "34a872965226a1f669fb6cf667d08e1895ea1f34a2a66540c6e1e3abba03e38e",
+      "fingerprint": "c242b9dd4492d87c788f25d3d1249417cc6b148fc74c9f120125ae5198635dd0",
       "references": [
         {
           "offset": 391,
@@ -30268,8 +30268,8 @@
       "caller": 4443472,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?DrawPaintGun@C2D@@QAEXAAVCViewData@@@Z",
-      "size": 212,
-      "fingerprint": "5719a80dcc207fc4452e623a4fc41a100fa4f3318bf028db2619022ae663c85d",
+      "size": 213,
+      "fingerprint": "9a85601239c72b41536f57ede3ee3457d239fdc48f9f189d08f1b71d217b4377",
       "references": [
         {
           "offset": 102,
@@ -30293,7 +30293,7 @@
           "source_symbol": "?DrawAnim@CLemmingAnimsManager@@QAEXFFKKKPAVCRemap@@@Z"
         },
         {
-          "offset": 200,
+          "offset": 201,
           "original_instruction": 4443672,
           "original_bytes": "e88c48fcff",
           "thunk": 4200105,
@@ -31135,8 +31135,8 @@
       "caller": 4448048,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?AddViewIndexToObjectClipGrid@C2D@@QAEXHHHHH@Z",
-      "size": 717,
-      "fingerprint": "b54c78d29859e9dbf617a25026e627d959eb02838c866f80ec34129bd6322950",
+      "size": 719,
+      "fingerprint": "4a9f04c9332d358a70f5be3a6b917c31a17292d26e523474b1931b215f90458f",
       "references": [
         {
           "offset": 96,
@@ -31167,7 +31167,7 @@
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 276,
+          "offset": 278,
           "original_instruction": 4448341,
           "original_bytes": "e84b49fcff",
           "thunk": 4204965,
@@ -31179,8 +31179,8 @@
       "caller": 4448800,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?BuildObjectClipData@C2D@@QAEXAAVCViewData@@H@Z",
-      "size": 2785,
-      "fingerprint": "cfa0ae446d4d76ed7d15169cd4925b913de73c25bdb124d495d3fed39698b297",
+      "size": 2789,
+      "fingerprint": "4eab7f1c5a41fbea28c9a730f63c0ba70b9096cc1bc94b666d72a107e8f6777b",
       "references": [
         {
           "offset": 423,
@@ -31197,14 +31197,14 @@
           "source_symbol": "?InGroupByObjectNo@C2D@@QAEHH@Z"
         },
         {
-          "offset": 967,
+          "offset": 969,
           "original_instruction": 4449769,
           "original_bytes": "e8b743fcff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 1024,
+          "offset": 1026,
           "original_instruction": 4449826,
           "original_bytes": "e87533fcff",
           "thunk": 4200860,
@@ -31216,8 +31216,8 @@
       "caller": 4451616,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?SetOrigin@C2D@@QAEXXZ",
-      "size": 610,
-      "fingerprint": "99a97f45d8a2f1a01a9f391149e04fed43a137a0154984447b0ff58819271db6",
+      "size": 612,
+      "fingerprint": "19abf47aa86444ba1b563ffa7042c3f2f034bcb3d30fe48b5f45b98fb65a82e3",
       "references": [
         {
           "offset": 80,
@@ -31248,7 +31248,7 @@
           "source_symbol": "?GameToScreen@CMap@@QAEXAAH0@Z"
         },
         {
-          "offset": 559,
+          "offset": 561,
           "original_instruction": 4452175,
           "original_bytes": "e8982afcff",
           "thunk": 4200940,
@@ -31284,7 +31284,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?MarkGroundAnimAndLiftBounds@C2D@@QAEXXZ",
       "size": 1046,
-      "fingerprint": "14e9b6f3920584b93d5f0fe49c53d82e3952fc6e0c3038f702efef48089ed975",
+      "fingerprint": "7fa7e07878fd4c284dc39759eac524a2dbb35fd43c0830530e331c59658003ff",
       "references": [
         {
           "offset": 32,
@@ -31342,7 +31342,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?UpdateSpriteGroundLookupRegions@C2D@@QAEXXZ",
       "size": 414,
-      "fingerprint": "8ce8258e4c54cb4bde2e3083e802636687fb1afba1de72310f9d0d997f57a009",
+      "fingerprint": "5adeeff235eb6ec0964c4485f5d14a2a8e6ef6e9da58a525863248238bf163bc",
       "references": [
         {
           "offset": 401,
@@ -31358,7 +31358,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?DrawObjects@C2D@@QAEXXZ",
       "size": 1540,
-      "fingerprint": "3d639c1abbfaa218918740e71ab9fd795a83453d6ad9a1c8976b860d97d47019",
+      "fingerprint": "5fb621453cd5733325b38cd1ce9c99be54caaea7df5823fcddf2b44f7cc13466",
       "references": [
         {
           "offset": 9,
@@ -31466,8 +31466,8 @@
       "caller": 4456448,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?Draw@C2D@@UAEXABVCVSRect@@@Z",
-      "size": 1002,
-      "fingerprint": "a5d317e27d365242bc9deece26e47809160b55cbbee1b45339d83adb659418fe",
+      "size": 942,
+      "fingerprint": "8eb3884a24db5268da05e8046ddf55cde8bb2014c764968f56941da0f2e06bea",
       "references": [
         {
           "offset": 65,
@@ -31498,63 +31498,63 @@
           "source_symbol": "?GetData@CAI@@QAEHPAVCViewData@@@Z"
         },
         {
-          "offset": 616,
+          "offset": 562,
           "original_instruction": 4457064,
           "original_bytes": "e8db1ffcff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 629,
+          "offset": 575,
           "original_instruction": 4457077,
           "original_bytes": "e88a1dfcff",
           "thunk": 4202500,
           "source_symbol": "??4CVSPoint@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 726,
+          "offset": 666,
           "original_instruction": 4457174,
           "original_bytes": "e8f50ffcff",
           "thunk": 4199120,
           "source_symbol": "??4CVSRect@@QAEAAV0@ABV0@@Z"
         },
         {
-          "offset": 757,
+          "offset": 697,
           "original_instruction": 4457205,
           "original_bytes": "e84b0efcff",
           "thunk": 4198725,
           "source_symbol": "?DrawObjects@C2D@@QAEXXZ"
         },
         {
-          "offset": 784,
+          "offset": 724,
           "original_instruction": 4457232,
           "original_bytes": "e8e323fcff",
           "thunk": 4204280,
           "source_symbol": "?DrawDemo@C2D@@QAEXXZ"
         },
         {
-          "offset": 793,
+          "offset": 733,
           "original_instruction": 4457241,
           "original_bytes": "e8e117fcff",
           "thunk": 4201215,
           "source_symbol": "?DrawTime@C2D@@QAEXXZ"
         },
         {
-          "offset": 800,
+          "offset": 740,
           "original_instruction": 4457248,
           "original_bytes": "e8a21dfcff",
           "thunk": 4202695,
           "source_symbol": "?DrawScore@C2D@@QAEXXZ"
         },
         {
-          "offset": 816,
+          "offset": 756,
           "original_instruction": 4457264,
           "original_bytes": "e88b29fcff",
           "thunk": 4205760,
           "source_symbol": "?DrawPaused@C2D@@QAEXXZ"
         },
         {
-          "offset": 869,
+          "offset": 809,
           "original_instruction": 4457317,
           "original_bytes": "e8701efcff",
           "thunk": 4202970,
@@ -31694,7 +31694,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "?CalcGroundCode@C2D@@QAEGW4eObjectType@@HHG@Z",
       "size": 941,
-      "fingerprint": "3440be10c1cfa607c6a4eba2a10b30efad60f910a70c6b1777711f219c29069a",
+      "fingerprint": "73053170963018c0c9ab88d579345922c45404fc991a62d30d92449eee4ad30d",
       "references": [
         {
           "offset": 270,
@@ -31795,7 +31795,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "??0CPanelButton@@QAE@PAVCPanelLemming@@ABVCVSRect@@PAVCPVGWnd@@@Z",
       "size": 630,
-      "fingerprint": "ac2df372cae75d923c0afcd37aa2f7e101ff2573a76990723aeea7458b3ee74a",
+      "fingerprint": "6c1dfd969e8b220e8dd64878c693e84f48c8750edcc7e323e5e665e971e7dab3",
       "references": [
         {
           "offset": 65,
@@ -31912,32 +31912,32 @@
       "caller": 4466320,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?DrawButton@CPanelButton@@UAEXXZ",
-      "size": 790,
-      "fingerprint": "4edce3ded32e621b695ca732bb44d5ceb66ef12d75a8eadff51aadba0d06a16b",
+      "size": 763,
+      "fingerprint": "d83c976eedcb5c26709d5b45ee58bbb09010cfc725911cf802a4b331f31c7b66",
       "references": [
         {
-          "offset": 572,
+          "offset": 545,
           "original_instruction": 4466896,
           "original_bytes": "e873f9fbff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 588,
+          "offset": 561,
           "original_instruction": 4466912,
           "original_bytes": "e81ff7fbff",
           "thunk": 4202500,
           "source_symbol": "??4CVSPoint@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 718,
+          "offset": 691,
           "original_instruction": 4467038,
           "original_bytes": "e8e5f8fbff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 731,
+          "offset": 704,
           "original_instruction": 4467051,
           "original_bytes": "e894f6fbff",
           "thunk": 4202500,
@@ -32171,11 +32171,11 @@
       "caller": 4469056,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanel.cpp.obj",
       "symbol": "??1CPanel@@UAE@XZ",
-      "size": 129,
-      "fingerprint": "c325628f64691ad56663b7ed8affb96855bfb378b708dca8005146acdfc2d679",
+      "size": 128,
+      "fingerprint": "13ecc01b3f9e00e56c72bc4f1024f18da6474776d3e8c8f61882a31322f5baa3",
       "references": [
         {
-          "offset": 43,
+          "offset": 42,
           "original_instruction": 4469098,
           "original_bytes": "e8a2fffbff",
           "thunk": 4206865,
@@ -32298,7 +32298,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?Initialise@CPauseWindow@@QAEXXZ",
       "size": 376,
-      "fingerprint": "d013e12bfda07c22f4c33ad1362f67779e5681f0cb00022d170e7bff2b700726",
+      "fingerprint": "f1f462c816cffef962e938c195599d80d6ee5217e4a57b6a710fc8cb05347627",
       "references": [
         {
           "offset": 303,
@@ -32358,7 +32358,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?CreateTheWindow@CPauseWindow@@QAEXABVCVSRect@@@Z",
       "size": 610,
-      "fingerprint": "7df4fa97971b8ce940e09b40c5be556d0d4d8c294f01c6a3a38da8370e763e17",
+      "fingerprint": "505dfe4c05887f810e9002f9f2cb59c7d92fc20e024b9b3c06812b76b509194d",
       "references": [
         {
           "offset": 400,
@@ -32394,18 +32394,18 @@
       "caller": 4472912,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?CalculateWindow@CPauseWindow@@QAE?AVCVSRect@@XZ",
-      "size": 1411,
-      "fingerprint": "d472a27898c7e548f29811555d448c3ff31a0e1e05615ee069cf1ea46e37d872",
+      "size": 1399,
+      "fingerprint": "bf417083039573ec3ac3b4832c6525a4229770366e32cee9b1b0051a6d4df17a",
       "references": [
         {
-          "offset": 393,
+          "offset": 392,
           "original_instruction": 4473301,
           "original_bytes": "e86ee0fbff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 675,
+          "offset": 664,
           "original_instruction": 4473597,
           "original_bytes": "e863effbff",
           "thunk": 4207205,
@@ -32418,7 +32418,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "??0CPauseWindow@@QAE@PAVCReceiveWindowState@@PAVCPVGWnd@@W4ePauseWindowMessages@@@Z",
       "size": 268,
-      "fingerprint": "61e9e8d8d248afa563d3b5a135fe30bee0d3bd17b30d0f790023f968a417610a",
+      "fingerprint": "d317d86df2a44c716ed31d93f09fcc9d6aeea42fd0f961d28891b17529d46997",
       "references": [
         {
           "offset": 93,
@@ -32455,7 +32455,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "??1CPauseWindow@@UAE@XZ",
       "size": 291,
-      "fingerprint": "e8106eee1723c2c04201260b4c499850122974c4484e7676ce469c6afeaa8dcf",
+      "fingerprint": "2c6ae59802d91076cc7df94ebb1eb4724937e8dcd5734a973e67ae2bdd3c8b1e",
       "references": [
         {
           "offset": 102,
@@ -32492,7 +32492,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?OnPaint@CPauseWindow@@UAEXABVCVSRect@@@Z",
       "size": 262,
-      "fingerprint": "fb6f65c518195cdcf1e17a7759f41ef4c794f8778e0ad3a0b58256db6df55e18",
+      "fingerprint": "359738b6145dd79b263f1d0ecfdb55521ac97548d98f8c08078c169ea51c2a77",
       "references": [
         {
           "offset": 172,
@@ -32524,7 +32524,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?OnButtonDown@CPauseWindow@@UAEXABUCVSPoint@@W4BUTTON_FLAGS@@@Z",
       "size": 167,
-      "fingerprint": "2dd3d3ece341387626028b9bd652b860190a8850154fb45e3a83befc5cfdb997",
+      "fingerprint": "ff6d42dedb779b6367d7fd4075e0157d42f23c576818335a3a1483915ed7b51b",
       "references": [
         {
           "offset": 139,
@@ -32632,7 +32632,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Engine/Animation/CAnimsManager.cpp.obj",
       "symbol": "??_ECAnim@@UAEPAXI@Z",
       "size": 89,
-      "fingerprint": "c95eb319445f6dfaa3b2b75d1f8cd720f350ad8296bc2a7efb9223db53f37523",
+      "fingerprint": "03d2b3ef8cef5f7be2f9eaa6d3a9ae7cad2e6678dabaeebaa62825d5bbc5dfa7",
       "references": [
         {
           "offset": 35,
@@ -32859,18 +32859,18 @@
       "caller": 4480016,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?_DrawBackGround@CBaseFrontendDrawer@@QAEXXZ",
-      "size": 602,
-      "fingerprint": "2d4ce966e32012bebb4c6c4288429c879403cf74f8efbd4c0d609f703503bd14",
+      "size": 601,
+      "fingerprint": "f7d583eb455d17d19451a5f74d81de7dc7fb6ad73bbb621c2d28f5449b36e5fe",
       "references": [
         {
-          "offset": 531,
+          "offset": 530,
           "original_instruction": 4480544,
           "original_bytes": "e8a6b4fbff",
           "thunk": 4199115,
           "source_symbol": "?DrawButtons@CGunController@@QAEXHH@Z"
         },
         {
-          "offset": 548,
+          "offset": 547,
           "original_instruction": 4480561,
           "original_bytes": "e8a8d8fbff",
           "thunk": 4208350,
@@ -33060,7 +33060,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendProcess.cpp.obj",
       "symbol": "?ProcessMsg@CBaseFrontendProcess@@UAEHPAUtagMESSAGE@@@Z",
       "size": 181,
-      "fingerprint": "ef1c8740723a6f4040df0a4671f51b9101e521d8fa00ef633f11f39c9244fdf7",
+      "fingerprint": "ddcc9802e8b713093066f0f05f1440f46aaa0af1c68b069ae8af6ecce671ba03",
       "references": [
         {
           "offset": 152,
@@ -34349,7 +34349,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Loading/CCDLoadAnim.cpp.obj",
       "symbol": "??0CCDLoadAnim@@QAE@PAVCGDI@@PAVCMain2DDisplay@@@Z",
       "size": 734,
-      "fingerprint": "e2dd63b03d1497c6f5c2d030689de4b5a8ba87fbc19854e104824ff0d476533f",
+      "fingerprint": "a1f0a1bdf667a1ecf963fff43c2dd90c819e56a1cc60c2d14ce96dc2a9abf972",
       "references": [
         {
           "offset": 77,
@@ -34658,7 +34658,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/About/CAboutScreen.cpp.obj",
       "symbol": "??0CAboutScreen@@QAE@PAVCMain2DDisplay@@PAVCGDI@@ABVCVSRect@@@Z",
       "size": 404,
-      "fingerprint": "a20ac317f54b21a1c7c83082b4ac5f4228aba4ce86e2bba770035a249ace31c7",
+      "fingerprint": "ab62eb5d05b47cef876b064a7f6e02afb1be7304ee117316065e5a2dd0e897c2",
       "references": [
         {
           "offset": 128,
@@ -34674,7 +34674,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/About/CAboutScreen.cpp.obj",
       "symbol": "??1CAboutScreen@@UAE@XZ",
       "size": 240,
-      "fingerprint": "3dd3982fcfd4867471e06deac70bdabf3882c804268bde85250f2bd0b59e8a4e",
+      "fingerprint": "78e8e0d9e80edfa86fd35c93ec5531ba0ff5cfb8052288a263cccc23cccc5bbe",
       "references": [
         {
           "offset": 181,
@@ -34862,7 +34862,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunButtons.cpp.obj",
       "symbol": "?LoadFaces@CGunButtons@@QAEXPAK@Z",
       "size": 398,
-      "fingerprint": "a60d4b1a4774ca68dcd650abaa06bceac440e5ffc9ae6a470ddd2dcd821ead8e",
+      "fingerprint": "4fc0f305698a26746cc93a13f97f5dbad1a75b8c956bb0622c0fba5b948ec158",
       "references": [
         {
           "offset": 316,
@@ -34910,7 +34910,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "??1CGunController@@UAE@XZ",
       "size": 351,
-      "fingerprint": "e4167afc90f683aac35cc9246dfb1732f2ac98088b35213044e3932010bf05d2",
+      "fingerprint": "495c565fb09ae8b9a58df3c378eca554b10064f10a2ad5b08150ef76bee5784a",
       "references": [
         {
           "offset": 314,
@@ -35031,8 +35031,8 @@
       "caller": 4510416,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?DrawSpriteWindow@CGunController@@QAEXXZ",
-      "size": 1216,
-      "fingerprint": "47ce4cca65b6557b0ff4a6c8cba960685901c0c933a30a2b10a1ae4bccabbd40",
+      "size": 1220,
+      "fingerprint": "314cda50474d0531c3c5e69eea2546dce17cc30891f353697c8be5b106fb57bf",
       "references": [
         {
           "offset": 96,
@@ -35042,7 +35042,7 @@
           "source_symbol": "??4CVSPoint@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 1179,
+          "offset": 1181,
           "original_instruction": 4511750,
           "original_bytes": "e82b5cfbff",
           "thunk": 4207670,
@@ -35055,7 +35055,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?MoveUp@CGunController@@QAEXXZ",
       "size": 170,
-      "fingerprint": "d8d836d2b14d2036b5c8693f8d8a3f65ce871f84be8f45c7a3911ddfd9a8172e",
+      "fingerprint": "49372b8b2f1130f74ded625bc3c56ec7f3148871631d1f18c04766a6a2a03e10",
       "references": [
         {
           "offset": 76,
@@ -35087,7 +35087,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?SelectOption@CGunController@@QAEXXZ",
       "size": 437,
-      "fingerprint": "7adee42de953dd02f52b2ae74e677488e6da8f6ac143e53ec748834818d1f654",
+      "fingerprint": "d4374681163f35fb101e9f084afc3a93ad371fabbcda7f059db83ff67ed208f8",
       "references": [
         {
           "offset": 424,
@@ -35103,7 +35103,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?Process@CGunController@@QAEXXZ",
       "size": 494,
-      "fingerprint": "9d1a293f2413861a4efd8c7df1edda968feea58feb753ae6a80673839e021aa9",
+      "fingerprint": "2333a4f8e648a6e17f22cd466de52f17f9148dae5528c09c20373ba56ff18185",
       "references": [
         {
           "offset": 198,
@@ -35174,7 +35174,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CTrackWindow.cpp.obj",
       "symbol": "??1CTrackWindow@@UAE@XZ",
       "size": 126,
-      "fingerprint": "dd33eb572c2cae7cce3147a500d15d556f7816d732fa7ceafd10036184f0afcb",
+      "fingerprint": "f558ad5290a194deb788ec9cf8f060089b13c7a99f958ec0b3bb90a7d452cdf5",
       "references": [
         {
           "offset": 74,
@@ -35190,7 +35190,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CTrackWindow.cpp.obj",
       "symbol": "?OnInside@CTrackWindow@@UAEXABUCVSPoint@@@Z",
       "size": 68,
-      "fingerprint": "86552ff50589c35d9010ab156df4b6d7e90c286317db54a944e0f76310f9a8f2",
+      "fingerprint": "84391400323a45d20364f3e73286206aea6baa93a40aa081f46c825f46d803ca",
       "references": [
         {
           "offset": 59,
@@ -35486,7 +35486,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CHiliteController.cpp.obj",
       "symbol": "?UpdateAnimIDs@CHiliteController@@QAEXK@Z",
       "size": 68,
-      "fingerprint": "7104c79f80a93cb57ef86ed92f6699fbc9f11b806a75c72898574dc25ab4b3f2",
+      "fingerprint": "ef829fef626db1e8f211fc7597ee78c2ba783003cdab2ff77da1aac67d0f69ed",
       "references": [
         {
           "offset": 57,
@@ -35577,8 +35577,8 @@
       "caller": 4522336,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Results/CSuccFailDrawer.cpp.obj",
       "symbol": "?CalculateText@CSuccFailDrawer@@QAEXXZ",
-      "size": 755,
-      "fingerprint": "18beb9b33fb1177b575c5c7b6ee76653d48d386fd59c6eb5a9f0a6cf6559be5c",
+      "size": 754,
+      "fingerprint": "7f38ae71b86a9756ad76ec8b2525fb5afdc47d11feaac0409986eac902165500",
       "references": [
         {
           "offset": 164,
@@ -35594,7 +35594,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Results/CSuccFailDrawer.cpp.obj",
       "symbol": "?Load@CSuccFailDrawer@@UAEXXZ",
       "size": 773,
-      "fingerprint": "6ba216294463ec1c7b88fdf620f6323dbb818dd494118603aaf3c8a2bec39c00",
+      "fingerprint": "c2b01078e4c4cd42deee1a709a28df8ed6bfdff2fff4d1a5fdbc2fe28fb17132",
       "references": [
         {
           "offset": 562,
@@ -35928,7 +35928,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Password/CPasswordDrawer.cpp.obj",
       "symbol": "?Load@CPasswordDrawer@@UAEXXZ",
       "size": 552,
-      "fingerprint": "53a62169eb6eb1ea70323b24d2c102d2b416b853db53f02d4ca840ef745a5cf0",
+      "fingerprint": "af74d2d3b8941ad4fe03d82f71690f48ca3385c14877987ee9ab4971c2009b1f",
       "references": [
         {
           "offset": 539,
@@ -36022,7 +36022,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Password/CPasswordDrawer.cpp.obj",
       "symbol": "?ProcessMessages@CPasswordDrawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 894,
-      "fingerprint": "2a54e1bce5ad63fd83b61f338837ff9e707b4152c9b26055c2d3082be8f9cf5b",
+      "fingerprint": "029e23b2a58addf8ffe8e9a1ec36f3ccfbe2b5c50f8d22de59fd0a807904d232",
       "references": [
         {
           "offset": 389,
@@ -36073,7 +36073,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Password/CPasswordDrawer.cpp.obj",
       "symbol": "?ButtonNumeric@CPasswordDrawer@@QAEXH@Z",
       "size": 284,
-      "fingerprint": "8994d8ebf16493e7e0b37917c21662d2ab05d1f7a4ab7042f99622af9f8a8c1a",
+      "fingerprint": "5c95f096bb0a2649051e8db41b7d58c4a0d69ea763e0c4f7f11fa707494e6a0e",
       "references": [
         {
           "offset": 83,
@@ -36250,7 +36250,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Multiplayer/CNetworkManager.cpp.obj",
       "symbol": "?ProcessMsg@CNetworkManager@@UAEHPAUtagMESSAGE@@@Z",
       "size": 497,
-      "fingerprint": "ad296a33351de8908b5f0482d8760e9bdb2ddb88e59da421e99765224f3e17f9",
+      "fingerprint": "5617a8ea59e468c48addfc83e89dec5ca48f64e44ebf86e4f27c561b1f27abaa",
       "references": [
         {
           "offset": 386,
@@ -37373,7 +37373,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CGWnd.cpp.obj",
       "symbol": "??0CGWnd@@QAE@XZ",
       "size": 115,
-      "fingerprint": "6c4f71a302f2d53d1e85493479514ee53b4851ad2154fef6d3b86d55522a9816",
+      "fingerprint": "df5927f4f16ec8f9292a3a858b4dcc7bffd285a970fabaa7a8b0682d08a7b7bb",
       "references": [
         {
           "offset": 20,
@@ -37433,7 +37433,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CGWnd.cpp.obj",
       "symbol": "?ProcessOtherMessages@CGWnd@@UAEHIII@Z",
       "size": 543,
-      "fingerprint": "d58460c1ffb9223a47455bfe072811fa760731c29011b9bc69a53f9bedaa6290",
+      "fingerprint": "5b530eb2b5b9630c97225b39015354aad18acf8c593eec9927631770b4597b56",
       "references": [
         {
           "offset": 345,
@@ -37449,7 +37449,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Engine/Animation/CAnimsManager.cpp.obj",
       "symbol": "??0CAnimsManager@@QAE@PAVCGDI@@KHHHI@Z",
       "size": 364,
-      "fingerprint": "69b7fcd7b4bbca9f6f0642baa010ba2224baa631e95d9e477ccf223b015a58eb",
+      "fingerprint": "7afd0aa1cdfbcb21988fe68db0bf3d71706b557ec011188cddb05f30c177eb26",
       "references": [
         {
           "offset": 317,
@@ -37465,7 +37465,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CFramedButton.cpp.obj",
       "symbol": "??_ECLine@@UAEPAXI@Z",
       "size": 89,
-      "fingerprint": "99ab5e327c76e65d7d228a13bb448ceb2750605594fe55275155dca28354725c",
+      "fingerprint": "2a8cdcf6a5c518b596677958fbc2ccd8ae512c1344466a0578e22a5e6e7ba341",
       "references": [
         {
           "offset": 35,
@@ -37513,7 +37513,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CPVButton.cpp.obj",
       "symbol": "??1CPVButton@@UAE@XZ",
       "size": 109,
-      "fingerprint": "49dbb69c1678c74f14a1a9b46b9ffb20ef2c05472a310105e1ff755ce7c7c160",
+      "fingerprint": "bedf6708555f7403cdf3b4c3a9b2a8d0450650b57e918141984282c8b124fd43",
       "references": [
         {
           "offset": 64,
@@ -37529,7 +37529,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CGraphicButton.cpp.obj",
       "symbol": "?Initialise@CGraphicButton@@QAEXXZ",
       "size": 506,
-      "fingerprint": "151fe37e9a118c2e806d7796f64372988f75122575d2c2a455ce09a741cb6ee1",
+      "fingerprint": "63bac33a474c1ca855310b7e822131bb1047f92fb270c37b52507dfebbf89159",
       "references": [
         {
           "offset": 44,
@@ -37583,11 +37583,11 @@
       "caller": 4634640,
       "object": "CMakeFiles/LEMBALL.dir/src/Engine/Input/CBaseCursor.cpp.obj",
       "symbol": "?Process@CBaseCursor@@QAEXXZ",
-      "size": 524,
-      "fingerprint": "bdb306a48d92640a2b872c4e3351f6f49163f4c00fd45aae564025b57bc20bc4",
+      "size": 523,
+      "fingerprint": "8db91e9aec80c03c523675ccc866801a531b39be3554b892e3e08aa091c2d7fc",
       "references": [
         {
-          "offset": 490,
+          "offset": 489,
           "original_instruction": 4635131,
           "original_bytes": "e8ad7bf9ff",
           "thunk": 4208045,
@@ -37647,18 +37647,18 @@
       "caller": 4687856,
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Graphics/CSurface.cpp.obj",
       "symbol": "?Blit@CSurface@@UAEXPAVCBitmap@@PAVCResBITMAP@@@Z",
-      "size": 583,
-      "fingerprint": "59f01d61784072a7623809821465edd39df1476dda55bc88c49ebba0b0f3be9b",
+      "size": 598,
+      "fingerprint": "998b56bb8781da277d39d7d5e97d91adfb025a426cb1ae2ec33c3b6dfc87d652",
       "references": [
         {
-          "offset": 258,
+          "offset": 262,
           "original_instruction": 4688104,
           "original_bytes": "e85b99f8ff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 272,
+          "offset": 276,
           "original_instruction": 4688118,
           "original_bytes": "e84d99f8ff",
           "thunk": 4203080,
