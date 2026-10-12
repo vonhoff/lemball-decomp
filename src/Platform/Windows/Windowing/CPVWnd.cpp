@@ -27,20 +27,20 @@ void CPVWnd::SetSizeStatus(unsigned int p_status)
 // FUNCTION: LEMBALL 0x004323d0
 void CPVWnd::AddChild(CPVWnd* p_child)
 {
-	void** node;
+	WindowOwnerNode* node;
 
-	node = (void**) operator new(3 * sizeof(*node));
+	node = (WindowOwnerNode*) operator new(sizeof(*node));
 	if (node != NULL) {
-		node[0] = p_child;
-		node[1] = NULL;
-		node[2] = NULL;
+		node->m_window = p_child;
+		node->m_next = NULL;
+		node->m_prev = NULL;
 	}
 	else {
 		node = NULL;
 	}
-	node[2] = m_childListTail;
+	node->m_prev = (WindowOwnerNode*) m_childListTail;
 	if (m_childListTail != NULL) {
-		((void**) m_childListTail)[1] = node;
+		((WindowOwnerNode*) m_childListTail)->m_next = node;
 	}
 	m_childListTail = node;
 	if (m_childList == NULL) {
@@ -52,30 +52,30 @@ void CPVWnd::AddChild(CPVWnd* p_child)
 // FUNCTION: LEMBALL 0x00432430
 void CPVWnd::RemoveChild(CPVWnd* p_child)
 {
-	void** node;
-	void** nextNode;
-	void** prevNode;
+	WindowOwnerNode* node;
+	WindowOwnerNode* nextNode;
+	WindowOwnerNode* prevNode;
 
-	node = (void**) m_childList;
+	node = (WindowOwnerNode*) m_childList;
 	if (node != NULL) {
 		do {
-			if ((CPVWnd*) node[0] == p_child) {
+			if (node->m_window == p_child) {
 				break;
 			}
-			node = (void**) node[1];
+			node = node->m_next;
 		} while (node != NULL);
 		if (node != NULL) {
-			nextNode = (void**) node[1];
-			prevNode = (void**) node[2];
+			nextNode = node->m_next;
+			prevNode = node->m_prev;
 			operator delete(node);
 			if (nextNode != NULL) {
-				nextNode[2] = prevNode;
+				nextNode->m_prev = prevNode;
 			}
 			else {
 				m_childListTail = prevNode;
 			}
 			if (prevNode != NULL) {
-				prevNode[1] = nextNode;
+				prevNode->m_next = nextNode;
 				m_childCount = m_childCount - 1;
 				return;
 			}
@@ -147,9 +147,9 @@ CPVWnd::~CPVWnd()
 			operator delete(list);
 		}
 	}
-	void** child = (void**) m_childList;
+	WindowOwnerNode* child = (WindowOwnerNode*) m_childList;
 	while (child != NULL) {
-		void** next = (void**) child[1];
+		WindowOwnerNode* next = child->m_next;
 		operator delete(child);
 		child = next;
 	}
@@ -158,18 +158,11 @@ CPVWnd::~CPVWnd()
 // FUNCTION: LEMBALL 0x00465db0
 void CPVWnd::SetInnerWindow(const CVSRect& p_rect)
 {
-	const short* position;
-
 	m_innerRect.m_width = p_rect.m_width;
 	m_innerRect.m_height = p_rect.m_height;
-	if (&p_rect != NULL) {
-		position = &p_rect.m_x;
-	}
-	else {
-		position = NULL;
-	}
-	m_innerRect.m_x = *position;
-	m_innerRect.m_y = position[1];
+	const CVSPoint& position = p_rect;
+	m_innerRect.m_x = position.m_x;
+	m_innerRect.m_y = position.m_y;
 	_OnSize();
 }
 
@@ -436,18 +429,11 @@ void CPVWnd::SetMenu(int& p_menuResourceId, tagMenuList** p_menuLists)
 // FUNCTION: LEMBALL 0x00466300
 void CPVWnd::_SetRect(const CVSRect& p_rect)
 {
-	const short* position;
-
 	m_rect.m_width = p_rect.m_width;
 	m_rect.m_height = p_rect.m_height;
-	if (&p_rect != NULL) {
-		position = &p_rect.m_x;
-	}
-	else {
-		position = NULL;
-	}
-	m_rect.m_x = *position;
-	m_rect.m_y = position[1];
+	const CVSPoint& position = p_rect;
+	m_rect.m_x = position.m_x;
+	m_rect.m_y = position.m_y;
 }
 
 // FUNCTION: LEMBALL 0x00466330
