@@ -86,16 +86,9 @@ CHotAreaHandler::CHotAreaHandler(const CVSRect& p_bounds)
 	Initialise();
 	m_bounds.m_width = p_bounds.m_width;
 	m_bounds.m_height = p_bounds.m_height;
-	const CVSRect* rect = &p_bounds;
-	const short* position;
-	if (rect != NULL) {
-		position = &rect->m_x;
-	}
-	else {
-		position = NULL;
-	}
-	m_bounds.m_x = *position;
-	m_bounds.m_y = position[1];
+	const CVSPoint& position = p_bounds;
+	m_bounds.m_x = position.m_x;
+	m_bounds.m_y = position.m_y;
 	SetActive(1);
 }
 
