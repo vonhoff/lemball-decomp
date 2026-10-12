@@ -2,24 +2,15 @@
 
 #include "Engine/Resources/Archive/CMogRes.h"
 
-#include <new.h>
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045dd20
 CResCol* CResCol::Load(unsigned long p_resourceId)
 {
-	void* storage;
 	CResCol* res;
-	unsigned long id = p_resourceId;
-	res = (CResCol*) g_pActiveMogRes->Find(id);
+	res = (CResCol*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {
-		storage = operator new(sizeof(CResCol));
-		if (storage != NULL) {
-			res = new (storage) CResCol(id);
-		}
-		else {
-			res = NULL;
-		}
+		res = new CResCol(p_resourceId);
 		return (CResCol*) res->CheckError();
 	}
 	if (res->m_chunkType != RESOURCE_CHUNK_COLOUR) {

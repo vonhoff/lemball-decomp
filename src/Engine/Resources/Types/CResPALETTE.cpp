@@ -3,24 +3,15 @@
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
 
-#include <new.h>
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045dd90
 CResPALETTE* CResPALETTE::Load(unsigned long p_resourceId)
 {
-	void* storage;
 	CResPALETTE* res;
-	unsigned long id = p_resourceId;
-	res = (CResPALETTE*) g_pActiveMogRes->Find(id);
+	res = (CResPALETTE*) g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {
-		storage = operator new(sizeof(CResPALETTE));
-		if (storage != NULL) {
-			res = new (storage) CResPALETTE(id);
-		}
-		else {
-			res = NULL;
-		}
+		res = new CResPALETTE(p_resourceId);
 		return (CResPALETTE*) res->CheckError();
 	}
 	if (res->m_chunkType != RESOURCE_CHUNK_PALETTE) {
