@@ -2443,20 +2443,20 @@ unsigned long C2D::LemmingFly(CViewData& p_viewData, int& p_frame)
 	if (viewX >= 0 && viewY >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
 		viewX &= GROUND_BLOCK_PIXEL_MASK;
 		viewY &= GROUND_BLOCK_PIXEL_MASK;
-		groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(viewX, viewY);
+		groundZ = map->m_ground.m_ground[(unsigned int) map->m_ground.m_width * blockY + blockX].GetZ(viewX, viewY);
 	}
 	else {
 		groundZ = 0;
 	}
 
 	if (p_viewData.m_position.m_z <= groundZ) {
-		p_frame = frameDelta * ANIMATION_FRAME_RATE_FPS / MILLISECONDS_PER_SECOND + 7;
+		p_frame = (int) ((unsigned int) frameDelta * ANIMATION_FRAME_RATE_FPS) / MILLISECONDS_PER_SECOND + 7;
 		if (p_frame > 12) {
 			p_frame = 12;
 		}
 	}
 	else {
-		p_frame = frameDelta * ANIMATION_FRAME_RATE_FPS / MILLISECONDS_PER_SECOND;
+		p_frame = (int) ((unsigned int) frameDelta * ANIMATION_FRAME_RATE_FPS) / MILLISECONDS_PER_SECOND;
 		if (p_frame > 6) {
 			p_frame = 6;
 		}
@@ -2479,8 +2479,9 @@ void C2D::DrawLemmingFlyShadow(CViewData& p_viewData)
 	int blockX = viewX >> GROUND_BLOCK_PIXEL_SHIFT;
 	int blockY = viewY >> GROUND_BLOCK_PIXEL_SHIFT;
 	if (viewX >= 0 && viewY >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-		groundZ = map->m_ground.m_ground[map->m_ground.m_width * blockY + blockX].GetZ(viewX & GROUND_BLOCK_PIXEL_MASK,
-																					   viewY & GROUND_BLOCK_PIXEL_MASK);
+		groundZ = map->m_ground.m_ground[(unsigned int) map->m_ground.m_width * blockY + blockX].GetZ(
+			viewX & GROUND_BLOCK_PIXEL_MASK,
+			viewY & GROUND_BLOCK_PIXEL_MASK);
 	}
 	else {
 		groundZ = 0;
