@@ -59,7 +59,7 @@ CGunButtons::CGunButtons(CGWnd* p_window,
 	int* binding = (int*) p_binding;
 	if (binding != NULL) {
 		if (m_valueCount == 1) {
-			m_value = *binding;
+			m_value = (bool) *binding;
 		}
 		else {
 			m_value = *binding;
