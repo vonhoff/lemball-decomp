@@ -1792,11 +1792,7 @@ void C2D::OnDriverChange()
 		short clipSizeX = m_clipSize.m_width;
 		if (m_viewSize.m_width != clipSizeX || m_clipSize.m_height != m_viewSize.m_height) {
 			CVSRect clipRect((short) m_clipOffsetX, (short) m_clipOffsetY, clipSizeX, m_clipSize.m_height);
-			const CVSRect& source = clipRect;
-			memcpy(&innerRect.m_width, &clipRect.m_width, sizeof(short));
-			memcpy(&innerRect.m_height, &clipRect.m_height, sizeof(short));
-			innerRect.m_x = source.m_x;
-			innerRect.m_y = source.m_y;
+			innerRect = clipRect;
 		}
 		m_display->SetRectInnerZoom(useRect, innerRect, m_zoom);
 		if (m_pauseWindow != NULL) {
@@ -5062,10 +5058,7 @@ void C2D::Draw(const CVSRect& p_rect)
 		CVSRect translatedBounds(windowRect);
 		translatedBounds.m_x = 0;
 		translatedBounds.m_y = 0;
-		memcpy(&surfaceBackground.m_bounds.m_width, &translatedBounds.m_width, sizeof(short));
-		memcpy(&surfaceBackground.m_bounds.m_height, &translatedBounds.m_height, sizeof(short));
-		memcpy(&surfaceBackground.m_bounds.m_x, &translatedBounds.m_x, sizeof(short));
-		memcpy(&surfaceBackground.m_bounds.m_y, &translatedBounds.m_y, sizeof(short));
+		surfaceBackground.m_bounds = translatedBounds;
 		surfaceBackground.m_flags = 0;
 		surfaceBackground.Draw(m_gdi);
 	}
@@ -5132,10 +5125,7 @@ void C2D::DrawObjectsZBuff()
 	backgroundBounds.m_x = 0;
 	int primitiveIndex = m_primitiveCount++;
 	CClipRect& background = m_clipRects[primitiveIndex];
-	memcpy(&background.m_bounds.m_width, &backgroundBounds.m_width, sizeof(short));
-	memcpy(&background.m_bounds.m_height, &backgroundBounds.m_height, sizeof(short));
-	memcpy(&background.m_bounds.m_x, &backgroundBounds.m_x, sizeof(short));
-	memcpy(&background.m_bounds.m_y, &backgroundBounds.m_y, sizeof(short));
+	background.m_bounds = backgroundBounds;
 	background.m_flags = 0;
 	background.Draw(m_gdi);
 
