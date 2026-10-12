@@ -306,10 +306,10 @@ void CSoundManager::PlayEffect(unsigned long p_effectId)
 }
 
 // FUNCTION: LEMBALL 0x0045b490
-void CSoundManager::PlayEffect(unsigned long p_effectId, unsigned int p_channel)
+void CSoundManager::PlayEffect(unsigned long p_effectId, unsigned int p_volume)
 {
 	if (m_effectsAvailable == true) {
-		m_effectOutput->EffectPlay(p_effectId, (unsigned char) p_channel, 0);
+		m_effectOutput->EffectPlay(p_effectId, (unsigned char) p_volume, 0);
 	}
 }
 

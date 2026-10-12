@@ -100,13 +100,13 @@ void CBaseSoundDevice::MusicMiscControlMessage(unsigned char p_channel, unsigned
 }
 
 // FUNCTION: LEMBALL 0x0047fa60
-unsigned char CBaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
+unsigned char CBaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_loop)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047fa70
-unsigned char CBaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume)
+unsigned char CBaseSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_volume, int p_loop)
 {
 	return 0;
 }

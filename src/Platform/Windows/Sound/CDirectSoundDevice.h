@@ -47,8 +47,8 @@ public:
 	virtual unsigned char GetEffectVolume();
 	virtual void SetEffectVolume(unsigned char p_volume);
 	virtual bool SetVolume(unsigned long p_resourceId, int p_index, unsigned char p_volume);
-	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume);
-	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume);
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_loop);
+	virtual unsigned char EffectPlay(unsigned long p_effectId, unsigned char p_volume, int p_loop);
 	virtual bool EffectStop(unsigned char p_channel, unsigned char p_effect);
 	virtual void SetWnd(CWnd* p_wnd);
 

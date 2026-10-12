@@ -418,19 +418,19 @@ bool CDirectSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, unsi
 }
 
 // FUNCTION: LEMBALL 0x0047e7c0
-unsigned char CDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
+unsigned char CDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_loop)
 {
-	return m_platform.m_effects[p_effectId]->Play(p_volume);
+	return m_platform.m_effects[p_effectId]->Play(p_loop);
 }
 
 // FUNCTION: LEMBALL 0x0047e7e0
-unsigned char CDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume)
+unsigned char CDirectSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_volume, int p_loop)
 {
 	enum {
 		SOUND_VOLUME_MAX = 0xff
 	};
-	int volume = (p_channel * 10000) / SOUND_VOLUME_MAX - 10000;
-	return m_platform.m_effects[p_effectId]->PlayWithVolume(volume, p_volume);
+	int volume = (p_volume * 10000) / SOUND_VOLUME_MAX - 10000;
+	return m_platform.m_effects[p_effectId]->PlayWithVolume(volume, p_loop);
 }
 
 // FUNCTION: LEMBALL 0x0047e860

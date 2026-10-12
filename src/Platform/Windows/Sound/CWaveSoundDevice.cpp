@@ -459,7 +459,7 @@ bool CWaveSoundDevice::SetVolume(unsigned long p_resourceId, int p_index, unsign
 }
 
 // FUNCTION: LEMBALL 0x0047d160
-unsigned char CWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_volume)
+unsigned char CWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned short p_pitch, int p_loop)
 {
 	unsigned int i;
 	MMRESULT result;
@@ -484,12 +484,12 @@ unsigned char CWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned sh
 }
 
 // FUNCTION: LEMBALL 0x0047d220
-unsigned char CWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_channel, int p_volume)
+unsigned char CWaveSoundDevice::EffectPlay(unsigned long p_effectId, unsigned char p_volume, int p_loop)
 {
 	CBaseSoundDevice* device;
 
 	device = this;
-	return device->EffectPlay(p_effectId, (unsigned short) 0xff00, p_volume);
+	return device->EffectPlay(p_effectId, (unsigned short) 0xff00, p_loop);
 }
 
 // FUNCTION: LEMBALL 0x0047d240
