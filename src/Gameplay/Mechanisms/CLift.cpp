@@ -184,24 +184,24 @@ bool CLift::Process()
 		if (m_active && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 			m_stateTimer = time;
 			if (m_direction == LIFT_DIRECTION_RISING) {
-				Action(ACTION_LIFT_START_RISING);
+				Action(ACTION_ARRIVING);
 			}
 			else {
-				Action(ACTION_LIFT_START_LOWERING);
+				Action(ACTION_LEAVING);
 			}
 		}
 		break;
-	case ACTION_LIFT_START_RISING: {
+	case ACTION_ARRIVING: {
 		short elapsedTicks = (short) (time - m_stateTimer);
 		int startHeight = m_start.m_z;
 		m_movementStartHeight = startHeight;
 		m_direction = LIFT_DIRECTION_RISING;
 		m_start.m_z = elapsedTicks + startHeight;
 		m_active = 1;
-		m_action = ACTION_LIFT_RISING;
+		m_action = ACTION_OPENING;
 		break;
 	}
-	case ACTION_LIFT_RISING:
+	case ACTION_OPENING:
 		m_start.m_z = m_movementStartHeight - m_stateTimer + time;
 		if (m_start.m_z >= m_highHeight) {
 			m_start.m_z = m_highHeight;
@@ -209,14 +209,14 @@ bool CLift::Process()
 			m_direction = LIFT_DIRECTION_LOWERING;
 			if (m_defaultActive && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
-				Action(ACTION_LIFT_START_LOWERING);
+				Action(ACTION_LEAVING);
 			}
 			else {
 				m_action = ACTION_READY;
 			}
 		}
 		break;
-	case ACTION_LIFT_LOWERING:
+	case ACTION_CLOSING:
 		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
 		if (m_start.m_z <= m_lowHeight) {
 			m_start.m_z = m_lowHeight;
@@ -224,18 +224,18 @@ bool CLift::Process()
 			m_direction = LIFT_DIRECTION_RISING;
 			if (m_defaultActive && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
 				m_stateTimer = time;
-				Action(ACTION_LIFT_START_RISING);
+				Action(ACTION_ARRIVING);
 			}
 			else {
 				m_action = ACTION_READY;
 			}
 		}
 		break;
-	case ACTION_LIFT_START_LOWERING:
+	case ACTION_LEAVING:
 		m_movementStartHeight = m_start.m_z;
 		m_direction = LIFT_DIRECTION_LOWERING;
 		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
-		m_action = ACTION_LIFT_LOWERING;
+		m_action = ACTION_CLOSING;
 		m_active = 1;
 		break;
 	}
