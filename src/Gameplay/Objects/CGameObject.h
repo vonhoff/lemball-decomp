@@ -243,7 +243,7 @@ protected:
 	unsigned long m_actionPhase1Deadline;  // 0xd0
 	unsigned long m_actionPhase2Deadline;  // 0xd4
 	C3DVector m_flightOrigin;              // 0xd8
-	C3DVector m_auxiliaryPosition;         // 0xe4
+	C3DVector m_momentum;                  // 0xe4
 	bool m_isFlying;                       // 0xf0
 	AICOORD m_groundPosition;              // 0xf4
 	int m_flightZ;                         // 0x100
@@ -285,9 +285,9 @@ inline void CGameObject::GetViewData(CViewData& p_viewData)
 	p_viewData.m_stateTimer = timer;
 	p_viewData.m_statusFlags = 0;
 	p_viewData.m_hidden = m_hidden;
-	p_viewData.m_auxiliaryPosition.m_xFixed = m_auxiliaryPosition.m_xFixed;
-	p_viewData.m_auxiliaryPosition.m_yFixed = m_auxiliaryPosition.m_yFixed;
-	p_viewData.m_auxiliaryPosition.m_zFixed = m_auxiliaryPosition.m_zFixed;
+	p_viewData.m_momentum.m_xFixed = m_momentum.m_xFixed;
+	p_viewData.m_momentum.m_yFixed = m_momentum.m_yFixed;
+	p_viewData.m_momentum.m_zFixed = m_momentum.m_zFixed;
 	p_viewData.m_soundEffect = m_soundEffect;
 	unsigned long timestamp;
 	if (m_isRemoteObject != 0) {

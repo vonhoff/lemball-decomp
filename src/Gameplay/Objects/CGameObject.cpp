@@ -413,9 +413,9 @@ void CGameObject::Restart()
 	m_position.m_xFixed = m_spawnPosition.m_xFixed;
 	m_position.m_yFixed = m_spawnPosition.m_yFixed;
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
-	m_auxiliaryPosition.m_xFixed = 0;
-	m_auxiliaryPosition.m_yFixed = 0;
-	m_auxiliaryPosition.m_zFixed = 0;
+	m_momentum.m_xFixed = 0;
+	m_momentum.m_yFixed = 0;
+	m_momentum.m_zFixed = 0;
 	Initialise();
 	m_position.m_zFixed = 0;
 	m_invisibleSwitchId = (unsigned short) INVALID_OBJECT_ID;

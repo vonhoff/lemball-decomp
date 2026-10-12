@@ -90,7 +90,7 @@ void CTrapDoor::GetViewData(CViewData& p_viewData)
 	p_viewData.m_stateTimer = stateTimer;
 	p_viewData.m_statusFlags = 0;
 	p_viewData.m_hidden = m_hidden;
-	p_viewData.m_auxiliaryPosition = m_auxiliaryPosition;
+	p_viewData.m_momentum = m_momentum;
 	p_viewData.m_soundEffect = m_soundEffect;
 	if (m_isRemoteObject != 0) {
 		p_viewData.m_animationTime = g_dwNetworkSimulationTimestamp;
