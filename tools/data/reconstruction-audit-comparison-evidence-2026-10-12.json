@@ -46,5 +46,6 @@
     "limits": "Catalog validates class/method identity but omits signatures and collapses destructor variants. Upstream matching may select the first duplicate full/demangled name with a warning. Saved-thunk verification covers manifest routes, not every overload or duplicate body. Passing these checks does not universally exclude mapping drift.",
     "decision": "Do not change normalizers, symbol overrides or scores to conceal demonstrated instruction changes."
   },
-  "remaining": "All nine categories remain open. This review strengthens rejection evidence; it supplies no supported source correction. Existing clean hypotheses still regress required matching, and no supported untried structural route was identified. Original declaration/inline context or new binary evidence remains necessary to reopen those families."
+  "remaining": "All nine categories remain open. This review strengthens rejection evidence; it supplies no supported source correction. Existing clean hypotheses still regress required matching, and no supported untried structural route was identified. Original declaration/inline context or new binary evidence remains necessary to reopen those families.",
+  "next_review": "tools/data/reconstruction-audit-clean-inference-2026-10-12.json"
 }
