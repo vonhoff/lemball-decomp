@@ -82,13 +82,13 @@ CNetworkAddress* CTCPIPNetwork::GetNewNetworkAddress()
 }
 
 // FUNCTION: LEMBALL 0x004715e0
-void* CTCPIPNetwork::GetNewConnect()
+CConnect* CTCPIPNetwork::GetNewConnect()
 {
 	return new CTCPIPConnect;
 }
 
 // FUNCTION: LEMBALL 0x00471810
-void* CTCPIPNetwork::GetNewBroadcast()
+CBroadcast* CTCPIPNetwork::GetNewBroadcast()
 {
 	return new CTCPIPBroadcast;
 }

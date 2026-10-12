@@ -26,8 +26,8 @@ public:
 	virtual void BeforeDestroyConnections();             // vtable+0x18
 	virtual void AfterDestroyConnections();              // vtable+0x1c
 	virtual void ForceProcess() = 0;                     // vtable+0x20
-	virtual void* GetNewConnect() = 0;                   // vtable+0x24
-	virtual void* GetNewBroadcast() = 0;                 // vtable+0x28
+	virtual CConnect* GetNewConnect() = 0;               // vtable+0x24
+	virtual CBroadcast* GetNewBroadcast() = 0;           // vtable+0x28
 	virtual CNetworkAddress* GetNewNetworkAddress() = 0; // vtable+0x2c
 	virtual void WaitProcess();                          // vtable+0x30
 	virtual ~CBaseNetwork();                             // vtable+0x04

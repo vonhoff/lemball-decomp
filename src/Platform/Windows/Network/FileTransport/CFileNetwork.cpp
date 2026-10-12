@@ -98,13 +98,13 @@ CNetworkAddress* CFileNetwork::GetNewNetworkAddress()
 }
 
 // FUNCTION: LEMBALL 0x0046f930
-void* CFileNetwork::GetNewConnect()
+CConnect* CFileNetwork::GetNewConnect()
 {
 	return new CFileConnect();
 }
 
 // FUNCTION: LEMBALL 0x0046f950
-void* CFileNetwork::GetNewBroadcast()
+CBroadcast* CFileNetwork::GetNewBroadcast()
 {
 	return new CFileBroadcast();
 }

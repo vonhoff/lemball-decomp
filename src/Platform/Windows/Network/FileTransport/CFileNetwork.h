@@ -17,8 +17,8 @@ public:
 
 	CFileNetwork();
 	virtual int Process(unsigned int p_message, unsigned int p_wParam, long p_lParam); // vtable+0x00
-	virtual void* GetNewBroadcast();                                                   // vtable+0x28
-	virtual void* GetNewConnect();                                                     // vtable+0x24
+	virtual CBroadcast* GetNewBroadcast();                                             // vtable+0x28
+	virtual CConnect* GetNewConnect();                                                 // vtable+0x24
 	virtual CNetworkAddress* GetNewNetworkAddress();                                   // vtable+0x2c
 	virtual void AfterDestroyConnections();                                            // vtable+0x1c
 	virtual void BeforeDestroyConnections();                                           // vtable+0x18

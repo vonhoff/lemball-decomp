@@ -148,7 +148,7 @@ bool CBaseNetwork::DoInitialise()
 	g_pMessFAILEDConnect = new CMessFAILEDConnect("Failed Connect");
 	g_pPulseMessage = new CPulseMessage;
 	g_pAckMessage = new CAckMessage;
-	m_broadcast = (CBroadcast*) GetNewBroadcast();
+	m_broadcast = GetNewBroadcast();
 	m_initialised = 1;
 	m_serverMode = 1;
 	ForceProcess();
@@ -305,7 +305,7 @@ CConnect* CBaseNetwork::NewConnect()
 		AfterDestroyConnections();
 	}
 
-	peer = (CConnect*) GetNewConnect();
+	peer = GetNewConnect();
 	if (m_firstConnect == NULL) {
 		m_firstConnect = peer;
 	}
@@ -685,12 +685,12 @@ void CBaseNetwork::UnInitialise()
 {
 }
 
-void* CBaseNetwork::GetNewConnect()
+CConnect* CBaseNetwork::GetNewConnect()
 {
 	return NULL;
 }
 
-void* CBaseNetwork::GetNewBroadcast()
+CBroadcast* CBaseNetwork::GetNewBroadcast()
 {
 	return NULL;
 }
