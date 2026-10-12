@@ -523,12 +523,10 @@ inline static void CopyPosition(CVSPoint& p_destination, const CVSPoint& p_sourc
 CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 {
 	CVSRect result;
-	int compact;
 	const CVSSize& screenSize = g_pTargetGraphicsDriver->m_screenSize;
 
-	compact = g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240;
-	g_nCompactPrimaryContextLayout = compact;
-	if (compact != 0) {
+	g_nCompactPrimaryContextLayout = g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240;
+	if (g_nCompactPrimaryContextLayout != 0) {
 		CopySize(result, m_lowResolutionSize);
 	}
 	else {
