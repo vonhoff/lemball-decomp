@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "98d20335",
+  "source_commit": "cf5d7edb",
+  "route_commit": "d3ddd65a",
+  "previous_review": "tools/data/reconstruction-audit-unsupported-metadata-2026-10-12.json",
+  "goal_status": "active",
+  "attempts": [12530, 12531, 12532],
+  "observation": 2252,
+  "changes": [
+    "Ordinary short values replace two temporary references in UpdateSpriteGroundLookupRegions and one member reference in MarkRect; preserve narrowing and capture timing.",
+    "Direct typed pause-window deletion replaces reference/address alias; preserve destructor receiver and post-callback clear.",
+    "DrawDemo guard annotation now maps original4a78c8 to actual compiler DATA S8. Annotation outside function uses supported GLOBAL lookup; no comparison-tool changes."
+  ],
+  "evidence_basis": "History11554/5849/5850 and5866 explicitly introduced reference barriers for register/stack matching; pause alias391 regained unrelated DrawGround score. Original43f485..4de consumes narrowed values without reference escape. Actual MarkRect mask writes and shutdown callback ordering verified.",
+  "validation": {
+    "build": "pass; routes refreshed and normal rebuild passed",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7201 references;0 errors",
+    "vtables": "412;100%",
+    "native_fixtures": {"mask_regions": 3410, "shutdown": 160, "draw_objects": 624, "draw_driver": 292, "construction": 96, "total": 4582},
+    "scope": "Same final EXE. Mask pair executes complete native functions; ordered writes, overlapping masks/input/lookup dimensions, signed bounds and16-bit wrap. Other fixtures cover owner reloads, allocation failures, callbacks, stack and saved registers.",
+    "limits": "Finite fixtures. Rendering, allocation/free and selected service/destructor leaves intercepted outside mask pair; no pixel/whole-game proof.",
+    "guard_mapping": "Actual TEST/OR operand4a78c8 maps4810e0; distinct from lastBlink4810e8 and visible47b7a8. DrawDemo100.",
+    "report": {"functions": 5958, "changed_rows": 15, "inventory_extents_unchanged": true, "before": {"exact_bytes": 231045, "effective_bytes": 284765, "exact_functions": 5230, "effective_functions": 5503}, "after": {"exact_bytes": 231148, "effective_bytes": 284652, "exact_functions": 5231, "effective_functions": 5503}},
+    "matching_review": "Worker rows/scores reproduced exactly. Exact+103 bytes; Effective-113. MarkRect loses260 bytes through register roles/division scheduling; NoStateRightClick gains147. DrawObjects scheduling loss covered by624 cases; constructor/draw/driver collateral also exercised.",
+    "graph": "3files including ledger;5seeds;5impacts. Known partial/virtual gaps: source/native/full-report fallback.",
+    "whitespace": "pass"
+  },
+  "evidence": {
+    "snapshot": "build-msvc400/clean-wave14-evidence/final",
+    "snapshot_files": 28,
+    "workers": "build-msvc400/clean-wave14-evidence/workers",
+    "worker_files": 18,
+    "exe_sha256": "cc712bcee695d7ab89cf8ebc6574332f5d95bc7e6f2f5a6de768901b2167d8c6",
+    "reproduction": "validate-clean-wave14.py; sequential. save-wave14.py verifies same EXE and worker/integration rows. Local ignored artifacts; hashes.json records contents."
+  },
+  "remaining": "Default-stream lifecycle worker00598371 verified, integration pending. Independent original-queue matrix audit found documentation corrections; final reconciliation pending. Historical naming/layout uncertainties remain explicit."
+}
