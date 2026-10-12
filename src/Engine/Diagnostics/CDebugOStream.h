@@ -11,9 +11,9 @@
 // VTABLE: LEMBALL 0x00493020
 class CDebugOStream : public virtual CVSOStream {
 public:
-	CDebugOStream(char* p_buffer, int p_size)
-		: CVSIOs(&m_buffer), CVSOStream(&m_buffer), m_buffer(p_buffer, p_size, NULL)
+	CDebugOStream(char* p_buffer, int p_size) : CVSIOs(), CVSOStream(), m_buffer(p_buffer, p_size, NULL)
 	{
+		SetStreamBuffer(&m_buffer);
 	}
 	virtual ~CDebugOStream() {}
 

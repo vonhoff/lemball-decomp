@@ -18,6 +18,7 @@ enum eVSORadix {
 // VTABLE: LEMBALL 0x00493034
 class CVSIOs {
 public:
+	CVSIOs() : m_flags(0x14), m_fill(' '), m_width(0), m_radix(VSO_RADIX_DECIMAL) {}
 	CVSIOs(CVSStreambuf* p_streamBuffer);
 	virtual ~CVSIOs(); // vtable+0x00
 	char SetFill(char p_fill)

@@ -45,7 +45,9 @@ public:
 	CVSOStream& operator<<(long p_value);
 	CVSOStream& operator<<(unsigned long p_value);
 	CVSOStream& operator<<(unsigned int p_value);
+	CVSOStream() : CVSIOs() {}
 	CVSOStream(CVSStreambuf* p_streamBuffer);
+	void SetStreamBuffer(CVSStreambuf* p_streamBuffer) { m_streamBuffer = p_streamBuffer; }
 	void _FormatNum();
 	~CVSOStream();
 
