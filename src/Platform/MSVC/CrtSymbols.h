@@ -1,6 +1,3 @@
-#ifndef LEMBALL_PLATFORM_WINDOWS_CRT_H
-#define LEMBALL_PLATFORM_WINDOWS_CRT_H
-
 // LIBRARY: LEMBALL 0x0047fab0 SYMBOL
 // __toupper
 
@@ -678,5 +675,3 @@
 
 // GLOBAL: LEMBALL 0x004ab954
 // __acmdln
-
-#endif
