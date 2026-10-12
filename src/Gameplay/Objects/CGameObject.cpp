@@ -304,7 +304,7 @@ int CGameObject::QOnBalloon()
 }
 
 // FUNCTION: LEMBALL 0x0040ab20
-void CGameObject::OnConveyor(unsigned int p_arg0, CIce* p_arg1, unsigned int p_arg2)
+void CGameObject::OnConveyor(bool p_onConveyor, CIce* p_ice, bool p_leave)
 {
 }
 

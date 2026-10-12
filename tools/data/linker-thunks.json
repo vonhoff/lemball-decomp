@@ -6889,7 +6889,7 @@
     {
       "address": 4205270,
       "target": 4238112,
-      "target_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+      "target_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
     },
     {
       "address": 4205275,
@@ -10029,7 +10029,7 @@
     {
       "address": 4208410,
       "target": 4260432,
-      "target_symbol": "?OnConveyor@CPlayerLemming@@UAEXIPAVCIce@@I@Z"
+      "target_symbol": "?OnConveyor@CPlayerLemming@@UAEXHPAVCIce@@H@Z"
     },
     {
       "address": 4208415,
@@ -13520,7 +13520,7 @@
     {
       "caller": 4260432,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
-      "symbol": "?OnConveyor@CPlayerLemming@@UAEXIPAVCIce@@I@Z",
+      "symbol": "?OnConveyor@CPlayerLemming@@UAEXHPAVCIce@@H@Z",
       "size": 120,
       "fingerprint": "2d046ea59b9381042f9d8a57071566c89329ecdb86aee82252751aec44139166",
       "references": [
@@ -38513,7 +38513,7 @@
           "original_pointer": 4796936,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -39214,7 +39214,7 @@
           "original_pointer": 4797408,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -39686,7 +39686,7 @@
           "original_pointer": 4797728,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -40165,7 +40165,7 @@
           "original_pointer": 4798056,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -40731,7 +40731,7 @@
           "original_pointer": 4798432,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -41349,7 +41349,7 @@
           "original_pointer": 4798840,
           "original_bytes": "1a374000",
           "thunk": 4208410,
-          "source_symbol": "?OnConveyor@CPlayerLemming@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CPlayerLemming@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -41987,7 +41987,7 @@
           "original_pointer": 4799304,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -42637,7 +42637,7 @@
           "original_pointer": 4799784,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -43570,7 +43570,7 @@
           "original_pointer": 4800392,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -44477,7 +44477,7 @@
           "original_pointer": 4800984,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -45043,7 +45043,7 @@
           "original_pointer": 4801360,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -45529,7 +45529,7 @@
           "original_pointer": 4801688,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -46015,7 +46015,7 @@
           "original_pointer": 4802016,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -46501,7 +46501,7 @@
           "original_pointer": 4802344,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -46987,7 +46987,7 @@
           "original_pointer": 4802672,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -47473,7 +47473,7 @@
           "original_pointer": 4803000,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -47959,7 +47959,7 @@
           "original_pointer": 4803328,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -48445,7 +48445,7 @@
           "original_pointer": 4803656,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -49385,7 +49385,7 @@
           "original_pointer": 4804288,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -50011,7 +50011,7 @@
           "original_pointer": 4804712,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -50483,7 +50483,7 @@
           "original_pointer": 4805112,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -50955,7 +50955,7 @@
           "original_pointer": 4805432,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -51738,7 +51738,7 @@
           "original_pointer": 4805960,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -52290,7 +52290,7 @@
           "original_pointer": 4806328,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -52790,7 +52790,7 @@
           "original_pointer": 4806664,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -53290,7 +53290,7 @@
           "original_pointer": 4807000,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -53790,7 +53790,7 @@
           "original_pointer": 4807336,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -54290,7 +54290,7 @@
           "original_pointer": 4807888,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -54856,7 +54856,7 @@
           "original_pointer": 4808264,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -55422,7 +55422,7 @@
           "original_pointer": 4808640,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -55988,7 +55988,7 @@
           "original_pointer": 4809016,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -56474,7 +56474,7 @@
           "original_pointer": 4809344,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -57040,7 +57040,7 @@
           "original_pointer": 4809720,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -57606,7 +57606,7 @@
           "original_pointer": 4810096,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -58078,7 +58078,7 @@
           "original_pointer": 4810416,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -58644,7 +58644,7 @@
           "original_pointer": 4810792,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -59210,7 +59210,7 @@
           "original_pointer": 4811168,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,
@@ -59776,7 +59776,7 @@
           "original_pointer": 4811544,
           "original_bytes": "d62a4000",
           "thunk": 4205270,
-          "source_symbol": "?OnConveyor@CGameObject@@UAEXIPAVCIce@@I@Z"
+          "source_symbol": "?OnConveyor@CGameObject@@UAEXHPAVCIce@@H@Z"
         },
         {
           "offset": 236,

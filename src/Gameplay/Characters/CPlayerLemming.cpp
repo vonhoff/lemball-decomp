@@ -860,7 +860,7 @@ void CPlayerLemming::Action(eAction p_action)
 }
 
 // FUNCTION: LEMBALL 0x00410250
-void CPlayerLemming::OnConveyor(unsigned int p_onConveyor, CIce* p_ice, unsigned int p_leave)
+void CPlayerLemming::OnConveyor(bool p_onConveyor, CIce* p_ice, bool p_leave)
 {
 	if (p_onConveyor == 0 && m_onConveyor != 0 && p_leave != 0) {
 		((CIce*) m_ice)->Leave(this);
