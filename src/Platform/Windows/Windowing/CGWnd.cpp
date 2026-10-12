@@ -285,13 +285,13 @@ void CGWnd::Render()
 	OnPaint(paintRect);
 	m_gdi->Render();
 	m_gdi->m_primitiveCount = 0;
-	void** childNode = (void**) m_childList;
+	WindowOwnerNode* childNode = (WindowOwnerNode*) m_childList;
 	for (;;) {
 		if (childNode == NULL) {
 			break;
 		}
-		((CGWnd*) childNode[0])->Render();
-		childNode = (void**) childNode[1];
+		((CGWnd*) childNode->m_window)->Render();
+		childNode = childNode->m_next;
 	}
 	if (m_parent == NULL && g_pCursor != NULL) {
 		g_pCursor->Draw(this);
@@ -304,7 +304,7 @@ void CGWnd::Render()
 void CGWnd::Flush()
 {
 	HDC dc;
-	void** childNode;
+	WindowOwnerNode* childNode;
 
 	if (m_lifecycleRefs == 0) {
 		return;
@@ -314,13 +314,13 @@ void CGWnd::Flush()
 		EnterCriticalSection((CRITICAL_SECTION*) g_pGdiHelperTarget->m_lock);
 		g_pGdiHelperTarget->SetWindowPtr(dc);
 	}
-	childNode = (void**) m_childList;
+	childNode = (WindowOwnerNode*) m_childList;
 	for (;;) {
 		if (childNode == NULL) {
 			break;
 		}
-		((CGWnd*) childNode[0])->Flush();
-		childNode = (void**) childNode[1];
+		((CGWnd*) childNode->m_window)->Flush();
+		childNode = childNode->m_next;
 	}
 	m_gdi->m_renderTarget->Flush();
 	if (m_nativeWindow != NULL) {
