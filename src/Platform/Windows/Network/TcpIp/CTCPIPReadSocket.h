@@ -5,7 +5,6 @@
 #include "Multiplayer/Transport/CReadSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 
-// SIZE 0xac
 // VTABLE: LEMBALL 0x0049a1e4 CNetworkWnd
 // VTABLE: LEMBALL 0x0049a1e8 CBaseSocket
 // VTABLE: LEMBALL 0x0049a210 CTCPIPReadSocket
