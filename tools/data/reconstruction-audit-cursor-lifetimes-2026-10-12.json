@@ -1,0 +1,280 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "5816e17b",
+  "source_commit": "3d519499",
+  "previous_review": "tools/data/reconstruction-audit-sdk-lists-2026-10-12.json",
+  "goal_status": "active; next owner-lifetime batches underway",
+  "commits": [
+    {
+      "commit": "43729c33",
+      "attempts": [
+        12483,
+        12484,
+        12485,
+        12486
+      ],
+      "change": "Four resource loaders: ordinary new; remove placement scaffolding and ID aliases.",
+      "evidence": "Windows guarded 48h/4ch allocations; inline vtable/+18 initialization; DoLoad; unconditional CheckError, including null fault. Historical536-539 explicitly targeted register matching."
+    },
+    {
+      "commit": "6a7f02ac",
+      "attempts": [
+        12477
+      ],
+      "change": "CResImage: natural alignment; sizeof serialized header.",
+      "evidence": "MSVC4 size54h,depth4ch,flags4dh,state50h; header10h. Serialized unknown fields retained. Full worker report unchanged."
+    },
+    {
+      "commit": "6e6f42d0",
+      "attempts": [
+        12478
+      ],
+      "change": "Remove duplicate guarded self-includes.",
+      "evidence": "CGunController/CInvisibleSwitch duplicate paths resolve to identical headers; no intervening undef. Register-only collateral changes reviewed."
+    },
+    {
+      "commit": "75c9126f",
+      "attempts": [
+        12479,
+        12480,
+        12481,
+        12482
+      ],
+      "change": "Five ordinary-new replacements: panel children, hilite window/button, platform services.",
+      "evidence": "Allocation sizes, guarded construction, callback reloads, post-construction stores and original null faults preserved."
+    },
+    {
+      "commit": "ee3254de",
+      "attempts": [
+        12487
+      ],
+      "change": "Typed collision flags; remove redundant final index cast.",
+      "evidence": "Keep unsigned product/wrap. CGroundArray40ebbc independently uses WORD collision update. MSVC4 emits original byte OR at409e8e; worker executable sections and full report unchanged."
+    },
+    {
+      "commit": "cba59898",
+      "attempts": [
+        12488
+      ],
+      "change": "C2D cursor enum signature; frame parameter; named NONE value.",
+      "evidence": "Mac enum/int signature; Windows4364b0 DWORD forwarding and RET8. Enum4; C2D2428h; typed member-pointer probe passes."
+    }
+  ],
+  "route_commit": "3d519499",
+  "validation": {
+    "build": "pass; stale enum-signature routes regenerated through recover_thunks, then normal build passed",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7199 references;0 errors",
+    "vtables": "412;100%",
+    "layout": "Actual MSVC4 resource offsets/header extent and cursor enum/member signature; pass.",
+    "native_fixtures": 17772,
+    "fixture_groups": 8,
+    "coverage": {
+      "resource_loaders": 3072,
+      "manual_lifetimes": 3584,
+      "collision": 4000,
+      "cursor_wrapper": 32,
+      "draw_objects": 624,
+      "rectangle_driver": 292,
+      "projections_exports": 2072,
+      "panel_geometry": 4096
+    },
+    "scope": "All eight result files reference the same final EXE hash. Allocation failures, callback mutation/reloads, typed geometry, alias/wrap cases, returns, stack cleanup and saved registers.",
+    "limits": "Finite fixtures; selected dependent allocator/constructor/OS/render leaves intercepted. Panel geometry executes without intercepted leaves; nonzero zoom. No full gameplay or OS smoke test.",
+    "report": {
+      "before": {
+        "exact_bytes": 235126,
+        "effective_bytes": 289347,
+        "exact_functions": 5248,
+        "effective_functions": 5516
+      },
+      "after": {
+        "exact_bytes": 234147,
+        "effective_bytes": 289971,
+        "exact_functions": 5245,
+        "effective_functions": 5517
+      },
+      "changed_rows": 26,
+      "changes": [
+        {
+          "address": "0x004358d0",
+          "name": "C2D::C2D",
+          "before": 92.07920792079209,
+          "after": 93.8118811881188
+        },
+        {
+          "address": "0x004369b0",
+          "name": "C2D::CheckValidFormGroup",
+          "before": 100.0,
+          "after": 65.625
+        },
+        {
+          "address": "0x00437460",
+          "name": "C2D::RemoveFromGroupByObjectNo",
+          "before": 71.05263157894737,
+          "after": 76.31578947368422
+        },
+        {
+          "address": "0x00437890",
+          "name": "C2D::NoStateRightClick",
+          "before": 87.91208791208791,
+          "after": 100.0
+        },
+        {
+          "address": "0x00437970",
+          "name": "C2D::ScreenToGame",
+          "before": 90.32258064516128,
+          "after": 96.12903225806451
+        },
+        {
+          "address": "0x00438210",
+          "name": "C2D::OnButtonDown",
+          "before": 94.04761904761905,
+          "after": 100.0
+        },
+        {
+          "address": "0x0043ace0",
+          "name": "C2D::DrawCliff",
+          "before": 85.71428571428571,
+          "after": 100.0
+        },
+        {
+          "address": "0x0043ad40",
+          "name": "C2D::DoClipWidth",
+          "before": 83.95522388059702,
+          "after": 84.85981308411215
+        },
+        {
+          "address": "0x0043b0e0",
+          "name": "C2D::DoClipWidthSearch",
+          "before": 52.63157894736842,
+          "after": 51.973684210526315
+        },
+        {
+          "address": "0x0043cd50",
+          "name": "C2D::DrawPaintGun",
+          "before": 96.15384615384616,
+          "after": 100.0
+        },
+        {
+          "address": "0x0043df30",
+          "name": "C2D::AddViewIndexToObjectClipGrid",
+          "before": 64.38631790744466,
+          "after": 64.7887323943662
+        },
+        {
+          "address": "0x0043e220",
+          "name": "C2D::BuildObjectClipData",
+          "before": 79.10085054678008,
+          "after": 93.92466585662211
+        },
+        {
+          "address": "0x0043ed20",
+          "name": "C2D::SetOrigin",
+          "before": 51.32743362831859,
+          "after": 51.4792899408284
+        },
+        {
+          "address": "0x0043f060",
+          "name": "C2D::MarkGroundAnimAndLiftBounds",
+          "before": 78.78787878787878,
+          "after": 79.6969696969697
+        },
+        {
+          "address": "0x0043f620",
+          "name": "C2D::DrawObjects",
+          "before": 64.78149100257069,
+          "after": 36.760925449871465
+        },
+        {
+          "address": "0x00440840",
+          "name": "C2D::CalcGroundCode",
+          "before": 48.30769230769231,
+          "after": 49.23076923076923
+        },
+        {
+          "address": "0x0044c870",
+          "name": "CGunController::CGunController",
+          "before": 100.0,
+          "after": 97.89915966386555
+        },
+        {
+          "address": "0x0044db20",
+          "name": "CGunController::SelectOption",
+          "before": 86.63594470046083,
+          "after": 85.71428571428571
+        },
+        {
+          "address": "0x0044fc20",
+          "name": "CHiliteController::UpdateAllAnimIDs",
+          "before": 100.0,
+          "after": 60.0
+        },
+        {
+          "address": "0x0044fc50",
+          "name": "CHiliteController::UpdateAnimIDs",
+          "before": 57.14285714285714,
+          "after": 53.57142857142857
+        },
+        {
+          "address": "0x00442f00",
+          "name": "CPanel::GetPausePos",
+          "before": 45.78313253012048,
+          "after": 48.19277108433735
+        },
+        {
+          "address": "0x00443360",
+          "name": "CPanel::MouseInPanel",
+          "before": 56.666666666666664,
+          "after": 44.44444444444444
+        },
+        {
+          "address": "0x0045eda0",
+          "name": "CPlatformServices::GetCDDir",
+          "before": 100.0,
+          "after": 93.33333333333333
+        },
+        {
+          "address": "0x0045dd20",
+          "name": "CResCol::Load",
+          "before": 100.0,
+          "after": 73.68421052631578
+        },
+        {
+          "address": "0x0045dd90",
+          "name": "CResPALETTE::Load",
+          "before": 100.0,
+          "after": 73.68421052631578
+        },
+        {
+          "address": "0x0045e4d0",
+          "name": "CResPres::Load",
+          "before": 100.0,
+          "after": 73.68421052631578
+        }
+      ],
+      "inventory_extents_unchanged": true
+    },
+    "matching_interpretation": "Exact -979 bytes/-3 functions; Effective +624 bytes/+1 function. Worker deltas not additive: shared C2D declaration changes alter panel code generation.",
+    "collateral_review": "CPanel GetPausePos and MouseInPanel combined code generation reviewed; additional4096 native fixtures pass. Destructor returns to raw100. DrawObjects large raw loss independently covered by624 native cases. Other losses: reviewed register allocation, independent store scheduling, commuted comparisons.",
+    "graph": "detect_changes:16 files,118 seeds,31 impacts; all pages. Virtual/overload and stale/partial coverage limitations; direct source/native/full report fallback.",
+    "whitespace": "pass",
+    "known_warning": "Existing staged-match collision40a830/440c10."
+  },
+  "evidence": {
+    "snapshot": "build-msvc400/clean-wave5-evidence/final",
+    "snapshot_files": 35,
+    "workers": "build-msvc400/clean-wave5-evidence/workers",
+    "exe_sha256": "47454ef3ca0738c305ef29b27211dafa45d923cc3c3218a2e4d2f56756015b3c",
+    "native_summary": "build-msvc400/clean-wave5-native-validation.json",
+    "reproduction": "Run build-msvc400/validate-clean-wave5.py sequentially after matching build. Scripts use current PDB and retained Unicorn dependencies. Snapshot copies require ROOT adjustment. Local artifacts ignored by git."
+  },
+  "remaining": [
+    "Startup GDI/input/statistics owner lifetimes: worker validation underway.",
+    "Frontend setup/options/network and resource-loader owner lifetimes: worker batches underway.",
+    "C2D constructor/shutdown typed owners: worker validation underway.",
+    "Further positive raw lifetime sites: CBaseQueue, CGDI primitives, CPVGDIBitmap rows, CGunButtons resources, CAnimSpecial entries, TCP/IP broadcast address factories, custom MOG arena factories. Per-site investigation required; raw allocation is not automatically wrong.",
+    "Historical common-base spelling, final two sound-patch byte roles, serialized unknown fields, opaque z-buffer purpose and switch tolerance relationship remain uncertain. No invented meanings."
+  ]
+}
