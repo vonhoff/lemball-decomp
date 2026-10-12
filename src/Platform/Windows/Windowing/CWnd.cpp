@@ -575,22 +575,22 @@ static bool RegisterBaseWindowClass()
 	HCURSOR cursor;
 	ATOM atom;
 
-	windowClass.style = 0xb;
+	windowClass.style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
 	windowClass.lpfnWndProc = CWnd::ProcessMessage;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 4;
 	windowClass.hInstance = g_pApplicationInstance;
 	if (g_preInitActive.m_icon == NULL) {
-		windowClass.hIcon = LoadIconA(NULL, (LPCSTR) 0x7f00);
+		windowClass.hIcon = LoadIconA(NULL, IDI_APPLICATION);
 	}
 	else {
 		windowClass.hIcon = g_preInitActive.m_icon;
 	}
 	windowClass.hCursor = NULL;
-	windowClass.hbrBackground = GetStockObject(4);
+	windowClass.hbrBackground = GetStockObject(BLACK_BRUSH);
 	windowClass.lpszMenuName = NULL;
 	windowClass.lpszClassName = g_pszVsBaseWindowClass;
-	cursor = LoadCursorA(NULL, (LPCSTR) 0x7f00);
+	cursor = LoadCursorA(NULL, IDC_ARROW);
 	atom = RegisterClassA(&windowClass);
 	SetCursor(cursor);
 	ShowCursor(1);
