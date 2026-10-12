@@ -63,7 +63,7 @@ CNetworkMessage::~CNetworkMessage()
 		}
 	}
 	if (m_ownsBuffer != 0) {
-		operator delete(m_buffer);
+		delete[] m_buffer;
 		m_buffer = NULL;
 	}
 }
@@ -240,7 +240,7 @@ void CNetworkMessage::OpenDataStream()
 	if (m_openDepth++ == 0) {
 		unsigned int allocSize = m_payloadCapacity + sizeof(BasePacketHeader);
 		if (m_ownsBuffer == 0) {
-			m_buffer = (unsigned char*) operator new(allocSize);
+			m_buffer = new unsigned char[allocSize];
 			m_ownsBuffer = 1;
 			m_writeCursor = m_buffer + sizeof(BasePacketHeader);
 			m_bufferEnd = m_writeCursor + m_payloadCapacity;
