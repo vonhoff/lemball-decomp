@@ -230,15 +230,9 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
 	CVSRect& rect = m_surfaceRect;
 	rect.m_width = p_rect.m_width;
 	rect.m_height = p_rect.m_height;
-	const short* coords;
-	if (&p_rect != NULL) {
-		coords = &p_rect.m_x;
-	}
-	else {
-		coords = NULL;
-	}
-	rect.m_x = *coords;
-	rect.m_y = coords[1];
+	const CVSPoint* position = &p_rect;
+	rect.m_x = position->m_x;
+	rect.m_y = position->m_y;
 	NewBitmap(p_rect);
 }
 
@@ -728,20 +722,19 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 	if (m_changeList->GetNumItems() > 0) {
 		do {
 			tagCHANGERECT* item = m_changeList->GetNItem(index);
-			CVSRect translated(*(CVSRect*) item);
+			CVSRect translated(*item);
 			if (g_dwFullScreenGdi == 0) {
 				translated.m_x += m_presentX;
 				translated.m_y += m_presentY;
 			}
-			const CVSPoint* origin = (const CVSPoint*) &m_relOriginX;
-			translated.m_x += origin->m_x;
-			translated.m_y += origin->m_y;
+			translated.m_x += m_relOriginX;
+			translated.m_y += m_relOriginY;
 			short zoom = m_zoom;
 			if (zoom == 1) {
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
 														   &translated,
 														   (CDrawingContext*) m_drawingPort,
-														   (CVSRect*) item,
+														   item,
 														   this);
 			}
 			else {
@@ -752,7 +745,7 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
 														   &destRect,
 														   (CDrawingContext*) m_drawingPort,
-														   (CVSRect*) item,
+														   item,
 														   this);
 			}
 			index++;
@@ -764,7 +757,7 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 		if (m_changeList->GetNumItems() > 0) {
 			do {
 				tagCHANGERECT* item = m_changeList->GetNItem(i);
-				CopyBackBuffToScreen(*(CVSRect*) item);
+				CopyBackBuffToScreen(*item);
 				i++;
 			} while (i < m_changeList->GetNumItems());
 		}
@@ -1557,10 +1550,7 @@ void CSurface::Blit(CFilledCircle* p_circle)
 // FUNCTION: LEMBALL 0x004756e0
 void CSurface::BlitRect(CVSRect p_rect, int p_colour)
 {
-	short storage[4];
-	CVSRect& clipped = *(CVSRect*) storage;
-	clipped.m_width = clipped.m_height = 0;
-	clipped.m_x = clipped.m_y = 0;
+	CVSRect clipped;
 	if (ClipRect(p_rect, &clipped)) {
 		if (clipped.m_width <= 0 || clipped.m_height <= 0) {
 			return;
