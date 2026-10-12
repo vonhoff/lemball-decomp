@@ -36,7 +36,7 @@ CChangeList::CChangeList(int p_capacity, CVSSize p_viewSize, CVSSize p_cellSize)
 void CChangeList::FreeMap()
 {
 	if (m_map != NULL) {
-		operator delete(m_map);
+		delete[] m_map;
 		m_map = NULL;
 	}
 	Reset();
@@ -50,7 +50,7 @@ void CChangeList::AllocMap()
 	if (m_map == NULL) {
 		capacity = (unsigned int) (m_mapSize.m_width * m_mapSize.m_height);
 		m_mapCapacity = capacity;
-		m_map = (unsigned char*) operator new(capacity);
+		m_map = new unsigned char[capacity];
 	}
 }
 
@@ -95,7 +95,7 @@ void CChangeList::Reset()
 CChangeList::~CChangeList()
 {
 	if (m_items != NULL) {
-		operator delete(m_items);
+		delete[] m_items;
 		m_items = NULL;
 	}
 	FreeMap();
