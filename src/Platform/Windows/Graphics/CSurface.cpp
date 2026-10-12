@@ -2043,7 +2043,7 @@ bool CSurface::ClipRect(CVSRect& p_rect, CVSRect* p_clipped)
 }
 
 // FUNCTION: LEMBALL 0x004766f0
-void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, bool p_reverse)
 {
 	int x = p_rect.m_x;
 	int step = 1;
@@ -2434,7 +2434,7 @@ void CSurface::BlitZRLEClipQZBuff(const CVSRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00476ee0
-void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, bool p_reverse)
 {
 	unsigned char* src = p_zrle->GetData();
 	short sourceWidth = p_zrle->m_size.m_width;
@@ -2569,7 +2569,7 @@ void CSurface::BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZ
 }
 
 // FUNCTION: LEMBALL 0x00477130
-void CSurface::BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_reverse)
 {
 	int x = p_rect.m_x;
 	int step = 1;
@@ -2772,7 +2772,7 @@ void CSurface::BlitZRLENoClipQZBuffRemap(const CVSRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x00477660
-void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse)
+void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_reverse)
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
 	int y = p_rect.m_y;
@@ -2814,7 +2814,7 @@ void CSurface::BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned
 void CSurface::BlitZRLEClipRemap(const CVSRect& p_rect,
 								 const CVSRect& p_clip,
 								 CResZRLE* p_zrle,
-								 unsigned int p_reverse,
+								 bool p_reverse,
 								 unsigned char* p_remap)
 {
 	unsigned char* src = p_zrle->GetData();
@@ -3223,7 +3223,7 @@ void CSurface::BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
 void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 								  const CVSRect& p_clip,
 								  CResZRLE* p_zrle,
-								  unsigned int p_reverse,
+								  bool p_reverse,
 								  unsigned char* p_remap)
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
@@ -3360,10 +3360,7 @@ void CSurface::BlitZRLEClipRemapR(const CVSRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x004781e0
-void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect,
-								   CResZRLE* p_zrle,
-								   unsigned int p_reverse,
-								   unsigned char* p_remap)
+void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_reverse, unsigned char* p_remap)
 {
 	int x = p_rect.m_x;
 	int y = p_rect.m_y;
@@ -3403,10 +3400,7 @@ void CSurface::BlitZRLENoClipRemap(const CVSRect& p_rect,
 }
 
 // FUNCTION: LEMBALL 0x004782d0
-void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect,
-									CResZRLE* p_zrle,
-									unsigned int p_reverse,
-									unsigned char* p_remap)
+void CSurface::BlitZRLENoClipRemapR(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_reverse, unsigned char* p_remap)
 {
 	int startX = p_rect.m_x + p_rect.m_width - 1;
 	int y = p_rect.m_y;

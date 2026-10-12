@@ -66,23 +66,23 @@ public:
 	virtual void Blit(CZBuffClear* p_clear);
 	void BlitRect(CVSRect p_rect, int p_colour);
 	void BlitZRLE(int p_x, int p_y, CResZRLE* p_zrle, unsigned long p_flags, CRemap* p_remap, unsigned short p_depth);
-	void BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse);
+	void BlitZRLEClip(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, bool p_reverse);
 	void BlitZRLEClipQZBuff(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth);
 	void BlitZRLEClipQZBuffRemap(const CVSRect& p_rect,
 								 const CVSRect& p_clip,
 								 CResZRLE* p_zrle,
 								 unsigned short p_depth,
 								 unsigned char* p_remap);
-	void BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned int p_reverse);
+	void BlitZRLEClipR(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, bool p_reverse);
 	void BlitZRLEClipRemap(const CVSRect& p_rect,
 						   const CVSRect& p_clip,
 						   CResZRLE* p_zrle,
-						   unsigned int p_reverse,
+						   bool p_reverse,
 						   unsigned char* p_remap);
 	void BlitZRLEClipRemapR(const CVSRect& p_rect,
 							const CVSRect& p_clip,
 							CResZRLE* p_zrle,
-							unsigned int p_reverse,
+							bool p_reverse,
 							unsigned char* p_remap);
 	void BlitZRLEClipZBuff(const CVSRect& p_rect, const CVSRect& p_clip, CResZRLE* p_zrle, unsigned short p_depth);
 	void BlitZRLEClipZBuffRemap(const CVSRect& p_rect,
@@ -90,15 +90,15 @@ public:
 								CResZRLE* p_zrle,
 								unsigned short p_depth,
 								unsigned char* p_remap);
-	void BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse);
+	void BlitZRLENoClip(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_reverse);
 	void BlitZRLENoClipQZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth);
 	void BlitZRLENoClipQZBuffRemap(const CVSRect& p_rect,
 								   CResZRLE* p_zrle,
 								   unsigned short p_depth,
 								   unsigned char* p_remap);
-	void BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse);
-	void BlitZRLENoClipRemap(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse, unsigned char* p_remap);
-	void BlitZRLENoClipRemapR(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned int p_reverse, unsigned char* p_remap);
+	void BlitZRLENoClipR(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_reverse);
+	void BlitZRLENoClipRemap(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_reverse, unsigned char* p_remap);
+	void BlitZRLENoClipRemapR(const CVSRect& p_rect, CResZRLE* p_zrle, bool p_reverse, unsigned char* p_remap);
 	void BlitZRLENoClipZBuff(const CVSRect& p_rect, CResZRLE* p_zrle, unsigned short p_depth);
 	void BlitZRLENoClipZBuffRemap(const CVSRect& p_rect,
 								  CResZRLE* p_zrle,
