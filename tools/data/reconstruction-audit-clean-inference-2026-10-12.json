@@ -5,6 +5,7 @@
   "previous_review": "tools/data/reconstruction-audit-comparison-evidence-2026-10-12.json",
   "priority": "User now prefers clean, supported source and logical trade-offs. Behavior and Windows ABI remain requirements. Matching losses are measured and accepted for supported reconstruction; earlier score-only rejection prerequisites no longer govern retention.",
   "goal_status": "active; five queued categories resolved, four remain partial or open; no claim of complete codebase recovery",
+  "next_review": "tools/data/reconstruction-audit-typed-ownership-2026-10-12.json",
   "workers": ["surface_type_resume", "typed_geometry_resume", "installer_evidence_resume"],
   "commits": [
     {

@@ -1,0 +1,191 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "23965b0d",
+  "source_commit": "7f47bcca",
+  "previous_review": "tools/data/reconstruction-audit-clean-inference-2026-10-12.json",
+  "goal_status": "active; concrete progress, remaining source findings verified below",
+  "priority": "Clean, supported MSVC4 source. Behavior and Windows ABI required. Instruction-match losses accepted and disclosed; no compiler, normalization or score compensation.",
+  "workers": ["typed_geometry_resume", "installer_evidence_resume", "surface_type_resume"],
+  "commits": [
+    {
+      "commit": "60acbc84",
+      "attempt": 12452,
+      "change": "Panel ammo fallback copies the four-byte size representation with memcpy instead of an incompatible integer-pointer dereference.",
+      "evidence": "Original 4428c1 reads the packed width/height DWORD, even though this is an odd colour value. Windows behavior retained; no conventional-colour substitution.",
+      "individual_matching": "DrawButton 78.5366 to 44.6602; OnPressed 90.1186 to 86.9565. Exact and Effective unchanged."
+    },
+    {
+      "commit": "a8cad912",
+      "attempt": 12455,
+      "change": "CPVGWnd owns CVSRect refresh storage; typed copy in Refresh. Default construction replaces split scalar zeroing; obsolete constructor .inl removed.",
+      "evidence": "Windows 4642ef..46431d copies a rectangle at +88 with point-base adjustment. Constructor 463b90..463bc0 zeroes the four words after all calls; intermediate base vtable is overwritten before another call. Final state and callback behavior agree in native fixtures.",
+      "individual_matching": "Exact +1813 bytes; Effective -2361. Refresh unchanged; constructor 100 to 88.8889. Abstract CPVGWnd vtable no longer emitted; explained in validation."
+    },
+    {
+      "commit": "e6f5a77c",
+      "attempt": 12458,
+      "change": "Pause border padding uses a real CVSPoint and public base conversion; final border copies use rectangle assignment in the native one-element array loop.",
+      "evidence": "Windows 443fca..443feb copies the padding pair; 44402c..44403f calls rectangle assignment with 16-byte stride. Mac toPoint and border loop corroborate source structure.",
+      "individual_matching": "Target 58.9342 to 63.5514; Exact -268 bytes; Effective +167."
+    },
+    {
+      "commit": "d8553198",
+      "attempt": 12456,
+      "change": "Shared CList/CListElement replaces invented window-owner records, embedded void-pointer child fields and duplicated node lifetimes. Window callbacks use typed traversal.",
+      "evidence": "Mac FindElement specialization names CList<CPVWnd,CListElement<CPVWnd>>. Windows node/head sizes 12 bytes; embedded list +24. Preserve native null-allocation fault, free-before-link-repair, destructor next snapshots and callback-sensitive traversal reloads.",
+      "individual_matching": "Worker Exact +2327 bytes; Effective -1543."
+    },
+    {
+      "commit": "03cac93b",
+      "attempt": 12454,
+      "change": "CViewData owns CPt3 position and exposes Coord() by value; typed C2D projection copies and laser/object/trap exporters.",
+      "evidence": "Mac Coord1011c8ee returns three DWORDs through hidden result. Windows +4/+8/+c and fixed-point conversion agree. Empty CPt3 default constructor preserves untouched position bytes.",
+      "individual_matching": "Worker Exact +4853 bytes; Effective -470. Getter spelling recovered; Windows member/type grouping inferred."
+    },
+    {
+      "commit": "1803f020",
+      "attempt": 12453,
+      "change": "Surface clipping uses real rectangle values; change rectangles use public base conversions; remove false point overlays over origin fields.",
+      "individual_matching": "Worker Exact -265 bytes; Effective -536. Native rectangle/pixel fixtures pass."
+    },
+    {
+      "commit": "de4a5635",
+      "attempt": 12457,
+      "change": "Bitmap row storage uses unsigned char**; remove 68 redundant byte-pointer casts across bitmap, surface and planar drawing.",
+      "evidence": "Windows row producers establish byte addressing, signed offsets and strides. Actual MSVC4 offsets/sizes unchanged; full row-table and pixel fixtures pass.",
+      "individual_matching": "Worker Exact +264 bytes; Effective +1078 relative to surface geometry batch."
+    },
+    {
+      "commit": "a2757be7",
+      "attempt": 12459,
+      "change": "Loading animation uses ordinary CVSPoint values instead of short arrays and type-punned references.",
+      "evidence": "Windows captures origin/rotated points before drawing callbacks; retain arithmetic shift, short narrowing, additions and trig reloads. Mac conversion/addition supports typed value structure.",
+      "individual_matching": "Draw 90.3904 to 56.8012; frame 40h to 54h. Exact and Effective unchanged; native state and callback fixtures pass."
+    },
+    {
+      "commit": "42c5d427",
+      "attempt": 12460,
+      "change": "Sound patch APIs use opaque VSPATCH*, unsigned-long handle pointers/values and unsigned-char arguments.",
+      "evidence": "Mac symbols identify pointers/handles; AllocateDrumPatch10102e2e loads and forwards both final arguments as bytes. Windows inert bodies establish stack slots/return only. Byte types inferred across platforms; roles remain unknown p_arg2/p_arg3. No invented VSPATCH layout.",
+      "individual_matching": "Worker Exact +26 bytes; Effective unchanged. All eight Windows patch bodies remain raw 100 in final integration."
+    },
+    {
+      "commit": "0cffccb8",
+      "attempt": 12461,
+      "change": "Five flat-prefix runtime classes inherit the existing diagnostic base; remove duplicate signature members and stream forward declarations.",
+      "evidence": "Windows layout/StreamOut slot and Mac base-construction evidence support common structure. CArenaBase remains an inferred name, not recovered historical spelling. Constructor bodies and initialization unchanged.",
+      "individual_matching": "Worker Exact -7463 bytes; Effective -5165. Layout probes, constructor/input fixtures and vtables pass."
+    },
+    {
+      "commit": "7e082651",
+      "attempt": 12462,
+      "change": "Wave effects use ordinary typed new/delete; remove explicit lifetime scaffolding and unused placement-new include.",
+      "evidence": "Windows guarded 24-byte allocation, constructor and deletion protocol preserved. Retain failed allocation behavior, output aliasing, and owner table/channel-count reloads across callbacks.",
+      "individual_matching": "Worker Exact -302 bytes; Effective unchanged."
+    },
+    {
+      "commit": "9a2c0183",
+      "attempt": 12463,
+      "change": "Statistics destructor indexes CBaseStat* entries directly; remove byte cursor and redundant index.",
+      "evidence": "Windows 45ab4a/45ab68 reloads table/count; selected object survives destructor callback until free. Mac10218c96 indexes the pointer table. Preserve holes and table-free-before-null-clear.",
+      "individual_matching": "Worker Exact -59 bytes; Effective -85."
+    },
+    {"commit": "7f47bcca", "change": "Refresh generated linker routes for combined source; no matching or compiler policy changes."}
+  ],
+  "validation": {
+    "build": "tools/make_binary.py exit 0",
+    "source": "tools/check_source.py: zero violations",
+    "catalog": "2698/2698 mapped implementations",
+    "thunks": "2079 entries; 7201 references; zero errors",
+    "vtables": "412 emitted tables, all 100%. Original abstract CPVGWnd table 499260 has no rebuilt table after removal of unobservable intermediate constructor stores; concrete CGWnd table remains mapped. No forced emission added.",
+    "layout": "Integrated MSVC4 probes pass window node/list sizes and offsets; CPVWnd/CWnd/CGWnd sizes; all five shared-base class field offsets and sizes; CPt3/CViewData layout; bitmap row-pointer layout. Refresh rectangle offset88, size8, window size90.",
+    "native_fixtures": {
+      "total": 28863,
+      "groups": 16,
+      "result": "All pass against final executable; every result has matching final EXE hash.",
+      "groups_file": "build-msvc400/clean-wave2-fixture-counts.json",
+      "coverage": "Original/rebuilt x86 state, allocations/failures, callback arguments/order and mutation reloads, signed narrowing, clipping, pixel writes, constructor sentinels, stack cleanup and saved registers.",
+      "limits": "Finite fixtures; selected allocator/OS/render/audio leaves intercepted. No full gameplay or OS smoke test. Existing vertical laser sound-dispatch caching difference under artificial vptr replacement excluded; coordinate ownership did not resolve that question."
+    },
+    "report": {
+      "functions": 5958,
+      "units": 368,
+      "original_bytes": 433937,
+      "inventory_and_extents_unchanged": true,
+      "changed_rows": 358,
+      "exact_before_bytes": 238362,
+      "exact_after_bytes": 235862,
+      "exact_before_functions": 5256,
+      "exact_after_functions": 5244,
+      "exact_percent_before": 54.93,
+      "exact_percent_after": 54.35,
+      "effective_before_bytes": 297508,
+      "effective_after_bytes": 294773,
+      "effective_before_functions": 5539,
+      "effective_after_functions": 5523,
+      "effective_percent_before": 68.56,
+      "effective_percent_after": 67.93,
+      "fuzzy_percent_before": 91.21,
+      "fuzzy_percent_after": 91.28,
+      "interpretation": "Exact -2500 bytes; Effective -2735. Worker deltas are not additive because declaration changes affect shared translation-unit code generation. No score-only compensation.",
+      "known_warning": "Existing staged-match collision at (40a830,440c80)."
+    },
+    "graph": "Tier2 implementation checks; Tier3 bounded current-source follow-up. detect_changes paginated for integration. Graph underreports virtual/overload edges and has stale/partial files; direct source, native evidence and full reports supply fallback.",
+    "format": "Touched C/C++ formatted; C++03 template spacing and include order preserved. Whitespace check clean."
+  },
+  "remaining_verified_findings": [
+    {
+      "category": "scalar/coordinate copy scaffolding",
+      "paths": ["src/GameView/Display/C2D.cpp"],
+      "finding": "Ten scalar short memcpy calls remain: OnDriverChange4383c0, Draw440000, DrawObjectsZBuff440560. Use supported typed rectangle copies; preserve reload/callback timing.",
+      "evidence": "Windows438494..4384c1,4403b4..4403d6,4405a6..4405c8. Prior12003 failed old score-only policy; eligible now."
+    },
+    {
+      "category": "list/input representation",
+      "paths": ["src/Platform/Windows/Graphics/CSurface.cpp", "src/Platform/Windows/Graphics/CSurface.h"],
+      "finding": "SurfaceListHead still uses void* links and overlays adjacent child fields. Repeated allocation/insertion/unlink lifetimes remain. Recover shared CList<CSurface,CListElement<CSurface>>.",
+      "evidence": "Mac catalog101093f4 explicitly names specialization. Windows46c140..46c200 gives12-byte nodes/heads;46c826..46c86b gives embedded layout. Preserve allocation-failure dereference and global reloads."
+    },
+    {
+      "category": "incomplete type recovery",
+      "paths": ["src/Platform/Windows/Graphics/CSurface.h", "src/Platform/Windows/Graphics/CSurface.cpp", "src/Platform/Windows/CCritical.h", "src/Platform/Windows/Windowing/CGWnd.cpp"],
+      "finding": "Raw SDK objects remain: bitmap header byte storage at+fc, surface critical-section bytes at+534, CCritical critical-section bytes at+4. Use actual SDK definitions with preserved layout/initialization.",
+      "evidence": "Windows46d2be..46d308 supports BITMAPINFOHEADER. Native critical-section API calls consume fixed24-byte storage. Earlier11141/11143 bitmap-header trials exposed DrawText macro collision and matching losses; do not invent copied SDK structures."
+    },
+    {
+      "category": "typed allocation/lifetime",
+      "paths": ["src/Engine/Graphics/CChangeList.cpp"],
+      "finding": "Byte-map raw allocation/free and raw delete of new tagCHANGERECT[] owner remain.",
+      "evidence": "Windows466ac0/466a90/466b90 and4669ed..466a1e establish sizes/trivial destruction/no cookie. Prior11784 rejected only15 Exact bytes."
+    },
+    {
+      "category": "geometry/redundant casts",
+      "paths": ["src/Platform/Windows/Graphics/CSurface.cpp", "src/Frontend/About/CAboutScreen.cpp"],
+      "finding": "Thirteen same-type or void-erasing surface-helper comparisons; two About-screen tagCHANGERECT-to-CVSRect casts without complete type declaration.",
+      "evidence": "Both surface-helper operands already CSurface*. About-screen Windows44bcd8..44bd17 and retained tagCHANGERECT public-base evidence11283 support ordinary base conversion."
+    }
+  ],
+  "category_status": {
+    "compiler_controls": "Queued inline-depth finding resolved; no manual register/assembly/force-inline/optimize controls found by current literal scan. Legitimate SDK/hardware pragmas not indiscriminately removed.",
+    "palette_destruction": "Queued finding resolved in preceding batch.",
+    "list_input_representation": "Window/input lists corrected; surface list remains.",
+    "geometry_storage_casts": "Original surface/pause/loading/refresh sites corrected; remaining About-screen base casts recorded.",
+    "cross_record_validity": "Queued finding resolved in preceding batch.",
+    "surface_row_indexing": "Queued loop resolved; row element type now recovered too.",
+    "scalar_coordinate_copies": "Owned view coordinate and loading points corrected; ten C2D scalar copies remain.",
+    "unsupported_constructor_declarations": "All nineteen audited declarations removed in preceding batch.",
+    "incomplete_type_name_recovery": "Display, focus hook, common base and sound patch types improved. SDK object types remain; common-base historical name and final two patch-byte roles remain uncertain. Do not invent names merely to conceal uncertainty."
+  },
+  "evidence": {
+    "directory": "build-msvc400/clean-wave2-evidence",
+    "report_diff": "build-msvc400/clean-wave2-evidence/integration-report-diff.json",
+    "snapshot": "build-msvc400/clean-wave2-evidence/final",
+    "snapshot_hashes": "build-msvc400/clean-wave2-evidence/final/hashes.json",
+    "worker_hashes": "build-msvc400/clean-wave2-evidence/worker-artifact-hashes.json",
+    "original_exe_sha256": "d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63",
+    "rebuilt_exe_sha256": "a9ba5ab4887863df927ac97075451ed8c9f6ad3a98dad40ca5675fcdbf75765c",
+    "report_sha256": "87340ac31ef3901f57ad9813ce0ec8a1fd0b5d9a6ca2af39ed845e985368aeb4",
+    "effective_sha256": "a65b60e8fd61965b955f1520c99e5414acba50bc0fb1aad02028eb92ae13d190",
+    "reproduction": "Run build-msvc400/validate-clean-wave2.py after the matching build. Scripts resolve current PDB addresses. Snapshot copies derive repository paths from script location and need adjustment before execution elsewhere. Existing Unicorn dependency directory required; artifacts retained locally, ignored by git."
+  }
+}
