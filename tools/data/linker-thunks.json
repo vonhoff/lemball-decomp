@@ -21663,7 +21663,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Navigation/CMaze.cpp.obj",
       "symbol": "?BInitialise@CMaze@@QAEXIHHHH@Z",
       "size": 273,
-      "fingerprint": "4bf7b52e9fd84ef2b75a08ad9dfbb9c4a7b77868d8f6b9585a98f7f6a03c2553",
+      "fingerprint": "128459f43a9cb7f84432a360aa7673e32a9c176e5327c18cbf4ffd32de2e523c",
       "references": [
         {
           "offset": 203,
@@ -21693,7 +21693,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Navigation/CMaze.cpp.obj",
       "symbol": "?BIteration@CMaze@@QAEHAAH0@Z",
       "size": 568,
-      "fingerprint": "29052ba9c51d36fef00fa29c879abfc4e6514a7e2efe14a340701bfb9580fc05",
+      "fingerprint": "50da74d9511b27d9fb42ac9d20360b1df88d54509df042a93916fa3d79ea6ced",
       "references": [
         {
           "offset": 99,

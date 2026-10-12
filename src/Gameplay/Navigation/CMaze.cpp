@@ -90,7 +90,7 @@ void CMaze::ReInitialise()
 							collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 						}
 						else {
-							collision = map->m_ground.m_ground[y * width + x].m_collision;
+							collision = map->m_ground.m_ground[(unsigned int) y * width + x].m_collision;
 						}
 					}
 					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
@@ -298,7 +298,7 @@ void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, i
 							collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 						}
 						else {
-							collision = map->m_ground.m_ground[y * width + x].m_collision;
+							collision = map->m_ground.m_ground[(unsigned int) y * width + x].m_collision;
 						}
 					}
 					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
