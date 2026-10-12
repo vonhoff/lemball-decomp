@@ -492,35 +492,54 @@ int CMain2DDisplay::GetReturnState()
 	return 0;
 }
 
+inline static CVSSize operator-(const CVSSize& p_left, const CVSSize& p_right)
+{
+	return CVSSize((short) (p_left.m_width - p_right.m_width), (short) (p_left.m_height - p_right.m_height));
+}
+
+inline static CVSSize operator/(const CVSSize& p_size, int p_divisor)
+{
+	return CVSSize((short) (p_size.m_width / p_divisor), (short) (p_size.m_height / p_divisor));
+}
+
+inline static CVSPoint SizeToPoint(const CVSSize& p_size)
+{
+	return CVSPoint(p_size.m_width, p_size.m_height);
+}
+
+inline static void CopySize(CVSSize& p_destination, const CVSSize& p_source)
+{
+	p_destination.m_width = p_source.m_width;
+	p_destination.m_height = p_source.m_height;
+}
+
+inline static void CopyPosition(CVSPoint& p_destination, const CVSPoint& p_source)
+{
+	p_destination.m_x = p_source.m_x;
+	p_destination.m_y = p_source.m_y;
+}
+
 // FUNCTION: LEMBALL 0x00431f30
 CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 {
 	CVSRect result;
-	short& width = result.m_width;
-	short& height = result.m_height;
-	short& x = result.m_x;
-	short& y = result.m_y;
 	int compact;
 	const CVSSize& screenSize = g_pTargetGraphicsDriver->m_screenSize;
 
 	compact = g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240;
 	g_nCompactPrimaryContextLayout = compact;
 	if (compact != 0) {
-		width = m_lowResolutionSize.m_width;
-		height = m_lowResolutionSize.m_height;
+		CopySize(result, m_lowResolutionSize);
 	}
 	else {
-		width = m_highResolutionSize.m_width;
-		height = m_highResolutionSize.m_height;
+		CopySize(result, m_highResolutionSize);
 	}
-	short centeredY = (short) (screenSize.m_height - height) / 2;
-	x = (short) (screenSize.m_width - width) / 2;
-	y = centeredY;
+	CopyPosition(result, SizeToPoint((screenSize - result) / 2));
 	if (p_x != DISPLAY_COORDINATE_AUTO_CENTER) {
-		x = (short) p_x;
+		result.m_x = (short) p_x;
 	}
 	if (p_y != DISPLAY_COORDINATE_AUTO_CENTER) {
-		y = (short) p_y;
+		result.m_y = (short) p_y;
 	}
 	return result;
 }
