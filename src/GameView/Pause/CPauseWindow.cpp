@@ -24,7 +24,6 @@
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Text/TextAdvanceFlags.h"
-#include "GameView/Pause/CPauseWindow.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"

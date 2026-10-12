@@ -15,7 +15,6 @@
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "Engine/Time/VsTime.h"
-#include "Frontend/Controls/CHiliteController.h"
 #include "Frontend/Controls/ControlMessages.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "GameView/Sound/CSoundView.h"
