@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "c6b788d9",
+  "source_commits": ["df26619b", "cf350979"],
+  "previous_review": "tools/data/reconstruction-audit-compiler-controls-2026-10-12.json",
+  "goal_status": "active",
+  "changes": [
+    {"commit": "df26619b", "observation": 2251, "change": "Remove unsupported CTCPIPReadSocket exact-size annotation.", "evidence": "0xac came from generated scaffold e47cd563 with artificial nativeShell; retained after77ca9d51 removed placeholders. Original471de0/46fd70/46fcf0 establishes occupied minimum0xa8, not exact complete size. Derived vbtable offsets and Mac layout do not establish standalone extent. No replacement size asserted."},
+    {"commit": "cf350979", "attempt": 12533, "change": "Omit20 unknown unused patch-parameter identifiers across base interface and two Windows implementations.", "evidence": "Four Windows methods return0/RET10; Mac10102df2 returns1,10102e2e forwards two bytes without interpreting them. Types retained from prior12460; meaningful patch/handle names retained. Unknown roles remain unasserted; no invented names or VSPATCH layout."}
+  ],
+  "validation": {
+    "build": "pass",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7201 references;0 errors; unchanged routes",
+    "vtables": "412;100%",
+    "focus": "47cef0/47cf00/47e500/47e510 raw100",
+    "binary": "All462336 code bytes, data/imports/relocations identical. Only parsed debug/resource timestamp bytes differ.516 PDB class sizes unchanged.",
+    "report": "5958-function report/effective pair byte-identical: Exact231045 bytes/5230 functions; Effective284765 bytes/5503 functions.",
+    "scope": "Whole code/data identity; no fixture rerun. Header comment deletion independently checked before patch-name source build.",
+    "graph": "6files;9seeds;0reportedimpacts. Virtual edges missing; direct declarations/implementations and full binary/report comparison supply fallback. Partial source lines read.",
+    "limits": "Neither current sizeof nor occupied native lower bound proves exact original class extent. Parameter role uncertainty remains explicit.",
+    "whitespace": "pass"
+  },
+  "evidence": {
+    "snapshot": "build-msvc400/clean-wave13-evidence/final",
+    "snapshot_files": 10,
+    "workers": "build-msvc400/clean-wave13-evidence/workers",
+    "worker_files": 2,
+    "exe_sha256": "0551adde0218c89bf01bfb3eadc0f5af6018f61ef1b92e7e1cd5dfaa60caf42c",
+    "reproduction": "verify-clean-wave13.py; parsed timestamp exclusions, full class-size/report comparison. Worker TCP-size provenance/native bytes saved. Local ignored artifacts; hashes.json records contents."
+  },
+  "remaining": "C2D reference/guard batch and default-stream lifecycle awaiting integration; independent nine-category matrix verification underway."
+}
