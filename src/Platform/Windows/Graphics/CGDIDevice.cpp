@@ -151,11 +151,11 @@ void CGDIDevice::Flush(CSurface* p_surface)
 	if (timer != NULL) {
 		if (timer->m_timingActive != 0) {
 			timer->Update(CurrentMilliTimer() - timer->m_timingStart);
-			timer->m_timingActive = 0;
+			timer->m_timingActive = false;
 		}
 		timer = m_surfaceSlots[i].m_timer;
 		timer->m_timingStart = CurrentMilliTimer();
-		timer->m_timingActive = 1;
+		timer->m_timingActive = true;
 	}
 	m_surfaceSlots[i].m_surface->ToScreen(g_pGdiHelperTarget);
 }

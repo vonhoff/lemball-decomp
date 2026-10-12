@@ -14,13 +14,13 @@ class CDepressedButton : public CPVButton {
 public:
 	CDepressedButton(CPVGWnd* p_parent) : CPVButton(p_parent)
 	{
-		m_state = 0;
-		m_enabled = 0;
+		m_state = false;
+		m_enabled = false;
 	}
 	CDepressedButton(const CVSRect& p_rect, CPVGWnd* p_parent) : CPVButton(p_rect, p_parent)
 	{
-		m_state = 0;
-		m_enabled = 0;
+		m_state = false;
+		m_enabled = false;
 	}
 	virtual void OnPaint(const CVSRect& p_rect);   // vtable+0xa8
 	virtual void _DrawButton();                    // vtable+0xb8
@@ -31,8 +31,8 @@ public:
 	friend class CPanelLemming;
 
 protected:
-	unsigned int m_enabled; // 0x104
-	unsigned int m_state;   // 0x108
+	bool m_enabled; // 0x104
+	bool m_state;   // 0x108
 };
 
 // SYNTHETIC: LEMBALL 0x00443ab0

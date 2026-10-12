@@ -425,20 +425,20 @@ done:
 // FUNCTION: LEMBALL 0x004077e0
 void CGame::Process()
 {
-	int timing;
+	bool timing;
 	CTimeStat* stat;
 	unsigned long now;
 	int quitState;
 
 	m_mainDisplay->Process();
 	if (m_process != NULL) {
-		timing = 0;
+		timing = false;
 		if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) &&
 			GAME_FLOW_TIMING_WARMUP_TICKS < (int) m_flowTicks) {
-			timing = 1;
+			timing = true;
 			stat = m_processingStat;
 			stat->m_timingStart = CurrentMilliTimer();
-			stat->m_timingActive = 1;
+			stat->m_timingActive = true;
 		}
 		m_process->Process();
 		if (timing != 0) {
@@ -446,7 +446,7 @@ void CGame::Process()
 			if (stat->m_timingActive != 0) {
 				now = CurrentMilliTimer();
 				stat->Update(now - stat->m_timingStart);
-				stat->m_timingActive = 0;
+				stat->m_timingActive = false;
 			}
 		}
 		if (g_pNetworkManager != NULL) {
@@ -491,14 +491,14 @@ void CGame::Process()
 // FUNCTION: LEMBALL 0x004078f0
 void CGame::RefreshViews()
 {
-	int timing;
+	bool timing;
 	CTimeStat* stat;
 	unsigned long now;
 
-	timing = 0;
+	timing = false;
 	if ((m_currentFlow == FLOW_GAMEPLAY || m_currentFlow == FLOW_DEMO) &&
 		GAME_FLOW_TIMING_WARMUP_TICKS < (int) m_flowTicks) {
-		timing = 1;
+		timing = true;
 		stat = m_refreshingStat;
 		now = CurrentMilliTimer();
 		stat->m_timingStart = now;
@@ -510,7 +510,7 @@ void CGame::RefreshViews()
 		if (stat->m_timingActive != 0) {
 			now = CurrentMilliTimer();
 			stat->Update(now - stat->m_timingStart);
-			stat->m_timingActive = 0;
+			stat->m_timingActive = false;
 		}
 	}
 }

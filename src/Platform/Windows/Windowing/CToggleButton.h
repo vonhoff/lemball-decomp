@@ -15,7 +15,7 @@ public:
 	CToggleButton(const CVSPoint& p_position, CPVGWnd* p_parent, unsigned long p_animId, unsigned long p_flags)
 		: CGraphicButton(p_position, p_parent, p_animId, p_flags)
 	{
-		m_toggled = 0;
+		m_toggled = false;
 	}
 	virtual void OnEnterButton();                  // vtable+0xc8
 	virtual void OnExitButton();                   // vtable+0xcc
@@ -25,7 +25,7 @@ public:
 	friend class CPanelPauseButton;
 
 private:
-	unsigned int m_toggled; // 0x130
+	bool m_toggled; // 0x130
 };
 
 // SYNTHETIC: LEMBALL 0x004438b0

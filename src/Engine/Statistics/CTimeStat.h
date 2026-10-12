@@ -9,7 +9,7 @@ class CTimeStat : public CBaseStat {
 public:
 	CTimeStat(char* p_description) : CBaseStat(p_description)
 	{
-		m_timingActive = 0;
+		m_timingActive = false;
 		m_timingStart = 0;
 	}
 	virtual void Update(unsigned int p_value); // vtable+0x04
@@ -18,8 +18,8 @@ public:
 	friend class CGDIDevice;
 
 private:
-	unsigned int m_timingStart;  // 0x20
-	unsigned int m_timingActive; // 0x24
+	unsigned int m_timingStart; // 0x20
+	bool m_timingActive;        // 0x24
 };
 
 #endif

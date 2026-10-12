@@ -9,20 +9,20 @@
 void CDepressedButton::OnReleased(BUTTON_FLAGS p_flags)
 {
 	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
-		m_enabled = 1;
+		m_enabled = true;
 		return;
 	}
-	m_enabled = 0;
+	m_enabled = false;
 }
 
 // FUNCTION: LEMBALL 0x0043a660 FOLDED
 void CDepressedButton::OnPressed(BUTTON_FLAGS p_flags)
 {
 	if (m_pressed != 0 && (p_flags == MOUSE_BUTTON_INDEX_LEFT || p_flags == MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK)) {
-		m_enabled = 1;
+		m_enabled = true;
 		return;
 	}
-	m_enabled = 0;
+	m_enabled = false;
 }
 
 // FUNCTION: LEMBALL 0x0043a6a0 FOLDED
@@ -30,10 +30,10 @@ void CDepressedButton::OnEnterButton()
 {
 	if (m_pressed != 0 &&
 		(m_buttonState[MOUSE_BUTTON_INDEX_LEFT] != 0 || m_buttonState[MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK] != 0)) {
-		m_enabled = 1;
+		m_enabled = true;
 		return;
 	}
-	m_enabled = 0;
+	m_enabled = false;
 }
 
 // FUNCTION: LEMBALL 0x0043a6e0 FOLDED
@@ -41,10 +41,10 @@ void CDepressedButton::OnExitButton()
 {
 	if (m_pressed != 0 &&
 		(m_buttonState[MOUSE_BUTTON_INDEX_LEFT] != 0 || m_buttonState[MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK] != 0)) {
-		m_enabled = 1;
+		m_enabled = true;
 		return;
 	}
-	m_enabled = 0;
+	m_enabled = false;
 }
 
 // FUNCTION: LEMBALL 0x00468300 FOLDED
