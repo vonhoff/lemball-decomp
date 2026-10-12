@@ -19,7 +19,7 @@ CGDI::CGDI(const CVSRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSur
 
 	if ((int) p_rect.m_height * (int) p_rect.m_width > 1) {
 		m_primitiveCapacity = p_primitiveCapacity + 3;
-		m_primitives = (CPrimitive**) operator new(m_primitiveCapacity * sizeof(*m_primitives));
+		m_primitives = new CPrimitive*[m_primitiveCapacity];
 		target = g_pGdiDevice->AllocateSurface(p_rect, p_parentSurface);
 		i = 0;
 		m_renderTarget = target;
@@ -36,7 +36,7 @@ CGDI::CGDI(const CVSRect& p_rect, int p_primitiveCapacity, CSurface* p_parentSur
 // FUNCTION: LEMBALL 0x004670d0
 CGDI::~CGDI()
 {
-	operator delete(m_primitives);
+	delete[] m_primitives;
 	g_pGdiDevice->FreeSurface(m_renderTarget);
 }
 

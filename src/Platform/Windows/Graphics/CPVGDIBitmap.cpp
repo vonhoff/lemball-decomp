@@ -23,7 +23,7 @@ CPVGDIBitmap::~CPVGDIBitmap()
 void CPVGDIBitmap::Free()
 {
 	if (m_lines != NULL) {
-		operator delete(m_lines);
+		delete[] m_lines;
 		m_lines = NULL;
 		m_lineCapacity = 0;
 	}
@@ -51,17 +51,11 @@ void CPVGDIBitmap::CreateLinePtrs()
 {
 	if ((int) m_lineCapacity < m_size.m_height) {
 		if (m_lines != NULL) {
-			operator delete(m_lines);
+			delete[] m_lines;
 			m_lines = NULL;
 		}
 		if (m_size.m_height > 0) {
-			short heightWord;
-			unsigned int size;
-
-			heightWord = m_size.m_height;
-			size = (unsigned int) heightWord;
-			size = size * sizeof(*m_lines);
-			m_lines = (unsigned char**) operator new(size);
+			m_lines = new unsigned char*[m_size.m_height];
 			ResetLinePtrs();
 		}
 		m_lineCapacity = (unsigned int) m_size.m_height;
