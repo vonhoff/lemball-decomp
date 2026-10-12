@@ -16,17 +16,9 @@ CStatManager::CStatManager(int p_capacity)
 // FUNCTION: LEMBALL 0x0045ab30
 CStatManager::~CStatManager()
 {
-	unsigned int byteIndex = 0;
-
 	if (m_stats != NULL) {
-		int i = 0;
-		while (i < m_statCount) {
-			char* statBytes = (char*) m_stats;
-			CBaseStat** slot = (CBaseStat**) (statBytes + byteIndex);
-			CBaseStat* stat = *slot;
-			delete stat;
-			byteIndex += sizeof(CBaseStat*);
-			++i;
+		for (int i = 0; i < m_statCount; ++i) {
+			delete m_stats[i];
 		}
 		delete[] m_stats;
 		m_stats = NULL;
