@@ -5,7 +5,6 @@
 #include "CGdiDibContext.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 
-#include <new.h>
 #include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
@@ -29,20 +28,10 @@ CGdiDriver::CGdiDriver()
 CDrawingContext* CGdiDriver::CreateDrawingContext()
 {
 	HDC hdc;
-	void* storage;
-	CDrawingContext* context;
-	enum {
-		GDI_CONTEXT_STORAGE_SIZE = sizeof(CGdiContext)
-	};
 
 	hdc = CreateCompatibleDC(NULL);
 	if (hdc != NULL) {
-		storage = operator new(GDI_CONTEXT_STORAGE_SIZE);
-		if (storage != NULL) {
-			context = new (storage) CGdiContext(hdc);
-			return context;
-		}
-		return NULL;
+		return new CGdiContext(hdc);
 	}
 	return NULL;
 }

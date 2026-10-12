@@ -13,7 +13,6 @@
 #include "Platform/Windows/Windowing/CPVWnd.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 
-#include <new.h>
 #include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
@@ -50,7 +49,6 @@ static char* g_graphicsDriverErrors[] = {
 bool CGraphicsState::SelectDriver(int p_driverMode)
 {
 	int resolvedDriverMode = p_driverMode;
-	void* driverStorage;
 	if (p_driverMode < GFX_MODE_AUTO + 1) {
 		*g_pDebugOutput << "Initialising graphics device driver: " << g_graphicsDriverNames[p_driverMode] << "...\n";
 	}
@@ -67,28 +65,10 @@ bool CGraphicsState::SelectDriver(int p_driverMode)
 		g_pTargetGraphicsDriver = new CGdiDriver();
 		break;
 	case GFX_MODE_VGA_320X200:
-		driverStorage = operator new(sizeof(CDisplayDibDriver));
-		if (driverStorage != NULL) {
-			CVSSize size;
-			size.m_width = 320;
-			size.m_height = 200;
-			g_pTargetGraphicsDriver = new (driverStorage) CDisplayDibDriver(size);
-		}
-		else {
-			g_pTargetGraphicsDriver = NULL;
-		}
+		g_pTargetGraphicsDriver = new CDisplayDibDriver(CVSSize(320, 200));
 		break;
 	case GFX_MODE_VGA_320X240:
-		driverStorage = operator new(sizeof(CPlanarDibDriver));
-		if (driverStorage != NULL) {
-			CVSSize size;
-			size.m_width = 320;
-			size.m_height = 240;
-			g_pTargetGraphicsDriver = new (driverStorage) CPlanarDibDriver(size);
-		}
-		else {
-			g_pTargetGraphicsDriver = NULL;
-		}
+		g_pTargetGraphicsDriver = new CPlanarDibDriver(CVSSize(320, 240));
 		break;
 	case GFX_MODE_DD_FS_640X480: {
 		g_pTargetGraphicsDriver = new CDirectDrawDriver(CVSSize(640, 480), 1);
