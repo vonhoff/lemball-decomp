@@ -19,8 +19,6 @@ public:
 	CBaseRemap();
 
 	friend class CSurface;
-
-public:
 	unsigned char* m_remap;         // 0x00
 	CResPALETTE* m_paletteResource; // 0x04
 };
