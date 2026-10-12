@@ -45,8 +45,6 @@
 
 #include <windows.h>
 
-class CMap;
-
 #pragma intrinsic(strcpy, strcat)
 
 extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int p_index);
@@ -291,7 +289,7 @@ void CMain2DDisplay::StatusUpdate(eFlowProcesses p_flow)
 		m_ai = (CAI*) m_game->m_process;
 		ai = (CAI*) m_game->m_process;
 		m_map = ai->m_map;
-		m_drawer = new C2D(this, (CAI*) m_ai, m_gdi, (CMap*) m_map, localRect);
+		m_drawer = new C2D(this, m_ai, m_gdi, m_map, localRect);
 		break;
 	}
 	case FLOW_ABOUT:

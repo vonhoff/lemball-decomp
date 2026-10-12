@@ -13,6 +13,8 @@ enum {
 };
 
 class CGame;
+class CAI;
+class CMap;
 class CCdLoadAnimDraw;
 class CResPALETTE;
 class CResZRLE;
@@ -59,11 +61,11 @@ private:
 	CResZRLE* m_cursorResource;     // 0xa8
 	CResPALETTE* m_gamePalette;     // 0xac
 	CResPALETTE* m_titlePalette;    // 0xb0
-	void* m_map;                    // 0xb4
+	CMap* m_map;                    // 0xb4
 	unsigned int m_frameCount;      // 0xb8
 	unsigned int m_drawerClosing;   // 0xbc
 	CGame* m_game;                  // 0xc0
-	void* m_ai;                     // 0xc4
+	CAI* m_ai;                      // 0xc4
 	bool m_quitRequested;           // 0xc8
 	eFlowProcesses m_currentFlow;   // 0xcc
 	CDrawingMark m_drawingMark;     // 0xd0
