@@ -76,8 +76,8 @@ void CSheepGroup::RunAway(AICOORD p_threatPosition)
 			}
 			CFixed cosine(cosineValue);
 			CVector rotatedEscapeVector = trigTable->Rotate(escapeVector, sine, cosine);
-			escapeDestination.m_xFixed += rotatedEscapeVector.m_xFixed;
-			escapeDestination.m_yFixed += rotatedEscapeVector.m_yFixed;
+			escapeDestination.m_xFixed = (unsigned int) escapeDestination.m_xFixed + rotatedEscapeVector.m_xFixed;
+			escapeDestination.m_yFixed = (unsigned int) escapeDestination.m_yFixed + rotatedEscapeVector.m_yFixed;
 			if ((escapeDestination.m_xFixed >> FIXED_POINT_FRACTION_BITS) < 0) {
 				escapeDestination.m_xFixed = 0;
 			}
@@ -85,7 +85,7 @@ void CSheepGroup::RunAway(AICOORD p_threatPosition)
 				escapeDestination.m_yFixed = 0;
 			}
 			int formationRandomValue =
-				(*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+				((unsigned int) *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 			*g_pRandomSeed = formationRandomValue;
 			SetFormationIndex(formationRandomValue % 3);
 			SendNewWaypoint(escapeDestination);
