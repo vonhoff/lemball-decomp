@@ -25631,7 +25631,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Map/CMap.cpp.obj",
       "symbol": "?CreateWalkBits@CMap@@QAEXXZ",
       "size": 1009,
-      "fingerprint": "ec40fa712312792271350a208512b85aef50f9ead8e3c42f0d3bb88bf4d6e516",
+      "fingerprint": "b8ae77b55de225eaee04fe4a798d529a644e84e127246d423c7a23e9c924f365",
       "references": [
         {
           "offset": 109,
@@ -25775,7 +25775,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Map/CMap.cpp.obj",
       "symbol": "?LoadLevel@CMap@@QAEXPAUtagLoadGroundSurfaceData@@KE@Z",
       "size": 201,
-      "fingerprint": "4659df10e37a435024909084f9cbb1bb40b5063cf4713fad31562703c248208e",
+      "fingerprint": "2d40374fdf31ac48d43566f486e0698cbf52f50c48d35378d22efbcd79836f99",
       "references": [
         {
           "offset": 38,

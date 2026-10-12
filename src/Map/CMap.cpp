@@ -153,7 +153,7 @@ unsigned short CMap::GetZ(int p_x, int p_y, CMover** p_mover)
 int CMap::TestWalkBit(int p_x, int p_y, unsigned char p_mask)
 {
 	if (p_x >= 0 && p_y >= 0 && m_walkWidth > p_x && m_walkHeight > p_y) {
-		return (m_walkBits[m_walkWidth * p_y + p_x] & p_mask) == p_mask;
+		return (m_walkBits[(unsigned int) m_walkWidth * p_y + p_x] & p_mask) == p_mask;
 	}
 	return 0;
 }
@@ -162,7 +162,7 @@ int CMap::TestWalkBit(int p_x, int p_y, unsigned char p_mask)
 unsigned char CMap::GetWalk(int p_x, int p_y)
 {
 	if (p_x >= 0 && p_y >= 0 && p_x < m_walkWidth && m_walkHeight > p_y) {
-		return m_walkBits[p_y * m_walkWidth + p_x];
+		return m_walkBits[(unsigned int) p_y * m_walkWidth + p_x];
 	}
 	return '\0';
 }
