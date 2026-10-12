@@ -16,10 +16,8 @@
 // FUNCTION: LEMBALL 0x00469a50
 void CText::Set(int p_x, int p_y, CResFONT* p_font, const char* p_text, unsigned long p_flags, CRemap* p_remap)
 {
-	short& startX = m_startX;
-	short& startY = m_startY;
-	startX = p_x;
-	startY = p_y;
+	m_startX = p_x;
+	m_startY = p_y;
 	m_font = p_font;
 	m_remap = p_remap;
 	m_flags = p_flags;
@@ -44,10 +42,8 @@ void CText::Set(const CVSPoint& p_position,
 // FUNCTION: LEMBALL 0x00469ac0
 void CText::Set(int p_x, int p_y, CResFONT* p_font, CString p_text, unsigned long p_flags, CRemap* p_remap)
 {
-	short& startX = m_startX;
-	short& startY = m_startY;
-	startX = p_x;
-	startY = p_y;
+	m_startX = p_x;
+	m_startY = p_y;
 	m_font = p_font;
 	m_flags = p_flags;
 	m_remap = p_remap;
