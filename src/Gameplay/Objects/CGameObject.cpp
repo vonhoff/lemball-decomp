@@ -683,7 +683,7 @@ unsigned short CGameObject::MapCheck(int p_x, int p_y)
 			CMap* map;
 			unsigned short cellCollision;
 			if (x >= 0 && y >= 0 && x < (width = g_pMap->m_ground.m_width) && y < (map = g_pMap)->m_ground.m_height) {
-				cellCollision = map->m_ground.m_ground[(int) ((unsigned int) y * width + x)].m_collision;
+				cellCollision = map->m_ground.m_ground[(unsigned int) y * width + x].m_collision;
 			}
 			else {
 				cellCollision = GROUND_COLLISION_OUT_OF_BOUNDS;
