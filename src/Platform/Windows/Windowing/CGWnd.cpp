@@ -133,8 +133,7 @@ void CGWnd::_OnDestroy()
 
 	gdi = m_gdi;
 	if (gdi != NULL) {
-		gdi->~CGDI();
-		operator delete(gdi);
+		delete gdi;
 		m_gdi = NULL;
 	}
 	style = GetStyle();

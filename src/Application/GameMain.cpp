@@ -158,7 +158,7 @@ int VSmain(int p_argc, char** p_argv)
 
 	_DEMO_Quit();
 	delete g_pRandomSeed;
-	operator delete(g_pVSTrig);
+	delete g_pVSTrig;
 	*g_pDebugOutput << g_szGameClosedDown;
 	return 0;
 }
