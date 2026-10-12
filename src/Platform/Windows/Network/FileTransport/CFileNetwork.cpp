@@ -10,7 +10,6 @@
 #include "Platform/Windows/Network/CNetworkWnd.h"
 #include "Platform/Windows/ThreadConstants.h"
 
-#include <new.h>
 #include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
@@ -95,16 +94,7 @@ void CFileNetwork::ForceProcess()
 // FUNCTION: LEMBALL 0x0046f860
 CNetworkAddress* CFileNetwork::GetNewNetworkAddress()
 {
-	void* storage;
-	CFileNetworkAddress* address;
-
-	storage = operator new(sizeof(CFileNetworkAddress));
-	if (storage != NULL) {
-		address = new (storage) CFileNetworkAddress();
-		address->m_text[0] = '\0';
-		return address;
-	}
-	return NULL;
+	return new CFileNetworkAddress();
 }
 
 // FUNCTION: LEMBALL 0x0046f930
