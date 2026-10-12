@@ -43,12 +43,6 @@
 
 extern "C" __declspec(dllimport) int __stdcall GdiFlush();
 
-struct SurfaceListHead {
-	void* m_first;
-	void* m_last;
-	int m_count;
-};
-
 #define SURFACE_PALETTE_ENTRY_COUNT 0x100
 #define SURFACE_PALETTE_VERSION_WIN3 0x0300
 #define SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT 10
@@ -68,7 +62,7 @@ struct SurfaceListHead {
 #define SURFACE_PALETTE_BUFFER_BYTES (sizeof(LOGPALETTE) + (SURFACE_PALETTE_ENTRY_COUNT - 1) * sizeof(PALETTEENTRY))
 
 // GLOBAL: LEMBALL 0x004a2010
-SurfaceListHead* g_pSurfaceList = NULL;
+CList<CSurface, CListElement<CSurface> >* g_pSurfaceList = NULL;
 
 enum {
 	SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS = 8,
@@ -135,71 +129,17 @@ inline unsigned int CSurface::ClipCode(int p_x, int p_y)
 }
 
 // FUNCTION: LEMBALL 0x0046c050
-CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface)
-	: m_presentX(m_presentY = 0), m_childSurfaceHead(NULL), m_childSurfaceTail(NULL), m_childSurfaceCount(0)
+CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface) : m_presentX(0), m_presentY(0)
 {
-	SurfaceListHead* head;
-	SurfaceListNode* node;
-	SurfaceListHead* parentList;
-	void* storage;
-
 	m_propagateChanges = true;
 	m_fullUpdatePending = false;
 	m_forwardChangesImmediately = false;
 	m_parentSurface = p_parentSurface;
-	parentList = (SurfaceListHead*) &m_parentSurface->m_childSurfaceHead;
-	storage = operator new(sizeof(SurfaceListNode));
-	if (storage != NULL) {
-		node = (SurfaceListNode*) storage;
-		node->m_surface = this;
-		node->m_next = NULL;
-		node->m_prev = NULL;
-	}
-	else {
-		node = NULL;
-	}
-	node->m_prev = (SurfaceListNode*) parentList->m_last;
-	if (parentList->m_last != NULL) {
-		((SurfaceListNode*) parentList->m_last)->m_next = node;
-	}
-	parentList->m_last = node;
-	if (parentList->m_first == NULL) {
-		parentList->m_first = node;
-	}
-	parentList->m_count++;
-
+	m_parentSurface->m_childSurfaces.Add(this);
 	if (g_pSurfaceList == NULL) {
-		head = (SurfaceListHead*) operator new(sizeof(SurfaceListHead));
-		if (head != NULL) {
-			head->m_first = NULL;
-			head->m_last = NULL;
-			head->m_count = 0;
-			g_pSurfaceList = head;
-		}
-		else {
-			g_pSurfaceList = NULL;
-		}
+		g_pSurfaceList = new CList<CSurface, CListElement<CSurface> >;
 	}
-	head = g_pSurfaceList;
-	storage = operator new(sizeof(SurfaceListNode));
-	if (storage != NULL) {
-		node = (SurfaceListNode*) storage;
-		node->m_surface = this;
-		node->m_next = NULL;
-		node->m_prev = NULL;
-	}
-	else {
-		node = NULL;
-	}
-	node->m_prev = (SurfaceListNode*) head->m_last;
-	if (head->m_last != NULL) {
-		((SurfaceListNode*) head->m_last)->m_next = node;
-	}
-	head->m_last = node;
-	if (head->m_first == NULL) {
-		head->m_first = node;
-	}
-	head->m_count++;
+	g_pSurfaceList->Add(this);
 
 	m_zoom = 1;
 	m_platformBitmap = NULL;
@@ -392,10 +332,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 CSurface::CSurface(GrafPort* p_port)
 {
 	m_presentY = 0;
-	m_childSurfaceHead = NULL;
 	m_presentX = 0;
-	m_childSurfaceTail = NULL;
-	m_childSurfaceCount = 0;
 	m_drawingPort = new CGdiContext(p_port);
 	m_platformBitmap = NULL;
 	m_changeList = NULL;
@@ -408,10 +345,6 @@ CSurface::CSurface(GrafPort* p_port)
 // FUNCTION: LEMBALL 0x0046c710
 CSurface::~CSurface()
 {
-	SurfaceListNode* node;
-	SurfaceListNode* next;
-	SurfaceListNode* prev;
-	CSurface* parent;
 	int locked;
 
 	locked = 0;
@@ -436,33 +369,8 @@ CSurface::~CSurface()
 		delete m_changeList;
 		m_changeList = NULL;
 	}
-	parent = m_parentSurface;
-	if (parent != NULL) {
-		node = parent->m_childSurfaceHead;
-		while (node != NULL) {
-			if (node->m_surface == this) {
-				break;
-			}
-			node = node->m_next;
-		}
-		if (node != NULL) {
-			next = node->m_next;
-			prev = node->m_prev;
-			operator delete(node);
-			if (next == NULL) {
-				parent->m_childSurfaceTail = prev;
-			}
-			else {
-				next->m_prev = prev;
-			}
-			if (prev == NULL) {
-				parent->m_childSurfaceHead = next;
-			}
-			else {
-				prev->m_next = next;
-			}
-			parent->m_childSurfaceCount = parent->m_childSurfaceCount - 1;
-		}
+	if (m_parentSurface != NULL) {
+		m_parentSurface->m_childSurfaces.Remove(this);
 		m_parentSurface = NULL;
 	}
 	if (locked != 0) {
@@ -470,55 +378,19 @@ CSurface::~CSurface()
 		DeleteCriticalSection((CRITICAL_SECTION*) m_lock);
 		m_lockInitialised = false;
 		if (g_pSurfaceList != NULL) {
-			node = (SurfaceListNode*) g_pSurfaceList->m_first;
-			while (node != NULL) {
-				if (node->m_surface == this) {
-					break;
-				}
-				node = node->m_next;
-			}
-			if (node != NULL) {
-				next = node->m_next;
-				prev = node->m_prev;
-				operator delete(node);
-				if (next == NULL) {
-					g_pSurfaceList->m_last = prev;
-				}
-				else {
-					next->m_prev = prev;
-				}
-				if (prev == NULL) {
-					g_pSurfaceList->m_first = next;
-				}
-				else {
-					prev->m_next = next;
-				}
-				g_pSurfaceList->m_count = g_pSurfaceList->m_count - 1;
-			}
-			if (g_pSurfaceList != NULL && g_pSurfaceList->m_count == 0) {
-				node = (SurfaceListNode*) g_pSurfaceList->m_first;
-				while (node != NULL) {
-					next = node->m_next;
-					operator delete(node);
-					node = next;
-				}
-				operator delete(g_pSurfaceList);
+			g_pSurfaceList->Remove(this);
+			if (g_pSurfaceList->m_count == 0) {
+				delete g_pSurfaceList;
 				g_pSurfaceList = NULL;
 			}
 		}
-	}
-	node = m_childSurfaceHead;
-	while (node != NULL) {
-		next = node->m_next;
-		operator delete(node);
-		node = next;
 	}
 }
 
 // FUNCTION: LEMBALL 0x0046c990
 void CSurface::ResetScroll()
 {
-	SurfaceListNode* node;
+	CListElement<CSurface>* node;
 
 	CPVGDIBitmap::ResetScroll();
 	if (HasBackBuff() != 0) {
@@ -527,8 +399,8 @@ void CSurface::ResetScroll()
 	if (HasZBuff() != 0) {
 		CPVZBuffSurface::m_bitmap.ResetScroll();
 	}
-	for (node = m_childSurfaceHead; node != NULL; node = node->m_next) {
-		node->m_surface->CPVGDIBitmap::ResetLinePtrs();
+	for (node = m_childSurfaces.m_head; node != NULL; node = node->m_next) {
+		node->m_object->CPVGDIBitmap::ResetLinePtrs();
 	}
 }
 
@@ -920,8 +792,8 @@ void CSurface::Resize(const CVSSize& p_size)
 			ResizeZBuff();
 		}
 	}
-	for (SurfaceListNode* node = m_childSurfaceHead; node != NULL; node = node->m_next) {
-		CSurface* child = node->m_surface;
+	for (CListElement<CSurface>* node = m_childSurfaces.m_head; node != NULL; node = node->m_next) {
+		CSurface* child = node->m_object;
 		CVSSize childSize(child->m_surfaceRect);
 		child->Resize(childSize);
 	}
@@ -1013,8 +885,8 @@ void CSurface::Move(const CVSPoint& p_position)
 		m_bitmapPixelCount = 0;
 		CreateLinePtrs();
 		LeaveCriticalSection(lock);
-		for (SurfaceListNode* node = m_childSurfaceHead; node != NULL; node = node->m_next) {
-			node->m_surface->MoveRel(delta);
+		for (CListElement<CSurface>* node = m_childSurfaces.m_head; node != NULL; node = node->m_next) {
+			node->m_object->MoveRel(delta);
 		}
 	}
 }
@@ -1066,7 +938,7 @@ void CSurface::SetDefaultCtable()
 	PALETTEENTRY* entries;
 	unsigned int* source;
 	int i;
-	SurfaceListNode* node;
+	CListElement<CSurface>* node;
 	CSurface* surface;
 
 	palette = (LOGPALETTE*) logPalette;
@@ -1085,9 +957,9 @@ void CSurface::SetDefaultCtable()
 		source++;
 	}
 	g_pTargetGraphicsDriver->CreatePalette(palette);
-	node = (SurfaceListNode*) g_pSurfaceList->m_first;
+	node = g_pSurfaceList->m_head;
 	while (node != NULL) {
-		surface = node->m_surface;
+		surface = node->m_object;
 		memcpy(m_colourTable, g_dwWinGDrawColourTable, sizeof(m_colourTable));
 		if (surface->m_drawingPort != NULL) {
 			g_pTargetGraphicsDriver->UpdateDibColourTable((CDrawingContext*) surface->m_drawingPort,

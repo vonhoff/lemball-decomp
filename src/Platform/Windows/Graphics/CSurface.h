@@ -4,6 +4,7 @@
 #include "CPVBackBuffSurface.h"
 #include "CPVScrollableSurface.h"
 #include "CPVZBuffSurface.h"
+#include "Engine/Containers/CList.h"
 
 class GrafPort;
 class CChangeList;
@@ -17,12 +18,6 @@ enum {
 };
 
 #pragma warning(disable : 4250)
-
-struct SurfaceListNode {
-	class CSurface* m_surface;
-	SurfaceListNode* m_next;
-	SurfaceListNode* m_prev;
-};
 
 // SIZE 0x5a0
 // VTABLE: LEMBALL 0x00499df0 CPVSurface
@@ -132,21 +127,19 @@ public:
 	friend class CPVBackBuffSurface;
 
 private:
-	short m_presentX;                    // 0xec
-	short m_presentY;                    // 0xee
-	void* m_platformBitmap;              // 0xf0
-	unsigned int m_unk0xf4;              // 0xf4
-	void* m_drawingPort;                 // 0xf8
-	char m_bitmapInfo[0x28];             // 0xfc
-	char m_colourTable[0x400];           // 0x124
-	unsigned int m_bitmapPixelCount;     // 0x524
-	SurfaceListNode* m_childSurfaceHead; // 0x528
-	SurfaceListNode* m_childSurfaceTail; // 0x52c
-	unsigned int m_childSurfaceCount;    // 0x530
-	char m_lock[0x18];                   // 0x534
-	bool m_lockInitialised;              // 0x54c
-	CChangeList* m_changeList;           // 0x550
-	void* m_currDb;                      // 0x554
+	short m_presentX;                                         // 0xec
+	short m_presentY;                                         // 0xee
+	void* m_platformBitmap;                                   // 0xf0
+	unsigned int m_unk0xf4;                                   // 0xf4
+	void* m_drawingPort;                                      // 0xf8
+	char m_bitmapInfo[0x28];                                  // 0xfc
+	char m_colourTable[0x400];                                // 0x124
+	unsigned int m_bitmapPixelCount;                          // 0x524
+	CList<CSurface, CListElement<CSurface> > m_childSurfaces; // 0x528
+	char m_lock[0x18];                                        // 0x534
+	bool m_lockInitialised;                                   // 0x54c
+	CChangeList* m_changeList;                                // 0x550
+	void* m_currDb;                                           // 0x554
 };
 
 // SYNTHETIC: LEMBALL 0x0046dc90 SYMBOL
