@@ -307,7 +307,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 	p_viewData->m_objectId = m_objectId;
 	p_viewData->m_objectType = m_objectType;
 	p_viewData->m_playerIndex = 0;
-	((CPt3&) p_viewData->m_positionX).InitializeFromAiCoord(m_position);
+	p_viewData->m_position.InitializeFromAiCoord(m_position);
 	p_viewData->m_facingDirection = m_facingDirection;
 	unsigned int argument = (unsigned short) m_actionArgument;
 	const unsigned int timer = m_stateTimer;
@@ -349,7 +349,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 				p_viewData->m_objectId = m_objectId;
 				p_viewData->m_objectType = m_objectType;
 				p_viewData->m_playerIndex = 0;
-				((CPt3&) p_viewData->m_positionX).InitializeFromAiCoord(m_position);
+				p_viewData->m_position.InitializeFromAiCoord(m_position);
 				p_viewData->m_facingDirection = m_facingDirection;
 				p_viewData->SetViewActionTuple(m_action, (unsigned short) m_actionArgument, m_stateTimer);
 				p_viewData->m_statusFlags = 0;
@@ -361,9 +361,9 @@ int CLaser::GetViewData(CViewData* p_viewData)
 				SetSndEffect(SFX_NONE);
 				p_viewData->m_transientFlags = m_transientFlags;
 				m_transientFlags = 0;
-				p_viewData->m_positionX = x;
-				p_viewData->m_positionY = y;
-				p_viewData->m_positionZ = z;
+				p_viewData->m_position.m_x = x;
+				p_viewData->m_position.m_y = y;
+				p_viewData->m_position.m_z = z;
 				p_viewData->m_objectType = OBJECT_LASER_VERTICAL_BEAM;
 				p_viewData->m_facingDirection = 0;
 				p_viewData->m_action = ACTION_ACTIVATED;
@@ -394,9 +394,9 @@ int CLaser::GetViewData(CViewData* p_viewData)
 					break;
 				}
 				CGameObject::GetViewData(*p_viewData);
-				p_viewData->m_positionX = x;
-				p_viewData->m_positionY = y;
-				p_viewData->m_positionZ = z;
+				p_viewData->m_position.m_x = x;
+				p_viewData->m_position.m_y = y;
+				p_viewData->m_position.m_z = z;
 				p_viewData->m_objectType = OBJECT_LASER_HORIZONTAL_BEAM;
 				p_viewData->m_facingDirection = 0;
 				p_viewData->m_action = ACTION_ACTIVATED;

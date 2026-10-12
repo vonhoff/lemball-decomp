@@ -8,6 +8,7 @@ enum eLemmingViewStatusFlag {
 
 #include "Application/SoundEffects.h"
 #include "Gameplay/Geometry/C3DVector.h"
+#include "Gameplay/Geometry/CPt3.h"
 #include "ObjectActions.h"
 #include "ObjectIds.h"
 #include "ObjectTypes.h"
@@ -20,6 +21,8 @@ enum eRemotePaletteRemap {
 // SIZE 0x4c
 class CViewData {
 public:
+	CPt3 Coord() { return m_position; }
+
 	void SetViewActionTuple(eAction p_action, unsigned int p_argument, unsigned int p_stateTimer);
 
 	// FUNCTION: LEMBALL 0x00439340
@@ -44,9 +47,7 @@ public:
 
 private:
 	short m_facingDirection;       // 0x00
-	int m_positionX;               // 0x04
-	int m_positionY;               // 0x08
-	int m_positionZ;               // 0x0c
+	CPt3 m_position;               // 0x04
 	short m_gameX;                 // 0x10
 	short m_gameY;                 // 0x12
 	unsigned int m_statusFlags;    // 0x14

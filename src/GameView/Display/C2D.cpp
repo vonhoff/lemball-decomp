@@ -993,8 +993,8 @@ bool C2D::FindGameObject(const CVSPoint& p_point, int& p_index, int p_preferLemm
 	if (m_viewDataCount != 0) {
 		do {
 			int type = m_viewData[index].m_objectType;
-			int x = m_viewData[index].m_positionX;
-			int y = m_viewData[index].m_positionY;
+			int x = m_viewData[index].m_position.m_x;
+			int y = m_viewData[index].m_position.m_y;
 			int left, top, right, bottom;
 			switch (type) {
 			case OBJECT_PLAYER_2:
@@ -2484,7 +2484,7 @@ unsigned long C2D::LemmingFly(CViewData& p_viewData, int& p_frame)
 		groundZ = 0;
 	}
 
-	if (p_viewData.m_positionZ <= groundZ) {
+	if (p_viewData.m_position.m_z <= groundZ) {
 		p_frame = frameDelta * ANIMATION_FRAME_RATE_FPS / MILLISECONDS_PER_SECOND + 7;
 		if (p_frame > 12) {
 			p_frame = 12;
@@ -2548,8 +2548,8 @@ void C2D::DrawLemmingJump(CViewData& p_viewData, unsigned int p_remapped)
 	unsigned int actionArgument;
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
-	x = p_viewData.m_positionX - g_lemmingFlyOffsets[direction][0];
-	y = p_viewData.m_positionY - g_lemmingFlyOffsets[direction][1];
+	x = p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction][0];
+	y = p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction][1];
 	resource = g_lemmingFlyResources[direction];
 	frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 	actionArgument = (unsigned short) p_viewData.m_actionArgument;
@@ -2588,8 +2588,8 @@ void C2D::DrawLemmingLanding(CViewData& p_viewData, unsigned int p_remapped)
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
 	resource = g_lemmingFlyResources[direction];
-	x = p_viewData.m_positionX - g_lemmingFlyOffsets[direction][0];
-	y = p_viewData.m_positionY - g_lemmingFlyOffsets[direction][1];
+	x = p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction][0];
+	y = p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction][1];
 	frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 	frame = frameDelta * 15 / 1024 + 7;
 	if (frame > 12) {
@@ -2613,8 +2613,8 @@ void C2D::DrawLemmingFall(CViewData& p_viewData, unsigned int p_remapped)
 // FUNCTION: LEMBALL 0x0043c090
 void C2D::DrawLemmingExternal(CViewData& p_viewData, unsigned int p_remapped)
 {
-	int x = p_viewData.m_positionX;
-	int y = p_viewData.m_positionY;
+	int x = p_viewData.m_position.m_x;
+	int y = p_viewData.m_position.m_y;
 	int frameDelta = (int) p_viewData.m_animationTime - (int) p_viewData.m_stateTimer;
 	unsigned int frame = frameDelta * ANIMATION_FRAME_RATE_FPS / MILLISECONDS_PER_SECOND;
 	unsigned int direction =
@@ -2659,8 +2659,8 @@ void C2D::DrawLemmingOnConveyor(CViewData& p_viewData, int p_remapped)
 	CRemap* remap;
 
 	frame = p_viewData.m_animationTime - p_viewData.m_stateTimer;
-	x = p_viewData.m_positionX;
-	y = p_viewData.m_positionY;
+	x = p_viewData.m_position.m_x;
+	y = p_viewData.m_position.m_y;
 	frame = (frame * ANIMATION_FRAME_RATE_FPS / MILLISECONDS_PER_SECOND) % LEMMING_CONVEYOR_ANIMATION_FRAME_COUNT;
 	if (p_remapped != 0) {
 		remap = m_paletteRemap;
@@ -2687,10 +2687,10 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_rema
 
 	animationFrame = p_viewData.m_stateTimer;
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
-	y = p_viewData.m_positionY;
+	y = p_viewData.m_position.m_y;
 	drawEquipment = 1;
 	drawBody = 1;
-	x = p_viewData.m_positionX;
+	x = p_viewData.m_position.m_x;
 	playerIndex = p_viewData.m_playerIndex;
 
 	switch (p_viewData.m_action) {
@@ -2854,8 +2854,8 @@ void C2D::DrawBullet(CViewData& p_viewData, int p_objectNo)
 	unsigned int direction;
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
-	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - g_bulletOffset[0],
-							 p_viewData.m_positionY - g_bulletOffset[1],
+	m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - g_bulletOffset[0],
+							 p_viewData.m_position.m_y - g_bulletOffset[1],
 							 g_bulletResources[direction],
 							 0,
 							 p_viewData.m_animationTime,
@@ -2868,16 +2868,16 @@ void C2D::DrawAmmo(CViewData& p_viewData, int p_objectNo)
 	switch (p_viewData.m_action) {
 	case ACTION_READY:
 	case ACTION_ACTIVATING:
-		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - g_ammoOffset[0],
-								 p_viewData.m_positionY - g_ammoOffset[1],
+		m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - g_ammoOffset[0],
+								 p_viewData.m_position.m_y - g_ammoOffset[1],
 								 RES_GAME_YELLOW_AMMO,
 								 0,
 								 p_viewData.m_animationTime,
 								 NULL);
 		break;
 	case ACTION_ACTIVATED:
-		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - g_pelletOffset[0],
-								 p_viewData.m_positionY - g_pelletOffset[1],
+		m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - g_pelletOffset[0],
+								 p_viewData.m_position.m_y - g_pelletOffset[1],
 								 RES_GAME_EX_PELLET,
 								 p_viewData.m_stateTimer,
 								 p_viewData.m_animationTime,
@@ -2926,10 +2926,15 @@ void C2D::DrawRocket(CViewData& p_viewData)
 	}
 
 	if (extraFrame != ROCKET_EXTRA_FRAME_NONE) {
-		m_lemmingAnims
-			->DrawAnim(p_viewData.m_positionX - 13, p_viewData.m_positionY - 73, RES_GAME_ROCKET, extraFrame, 0, NULL);
+		m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - 13,
+								 p_viewData.m_position.m_y - 73,
+								 RES_GAME_ROCKET,
+								 extraFrame,
+								 0,
+								 NULL);
 	}
-	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - 13, p_viewData.m_positionY - 73, RES_GAME_ROCKET, frame, 0, NULL);
+	m_lemmingAnims
+		->DrawAnim(p_viewData.m_position.m_x - 13, p_viewData.m_position.m_y - 73, RES_GAME_ROCKET, frame, 0, NULL);
 }
 
 // FUNCTION: LEMBALL 0x0043c7f0
@@ -2941,8 +2946,8 @@ void C2D::DrawHand(CViewData& p_viewData)
 	CRemap* remap;
 	eAction action = p_viewData.m_action;
 
-	drawX = p_viewData.m_positionX - 0x31;
-	drawY = p_viewData.m_positionY - 0x14;
+	drawX = p_viewData.m_position.m_x - 0x31;
+	drawY = p_viewData.m_position.m_y - 0x14;
 	remap = NULL;
 	if (p_viewData.m_actionArgument != REMOTE_PALETTE_REMAP_DISABLED) {
 		remap = m_paletteRemap;
@@ -2976,8 +2981,8 @@ void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_r
 	CRemap* remap;
 	CRemap* balloonRemap;
 
-	x = p_viewData.m_positionX;
-	y = p_viewData.m_positionY;
+	x = p_viewData.m_position.m_x;
+	y = p_viewData.m_position.m_y;
 	phase = ((p_viewData.m_animationTime - p_viewData.m_stateTimer) & ANIMATION_PHASE_TIME_MASK) >>
 			ANIMATION_PHASE_TIME_SHIFT;
 
@@ -3018,8 +3023,8 @@ void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_r
 void C2D::DrawBalloon(CViewData& p_viewData, int p_playerIndex)
 {
 	CRemap* remap;
-	short x = p_viewData.m_positionX;
-	short y = p_viewData.m_positionY;
+	short x = p_viewData.m_position.m_x;
+	short y = p_viewData.m_position.m_y;
 	int xOffset;
 	int yOffset;
 	unsigned int phase = ((p_viewData.m_animationTime - p_viewData.m_stateTimer) & ANIMATION_PHASE_TIME_MASK) >>
@@ -3055,8 +3060,8 @@ void C2D::DrawBalloonPost(CViewData& p_viewData, int p_playerIndex)
 	int y;
 	CRemap* remap;
 
-	x = p_viewData.m_positionX - 0x10;
-	y = p_viewData.m_positionY - 0x40;
+	x = p_viewData.m_position.m_x - 0x10;
+	y = p_viewData.m_position.m_y - 0x40;
 	if (p_playerIndex < 4) {
 		remap = m_remaps[p_playerIndex];
 	}
@@ -3073,8 +3078,8 @@ void C2D::DrawTrampoline(CViewData& p_viewData)
 	int y;
 	int frame;
 
-	x = p_viewData.m_positionX - g_trampolineOffset[0];
-	y = p_viewData.m_positionY - g_trampolineOffset[1];
+	x = p_viewData.m_position.m_x - g_trampolineOffset[0];
+	y = p_viewData.m_position.m_y - g_trampolineOffset[1];
 
 	switch (p_viewData.m_action) {
 	case ACTION_READY:
@@ -3096,8 +3101,8 @@ void C2D::DrawTrampoline(CViewData& p_viewData)
 void C2D::DrawMover(CViewData& p_viewData)
 {
 	unsigned short frame;
-	int x = p_viewData.m_positionX;
-	int y = p_viewData.m_positionY;
+	int x = p_viewData.m_position.m_x;
+	int y = p_viewData.m_position.m_y;
 	unsigned short state = p_viewData.m_actionArgument;
 	switch (m_ai->m_mapType) {
 	case GROUND_STYLE_GRASS:
@@ -3131,8 +3136,8 @@ void C2D::DrawMover(CViewData& p_viewData)
 void C2D::DrawSlinky(CViewData& p_viewData)
 {
 	unsigned int direction = (unsigned short) p_viewData.m_actionArgument;
-	int x = p_viewData.m_positionX - g_slinkyOffsets[direction][0];
-	int y = p_viewData.m_positionY - g_slinkyOffsets[direction][1];
+	int x = p_viewData.m_position.m_x - g_slinkyOffsets[direction][0];
+	int y = p_viewData.m_position.m_y - g_slinkyOffsets[direction][1];
 	int frame;
 	switch (p_viewData.m_action) {
 	case ACTION_READY:
@@ -3178,8 +3183,8 @@ void C2D::DrawSlinky(CViewData& p_viewData)
 // FUNCTION: LEMBALL 0x0043cd50
 void C2D::DrawPaintGun(CViewData& p_viewData)
 {
-	int x = p_viewData.m_positionX - g_paintGunOffset[0];
-	int y = p_viewData.m_positionY - g_paintGunOffset[1];
+	int x = p_viewData.m_position.m_x - g_paintGunOffset[0];
+	int y = p_viewData.m_position.m_y - g_paintGunOffset[1];
 	int frame;
 	if (p_viewData.m_action == ACTION_FIRING || p_viewData.m_action == ACTION_RUNNING) {
 		frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) * PAINT_GUN_ANIMATION_FRAME_RATE_FPS /
@@ -3208,13 +3213,13 @@ void C2D::DrawLaserFire(CViewData& p_viewData)
 
 	switch (p_viewData.m_objectType) {
 	case OBJECT_LASER_HORIZONTAL_BEAM:
-		x = p_viewData.m_positionX - 0xd;
-		y = p_viewData.m_positionY - 9;
+		x = p_viewData.m_position.m_x - 0xd;
+		y = p_viewData.m_position.m_y - 9;
 		m_lemmingAnims->DrawAnim(x, y, RES_GAME_LASER_FIRE_NORTH, 0, 0, NULL);
 		break;
 	case OBJECT_LASER_VERTICAL_BEAM:
-		x = p_viewData.m_positionX - 0x16;
-		y = p_viewData.m_positionY - 0xf;
+		x = p_viewData.m_position.m_x - 0x16;
+		y = p_viewData.m_position.m_y - 0xf;
 		m_lemmingAnims->DrawAnim(x, y, RES_GAME_LASER_FIRE_EAST, 0, 0, NULL);
 		break;
 	}
@@ -3235,14 +3240,14 @@ void C2D::DrawLaser(CViewData& p_viewData)
 	case OBJECT_LASER_HORIZONTAL:
 	case OBJECT_LASER_EMITTER_H:
 		resourceId = RES_GAME_LASER_EAST;
-		x = p_viewData.m_positionX - 0x14;
-		y = p_viewData.m_positionY - 0xa;
+		x = p_viewData.m_position.m_x - 0x14;
+		y = p_viewData.m_position.m_y - 0xa;
 		break;
 	case OBJECT_LASER_VERTICAL:
 	case OBJECT_LASER_EMITTER_V:
 		resourceId = RES_GAME_LASER_NORTH;
-		x = p_viewData.m_positionX - 0x2e;
-		y = p_viewData.m_positionY - 0xa;
+		x = p_viewData.m_position.m_x - 0x2e;
+		y = p_viewData.m_position.m_y - 0xa;
 		break;
 	}
 
@@ -3275,8 +3280,8 @@ void C2D::DrawDuplicator(CViewData& p_viewData)
 
 	elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 	action = p_viewData.m_action;
-	x = p_viewData.m_positionX - 0x1c;
-	y = p_viewData.m_positionY - 0x3f;
+	x = p_viewData.m_position.m_x - 0x1c;
+	y = p_viewData.m_position.m_y - 0x3f;
 	remap = NULL;
 
 	if (p_viewData.m_actionArgument != REMOTE_PALETTE_REMAP_DISABLED) {
@@ -3309,8 +3314,8 @@ void C2D::DrawCrate(CViewData& p_viewData, int p_objectNo)
 
 	switch (action) {
 	case ACTION_READY:
-		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - g_crateOffset[0],
-								 p_viewData.m_positionY - g_crateOffset[1],
+		m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - g_crateOffset[0],
+								 p_viewData.m_position.m_y - g_crateOffset[1],
 								 RES_GAME_CRATE,
 								 stateTimer,
 								 p_viewData.m_animationTime,
@@ -3318,8 +3323,8 @@ void C2D::DrawCrate(CViewData& p_viewData, int p_objectNo)
 		break;
 	case ACTION_ACTIVATING:
 	case ACTION_ACTIVATED:
-		m_lemmingAnims->DrawAnim(p_viewData.m_positionX - g_crateExplosionOffset[0],
-								 p_viewData.m_positionY - g_crateExplosionOffset[1],
+		m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - g_crateExplosionOffset[0],
+								 p_viewData.m_position.m_y - g_crateExplosionOffset[1],
 								 RES_GAME_CRATE_EXPLODE,
 								 stateTimer,
 								 p_viewData.m_animationTime,
@@ -3331,8 +3336,8 @@ void C2D::DrawCrate(CViewData& p_viewData, int p_objectNo)
 // FUNCTION: LEMBALL 0x0043d0f0
 void C2D::DrawTimeBonus(CViewData& p_viewData)
 {
-	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - g_timeBonusOffset[0],
-							 p_viewData.m_positionY - g_timeBonusOffset[1],
+	m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - g_timeBonusOffset[0],
+							 p_viewData.m_position.m_y - g_timeBonusOffset[1],
 							 RES_GAME_TIME_BONUS,
 							 p_viewData.m_stateTimer,
 							 p_viewData.m_animationTime,
@@ -3354,8 +3359,8 @@ void C2D::DrawCatapult(CViewData& p_viewData, int p_objectNo)
 
 	action = p_viewData.m_action;
 	stateTimer = p_viewData.m_stateTimer;
-	x = p_viewData.m_positionX;
-	y = p_viewData.m_positionY;
+	x = p_viewData.m_position.m_x;
+	y = p_viewData.m_position.m_y;
 	remap = NULL;
 
 	if (p_viewData.m_actionArgument != REMOTE_PALETTE_REMAP_DISABLED) {
@@ -3446,8 +3451,8 @@ void C2D::DrawSheep(CViewData& p_viewData, int p_objectNo)
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
 	stateTimer = p_viewData.m_stateTimer;
-	x = p_viewData.m_positionX;
-	y = p_viewData.m_positionY;
+	x = p_viewData.m_position.m_x;
+	y = p_viewData.m_position.m_y;
 
 	switch (p_viewData.m_action) {
 	case ACTION_NONE:
@@ -3480,8 +3485,8 @@ void C2D::DrawBall(CViewData& p_viewData)
 	int elapsed;
 	int frame;
 
-	x = p_viewData.m_positionX;
-	y = p_viewData.m_positionY;
+	x = p_viewData.m_position.m_x;
+	y = p_viewData.m_position.m_y;
 
 	switch (p_viewData.m_action) {
 	case ACTION_BALL_MOVING:
@@ -3512,8 +3517,8 @@ void C2D::DrawKey(CViewData& p_viewData, int p_playerIndex)
 		remap = NULL;
 	}
 
-	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - g_keyOffset[0],
-							 p_viewData.m_positionY - g_keyOffset[1],
+	m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - g_keyOffset[0],
+							 p_viewData.m_position.m_y - g_keyOffset[1],
 							 RES_GAME_KEYS,
 							 0,
 							 0,
@@ -3528,8 +3533,8 @@ void C2D::DrawMine(CViewData& p_viewData)
 	unsigned int stateTimer;
 	eAction action;
 
-	x = p_viewData.m_positionX;
-	y = p_viewData.m_positionY;
+	x = p_viewData.m_position.m_x;
+	y = p_viewData.m_position.m_y;
 	stateTimer = p_viewData.m_stateTimer;
 	action = p_viewData.m_action;
 
@@ -3565,8 +3570,8 @@ void C2D::DrawDoor(CViewData& p_viewData)
 	CRemap* remap;
 	int frame;
 
-	x = p_viewData.m_positionX - g_doorOffset[0];
-	y = p_viewData.m_positionY - g_doorOffset[1];
+	x = p_viewData.m_position.m_x - g_doorOffset[0];
+	y = p_viewData.m_position.m_y - g_doorOffset[1];
 	action = p_viewData.m_action;
 	objectType = p_viewData.m_objectType;
 	elapsed = p_viewData.m_animationTime - p_viewData.m_stateTimer;
@@ -3651,8 +3656,8 @@ void C2D::DrawSwitch(CViewData& p_viewData)
 	unsigned short actionArgument;
 	eAction action;
 
-	x = p_viewData.m_positionX - g_switchOffset[0];
-	y = p_viewData.m_positionY - g_switchOffset[1];
+	x = p_viewData.m_position.m_x - g_switchOffset[0];
+	y = p_viewData.m_position.m_y - g_switchOffset[1];
 	stateTimer = p_viewData.m_stateTimer;
 	action = p_viewData.m_action;
 	actionArgument = (unsigned short) p_viewData.m_actionArgument;
@@ -3689,8 +3694,8 @@ void C2D::DrawFlag(CViewData& p_viewData, eObjectType p_objectType)
 	int x;
 	int y;
 
-	x = p_viewData.m_positionX - g_flagOffset[0];
-	y = p_viewData.m_positionY - g_flagOffset[1];
+	x = p_viewData.m_position.m_x - g_flagOffset[0];
+	y = p_viewData.m_position.m_y - g_flagOffset[1];
 
 	switch (p_objectType) {
 	case OBJECT_FLAG_1:
@@ -3706,8 +3711,8 @@ void C2D::DrawFlag(CViewData& p_viewData, eObjectType p_objectType)
 // FUNCTION: LEMBALL 0x0043d950
 void C2D::DrawBonus(CViewData& p_viewData)
 {
-	m_lemmingAnims->DrawAnim(p_viewData.m_positionX - g_bonusOffset[0],
-							 p_viewData.m_positionY - g_bonusOffset[1],
+	m_lemmingAnims->DrawAnim(p_viewData.m_position.m_x - g_bonusOffset[0],
+							 p_viewData.m_position.m_y - g_bonusOffset[1],
 							 RES_GAME_BONUS,
 							 0,
 							 p_viewData.m_animationTime,
@@ -3718,8 +3723,8 @@ void C2D::DrawBonus(CViewData& p_viewData)
 void C2D::DrawTrapDoor(CViewData& p_viewData)
 {
 	int frame;
-	int x = p_viewData.m_positionX - g_trapDoorOffset[0];
-	int y = p_viewData.m_positionY - g_trapDoorOffset[1];
+	int x = p_viewData.m_position.m_x - g_trapDoorOffset[0];
+	int y = p_viewData.m_position.m_y - g_trapDoorOffset[1];
 	int shadowX = x + 16;
 	int shadowY = y + 78;
 	frame = (p_viewData.m_animationTime - p_viewData.m_stateTimer) / 66;
@@ -3818,8 +3823,8 @@ void C2D::DrawObject(CViewData& p_viewData)
 		return;
 	case OBJECT_TOWER:
 		if (m_ai->m_mapType != GROUND_STYLE_SPACE) {
-			m_lemmingAnims->DrawAnim((short) p_viewData.m_positionX - (short) g_styleObjectClip[0],
-									 (short) p_viewData.m_positionY - (short) g_styleObjectClip[1],
+			m_lemmingAnims->DrawAnim((short) p_viewData.m_position.m_x - (short) g_styleObjectClip[0],
+									 (short) p_viewData.m_position.m_y - (short) g_styleObjectClip[1],
 									 g_anGroundStyleResourceIds[6],
 									 0,
 									 0,
@@ -4032,52 +4037,52 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 	CVSRect boundsValue;
 	CVSRect& bounds = boundsValue;
 	eObjectType objectType = p_viewData.m_objectType;
-	int screenX = p_viewData.m_positionX;
-	int screenY = p_viewData.m_positionY;
+	int screenX = p_viewData.m_position.m_x;
+	int screenY = p_viewData.m_position.m_y;
 	if (screenX > -40 && screenY > -40 && screenX < m_clipSize.m_width + 40 && screenY < m_clipSize.m_height + 40) {
 		{
 			const int& gameX = (int) (unsigned short) p_viewData.m_gameX;
 			const int& gameY = (int) (unsigned short) p_viewData.m_gameY;
 			switch (objectType) {
 			default:
-				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
+				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_position.m_z, 1);
 				break;
 			case OBJECT_PLAYER_1:
 			case OBJECT_PLAYER_2:
 				switch (p_viewData.m_action) {
 				default:
-					AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
+					AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_position.m_z, 1);
 					break;
 				case ACTION_JUMPING:
 				case ACTION_FALLING:
-					AddViewIndexToObjectClipGrid(gameX - 1, gameY - 1, p_viewIndex, p_viewData.m_positionZ, 0);
+					AddViewIndexToObjectClipGrid(gameX - 1, gameY - 1, p_viewIndex, p_viewData.m_position.m_z, 0);
 					break;
 				}
 				break;
 			case OBJECT_CRATE:
 				switch (p_viewData.m_action) {
 				case ACTION_OBJECT_READY:
-					AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 1);
+					AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_position.m_z, 1);
 					break;
 				case ACTION_OBJECT_ACTIVATING:
 				case ACTION_OBJECT_ACTIVATED:
-					AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_positionZ, 1);
+					AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_position.m_z, 1);
 					break;
 				}
 				break;
 			case OBJECT_TRAP_DOOR:
-				AddViewIndexToObjectClipGrid(gameX + 32, gameY + 32, p_viewIndex, p_viewData.m_positionZ, 1);
+				AddViewIndexToObjectClipGrid(gameX + 32, gameY + 32, p_viewIndex, p_viewData.m_position.m_z, 1);
 				break;
 			case OBJECT_DOOR_1:
 			case OBJECT_DOOR_2:
-				AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_positionZ, 1);
+				AddViewIndexToObjectClipGrid(gameX + 16, gameY + 16, p_viewIndex, p_viewData.m_position.m_z, 1);
 				break;
 			case OBJECT_PAINT_GUN:
 			case OBJECT_TRAMPOLINE:
-				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_positionZ, 0);
+				AddViewIndexToObjectClipGrid(gameX, gameY, p_viewIndex, p_viewData.m_position.m_z, 0);
 				break;
 			case OBJECT_MOVER:
-				AddViewIndexToObjectClipGrid(gameX - 8, gameY - 8, p_viewIndex, p_viewData.m_positionZ + 8, 1);
+				AddViewIndexToObjectClipGrid(gameX - 8, gameY - 8, p_viewIndex, p_viewData.m_position.m_z + 8, 1);
 				break;
 			}
 		}
@@ -4496,16 +4501,15 @@ void C2D::TransformAndSortViewData()
 	if ((int) m_viewDataCount > 0) {
 		do {
 			CViewData* viewData = m_viewData + viewIndex;
-			viewData->m_gameX = (short) viewData->m_positionX;
-			viewData->m_gameY = (short) viewData->m_positionY;
+			viewData->m_gameX = (short) viewData->m_position.m_x;
+			viewData->m_gameY = (short) viewData->m_position.m_y;
 
-			CPt3 position;
-			memcpy(&position, &m_viewData[viewIndex].m_positionX, sizeof(position));
+			CPt3 position = m_viewData[viewIndex].Coord();
 			m_map->GameToScreen(position.m_x, position.m_y);
 			position.m_y -= position.m_z;
 			position.m_x -= m_viewOriginX;
 			position.m_y -= m_viewOriginY;
-			memcpy(&m_viewData[viewIndex].m_positionX, &position, sizeof(position));
+			m_viewData[viewIndex].m_position = position;
 			viewIndex++;
 		} while ((int) m_viewDataCount > viewIndex);
 	}
@@ -5143,14 +5147,14 @@ void C2D::DrawObjectsZBuff()
 				break;
 			}
 			CViewData* viewData = m_viewData + viewIndex;
-			viewData->m_gameX = (short) viewData->m_positionX;
-			viewData->m_gameY = (short) viewData->m_positionY;
-			memcpy(&position, &m_viewData[viewIndex].m_positionX, sizeof(position));
+			viewData->m_gameX = (short) viewData->m_position.m_x;
+			viewData->m_gameY = (short) viewData->m_position.m_y;
+			position = m_viewData[viewIndex].Coord();
 			m_map->GameToScreen(position.m_x, position.m_y);
 			position.m_y -= position.m_z;
 			position.m_x -= m_viewOriginX;
 			position.m_y -= m_viewOriginY;
-			memcpy(&m_viewData[viewIndex].m_positionX, &position, sizeof(position));
+			m_viewData[viewIndex].m_position = position;
 			viewIndex++;
 		}
 	}
@@ -5212,7 +5216,7 @@ unsigned short C2D::CalcZValue_Sprite(int p_index)
 	}
 
 	CViewData* viewData = m_viewData + p_index;
-	unsigned short z = (unsigned short) viewData->m_positionZ;
+	unsigned short z = (unsigned short) viewData->m_position.m_z;
 	return CalcGroundCode(objectType, (unsigned short) viewData->m_gameX, (unsigned short) viewData->m_gameY, z) + z +
 		   1;
 }

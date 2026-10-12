@@ -273,9 +273,9 @@ inline void CGameObject::GetViewData(CViewData& p_viewData)
 	p_viewData.m_objectId = m_objectId;
 	p_viewData.m_objectType = m_objectType;
 	p_viewData.m_playerIndex = 0;
-	p_viewData.m_positionX = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-	p_viewData.m_positionY = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-	p_viewData.m_positionZ = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_position.m_x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_position.m_y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+	p_viewData.m_position.m_z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	p_viewData.m_facingDirection = m_facingDirection;
 	unsigned int argument = (unsigned short) m_actionArgument;
 	unsigned int timer = m_stateTimer;
