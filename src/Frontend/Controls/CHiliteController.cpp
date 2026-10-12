@@ -23,7 +23,6 @@
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 
-#include <new.h>
 #include <stddef.h>
 
 class CAnimFrameBASE;
@@ -72,13 +71,7 @@ CHiliteController::CHiliteController(CGWnd* p_window,
 // FUNCTION: LEMBALL 0x0044f590
 void CHiliteController::SetHiliteWindow()
 {
-	void* storage = operator new(sizeof(CHiliteWindow));
-	if (storage == NULL) {
-		m_hiliteWindow = NULL;
-	}
-	else {
-		m_hiliteWindow = new (storage) CHiliteWindow();
-	}
+	m_hiliteWindow = new CHiliteWindow();
 	CVSRect rect(m_window->m_rect);
 	rect.m_x = 0;
 	rect.m_y = 0;
@@ -177,20 +170,18 @@ void CHiliteController::AddButton(int p_x,
 								  unsigned long p_actionMessage)
 {
 	unsigned long controlMessage = ++m_nextControlMessage;
-	void* storage = operator new(sizeof(CHiliteButtons));
-	m_buttons[m_buttonCount] = storage != NULL ? new (storage) CHiliteButtons(m_window,
-																			  m_gdi,
-																			  p_x,
-																			  p_y,
-																			  p_animIds,
-																			  p_mode,
-																			  p_minimum,
-																			  p_maximum,
-																			  p_value,
-																			  controlMessage,
-																			  p_binding,
-																			  p_actionMessage)
-											   : NULL;
+	m_buttons[m_buttonCount] = new CHiliteButtons(m_window,
+												  m_gdi,
+												  p_x,
+												  p_y,
+												  p_animIds,
+												  p_mode,
+												  p_minimum,
+												  p_maximum,
+												  p_value,
+												  controlMessage,
+												  p_binding,
+												  p_actionMessage);
 	AddHJunction(p_x, p_y, m_buttons[m_buttonCount]->m_controlMessage);
 	m_buttonCount++;
 }

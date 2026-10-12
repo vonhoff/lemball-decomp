@@ -16,7 +16,6 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 
-#include <new.h>
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00442f00
@@ -70,24 +69,12 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 	short y = calculated.m_y;
 	m_panelPosition.m_y = y;
 	CVSPoint position(x, y);
-	void* storage = operator new(sizeof(CPanelPauseButton));
-	if (storage != NULL) {
-		m_pauseButton = new (storage) CPanelPauseButton(this, position, m_window, RES_GAME_BUTPAWS, 3);
-	}
-	else {
-		m_pauseButton = NULL;
-	}
+	m_pauseButton = new CPanelPauseButton(this, position, m_window, RES_GAME_BUTPAWS, 3);
 
 	position.m_x = position.m_x + m_pauseSize.m_width;
 	i = 0;
 	do {
-		storage = operator new(sizeof(CPanelLemming));
-		if (storage != NULL) {
-			m_lemmings[i] = new (storage) CPanelLemming(m_ai->m_networkLemmings[i], position, this);
-		}
-		else {
-			m_lemmings[i] = NULL;
-		}
+		m_lemmings[i] = new CPanelLemming(m_ai->m_networkLemmings[i], position, this);
 		i++;
 	} while (i < 4);
 	g_pMasterInputQueue->Attach(this, 0);

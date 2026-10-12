@@ -2,7 +2,6 @@
 
 #include "Engine/Files/VsFile.h"
 
-#include <new.h>
 #include <string.h>
 
 struct _Filet;
@@ -67,16 +66,9 @@ char g_szFileModeRead[4] = "r";
 // FUNCTION: LEMBALL 0x00456680
 bool InitPlatformServices()
 {
-	void* storage;
 	unsigned int length;
 
-	storage = operator new(sizeof(CPlatformServices));
-	if (storage == NULL) {
-		g_pTargetPlatformServices = NULL;
-	}
-	else {
-		g_pTargetPlatformServices = new (storage) CPlatformServices();
-	}
+	g_pTargetPlatformServices = new CPlatformServices();
 	GetCurrentDirectoryA(sizeof(g_szCurrentDirectory), g_szCurrentDirectory);
 	length = strlen(g_szCurrentDirectory) - 1;
 	if (g_szCurrentDirectory[length] == '\\') {
