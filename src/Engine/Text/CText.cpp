@@ -72,12 +72,6 @@ void CText::Draw(CGDI* p_gdi)
 	p_gdi->AddToList(this);
 }
 
-inline static void CopyAdvance(CVSSize& p_destination, const CVSSize& p_source)
-{
-	p_destination.m_width = p_source.m_width;
-	p_destination.m_height = p_source.m_height;
-}
-
 inline static void AddAdvance(CVSSize& p_destination, const CVSSize& p_delta)
 {
 	p_destination.m_width += p_delta.m_width;
@@ -89,10 +83,10 @@ void CText::NextPos()
 {
 	CVSSize step;
 	if (m_useAdvance != 0) {
-		CopyAdvance(step, CVSSize(m_advanceX, m_advanceY));
+		step = CVSSize(m_advanceX, m_advanceY);
 	}
 	else {
-		CopyAdvance(step, m_glyph->m_size);
+		step = m_glyph->m_size;
 		AddAdvance(step, CVSSize(1, 1));
 	}
 	unsigned int flags = m_flags;

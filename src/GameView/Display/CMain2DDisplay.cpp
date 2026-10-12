@@ -449,18 +449,6 @@ inline static CVSPoint SizeToPoint(const CVSSize& p_size)
 	return CVSPoint(p_size.m_width, p_size.m_height);
 }
 
-inline static void CopySize(CVSSize& p_destination, const CVSSize& p_source)
-{
-	p_destination.m_width = p_source.m_width;
-	p_destination.m_height = p_source.m_height;
-}
-
-inline static void CopyPosition(CVSPoint& p_destination, const CVSPoint& p_source)
-{
-	p_destination.m_x = p_source.m_x;
-	p_destination.m_y = p_source.m_y;
-}
-
 // FUNCTION: LEMBALL 0x00431f30
 CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 {
@@ -469,12 +457,12 @@ CVSRect CMain2DDisplay::GetUseRect(int p_x, int p_y)
 
 	g_nCompactPrimaryContextLayout = g_pTargetGraphicsSystem->m_driverMode == GFX_MODE_VGA_320X240;
 	if (g_nCompactPrimaryContextLayout != 0) {
-		CopySize(result, m_lowResolutionSize);
+		static_cast<CVSSize&>(result) = m_lowResolutionSize;
 	}
 	else {
-		CopySize(result, m_highResolutionSize);
+		static_cast<CVSSize&>(result) = m_highResolutionSize;
 	}
-	CopyPosition(result, SizeToPoint((screenSize - result) / 2));
+	static_cast<CVSPoint&>(result) = SizeToPoint((screenSize - result) / 2);
 	if (p_x != DISPLAY_COORDINATE_AUTO_CENTER) {
 		result.m_x = (short) p_x;
 	}
