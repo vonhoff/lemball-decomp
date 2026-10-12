@@ -219,38 +219,18 @@ int g_nNetworkOptionsCapsOrShift = 0;
 
 #include "Multiplayer/Transport/CNetworkAddress.h"
 
-extern char* g_szBroadcastPeerName;
-
 enum {
 	NETWORK_OPTIONS_REDRAW_INTERVAL_MS = 500
 };
 
-extern char* g_szBroadcastPeerName;
-
-extern unsigned char* g_apNetworkOptionsRemaps[6];
-
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Resources/Types/CResFONT.h"
-
-extern char* g_szBroadcastPeerName;
 
 enum {
 	NETWORK_OPTIONS_REMAP_NONE = 6
 };
 
 #include "Engine/Strings/CString.h"
-
-extern char* g_szBroadcastPeerName;
-
-extern char* g_apNetworkOptionsMessages[NETWORK_OPTIONS_MESSAGE_COUNT];
-extern char g_szNetworkGameName[16];
-extern char g_szNetworkBroadcastAddress[NETWORK_OPTIONS_ADDRESS_MAX_LENGTH + 1];
-extern char g_szNetworkOptionsCursor[];
-extern char g_szNetworkOptionsDividerIp[];
-extern char g_szNetworkOptionsDividerLocal[];
-extern char g_szNetworkOptionsHeaderComputer[];
-extern char g_szNetworkOptionsHeaderIp[];
-extern char g_szNetworkOptionsHeaderName[];
 
 // FUNCTION: LEMBALL 0x00453280
 CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)

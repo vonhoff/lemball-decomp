@@ -111,9 +111,6 @@ char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
 #include "Engine/Graphics/Palettes/CBaseRemap.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 
-extern int g_previewRemapSourceIndices[10];
-extern int g_previewRemapTargetIndices[10];
-
 // FUNCTION: LEMBALL 0x004491b0
 CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 	: CBaseFrontendDrawer(p_display, p_gdi, p_rect, FLOW_PREVIEW, 0x32, 200, 0, 0x28, 0x30)

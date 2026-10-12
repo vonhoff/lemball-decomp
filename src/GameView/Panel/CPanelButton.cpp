@@ -40,8 +40,6 @@ enum {
 #include "GameView/Display/C2D.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 
-extern char g_szButton[];
-
 enum eAmmoCountCacheState {
 	AMMO_COUNT_CACHE_UNSET = 0xffffffff
 };

@@ -114,8 +114,6 @@ char g_szPauseConnectionLost[] = "Connection Lost...";
 
 #include <stddef.h>
 
-extern char* g_apPauseMenuLabels[15];
-
 // FUNCTION: LEMBALL 0x00443af0
 void CPauseWindow::Initialise()
 {

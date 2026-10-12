@@ -23,9 +23,6 @@ CVSPoint* g_pHotAreaCursor = NULL;
 // GLOBAL: LEMBALL 0x004a1ffc
 int g_nHotAreaListCount = 0;
 
-extern CVSPoint* g_pHotAreaCursor;
-extern int g_nHotAreaListCount;
-
 // FUNCTION: LEMBALL 0x00466370
 void CHotAreaList::Set(const CVSRect& p_rect, CVSPoint p_relativeTopLeft, const CVSPoint& p_innerOrigin)
 {

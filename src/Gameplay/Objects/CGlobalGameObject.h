@@ -53,7 +53,6 @@ public:
 	friend class CLaserManager;
 	friend class CLiftManager;
 	friend class CMineManager;
-	friend class CRocketManager;
 	friend class CTrapDoorManager;
 	friend class CHandManager;
 
