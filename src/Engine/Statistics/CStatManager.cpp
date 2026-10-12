@@ -37,15 +37,11 @@ void CStatManager::Register(CBaseStat* p_stat)
 // FUNCTION: LEMBALL 0x0045abb0
 CVSOStream& CStatManager::StreamOut(CVSOStream& p_stream)
 {
-	int i;
-
 	p_stream << "Stats Output\n";
 	p_stream << "---------------------------------------------------\n";
 	p_stream << "Average  Total    Max      Min      nSamples Desc\n";
-	i = 0;
-	while (i < m_statCount) {
+	for (int i = 0; i < m_statCount; ++i) {
 		m_stats[i]->StreamOut(p_stream);
-		++i;
 	}
 	p_stream << "---------------------------------------------------\n";
 	return p_stream;
