@@ -44,7 +44,7 @@ public:
 	~CSoundManager();
 
 private:
-	unsigned int m_reserved04;         // 0x04
+	unsigned int m_signature;          // 0x04
 	bool m_background;                 // 0x08
 	bool m_musicAvailable;             // 0x0c
 	bool m_effectsAvailable;           // 0x10
