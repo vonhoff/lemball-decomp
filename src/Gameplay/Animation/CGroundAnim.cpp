@@ -106,16 +106,11 @@ void CGroundAnim::Process()
 // FUNCTION: LEMBALL 0x0040d080
 bool CGroundAnim::Check(const tCoord3d& p_coordinate)
 {
-	int index = 0;
-	if (0 < m_count) {
-		GroundAnimEntry* entry = m_entries;
-		do {
-			if (entry->m_coordinate.m_x == p_coordinate.m_x && entry->m_coordinate.m_y == p_coordinate.m_y) {
-				return true;
-			}
-			entry++;
-			index++;
-		} while (index < m_count);
+	for (int index = 0; index < m_count; index++) {
+		if (m_entries[index].m_coordinate.m_x == p_coordinate.m_x &&
+			m_entries[index].m_coordinate.m_y == p_coordinate.m_y) {
+			return true;
+		}
 	}
 	return false;
 }
