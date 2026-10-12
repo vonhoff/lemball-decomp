@@ -902,8 +902,8 @@ void CSurface::CopyDibBits(BITMAPINFOHEADER* p_header, unsigned char* p_bits)
 	EnterCriticalSection(&m_lock);
 	int copyWidth = m_windowRect.m_width <= p_header->biWidth ? m_windowRect.m_width : p_header->biWidth;
 	int copyHeight = m_windowRect.m_height <= p_header->biHeight ? m_windowRect.m_height : p_header->biHeight;
-	int stride = (int) ((p_header->biBitCount * p_header->biWidth + 31) & ~31) / 8;
-	unsigned char* source = p_bits + (p_header->biHeight - 1) * stride;
+	int stride = (int) ((p_header->biBitCount * (unsigned long) p_header->biWidth + 31) & ~31) / 8;
+	unsigned char* source = p_bits + (int) (((unsigned long) p_header->biHeight - 1) * stride);
 	int y = 0;
 copyRow:
 	if (y >= copyHeight) {

@@ -37633,8 +37633,8 @@
       "caller": 4687856,
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Graphics/CSurface.cpp.obj",
       "symbol": "?Blit@CSurface@@UAEXPAVCBitmap@@PAVCResBITMAP@@@Z",
-      "size": 578,
-      "fingerprint": "afe90eccb50cab2a885caebe1f75c18bd47a0f8bdcdaa3ac15dc912aaf83b943",
+      "size": 583,
+      "fingerprint": "4bfb7d72fac39998e61d5dc66cde510a6b5f2a38456d988ab29917f29b27c4a0",
       "references": [
         {
           "offset": 258,
