@@ -985,5 +985,6 @@
       "build-msvc400/goal-integration-diff.json"
     ]
   },
-  "follow_up": "tools/data/reconstruction-audit-resolution-2026-10-12.json"
+  "follow_up": "tools/data/reconstruction-audit-resolution-2026-10-12.json",
+  "final_resolution": "tools/data/reconstruction-audit-completed-2026-10-12.json"
 }
