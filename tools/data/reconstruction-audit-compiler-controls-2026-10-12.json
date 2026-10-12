@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "7ba1cc1f",
+  "source_commits": ["adc89f95", "c608d88d"],
+  "previous_review": "tools/data/reconstruction-audit-transport-formation-2026-10-12.json",
+  "goal_status": "active",
+  "changes": [
+    {"commit": "adc89f95", "attempts": [12526, 12527, 12528], "change": "Remove redundant C4355 suppression and two vtordisp off/on pairs.", "evidence": "Actual MSVC4 production TUs, five sizeof probes, full PE sections, PDB types and vtables unchanged apart from timestamps/anonymous enum metadata. C4250 retained: real dominance warnings under /WX. No ABI/layout/control-flow changes."},
+    {"commit": "c608d88d", "attempts": [12529], "change": "Remove final four libc intrinsic directives.", "evidence": "Only pragma lines/adjacent blanks changed. Existing actual-flags probes and full worker code/report identity establish redundancy. No compiler flags changed."
+    }
+  ],
+  "validation": {
+    "build": "pass",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7201 references;0 errors; no route changes",
+    "vtables": "412;100%",
+    "binary_sections": "All462336 code bytes identical. Data, imports and relocations identical. Remaining differences:6 debug timestamp bytes and34 resource timestamp bytes; exact parsed timestamp offsets verified.",
+    "pdb": "All516 nonzero class sizes identical. Worker full pre-existing type records identical; only duplicate anonymous enum appended.",
+    "report": "5958-function report.json/effective.json byte-identical. Exact231045 bytes/5230 functions; Effective284765 bytes/5503 functions.",
+    "native_tests": "No fixture rerun: whole code/data identity establishes unchanged tested implementation from preceding batch. Hardware ports not executed.",
+    "graph": "7files;66seeds;72impacts; all pages. Coverage metadata-changed; direct source/worker probes and full binary comparison provide fallback. Virtual/overload graph limits remain.",
+    "limits": "Proves current controls redundant; historical original pragma/option provenance unknown. Current PDB size alone does not prove original standalone class extent.",
+    "whitespace": "pass",
+    "known_warning": "Existing staged-match collision40a830"
+  },
+  "evidence": {
+    "snapshot": "build-msvc400/clean-wave12-evidence/final",
+    "snapshot_files": 10,
+    "workers": "build-msvc400/clean-wave12-evidence/workers",
+    "worker_files": 64,
+    "exe_sha256": "37d5e502611fa1275c9676cfeb4da8c29c89fac1033803cef5e7cf320bc277e4",
+    "code_sha256": "afec451851f147b8ced5a26ff0d59de06d4007f27c0eafb5a933fda9a1fc64b3",
+    "reproduction": "verify-clean-wave12.py; compares all sections, parsed timestamp exclusions, class sizes and reports. Local artifacts ignored; hashes.json records contents."
+  },
+  "remaining": [
+    "CDebugOStream default-base construction and later buffer attachment: native45b606..68f, prior11525/11406 rejected solely scores; investigation active.",
+    "CTCPIPReadSocket annotated0xac versus rebuilt0xa8: original standalone extent unproven; provenance investigation active.",
+    "C2D/ground-lookup score-driven references and deletion alias; compiler-generated static guard annotation identity; nine-category completion matrix."
+  ]
+}
