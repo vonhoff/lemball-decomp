@@ -5007,18 +5007,10 @@ void C2D::Draw(const CVSRect& p_rect)
 	{
 		int primitiveIndex = m_primitiveCount++;
 		CClipRect& background = m_clipRects[primitiveIndex];
-		if (m_clipConfigured == 0 && m_redrawPending == 0) {
-			backgroundBounds.m_width = m_clipSize.m_width;
-			backgroundBounds.m_height = m_clipSize.m_height;
-			backgroundBounds.m_x = 0;
-			backgroundBounds.m_y = 0;
-		}
-		else {
-			backgroundBounds.m_width = m_clipSize.m_width;
-			backgroundBounds.m_height = m_clipSize.m_height;
-			backgroundBounds.m_x = 0;
-			backgroundBounds.m_y = 0;
-		}
+		backgroundBounds.m_width = m_clipSize.m_width;
+		backgroundBounds.m_height = m_clipSize.m_height;
+		backgroundBounds.m_x = 0;
+		backgroundBounds.m_y = 0;
 		static_cast<CVSSize&>(background.m_bounds) = backgroundBounds;
 		background.m_bounds.CVSPoint::operator=(backgroundBounds);
 		background.m_flags = 0;
