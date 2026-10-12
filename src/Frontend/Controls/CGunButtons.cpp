@@ -234,7 +234,7 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 	int i;
 
 	m_animIds = p_animIds;
-	m_resources = (CResANIM**) operator new(m_valueCount * sizeof(*m_resources));
+	m_resources = new CResANIM*[m_valueCount];
 	i = 0;
 	if (m_valueCount > i) {
 		do {
@@ -282,7 +282,7 @@ void CGunButtons::UnLoadFaces()
 			resource->UnLoad();
 		} while (i < m_valueCount);
 	}
-	operator delete(m_resources);
+	delete[] m_resources;
 	m_resources = NULL;
 }
 
