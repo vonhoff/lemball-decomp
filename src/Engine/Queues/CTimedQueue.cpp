@@ -8,7 +8,6 @@ bool CTimedQueue::Post(tagMESSAGE& p_message)
 	tagMESSAGE* slot;
 	unsigned int count;
 	unsigned int index;
-	tagMESSAGE* message;
 
 	slot = m_readCursor;
 	if (m_capacity == m_messageCount) {
@@ -17,20 +16,15 @@ bool CTimedQueue::Post(tagMESSAGE& p_message)
 			ProcessNMsgs(1);
 		} while (m_capacity == m_messageCount);
 	}
-	index = 0;
 	count = m_messageCount;
-	if (count != 0) {
-		do {
-			message = slot;
-			if ((int) (p_message.m_time - message->m_time) < 0) {
-				break;
-			}
-			slot = slot + 1;
-			index = index + 1;
-			if (m_messageBufferEnd <= slot) {
-				slot = m_messageBuffer;
-			}
-		} while (index < count);
+	for (index = 0; index < count; ++index) {
+		if ((int) (p_message.m_time - slot->m_time) < 0) {
+			break;
+		}
+		slot = slot + 1;
+		if (m_messageBufferEnd <= slot) {
+			slot = m_messageBuffer;
+		}
 	}
 	PutNth(&p_message, index);
 	return true;
@@ -40,5 +34,5 @@ bool CTimedQueue::Post(tagMESSAGE& p_message)
 bool CTimedQueue::Send(tagMESSAGE& p_message)
 {
 	m_sendCount = m_sendCount + 1;
-	return (unsigned int) Process(&p_message) >= 1;
+	return Process(&p_message) != 0;
 }
