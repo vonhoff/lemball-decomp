@@ -50,7 +50,7 @@ CHiliteButtons::CHiliteButtons(CGWnd* p_window,
 	int* binding = (int*) p_binding;
 	if (binding != NULL) {
 		if (m_valueCount == 1) {
-			m_value = *binding;
+			m_value = static_cast<bool>(*binding);
 		}
 		else {
 			m_value = *binding;
@@ -109,15 +109,15 @@ int CHiliteButtons::ProcessMsg(tagMESSAGE* p_message)
 			}
 			if (m_binding != NULL) {
 				if (m_valueCount == 1) {
-					if (*m_binding == 0) {
-						*m_binding = 1;
+					if (*(bool*) m_binding == false) {
+						*(bool*) m_binding = true;
 					}
 					else {
-						*m_binding = 0;
+						*(bool*) m_binding = false;
 					}
 				}
 				else {
-					*m_binding = m_value;
+					*(int*) m_binding = m_value;
 				}
 			}
 			m_button->SetAnimID(m_animIds[(int) ((unsigned int) m_value - m_minimum)]);
@@ -190,10 +190,10 @@ void CHiliteButtons::UpdateAnimID()
 {
 	if (m_binding != NULL) {
 		if (m_valueCount == 1) {
-			m_value = *m_binding;
+			m_value = *(bool*) m_binding;
 		}
 		else {
-			m_value = *m_binding;
+			m_value = *(int*) m_binding;
 		}
 	}
 	m_button->SetAnimID(m_animIds[(int) ((unsigned int) m_value - m_minimum)]);

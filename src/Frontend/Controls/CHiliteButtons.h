@@ -25,7 +25,7 @@ public:
 				   void* p_binding,
 				   unsigned long p_actionMessage);
 	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
-	virtual ~CHiliteButtons();                  // vtable+0x04
+	virtual ~CHiliteButtons();                     // vtable+0x04
 	void Draw(int p_force);
 	void MoveCurrentButton(int p_x, int p_y);
 	void LoadFaces(unsigned long* p_animIds);
@@ -47,7 +47,7 @@ private:
 	int m_maximum;                 // 0x38
 	int m_minimum;                 // 0x3c
 	int m_value;                   // 0x40
-	int* m_binding;                // 0x44
+	void* m_binding;               // 0x44
 	unsigned long* m_animIds;      // 0x48
 	CGraphicButton* m_button;      // 0x4c
 	CResANIM** m_resources;        // 0x50
