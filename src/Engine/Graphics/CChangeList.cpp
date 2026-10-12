@@ -81,15 +81,12 @@ void CChangeList::Resize(CVSSize p_size)
 // FUNCTION: LEMBALL 0x00466b60
 void CChangeList::Reset()
 {
-	unsigned int zero;
-
-	zero = 0;
-	m_currentArea.m_width = (short) zero;
-	m_area = zero;
+	m_currentArea.m_width = 0;
+	m_area = 0;
 	m_activeMark = 'P';
-	m_currentArea.m_height = (short) zero;
-	m_currentArea.m_x = (short) zero;
-	m_currentArea.m_y = (short) zero;
+	m_currentArea.m_height = 0;
+	m_currentArea.m_x = 0;
+	m_currentArea.m_y = 0;
 	m_itemCount = CHANGE_LIST_ITEMS_NEED_REBUILD;
 	m_drawMarkCount = CHANGE_LIST_ITEMS_NEED_REBUILD;
 }
