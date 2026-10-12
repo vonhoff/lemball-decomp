@@ -268,17 +268,15 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 		m_borderPadding.m_width = 8;
 		m_borderPadding.m_height = 8;
 	}
-	size.m_width = m_borderPadding.m_width;
-	size.m_height = m_borderPadding.m_height;
-	((CVSPoint*) &borderRect.m_x)->AddInPlace((CVSPoint*) &size);
+	CVSPoint padding(m_borderPadding.m_width, m_borderPadding.m_height);
+	borderRect.AddInPlace(&padding);
 	size.m_width = (short) (m_borderPadding.m_width * 2);
 	size.m_height = (short) (m_borderPadding.m_height * 2);
 	static_cast<CVSSize&>(borderRect) -= size;
-	m_borderLine[0].m_bounds.m_width = borderRect.m_width;
-	m_borderLine[0].m_bounds.m_height = borderRect.m_height;
-	m_borderLine[0].m_bounds.m_x = borderRect.m_x;
-	m_borderLine[0].m_bounds.m_y = borderRect.m_y;
-	m_borderLine[0].m_colour = 0xc;
+	for (unsigned int border = 0; border < sizeof(m_borderLine) / sizeof(m_borderLine[0]); border++) {
+		m_borderLine[border].m_bounds = borderRect;
+		m_borderLine[border].m_colour = 0xc;
+	}
 }
 
 // FUNCTION: LEMBALL 0x00444050
