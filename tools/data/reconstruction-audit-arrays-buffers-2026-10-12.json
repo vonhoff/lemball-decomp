@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "e21488e5",
+  "source_commit": "d2b2a116",
+  "route_commit": "f983fe78",
+  "previous_review": "tools/data/reconstruction-audit-view-queue-2026-10-12.json",
+  "goal_status": "active",
+  "commits": [
+    {"commit": "4dafdc59", "attempts": [12500, 12501], "change": "Graphics primitive/row arrays: typed new[]/delete[]; remove byte-size scaffolding.", "evidence": "Native pointer strides, positive height guard, signed/wrapped lengths, separate initialization and callback-sensitive reloads."},
+    {"commit": "624e59f1", "attempts": [12499], "change": "Gun-button resource array: typed ownership.", "evidence": "Native allocation/free pair; live resource/count/table reloads; original null faults."},
+    {"commit": "8637ade9", "attempts": [12502], "change": "Special animation entries: typed array ownership.", "evidence": "Native12-byte entries; offsets0/2/4/8; padding untouched. Preserve non-null reuse, zero-count pointer loss and unchecked allocation failure."},
+    {"commit": "3f6699a1", "attempts": [12503, 12504], "change": "Broadcast addresses: ordinary construction; remove placement scaffolding.", "evidence": "Native guards, vptr/first-byte initialization and subsequent assignment. Preserve cached virtual calls and callback field reloads."},
+    {"commit": "e3ecfea1", "attempts": [12505], "change": "Edit-string buffer: typed array; paired explicit buffer/editor cleanup.", "evidence": "Native capacity+1; captured editor; buffer then owner free. No added destructor/header."},
+    {"commit": "35bc56bc", "attempts": [12506], "change": "Network message byte buffer: typed array ownership.", "evidence": "Native owned/borrowed distinction, wrapped byte extent, write/end pointers, callback reloads and conditional free."},
+    {"commit": "d2b2a116", "attempts": [12507], "change": "EndSound: ordinary typed delete; retain final global clear.", "evidence": "Windows45b7c1 captures owner; direct destructor/free;45b7db clears global. Nonvirtual destructor; no custom allocator. Raw100 unchanged."}
+  ],
+  "validation": {
+    "build": "pass; routes regenerated, normal rebuild passed",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7201 references;0 errors",
+    "vtables": "412;100%",
+    "layout": "MSVC4 animation entry/owner size and offsets: pass",
+    "native_fixtures": {"graphics_arrays": 908, "gun_resources": 211, "animation_owners": 180, "view_constructor": 96, "view_driver": 292, "projections": 2072, "broadcast": 112, "byte_buffers": 312, "sound_shutdown": 27, "total": 4210},
+    "scope": "Nine groups; same final EXE. Ownership, initialization, overflow, aliases, callback mutation/reloads, original null faults, stack and saved registers.",
+    "limits": "Finite fixtures; selected dependent allocator/constructor/OS/render/service leaves intercepted. Animation constructor fixture executes inline block, not whole Restart. No full gameplay/OS test.",
+    "report": {
+      "functions": 5958,
+      "original_bytes": 433937,
+      "inventory_extents_unchanged": true,
+      "changed_rows": 20,
+      "before": {"exact_bytes": 231937, "effective_bytes": 289336, "exact_functions": 5235, "effective_functions": 5511},
+      "after": {"exact_bytes": 230771, "effective_bytes": 287544, "exact_functions": 5229, "effective_functions": 5508}
+    },
+    "matching_review": "Exact -1166 bytes/-6 functions; Effective -1792 bytes/-3. Exact worker row union, including scores; no additional sound/integration rows. Losses: register roles, independent scheduling, commutative address operands and equivalent index arithmetic. Full consumer loss diffs reviewed.",
+    "graph": "Main detect_changes:10 files;16 seeds;44 impacts; all pages. Partial/stale coverage and unresolved virtual/overload edges: source/native/full report fallback.",
+    "whitespace": "pass",
+    "known_warning": "Existing staged-match collision40a830"
+  },
+  "evidence": {
+    "snapshot": "build-msvc400/clean-wave8-evidence/final",
+    "snapshot_files": 39,
+    "workers": "build-msvc400/clean-wave8-evidence/workers",
+    "worker_files": 58,
+    "exe_sha256": "08db490873fb8728827a0d2ccbca6477c0117161d735274d388d1c3b57468d67",
+    "reproduction": "validate-clean-wave8.py; sequential. save-wave8.py verifies result hashes and worker/integration row equality. Local artifacts ignored; hashes.json records contents."
+  },
+  "remaining": [
+    "Window/trig scalar cleanup: verified worker batch, integration pending.",
+    "Gameplay array cleanup, custom MOG arena ownership and compiler pragmas: worker investigations underway.",
+    "Read/write/broadcast socket cleanup, game-object destination lists and serialized scratch allocation: positive sites; individual review pending.",
+    "Sprite-ground lookup: native cleanup capture/order recorded in observation2247; producer provenance unresolved. No speculative source change.",
+    "Historical names, two patch-byte roles, opaque z-buffer purpose and unsupported constant relationships remain qualified."
+  ]
+}
