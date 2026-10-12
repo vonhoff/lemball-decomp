@@ -76,7 +76,7 @@ void CAnimSpecial::Initialise(CMap* p_map)
 		return;
 	}
 	if (m_entries == NULL) {
-		m_entries = (AnimSpecialEntry*) operator new(entryCount * sizeof(AnimSpecialEntry));
+		m_entries = new AnimSpecialEntry[entryCount];
 	}
 
 	int entryIndex = 0;

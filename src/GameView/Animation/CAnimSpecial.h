@@ -19,7 +19,7 @@ public:
 	~CAnimSpecial()
 	{
 		if (m_entries != NULL) {
-			operator delete(m_entries);
+			delete[] m_entries;
 		}
 	}
 	void Initialise(CMap* p_map);
