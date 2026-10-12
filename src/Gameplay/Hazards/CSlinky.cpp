@@ -99,7 +99,7 @@ bool CSlinky::Move()
 	do {
 		int dx;
 		int dy;
-		int random = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+		int random = ((unsigned int) *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 		*g_pRandomSeed = random;
 		m_actionArgument = random % SLINKY_DIRECTION_COUNT;
 		switch ((unsigned short) m_actionArgument) {
