@@ -9,7 +9,7 @@
 void SpriteGroundLookup::MarkRect(const CVSRect& p_rect)
 {
 	short pixelX = p_rect.m_x;
-	const short& pixelY = p_rect.m_y;
+	short pixelY = p_rect.m_y;
 	int cellX = (short) (pixelX / GROUND_BLOCK_PIXEL_SIZE);
 	int cellY = (short) (pixelY / GROUND_BLOCK_PIXEL_SIZE);
 	int columns = (pixelX + p_rect.m_width - 1) / GROUND_BLOCK_PIXEL_SIZE - cellX + 1;
