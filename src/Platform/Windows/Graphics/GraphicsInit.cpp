@@ -6,7 +6,6 @@
 #include "Engine/Startup/VsInit.h"
 #include "Platform/Windows/Input/CCursor.h"
 
-#include <new.h>
 #include <stddef.h>
 
 class GrafPort;
@@ -14,46 +13,11 @@ class GrafPort;
 // FUNCTION: LEMBALL 0x0046ba80
 bool _GDI_Init()
 {
-	void* storage;
-	CCursor* cursor;
-	CGraphicsState* system;
-
-	storage = operator new(sizeof(CGraphicsState));
-	system = (CGraphicsState*) storage;
-	if (system != NULL) {
-		system->m_targetWindow = 0;
-		system->m_fallbackWarningShown = 0;
-		g_pTargetGraphicsSystem = system;
-	}
-	else {
-		g_pTargetGraphicsSystem = NULL;
-	}
+	g_pTargetGraphicsSystem = new CGraphicsState();
 	g_pTargetGraphicsSystem->SelectDriver(8);
-
-	storage = operator new(sizeof(CGDIDevice));
-	if (storage != NULL) {
-		g_pGdiDevice = new (storage) CGDIDevice(g_preInitActive.m_flags);
-	}
-	else {
-		g_pGdiDevice = NULL;
-	}
-
-	storage = operator new(sizeof(CSurface));
-	if (storage != NULL) {
-		g_pGdiHelperTarget = new (storage) CSurface((GrafPort*) NULL);
-	}
-	else {
-		g_pGdiHelperTarget = NULL;
-	}
-
-	cursor = (CCursor*) operator new(sizeof(CCursor));
-	if (cursor != NULL) {
-		new (cursor) CCursor();
-		g_pCursor = cursor;
-	}
-	else {
-		g_pCursor = NULL;
-	}
+	g_pGdiDevice = new CGDIDevice(g_preInitActive.m_flags);
+	g_pGdiHelperTarget = new CSurface((GrafPort*) NULL);
+	g_pCursor = new CCursor();
 
 	if (g_pGdiDevice != NULL && g_pGdiHelperTarget != NULL) {
 		return true;
@@ -64,29 +28,11 @@ bool _GDI_Init()
 // FUNCTION: LEMBALL 0x0046bb70
 bool _GDI_Quit()
 {
-	CSurface* surface;
-	CGDIDevice* device;
-	CGraphicsState* system;
-
 	delete g_pCursor;
-	surface = g_pGdiHelperTarget;
-	if (surface != NULL) {
-		surface->~CSurface();
-		operator delete(surface);
-	}
-	device = g_pGdiDevice;
-	if (device != NULL) {
-		device->~CGDIDevice();
-		operator delete(device);
-	}
+	delete g_pGdiHelperTarget;
+	delete g_pGdiDevice;
 	g_pGdiHelperTarget = NULL;
 	g_pGdiDevice = NULL;
-	system = g_pTargetGraphicsSystem;
-	if (system != NULL) {
-		if (g_pTargetGraphicsDriver != NULL) {
-			delete g_pTargetGraphicsDriver;
-		}
-		operator delete(system);
-	}
+	delete g_pTargetGraphicsSystem;
 	return true;
 }

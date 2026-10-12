@@ -1,6 +1,8 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSSTATE_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSSTATE_H
 
+#include "CGraphicsDriver.h"
+
 enum eGraphicsDriverMode {
 	GFX_MODE_NONE = 0,
 	GFX_MODE_GDI = 1,
@@ -15,6 +17,9 @@ enum eGraphicsDriverMode {
 
 // SIZE 0x0c
 struct CGraphicsState {
+	CGraphicsState() : m_targetWindow(0), m_fallbackWarningShown(false) {}
+	~CGraphicsState() { delete g_pTargetGraphicsDriver; }
+
 	bool SelectDriver(int p_driverMode);
 	void NotifyDriverChange();
 	bool ChangeDriver(int p_driverMode);

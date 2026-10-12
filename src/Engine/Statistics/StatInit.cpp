@@ -2,7 +2,6 @@
 #include "Engine/Startup/VsInit.h"
 #include "Engine/Streams/CVSOStream.h"
 
-#include <new.h>
 #include <stddef.h>
 
 enum {
@@ -12,16 +11,7 @@ enum {
 // FUNCTION: LEMBALL 0x0045aa80
 bool _STAT_Init()
 {
-	void* storage;
-
-	storage = operator new(sizeof(CStatManager));
-	if (storage != NULL) {
-		storage = new (storage) CStatManager(STAT_MANAGER_INITIAL_CAPACITY);
-	}
-	else {
-		storage = NULL;
-	}
-	g_pStatManager = (CStatManager*) storage;
+	g_pStatManager = new CStatManager(STAT_MANAGER_INITIAL_CAPACITY);
 
 	return g_pStatManager != NULL;
 }
