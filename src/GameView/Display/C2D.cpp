@@ -566,7 +566,7 @@ void C2D::ShutDown()
 	}
 	operator delete(m_zBuffer);
 	operator delete(m_viewData);
-	CursorChangeType(0, 0);
+	CursorChangeType(CURSOR_DISPLAY_NONE, 0);
 	delete m_lemmingAnims;
 	UnRegisterRemaps();
 	CPBButton::DumpStrs();
@@ -646,9 +646,9 @@ void C2D::UnRegisterRemaps()
 }
 
 // FUNCTION: LEMBALL 0x004364b0
-void C2D::CursorChangeType(int p_cursorType, int p_value)
+void C2D::CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 {
-	::CursorChangeType((eCursorDisplayType) p_cursorType, p_value);
+	::CursorChangeType(p_cursorType, p_frame);
 }
 
 // FUNCTION: LEMBALL 0x004364d0

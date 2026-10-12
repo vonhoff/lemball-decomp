@@ -13,6 +13,7 @@
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Graphics/Primitives/CZBuffClear.h"
 #include "Engine/Graphics/Primitives/CZBuffScroll.h"
+#include "Engine/Input/CBaseCursor.h"
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
@@ -116,7 +117,7 @@ public:
 	void BuildObjectClipData(CViewData& p_viewData, int p_viewIndex);
 	void CancelMoves();
 	void CheckValidFormGroup();
-	void CursorChangeType(int p_cursorType, int p_value);
+	void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame);
 	void DoButtons();
 	void DoClipWidth(int p_mapX, int p_mapY, int p_count);
 	void DoClipWidthSearch(int p_mapX, int p_mapY, int p_count);
