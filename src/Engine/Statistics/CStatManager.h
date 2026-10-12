@@ -14,10 +14,10 @@ public:
 	~CStatManager();
 
 private:
-	unsigned int m_unk0x04; // 0x04
-	CBaseStat** m_stats;    // 0x08
-	int m_capacity;         // 0x0c
-	int m_statCount;        // 0x10
+	unsigned int m_signature; // 0x04
+	CBaseStat** m_stats;      // 0x08
+	int m_capacity;           // 0x0c
+	int m_statCount;          // 0x10
 };
 
 extern CStatManager* g_pStatManager;

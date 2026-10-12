@@ -26,7 +26,7 @@ public:
 	friend class CBaseCursor;
 
 private:
-	unsigned int m_unk0x04;   // 0x04
+	unsigned int m_signature; // 0x04
 	unsigned int m_itemCount; // 0x08
 	CBaseQueue* m_queue;      // 0x0c
 	void* m_firstItem;        // 0x10
