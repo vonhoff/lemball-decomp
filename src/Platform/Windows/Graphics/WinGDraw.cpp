@@ -338,7 +338,7 @@ int __stdcall WinGDrawFrame(WinGDrawState* p_state, void* p_request, long p_para
 	request = (IcDraw*) p_request;
 	window = (CPVWnd*) p_state->m_window;
 	if (window->m_lifecycleRefs == 1) {
-		p_state->m_surface->CopyDibBits(request->lpFormat, (unsigned char*) request->lpData);
+		p_state->m_surface->CopyDibBits((BITMAPINFOHEADER*) request->lpFormat, (unsigned char*) request->lpData);
 		p_state->m_window->CGWnd::Refresh(NULL);
 	}
 	return 0;

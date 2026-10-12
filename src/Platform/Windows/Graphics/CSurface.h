@@ -121,7 +121,7 @@ public:
 	void SetDefaultCtable();
 	void SetWindowPtr(void* p_platformPort);
 	void ToScreen(class CSurface* p_destinationSurface);
-	void CopyDibBits(void* p_header, unsigned char* p_bits);
+	void CopyDibBits(BITMAPINFOHEADER* p_header, unsigned char* p_bits);
 	~CSurface();
 
 	friend class CBaseFrontendDrawer;

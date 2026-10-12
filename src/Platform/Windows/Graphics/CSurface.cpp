@@ -894,17 +894,16 @@ void CSurface::SetWindowPtr(void* p_platformPort)
 }
 
 // FUNCTION: LEMBALL 0x0046d800
-void CSurface::CopyDibBits(void* p_header, unsigned char* p_bits)
+void CSurface::CopyDibBits(BITMAPINFOHEADER* p_header, unsigned char* p_bits)
 {
 	if (m_changeList == NULL) {
 		return;
 	}
 	EnterCriticalSection(&m_lock);
-	BITMAPINFOHEADER* header = (BITMAPINFOHEADER*) p_header;
-	int copyWidth = m_windowRect.m_width <= header->biWidth ? m_windowRect.m_width : header->biWidth;
-	int copyHeight = m_windowRect.m_height <= header->biHeight ? m_windowRect.m_height : header->biHeight;
-	int stride = (int) ((header->biBitCount * header->biWidth + 31) & ~31) / 8;
-	unsigned char* source = p_bits + (header->biHeight - 1) * stride;
+	int copyWidth = m_windowRect.m_width <= p_header->biWidth ? m_windowRect.m_width : p_header->biWidth;
+	int copyHeight = m_windowRect.m_height <= p_header->biHeight ? m_windowRect.m_height : p_header->biHeight;
+	int stride = (int) ((p_header->biBitCount * p_header->biWidth + 31) & ~31) / 8;
+	unsigned char* source = p_bits + (p_header->biHeight - 1) * stride;
 	int y = 0;
 copyRow:
 	if (y >= copyHeight) {
@@ -912,7 +911,7 @@ copyRow:
 	}
 	{
 		memcpy(m_lines[y], source, copyWidth);
-		copyHeight = m_windowRect.m_height <= header->biHeight ? m_windowRect.m_height : header->biHeight;
+		copyHeight = m_windowRect.m_height <= p_header->biHeight ? m_windowRect.m_height : p_header->biHeight;
 		source -= stride;
 		y++;
 		goto copyRow;
