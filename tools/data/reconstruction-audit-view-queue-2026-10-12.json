@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "576d0a00",
+  "source_commit": "e21488e5",
+  "previous_review": "tools/data/reconstruction-audit-startup-frontend-2026-10-12.json",
+  "goal_status": "active",
+  "commits": [
+    {
+      "commit": "49d2d8fa",
+      "attempts": [12496, 12497],
+      "change": "Three ordinary constructions: graphics drivers and GDI context.",
+      "evidence": "Windows guarded allocations; real CVSSize arguments; callback-sensitive globals. Preserve successful HDC leak on allocation failure."
+    },
+    {
+      "commit": "03161670",
+      "attempts": [12495],
+      "change": "C2D: three ordinary constructions; typed grid and array ownership; remove immediately-null cell disposal branch.",
+      "evidence": "Windows allocation sizes/guards, constructor arguments, partial initialization, captured owners and callback reloads. Array constructors execute without cookies. Opaque2048-byte owner remains uninitialized; role unknown."
+    },
+    {
+      "commit": "e21488e5",
+      "attempts": [12498],
+      "change": "Queue: typed message arrays and handler nodes.",
+      "evidence": "Windows20-byte messages/12-byte nodes; low32 allocation arithmetic; conditional buffer free; captured head/next; live count reloads. Constructor overloads retained."
+    }
+  ],
+  "validation": {
+    "build": "pass; routes regenerated, normal rebuild passed",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7201 references;0 errors",
+    "vtables": "412;100%",
+    "headers_or_layouts_changed": false,
+    "native_fixtures": {"graphics": 2584, "view": 6636, "queue": 623, "total": 9843},
+    "scope": "Nine groups; same final EXE. Failures, uninitialized storage, callback mutations/reloads, network shutdown branches, geometry, overflow/alias cases, stack and saved registers.",
+    "limits": "Finite fixtures; selected dependent allocator/constructor/OS/render/network leaves intercepted. Actual view array constructors execute. No full gameplay/OS test.",
+    "report": {
+      "functions": 5958,
+      "original_bytes": 433937,
+      "inventory_extents_unchanged": true,
+      "changed_rows": 37,
+      "before": {"exact_bytes": 233162, "effective_bytes": 290326, "exact_functions": 5242, "effective_functions": 5517},
+      "after": {"exact_bytes": 231937, "effective_bytes": 289336, "exact_functions": 5235, "effective_functions": 5511}
+    },
+    "matching_review": "Exact -1225 bytes/-7 functions; Effective -990 bytes/-6. Exact worker row union, including scores. Losses reviewed: register roles, independent scheduling and commuted comparisons. Native fixtures cover major collateral paths; Jump/Switch complete diffs inspected.",
+    "whitespace": "pass",
+    "known_warning": "Existing staged-match collision40a830"
+  },
+  "evidence": {
+    "snapshot": "build-msvc400/clean-wave7-evidence/final",
+    "snapshot_files": 36,
+    "workers": "build-msvc400/clean-wave7-evidence/workers",
+    "worker_files": 39,
+    "exe_sha256": "b1dbebe6422eef5e8d9dd9f80532fdc91a31aea536cd6e1517e612eccae3f66a",
+    "reproduction": "validate-clean-wave7.py; sequential. save-wave7.py verifies result hashes and worker/integration row equality. Local artifacts ignored; hashes.json records contents."
+  },
+  "remaining": [
+    "Graphics primitive/row arrays, gun-button resources and animation entries: worker batches underway.",
+    "String/message byte buffers, broadcast factories, custom arenas and sprite-ground lookup provenance require individual investigation.",
+    "Historical names, two sound-patch byte roles, opaque z-buffer purpose and unsupported constant relationships remain qualified."
+  ]
+}
