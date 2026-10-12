@@ -146,7 +146,6 @@ public:
 	void StopMoving();
 	void TurnToFaceDestination();
 	void UpdateCollision();
-	CGameObject();
 
 	friend class CGameObjectMess;
 	friend class CLift;

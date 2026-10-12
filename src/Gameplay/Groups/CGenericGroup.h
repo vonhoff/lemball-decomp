@@ -55,7 +55,6 @@ public:
 	virtual void GetBoundingBox(CVSRect& p_rect);                                             // vtable+0x48
 	void SwapElements(CGameObject* p_first, CGameObject* p_second);
 	void SwapElementIndices(int p_firstIndex, int p_secondIndex);
-	CGenericGroup();
 
 protected:
 	int m_elementCount;          // 0x124

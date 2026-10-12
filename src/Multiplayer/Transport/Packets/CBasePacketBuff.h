@@ -8,7 +8,6 @@ class CBasePacketBuff {
 public:
 	CBasePacketBuff(int p_packetCount, unsigned short p_packetSize);
 	~CBasePacketBuff();
-	CBasePacketBuff();
 
 protected:
 	int m_packetCount;         // 0x00

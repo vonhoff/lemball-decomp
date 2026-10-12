@@ -21,7 +21,6 @@ public:
 	bool ContainsAddress(void* p_address);
 	void* operator new(size_t p_size, void* p_memory);
 	void operator delete(void*) {}
-	CMBlock();
 
 	friend class CArena;
 	friend class CRAMArena;

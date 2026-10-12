@@ -22,7 +22,6 @@ public:
 	virtual bool ProcessMessages(tagMESSAGE* p_message);                                             // vtable+0x10
 	int ProcessMsg(tagMESSAGE* p_message);
 	void Action(eUserActions p_action, eUserActionStages p_stage);
-	CBaseFrontendProcess();
 
 	friend class CNetworkOptionsProc;
 

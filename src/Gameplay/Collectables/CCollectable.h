@@ -15,7 +15,6 @@ public:
 	virtual void SetSFX();     // vtable+0x110
 	virtual int Collected();   // vtable+0x114
 	virtual ~CCollectable();   // vtable+0x00
-	CCollectable();
 
 	friend class CCollectableManager;
 

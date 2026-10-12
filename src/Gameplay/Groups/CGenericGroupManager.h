@@ -45,7 +45,6 @@ public:
 	void Restart();
 	void ClearGroups();
 	~CGenericGroupManager();
-	CGenericGroupManager();
 
 protected:
 	CGenericGroup* m_groups[GENERIC_GROUP_CAPACITY]; // 0x04

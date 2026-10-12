@@ -17,7 +17,6 @@ public:
 	CGameFlaggedMessage(unsigned long p_messageId);
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
-	CGameFlaggedMessage();
 
 private:
 	unsigned int m_flag; // 0x2c

@@ -53,7 +53,6 @@ public:
 	void DeleteLists();
 	void* operator new(size_t p_size, void* p_memory);
 	void operator delete(void*) {}
-	CArena();
 
 	friend class CMogRes;
 	friend void INIT_SubSystems();

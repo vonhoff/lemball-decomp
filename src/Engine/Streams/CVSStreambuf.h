@@ -10,7 +10,6 @@ public:
 	virtual void flush() = 0;          // vtable+0x04
 	virtual void sputc(char p_c) = 0;  // vtable+0x08
 	virtual void sputs(char* p_s) = 0; // vtable+0x0c
-	CVSStreambuf();
 
 public:
 	char* m_buffer;          // 0x04

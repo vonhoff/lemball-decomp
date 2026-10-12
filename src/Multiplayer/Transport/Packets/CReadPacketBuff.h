@@ -9,7 +9,6 @@ public:
 	CReadPacketBuff(int p_packetCount, unsigned short p_packetSize);
 	void FillPacket(int p_index);
 	void UnUseAll();
-	CReadPacketBuff();
 };
 
 #endif

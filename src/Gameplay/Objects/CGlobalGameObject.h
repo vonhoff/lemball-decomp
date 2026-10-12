@@ -33,7 +33,6 @@ public:
 	static void DeleteMessages();
 	void RequestAction(eAction p_action);
 	static void SetMessages();
-	CGlobalGameObject();
 	void SetActionAndRequest(eAction p_action, int p_argument);
 
 	friend class CGameObjectMess;

@@ -33,7 +33,6 @@ public:
 	virtual ~CBaseQueue();                               // vtable+0x04
 	virtual bool Post(tagMESSAGE& p_message);            // vtable+0x08
 	virtual bool Send(tagMESSAGE& p_message);            // vtable+0x0c
-	CBaseQueue();
 
 	friend class CTimedQueue;
 

@@ -12,7 +12,6 @@ public:
 	virtual void AddData(); // vtable+0x10
 	virtual void GetData(); // vtable+0x08
 	void Send(CGlobalGameObject* p_object);
-	CGameObjectMess();
 
 	friend class CObjectChangeStateMess;
 	friend class CObjectDiesMess;

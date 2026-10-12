@@ -20,7 +20,6 @@ class CVSIOs {
 public:
 	CVSIOs(CVSStreambuf* p_streamBuffer);
 	virtual ~CVSIOs(); // vtable+0x00
-	CVSIOs();
 	char SetFill(char p_fill)
 	{
 		char previous = m_fill;

@@ -47,7 +47,6 @@ public:
 	void DetachGdi(CGDI* p_gdi);
 	void UnLoadAnims(unsigned long p_resourceId);
 	~CAnimsManager();
-	CAnimsManager();
 
 	friend class CBaseFrontendDrawer;
 	friend class C2D;
