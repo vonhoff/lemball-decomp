@@ -18,17 +18,17 @@ CGameStatus::CGameStatus()
 	int zero = 0;
 	int index;
 
-	m_level = zero;
-	m_levelState = zero;
-	m_skill = zero;
-	m_skillState = zero;
-	m_bulletHitHandlingDisabled = zero;
-	m_unlimitedAmmo = zero;
+	m_level = 0;
+	m_levelState = 0;
+	m_skill = 0;
+	m_skillState = 0;
+	m_bulletHitHandlingDisabled = 0;
+	m_unlimitedAmmo = 0;
 	for (index = 0; index < 5; index++) {
-		m_maxLevels[index] = zero;
+		m_maxLevels[index] = 0;
 	}
 	for (index = 0; index < 5; index++) {
-		m_lastLevels[index] = zero;
+		m_lastLevels[index] = 0;
 	}
 }
 
