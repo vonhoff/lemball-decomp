@@ -279,19 +279,13 @@ int CDirectSoundDevice::IsEffectCapable()
 }
 
 // FUNCTION: LEMBALL 0x0047e500
-int CDirectSoundDevice::AllocatePatch(VSPATCH* p_patch,
-									  unsigned long* p_handle,
-									  unsigned char p_arg2,
-									  unsigned char p_arg3)
+int CDirectSoundDevice::AllocatePatch(VSPATCH* p_patch, unsigned long* p_handle, unsigned char, unsigned char)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e510
-int CDirectSoundDevice::AllocateDrumPatch(VSPATCH* p_patch,
-										  unsigned long* p_handle,
-										  unsigned char p_arg2,
-										  unsigned char p_arg3)
+int CDirectSoundDevice::AllocateDrumPatch(VSPATCH* p_patch, unsigned long* p_handle, unsigned char, unsigned char)
 {
 	return 0;
 }

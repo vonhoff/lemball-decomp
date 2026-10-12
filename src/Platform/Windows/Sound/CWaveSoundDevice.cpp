@@ -301,19 +301,13 @@ int CWaveSoundDevice::IsEffectCapable()
 }
 
 // FUNCTION: LEMBALL 0x0047cef0
-int CWaveSoundDevice::AllocatePatch(VSPATCH* p_patch,
-									unsigned long* p_handle,
-									unsigned char p_arg2,
-									unsigned char p_arg3)
+int CWaveSoundDevice::AllocatePatch(VSPATCH* p_patch, unsigned long* p_handle, unsigned char, unsigned char)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047cf00
-int CWaveSoundDevice::AllocateDrumPatch(VSPATCH* p_patch,
-										unsigned long* p_handle,
-										unsigned char p_arg2,
-										unsigned char p_arg3)
+int CWaveSoundDevice::AllocateDrumPatch(VSPATCH* p_patch, unsigned long* p_handle, unsigned char, unsigned char)
 {
 	return 0;
 }

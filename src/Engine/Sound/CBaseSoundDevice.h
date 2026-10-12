@@ -25,12 +25,12 @@ public:
 	virtual int GetNumEffectsChannels() = 0;                  // vtable+0x30
 	virtual int AllocatePatch(VSPATCH* p_patch,
 							  unsigned long* p_handle,
-							  unsigned char p_arg2,
-							  unsigned char p_arg3) = 0; // vtable+0x34
+							  unsigned char,
+							  unsigned char) = 0; // vtable+0x34
 	virtual int AllocateDrumPatch(VSPATCH* p_patch,
 								  unsigned long* p_handle,
-								  unsigned char p_arg2,
-								  unsigned char p_arg3) = 0;                                             // vtable+0x38
+								  unsigned char,
+								  unsigned char) = 0;                                                    // vtable+0x38
 	virtual int AllocateEffect(unsigned char* p_data, unsigned long* p_handle) = 0;                      // vtable+0x3c
 	virtual int FreePatch(unsigned long p_patchHandle) = 0;                                              // vtable+0x40
 	virtual int FreeDrumPatch(unsigned long p_patchHandle) = 0;                                          // vtable+0x44
