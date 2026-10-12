@@ -312,9 +312,9 @@ void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
 	}
 	SelectObject((HDC) p_dc, (HFONT) m_fontHandle);
 	int lineHeight = m_lineHeight;
-	int count = (paintRect.bottom - paintRect.top + lineHeight - 1) / lineHeight;
-	int first = m_topLine + paintRect.top / lineHeight;
-	for (int line = first; line < first + count; line++) {
+	int count = (int) ((unsigned int) paintRect.bottom - paintRect.top + lineHeight - 1) / lineHeight;
+	int first = (unsigned int) m_topLine + paintRect.top / lineHeight;
+	for (int line = first; line < (int) ((unsigned int) first + count); line++) {
 		unsigned int foreground = 0;
 		unsigned int background = TEXT_WINDOW_COLOR_WHITE;
 		const char* text;
@@ -332,10 +332,10 @@ void CTextWnd::Paint(void* p_dc, const tagPAINTSTRUCT* p_paint)
 			text = "";
 		}
 		RECT row;
-		row.top = (line - m_topLine) * m_lineHeight;
+		row.top = ((unsigned int) line - m_topLine) * m_lineHeight;
 		row.left = 0;
 		row.right = m_clientWidth;
-		row.bottom = row.top + m_lineHeight;
+		row.bottom = (unsigned int) row.top + m_lineHeight;
 		SetTextColor((HDC) p_dc, foreground);
 		SetBkColor((HDC) p_dc, background);
 		ExtTextOutA((HDC) p_dc, row.left, row.top, ETO_OPAQUE, &row, text, strlen(text), NULL);
