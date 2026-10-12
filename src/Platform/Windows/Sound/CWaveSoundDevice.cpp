@@ -113,14 +113,14 @@ CWaveSoundDevice::CWaveSoundDevice(int p_channelCount)
 // FUNCTION: LEMBALL 0x0047caa0
 CWaveSoundDevice::~CWaveSoundDevice()
 {
-	Close();
+	ShutDown();
 	delete[] m_effects;
 	delete[] m_effectHandles;
 	delete[] m_effectUsed;
 }
 
 // FUNCTION: LEMBALL 0x0047caf0
-char* CWaveSoundDevice::GetInfo()
+char* CWaveSoundDevice::GetDeviceInfo()
 {
 	WAVEOUTCAPSA* caps;
 
@@ -132,7 +132,7 @@ char* CWaveSoundDevice::GetInfo()
 }
 
 // FUNCTION: LEMBALL 0x0047cb00
-int CWaveSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
+int CWaveSoundDevice::Initialise(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
 	MMRESULT result;
 	char errorText[MAXERRORLENGTH];
@@ -180,13 +180,13 @@ int CWaveSoundDevice::GetNumEffectsChannels()
 }
 
 // FUNCTION: LEMBALL 0x0047cc10
-int CWaveSoundDevice::IsAvailable()
+int CWaveSoundDevice::Detect()
 {
 	return (int) m_available;
 }
 
 // FUNCTION: LEMBALL 0x0047cc20
-int CWaveSoundDevice::Close()
+int CWaveSoundDevice::ShutDown()
 {
 	MMRESULT result;
 	unsigned int tries;
@@ -204,7 +204,7 @@ int CWaveSoundDevice::Close()
 		} while (result != 0);
 		if (tries == WAVE_DEVICE_RETRY_LIMIT) {
 			*g_pErrorOutput << "Error Shutting Down Wave Device : ";
-			*g_pErrorOutput << GetInfo() << ".\n";
+			*g_pErrorOutput << GetDeviceInfo() << ".\n";
 			*g_pErrorOutput << "System may be unstable!\n";
 			waveOutGetErrorTextA(result, errorText, sizeof(errorText));
 			*g_pErrorOutput << errorText << "\n";
@@ -225,7 +225,7 @@ int CWaveSoundDevice::Close()
 			} while (result != 0);
 			if (tries == WAVE_DEVICE_RETRY_LIMIT) {
 				*g_pErrorOutput << "Error Closing Down Wave Device : ";
-				*g_pErrorOutput << GetInfo() << ".\n";
+				*g_pErrorOutput << GetDeviceInfo() << ".\n";
 				*g_pErrorOutput << "System may be unstable!\n";
 				waveOutGetErrorTextA(result, errorText, sizeof(errorText));
 				*g_pErrorOutput << errorText << "\n";
@@ -238,7 +238,7 @@ int CWaveSoundDevice::Close()
 }
 
 // FUNCTION: LEMBALL 0x0047cdd0
-int CWaveSoundDevice::IsAnyEffectPlaying()
+int CWaveSoundDevice::HasActiveVoices()
 {
 	unsigned int i;
 	int playing;
@@ -279,7 +279,7 @@ int CWaveSoundDevice::StopAllEffects()
 		} while (result != 0);
 		if (tries == WAVE_DEVICE_RETRY_LIMIT) {
 			*g_pErrorOutput << "Error stopping playback in device : ";
-			*g_pErrorOutput << GetInfo() << ".\n";
+			*g_pErrorOutput << GetDeviceInfo() << ".\n";
 			*g_pErrorOutput << "System may be unstable!\n";
 			waveOutGetErrorTextA(result, errorText, sizeof(errorText));
 			*g_pErrorOutput << errorText << "\n";
@@ -317,13 +317,13 @@ int CWaveSoundDevice::AllocateDrumPatch(unsigned int p_arg0,
 }
 
 // FUNCTION: LEMBALL 0x0047cf10
-int CWaveSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_handle)
+int CWaveSoundDevice::AllocateEffect(unsigned char* p_data, unsigned long* p_handle)
 {
 	void* storage;
 
 	for (unsigned int i = 0; i < m_channelCount; i++) {
 		if (m_effectUsed[i] == 0) {
-			Close();
+			ShutDown();
 			storage = operator new(sizeof(CWaveEffect));
 			if (storage == NULL) {
 				m_effects[i] = NULL;
@@ -332,7 +332,7 @@ int CWaveSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_hand
 				m_effects[i] =
 					new (storage) CWaveEffect(p_data, m_waveOut, m_sampleRate, (int) m_use16Bit, (int) m_stereo);
 			}
-			Open(0, 1, 0);
+			Initialise(0, 1, 0);
 			m_effectUsed[i] = true;
 			m_effectHandles[i] = m_nextHandle;
 			*p_handle = m_nextHandle;

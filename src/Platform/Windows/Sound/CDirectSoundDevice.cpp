@@ -113,13 +113,13 @@ CDirectSoundDevice::~CDirectSoundDevice()
 }
 
 // FUNCTION: LEMBALL 0x0047e000
-char* CDirectSoundDevice::GetInfo()
+char* CDirectSoundDevice::GetDeviceInfo()
 {
 	return m_platform.m_available == 1 ? "Direct Sound Device\n" : "ERROR! No Effects Device for WinEff!\n";
 }
 
 // FUNCTION: LEMBALL 0x0047e020
-int CDirectSoundDevice::Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
+int CDirectSoundDevice::Initialise(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId)
 {
 	DSBUFFERDESC description;
 	long result;
@@ -211,13 +211,13 @@ int CDirectSoundDevice::GetNumEffectsChannels()
 }
 
 // FUNCTION: LEMBALL 0x0047e380
-int CDirectSoundDevice::IsAvailable()
+int CDirectSoundDevice::Detect()
 {
 	return m_platform.m_available;
 }
 
 // FUNCTION: LEMBALL 0x0047e390
-int CDirectSoundDevice::Close()
+int CDirectSoundDevice::ShutDown()
 {
 	if (g_primarySoundBuffer != NULL) {
 		unsigned long result = g_primarySoundBuffer->Release();
@@ -241,7 +241,7 @@ int CDirectSoundDevice::Close()
 }
 
 // FUNCTION: LEMBALL 0x0047e450
-int CDirectSoundDevice::IsAnyEffectPlaying()
+int CDirectSoundDevice::HasActiveVoices()
 {
 	for (int i = 1; i <= m_platform.m_effectCapacity; i++) {
 		if (m_platform.m_effects[i] != NULL && m_platform.m_effects[i]->IsPlaying()) {
@@ -446,7 +446,7 @@ void CDirectSoundDevice::SetWnd(CWnd* p_wnd)
 }
 
 // FUNCTION: LEMBALL 0x0047e8c0
-int CDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_handle)
+int CDirectSoundDevice::AllocateEffect(unsigned char* p_data, unsigned long* p_handle)
 {
 	return PrepareEffect(p_data, p_handle, 1);
 }

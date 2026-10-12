@@ -114,7 +114,7 @@ CSoundManager::~CSoundManager()
 		do {
 			if (m_devices[i] != NULL) {
 				m_devices[i]->SetMasterVolume(0);
-				m_devices[i]->Close();
+				m_devices[i]->ShutDown();
 				delete m_devices[i];
 			}
 			i = i + 1;
@@ -149,7 +149,7 @@ void CSoundManager::Background()
 			devices = m_devices;
 			do {
 				if (*devices != NULL) {
-					(*devices)->Close();
+					(*devices)->ShutDown();
 				}
 				devices = devices + 1;
 				i = i + 1;
@@ -175,7 +175,7 @@ void CSoundManager::Foreground()
 			m_effectOutput = NULL;
 		}
 		if (m_useMusicCD == false && musicOutput != NULL) {
-			if (musicOutput->Open(music, effects, m_resourceId) == 0) {
+			if (musicOutput->Initialise(music, effects, m_resourceId) == 0) {
 				music = false;
 				effects = false;
 			}
@@ -183,7 +183,7 @@ void CSoundManager::Foreground()
 			m_effectsAvailable = effects;
 		}
 		if (m_effectOutput != NULL) {
-			if (m_effectOutput->Open(0, m_requestedEffects, m_resourceId) == 0) {
+			if (m_effectOutput->Initialise(0, m_requestedEffects, m_resourceId) == 0) {
 				m_requestedEffects = false;
 			}
 			m_effectsAvailable = m_requestedEffects;
@@ -289,7 +289,7 @@ unsigned long CSoundManager::PrepareEffect(unsigned long p_resourceId)
 		}
 		effect->m_directUseCount = effect->m_directUseCount + 1;
 		data = effect->GetData();
-		m_effectOutput->PrepareEffect(data, &handle);
+		m_effectOutput->AllocateEffect(data, &handle);
 		effect->m_directUseCount = effect->m_directUseCount - 1;
 		effect->UnLoad();
 		return handle;
@@ -395,13 +395,13 @@ char* CSoundManager::BuildDriverInfo()
 	CDebugOStream stream(g_szSoundDriverInfo, sizeof(g_szSoundDriverInfo));
 	g_szSoundDriverInfo[0] = 0;
 	if (m_effectOutput != NULL && m_requestedEffects != false) {
-		stream << g_szEffectsDriverPrefix << m_effectOutput->GetInfo();
+		stream << g_szEffectsDriverPrefix << m_effectOutput->GetDeviceInfo();
 	}
 	if (m_useMusicCD != false && m_requestedMusic != false) {
 		stream << m_musicDevice->GetInfo() << g_szSoundDriverNewline;
 	}
 	if (m_musicOutput != NULL && m_requestedMusic != false) {
-		stream << g_szMusicDriverPrefix << m_musicOutput->GetInfo();
+		stream << g_szMusicDriverPrefix << m_musicOutput->GetDeviceInfo();
 	}
 	return g_szSoundDriverInfo;
 }

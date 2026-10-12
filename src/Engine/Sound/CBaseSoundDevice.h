@@ -7,15 +7,15 @@ class CWnd;
 // VTABLE: LEMBALL 0x0049ade8
 class CBaseSoundDevice {
 public:
-	virtual ~CBaseSoundDevice();                                                                    // vtable+0x00
-	virtual char* GetInfo() = 0;                                                                    // vtable+0x04
-	virtual int IsAvailable() = 0;                                                                  // vtable+0x08
-	virtual int Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId) = 0; // vtable+0x0c
+	virtual ~CBaseSoundDevice();                                                                          // vtable+0x00
+	virtual char* GetDeviceInfo() = 0;                                                                    // vtable+0x04
+	virtual int Detect() = 0;                                                                             // vtable+0x08
+	virtual int Initialise(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId) = 0; // vtable+0x0c
 	virtual int Reinitialise(unsigned int p_music,
 							 unsigned int p_effects,
 							 unsigned long p_resourceId) = 0; // vtable+0x10
-	virtual int Close() = 0;                                  // vtable+0x14
-	virtual int IsAnyEffectPlaying() = 0;                     // vtable+0x18
+	virtual int ShutDown() = 0;                               // vtable+0x14
+	virtual int HasActiveVoices() = 0;                        // vtable+0x18
 	virtual int StopAllMusic() = 0;                           // vtable+0x1c
 	virtual int StopAllEffects() = 0;                         // vtable+0x20
 	virtual int IsMusicCapable() = 0;                         // vtable+0x24
@@ -30,7 +30,7 @@ public:
 								  unsigned int p_arg1,
 								  unsigned int p_arg2,
 								  unsigned int p_arg3) = 0;                                              // vtable+0x38
-	virtual int PrepareEffect(unsigned char* p_data, unsigned long* p_handle) = 0;                       // vtable+0x3c
+	virtual int AllocateEffect(unsigned char* p_data, unsigned long* p_handle) = 0;                      // vtable+0x3c
 	virtual int FreePatch(unsigned int p_arg0) = 0;                                                      // vtable+0x40
 	virtual int FreeDrumPatch(unsigned int p_arg0) = 0;                                                  // vtable+0x44
 	virtual int FreeEffect(unsigned long p_effectId) = 0;                                                // vtable+0x48

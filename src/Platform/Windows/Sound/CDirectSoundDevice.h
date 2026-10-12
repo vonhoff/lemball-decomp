@@ -20,12 +20,12 @@ class CDirectSoundDevice : public CBaseSoundDevice {
 public:
 	CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEffect);
 	virtual ~CDirectSoundDevice();
-	virtual char* GetInfo();
-	virtual int IsAvailable();
-	virtual int Open(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId);
+	virtual char* GetDeviceInfo();
+	virtual int Detect();
+	virtual int Initialise(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId);
 	virtual int Reinitialise(unsigned int p_music, unsigned int p_effects, unsigned long p_resourceId);
-	virtual int Close();
-	virtual int IsAnyEffectPlaying();
+	virtual int ShutDown();
+	virtual int HasActiveVoices();
 	virtual int StopAllMusic();
 	virtual int StopAllEffects();
 	virtual int IsMusicCapable();
@@ -34,7 +34,7 @@ public:
 	virtual int GetNumEffectsChannels();
 	virtual int AllocatePatch(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3);
 	virtual int AllocateDrumPatch(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3);
-	virtual int PrepareEffect(unsigned char* p_data, unsigned long* p_handle);
+	virtual int AllocateEffect(unsigned char* p_data, unsigned long* p_handle);
 	virtual int FreePatch(unsigned int p_arg0);
 	virtual int FreeDrumPatch(unsigned int p_arg0);
 	virtual int FreeEffect(unsigned long p_effectId);
