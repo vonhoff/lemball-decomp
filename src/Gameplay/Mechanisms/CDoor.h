@@ -27,11 +27,11 @@ public:
 	friend class CDoorManager;
 
 private:
-	unsigned short m_doorIndex;       // 0x138
-	unsigned long m_setTick;          // 0x13c
-	short m_doorType;                 // 0x140
-	unsigned int m_activationPending; // 0x144
-	unsigned short m_unk0x148;        // 0x148
+	unsigned short m_doorIndex; // 0x138
+	unsigned long m_setTick;    // 0x13c
+	short m_doorType;           // 0x140
+	bool m_activationPending;   // 0x144
+	unsigned short m_unk0x148;  // 0x148
 };
 
 // SYNTHETIC: LEMBALL 0x0040ec10

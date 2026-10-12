@@ -81,7 +81,7 @@ void CDoor::Set(eObjectType p_objectType, unsigned short p_doorType, int p_x, in
 	m_position.m_xFixed = m_spawnPosition.m_xFixed;
 	m_position.m_yFixed = m_spawnPosition.m_yFixed;
 	m_position.m_zFixed = m_spawnPosition.m_zFixed;
-	m_activationPending = 0;
+	m_activationPending = false;
 	int blockY;
 	int blockX = p_x / GROUND_BLOCK_PIXEL_SIZE;
 	blockY = p_y / GROUND_BLOCK_PIXEL_SIZE;
@@ -290,7 +290,7 @@ bool CDoor::Process()
 	switch (m_action) {
 	case ACTION_DOOR_LOCKED_FEEDBACK:
 		Action(ACTION_DOOR_LOCKED);
-		m_activationPending = 0;
+		m_activationPending = false;
 		break;
 	case ACTION_DOOR_OPENING:
 		m_stateTimer = g_dwSimulationTimestamp;
@@ -307,10 +307,10 @@ bool CDoor::Process()
 			Action(ACTION_DOOR_CLOSING);
 			return true;
 		}
-		m_activationPending = 0;
+		m_activationPending = false;
 		break;
 	case ACTION_DOOR_CLOSING:
-		m_activationPending = 0;
+		m_activationPending = false;
 		Action(ACTION_DOOR_CLOSED);
 		break;
 	default:
@@ -345,7 +345,7 @@ bool CDoor::TryBeginActivation()
 		return false;
 	}
 	tick = g_dwGameTick;
-	m_activationPending = 1;
+	m_activationPending = true;
 	m_setTick = tick;
 	return true;
 }
@@ -395,7 +395,7 @@ int CDoor::Hits(const AICOORD& p_position, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x0040dec0
 void CDoor::DoActivate()
 {
-	m_activationPending = 1;
+	m_activationPending = true;
 	m_stateTimer = g_dwSimulationTimestamp;
 	m_actionDeadline += g_dwGameTick;
 	if (m_action != ACTION_DOOR_LOCKED_FEEDBACK) {
