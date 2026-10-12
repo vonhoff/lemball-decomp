@@ -479,12 +479,9 @@ void CPasswordDrawer::DrawPassword()
 	PasswordTextLayout* layout = m_layout;
 	int y = layout->m_passwordY;
 	int x = m_size.m_width - layout->m_passwordRightMargin;
-	CVSSize textSize = m_textManager->GetFont(m_chalkFontId)->GetSize(m_password, TEXT_ADVANCE_X_POSITIVE);
-	x -= textSize.m_width;
+	x -= m_textManager->GetFont(m_chalkFontId)->GetSize(m_password, TEXT_ADVANCE_X_POSITIVE).m_width;
 	CVSPoint position(x, y);
-	textSize.m_height = 0;
-	textSize.m_width = 0;
-	m_textManager->DrawString(m_gdi, position, textSize, m_chalkFontId, m_password, TEXT_ADVANCE_X_POSITIVE, NULL);
+	m_textManager->DrawString(m_gdi, position, CVSSize(), m_chalkFontId, m_password, TEXT_ADVANCE_X_POSITIVE, NULL);
 }
 
 // FUNCTION: LEMBALL 0x00451d20
