@@ -281,19 +281,19 @@ int CDirectSoundDevice::IsEffectCapable()
 }
 
 // FUNCTION: LEMBALL 0x0047e500
-int CDirectSoundDevice::AllocatePatch(unsigned int p_arg0,
-									  unsigned int p_arg1,
-									  unsigned int p_arg2,
-									  unsigned int p_arg3)
+int CDirectSoundDevice::AllocatePatch(VSPATCH* p_patch,
+									  unsigned long* p_handle,
+									  unsigned char p_arg2,
+									  unsigned char p_arg3)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e510
-int CDirectSoundDevice::AllocateDrumPatch(unsigned int p_arg0,
-										  unsigned int p_arg1,
-										  unsigned int p_arg2,
-										  unsigned int p_arg3)
+int CDirectSoundDevice::AllocateDrumPatch(VSPATCH* p_patch,
+										  unsigned long* p_handle,
+										  unsigned char p_arg2,
+										  unsigned char p_arg3)
 {
 	return 0;
 }
@@ -320,13 +320,13 @@ bool CDirectSoundDevice::PrepareEffect(unsigned char* p_data, unsigned long* p_h
 }
 
 // FUNCTION: LEMBALL 0x0047e5b0
-int CDirectSoundDevice::FreePatch(unsigned int p_arg0)
+int CDirectSoundDevice::FreePatch(unsigned long p_patchHandle)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047e5c0
-int CDirectSoundDevice::FreeDrumPatch(unsigned int p_arg0)
+int CDirectSoundDevice::FreeDrumPatch(unsigned long p_patchHandle)
 {
 	return 0;
 }

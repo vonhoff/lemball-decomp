@@ -302,16 +302,19 @@ int CWaveSoundDevice::IsEffectCapable()
 }
 
 // FUNCTION: LEMBALL 0x0047cef0
-int CWaveSoundDevice::AllocatePatch(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3)
+int CWaveSoundDevice::AllocatePatch(VSPATCH* p_patch,
+									unsigned long* p_handle,
+									unsigned char p_arg2,
+									unsigned char p_arg3)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047cf00
-int CWaveSoundDevice::AllocateDrumPatch(unsigned int p_arg0,
-										unsigned int p_arg1,
-										unsigned int p_arg2,
-										unsigned int p_arg3)
+int CWaveSoundDevice::AllocateDrumPatch(VSPATCH* p_patch,
+										unsigned long* p_handle,
+										unsigned char p_arg2,
+										unsigned char p_arg3)
 {
 	return 0;
 }
@@ -347,13 +350,13 @@ int CWaveSoundDevice::AllocateEffect(unsigned char* p_data, unsigned long* p_han
 }
 
 // FUNCTION: LEMBALL 0x0047cfe0
-int CWaveSoundDevice::FreePatch(unsigned int p_arg0)
+int CWaveSoundDevice::FreePatch(unsigned long p_patchHandle)
 {
 	return 0;
 }
 
 // FUNCTION: LEMBALL 0x0047cff0
-int CWaveSoundDevice::FreeDrumPatch(unsigned int p_arg0)
+int CWaveSoundDevice::FreeDrumPatch(unsigned long p_patchHandle)
 {
 	return 0;
 }

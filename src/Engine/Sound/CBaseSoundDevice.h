@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_SOUND_CBASESOUNDDEVICE_H
 
 class CWnd;
+struct VSPATCH;
 
 // SIZE 0x04
 // VTABLE: LEMBALL 0x0049ade8
@@ -22,17 +23,17 @@ public:
 	virtual int IsEffectCapable() = 0;                        // vtable+0x28
 	virtual int GetNumMusicChannels() = 0;                    // vtable+0x2c
 	virtual int GetNumEffectsChannels() = 0;                  // vtable+0x30
-	virtual int AllocatePatch(unsigned int p_arg0,
-							  unsigned int p_arg1,
-							  unsigned int p_arg2,
-							  unsigned int p_arg3) = 0; // vtable+0x34
-	virtual int AllocateDrumPatch(unsigned int p_arg0,
-								  unsigned int p_arg1,
-								  unsigned int p_arg2,
-								  unsigned int p_arg3) = 0;                                              // vtable+0x38
+	virtual int AllocatePatch(VSPATCH* p_patch,
+							  unsigned long* p_handle,
+							  unsigned char p_arg2,
+							  unsigned char p_arg3) = 0; // vtable+0x34
+	virtual int AllocateDrumPatch(VSPATCH* p_patch,
+								  unsigned long* p_handle,
+								  unsigned char p_arg2,
+								  unsigned char p_arg3) = 0;                                             // vtable+0x38
 	virtual int AllocateEffect(unsigned char* p_data, unsigned long* p_handle) = 0;                      // vtable+0x3c
-	virtual int FreePatch(unsigned int p_arg0) = 0;                                                      // vtable+0x40
-	virtual int FreeDrumPatch(unsigned int p_arg0) = 0;                                                  // vtable+0x44
+	virtual int FreePatch(unsigned long p_patchHandle) = 0;                                              // vtable+0x40
+	virtual int FreeDrumPatch(unsigned long p_patchHandle) = 0;                                          // vtable+0x44
 	virtual int FreeEffect(unsigned long p_effectId) = 0;                                                // vtable+0x48
 	virtual int FreeAllPatches() = 0;                                                                    // vtable+0x4c
 	virtual int FreeAllEffects() = 0;                                                                    // vtable+0x50

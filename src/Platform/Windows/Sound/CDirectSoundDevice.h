@@ -32,11 +32,14 @@ public:
 	virtual int IsEffectCapable();
 	virtual int GetNumMusicChannels();
 	virtual int GetNumEffectsChannels();
-	virtual int AllocatePatch(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3);
-	virtual int AllocateDrumPatch(unsigned int p_arg0, unsigned int p_arg1, unsigned int p_arg2, unsigned int p_arg3);
+	virtual int AllocatePatch(VSPATCH* p_patch, unsigned long* p_handle, unsigned char p_arg2, unsigned char p_arg3);
+	virtual int AllocateDrumPatch(VSPATCH* p_patch,
+								  unsigned long* p_handle,
+								  unsigned char p_arg2,
+								  unsigned char p_arg3);
 	virtual int AllocateEffect(unsigned char* p_data, unsigned long* p_handle);
-	virtual int FreePatch(unsigned int p_arg0);
-	virtual int FreeDrumPatch(unsigned int p_arg0);
+	virtual int FreePatch(unsigned long p_patchHandle);
+	virtual int FreeDrumPatch(unsigned long p_patchHandle);
 	virtual int FreeEffect(unsigned long p_effectId);
 	virtual int FreeAllPatches();
 	virtual int FreeAllEffects();
