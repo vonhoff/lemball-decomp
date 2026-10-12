@@ -7,7 +7,7 @@
 
 #include <stddef.h>
 
-#define FONT_GLYPH_COUNT 0x100
+const int FONT_GLYPH_COUNT = 0x100;
 
 // FUNCTION: LEMBALL 0x00473650
 CFontTable::CFontTable(CResFONT* p_font)

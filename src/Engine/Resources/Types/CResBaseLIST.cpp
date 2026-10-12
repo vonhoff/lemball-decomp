@@ -13,7 +13,7 @@ enum {
 	VRAM_ENTRIES_NOT_TRACKED = -1
 };
 
-#define RESOURCE_LIST_HEADER_UNSET 0xffffffff
+const unsigned int RESOURCE_LIST_HEADER_UNSET = 0xffffffff;
 
 // FUNCTION: LEMBALL 0x0045d290
 void CResBaseLIST::SetHeader()

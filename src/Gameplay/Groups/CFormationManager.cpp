@@ -7,7 +7,8 @@
 
 #include <new.h>
 #include <stddef.h>
-#define FORMATION_VECTOR_COUNT 8
+const int FORMATION_VECTOR_COUNT = 8;
+
 // FUNCTION: LEMBALL 0x0041a140
 CFormationManager::CFormationManager()
 {

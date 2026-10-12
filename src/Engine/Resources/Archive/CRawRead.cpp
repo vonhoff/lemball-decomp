@@ -8,7 +8,7 @@
 // GLOBAL: LEMBALL 0x004a1d50
 _Filet* g_pMogFile = NULL;
 
-#define RESOURCE_PATH_SEPARATOR '/'
+const char RESOURCE_PATH_SEPARATOR = '/';
 
 // FUNCTION: LEMBALL 0x0045bbc0
 bool CRawRead::Open(char* p_path, char* p_mode)

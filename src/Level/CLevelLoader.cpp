@@ -35,13 +35,8 @@
 
 #include <string.h>
 
-struct tagLoadGroundName;
-struct _Filet;
-
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
-														   char* p_text,
-														   char* p_caption,
-														   unsigned int p_type);
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 #define LEVEL_AI_UNVERSIONED_DATA_BYTES (2 * sizeof(unsigned short))
 #define LEVEL_AI_LEGACY_LEMMING_COUNT 4
@@ -239,7 +234,7 @@ bool CLevelLoader::LocateStartOfLevelFile()
 		vsClose(file);
 		return true;
 	}
-	MessageBoxA(NULL, g_szOkSmartarse, g_szYouStupidStupidMan, 0);
+	MessageBoxA(NULL, g_szOkSmartarse, g_szYouStupidStupidMan, MB_OK);
 	return false;
 }
 

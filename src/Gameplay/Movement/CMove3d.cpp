@@ -5,11 +5,11 @@
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/CPt3.h"
 
-#define MOVE3D_MAX_NORMALIZED_COMPONENT 100
-
 // FUNCTION: LEMBALL 0x0042a7d0
 void CMove3d::Set(CPt3& p_start, CPt3& p_end, int p_startTime, int p_speed)
 {
+	const int MOVE3D_MAX_NORMALIZED_COMPONENT = 100;
+
 	m_start = p_start;
 	m_startTime = p_startTime;
 

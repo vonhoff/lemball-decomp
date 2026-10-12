@@ -20152,7 +20152,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CEnemy.cpp.obj",
       "symbol": "??0CEnemy@@QAE@PAVCAI@@HHHH@Z",
       "size": 302,
-      "fingerprint": "9500ad21fc52d73d80326ab8940f1fa0c549cf2bb4b49213eb3b2be0e75daf33",
+      "fingerprint": "50b46e48dffe7808bead06a8a2693750ba89dd3f559d8cab83c63e998bb9eb0f",
       "references": [
         {
           "offset": 18,
@@ -20545,18 +20545,18 @@
       "caller": 4326624,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CEnemy.cpp.obj",
       "symbol": "?EndFiring@CEnemy@@UAEXXZ",
-      "size": 280,
-      "fingerprint": "e267b0948e9586c1ddfceeb6c6b6f0b097a673775cf635d205373d5e37b60ba1",
+      "size": 277,
+      "fingerprint": "08861957df9b3949eaedc8670e55c91abf0d32e45e190b443e57fd5af47aa35b",
       "references": [
         {
-          "offset": 222,
+          "offset": 221,
           "original_instruction": 4326840,
           "original_bytes": "e8e823feff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 245,
+          "offset": 242,
           "original_instruction": 4326869,
           "original_bytes": "e8b32cfeff",
           "thunk": 4207245,
@@ -20740,8 +20740,8 @@
       "caller": 4328912,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CEnemyGroupManager.cpp.obj",
       "symbol": "?LoadLevel@CEnemyGroupManager@@QAEXPAUtagLoadEnemyData@@KI@Z",
-      "size": 431,
-      "fingerprint": "6a6899257f97defb17d096099e1a57e2d18af0680dfaac1e5f17fd622988b150",
+      "size": 432,
+      "fingerprint": "1b96f3d217261d840dfe4f08c274ee310a9e1f8871b98ae854f7021a59a1ada3",
       "references": [
         {
           "offset": 167,
@@ -20751,49 +20751,49 @@
           "source_symbol": "??0CEnemyGroup@@QAE@PAVCAI@@PAVCObjectManager@@PAVCFormationManager@@@Z"
         },
         {
-          "offset": 189,
+          "offset": 190,
           "original_instruction": 4329103,
           "original_bytes": "e85419feff",
           "thunk": 4204520,
           "source_symbol": "?AddNewGroup@CGenericGroupManager@@UAEXPAVCGenericGroup@@@Z"
         },
         {
-          "offset": 245,
+          "offset": 247,
           "original_instruction": 4329160,
           "original_bytes": "e82014feff",
           "thunk": 4203245,
           "source_symbol": "??0CEnemy@@QAE@PAVCAI@@HHHH@Z"
         },
         {
-          "offset": 295,
+          "offset": 296,
           "original_instruction": 4329209,
           "original_bytes": "e8c817feff",
           "thunk": 4204230,
           "source_symbol": "?SetEnemyType@CEnemy@@QAEXW4eEnemyStateActions@@W4eEnemyStateRules@@0101@Z"
         },
         {
-          "offset": 317,
+          "offset": 318,
           "original_instruction": 4329231,
           "original_bytes": "e87b08feff",
           "thunk": 4200335,
           "source_symbol": "?LoadLevelAdditional_Waypoint@CEnemyGroupManager@@QAEPAUtagLoadEnemyDataAdditionalAction@@PAU2@AAPAUtagWaypointInformation@@@Z"
         },
         {
-          "offset": 349,
+          "offset": 350,
           "original_instruction": 4329263,
           "original_bytes": "e85b08feff",
           "thunk": 4200335,
           "source_symbol": "?LoadLevelAdditional_Waypoint@CEnemyGroupManager@@QAEPAUtagLoadEnemyDataAdditionalAction@@PAU2@AAPAUtagWaypointInformation@@@Z"
         },
         {
-          "offset": 383,
+          "offset": 384,
           "original_instruction": 4329297,
           "original_bytes": "e83908feff",
           "thunk": 4200335,
           "source_symbol": "?LoadLevelAdditional_Waypoint@CEnemyGroupManager@@QAEPAUtagLoadEnemyDataAdditionalAction@@PAU2@AAPAUtagWaypointInformation@@@Z"
         },
         {
-          "offset": 406,
+          "offset": 407,
           "original_instruction": 4329320,
           "original_bytes": "e87208feff",
           "thunk": 4200415,
@@ -23141,8 +23141,8 @@
       "caller": 4356944,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CHand.cpp.obj",
       "symbol": "?Set@CHand@@QAEXGABVAICOORD@@@Z",
-      "size": 232,
-      "fingerprint": "3d80d4d55e71818a82e757c8c0ce53ef3069b57b1af34729f83a18f483dc07db",
+      "size": 225,
+      "fingerprint": "612e0e2c6749690429a653deea309f29ad6c5dbb91cdb4c1eb880a1b846b824c",
       "references": [
         {
           "offset": 9,
@@ -33714,7 +33714,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Options/CMainOptions2Drawer.cpp.obj",
       "symbol": "?Load@CMainOptions2Drawer@@UAEXXZ",
       "size": 535,
-      "fingerprint": "cfa558252d897e85025f6df67d31fc3520eb56771369989655c45f248eef3ee6",
+      "fingerprint": "8ebb467baa962ca2031638dd92476f3f187c3e74dc93501955d9c73b5e6e58c7",
       "references": [
         {
           "offset": 254,
@@ -35907,7 +35907,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Password/CPasswordDrawer.cpp.obj",
       "symbol": "?Load@CPasswordDrawer@@UAEXXZ",
       "size": 552,
-      "fingerprint": "5ac3d0af7020134940d68f0d3f652904582a21343d92338d24c5da65f616c16d",
+      "fingerprint": "9d6e7482b31838ecc6fb7ab34a351ee2f8de01ba1b9fb52a6bf9446ff1c3da07",
       "references": [
         {
           "offset": 539,

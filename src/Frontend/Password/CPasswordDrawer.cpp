@@ -36,11 +36,8 @@ class CResBITMAP;
 
 extern char g_abPasswordLevelText[24];
 
-#define PASSWORD_BUTTON_MESSAGE_FIRST 0xabcd00b0
-#define PASSWORD_BUTTON_MESSAGE_LAST 0xabcd00bb
-#define PASSWORD_BUTTON_MESSAGE_TO_INDEX_OFFSET 0x5432ff50
-#define PASSWORD_CODE_LENGTH 10
-#define PASSWORD_RETURN_DELAY_MS 1000
+const unsigned int PASSWORD_BUTTON_MESSAGE_FIRST = 0xabcd00b0;
+const unsigned int PASSWORD_BUTTON_MESSAGE_LAST = 0xabcd00bb;
 
 enum ePasswordButtonIndex {
 	PASSWORD_BUTTON_DIGIT_0 = 0,
@@ -398,7 +395,7 @@ bool CPasswordDrawer::ProcessMessages(tagMESSAGE* p_message)
 	case MESSAGE_BUTTON_RELEASED:
 		code = message->m_code;
 		if (code >= PASSWORD_BUTTON_MESSAGE_FIRST && code <= PASSWORD_BUTTON_MESSAGE_LAST) {
-			ButtonNumeric(code + PASSWORD_BUTTON_MESSAGE_TO_INDEX_OFFSET);
+			ButtonNumeric(code - PASSWORD_BUTTON_MESSAGE_FIRST);
 			return true;
 		}
 		break;
@@ -487,6 +484,9 @@ void CPasswordDrawer::DrawPassword()
 // FUNCTION: LEMBALL 0x00451d20
 void CPasswordDrawer::ButtonNumeric(int p_button)
 {
+	const int PASSWORD_CODE_LENGTH = 10;
+	const int PASSWORD_RETURN_DELAY_MS = 1000;
+
 	if (m_passwordSubmitted == true) {
 		return;
 	}

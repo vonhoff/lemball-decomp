@@ -10,7 +10,7 @@
 #include <string.h>
 #include <windows.h>
 
-#define MCI_ERROR_TEXT_CAPACITY 128
+const int MCI_ERROR_TEXT_CAPACITY = 128;
 
 // GLOBAL: LEMBALL 0x004aa228
 static CMciMusicDevice* g_pActiveMciMusicDevice;

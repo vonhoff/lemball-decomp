@@ -12,6 +12,8 @@
 #include <conio.h>
 #include <string.h>
 #include <windows.h>
+#include <windowsx.h>
+#include <dispdib.h>
 
 #pragma intrinsic(_outp)
 
@@ -52,11 +54,8 @@ CDisplayDibDriver::CDisplayDibDriver(const CVSSize& p_size)
 // FUNCTION: LEMBALL 0x00456e20
 CDisplayDibDriver::~CDisplayDibDriver()
 {
-	enum {
-		DISPLAYDIB_DEACTIVATE_COMMAND = 0x4000
-	};
 	if (m_displayDibEnd != NULL) {
-		g_pDisplayDib(NULL, NULL, DISPLAYDIB_DEACTIVATE_COMMAND);
+		g_pDisplayDib(NULL, NULL, DISPLAYDIB_END);
 		m_displayDibEnd();
 	}
 }

@@ -13,8 +13,6 @@
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Packets/CReadPacket.h"
 
-#define g_pNetworkOptionsDrawer ((CNetworkOptionsDrawer*) g_pBaseFrontendDrawer)
-
 #include "Engine/Time/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
@@ -50,8 +48,8 @@ CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p
 CNetworkOptionsProc::~CNetworkOptionsProc()
 {
 	g_pNetworkOptionsProc = NULL;
-	if (g_pNetworkOptionsDrawer != NULL) {
-		if (g_pNetworkOptionsDrawer->GetReturnState() == 0) {
+	if (g_pBaseFrontendDrawer != NULL) {
+		if (g_pBaseFrontendDrawer->GetReturnState() == 0) {
 			Stop();
 		}
 		else {
@@ -101,7 +99,7 @@ void CNetworkOptionsProc::StopBroadcast()
 		index = 0;
 		do {
 			if (index < NETWORK_GAME_SLOT_COUNT) {
-				g_pNetworkOptionsDrawer->GameNotReady(index);
+				static_cast<CNetworkOptionsDrawer*>(g_pBaseFrontendDrawer)->GameNotReady(index);
 			}
 			if (*connections != NULL && *connections != g_pActiveConnection) {
 				startTime = CurrentMilliTimer();
@@ -147,13 +145,14 @@ void CNetworkOptionsProc::Stop()
 // FUNCTION: LEMBALL 0x00455320
 void CNetworkOptionsProc::NetworkEvent(NetworkEvents p_event)
 {
-	if (g_pNetworkOptionsDrawer != NULL) {
+	if (g_pBaseFrontendDrawer != NULL) {
 		switch (p_event) {
 		case NETWORK_EVENT_CONNECTION_CLOSED:
-			g_pNetworkOptionsDrawer->ResetHandlers();
+			static_cast<CNetworkOptionsDrawer*>(g_pBaseFrontendDrawer)->ResetHandlers();
 			break;
 		case NETWORK_EVENT_HOST_LOOKUP_FAILED:
-			g_pNetworkOptionsDrawer->m_pendingEvent = NETWORK_OPTIONS_MESSAGE_HOST_LOOKUP_FAILED;
+			static_cast<CNetworkOptionsDrawer*>(g_pBaseFrontendDrawer)->m_pendingEvent =
+				NETWORK_OPTIONS_MESSAGE_HOST_LOOKUP_FAILED;
 			break;
 		}
 	}
@@ -162,7 +161,7 @@ void CNetworkOptionsProc::NetworkEvent(NetworkEvents p_event)
 // FUNCTION: LEMBALL 0x00455360
 bool CNetworkOptionsProc::ReceiveCritical(unsigned long p_id, CReadPacket* p_packet, CConnect* p_connection)
 {
-	CNetworkOptionsDrawer* drawer = g_pNetworkOptionsDrawer;
+	CNetworkOptionsDrawer* drawer = static_cast<CNetworkOptionsDrawer*>(g_pBaseFrontendDrawer);
 	CConnect* connection = p_connection;
 	CReadPacket* packet = p_packet;
 

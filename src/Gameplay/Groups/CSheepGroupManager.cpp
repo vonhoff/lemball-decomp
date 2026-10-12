@@ -12,8 +12,6 @@
 
 #include <stddef.h>
 
-#define SHEEP_INITIAL_SPACING 20
-
 // FUNCTION: LEMBALL 0x0041f0b0
 CSheepGroupManager::CSheepGroupManager(CAI* p_ai,
 									   CObjectManager* p_objectManager,
@@ -110,6 +108,8 @@ void CSheepGroupManager::RemoveSheepGroup(CSheepGroup* p_group)
 // FUNCTION: LEMBALL 0x0041f2e0
 void CSheepGroupManager::LoadLevel(tagLoadSheepData* p_data, unsigned long p_dataSize, unsigned int p_skip)
 {
+	const int SHEEP_INITIAL_SPACING = 20;
+
 	int count = p_dataSize / sizeof(tagLoadSheepData);
 	if (p_skip != 0) {
 		return;

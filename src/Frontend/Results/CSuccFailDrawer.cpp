@@ -35,8 +35,8 @@
 
 class CGWnd;
 
-#define SUCC_FAIL_BUTTON_MESSAGE_GO 0xacef0010
-#define SUCC_FAIL_BUTTON_MESSAGE_RETURN 0xacef0011
+const unsigned int SUCC_FAIL_BUTTON_MESSAGE_GO = 0xacef0010;
+const unsigned int SUCC_FAIL_BUTTON_MESSAGE_RETURN = 0xacef0011;
 
 // GLOBAL: LEMBALL 0x0049fcb4
 char g_szSuccFailCollectedAllFlags[] = "You collected all the flags!";

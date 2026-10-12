@@ -39,13 +39,6 @@ struct WinGDrawState {
 #include <vfw.h>
 // clang-format on
 
-enum {
-	WING_DRAW_API_MAJOR_VERSION = 1,
-	WING_DRAW_API_MAJOR_VERSION_SHIFT = 16
-};
-#define WING_DRAW_VERSION (WING_DRAW_API_MAJOR_VERSION << WING_DRAW_API_MAJOR_VERSION_SHIFT)
-#define WING_DRAW_TEXT_CAPACITY 256
-
 class CAnimWnd;
 
 extern CAnimWnd* g_pAnimWnd;
@@ -233,6 +226,13 @@ char g_szVsWinGAnim[] = "VS - WinG Anim";
 // FUNCTION: LEMBALL 0x004792a0
 unsigned int __stdcall WinGDrawGetInfo(void* p_info, unsigned int p_size)
 {
+	enum {
+		WING_DRAW_API_MAJOR_VERSION = 1,
+		WING_DRAW_API_MAJOR_VERSION_SHIFT = 16
+	};
+	const int WING_DRAW_VERSION = (WING_DRAW_API_MAJOR_VERSION << WING_DRAW_API_MAJOR_VERSION_SHIFT);
+	const int WING_DRAW_TEXT_CAPACITY = 256;
+
 	IcInfo* info;
 	WCHAR* description;
 

@@ -11,11 +11,6 @@
 
 #include <stddef.h>
 
-#define ENEMY_LEVEL_HEADER_BYTES (2 * sizeof(unsigned short))
-#define ENEMY_WAYPOINT_DESCRIPTOR_BYTES 4
-#define ENEMY_WAYPOINT_STEP_SIGN_BIT 0x80
-#define ENEMY_WAYPOINT_STEP_SIGN_EXTENSION_MASK 0xffffff00
-
 extern CAI* g_pGenericGroupAI;
 extern CObjectManager* g_pGenericGroupObjectManager;
 extern CFormationManager* g_pGenericGroupFormationManager;
@@ -125,6 +120,8 @@ void CEnemyGroupManager::RemoveEnemyGroup(CEnemyGroup* p_group)
 // FUNCTION: LEMBALL 0x00420dd0
 void CEnemyGroupManager::LoadLevel(tagLoadEnemyData* p_data, unsigned long p_dataSize, unsigned int p_skip)
 {
+	const unsigned int ENEMY_LEVEL_HEADER_BYTES = (2 * sizeof(unsigned short));
+
 	unsigned short* wordData = (unsigned short*) p_data;
 	int headerCount = *wordData;
 	int count;
@@ -196,6 +193,10 @@ tagLoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoi
 	tagLoadEnemyDataAdditionalAction* p_data,
 	tagWaypointInformation*& p_waypointInfo)
 {
+	const int ENEMY_WAYPOINT_DESCRIPTOR_BYTES = 4;
+	const int ENEMY_WAYPOINT_STEP_SIGN_BIT = 0x80;
+	const unsigned int ENEMY_WAYPOINT_STEP_SIGN_EXTENSION_MASK = 0xffffff00;
+
 	unsigned char* data = (unsigned char*) p_data;
 	ENEMY_GetLONG((unsigned long*) data);
 	data += sizeof(unsigned long);

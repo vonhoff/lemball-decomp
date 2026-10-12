@@ -222,16 +222,16 @@ int CDirectDrawDriver::DestroyDibContext(CDibContext* p_dibContext)
 	return 1;
 }
 
-#define DIRECTDRAW_PALETTE_ENTRY_COUNT 256
 // FUNCTION: LEMBALL 0x004578c0
 unsigned int CDirectDrawDriver::UpdateDibColourTable(CDrawingContext* p_drawingContext,
 													 unsigned int p_startIndex,
 													 unsigned int p_entryCount,
 													 void* p_colours)
 {
+	const int DIRECTDRAW_PALETTE_ENTRY_COUNT = 256;
+
 	return DIRECTDRAW_PALETTE_ENTRY_COUNT;
 }
-#undef DIRECTDRAW_PALETTE_ENTRY_COUNT
 
 // FUNCTION: LEMBALL 0x004578d0
 int CDirectDrawDriver::BitBltContexts(CDrawingContext* p_destination,

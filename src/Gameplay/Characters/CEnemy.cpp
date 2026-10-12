@@ -37,11 +37,12 @@ enum eEnemyBehaviorStage {
 	ENEMY_BEHAVIOR_STAGE_THIRD = 2
 };
 
-#define ENEMY_FIRE_RAPID_INTERVAL_MS 100
-#define ENEMY_FIRE_SLOW_INTERVAL_MS 800
-#define ENEMY_FIRE_RANDOM_MIN_INTERVAL_MS 150
-#define ENEMY_FIRE_RANDOM_INTERVAL_RANGE_MS 1000
-#define ENEMY_MUZZLE_HEIGHT_FIXED (12 * FIXED_POINT_ONE)
+enum {
+	ENEMY_FIRE_RAPID_INTERVAL_MS = 100,
+	ENEMY_FIRE_SLOW_INTERVAL_MS = 800,
+	ENEMY_FIRE_RANDOM_MIN_INTERVAL_MS = 150,
+	ENEMY_FIRE_RANDOM_INTERVAL_RANGE_MS = 1000
+};
 
 struct EnemyFacingOffset {
 	int m_dx;
@@ -399,6 +400,8 @@ void CEnemy::RequestFire(int p_interval)
 // FUNCTION: LEMBALL 0x00420430
 void CEnemy::Fire()
 {
+	const int ENEMY_MUZZLE_HEIGHT_FIXED = (12 * FIXED_POINT_ONE);
+
 	AICOORD start;
 	start.m_xFixed = m_position.m_xFixed;
 	int facing = m_facingDirection;
