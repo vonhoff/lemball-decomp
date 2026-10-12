@@ -78,34 +78,21 @@ void CGodManager::Register(CBaseObjectManager* p_manager)
 // FUNCTION: LEMBALL 0x0040b180
 void CGodManager::Unregister(CBaseObjectManager* p_manager)
 {
-	CBaseObjectManager** managers;
-	CBaseObjectManager** item;
-	int count;
-	int index;
-
-	index = 0;
-	count = m_count;
-	if (count > index) {
-		managers = m_managers;
-		do {
-			if (*managers == p_manager) {
-				goto managerFound;
+	int count = m_count;
+	for (int index = 0; index < count; index++) {
+		if (m_managers[index] == p_manager) {
+			if (index < count - 1) {
+				do {
+					CBaseObjectManager** item = m_managers + index;
+					index++;
+					*item = item[1];
+				} while (index < m_count - 1);
 			}
-			managers++;
-			index++;
-		} while (count > index);
-		return;
-	managerFound:
-		if (index < count - 1) {
-			do {
-				item = m_managers + index;
-				index++;
-				*item = item[1];
-			} while (index < m_count - 1);
+			m_transportMap[p_manager->m_transportId] = TRANSPORT_MANAGER_INDEX_UNREGISTERED;
+			m_managers[index] = NULL;
+			m_count--;
+			return;
 		}
-		m_transportMap[p_manager->m_transportId] = TRANSPORT_MANAGER_INDEX_UNREGISTERED;
-		m_managers[index] = NULL;
-		m_count--;
 	}
 }
 
