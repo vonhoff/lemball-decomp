@@ -3,8 +3,6 @@
 #include <ctype.h>
 #include <string.h>
 
-#pragma intrinsic(strlen)
-
 // FUNCTION: LEMBALL 0x00406790
 int StrCmpI(const char* p_left, const char* p_right, int p_maxLength)
 {

@@ -14,8 +14,6 @@ enum {
 	CHAR4_BITS_PER_BYTE = 8
 };
 
-#pragma intrinsic(memset, memcpy, strlen)
-
 // FUNCTION: LEMBALL 0x00458450
 CVSOStream::CVSOStream(CVSStreambuf* p_streamBuffer) : CVSIOs(p_streamBuffer)
 {
