@@ -41,9 +41,6 @@
 
 #include <windows.h>
 
-extern "C" __declspec(dllimport) int __stdcall GdiFlush();
-
-#define SURFACE_PALETTE_ENTRY_COUNT 0x100
 #define SURFACE_PALETTE_VERSION_WIN3 0x0300
 #define SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT 10
 #define SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START                                                                     \
@@ -145,7 +142,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface) : m_present
 	m_platformBitmap = NULL;
 	m_drawingPort = NULL;
 	m_worldWidth = 0;
-	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
+	InitializeCriticalSection(&m_lock);
 	m_lockInitialised = true;
 	if (m_parentSurface == g_pGdiHelperTarget) {
 		m_changeList = new CChangeList(
@@ -337,7 +334,7 @@ CSurface::CSurface(GrafPort* p_port)
 	m_platformBitmap = NULL;
 	m_changeList = NULL;
 	m_parentSurface = NULL;
-	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
+	InitializeCriticalSection(&m_lock);
 	m_lockInitialised = true;
 	m_propagateChanges = false;
 }
@@ -349,7 +346,7 @@ CSurface::~CSurface()
 
 	locked = 0;
 	if (m_lockInitialised != 0) {
-		EnterCriticalSection((CRITICAL_SECTION*) m_lock);
+		EnterCriticalSection(&m_lock);
 		locked = 1;
 	}
 	if (m_platformBitmap != NULL) {
@@ -374,8 +371,8 @@ CSurface::~CSurface()
 		m_parentSurface = NULL;
 	}
 	if (locked != 0) {
-		LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
-		DeleteCriticalSection((CRITICAL_SECTION*) m_lock);
+		LeaveCriticalSection(&m_lock);
+		DeleteCriticalSection(&m_lock);
 		m_lockInitialised = false;
 		if (g_pSurfaceList != NULL) {
 			g_pSurfaceList->Remove(this);
@@ -583,8 +580,8 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 		return;
 	}
 
-	EnterCriticalSection((CRITICAL_SECTION*) m_lock);
-	EnterCriticalSection((CRITICAL_SECTION*) p_destinationSurface->m_lock);
+	EnterCriticalSection(&m_lock);
+	EnterCriticalSection(&p_destinationSurface->m_lock);
 	CDrawingContext* destContext = (CDrawingContext*) p_destinationSurface->m_drawingPort;
 	g_pTargetGraphicsDriver->RealizePalette(destContext);
 	if ((int) m_dontUpdateRect.m_height * (int) m_dontUpdateRect.m_width > 0) {
@@ -634,8 +631,8 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 			} while (i < m_changeList->GetNumItems());
 		}
 	}
-	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
-	LeaveCriticalSection((CRITICAL_SECTION*) p_destinationSurface->m_lock);
+	LeaveCriticalSection(&m_lock);
+	LeaveCriticalSection(&p_destinationSurface->m_lock);
 }
 
 // FUNCTION: LEMBALL 0x0046d040
@@ -656,7 +653,7 @@ void CSurface::AttachPalette(CResPALETTE* p_palette)
 // FUNCTION: LEMBALL 0x0046d090
 void CSurface::NewBitmap(const CVSRect& p_rect)
 {
-	EnterCriticalSection((CRITICAL_SECTION*) m_lock);
+	EnterCriticalSection(&m_lock);
 	{
 		CVSRect& bounds = m_surfaceRect;
 		bounds.m_width = p_rect.m_width;
@@ -735,21 +732,20 @@ void CSurface::NewBitmap(const CVSRect& p_rect)
 	}
 	else {
 		if (m_platformBitmap == NULL) {
-			g_pTargetGraphicsDriver->InitializeBitmapInfo((BITMAPINFO*) m_bitmapInfo);
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biWidth = width;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biHeight =
-				(int) height * (int) ((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biHeight;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biPlanes = 1;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biCompression = BI_RGB;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biSizeImage = 0;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biXPelsPerMeter = 0;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biYPelsPerMeter = 0;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biClrUsed = 0;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biClrImportant = 0;
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-			((BITMAPINFO*) m_bitmapInfo)->bmiHeader.biBitCount = 8;
-			m_platformBitmap =
-				g_pTargetGraphicsDriver->CreateDibContext((CDrawingContext*) m_drawingPort, (BITMAPINFO*) m_bitmapInfo);
+			g_pTargetGraphicsDriver->InitializeBitmapInfo((BITMAPINFO*) &m_bitmapInfo);
+			m_bitmapInfo.biWidth = width;
+			m_bitmapInfo.biHeight = (int) height * (int) m_bitmapInfo.biHeight;
+			m_bitmapInfo.biPlanes = 1;
+			m_bitmapInfo.biCompression = BI_RGB;
+			m_bitmapInfo.biSizeImage = 0;
+			m_bitmapInfo.biXPelsPerMeter = 0;
+			m_bitmapInfo.biYPelsPerMeter = 0;
+			m_bitmapInfo.biClrUsed = 0;
+			m_bitmapInfo.biClrImportant = 0;
+			m_bitmapInfo.biSize = sizeof(BITMAPINFOHEADER);
+			m_bitmapInfo.biBitCount = 8;
+			m_platformBitmap = g_pTargetGraphicsDriver->CreateDibContext((CDrawingContext*) m_drawingPort,
+																		 (BITMAPINFO*) &m_bitmapInfo);
 			if (m_platformBitmap != NULL) {
 				g_pTargetGraphicsDriver->SelectDibContext((CDrawingContext*) m_drawingPort,
 														  (CDibContext*) m_platformBitmap);
@@ -769,7 +765,7 @@ void CSurface::NewBitmap(const CVSRect& p_rect)
 		clip.m_height = drawHeight;
 		AddToChangeList(clip);
 	}
-	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
+	LeaveCriticalSection(&m_lock);
 }
 
 // FUNCTION: LEMBALL 0x0046d420
@@ -820,7 +816,7 @@ void CSurface::Move(const CVSPoint& p_position)
 	CVSPoint delta = p_position - position;
 
 	if (m_parentSurface != g_pGdiHelperTarget) {
-		CRITICAL_SECTION* lock = (CRITICAL_SECTION*) m_lock;
+		CRITICAL_SECTION* lock = &m_lock;
 		EnterCriticalSection(lock);
 		{
 			CVSRect& surface = m_surfaceRect;
@@ -903,7 +899,7 @@ void CSurface::CopyDibBits(void* p_header, unsigned char* p_bits)
 	if (m_changeList == NULL) {
 		return;
 	}
-	EnterCriticalSection((CRITICAL_SECTION*) m_lock);
+	EnterCriticalSection(&m_lock);
 	BITMAPINFOHEADER* header = (BITMAPINFOHEADER*) p_header;
 	int copyWidth = m_windowRect.m_width <= header->biWidth ? m_windowRect.m_width : header->biWidth;
 	int copyHeight = m_windowRect.m_height <= header->biHeight ? m_windowRect.m_height : header->biHeight;
@@ -927,7 +923,7 @@ copiedRows:
 	rect.m_x = rect.m_y = 0;
 	m_changeList->Reset();
 	AddToChangeList(rect);
-	LeaveCriticalSection((CRITICAL_SECTION*) m_lock);
+	LeaveCriticalSection(&m_lock);
 }
 
 // FUNCTION: LEMBALL 0x0046d930

@@ -306,7 +306,7 @@ void CGWnd::Flush()
 	}
 	if (m_nativeWindow != NULL) {
 		dc = GetDC((HWND) m_nativeWindow);
-		EnterCriticalSection((CRITICAL_SECTION*) g_pGdiHelperTarget->m_lock);
+		EnterCriticalSection(&g_pGdiHelperTarget->m_lock);
 		g_pGdiHelperTarget->SetWindowPtr(dc);
 	}
 	childNode = m_childList.m_head;
@@ -317,7 +317,7 @@ void CGWnd::Flush()
 	m_gdi->m_renderTarget->Flush();
 	if (m_nativeWindow != NULL) {
 		ReleaseDC((HWND) m_nativeWindow, dc);
-		LeaveCriticalSection((CRITICAL_SECTION*) g_pGdiHelperTarget->m_lock);
+		LeaveCriticalSection(&g_pGdiHelperTarget->m_lock);
 	}
 }
 

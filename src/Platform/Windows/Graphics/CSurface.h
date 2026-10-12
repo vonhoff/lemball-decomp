@@ -5,6 +5,7 @@
 #include "CPVScrollableSurface.h"
 #include "CPVZBuffSurface.h"
 #include "Engine/Containers/CList.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 class GrafPort;
 class CChangeList;
@@ -14,7 +15,8 @@ struct CVSPoint;
 class CVSRect;
 
 enum {
-	SURFACE_STEP_BACKWARD = -1
+	SURFACE_STEP_BACKWARD = -1,
+	SURFACE_PALETTE_ENTRY_COUNT = 256
 };
 
 #pragma warning(disable : 4250)
@@ -132,11 +134,11 @@ private:
 	void* m_platformBitmap;                                   // 0xf0
 	unsigned int m_unk0xf4;                                   // 0xf4
 	void* m_drawingPort;                                      // 0xf8
-	char m_bitmapInfo[0x28];                                  // 0xfc
-	char m_colourTable[0x400];                                // 0x124
+	BITMAPINFOHEADER m_bitmapInfo;                            // 0xfc
+	RGBQUAD m_colourTable[SURFACE_PALETTE_ENTRY_COUNT];       // 0x124
 	unsigned int m_bitmapPixelCount;                          // 0x524
 	CList<CSurface, CListElement<CSurface> > m_childSurfaces; // 0x528
-	char m_lock[0x18];                                        // 0x534
+	CRITICAL_SECTION m_lock;                                  // 0x534
 	bool m_lockInitialised;                                   // 0x54c
 	CChangeList* m_changeList;                                // 0x550
 	void* m_currDb;                                           // 0x554
