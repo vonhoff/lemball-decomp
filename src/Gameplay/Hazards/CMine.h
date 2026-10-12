@@ -26,12 +26,12 @@ public:
 	friend class CMineManager;
 
 private:
-	unsigned int m_enabled;        // 0x138
-	unsigned int m_activated;      // 0x13c
-	unsigned int m_terrainSet;     // 0x140
-	unsigned int m_triggerPending; // 0x144
-	int m_triggerDelay;            // 0x148
-	int m_managerIndex;            // 0x14c
+	bool m_enabled;        // 0x138
+	bool m_activated;      // 0x13c
+	bool m_terrainSet;     // 0x140
+	bool m_triggerPending; // 0x144
+	int m_triggerDelay;    // 0x148
+	int m_managerIndex;    // 0x14c
 };
 
 // SYNTHETIC: LEMBALL 0x00424c60

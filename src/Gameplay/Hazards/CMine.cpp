@@ -36,10 +36,10 @@ void CMine::Restart()
 void CMine::Initialise()
 {
 	m_action = ACTION_READY;
-	m_enabled = 0;
-	m_activated = 0;
-	m_terrainSet = 0;
-	m_triggerPending = 0;
+	m_enabled = false;
+	m_activated = false;
+	m_terrainSet = false;
+	m_triggerPending = false;
 	m_actionDeadline = g_dwGameTick;
 	g_mineTerrainOffsets[0] = 10;
 	g_mineTerrainOffsets[1] = 17;
@@ -53,9 +53,9 @@ void CMine::Set(AICOORD p_position)
 	m_position.m_xFixed = p_position.m_xFixed;
 	m_position.m_yFixed = p_position.m_yFixed;
 	m_position.m_zFixed = p_position.m_zFixed;
-	m_activated = 0;
-	m_enabled = 1;
-	m_terrainSet = 0;
+	m_activated = false;
+	m_enabled = true;
+	m_terrainSet = false;
 	int blockX = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	int blockY = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (blockX >= 0 && blockY >= 0) {
@@ -75,7 +75,7 @@ void CMine::Set(AICOORD p_position)
 void CMine::Trigger(int p_delay)
 {
 	if (m_triggerPending == 0 && m_action == ACTION_READY) {
-		m_triggerPending = 1;
+		m_triggerPending = true;
 		m_triggerDelay = p_delay;
 		RequestAction(ACTION_ACTIVATED);
 	}
@@ -84,9 +84,9 @@ void CMine::Trigger(int p_delay)
 // FUNCTION: LEMBALL 0x00423d70
 void CMine::DoActivate()
 {
-	m_activated = 1;
+	m_activated = true;
 	if (m_triggerPending != 0) {
-		m_terrainSet = 0;
+		m_terrainSet = false;
 		m_lastMovementTick = g_dwGameTick + m_triggerDelay;
 		((CMineManager*) m_manager)->Triggered(this);
 		return;
@@ -138,7 +138,7 @@ bool CMine::Process()
 		if (m_pendingAction != action) {
 			switch (action) {
 			case ACTION_DEAD:
-				m_enabled = m_activated = 0;
+				m_enabled = m_activated = false;
 				break;
 			case ACTION_RUNNING:
 				SetTerrain();
@@ -151,7 +151,7 @@ bool CMine::Process()
 
 	switch (action) {
 	case ACTION_ACTIVATING:
-		m_terrainSet = 0;
+		m_terrainSet = false;
 		return false;
 	case ACTION_ACTIVATED:
 		if (m_lastMovementTick < g_dwGameTick) {
@@ -164,8 +164,8 @@ bool CMine::Process()
 		break;
 	case ACTION_RUNNING:
 		if (m_actionDeadline < g_dwGameTick) {
-			m_activated = 0;
-			m_enabled = 0;
+			m_activated = false;
+			m_enabled = false;
 			m_lastMovementTick = g_dwGameTick + MINE_DEAD_STATE_DELAY_TICKS;
 			Action(ACTION_DEAD);
 		}
