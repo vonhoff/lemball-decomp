@@ -31891,18 +31891,18 @@
       "caller": 4466320,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?DrawButton@CPanelButton@@UAEXXZ",
-      "size": 787,
-      "fingerprint": "39460d735de16d0eb01e47efa1ea6a7ac50b91fbe61163a4d7764dcceb79868d",
+      "size": 790,
+      "fingerprint": "5724c730f2c99eef777744f7e777fb7500d9ecb5c21524bdd4233b7beded3815",
       "references": [
         {
-          "offset": 576,
+          "offset": 572,
           "original_instruction": 4466896,
           "original_bytes": "e873f9fbff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 592,
+          "offset": 588,
           "original_instruction": 4466912,
           "original_bytes": "e81ff7fbff",
           "thunk": 4202500,
@@ -31961,7 +31961,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?OnPressed@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z",
       "size": 454,
-      "fingerprint": "d5a45f9ecf4ee20a196b0f0141799dd95f31d04d94690088c84ee3cccb780859",
+      "fingerprint": "f8f64eb695ce0f77a0b2742d6fe0e0b2feedb8ffe752a48eb74b2fa3f4b71f3b",
       "references": [
         {
           "offset": 186,

@@ -25,6 +25,7 @@
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 
 #include <stddef.h>
+#include <string.h>
 
 class CResANIM;
 class CHotAreaHandler;
@@ -190,7 +191,7 @@ void CPanelButton::DrawButton()
 		mappedColour = playerRemap->m_remap[colour];
 	}
 	else {
-		mappedColour = *(const unsigned int*) &ammoSize;
+		memcpy(&mappedColour, &ammoSize, sizeof(mappedColour));
 	}
 	static_cast<CVSSize&>(m_statusLine[0].m_bounds) = ammoSize;
 	m_statusLine[0].m_bounds.CVSPoint::operator=(ammoPosition);
