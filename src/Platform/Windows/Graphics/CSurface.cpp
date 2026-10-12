@@ -147,7 +147,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface) : m_present
 	m_worldWidth = 0;
 	InitializeCriticalSection((CRITICAL_SECTION*) m_lock);
 	m_lockInitialised = true;
-	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface == g_pGdiHelperTarget) {
 		m_changeList = new CChangeList(
 			GDI_HELPER_CHANGE_LIST_CAPACITY,
 			p_rect,
@@ -159,7 +159,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface) : m_present
 			p_rect,
 			CVSSize(SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS, SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS));
 	}
-	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface == g_pGdiHelperTarget) {
 		BuildSurfaceColourTable((unsigned int*) m_colourTable,
 								NULL,
 								NULL,
@@ -357,7 +357,7 @@ CSurface::~CSurface()
 		g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
 		m_platformBitmap = NULL;
 	}
-	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface == g_pGdiHelperTarget) {
 		FreeBackBuff();
 		FreeZBuff();
 	}
@@ -412,7 +412,7 @@ void CSurface::SetLinePtrs()
 	int parentStride;
 	unsigned char* bits;
 
-	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface != g_pGdiHelperTarget) {
 		parentStride = m_parentSurface->m_stride;
 		m_stride = parentStride;
 		bits = m_parentSurface->m_lines[(int) m_windowRect.m_y] + (int) m_windowRect.m_x;
@@ -460,15 +460,15 @@ void CSurface::AddToChangeList(const CVSRect& p_rect)
 	short originX;
 	short originY;
 
-	parent = (CSurface*) m_parentSurface;
-	if (parent != (CSurface*) g_pGdiHelperTarget && m_forwardChangesImmediately && m_propagateChanges) {
+	parent = m_parentSurface;
+	if (parent != g_pGdiHelperTarget && m_forwardChangesImmediately && m_propagateChanges) {
 		origin = &this->m_surfaceRect;
 		originX = origin->m_x;
 		originY = origin->m_y;
 		CVSRect translated(p_rect);
 		translated.m_x += originX;
 		translated.m_y += originY;
-		((CSurface*) m_parentSurface)->AddToChangeList(translated);
+		m_parentSurface->AddToChangeList(translated);
 		return;
 	}
 	m_changeList->Add(p_rect);
@@ -525,7 +525,7 @@ void CSurface::Blit(CClipRect* p_clipRect)
 		}
 	}
 	CSurface* parent = m_parentSurface;
-	if ((CSurface*) g_pGdiHelperTarget != parent && (p_clipRect->m_flags & CClipRect::CLIP_IGNORE_PARENT) == 0) {
+	if (g_pGdiHelperTarget != parent && (p_clipRect->m_flags & CClipRect::CLIP_IGNORE_PARENT) == 0) {
 		CVSRect* parentClip = &parent->m_clipRect;
 		short parentX = parentClip->m_x;
 		CVSRect* childClip = &m_clipRect;
@@ -562,7 +562,7 @@ void CSurface::Blit(CClipRect* p_clipRect)
 // FUNCTION: LEMBALL 0x0046cda0
 void CSurface::ToScreen(CSurface* p_destinationSurface)
 {
-	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
+	if (m_parentSurface != g_pGdiHelperTarget) {
 		if (!m_forwardChangesImmediately) {
 			if (m_fullUpdatePending) {
 				m_parentSurface->AddToChangeList(m_windowRect);
@@ -673,7 +673,7 @@ void CSurface::NewBitmap(const CVSRect& p_rect)
 		bounds.m_x = position->m_x;
 		bounds.m_y = position->m_y;
 	}
-	if ((void*) m_parentSurface != g_pGdiHelperTarget) {
+	if (m_parentSurface != g_pGdiHelperTarget) {
 		const CVSSize& parentSize = m_parentSurface->m_windowRect;
 		short parentWidth = parentSize.m_width;
 		short parentHeight = parentSize.m_height;
@@ -782,12 +782,12 @@ void CSurface::Resize(const CVSSize& p_size)
 		m_changeList->Resize(rect);
 	}
 	NewBitmap(rect);
-	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface == g_pGdiHelperTarget) {
 		if (HasBackBuff()) {
 			ResizeBackBuff();
 		}
 	}
-	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface == g_pGdiHelperTarget) {
 		if (HasZBuff()) {
 			ResizeZBuff();
 		}
@@ -819,7 +819,7 @@ void CSurface::Move(const CVSPoint& p_position)
 	const CVSPoint& position = m_surfaceRect;
 	CVSPoint delta = p_position - position;
 
-	if (m_parentSurface != (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface != g_pGdiHelperTarget) {
 		CRITICAL_SECTION* lock = (CRITICAL_SECTION*) m_lock;
 		EnterCriticalSection(lock);
 		{
@@ -977,7 +977,7 @@ bool CSurface::BeginRender()
 	if (m_lines == NULL) {
 		return false;
 	}
-	if (m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
+	if (m_parentSurface == g_pGdiHelperTarget) {
 		CDibContext* dib = (CDibContext*) m_platformBitmap;
 		if (dib == NULL) {
 			return false;
@@ -1013,7 +1013,7 @@ void CSurface::EndRender()
 {
 	CSurface* current = this;
 	for (;;) {
-		if (current->m_parentSurface == (CSurface*) g_pGdiHelperTarget) {
+		if (current->m_parentSurface == g_pGdiHelperTarget) {
 			CDibContext* dib = (CDibContext*) current->m_platformBitmap;
 			dib->Unlock();
 			return;
