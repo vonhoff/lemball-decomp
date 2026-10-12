@@ -12,7 +12,7 @@
 #include "Engine/Math/RandomConstants.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Resources/Archive/CMogRes.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Text/CTextManager.h"

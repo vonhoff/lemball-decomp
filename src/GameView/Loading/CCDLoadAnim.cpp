@@ -18,7 +18,7 @@
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/VSTrig.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Resources/Types/CResPALETTE.h"

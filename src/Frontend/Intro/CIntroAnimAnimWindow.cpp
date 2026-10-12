@@ -2,7 +2,7 @@
 
 #include "Application/CGameStatus.h"
 #include "CIntroAnimDrawer.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Level/CLevelLoader.h"
 #include "Platform/Windows/Windowing/CAnimWnd.h"
 #include "Platform/Windows/Windowing/CWnd.h"

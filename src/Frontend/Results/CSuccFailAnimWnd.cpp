@@ -2,7 +2,7 @@
 
 #include "Application/GameMain.h"
 #include "Engine/Math/RandomConstants.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Platform/Windows/Windowing/CAnimWnd.h"
 #include "Platform/Windows/Windowing/CWnd.h"

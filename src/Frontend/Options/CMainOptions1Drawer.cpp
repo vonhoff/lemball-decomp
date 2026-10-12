@@ -6,7 +6,7 @@
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Graphics/Primitives/CBitmap.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Time/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"

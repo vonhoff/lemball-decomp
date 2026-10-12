@@ -1,7 +1,7 @@
 #include "CInputTextButton.h"
 
 #include "Engine/Queues/CBaseQueue.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Platform/Windows/Windowing/CTextButton.h"
 
 #include <string.h>

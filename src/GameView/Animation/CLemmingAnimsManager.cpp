@@ -9,7 +9,7 @@
 #include "Engine/Animation/CTimedAnim.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Resources/Archive/CMogRes.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "GameView/Display/CMain2DDisplay.h"

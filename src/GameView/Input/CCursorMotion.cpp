@@ -1,6 +1,6 @@
 #include "CCursorMotion.h"
 
-#include "../../Engine/Resources/Manifest.h"
+#include "../../Engine/Resources/ResourceCatalog.h"
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Math/CFixed.h"
 #include "Engine/Math/CVSPoint.h"

@@ -51,7 +51,7 @@ struct ObjectClipGrid {
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Queues/tagMESSAGE.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Sorting/VsSort.h"
 #include "Engine/Streams/CVSOStream.h"

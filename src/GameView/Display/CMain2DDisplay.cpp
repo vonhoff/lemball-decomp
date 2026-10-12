@@ -1,6 +1,6 @@
 #include "CMain2DDisplay.h"
 
-#include "../../Engine/Resources/Manifest.h"
+#include "../../Engine/Resources/ResourceCatalog.h"
 #include "../../Platform/Windows/Entry.h"
 #include "Application/CGame.h"
 #include "Application/GameMain.h"

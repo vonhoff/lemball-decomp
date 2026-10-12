@@ -8,7 +8,7 @@
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/Archive/CMogloadArena.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResSTRING.h"
 #include "Engine/Sound/CSoundManager.h"
 #include "Engine/Sound/VsSound.h"

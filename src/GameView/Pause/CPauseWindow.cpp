@@ -1,6 +1,6 @@
 #include "CPauseWindow.h"
 
-#include "../../Engine/Resources/Manifest.h"
+#include "../../Engine/Resources/ResourceCatalog.h"
 #include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
 #include "CReceiveWindowState.h"

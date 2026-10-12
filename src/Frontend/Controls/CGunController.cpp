@@ -1,7 +1,7 @@
 #include "CGunController.h"
 
 #include "../../Engine/Animation/CPlayThruAnim.h"
-#include "../../Engine/Resources/Manifest.h"
+#include "../../Engine/Resources/ResourceCatalog.h"
 #include "Application/SoundEffects.h"
 #include "CGunButtons.h"
 #include "CSpriteWindow.h"
@@ -22,8 +22,8 @@
 #include "Engine/Time/VsTime.h"
 #include "Frontend/Controls/CGunController.h"
 #include "Frontend/Controls/ControlMessages.h"
-#include "Frontend/tagCoordPair.h"
 #include "Frontend/FrontendLayoutMode.h"
+#include "Frontend/tagCoordPair.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"

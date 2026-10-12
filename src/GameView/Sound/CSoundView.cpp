@@ -5,7 +5,7 @@
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/RandomConstants.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Sound/CSoundManager.h"
 #include "Engine/Time/VsTime.h"
 #include "Frontend/CBaseFrontendDrawer.h"

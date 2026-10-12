@@ -1,7 +1,7 @@
 #include "CLevelLoader.h"
 
 #include "Engine/Files/VsFile.h"
-#include "Engine/Resources/Manifest.h"
+#include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResBIN.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Gameplay/Animation/CGroundAnim.h"

@@ -1,6 +1,6 @@
 #include "CHiliteController.h"
 
-#include "../../Engine/Resources/Manifest.h"
+#include "../../Engine/Resources/ResourceCatalog.h"
 #include "Application/SoundEffects.h"
 #include "CHiliteButtons.h"
 #include "CHiliteWindow.h"
