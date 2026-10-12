@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-12",
+  "baseline_commit": "d61236c3",
+  "source_commits": ["d14c1efe", "5cc6cdc7", "4efddf20"],
+  "route_commit": "d1729c2f",
+  "previous_review": "tools/data/reconstruction-audit-arena-intrinsics-2026-10-12.json",
+  "goal_status": "active",
+  "changes": [
+    {"commit": "d14c1efe", "attempts": [12518, 12519, 12520], "change": "Typed transport-buffer/address deletion; byte-array packet scratch allocation/free.", "evidence": "Windows cleanup preserves nonvirtual static destruction, captured owners and later reloads. Mac cleanup symbols corroborate names. Scratch capacity is bytes, not header elements; no initialization added. Existing CNetworkAddress static deletion remains historical MSVC4 behavior; no virtual slot invented."},
+    {"commit": "5cc6cdc7", "attempts": [12524, 12525], "change": "Typed destination-list cleanup; scalar cosine then ordinary CFixed construction.", "evidence": "Native414fff..41505b allocates8-byte list and capacity*20-byte entries;415160..4151a4 captures list, frees entries then list. Native41a1d0..41a2cf preserves wrapped angle arithmetic, trig receiver capture, lookup timing and vector results. Prior8622..8626 explicitly introduced placement storage for scores."},
+    {"commit": "4efddf20", "attempts": [12521, 12522, 12523], "change": "Remove three redundant hardware intrinsic directives.", "evidence": "Actual MSVC4 flags produce identical port instructions without directives. Entire worker code section and report pair identical. No execution of hardware ports; original pragma/option provenance unknown."}
+  ],
+  "validation": {
+    "build": "pass; routes refreshed and normal rebuild passed",
+    "source_policy": "0 violations",
+    "catalog": "2698/2698",
+    "thunks": "2079;7201 references;0 errors",
+    "vtables": "412;100%",
+    "native_fixtures": {"transport": 570, "formation": 12372, "destination_cleanup": 8, "object_id_collection": 2106, "total": 15056},
+    "scope": "Same final EXE. Actual formation rotation/copy; all three formations, signed full-turn range and overflow edges. ID collection:78 bitmap patterns, capacity edges, disjoint/overlapping output. Transport: nulls, mutation, allocation failures, captured owners, live reloads, stack and saved registers.",
+    "limits": "Finite fixtures; external allocation/free, network services and selected destructors intercepted. No network I/O or whole-game test. Shutdown connection list empty. Trig-global mutation deliberately stresses receiver capture; no claim of callback inside pure Rotate.",
+    "report": {
+      "functions": 5958,
+      "original_bytes": 433937,
+      "inventory_extents_unchanged": true,
+      "changed_rows": 13,
+      "before": {"exact_bytes": 230663, "effective_bytes": 284569, "exact_functions": 5229, "effective_functions": 5502},
+      "after": {"exact_bytes": 231045, "effective_bytes": 284765, "exact_functions": 5230, "effective_functions": 5503}
+    },
+    "matching_review": "Exact+382 bytes; Effective+196 bytes. Worker row union equals integration, including scores. Formation83.908->76.301: joined cosine store, register roles and scheduling;24-byte frame retained. CollectUnusedObjectIds loses90 Effective bytes; native alias/bounds fixtures pass. Other losses inspected: saved-register swaps, equivalent comparison reversal, scheduling and stack allocation.",
+    "graph": "10 files including ledger;78 seeds;36 impacts; all pages. Partial allocation/cast lines read. Metadata-changed, virtual and overload gaps limit graph; source/full report/native comparisons provide fallback.",
+    "whitespace": "pass",
+    "known_warning": "Existing staged-match collision40a830"
+  },
+  "evidence": {
+    "snapshot": "build-msvc400/clean-wave11-evidence/final",
+    "snapshot_files": 20,
+    "workers": "build-msvc400/clean-wave11-evidence/workers",
+    "worker_files": 43,
+    "exe_sha256": "580b3bf4136beed87c479a63d48e7d980a5ee3abf6a550aa748bf51816a6820b",
+    "reproduction": "validate-clean-wave11.py; sequential. save-wave11.py verifies result hashes and worker/integration rows. Local artifacts ignored; hashes.json records contents."
+  },
+  "remaining": [
+    "Four remaining libc pragmas and redundant C4355/vtordisp controls: worker-verified; integration pending.",
+    "Score-driven C2D/ground-lookup references and deletion alias: worker validation underway.",
+    "CDebugOStream default-base lifecycle; CTCPIPReadSocket standalone extent; nine-category completion matrix and remaining provenance questions."
+  ]
+}
