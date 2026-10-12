@@ -63,7 +63,7 @@ CCollectableManager::~CCollectableManager()
 		for (int i = 0; i < m_count; i++) {
 			delete m_collectables[i];
 		}
-		operator delete(m_collectables);
+		delete[] m_collectables;
 	}
 }
 

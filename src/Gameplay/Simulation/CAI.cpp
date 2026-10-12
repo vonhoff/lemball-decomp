@@ -420,11 +420,11 @@ CAI::~CAI()
 		delete m_networkGame;
 		delete m_gameStateMessage;
 	}
-	operator delete(m_objectRequired);
+	delete[] m_objectRequired;
 	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
 		g_pGameStatus->m_levelState = m_score;
 	}
-	operator delete(m_objects);
+	delete[] m_objects;
 }
 
 // FUNCTION: LEMBALL 0x00411b10

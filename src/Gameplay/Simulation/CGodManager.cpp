@@ -52,8 +52,8 @@ CGodManager::~CGodManager()
 	}
 	delete m_gameStateMessage;
 	CGlobalGameObject::DeleteMessages();
-	operator delete(m_transportMap);
-	operator delete(m_managers);
+	delete[] m_transportMap;
+	delete[] m_managers;
 }
 
 // FUNCTION: LEMBALL 0x0040b120
