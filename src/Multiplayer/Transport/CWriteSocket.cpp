@@ -16,8 +16,6 @@
 #include <new.h>
 #include <string.h>
 
-#pragma intrinsic(memcpy)
-
 extern "C" unsigned long __stdcall timeGetTime(void);
 
 // FUNCTION: LEMBALL 0x0045fce0

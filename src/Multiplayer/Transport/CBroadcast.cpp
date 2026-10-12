@@ -19,8 +19,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(memcpy, strcat, strcpy, strlen)
-
 // GLOBAL: LEMBALL 0x004a1e08
 int g_vsNetMajorVersion = 0;
 

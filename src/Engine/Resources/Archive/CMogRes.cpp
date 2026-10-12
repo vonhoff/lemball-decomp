@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-#pragma intrinsic(strcpy, strlen)
-
 enum {
 	RESOURCE_INDEX_NONE = -1
 };

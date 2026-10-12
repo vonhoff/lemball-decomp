@@ -45,8 +45,6 @@ enum {
 	GAME_SOUND_CHANNEL_COUNT = 50
 };
 
-#pragma intrinsic(strcpy, strcat, strcmp)
-
 enum eEventPumpResult {
 	EVENT_PUMP_CONTINUE = 0,
 	EVENT_PUMP_QUIT = 1
