@@ -37,8 +37,6 @@ unsigned int CPVGWnd::GetStyle()
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Platform/Windows/CPlatformServices.h"
 
-#include <string.h>
-
 // FUNCTION: LEMBALL 0x00465aa0
 void CPVGWnd::Clear(int p_colour)
 {
@@ -52,34 +50,24 @@ void CPVGWnd::Clear(int p_colour)
 	m_gdi->m_renderTarget->GetCurrDB();
 	CVSSize size(m_gdi->m_renderTarget->m_windowRect.m_width, m_gdi->m_renderTarget->m_windowRect.m_height);
 	CVSRect clearRect(0, 0, &size);
-	clearRect.m_x = clearRect.m_y = 0;
 	CDrawingMark* drawingMark = new CDrawingMark;
 
 	m_gdi->m_renderTarget->GetChangeList()->Reset();
 	drawingMark->Draw(m_gdi);
 
-	memcpy(&m_clearRectangle[0].m_bounds.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
-	memcpy(&m_clearRectangle[0].m_bounds.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
-	memcpy(&m_clearRectangle[0].m_bounds.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
-	memcpy(&m_clearRectangle[0].m_bounds.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
+	m_clearRectangle[0].m_bounds = clearRect;
 	m_clearRectangle[0].m_colour = p_colour;
 	m_clearRectangle[0].Draw(m_gdi);
 
 	if (m_gdi->m_renderTarget->HasBackBuff()) {
 		m_backBufferCopy[0].m_x = 0;
 		m_backBufferCopy[0].m_y = 0;
-		memcpy(&m_backBufferCopy[0].m_destination.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
-		memcpy(&m_backBufferCopy[0].m_destination.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
-		memcpy(&m_backBufferCopy[0].m_destination.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
-		memcpy(&m_backBufferCopy[0].m_destination.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
+		m_backBufferCopy[0].m_destination = clearRect;
 		m_backBufferCopy[0].Draw(m_gdi);
 	}
 
 	if (m_gdi->m_renderTarget->HasZBuff()) {
-		memcpy(&m_zBufferClear[0].m_bounds.m_width, &clearRect.m_width, sizeof(clearRect.m_width));
-		memcpy(&m_zBufferClear[0].m_bounds.m_height, &clearRect.m_height, sizeof(clearRect.m_height));
-		memcpy(&m_zBufferClear[0].m_bounds.m_x, &clearRect.m_x, sizeof(clearRect.m_x));
-		memcpy(&m_zBufferClear[0].m_bounds.m_y, &clearRect.m_y, sizeof(clearRect.m_y));
+		m_zBufferClear[0].m_bounds = clearRect;
 		m_zBufferClear[0].m_depth = 0;
 		m_zBufferClear[0].Draw(m_gdi);
 	}
