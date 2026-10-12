@@ -422,9 +422,9 @@ void CPlayerLemming::HitMine()
 void CPlayerLemming::GetData()
 {
 	unsigned short packedState[8];
-	m_position.m_xFixed = (int) (unsigned int) GetWORD() << FIXED_POINT_FRACTION_BITS;
-	m_position.m_yFixed = (int) (unsigned int) GetWORD() << FIXED_POINT_FRACTION_BITS;
-	m_position.m_zFixed = (int) (unsigned int) GetWORD() << FIXED_POINT_FRACTION_BITS;
+	m_position.m_xFixed = GetWORD() << FIXED_POINT_FRACTION_BITS;
+	m_position.m_yFixed = GetWORD() << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = GetWORD() << FIXED_POINT_FRACTION_BITS;
 	Get(packedState[1]);
 	m_facingDirection = packedState[1] & FACING_DIRECTION_MASK;
 	m_actionArgument =
