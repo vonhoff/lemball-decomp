@@ -407,8 +407,8 @@ CGlobalGameObject* CObjectManager::FindNearbyObject(AICOORD p_position, eObjectT
 		}
 		CGlobalGameObject* object = m_objects[index];
 		if (object->m_objectType == p_objectType) {
-			const int& left = (object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
-			const int& top = (object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
+			int left = (object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 8;
+			int top = (object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 8;
 			int right = left + 8;
 			int bottom = top + 8;
 			if (left < x && x < right && y > top && y < bottom) {
