@@ -51,7 +51,6 @@ extern char g_szUnknownUserActionReceived[];
 #include "Engine/Resources/ResourceLimits.h"
 #include "tagPRIMS.h"
 
-#include <new.h>
 #include <stddef.h>
 
 enum {
@@ -132,8 +131,6 @@ CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,
 // FUNCTION: LEMBALL 0x004455f0
 void CBaseFrontendDrawer::Setup()
 {
-	void* storage;
-
 	if (m_drawBackground != 0) {
 		CursorChangeType(CURSOR_DISPLAY_PAW, 0);
 	}
@@ -142,25 +139,13 @@ void CBaseFrontendDrawer::Setup()
 	}
 
 	if (m_textPrimitiveCapacity > 0) {
-		storage = operator new(sizeof(CTextManager));
-		if (storage == NULL) {
-			m_textManager = NULL;
-		}
-		else {
-			m_textManager = new (storage) CTextManager(RESOURCE_ID_COUNT, 1, m_textPrimitiveCapacity, m_maxStringLen);
-		}
+		m_textManager = new CTextManager(RESOURCE_ID_COUNT, 1, m_textPrimitiveCapacity, m_maxStringLen);
 	}
 
 	Restart();
 
 	if (m_ambientAnimId != 0) {
-		storage = operator new(sizeof(CPlayThruAnim));
-		if (storage == NULL) {
-			m_ambientAnim = NULL;
-		}
-		else {
-			m_ambientAnim = new (storage) CPlayThruAnim(CAnimsManager::GetnAnims(m_ambientAnimId), 1);
-		}
+		m_ambientAnim = new CPlayThruAnim(CAnimsManager::GetnAnims(m_ambientAnimId), 1);
 		m_ambientAnim->m_fixedTime = ANIMATION_TIME_REALTIME;
 		m_ambientAnim->SetAnimTime(BASE_FRONTEND_AMBIENT_ANIMATION_DURATION_MS);
 		unsigned long now = CurrentMilliTimer();

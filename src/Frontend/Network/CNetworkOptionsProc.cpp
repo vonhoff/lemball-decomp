@@ -17,28 +17,13 @@
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
-#include <new.h>
 #include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00455050
 CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p_game)
 {
-	void* storage;
-
-	storage = operator new(sizeof(CGameRejectMessage));
-	if (storage == NULL) {
-		m_rejectMessage = NULL;
-	}
-	else {
-		m_rejectMessage = new (storage) CGameRejectMessage();
-	}
-	storage = operator new(sizeof(CGameAcceptMessage));
-	if (storage == NULL) {
-		m_acceptMessage = NULL;
-	}
-	else {
-		m_acceptMessage = new (storage) CGameAcceptMessage();
-	}
+	m_rejectMessage = new CGameRejectMessage();
+	m_acceptMessage = new CGameAcceptMessage();
 	m_started = 0;
 	m_startFailed = 0;
 	g_pNetworkOptionsProc = this;

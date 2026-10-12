@@ -15,7 +15,6 @@
 #include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/Sound/CSoundView.h"
 
-#include <new.h>
 #include <stddef.h>
 
 const unsigned int MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE = 0xacef0004;
@@ -96,7 +95,6 @@ void CMainOptions2Drawer::Load()
 	unsigned long* musicAnim;
 	unsigned long* navigationAnim;
 	int i;
-	void* storage;
 
 	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
 		m_buttonLayout = g_anMainOptions2CompactButtonLayout;
@@ -128,14 +126,7 @@ void CMainOptions2Drawer::Load()
 		i++;
 	} while (--remaining);
 
-	storage = operator new(sizeof(CGunController));
-	CGunController** gunController = &m_gunController;
-	if (storage == NULL) {
-		*gunController = NULL;
-	}
-	else {
-		*gunController = new (storage) CGunController(m_display, m_gdi, 8, m_mode);
-	}
+	m_gunController = new CGunController(m_display, m_gdi, 8, m_mode);
 
 	int disableZoom = 0;
 	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
@@ -143,58 +134,53 @@ void CMainOptions2Drawer::Load()
 		m_disableZoom = 1;
 	}
 
-	(*gunController)
-		->AddButton(m_buttonLayout[0],
-					m_buttonLayout[1],
-					zoomAnim,
-					GUN_BUTTON_CYCLE_VALUE,
-					disableZoom,
-					1,
-					0,
-					&m_disableZoom,
-					MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE);
-	(*gunController)
-		->AddButton(m_buttonLayout[2],
-					m_buttonLayout[3],
-					animationsAnim,
-					GUN_BUTTON_CYCLE_VALUE,
-					0,
-					1,
-					0,
-					&m_disableAnimations,
-					MAIN_OPTIONS2_ANIMATIONS_TOGGLE_MESSAGE);
-	(*gunController)
-		->AddButton(m_buttonLayout[4],
-					m_buttonLayout[5],
-					effectsAnim,
-					GUN_BUTTON_CYCLE_VALUE,
-					0,
-					1,
-					0,
-					&g_nPendingEffectsVolume,
-					MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE);
-	(*gunController)
-		->AddButton(m_buttonLayout[6],
-					m_buttonLayout[7],
-					musicAnim,
-					GUN_BUTTON_CYCLE_VALUE,
-					0,
-					1,
-					0,
-					&g_nPendingMusicVolume,
-					MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE);
-	(*gunController)
-		->AddButton(m_buttonLayout[10],
-					m_buttonLayout[11],
-					navigationAnim,
-					GUN_BUTTON_POST_ACTION_MESSAGE,
-					0,
-					0,
-					0,
-					&m_transitionPending,
-					MAIN_OPTIONS2_RETURN_MESSAGE);
-	(*gunController)->SetGun(0);
-	(*gunController)->SetSpriteWindow();
+	m_gunController->AddButton(m_buttonLayout[0],
+							   m_buttonLayout[1],
+							   zoomAnim,
+							   GUN_BUTTON_CYCLE_VALUE,
+							   disableZoom,
+							   1,
+							   0,
+							   &m_disableZoom,
+							   MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE);
+	m_gunController->AddButton(m_buttonLayout[2],
+							   m_buttonLayout[3],
+							   animationsAnim,
+							   GUN_BUTTON_CYCLE_VALUE,
+							   0,
+							   1,
+							   0,
+							   &m_disableAnimations,
+							   MAIN_OPTIONS2_ANIMATIONS_TOGGLE_MESSAGE);
+	m_gunController->AddButton(m_buttonLayout[4],
+							   m_buttonLayout[5],
+							   effectsAnim,
+							   GUN_BUTTON_CYCLE_VALUE,
+							   0,
+							   1,
+							   0,
+							   &g_nPendingEffectsVolume,
+							   MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE);
+	m_gunController->AddButton(m_buttonLayout[6],
+							   m_buttonLayout[7],
+							   musicAnim,
+							   GUN_BUTTON_CYCLE_VALUE,
+							   0,
+							   1,
+							   0,
+							   &g_nPendingMusicVolume,
+							   MAIN_OPTIONS2_MUSIC_VOLUME_MESSAGE);
+	m_gunController->AddButton(m_buttonLayout[10],
+							   m_buttonLayout[11],
+							   navigationAnim,
+							   GUN_BUTTON_POST_ACTION_MESSAGE,
+							   0,
+							   0,
+							   0,
+							   &m_transitionPending,
+							   MAIN_OPTIONS2_RETURN_MESSAGE);
+	m_gunController->SetGun(0);
+	m_gunController->SetSpriteWindow();
 }
 
 // FUNCTION: LEMBALL 0x00448dc0
