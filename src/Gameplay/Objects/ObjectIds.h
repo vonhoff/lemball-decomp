@@ -3,7 +3,6 @@
 
 #define INVALID_OBJECT_ID 0xffff
 #define INVALID_OBJECT_REGISTRY_INDEX 0xffff
-#define OBJECT_ID_MASK 0xffff
 #define OBJECT_REGISTRY_CAPACITY 1000
 
 enum {
