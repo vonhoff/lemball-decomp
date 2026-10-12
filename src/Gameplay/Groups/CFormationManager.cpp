@@ -5,7 +5,6 @@
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/VSTrig.h"
 
-#include <new.h>
 #include <stddef.h>
 const int FORMATION_VECTOR_COUNT = 8;
 
@@ -71,17 +70,15 @@ void CFormationManager::TransformFormation(int p_formationIndex, int p_angle)
 			sine = g_pVSTrig->m_sine[angle % TRIG_ANGLE_FULL_TURN].m_value;
 		}
 		CFixed sin(sine);
-		unsigned int cosStorage;
+		int cosine;
 		if ((int) ((unsigned int) angle + TRIG_ANGLE_QUARTER_TURN) < 0) {
-			new (&cosStorage)
-				CFixed(-g_pVSTrig->m_sine[(int) (0U - TRIG_ANGLE_QUARTER_TURN - angle) % TRIG_ANGLE_FULL_TURN].m_value);
+			cosine = -g_pVSTrig->m_sine[(int) (0U - TRIG_ANGLE_QUARTER_TURN - angle) % TRIG_ANGLE_FULL_TURN].m_value;
 		}
 		else {
-			new (&cosStorage)
-				CFixed(g_pVSTrig->m_sine[(int) ((unsigned int) angle + TRIG_ANGLE_QUARTER_TURN) % TRIG_ANGLE_FULL_TURN]
-						   .m_value);
+			cosine = g_pVSTrig->m_sine[(int) ((unsigned int) angle + TRIG_ANGLE_QUARTER_TURN) % TRIG_ANGLE_FULL_TURN]
+						 .m_value;
 		}
-		CFixed& cos = *static_cast<CFixed*>(static_cast<void*>(&cosStorage));
+		CFixed cos(cosine);
 		CVector rotated = trig->Rotate(*source, sin, cos);
 		int x = rotated.m_xFixed;
 		int y = rotated.m_yFixed;

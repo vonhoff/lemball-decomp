@@ -440,8 +440,8 @@ CGameObject::~CGameObject()
 	g_pObjects[m_objectId] = NULL;
 	CAiDestinationList* destinationList = m_destinationList;
 	if (destinationList != NULL) {
-		operator delete(destinationList->m_entries);
-		operator delete(destinationList);
+		delete[] destinationList->m_entries;
+		delete destinationList;
 	}
 	m_objectId = INVALID_OBJECT_REGISTRY_INDEX;
 }
