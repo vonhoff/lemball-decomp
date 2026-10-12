@@ -17,8 +17,6 @@ public:
 
 private:
 	char m_text[28]; // 0x04
-
-	friend class CFileNetwork;
 };
 
 #endif
