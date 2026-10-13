@@ -48,7 +48,7 @@ struct ObjectClipGrid {
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Input/CBaseCursor.h"
 #include "Engine/Math/CFixed.h"
-#include "Engine/Math/CVSSize.h"
+#include "Engine/Math/CVSSizeArithmetic.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceCatalog.h"
@@ -690,8 +690,6 @@ void C2D::OnZoom(const CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x004366b0
 void C2D::OnSize(const CVSRect& p_rect)
 {
-	unsigned int zoomDivisor;
-
 	if (m_display->GetSizeStatus() == 0) {
 		if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
 			g_pDemo->GameIsOver();
@@ -701,9 +699,9 @@ void C2D::OnSize(const CVSRect& p_rect)
 	else if (m_display->IsWindowValid()) {
 		m_viewSize.m_width = p_rect.m_width;
 		m_viewSize.m_height = p_rect.m_height;
-		zoomDivisor = m_zoom;
-		m_viewSize.m_width = (short) ((int) m_viewSize.m_width / (int) zoomDivisor);
-		m_viewSize.m_height = (short) ((int) m_viewSize.m_height / (int) zoomDivisor);
+		CVSSize size = m_viewSize / m_zoom;
+		m_viewSize.m_width = size.m_width;
+		m_viewSize.m_height = size.m_height;
 		DoButtons();
 		m_redrawPending = 1;
 		if (m_panel != NULL) {
