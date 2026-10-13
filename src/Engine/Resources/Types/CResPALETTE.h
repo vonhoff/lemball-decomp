@@ -10,6 +10,14 @@ struct PaletteHeader {
 	unsigned int m_entryCount;
 };
 
+// SIZE 0x04
+struct PaletteColour {
+	unsigned char m_red;
+	unsigned char m_green;
+	unsigned char m_blue;
+	unsigned char m_reserved;
+};
+
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00498c08
 class CResPALETTE : public CResBase {

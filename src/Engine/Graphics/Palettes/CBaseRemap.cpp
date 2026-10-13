@@ -74,16 +74,16 @@ void CBaseRemap::CalculateGreyScale()
 	int greyIndex;
 
 	for (paletteIndex = 1; paletteIndex < paletteSize - 1; ++paletteIndex) {
-		unsigned char* colour = m_paletteResource->m_data + paletteIndex * 4;
-		if (colour[0] == colour[1] && colour[2] == colour[1]) {
+		PaletteColour* colour = (PaletteColour*) m_paletteResource->m_data + paletteIndex;
+		if (colour->m_red == colour->m_green && colour->m_blue == colour->m_green) {
 			greyIndices[greyCount++] = (unsigned char) paletteIndex;
 		}
 	}
 
 	for (paletteIndex = 1; paletteIndex < paletteSize - 1; ++paletteIndex) {
-		unsigned char* colour = m_paletteResource->m_data + paletteIndex * 4;
-		grey = (short) (((short) ((unsigned short) colour[0] * 2) + (short) ((unsigned short) colour[1] * 7) +
-						 (int) colour[2]) /
+		PaletteColour* colour = (PaletteColour*) m_paletteResource->m_data + paletteIndex;
+		grey = (short) (((short) ((unsigned short) colour->m_red * 2) + (short) ((unsigned short) colour->m_green * 7) +
+						 (int) colour->m_blue) /
 						10);
 		unsigned int bestIndex = (unsigned int) -1;
 		int bestDistance = REMAP_BEST_DISTANCE_INITIAL_VALUE;
@@ -94,7 +94,7 @@ void CBaseRemap::CalculateGreyScale()
 				break;
 			}
 			unsigned int candidate = greyIndices[greyIndex];
-			int distance = abs((int) m_paletteResource->m_data[candidate * 4] - grey);
+			int distance = abs((int) ((PaletteColour*) m_paletteResource->m_data)[candidate].m_red - grey);
 			if (bestDistance > distance) {
 				bestDistance = distance;
 				bestIndex = candidate;
