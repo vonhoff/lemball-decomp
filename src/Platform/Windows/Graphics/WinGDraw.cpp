@@ -54,54 +54,6 @@ unsigned int __stdcall WinGDrawGetInfo(void* p_info, unsigned int p_size);
 
 extern unsigned int g_dwWinGDrawColourTable[256];
 
-struct IcOpen {
-	unsigned int dwSize;
-	unsigned int fccType;
-	unsigned int fccHandler;
-	unsigned int dwVersion;
-	unsigned int dwFlags;
-	int dwError;
-};
-
-struct IcInfo {
-	unsigned int dwSize;
-	unsigned int fccType;
-	unsigned int fccHandler;
-	unsigned int dwFlags;
-	unsigned int dwVersion;
-	unsigned int dwVersionICM;
-	WCHAR szName[16];
-	WCHAR szDescription[128];
-	WCHAR szDriver[128];
-};
-
-struct IcDrawBegin {
-	unsigned int dwFlags;
-	void* hpal;
-	void* hwnd;
-	void* hdc;
-	int xDst;
-	int yDst;
-	int dxDst;
-	int dyDst;
-	BITMAPINFOHEADER* lpbi;
-	int xSrc;
-	int ySrc;
-	int dxSrc;
-	int dySrc;
-};
-
-struct IcDraw {
-	unsigned int dwFlags;
-	void* lpFormat;
-	void* lpData;
-};
-
-struct IcDrawSuggest {
-	BITMAPINFOHEADER* lpbiIn;
-	BITMAPINFOHEADER* lpbiSuggest;
-};
-
 // FUNCTION: LEMBALL 0x00478fb0
 long __stdcall WinGDrawDriverProc(unsigned long p_driverId,
 								  void* p_driverHandle,
@@ -166,9 +118,9 @@ WinGDrawState* __stdcall WinGDrawOpen(void* p_openInfo)
 {
 	void* mem;
 	WinGDrawState* state;
-	IcOpen* openInfo;
+	ICOPEN* openInfo;
 
-	openInfo = (IcOpen*) p_openInfo;
+	openInfo = (ICOPEN*) p_openInfo;
 	if (openInfo->fccType != streamtypeVIDEO) {
 		return NULL;
 	}
@@ -233,18 +185,18 @@ unsigned int __stdcall WinGDrawGetInfo(void* p_info, unsigned int p_size)
 	const int WING_DRAW_VERSION = (WING_DRAW_API_MAJOR_VERSION << WING_DRAW_API_MAJOR_VERSION_SHIFT);
 	const int WING_DRAW_TEXT_CAPACITY = 256;
 
-	IcInfo* info;
+	ICINFO* info;
 	WCHAR* description;
 
-	info = (IcInfo*) p_info;
+	info = (ICINFO*) p_info;
 	if (info == NULL) {
-		return sizeof(IcInfo);
+		return sizeof(ICINFO);
 	}
-	if (p_size < sizeof(IcInfo)) {
+	if (p_size < sizeof(ICINFO)) {
 		return 0;
 	}
 	info->fccType = ICTYPE_VIDEO;
-	info->dwSize = sizeof(IcInfo);
+	info->dwSize = sizeof(ICINFO);
 	info->fccHandler = mmioFOURCC('V', 'S', 'A', 'N');
 	info->dwFlags = VIDCF_DRAW;
 	info->dwVersion = WING_DRAW_VERSION;
@@ -252,7 +204,7 @@ unsigned int __stdcall WinGDrawGetInfo(void* p_info, unsigned int p_size)
 	description = info->szDescription;
 	MultiByteToWideChar(CP_ACP, 0, g_szVisualSciencesWinGDrawHandler, -1, description, WING_DRAW_TEXT_CAPACITY);
 	MultiByteToWideChar(CP_ACP, 0, g_szVsWinGAnim, -1, description, WING_DRAW_TEXT_CAPACITY);
-	return sizeof(IcInfo);
+	return sizeof(ICINFO);
 }
 
 // FUNCTION: LEMBALL 0x00479330
@@ -273,11 +225,11 @@ int __stdcall WinGDrawQueryFormat(WinGDrawState* p_state, void* p_format)
 // FUNCTION: LEMBALL 0x00479370
 int __stdcall WinGDrawSuggestFormat(WinGDrawState* p_state, void* p_request, long p_param2)
 {
-	IcDrawSuggest* request;
+	ICDRAWSUGGEST* request;
 	BITMAPINFOHEADER* source;
 	BITMAPINFOHEADER* dest;
 
-	request = (IcDrawSuggest*) p_request;
+	request = (ICDRAWSUGGEST*) p_request;
 	dest = request->lpbiSuggest;
 	if (dest == NULL) {
 		return sizeof(BITMAPINFOHEADER) + 256 * sizeof(RGBQUAD);
@@ -301,11 +253,11 @@ int __stdcall WinGDrawBegin(WinGDrawState* p_state, void* p_request, long p_para
 {
 	int result;
 	int copyBytes;
-	IcDrawBegin* request;
+	ICDRAWBEGIN* request;
 	BITMAPINFO* format;
 	(void) p_param2;
 
-	request = (IcDrawBegin*) p_request;
+	request = (ICDRAWBEGIN*) p_request;
 	result = WinGDrawQueryFormat(p_state, request->lpbi);
 	if (result == 0 && (request->dwFlags & ICDRAW_QUERY) == 0) {
 		p_state->m_destinationX = request->xDst;
@@ -331,11 +283,11 @@ int __stdcall WinGDrawBegin(WinGDrawState* p_state, void* p_request, long p_para
 // FUNCTION: LEMBALL 0x00479480
 int __stdcall WinGDrawFrame(WinGDrawState* p_state, void* p_request, long p_param2)
 {
-	IcDraw* request;
+	ICDRAW* request;
 	CPVWnd* window;
 	(void) p_param2;
 
-	request = (IcDraw*) p_request;
+	request = (ICDRAW*) p_request;
 	window = (CPVWnd*) p_state->m_window;
 	if (window->m_lifecycleRefs == 1) {
 		p_state->m_surface->CopyDibBits((BITMAPINFOHEADER*) request->lpFormat, (unsigned char*) request->lpData);
