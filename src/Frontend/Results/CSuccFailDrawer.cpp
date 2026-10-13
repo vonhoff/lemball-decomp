@@ -255,8 +255,8 @@ void CSuccFailDrawer::CalculateText()
 			const CVSSize& textSize = font->GetSize(m_firstLine, TEXT_ADVANCE_X_POSITIVE);
 			measuredSize.m_height = textSize.m_height;
 			measuredSize.m_width = textSize.m_width;
-			lineX =
-				(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - measuredSize.m_width) / 2);
+			lineX = (short) m_layout->m_frameStart.m_x +
+					(short) ((int) ((unsigned int) m_layout->m_frameEnd.m_x - measuredSize.m_width) / 2);
 			char* prevBreak = (m_secondLine != NULL) ? (m_secondLine - 1) : NULL;
 			if (lineX < layoutMinX) {
 				char* space = strrchr(m_firstLine, ' ');
@@ -280,8 +280,8 @@ void CSuccFailDrawer::CalculateText()
 		else {
 			layoutY = layoutY + measuredSize.m_height;
 			const CVSSize& textSize = font->GetSize(m_secondLine, TEXT_ADVANCE_X_POSITIVE);
-			m_secondLinePos.m_x =
-				(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - textSize.m_width) / 2);
+			m_secondLinePos.m_x = (short) m_layout->m_frameStart.m_x +
+								  (short) ((int) ((unsigned int) m_layout->m_frameEnd.m_x - textSize.m_width) / 2);
 			m_secondLinePos.m_y = layoutY;
 		}
 	}
@@ -291,8 +291,8 @@ void CSuccFailDrawer::CalculateText()
 		short labelHeight = textSize.m_height;
 		int labelWidth = textSize.m_width;
 		passwordLabelY = m_layout->m_passwordLabelPosition.m_y;
-		m_passwordLabelPos.m_x =
-			(short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - labelWidth) / 2);
+		m_passwordLabelPos.m_x = (short) m_layout->m_frameStart.m_x +
+								 (short) ((int) ((unsigned int) m_layout->m_frameEnd.m_x - labelWidth) / 2);
 		m_passwordLabelPos.m_y = passwordLabelY;
 		passwordLabelY += labelHeight;
 	}
@@ -300,7 +300,8 @@ void CSuccFailDrawer::CalculateText()
 	{
 		const CVSSize& passwordSize = font->GetSize(m_password, TEXT_ADVANCE_X_POSITIVE);
 		int labelWidth = passwordSize.m_width;
-		m_passwordPos.m_x = (short) m_layout->m_frameStart.m_x + (short) ((m_layout->m_frameEnd.m_x - labelWidth) / 2);
+		m_passwordPos.m_x = (short) m_layout->m_frameStart.m_x +
+							(short) ((int) ((unsigned int) m_layout->m_frameEnd.m_x - labelWidth) / 2);
 		m_passwordPos.m_y = passwordLabelY;
 	}
 }
