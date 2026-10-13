@@ -148,7 +148,7 @@ bool CGameStatus::DecodePassword(char* p_password)
 // FUNCTION: LEMBALL 0x00406d80
 int CGameStatus::StringToDWord()
 {
-	int result = 0;
+	unsigned int result = 0;
 	char* password = m_password;
 	for (unsigned int digitIndex = 0; digitIndex < strlen(password); digitIndex++) {
 		result = result * 10 + (m_password[digitIndex] - '0');
