@@ -134,19 +134,16 @@ void CGenericGroup::SwapElements(CGameObject* p_first, CGameObject* p_second)
 {
 	int firstIndex;
 	int secondIndex = GROUP_ELEMENT_INDEX_NOT_FOUND;
-	int index = 0;
+	int count = m_elementCount;
 
-	if (m_elementCount > index) {
-		do {
-			CGameObject* element = m_elements[index];
-			if (p_first == element) {
-				firstIndex = index;
-			}
-			if (element == p_second) {
-				secondIndex = index;
-			}
-			index++;
-		} while (index < m_elementCount);
+	for (int index = 0; index < count; ++index) {
+		CGameObject* element = m_elements[index];
+		if (p_first == element) {
+			firstIndex = index;
+		}
+		if (element == p_second) {
+			secondIndex = index;
+		}
 	}
 	m_elements[firstIndex] = p_second;
 	m_elements[secondIndex] = p_first;
