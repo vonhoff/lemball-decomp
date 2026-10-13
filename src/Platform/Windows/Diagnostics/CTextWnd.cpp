@@ -501,7 +501,7 @@ char* CTextWnd::GetSelectionText()
 	for (line = m_selectionStart; line <= m_selectionEnd; line++) {
 		strcat(text, m_lineBuffer->m_lines[line].m_text);
 		// STRING: LEMBALL 0x004a2cd4
-		memcpy(text + strlen(text), "\r\n", 3);
+		strcat(text, "\r\n");
 	}
 	LeaveCritical();
 	return text;
