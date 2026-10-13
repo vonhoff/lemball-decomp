@@ -14,11 +14,11 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
-#include "Platform/Windows/VsTime.h"
 #include "Frontend/Controls/ControlMessages.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Platform/Windows/Graphics/CSurface.h"
+#include "Platform/Windows/VsTime.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
@@ -76,7 +76,7 @@ void CHiliteController::SetHiliteWindow()
 	rect.m_x = 0;
 	rect.m_y = 0;
 	m_hiliteWindow->Create(rect, (CPVGWnd*) m_window, NULL);
-	m_hiliteSurface = (void*) m_hiliteWindow->m_gdi;
+	m_hiliteGdi = m_hiliteWindow->m_gdi;
 }
 
 // FUNCTION: LEMBALL 0x0044f610
@@ -217,7 +217,7 @@ void CHiliteController::DrawHiliteWindow()
 {
 	if (m_active != 0) {
 		int offset = m_layoutMode == FRONTEND_LAYOUT_COMPACT ? -1 : -2;
-		CGDI* hiliteGdi = (CGDI*) m_hiliteSurface;
+		CGDI* hiliteGdi = m_hiliteGdi;
 		CSurface* surface = hiliteGdi->m_renderTarget;
 		CVSSize dimensions(surface->m_windowRect);
 		m_hiliteRect.m_flags = CClipRect::CLIP_IGNORE_PARENT;
@@ -231,10 +231,7 @@ void CHiliteController::DrawHiliteWindow()
 		position.m_x = (short) m_currentX + (short) offset;
 		position.m_y = (short) m_currentY + (short) offset;
 		unsigned long animationId = g_dwHiliteAnimationId;
-		CGDI* savedGdi = CAnimsManager::m_gdi;
-		CAnimsManager::m_gdi = (CGDI*) m_hiliteSurface;
-		CAnimsManager::DrawAnim(position, animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, NULL);
-		CAnimsManager::m_gdi = savedGdi;
+		CAnimsManager::DrawAnim(m_hiliteGdi, position, animationId, 0, (CAnimFrameBASE*) &m_hiliteAnim, NULL);
 		CAnimsManager::ResetPrimitives();
 	}
 }

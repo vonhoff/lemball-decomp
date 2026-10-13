@@ -35423,7 +35423,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CHiliteController.cpp.obj",
       "symbol": "?UpdateAnimIDs@CHiliteController@@QAEXK@Z",
       "size": 68,
-      "fingerprint": "7104c79f80a93cb57ef86ed92f6699fbc9f11b806a75c72898574dc25ab4b3f2",
+      "fingerprint": "e9dfbae811f834c0179a06298c357ffed21af8d2345bdf3bd215b9056b946574",
       "references": [
         {
           "offset": 57,

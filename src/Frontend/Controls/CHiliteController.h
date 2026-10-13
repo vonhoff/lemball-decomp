@@ -34,7 +34,7 @@ public:
 					  unsigned int p_layoutMode,
 					  unsigned int p_horizontalMode);
 	virtual int ProcessMsg(tagMESSAGE* p_message); // vtable+0x08
-	virtual ~CHiliteController();               // vtable+0x04
+	virtual ~CHiliteController();                  // vtable+0x04
 	void ActivateButtons(int p_active);
 	void AddButton(int p_x,
 				   int p_y,
@@ -76,7 +76,7 @@ private:
 	unsigned int m_nextControlMessage;       // 0x114
 	CStaticAnim m_hiliteAnim;                // 0x118
 	CHiliteWindow* m_hiliteWindow;           // 0x128
-	void* m_hiliteSurface;                   // 0x12c
+	CGDI* m_hiliteGdi;                       // 0x12c
 	unsigned int m_layoutMode;               // 0x130
 	unsigned int m_horizontalMode;           // 0x134
 	unsigned int m_animationSet;             // 0x138
