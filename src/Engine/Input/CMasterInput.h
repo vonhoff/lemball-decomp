@@ -4,6 +4,7 @@
 #include "Engine/Memory/CArenaBase.h"
 
 class CBaseQueue;
+class CMasterInputItem;
 
 enum {
 	MASTER_INPUT_ACTIVE_STATE_MASK = 0x03
@@ -14,8 +15,8 @@ enum {
 class CMasterInput : public CArenaBase {
 public:
 	CMasterInput(CBaseQueue* p_queue);
-	bool AddItem(void* p_item);
-	bool RemoveItem(void* p_item);
+	bool AddItem(CMasterInputItem* p_item);
+	bool RemoveItem(CMasterInputItem* p_item);
 	bool IsEmpty();
 	bool ProcessItems();
 	virtual CVSOStream& StreamOut(CVSOStream& p_stream); // vtable+0x00
@@ -28,7 +29,7 @@ public:
 
 private:
 	struct CNode {
-		void* m_item;
+		CMasterInputItem* m_item;
 		CNode* m_next;
 	};
 

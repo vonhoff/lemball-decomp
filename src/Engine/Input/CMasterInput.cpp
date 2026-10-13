@@ -25,7 +25,7 @@ CMasterInput::~CMasterInput()
 }
 
 // FUNCTION: LEMBALL 0x004720c0
-bool CMasterInput::AddItem(void* p_item)
+bool CMasterInput::AddItem(CMasterInputItem* p_item)
 {
 	CNode* added = new CNode;
 	CNode* last = m_firstItem;
@@ -45,7 +45,7 @@ bool CMasterInput::AddItem(void* p_item)
 }
 
 // FUNCTION: LEMBALL 0x00472110
-bool CMasterInput::RemoveItem(void* p_item)
+bool CMasterInput::RemoveItem(CMasterInputItem* p_item)
 {
 	unsigned int index;
 	unsigned int count = m_itemCount;
@@ -80,8 +80,8 @@ bool CMasterInput::ProcessItems()
 	}
 	CNode* node = m_firstItem;
 	for (unsigned int i = 0; i < m_itemCount; i++) {
-		if (static_cast<CMasterInputItem*>(node->m_item)->IsReady() == 1) {
-			if (static_cast<CMasterInputItem*>(node->m_item)->ProcessQueue(m_queue) == 0) {
+		if (node->m_item->IsReady() == 1) {
+			if (node->m_item->ProcessQueue(m_queue) == 0) {
 				return false;
 			}
 		}
