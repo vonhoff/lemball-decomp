@@ -67,13 +67,7 @@ CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect
 	m_textManager->LoadFont(RES_GAME_FONT3);
 	m_aboutString = CResSTRING::Load(RES_REGISTRATION_FINGERPRINT);
 	CResSTRING* aboutString = m_aboutString;
-	if (aboutString->m_loaded != 0) {
-		aboutString->m_age = 0;
-	}
-	else {
-		aboutString->LoadData();
-	}
-	aboutString->m_directUseCount = aboutString->m_directUseCount + 1;
+	aboutString->Lock();
 	m_aboutText = (char*) aboutString->m_data;
 	m_startTime = CurrentMilliTimer();
 	m_endTime = m_startTime + ABOUT_SCREEN_DISPLAY_DURATION_MS;

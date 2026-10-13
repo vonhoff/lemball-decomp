@@ -66,13 +66,7 @@ void CGraphicButton::Initialise()
 	m_gdiFlags = m_gdiFlags + 1;
 	m_animation = CResANIM::Load(m_animationId);
 	animation = m_animation;
-	if (animation->m_loaded != 0) {
-		animation->m_age = 0;
-	}
-	else {
-		animation->LoadData();
-	}
-	animation->m_directUseCount++;
+	animation->Lock();
 	entries = m_animation->m_animationEntries;
 	unsigned short& graphicHeight = m_graphicHeight;
 	short firstWidth = entries->m_size.m_width;

@@ -28,6 +28,16 @@ public:
 	virtual unsigned int GetSizeUsed();                                                         // vtable+0x38
 	void DoLoad(unsigned long p_resourceId);
 	void Initialise();
+	void Lock()
+	{
+		if (m_loaded != 0) {
+			m_age = 0;
+		}
+		else {
+			LoadData();
+		}
+		++m_directUseCount;
+	}
 	void UnLoad();
 	void UnLoadExtData(bool p_force);
 

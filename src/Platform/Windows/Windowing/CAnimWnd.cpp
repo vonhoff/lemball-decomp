@@ -217,13 +217,7 @@ void CAnimWnd::SetAnim(unsigned long p_resourceId)
 	if (p_resourceId != 0) {
 		m_animResourceId = p_resourceId;
 		movie = CResMOVIE::Load(p_resourceId);
-		if (movie->m_loaded != 0) {
-			movie->m_age = 0;
-		}
-		else {
-			movie->LoadData();
-		}
-		movie->m_directUseCount = movie->m_directUseCount + 1;
+		movie->Lock();
 		fileName = (char*) movie->m_movieEntries->m_data;
 	}
 	CString relative;

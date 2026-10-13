@@ -118,13 +118,7 @@ void CMciMusicDevice::Prepare(unsigned long p_handle, unsigned long p_resourceId
 	m_preparedHandle = p_handle;
 	g_nPreparedMciMusicTrackHandle = p_handle;
 	name = CResSTRING::Load(p_resourceId);
-	if (name->m_loaded != 0) {
-		name->m_age = 0;
-	}
-	else {
-		name->LoadData();
-	}
-	name->m_directUseCount++;
+	name->Lock();
 	openParms.lpstrDeviceType = (LPCSTR) MCI_DEVTYPE_SEQUENCER;
 	CString musicName;
 	if (m_usePathPrefix != 0) {

@@ -281,13 +281,7 @@ unsigned long CSoundManager::PrepareEffect(unsigned long p_resourceId)
 
 	if (m_effectsAvailable == true) {
 		effect = CResEFFECT::Load(p_resourceId);
-		if (effect->m_loaded != 0) {
-			effect->m_age = 0;
-		}
-		else {
-			effect->LoadData();
-		}
-		effect->m_directUseCount = effect->m_directUseCount + 1;
+		effect->Lock();
 		data = effect->GetData();
 		m_effectOutput->AllocateEffect(data, &handle);
 		effect->m_directUseCount = effect->m_directUseCount - 1;

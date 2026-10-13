@@ -261,14 +261,8 @@ bool CGame::IsValidResource()
 	if (resource == NULL) {
 		return false;
 	}
-	if (resource->m_loaded != 0) {
-		resource->m_age = 0;
-	}
-	else {
-		resource->LoadData();
-	}
+	resource->Lock();
 	i = 0;
-	resource->m_directUseCount++;
 	data = resource->m_data;
 	if (*data != 0) {
 		do {

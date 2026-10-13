@@ -9,13 +9,7 @@
 void CZRLE::Draw(CGDI* p_gdi)
 {
 	CResBase* resource = m_resource;
-	if (resource->m_loaded != 0) {
-		resource->m_age = 0;
-	}
-	else {
-		resource->LoadData();
-	}
-	resource->m_directUseCount++;
+	resource->Lock();
 	p_gdi->AddToList(this);
 }
 

@@ -36,13 +36,7 @@ CBaseRemap::~CBaseRemap()
 void CBaseRemap::MapRemap(const unsigned char* p_mapping)
 {
 	CResPALETTE* palette = m_paletteResource;
-	if (palette->m_loaded != 0) {
-		palette->m_age = 0;
-	}
-	else {
-		palette->LoadData();
-	}
-	++palette->m_directUseCount;
+	palette->Lock();
 
 	unsigned int paletteSize = m_paletteResource->m_entryCount;
 	m_remap = new unsigned char[paletteSize];
@@ -70,13 +64,7 @@ void CBaseRemap::CalculateGreyScale()
 {
 	short grey;
 	CResPALETTE* palette = m_paletteResource;
-	if (palette->m_loaded != 0) {
-		palette->m_age = 0;
-	}
-	else {
-		palette->LoadData();
-	}
-	++palette->m_directUseCount;
+	palette->Lock();
 
 	int paletteSize = (int) m_paletteResource->m_entryCount;
 	m_remap = new unsigned char[paletteSize];

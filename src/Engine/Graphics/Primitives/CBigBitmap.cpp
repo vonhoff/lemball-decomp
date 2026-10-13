@@ -9,13 +9,7 @@ void CBigBitmap::Draw(CGDI* p_gdi)
 {
 	CResBITMAP* resource = m_resource;
 
-	if (resource->m_loaded != 0) {
-		resource->m_age = 0;
-	}
-	else {
-		resource->LoadData();
-	}
-	resource->m_directUseCount++;
+	resource->Lock();
 	m_resource->m_rendered = 1;
 	p_gdi->AddToList(this);
 }

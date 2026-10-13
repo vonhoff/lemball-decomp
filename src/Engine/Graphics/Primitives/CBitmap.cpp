@@ -10,13 +10,7 @@ void CBitmap::Draw(CGDI* p_gdi)
 	CResBITMAP* resource = m_resource;
 	CBitmap* self = this;
 
-	if (resource->m_loaded != 0) {
-		resource->m_age = 0;
-	}
-	else {
-		resource->LoadData();
-	}
-	resource->m_directUseCount++;
+	resource->Lock();
 	p_gdi->AddToList(self);
 }
 

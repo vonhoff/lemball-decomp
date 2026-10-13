@@ -399,13 +399,7 @@ void CGWnd::AttachPalette(unsigned long p_paletteId)
 		return;
 	}
 	palette = CResPALETTE::Load(p_paletteId);
-	if (palette->m_loaded != 0) {
-		palette->m_age = 0;
-	}
-	else {
-		palette->LoadData();
-	}
-	palette->m_directUseCount = palette->m_directUseCount + 1;
+	palette->Lock();
 	m_gdi->m_renderTarget->AttachPalette(palette);
 	palette->m_directUseCount = palette->m_directUseCount - 1;
 	palette->UnLoad();

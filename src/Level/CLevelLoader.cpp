@@ -73,13 +73,7 @@ void CLevelLoader::LoadLevel(eSkill p_skill, int p_level, bool p_skip)
 	if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
 		unsigned int resourceId = CalcLevelID(p_skill, p_level);
 		binResource = CResBIN::Load(resourceId);
-		if (binResource->m_loaded != 0) {
-			binResource->m_age = 0;
-		}
-		else {
-			binResource->LoadData();
-		}
-		binResource->m_directUseCount++;
+		binResource->Lock();
 		g_pLevelFileData = binResource->GetData();
 	}
 	else {
@@ -270,13 +264,7 @@ void CLevelLoader::RetrievePreviewData(eSkill p_skill, int p_level, tPreviewData
 	if (g_nEditLevelMode == 0 && g_nPlayLevelMode == 0) {
 		unsigned int resourceId = CalcLevelID(p_skill, p_level);
 		binResource = CResBIN::Load(resourceId);
-		if (binResource->m_loaded != 0) {
-			binResource->m_age = 0;
-		}
-		else {
-			binResource->LoadData();
-		}
-		binResource->m_directUseCount++;
+		binResource->Lock();
 		g_pLevelFileData = binResource->GetData();
 	}
 	else {

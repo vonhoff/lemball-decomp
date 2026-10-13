@@ -96,13 +96,7 @@ void CText::NextPos()
 void CText::Render(CGDI* p_gdi)
 {
 	CResFONT* font = m_font;
-	if (font->m_loaded != 0) {
-		font->m_age = 0;
-	}
-	else {
-		font->LoadData();
-	}
-	font->m_directUseCount++;
+	font->Lock();
 	m_x = m_startX;
 	m_y = m_startY;
 	m_primitive.m_flags = m_flags;

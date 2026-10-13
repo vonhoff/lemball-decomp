@@ -147,13 +147,7 @@ bool CDemo::LoadBuffer()
 	else {
 		m_resource = CResBIN::Load(m_currentResourceId);
 		CResBIN* resource = m_resource;
-		if (resource->m_loaded != 0) {
-			resource->m_age = 0;
-		}
-		else {
-			resource->LoadData();
-		}
-		++resource->m_directUseCount;
+		resource->Lock();
 		m_buffer = m_resource->GetData();
 		m_bytesRemaining = m_resource->m_dataSize;
 		m_currentResourceId = (unsigned int) m_currentResourceId + 1;

@@ -16,13 +16,7 @@ void CAnim::Draw(CGDI* p_gdi)
 	CResANIM* resource;
 
 	resource = m_animResource;
-	if (resource->m_loaded != 0) {
-		resource->m_age = 0;
-	}
-	else {
-		resource->LoadData();
-	}
-	resource->m_directUseCount = resource->m_directUseCount + 1;
+	resource->Lock();
 	p_gdi->AddToList(this);
 }
 
