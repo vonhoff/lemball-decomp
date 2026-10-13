@@ -156,8 +156,8 @@ bool CDemo::LoadBuffer()
 		++resource->m_directUseCount;
 		m_buffer = m_resource->GetData();
 		m_bytesRemaining = m_resource->m_dataSize;
-		++m_currentResourceId;
-		if (m_firstResourceId + m_resourceCount <= m_currentResourceId) {
+		m_currentResourceId = (unsigned int) m_currentResourceId + 1;
+		if ((int) ((unsigned int) m_firstResourceId + m_resourceCount) <= m_currentResourceId) {
 			m_currentResourceId = m_firstResourceId;
 		}
 	}
@@ -223,7 +223,7 @@ void CDemo::Process()
 			GameIsOver();
 			return;
 		}
-		m_packetIndex++;
+		m_packetIndex = (unsigned int) m_packetIndex + 1;
 		bool more;
 		do {
 			more = SendNextPacket(m_packetIndex);
