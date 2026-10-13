@@ -280,51 +280,36 @@ void CBaseCursor::SetMainID(unsigned long p_resourceId, int p_frame)
 // FUNCTION: LEMBALL 0x0046b460
 bool CBaseCursor::InWindow(CGWnd* p_window)
 {
-	short innerWidth;
-	short clipX;
-	short clipY;
-	short innerHeight;
-	short cursorX;
-	short cursorY;
 	CVSRect bounds(p_window->m_rect);
-	short& width = bounds.m_width;
-	short& x = bounds.m_x;
-	short& y = bounds.m_y;
-	short& height = bounds.m_height;
-	CVSPoint* innerXY;
-
-	innerHeight = p_window->m_innerRect.m_height;
-	innerWidth = p_window->m_innerRect.m_width;
-	innerXY = &p_window->m_innerRect;
-	clipX = innerXY->m_x;
-	clipY = innerXY->m_y;
-	if ((int) innerHeight * (int) innerWidth != 0) {
-		clipX = (short) (clipX + x);
-		clipY = (short) (clipY + y);
-		if (x < clipX) {
-			width = (short) (width + (x - clipX));
-			x = clipX;
+	CVSRect innerBounds(p_window->m_innerRect);
+	if (innerBounds.m_height * innerBounds.m_width != 0) {
+		innerBounds.m_x = (short) (innerBounds.m_x + bounds.m_x);
+		innerBounds.m_y = (short) (innerBounds.m_y + bounds.m_y);
+		if (bounds.m_x < innerBounds.m_x) {
+			bounds.m_width = (short) (bounds.m_width + (bounds.m_x - innerBounds.m_x));
+			bounds.m_x = innerBounds.m_x;
 		}
-		if ((short) (innerWidth + clipX) < (short) (x + width)) {
-			width = (short) ((clipX - x) + innerWidth);
+		if ((short) (innerBounds.m_width + innerBounds.m_x) < (short) (bounds.m_x + bounds.m_width)) {
+			bounds.m_width = (short) ((innerBounds.m_x - bounds.m_x) + innerBounds.m_width);
 		}
-		if (y < clipY) {
-			height = (short) (height + (y - clipY));
-			y = clipY;
+		if (bounds.m_y < innerBounds.m_y) {
+			bounds.m_height = (short) (bounds.m_height + (bounds.m_y - innerBounds.m_y));
+			bounds.m_y = innerBounds.m_y;
 		}
-		if ((short) (innerHeight + clipY) < (short) (height + y)) {
-			height = (short) ((innerHeight - y) + clipY);
+		if ((short) (innerBounds.m_height + innerBounds.m_y) < (short) (bounds.m_height + bounds.m_y)) {
+			bounds.m_height = (short) ((innerBounds.m_height - bounds.m_y) + innerBounds.m_y);
 		}
-		if (width <= 0 || height <= 0) {
-			height = 0;
-			width = 0;
-			y = 0;
-			x = 0;
+		if (bounds.m_width <= 0 || bounds.m_height <= 0) {
+			bounds.m_height = 0;
+			bounds.m_width = 0;
+			bounds.m_y = 0;
+			bounds.m_x = 0;
 		}
 	}
-	cursorX = m_position.m_x;
-	if (x <= cursorX && cursorX < (short) (x + width) && y <= (cursorY = m_position.m_y) &&
-		cursorY < (short) (height + y)) {
+	short cursorX = m_position.m_x;
+	short cursorY;
+	if (bounds.m_x <= cursorX && cursorX < (short) (bounds.m_x + bounds.m_width) &&
+		bounds.m_y <= (cursorY = m_position.m_y) && cursorY < (short) (bounds.m_height + bounds.m_y)) {
 		return true;
 	}
 	return false;
