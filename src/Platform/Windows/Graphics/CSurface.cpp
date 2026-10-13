@@ -1572,10 +1572,10 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 // FUNCTION: LEMBALL 0x00475bc0
 int CSurface::ClipCircle(int p_centreX, int p_centreY, int p_radius)
 {
-	int left = p_centreX - p_radius;
-	int top = p_centreY - p_radius;
-	int right = p_centreX + p_radius;
-	int bottom = p_centreY + p_radius;
+	int left = (unsigned int) p_centreX - p_radius;
+	int top = (unsigned int) p_centreY - p_radius;
+	int right = (unsigned int) p_centreX + p_radius;
+	int bottom = (unsigned int) p_centreY + p_radius;
 
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return CIRCLE_OUTSIDE_CLIP;
