@@ -70,26 +70,16 @@ CMaze::~CMaze()
 // FUNCTION: LEMBALL 0x00423110
 void CMaze::ReInitialise()
 {
-	unsigned short collision;
-	int y = 0;
-	int x;
-	if (m_height > 0) {
-		do {
-			x = 0;
-			if (m_width > 0) {
-				do {
-					collision = m_map->m_ground.GetCollision(x, y);
-					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
-						m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
-					}
-					else {
-						m_distances[y][x] = MAZE_DISTANCE_UNREACHED;
-					}
-					x++;
-				} while (x < m_width);
+	for (int y = 0; y < m_height; y++) {
+		for (int x = 0; x < m_width; x++) {
+			unsigned short collision = m_map->m_ground.GetCollision(x, y);
+			if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
+				m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
 			}
-			y++;
-		} while (y < m_height);
+			else {
+				m_distances[y][x] = MAZE_DISTANCE_UNREACHED;
+			}
+		}
 	}
 }
 
@@ -251,7 +241,6 @@ void CMaze::SwapChange()
 // FUNCTION: LEMBALL 0x00423530
 void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY)
 {
-	int x;
 	if (p_resetStats != 0) {
 		m_totalTime = 0;
 		m_solutionCount = 0;
@@ -263,25 +252,16 @@ void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, i
 	m_endX = p_endX;
 	m_endY = p_endY;
 
-	int y = 0;
-	if (m_height > 0) {
-		do {
-			x = 0;
-			if (m_width > 0) {
-				do {
-					unsigned short collision;
-					collision = m_map->m_ground.GetCollision(x, y);
-					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
-						m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
-					}
-					else {
-						m_distances[y][x] = MAZE_DISTANCE_UNREACHED;
-					}
-					x++;
-				} while (x < m_width);
+	for (int y = 0; y < m_height; y++) {
+		for (int x = 0; x < m_width; x++) {
+			unsigned short collision = m_map->m_ground.GetCollision(x, y);
+			if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
+				m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
 			}
-			y++;
-		} while (y < m_height);
+			else {
+				m_distances[y][x] = MAZE_DISTANCE_UNREACHED;
+			}
+		}
 	}
 
 	m_changeSelect = 0;
