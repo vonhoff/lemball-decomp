@@ -1,9 +1,10 @@
+#include "MachineSoundDetect.h"
+
 #include "CDirectSoundDevice.h"
 #include "CMciMusicDevice.h"
 #include "CWaveSoundDevice.h"
 #include "Engine/Sound/CBaseSoundDevice.h"
 #include "Engine/Sound/CPVMusicDevice.h"
-#include "Engine/Sound/VsSound.h"
 
 #include <stddef.h>
 

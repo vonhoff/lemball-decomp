@@ -1,8 +1,8 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSSOUND_H
 #define LEMBALL_VISOS_FOUNDATION_VSSOUND_H
 
-class CBaseSoundDevice;
-class CPVMusicDevice;
+#include "Platform/Windows/Sound/MachineSoundDetect.h"
+
 class CWnd;
 
 bool InitSound(unsigned int p_musicEnabled,
@@ -11,11 +11,4 @@ bool InitSound(unsigned int p_musicEnabled,
 			   CWnd* p_window,
 			   unsigned int p_platformFlag);
 void EndSound();
-int MachineSoundDetect(CBaseSoundDevice** p_devices,
-					   unsigned char p_musicEnabled,
-					   unsigned int p_effectsEnabled,
-					   unsigned int p_useMusicCD,
-					   unsigned int* p_musicAvailable,
-					   CPVMusicDevice** p_musicDevice,
-					   int p_effectCapacity);
 #endif
