@@ -37382,7 +37382,7 @@
     {
       "caller": 4603760,
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CGWnd.cpp.obj",
-      "symbol": "?ProcessOtherMessages@CGWnd@@UAEHIII@Z",
+      "symbol": "?ProcessOtherMessages@CGWnd@@UAEJIIJ@Z",
       "size": 543,
       "fingerprint": "5a22844ef3d3f327d1dfa0e47cc3ff641d9eddff2ac3f7acce4c364b3a90280a",
       "references": [

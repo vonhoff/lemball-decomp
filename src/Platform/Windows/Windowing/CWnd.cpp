@@ -822,7 +822,7 @@ void CWnd::Refresh(CVSRect* p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00465640
-int CWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
+long CWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, long p_lParam)
 {
 	return DefWindowProcA(m_nativeWindow, p_message, p_wParam, p_lParam);
 }

@@ -31,9 +31,8 @@ public:
 	virtual void BeforeFocusLost();                                              // vtable+0x94
 	virtual void OnFocusGained();                                                // vtable+0x98
 	virtual void OnFocusLost();                                                  // vtable+0x9c
-	virtual int ProcessOtherMessages(unsigned int p_message,
-									 unsigned int p_wParam,
-									 unsigned int p_lParam);                // vtable+0xa0
+	virtual long ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam,
+									  long p_lParam);                       // vtable+0xa0
 	virtual void OnCreate();                                                // vtable+0x3c
 	virtual void OnDestroy();                                               // vtable+0x40
 	virtual void OnMaximise();                                              // vtable+0x50

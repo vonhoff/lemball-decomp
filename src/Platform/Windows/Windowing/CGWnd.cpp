@@ -196,7 +196,7 @@ void CGWnd::OnPaint(const CVSRect& p_rect)
 }
 
 // FUNCTION: LEMBALL 0x00463f70
-int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
+long CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, long p_lParam)
 {
 	PAINTSTRUCT paint;
 	short paintWidth;
@@ -211,8 +211,7 @@ int CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, u
 		case GFX_MODE_DD_FS_320X200:
 			return DefWindowProcA((HWND) g_pTargetGraphicsDriver->m_window, p_message, p_wParam, p_lParam);
 		default: {
-			HDC(WINAPI * beginPaint)(HWND, LPPAINTSTRUCT) = BeginPaint;
-			beginPaint((HWND) m_nativeWindow, &paint);
+			BeginPaint((HWND) m_nativeWindow, &paint);
 			paintX = (short) paint.rcPaint.left;
 			paintWidth = (short) paint.rcPaint.right - (unsigned short) paint.rcPaint.left;
 			paintY = (short) paint.rcPaint.top;

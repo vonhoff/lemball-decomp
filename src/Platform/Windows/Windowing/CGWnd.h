@@ -16,9 +16,8 @@ public:
 	virtual void AttachPalette(unsigned long p_paletteId); // vtable+0xac
 	virtual void Render();                                 // vtable+0xb0
 	virtual void Flush();                                  // vtable+0xb4
-	virtual int ProcessOtherMessages(unsigned int p_message,
-									 unsigned int p_wParam,
-									 unsigned int p_lParam);                     // vtable+0xa0
+	virtual long ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam,
+									  long p_lParam);                            // vtable+0xa0
 	virtual void Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title); // vtable+0x04
 	virtual void Move(const CVSPoint& p_point);                                  // vtable+0x38
 	virtual void _OnCreate();                                                    // vtable+0x18

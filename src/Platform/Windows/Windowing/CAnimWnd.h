@@ -15,9 +15,8 @@ public:
 	virtual void OnFrame(int p_frame);   // vtable+0xbc
 	virtual void OnStart();              // vtable+0xc0
 	virtual void OnStop();               // vtable+0xc4
-	virtual int ProcessOtherMessages(unsigned int p_message,
-									 unsigned int p_wParam,
-									 unsigned int p_lParam); // vtable+0xa0
+	virtual long ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam,
+									  long p_lParam);        // vtable+0xa0
 	virtual void Refresh(CVSRect* p_rect);                   // vtable+0x70
 	void Initialise();
 	void OnNotifyError(int p_error);

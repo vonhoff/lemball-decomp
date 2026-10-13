@@ -175,7 +175,7 @@ void CAnimWnd::OnNotifySize(int p_width, int p_height)
 }
 
 // FUNCTION: LEMBALL 0x0046e080
-int CAnimWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam)
+long CAnimWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, long p_lParam)
 {
 	switch (p_message) {
 	case MCIWNDM_NOTIFYMODE:
