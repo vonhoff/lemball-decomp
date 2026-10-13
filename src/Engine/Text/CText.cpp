@@ -3,7 +3,7 @@
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSSize.h"
+#include "Engine/Math/CVSSizeArithmetic.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Engine/Streams/CVSOStream.h"
@@ -71,14 +71,7 @@ void CText::Draw(CGDI* p_gdi)
 // FUNCTION: LEMBALL 0x004749c0
 void CText::NextPos()
 {
-	CVSSize step;
-	if (m_useAdvance != 0) {
-		step = CVSSize(m_advanceX, m_advanceY);
-	}
-	else {
-		step = m_glyph->m_size;
-		step += CVSSize(1, 1);
-	}
+	CVSSize step = m_useAdvance != 0 ? CVSSize(m_advanceX, m_advanceY) : m_glyph->m_size + CVSSize(1, 1);
 	unsigned int flags = m_flags;
 	if ((flags & TEXT_ADVANCE_USE_CUSTOM_OFFSETS) != 0) {
 		step += CVSSize(m_offsetX, m_offsetY);
