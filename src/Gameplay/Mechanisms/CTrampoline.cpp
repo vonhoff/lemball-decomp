@@ -144,9 +144,6 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 	}
 
 	C3DVector flightVelocity;
-	flightVelocity.m_xFixed = DEBUG_SENTINEL;
-	flightVelocity.m_yFixed = DEBUG_SENTINEL;
-	flightVelocity.m_zFixed = DEBUG_SENTINEL;
 	CFixed incomingVelocity[3] = {CFixed(p_object->m_flightVelocity.m_xFixed),
 								  CFixed(p_object->m_flightVelocity.m_yFixed),
 								  CFixed(p_object->m_flightVelocity.m_zFixed)};
@@ -163,9 +160,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
 			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
-			flightVelocity.m_xFixed = bouncedVelocity.m_xFixed;
-			flightVelocity.m_yFixed = bouncedVelocity.m_yFixed;
-			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
+			flightVelocity = bouncedVelocity;
 		}
 		else {
 			CFixed impulse[3] = {CFixed(0),
@@ -175,9 +170,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
 			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
-			flightVelocity.m_xFixed = bouncedVelocity.m_xFixed;
-			flightVelocity.m_yFixed = bouncedVelocity.m_yFixed;
-			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
+			flightVelocity = bouncedVelocity;
 		}
 	}
 	else {
@@ -189,9 +182,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
 			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
-			flightVelocity.m_xFixed = bouncedVelocity.m_xFixed;
-			flightVelocity.m_yFixed = bouncedVelocity.m_yFixed;
-			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
+			flightVelocity = bouncedVelocity;
 		}
 		else {
 			CFixed impulse[3] = {CFixed(-TRAMPOLINE_PLANAR_BOUNCE_IMPULSE_FIXED),
@@ -201,9 +192,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 			CFixed bouncedY = impulse[1] + incomingVelocity[1];
 			CFixed bouncedZ = impulse[2] + incomingVelocity[2];
 			C3DVector bouncedVelocity(bouncedX, bouncedY, bouncedZ);
-			flightVelocity.m_xFixed = bouncedVelocity.m_xFixed;
-			flightVelocity.m_yFixed = bouncedVelocity.m_yFixed;
-			flightVelocity.m_zFixed = bouncedVelocity.m_zFixed;
+			flightVelocity = bouncedVelocity;
 		}
 	}
 
