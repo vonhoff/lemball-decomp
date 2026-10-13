@@ -53,7 +53,7 @@ CMogDir::CMogDir(unsigned long p_fileOffset)
 	m_directoryData = (unsigned char*) CMogloadArena::operator new(directoryDataSize);
 	vsRead(g_pMogFile, m_directoryData, directoryDataSize);
 	if (m_chunkCount != 0) {
-		tagChunkInfo* info = (tagChunkInfo*) CMogloadArena::operator new(sizeof(tagChunkInfo));
+		tagChunkInfo* info = new tagChunkInfo;
 		m_first.m_info = info;
 		m_first.m_index = 0;
 		GetChunkInfo(info);
@@ -94,7 +94,7 @@ CMogDir::~CMogDir()
 			CMogloadArena::operator delete(chunk->m_directory);
 			m_first.m_info->m_directory = NULL;
 		}
-		CMogloadArena::operator delete(m_first.m_info);
+		delete m_first.m_info;
 		m_first.m_info = NULL;
 		chunk = m_iterator.m_info;
 	}
@@ -126,7 +126,7 @@ void CMogDir::GetChunkInfo(tagChunkInfo* p_info)
 // FUNCTION: LEMBALL 0x0045c030
 tagChunkInfo* CMogDir::NewChunkInfo()
 {
-	tagChunkInfo* info = (tagChunkInfo*) CMogloadArena::operator new(sizeof(tagChunkInfo));
+	tagChunkInfo* info = new tagChunkInfo;
 	m_iterator.m_info->m_next.m_info = info;
 	m_iterator.m_info->m_next.m_index = m_loadedChunkCount;
 	m_loadedChunkCount += 1U;

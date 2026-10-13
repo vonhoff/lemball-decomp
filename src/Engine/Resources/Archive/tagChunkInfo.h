@@ -1,12 +1,18 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_TAGCHUNKINFO_H
 #define LEMBALL_VISOS_FOUNDATION_TAGCHUNKINFO_H
 
+#include "CMogloadArena.h"
 #include "tagCHUNK.h"
+
+#include <stddef.h>
 
 class CMogDir;
 
 // SIZE 0x38
 struct tagChunkInfo {
+	void* operator new(size_t p_size) { return CMogloadArena::operator new(p_size); }
+	void operator delete(void* p_data) { CMogloadArena::operator delete(p_data); }
+
 	unsigned char* m_data;     // 0x00
 	unsigned int m_type;       // 0x04
 	unsigned long m_id;        // 0x08
