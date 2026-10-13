@@ -1,12 +1,19 @@
 #ifndef LEMBALL_MAP_GROUND_CGROUNDARRAY_H
 #define LEMBALL_MAP_GROUND_CGROUNDARRAY_H
 
-class CGround;
+#include "CGround.h"
 
 // SIZE 0x10
 class CGroundArray {
 public:
 	CGround* GetGroundCell(int p_x, int p_y);
+	unsigned short GetCollision(int p_x, int p_y)
+	{
+		if (p_x >= 0 && p_y >= 0 && p_x < m_width && p_y < m_height) {
+			return GetGroundCell(p_x, p_y)->m_collision;
+		}
+		return GROUND_COLLISION_OUT_OF_BOUNDS;
+	}
 	unsigned short GetZ(int p_x, int p_y);
 	void Clear();
 	void SetCollision(int p_x, int p_y, int p_collision);
