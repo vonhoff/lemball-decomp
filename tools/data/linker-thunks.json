@@ -23430,22 +23430,6 @@
       ]
     },
     {
-      "caller": 4360880,
-      "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaser.cpp.obj",
-      "symbol": "?CheckHits@CLaser@@QAEHXZ",
-      "size": 564,
-      "fingerprint": "56010e9fdbb77eb07c2162c1d5fa372ff8f4a6e2c45bf8457ddfccaff8db7eb7",
-      "references": [
-        {
-          "offset": 228,
-          "original_instruction": 4361111,
-          "original_bytes": "e8099efdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        }
-      ]
-    },
-    {
       "caller": 4361456,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaser.cpp.obj",
       "symbol": "?Process@CLaser@@UAEHXZ",
@@ -23502,8 +23486,8 @@
       "caller": 4362128,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaser.cpp.obj",
       "symbol": "?GetViewData@CLaser@@QAEHPAVCViewData@@@Z",
-      "size": 1068,
-      "fingerprint": "9fa5a010ab1d20f42d059d2d31d87f78199ae8e3b4aeb69015163cdb381dc577",
+      "size": 936,
+      "fingerprint": "b0ad428d35a12766db3b947e6f11d97f912bc27ab90518e6731445c1fec86a28",
       "references": [
         {
           "offset": 43,
@@ -23513,46 +23497,18 @@
           "source_symbol": "?InitializeFromAiCoord@CPt3@@QAEXABVAICOORD@@@Z"
         },
         {
-          "offset": 351,
-          "original_instruction": 4362491,
-          "original_bytes": "e8b484fdff",
-          "thunk": 4199860,
-          "source_symbol": "?GetGroundCell@CGroundArray@@QAEPAVCGround@@HH@Z"
-        },
-        {
-          "offset": 358,
-          "original_instruction": 4362498,
-          "original_bytes": "e89e98fdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        },
-        {
-          "offset": 411,
+          "offset": 348,
           "original_instruction": 4362551,
           "original_bytes": "e88e82fdff",
           "thunk": 4199370,
           "source_symbol": "?InitializeFromAiCoord@CPt3@@QAEXABVAICOORD@@@Z"
         },
         {
-          "offset": 452,
+          "offset": 389,
           "original_instruction": 4362592,
           "original_bytes": "e81d93fdff",
           "thunk": 4203650,
           "source_symbol": "?SetViewActionTuple@CViewData@@QAEXW4eAction@@II@Z"
-        },
-        {
-          "offset": 728,
-          "original_instruction": 4362878,
-          "original_bytes": "e83183fdff",
-          "thunk": 4199860,
-          "source_symbol": "?GetGroundCell@CGroundArray@@QAEPAVCGround@@HH@Z"
-        },
-        {
-          "offset": 735,
-          "original_instruction": 4362885,
-          "original_bytes": "e81b97fdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         }
       ]
     },

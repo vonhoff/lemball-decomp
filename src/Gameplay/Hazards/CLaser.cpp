@@ -141,26 +141,7 @@ bool CLaser::CheckHits()
 	for (int step = 0; step < 8; step++) {
 		x += stepX;
 		y += stepY;
-		int blockX;
-		CMap* map = g_pMap;
-		blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
-		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-		unsigned short groundZ;
-		if (x >= 0 && y >= 0) {
-			int width = map->m_ground.m_width;
-			if (blockX < width && map->m_ground.m_height > blockY) {
-				int cellX = x & GROUND_BLOCK_PIXEL_MASK;
-				int cellY = y;
-				cellY &= GROUND_BLOCK_PIXEL_MASK;
-				groundZ = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(cellX, cellY);
-			}
-			else {
-				groundZ = 0;
-			}
-		}
-		else {
-			groundZ = 0;
-		}
+		unsigned short groundZ = g_pMap->m_ground.GetZ(x, y);
 		if (groundZ > z) {
 			break;
 		}
@@ -332,17 +313,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 			int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 			int z = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_HEIGHT_ABOVE_EMITTER_PIXELS;
 			for (unsigned int i = 1; i < 8; i++) {
-				unsigned short height;
-				int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
-				int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-				CMap* map = g_pMap;
-				if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-					height = map->m_ground.GetGroundCell(blockX, blockY)
-								 ->GetZ(x & GROUND_BLOCK_PIXEL_MASK, y & GROUND_BLOCK_PIXEL_MASK);
-				}
-				else {
-					height = 0;
-				}
+				unsigned short height = g_pMap->m_ground.GetZ(x, y);
 				if (height > z) {
 					break;
 				}
@@ -379,17 +350,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 			int y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_VERTICAL_START_OFFSET_PIXELS;
 			int z = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_HEIGHT_ABOVE_EMITTER_PIXELS;
 			for (unsigned int i = 1; i < 8; i++) {
-				unsigned short height;
-				int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
-				int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-				CMap* map = g_pMap;
-				if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && blockY < map->m_ground.m_height) {
-					height = map->m_ground.GetGroundCell(blockX, blockY)
-								 ->GetZ(x & GROUND_BLOCK_PIXEL_MASK, y & GROUND_BLOCK_PIXEL_MASK);
-				}
-				else {
-					height = 0;
-				}
+				unsigned short height = g_pMap->m_ground.GetZ(x, y);
 				if (height > z) {
 					break;
 				}
