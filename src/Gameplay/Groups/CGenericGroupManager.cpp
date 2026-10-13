@@ -293,19 +293,17 @@ void CGenericGroupManager::FindElementInGroupAndRemoveIt(CGameObject* p_object)
 // FUNCTION: LEMBALL 0x0041ee00
 int CGenericGroupManager::GetAllBoundingBoxes(tRect* p_rects)
 {
-	tRect* output;
 	int count = 0;
 	CVSRect bounds;
 	CGenericGroup* group = GetFirstGroup();
 	if (group != NULL) {
-		output = p_rects;
 		do {
 			group->GetBoundingBox(bounds);
-			output->m_left = bounds.m_x;
-			output->m_top = bounds.m_y;
-			output->m_right = bounds.m_x + bounds.m_width;
-			output->m_bottom = bounds.m_y + bounds.m_height;
-			output++;
+			p_rects->m_left = bounds.m_x;
+			p_rects->m_top = bounds.m_y;
+			p_rects->m_right = bounds.m_x + bounds.m_width;
+			p_rects->m_bottom = bounds.m_y + bounds.m_height;
+			p_rects++;
 			count++;
 			group = GetNextGroup();
 		} while (group != NULL);
