@@ -14,6 +14,7 @@
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "Platform/Windows/Graphics/CGraphicsState.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <string.h>
 
@@ -26,8 +27,6 @@ enum {
 	COMMAND_LINE_SWITCH_MAX_COMPARE_LENGTH = 99,
 	COMMAND_LINE_LEVEL_PATH_MIN_LENGTH = 1
 };
-
-extern "C" __declspec(dllimport) void* __stdcall LoadIconA(void* p_instance, const char* p_name);
 
 // GLOBAL: LEMBALL 0x0049ca30
 int g_nTestAllLevels = 0;

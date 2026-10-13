@@ -36,6 +36,7 @@
 #include "Platform/Windows/CPlatformServices.h"
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <string.h>
 
@@ -49,11 +50,6 @@ enum eEventPumpResult {
 	EVENT_PUMP_CONTINUE = 0,
 	EVENT_PUMP_QUIT = 1
 };
-
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_hWnd,
-														   const char* p_lpText,
-														   const char* p_lpCaption,
-														   unsigned int p_uType);
 
 // GLOBAL: LEMBALL 0x0049cbc8
 char g_szLemmingsPaintball[20] = "Lemmings Paintball";

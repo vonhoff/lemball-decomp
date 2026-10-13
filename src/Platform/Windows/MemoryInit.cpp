@@ -5,18 +5,9 @@
 #include "Engine/Memory/CSmallMemory.h"
 #include "Engine/Startup/tagPRE_INIT.h"
 #include "Engine/Streams/CVSOStream.h"
+#include "WindowsTypes.h"
 
 #include <stddef.h>
-
-enum {
-	GLOBAL_ALLOC_FLAG_MOVEABLE = 0x0002
-};
-
-extern "C" __declspec(dllimport) void* __stdcall GlobalAlloc(unsigned int p_flags, unsigned long p_bytes);
-extern "C" __declspec(dllimport) void* __stdcall GlobalLock(void* p_mem);
-extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(void* p_mem);
-extern "C" __declspec(dllimport) void* __stdcall GlobalFree(void* p_mem);
-extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError();
 
 // GLOBAL: LEMBALL 0x004a2184
 char g_szMasterMainRamArena[24] = "Master Main Ram Arena";
@@ -46,7 +37,7 @@ bool _MEM_Init()
 	int smallEnabled;
 	CSmallMemory* smallMemory;
 
-	g_pMasterArenaMemory = GlobalAlloc(GLOBAL_ALLOC_FLAG_MOVEABLE, g_preInitActive.m_memoryBudget);
+	g_pMasterArenaMemory = GlobalAlloc(GMEM_MOVEABLE, g_preInitActive.m_memoryBudget);
 	if (g_pMasterArenaMemory == NULL) {
 		return false;
 	}

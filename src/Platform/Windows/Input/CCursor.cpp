@@ -4,13 +4,9 @@
 #include "Engine/Input/CBaseCursor.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Resources/ResourceCatalog.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <stddef.h>
-
-extern "C" __declspec(dllimport) void* __stdcall LoadCursorA(void* p_instance, const char* p_name);
-extern "C" __declspec(dllimport) int __stdcall GetCursorPos(void* p_point);
-extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* p_cursor);
-extern "C" __declspec(dllimport) int __stdcall ShowCursor(int p_show);
 
 // GLOBAL: LEMBALL 0x004a9bf4
 CCursor* g_pCursor;
@@ -67,23 +63,18 @@ void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 void CCursor::InitialiseSystemCursor()
 {
 	m_systemCursor = NULL;
-	m_systemCursor = LoadCursorA(NULL, (char*) 0x7f00);
+	m_systemCursor = LoadCursorA(NULL, IDC_ARROW);
 	RefreshPos();
 }
-
-struct CursorPos {
-	int m_x;
-	int m_y;
-};
 
 // FUNCTION: LEMBALL 0x00474b80
 void CCursor::RefreshPos()
 {
-	CursorPos point;
+	POINT point;
 
 	GetCursorPos(&point);
-	m_position.m_x = (short) point.m_x;
-	m_position.m_y = (short) point.m_y;
+	m_position.m_x = (short) point.x;
+	m_position.m_y = (short) point.y;
 }
 
 // FUNCTION: LEMBALL 0x00474bb0

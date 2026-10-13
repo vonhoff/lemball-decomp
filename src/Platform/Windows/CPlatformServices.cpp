@@ -1,44 +1,18 @@
 #include "CPlatformServices.h"
 
 #include "Engine/Files/VsFile.h"
+#include "WindowsTypes.h"
 
 #include <string.h>
 
 struct _Filet;
 
 enum ePlatformApiValue {
-	REGISTRY_HIVE_LOCAL_MACHINE = 0x80000002,
-	REGISTRY_ACCESS_ALL = 0xf003f,
-	REGISTRY_VALUE_STRING = 1,
 	REGISTRY_VALUE_TYPE_UNSET = 0xffffffff,
-	REGISTRY_API_SUCCESS = 0,
-	PLATFORM_DRIVE_TYPE_CDROM = 5,
 	LOGICAL_DRIVE_BITMAP_BITS = 32,
 	LOGICAL_DRIVE_BITMAP_CURRENT_DRIVE_MASK = 1,
 	LOGICAL_DRIVE_BITMAP_NEXT_DRIVE_SHIFT = 1
 };
-
-extern "C" __declspec(dllimport) unsigned int __stdcall GetCurrentDirectoryA(unsigned int p_length, char* p_buffer);
-extern "C" __declspec(dllimport) unsigned int __stdcall GetLogicalDrives();
-extern "C" __declspec(dllimport) unsigned int __stdcall GetDriveTypeA(const char* p_root);
-extern "C" __declspec(dllimport) long __stdcall RegOpenKeyExA(void* p_key,
-															  const char* p_subkey,
-															  unsigned int p_options,
-															  unsigned int p_access,
-															  void** p_result);
-extern "C" __declspec(dllimport) long __stdcall RegSetValueExA(void* p_key,
-															   const char* p_name,
-															   unsigned int p_reserved,
-															   unsigned int p_type,
-															   const unsigned char* p_data,
-															   unsigned int p_size);
-extern "C" __declspec(dllimport) long __stdcall RegCloseKey(void* p_key);
-extern "C" __declspec(dllimport) long __stdcall RegQueryValueExA(void* p_key,
-																 const char* p_name,
-																 unsigned int* p_reserved,
-																 unsigned int* p_type,
-																 unsigned char* p_data,
-																 unsigned int* p_size);
 
 // GLOBAL: LEMBALL 0x004a1dcc
 CPlatformServices* g_pTargetPlatformServices = NULL;
@@ -101,15 +75,15 @@ CPlatformServices::~CPlatformServices()
 bool CPlatformServices::WriteRegistryFlag(const char* p_subkey, int p_enabled)
 {
 	char keyPath[256];
-	void* key;
+	HKEY key;
 	const char* value;
-	unsigned int valueSize;
+	DWORD valueSize;
 	long status;
 
 	strcpy(keyPath, g_szRegistrySoftwarePrefix);
 	strcat(keyPath, p_subkey);
-	status = RegOpenKeyExA((void*) REGISTRY_HIVE_LOCAL_MACHINE, keyPath, 0, REGISTRY_ACCESS_ALL, &key);
-	if (status != REGISTRY_API_SUCCESS) {
+	status = RegOpenKeyExA(HKEY_LOCAL_MACHINE, keyPath, 0, KEY_ALL_ACCESS, &key);
+	if (status != ERROR_SUCCESS) {
 		return false;
 	}
 	value = g_szRegistryRunning;
@@ -117,21 +91,16 @@ bool CPlatformServices::WriteRegistryFlag(const char* p_subkey, int p_enabled)
 		value = g_szRegistryNotRunning;
 	}
 	valueSize = strlen(value) + 1;
-	status = RegSetValueExA(key,
-							g_szRegistryValueRunning,
-							0,
-							REGISTRY_VALUE_STRING,
-							(const unsigned char*) value,
-							valueSize);
+	status = RegSetValueExA(key, g_szRegistryValueRunning, 0, REG_SZ, (const unsigned char*) value, valueSize);
 	RegCloseKey(key);
-	return status == REGISTRY_API_SUCCESS;
+	return status == ERROR_SUCCESS;
 }
 
 // FUNCTION: LEMBALL 0x0045eda0
 char* CPlatformServices::GetCDDir(const char* p_requiredFile)
 {
 	char candidate[256];
-	unsigned int drives;
+	DWORD drives;
 	char letter;
 	int i;
 	_Filet* file;
@@ -145,7 +114,7 @@ char* CPlatformServices::GetCDDir(const char* p_requiredFile)
 		if ((drives & LOGICAL_DRIVE_BITMAP_CURRENT_DRIVE_MASK) != 0) {
 			candidate[0] = letter;
 			g_szCDRootPath[0] = letter;
-			if (GetDriveTypeA(g_szCDRootPath) == PLATFORM_DRIVE_TYPE_CDROM) {
+			if (GetDriveTypeA(g_szCDRootPath) == DRIVE_CDROM) {
 				file = vsOpen(candidate, g_szFileModeRead);
 				if (file != NULL) {
 					vsClose(file);
@@ -163,23 +132,19 @@ char* CPlatformServices::GetCDDir(const char* p_requiredFile)
 // FUNCTION: LEMBALL 0x0046dcd0
 char* ReadSourceDiskRegistryPath()
 {
-	void* key;
-	unsigned int size;
-	unsigned int type;
+	HKEY key;
+	DWORD size;
+	DWORD type;
 
 	g_szSourceDiskPath[0] = 0;
 	key = NULL;
-	if (RegOpenKeyExA((void*) REGISTRY_HIVE_LOCAL_MACHINE,
-					  "SOFTWARE\\Visual Sciences\\Lemmings Paintball",
-					  0,
-					  REGISTRY_ACCESS_ALL,
-					  &key) != REGISTRY_API_SUCCESS) {
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Visual Sciences\\Lemmings Paintball", 0, KEY_ALL_ACCESS, &key) !=
+		ERROR_SUCCESS) {
 		return g_szSourceDiskPath;
 	}
 	type = REGISTRY_VALUE_TYPE_UNSET;
 	size = sizeof(g_szSourceDiskPath);
-	if (RegQueryValueExA(key, "SrcDisk", NULL, &type, (unsigned char*) g_szSourceDiskPath, &size) !=
-		REGISTRY_API_SUCCESS) {
+	if (RegQueryValueExA(key, "SrcDisk", NULL, &type, (unsigned char*) g_szSourceDiskPath, &size) != ERROR_SUCCESS) {
 		g_szSourceDiskPath[0] = 0;
 		return g_szSourceDiskPath;
 	}
