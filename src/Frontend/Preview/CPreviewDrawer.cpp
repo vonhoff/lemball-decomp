@@ -403,13 +403,13 @@ void CPreviewDrawer::DrawAnims()
 								m_lemmingAnim,
 								m_remap);
 		width = CAnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
-		x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
-			m_layout->m_positions[PreviewFormationOffset].m_x;
+		x = (int) ((unsigned int) m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
+				   m_layout->m_positions[PreviewFormationOffset].m_x);
 		y = m_layout->m_positions[PreviewNetworkLemmingRow].m_y;
 		i = 0;
 		if (m_lemmingCount > 0) {
 			do {
-				x = x - ((short) (width / 8) + width);
+				x = (int) ((unsigned int) x - ((short) (width / 8) + width));
 				CVSPoint point((short) x, (short) y);
 				CAnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, m_remap);
 				i = i + 1;
@@ -418,13 +418,13 @@ void CPreviewDrawer::DrawAnims()
 	}
 
 	width = CAnimsManager::GetAnimSize(m_lemmingAnimId, 0).m_width;
-	x = m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
-		m_layout->m_positions[PreviewFormationOffset].m_x;
+	x = (int) ((unsigned int) m_layout->m_positions[PreviewFormationAnchor].m_x - (short) (width / 4) +
+			   m_layout->m_positions[PreviewFormationOffset].m_x);
 	y = m_layout->m_positions[PreviewOpponentRow].m_y;
 	i = 0;
 	if (m_opponentCount > 0) {
 		do {
-			x = x - ((short) (width / 8) + width);
+			x = (int) ((unsigned int) x - ((short) (width / 8) + width));
 			CVSPoint point((short) x, (short) y);
 			CAnimsManager::DrawAnim(point, m_lemmingAnimId, 0, m_lemmingAnim, NULL);
 			i = i + 1;
@@ -432,14 +432,14 @@ void CPreviewDrawer::DrawAnims()
 	}
 
 	width = CAnimsManager::GetAnimSize(m_teamAnimId, 0).m_width;
-	x = m_layout->m_positions[PreviewFormationAnchor].m_x - m_layout->m_positions[PreviewTeamOffset].m_x +
-		m_layout->m_positions[PreviewFormationOffset].m_x;
+	x = (int) ((unsigned int) m_layout->m_positions[PreviewFormationAnchor].m_x -
+			   m_layout->m_positions[PreviewTeamOffset].m_x + m_layout->m_positions[PreviewFormationOffset].m_x);
 	y = m_layout->m_positions[PreviewTeamRow].m_y;
 	if (m_teamCount <= 4) {
 		i = 0;
 		if (m_teamCount > 0) {
 			do {
-				x = x - width;
+				x = (int) ((unsigned int) x - width);
 				CVSPoint point((short) x, (short) y);
 				CAnimsManager::DrawAnim(point, m_teamAnimId, 0, m_teamAnim, NULL);
 				i = i + 1;
