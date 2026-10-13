@@ -3,6 +3,11 @@
 
 #include "CVSSize.h"
 
+inline CVSSize operator+(const CVSSize& p_left, const CVSSize& p_right)
+{
+	return CVSSize(p_left.m_width + p_right.m_width, p_left.m_height + p_right.m_height);
+}
+
 inline CVSSize operator-(const CVSSize& p_left, const CVSSize& p_right)
 {
 	return CVSSize(p_left.m_width - p_right.m_width, p_left.m_height - p_right.m_height);

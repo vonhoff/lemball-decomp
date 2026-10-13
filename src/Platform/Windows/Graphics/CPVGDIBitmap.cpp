@@ -2,7 +2,7 @@
 
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVSSize.h"
+#include "Engine/Math/CVSSizeArithmetic.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -182,7 +182,7 @@ CVSSize CPVGDIBitmap::SetSize(const CVSSize& p_size, int p_pitch)
 		m_rowPadding = 0;
 	}
 	else {
-		m_rowPadding = p_pitch - m_size.m_width;
+		m_rowPadding = (unsigned int) p_pitch - m_size.m_width;
 	}
 	if (p_size.m_width == 0) {
 		m_extraRows = 0;
@@ -190,7 +190,7 @@ CVSSize CPVGDIBitmap::SetSize(const CVSSize& p_size, int p_pitch)
 	else {
 		m_extraRows = (int) (p_size.m_width - 1 + m_rowPadding * 2) / (int) p_size.m_width;
 	}
-	return CVSSize(m_size.m_width, (short) (m_size.m_height + m_extraRows));
+	return m_size + CVSSize(0, m_extraRows);
 }
 
 // FUNCTION: LEMBALL 0x00472670
