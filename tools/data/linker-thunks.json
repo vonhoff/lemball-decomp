@@ -21993,18 +21993,18 @@
       "caller": 4343344,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CMineManager.cpp.obj",
       "symbol": "?StepOn@CMineManager@@QAEXABVAICOORD@@PAVCGameObject@@@Z",
-      "size": 219,
-      "fingerprint": "c50ab5bfaf2d4d7f18451bf78f7e71df922e58e8ab8610438aa5ec1cf5a793de",
+      "size": 216,
+      "fingerprint": "db89e208182f8f3aa1b2b46d65d1ece63667009c6948cf2e7c0f429ee69a1848",
       "references": [
         {
-          "offset": 194,
+          "offset": 191,
           "original_instruction": 4343536,
           "original_bytes": "e88ecdfdff",
           "thunk": 4199555,
           "source_symbol": "?StepOn@CMine@@QAEXPAVCGameObject@@@Z"
         },
         {
-          "offset": 204,
+          "offset": 201,
           "original_instruction": 4343546,
           "original_bytes": "e820f0fdff",
           "thunk": 4208415,
@@ -22047,7 +22047,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CMineManager.cpp.obj",
       "symbol": "?Process@CMineManager@@UAEXXZ",
       "size": 76,
-      "fingerprint": "f1f9c4511f86c5f809bbba9665985dba3a8d156e13d81cd7ef7e4b60204c18bd",
+      "fingerprint": "fb6b3e730455cfbcefac5253a2abc5a0e0d7186f76e242ea65d37fb7cfafbc3d",
       "references": [
         {
           "offset": 22,

@@ -3,6 +3,7 @@
 #include "CMine.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/CRect3.h"
 #include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/CGameObject.h"
@@ -124,27 +125,27 @@ void CMineManager::Trigger(int p_index, int p_delay)
 void CMineManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
 	enum {
-
 		STEP_ON_HALF_WIDTH = 8,
 		STEP_ON_BOUND_SPAN = 15
 	};
-	int xMin = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
-	int yMin = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
-	int zMin = (p_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
-	int xMax = xMin + STEP_ON_BOUND_SPAN;
-	int yMax = yMin + STEP_ON_BOUND_SPAN;
+	CRect3 bounds;
+	bounds.m_x1 = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	bounds.m_y1 = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	bounds.m_z1 = (p_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	bounds.m_x2 = bounds.m_x1 + STEP_ON_BOUND_SPAN;
+	bounds.m_y2 = bounds.m_y1 + STEP_ON_BOUND_SPAN;
+	bounds.m_z2 = bounds.m_y1 + STEP_ON_BOUND_SPAN;
 	int i = 0;
 	if (m_count <= 0) {
 		return;
 	}
 	do {
 		if (m_mines[i].m_enabled != 0 && m_mines[i].m_activated == 0) {
-			int pz;
-			int px;
 			int py = m_positions[i].m_y;
-			px = m_positions[i].m_x;
-			pz = m_positions[i].m_z;
-			if (xMin < px && px < xMax && yMin < py && py < yMax && zMin < pz && pz < yMax) {
+			int px = m_positions[i].m_x;
+			int pz = m_positions[i].m_z;
+			if (bounds.m_x1 < px && px < bounds.m_x2 && bounds.m_y1 < py && py < bounds.m_y2 && bounds.m_z1 < pz &&
+				pz < bounds.m_z2) {
 				m_mines[i].StepOn(p_object);
 				Trigger(i, 0);
 				return;
