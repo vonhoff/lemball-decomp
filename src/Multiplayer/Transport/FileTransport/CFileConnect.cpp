@@ -94,8 +94,7 @@ void CFileConnect::Connect()
 // FUNCTION: LEMBALL 0x0047b580
 void CFileConnect::ConnectSetup()
 {
-	int port = m_port;
-	int writeIndex = port * 2;
+	int writeIndex = m_port * 2;
 	int readIndex = writeIndex;
 	if (m_isHost == 0) {
 		readIndex++;
