@@ -26,6 +26,26 @@ public:
 
 	CVSRect& operator=(const CVSRect& p_source);
 	CVSRect* ExpandToInclude(const CVSRect& p_rect);
+	void ClipToSize(const CVSSize& p_size)
+	{
+		if (m_x < 0) {
+			m_width += m_x;
+			m_x = 0;
+		}
+		if ((short) (m_width + m_x) > p_size.m_width) {
+			m_width = p_size.m_width - m_x;
+		}
+		if (m_y < 0) {
+			m_height += m_y;
+			m_y = 0;
+		}
+		if ((short) (m_y + m_height) > p_size.m_height) {
+			m_height = p_size.m_height - m_y;
+		}
+		if (m_width <= 0 || m_height <= 0) {
+			m_width = m_height = m_x = m_y = 0;
+		}
+	}
 };
 
 // SYNTHETIC: LEMBALL 0x00442170

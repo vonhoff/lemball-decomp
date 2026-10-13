@@ -100,26 +100,7 @@ int CDisplayDibDriver::BitBltContexts(CDrawingContext* p_destination,
 	CVSSize limits;
 	limits.m_width = m_screenSize.m_width;
 	limits.m_height = m_screenSize.m_height;
-	if (clipped.m_x < 0) {
-		clipped.m_width += clipped.m_x;
-		clipped.m_x = 0;
-	}
-	if ((short) (clipped.m_width + clipped.m_x) > limits.m_width) {
-		clipped.m_width = limits.m_width - clipped.m_x;
-	}
-	if (clipped.m_y < 0) {
-		clipped.m_height += clipped.m_y;
-		clipped.m_y = 0;
-	}
-	if ((short) (clipped.m_y + clipped.m_height) > limits.m_height) {
-		clipped.m_height = limits.m_height - clipped.m_y;
-	}
-	if (clipped.m_width <= 0 || clipped.m_height <= 0) {
-		clipped.m_height = 0;
-		clipped.m_x = 0;
-		clipped.m_width = 0;
-		clipped.m_y = 0;
-	}
+	clipped.ClipToSize(limits);
 	int rows = clipped.m_height;
 	int bytes = clipped.m_width;
 	if (rows * bytes == 0) {
