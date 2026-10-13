@@ -3,18 +3,12 @@
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Files/VsFile.h"
 #include "Engine/Startup/ProcessExitCodes.h"
-#include "Platform/Windows/Thread.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <setjmp.h>
 #include <stddef.h>
 
 struct _Filet;
-
-extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_window,
-														   const char* p_text,
-														   const char* p_caption,
-														   unsigned int p_type);
 
 unsigned long __cdecl DebugMessageThreadMain();
 
@@ -26,19 +20,15 @@ bool _DBG_Init()
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		g_pDebugSyncEvent = CreateEventA(NULL, 0, 0, "Sync_Debug");
-		g_pDebugThread = CreateThread(NULL,
-									  0,
-									  (unsigned long(__stdcall*)(void*)) DebugMessageThreadMain,
-									  NULL,
-									  0,
-									  &g_nDebugThreadId);
+		g_pDebugThread =
+			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) DebugMessageThreadMain, NULL, 0, &g_nDebugThreadId);
 		if (g_pDebugThread == NULL) {
 			MessageBoxA(NULL, "Unable to start 'Debug Message loop' thread\n", "ERROR", 0);
 			ExitProcess(VISOS_THREAD_START_FAILURE_EXIT_CODE);
 		}
 
 		SetThreadPriority(g_pDebugThread, 1);
-		WaitForSingleObject(g_pDebugSyncEvent, THREAD_WAIT_INFINITE);
+		WaitForSingleObject(g_pDebugSyncEvent, INFINITE);
 	}
 
 	return true;
@@ -49,7 +39,7 @@ bool _DBG_Quit(unsigned int p_force)
 {
 	if (g_nAsyncDebugEnabled == 1) {
 		if (p_force == 0) {
-			WaitForSingleObject(g_pDebugSyncEvent, THREAD_WAIT_INFINITE);
+			WaitForSingleObject(g_pDebugSyncEvent, INFINITE);
 		}
 		else {
 			TerminateThread(g_pDebugThread, VISOS_FATAL_EXIT_CODE);

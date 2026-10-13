@@ -8,6 +8,8 @@
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/CString.h"
 #include "Engine/Strings/VsString.h"
+#include "Platform/Windows/ThreadConstants.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <setjmp.h>
 #include <string.h>
@@ -23,15 +25,6 @@ enum {
 
 struct FILE;
 struct _Filet;
-
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* p_hWnd,
-														   const char* p_lpText,
-														   const char* p_lpCaption,
-														   unsigned int p_uType);
-extern "C" __declspec(dllimport) unsigned long __stdcall GetLastError();
-extern "C" __declspec(dllimport) void __stdcall ExitProcess(unsigned int p_code);
-
-#include "Platform/Windows/ThreadConstants.h"
 
 // GLOBAL: LEMBALL 0x004a071c
 void* g_pDebugAcceleratorTable = NULL;
