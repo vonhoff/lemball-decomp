@@ -1,4 +1,4 @@
-#include "Engine/Startup/VsInit.h"
+#include "TimeInit.h"
 
 // FUNCTION: LEMBALL 0x00462e60
 bool _TIME_Init()

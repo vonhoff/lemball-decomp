@@ -1,0 +1,7 @@
+#ifndef LEMBALL_ENGINE_STATISTICS_STATINIT_H
+#define LEMBALL_ENGINE_STATISTICS_STATINIT_H
+
+bool _STAT_Init();
+bool _STAT_Quit();
+
+#endif

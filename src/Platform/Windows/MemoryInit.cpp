@@ -1,8 +1,9 @@
+#include "MemoryInit.h"
+
 #include "Engine/Memory/CArena.h"
 #include "Engine/Memory/CRAMArena.h"
 #include "Engine/Memory/CSmallMemory.h"
 #include "Engine/Startup/tagPRE_INIT.h"
-#include "Engine/Startup/VsInit.h"
 #include "Engine/Streams/CVSOStream.h"
 
 #include <stddef.h>

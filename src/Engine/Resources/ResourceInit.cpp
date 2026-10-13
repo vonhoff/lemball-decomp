@@ -1,7 +1,8 @@
+#include "ResourceInit.h"
+
 #include "Engine/Graphics/Palettes/CBasePalManager.h"
 #include "Engine/Graphics/Palettes/CPaletteManager.h"
 #include "Engine/Resources/ResourceTypeList.h"
-#include "Engine/Startup/VsInit.h"
 #include "ResourceChunkTypes.h"
 
 #include <stddef.h>

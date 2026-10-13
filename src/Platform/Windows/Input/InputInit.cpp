@@ -1,8 +1,9 @@
+#include "InputInit.h"
+
 #include "CTranslator.h"
 #include "Engine/Input/CMasterInput.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CTimedQueue.h"
-#include "Engine/Startup/VsInit.h"
 #include "Platform/Windows/Input/InputTranslation.h"
 
 namespace

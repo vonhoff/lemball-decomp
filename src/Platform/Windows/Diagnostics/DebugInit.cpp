@@ -1,7 +1,8 @@
+#include "DebugInit.h"
+
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Files/VsFile.h"
 #include "Engine/Startup/ProcessExitCodes.h"
-#include "Engine/Startup/VsInit.h"
 #include "Platform/Windows/Thread.h"
 
 #include <setjmp.h>

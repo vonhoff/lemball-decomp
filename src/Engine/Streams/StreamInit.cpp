@@ -1,7 +1,8 @@
+#include "StreamInit.h"
+
 #include "CVSOStream.h"
 #include "Engine/Diagnostics/CVSDebugStreambuf.h"
 #include "Engine/Diagnostics/VsDebug.h"
-#include "Engine/Startup/VsInit.h"
 
 #include <stddef.h>
 

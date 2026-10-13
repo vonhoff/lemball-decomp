@@ -1,0 +1,7 @@
+#ifndef LEMBALL_ENGINE_STREAMS_STREAMINIT_H
+#define LEMBALL_ENGINE_STREAMS_STREAMINIT_H
+
+bool _STRM_Init();
+bool _STRM_Quit();
+
+#endif

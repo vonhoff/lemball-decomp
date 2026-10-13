@@ -1,0 +1,7 @@
+#ifndef LEMBALL_PLATFORM_WINDOWS_MEMORYINIT_H
+#define LEMBALL_PLATFORM_WINDOWS_MEMORYINIT_H
+
+bool _MEM_Init();
+bool _MEM_Quit();
+
+#endif

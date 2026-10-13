@@ -1,7 +1,8 @@
+#include "NetworkInit.h"
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Startup/ProcessExitCodes.h"
-#include "Engine/Startup/VsInit.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"

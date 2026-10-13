@@ -1,0 +1,7 @@
+#ifndef LEMBALL_ENGINE_RESOURCES_RESOURCEINIT_H
+#define LEMBALL_ENGINE_RESOURCES_RESOURCEINIT_H
+
+bool _RES_Init();
+bool _RES_Quit();
+
+#endif

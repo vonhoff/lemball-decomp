@@ -10,8 +10,8 @@
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/VsString.h"
 #include "Platform/Windows/CPlatformServices.h"
-#include "tagPRE_INIT.h"
 #include "VisosVersion.h"
+#include "tagPRE_INIT.h"
 
 #include <ctype.h>
 #include <setjmp.h>
