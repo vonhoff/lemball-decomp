@@ -983,7 +983,8 @@ void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned shor
 		else {
 			int cellX = x & GROUND_BLOCK_PIXEL_MASK;
 			int cellY = y & GROUND_BLOCK_PIXEL_MASK;
-			groundZ = map->m_ground.m_ground[groundY * map->m_ground.m_width + groundX].GetZ(cellX, cellY);
+			groundZ =
+				map->m_ground.m_ground[(unsigned int) groundY * map->m_ground.m_width + groundX].GetZ(cellX, cellY);
 		}
 	}
 
@@ -1003,7 +1004,7 @@ void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned shor
 			collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 		}
 		else {
-			collision = map->m_ground.m_ground[blockY * width + blockX].m_collision;
+			collision = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].m_collision;
 		}
 	}
 
@@ -1012,7 +1013,8 @@ void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned shor
 	}
 
 	if ((collision & GROUND_COLLISION_HAZARD) != 0 && (p_collisionFlags & GAME_OBJECT_COLLISION_TRIGGER_HAZARDS) != 0) {
-		eObjectType objectType = m_map->m_ground.m_ground[blockY * m_map->m_ground.m_width + blockX].m_objectType;
+		eObjectType objectType =
+			m_map->m_ground.m_ground[(unsigned int) blockY * m_map->m_ground.m_width + blockX].m_objectType;
 		p_object->m_actionDeadline = g_dwGameTick + HAZARD_DEATH_DELAY_TICKS;
 		p_object->m_action = ACTION_EXTERNAL_CONTROL;
 		switch (objectType) {
@@ -1065,7 +1067,7 @@ bool CAI::OpenDoor(const AICOORD& p_position, CGameObject* p_object, unsigned sh
 			collision = GROUND_COLLISION_OUT_OF_BOUNDS;
 		}
 		else {
-			collision = map->m_ground.m_ground[blockY * width + blockX].m_collision;
+			collision = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].m_collision;
 		}
 	}
 	if ((collision & GROUND_COLLISION_OBJECT_INTERACTION) != 0 &&

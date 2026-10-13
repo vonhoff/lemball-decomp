@@ -14887,7 +14887,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?SwitchMessage@CAI@@QAEXW4swMessage@@HHH@Z",
       "size": 196,
-      "fingerprint": "28c66508628ac067016918d62b6cdfeac6d9cc42c15a60baca3af2445c32b853",
+      "fingerprint": "a7ac3d9f98e6874491e28d6d8736b7afea939c7ea2d801d3ca9979e5f5d82347",
       "references": [
         {
           "offset": 50,
@@ -15041,7 +15041,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?FixUpLevel@CAI@@QAEXXZ",
       "size": 78,
-      "fingerprint": "09da8a9a58bde53c1499a46e5ed211212bc404eb47b88a6af4f1b771798caef9",
+      "fingerprint": "f17afe4a7a17169922d0d50af44bc2bc942fb62d11d1dc42b2bc57a5808a008f",
       "references": [
         {
           "offset": 33,
