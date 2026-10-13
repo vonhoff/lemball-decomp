@@ -225,12 +225,12 @@ void CTextWnd::RedrawLines(int p_firstLine, int p_lineCount)
 {
 	RECT rect;
 	EnterCritical();
-	int row = p_firstLine - m_topLine;
+	int row = (unsigned int) p_firstLine - m_topLine;
 	if (row >= 0 && row < m_visibleRowsCeiling) {
 		rect.left = 0;
 		rect.right = m_clientWidth;
-		rect.top = row * m_lineHeight;
-		rect.bottom = m_lineHeight * p_lineCount + rect.top;
+		rect.top = (unsigned int) row * m_lineHeight;
+		rect.bottom = (unsigned int) m_lineHeight * p_lineCount + rect.top;
 		if (InvalidateRect((HWND) m_windowHandle, &rect, 0) == 0) {
 			MessageBoxA(NULL, g_unableToInvalidateTextLines, g_textWindowInfo, MB_OK);
 		}
@@ -246,10 +246,10 @@ int CTextWnd::UpdateVisibleRows()
 	critical->EnterCritical();
 	GetClientRect((HWND) m_windowHandle, &rect);
 	int lineHeight;
-	int height = rect.bottom - rect.top;
+	int height = (unsigned int) rect.bottom - rect.top;
 	lineHeight = m_lineHeight;
 	m_visibleRows = height / lineHeight;
-	m_visibleRowsCeiling = (lineHeight + height - 1) / lineHeight;
+	m_visibleRowsCeiling = (int) ((unsigned int) lineHeight + height - 1) / lineHeight;
 	critical->LeaveCritical();
 	return m_visibleRowsCeiling;
 }
@@ -260,7 +260,7 @@ int CTextWnd::UpdateClientWidth()
 	RECT rect;
 	EnterCritical();
 	GetClientRect((HWND) m_windowHandle, &rect);
-	m_clientWidth = rect.right - rect.left;
+	m_clientWidth = (unsigned int) rect.right - rect.left;
 	LeaveCritical();
 	return m_clientWidth;
 }
@@ -274,18 +274,18 @@ void CTextWnd::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned
 	int remainder = p_clientHeight % lineHeight;
 	if (remainder != 0) {
 		p_clientHeight -= remainder;
-		p_clientHeight += lineHeight;
+		p_clientHeight += (unsigned int) lineHeight;
 		rect.left = 0;
 		rect.top = 0;
-		rect.right = GetSystemMetrics(SM_CXVSCROLL) + p_clientWidth;
+		rect.right = (unsigned int) GetSystemMetrics(SM_CXVSCROLL) + p_clientWidth;
 		rect.bottom = p_clientHeight;
 		AdjustWindowRect(&rect, GetWindowLongA((HWND) m_windowHandle, GWL_STYLE), 0);
 		SetWindowPos((HWND) m_windowHandle,
 					 NULL,
 					 0,
 					 0,
-					 rect.right - rect.left,
-					 rect.bottom - rect.top,
+					 (unsigned int) rect.right - rect.left,
+					 (unsigned int) rect.bottom - rect.top,
 					 SWP_NOMOVE | SWP_NOZORDER);
 	}
 	else {
