@@ -1420,43 +1420,11 @@ void CSurface::BlitRect(CVSRect p_rect, int p_colour)
 // FUNCTION: LEMBALL 0x004757a0
 int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 {
-	unsigned int code1;
-	unsigned int code2;
-	int coordinate;
-
 	if (m_clipRect.m_height <= 0 || m_clipRect.m_width <= 0) {
 		return 1;
 	}
-	code1 = LINE_CLIP_REGION_INSIDE;
-	coordinate = p_x1;
-	if (coordinate < m_clipRect.m_x) {
-		code1 = LINE_CLIP_REGION_LEFT;
-	}
-	else if (m_clipRect.m_width + m_clipRect.m_x - 1 < coordinate) {
-		code1 = LINE_CLIP_REGION_RIGHT;
-	}
-	coordinate = p_y1;
-	if (coordinate < m_clipRect.m_y) {
-		code1 |= LINE_CLIP_REGION_TOP;
-	}
-	else if (m_clipRect.m_height + m_clipRect.m_y - 1 < coordinate) {
-		code1 |= LINE_CLIP_REGION_BOTTOM;
-	}
-	code2 = LINE_CLIP_REGION_INSIDE;
-	coordinate = p_x2;
-	if (coordinate < m_clipRect.m_x) {
-		code2 = LINE_CLIP_REGION_LEFT;
-	}
-	else if (m_clipRect.m_width + m_clipRect.m_x - 1 < coordinate) {
-		code2 = LINE_CLIP_REGION_RIGHT;
-	}
-	coordinate = p_y2;
-	if (coordinate < m_clipRect.m_y) {
-		code2 |= LINE_CLIP_REGION_TOP;
-	}
-	else if (m_clipRect.m_height + m_clipRect.m_y - 1 < coordinate) {
-		code2 |= LINE_CLIP_REGION_BOTTOM;
-	}
+	unsigned int code1 = ClipCode(p_x1, p_y1);
+	unsigned int code2 = ClipCode(p_x2, p_y2);
 	if ((code1 | code2) != LINE_CLIP_REGION_INSIDE) {
 		do {
 			if ((code1 & code2) != 0) {
@@ -1496,19 +1464,7 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 					p_y1 = (int) ((unsigned int) y1 + (int) (((unsigned int) m_clipRect.m_x - x1) * dy) / dx);
 					p_x1 = m_clipRect.m_x;
 				}
-				code1 = LINE_CLIP_REGION_INSIDE;
-				if (p_x1 < m_clipRect.m_x) {
-					code1 = LINE_CLIP_REGION_LEFT;
-				}
-				else if (m_clipRect.m_width + m_clipRect.m_x - 1 < p_x1) {
-					code1 = LINE_CLIP_REGION_RIGHT;
-				}
-				if (p_y1 < m_clipRect.m_y) {
-					code1 |= LINE_CLIP_REGION_TOP;
-				}
-				else if (m_clipRect.m_height + m_clipRect.m_y - 1 < p_y1) {
-					code1 |= LINE_CLIP_REGION_BOTTOM;
-				}
+				code1 = ClipCode(p_x1, p_y1);
 			}
 			else {
 				if ((code2 & LINE_CLIP_REGION_LEFT) == 0) {
@@ -1538,19 +1494,7 @@ int CSurface::LineClip(int& p_x1, int& p_y1, int& p_x2, int& p_y2)
 					p_y2 = (int) ((unsigned int) y2 + (int) (((unsigned int) m_clipRect.m_x - x2) * dy) / dx);
 					p_x2 = m_clipRect.m_x;
 				}
-				code2 = LINE_CLIP_REGION_INSIDE;
-				if (p_x2 < m_clipRect.m_x) {
-					code2 = LINE_CLIP_REGION_LEFT;
-				}
-				else if (m_clipRect.m_width + m_clipRect.m_x - 1 < p_x2) {
-					code2 = LINE_CLIP_REGION_RIGHT;
-				}
-				if (p_y2 < m_clipRect.m_y) {
-					code2 |= LINE_CLIP_REGION_TOP;
-				}
-				else if (m_clipRect.m_height + m_clipRect.m_y - 1 < p_y2) {
-					code2 |= LINE_CLIP_REGION_BOTTOM;
-				}
+				code2 = ClipCode(p_x2, p_y2);
 			}
 		} while ((code1 | code2) != LINE_CLIP_REGION_INSIDE);
 	}
