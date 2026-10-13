@@ -24,7 +24,7 @@ bool _RES_Init()
 		list->m_capacity = 2;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
-		list->m_typeCodes = new unsigned int[list->m_capacity];
+		list->m_typeCodes = new CHUNKID[list->m_capacity];
 	}
 	else {
 		list = NULL;
@@ -40,7 +40,7 @@ bool _RES_Init()
 		list->m_capacity = 1;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
-		list->m_typeCodes = new unsigned int[list->m_capacity];
+		list->m_typeCodes = new CHUNKID[list->m_capacity];
 	}
 	else {
 		list = NULL;
@@ -54,7 +54,7 @@ bool _RES_Init()
 		list->m_capacity = 2;
 		list->m_currentIndex = -1;
 		list->m_count = 0;
-		list->m_typeCodes = new unsigned int[list->m_capacity];
+		list->m_typeCodes = new CHUNKID[list->m_capacity];
 	}
 	else {
 		list = NULL;

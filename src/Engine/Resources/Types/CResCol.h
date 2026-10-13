@@ -3,8 +3,6 @@
 
 #include "CResBase.h"
 
-#define RESOURCE_CHUNK_COLOUR 0x434f4c20
-
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00498bc8
 class CResCol : public CResBase {

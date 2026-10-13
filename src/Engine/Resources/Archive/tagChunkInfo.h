@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_FOUNDATION_TAGCHUNKINFO_H
 
 #include "CMogloadArena.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
 #include "tagCHUNK.h"
 
 #include <stddef.h>
@@ -14,7 +15,7 @@ struct tagChunkInfo {
 	void operator delete(void* p_data) { CMogloadArena::operator delete(p_data); }
 
 	unsigned char* m_data;     // 0x00
-	unsigned int m_type;       // 0x04
+	CHUNKID m_type;            // 0x04
 	unsigned long m_id;        // 0x08
 	unsigned int m_fileOffset; // 0x0c
 	unsigned int m_size;       // 0x10

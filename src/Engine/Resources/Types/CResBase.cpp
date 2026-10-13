@@ -9,7 +9,7 @@
 
 // SIZE 0x08
 struct ResourceEntryHeader {
-	unsigned int m_chunkType;
+	CHUNKID m_chunkType;
 	unsigned int m_dataSize;
 };
 
@@ -91,7 +91,7 @@ void CResBase::Initialise()
 	m_data = NULL;
 	m_externalList = NULL;
 	m_headerSkip = 0;
-	m_chunkType = 0;
+	m_chunkType = RESOURCE_CHUNK_NONE;
 	m_resourceId = 0;
 	m_error = 0;
 	SetType();
@@ -254,7 +254,7 @@ void CResBase::SetHeader()
 // FUNCTION: LEMBALL 0x0045e640
 void CResBase::SetType()
 {
-	m_chunkType = 0;
+	m_chunkType = RESOURCE_CHUNK_NONE;
 }
 
 // FUNCTION: LEMBALL 0x0045e650

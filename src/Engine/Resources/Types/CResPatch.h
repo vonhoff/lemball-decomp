@@ -3,8 +3,6 @@
 
 #include "CResBase.h"
 
-#define RESOURCE_CHUNK_PATCH 0x50544348
-
 // SIZE 0x48
 // VTABLE: LEMBALL 0x00498da0
 class CResPatch : public CResBase {

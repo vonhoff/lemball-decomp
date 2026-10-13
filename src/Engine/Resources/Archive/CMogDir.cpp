@@ -117,7 +117,7 @@ void CMogDir::GetChunkInfo(tagChunkInfo* p_info)
 	p_info->m_directory = NULL;
 	p_info->m_data = m_directoryData + (InputDword() - m_payloadStartOffset);
 	p_info->m_id = InputDword();
-	p_info->m_type = InputDword();
+	p_info->m_type = (CHUNKID) InputDword();
 	p_info->m_fileOffset = InputDword();
 	p_info->m_size = InputDword();
 	vsRead(g_pMogFile, p_info->m_name, sizeof(p_info->m_name));
@@ -185,10 +185,10 @@ CMogDir* CMogDir::GetNextDir()
 }
 
 // FUNCTION: LEMBALL 0x0045c200
-void CMogDir::FindNext(tagCHUNK& p_chunk, unsigned int p_type)
+void CMogDir::FindNext(tagCHUNK& p_chunk, CHUNKID p_type)
 {
 	int exhausted = 0;
-	unsigned int type = p_type;
+	CHUNKID type = p_type;
 	tagCHUNK* iterator = &m_iterator;
 	tagCHUNK* next;
 
@@ -222,7 +222,7 @@ void CMogDir::FindNext(tagCHUNK& p_chunk, unsigned int p_type)
 }
 
 // FUNCTION: LEMBALL 0x0045c2a0
-void CMogDir::FindFirst(tagCHUNK& p_chunk, unsigned int p_type)
+void CMogDir::FindFirst(tagCHUNK& p_chunk, CHUNKID p_type)
 {
 	tagCHUNK* iterator = &m_iterator;
 	tagCHUNK* first = &m_first;

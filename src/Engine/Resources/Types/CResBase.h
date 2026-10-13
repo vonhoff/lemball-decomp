@@ -1,6 +1,8 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESBASE_H
 #define LEMBALL_VISOS_RESOURCES_CRESBASE_H
 
+#include "Engine/Resources/ResourceChunkTypes.h"
+
 class CResBaseLIST;
 
 // SIZE 0x48
@@ -80,7 +82,7 @@ protected:
 	char* m_name;                  // 0x34
 	unsigned char* m_data;         // 0x38
 	unsigned int m_headerSkip;     // 0x3c
-	unsigned int m_chunkType;      // 0x40
+	CHUNKID m_chunkType;           // 0x40
 	unsigned int m_error;          // 0x44
 };
 

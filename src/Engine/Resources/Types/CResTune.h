@@ -3,8 +3,6 @@
 
 #include "CResBase.h"
 
-#define RESOURCE_CHUNK_TUNE 0x54554e45
-
 // SIZE 0x48
 // VTABLE: LEMBALL 0x00498de0
 class CResTune : public CResBase {
