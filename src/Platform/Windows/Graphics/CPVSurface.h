@@ -73,8 +73,7 @@ private:
 	CVSRect m_dontUpdateRect;         // 0x04
 	CVSRect m_surfaceRect;            // 0x0c
 	CVSRect m_windowRect;             // 0x14
-	short m_relOriginX;               // 0x1c
-	short m_relOriginY;               // 0x1e
+	CVSPoint m_relativeOrigin;        // 0x1c
 	CSurface* m_parentSurface;        // 0x20
 	CVSRect m_clipRect;               // 0x24
 	short m_zoom;                     // 0x2c

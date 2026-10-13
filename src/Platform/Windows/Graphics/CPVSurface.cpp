@@ -18,8 +18,6 @@ CPVSurface::CPVSurface()
 	m_windowRect.m_width = 0;
 	m_windowRect.m_y = 0;
 	m_windowRect.m_x = 0;
-	m_relOriginY = 0;
-	m_relOriginX = 0;
 	m_updateEnabled = 1;
 	m_clipRect.m_height = 0;
 	m_worldWidth = 0;

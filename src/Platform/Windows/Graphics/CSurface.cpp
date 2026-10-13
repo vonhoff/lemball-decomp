@@ -596,8 +596,9 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 				translated.m_x += m_presentX;
 				translated.m_y += m_presentY;
 			}
-			translated.m_x += m_relOriginX;
-			translated.m_y += m_relOriginY;
+			const CVSPoint& relativeOrigin = m_relativeOrigin;
+			translated.m_x += relativeOrigin.m_x;
+			translated.m_y += relativeOrigin.m_y;
 			short zoom = m_zoom;
 			if (zoom == 1) {
 				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,

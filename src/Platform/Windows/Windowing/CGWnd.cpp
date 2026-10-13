@@ -102,9 +102,9 @@ void CGWnd::_OnCreate()
 		originX = originX - parentOrigin->m_x;
 		originY = originY - parentOrigin->m_y;
 	}
-	CPVSurface& surface = *target;
-	surface.m_relOriginX = originX;
-	surface.m_relOriginY = originY;
+	CVSPoint& relativeOrigin = target->m_relativeOrigin;
+	relativeOrigin.m_x = originX;
+	relativeOrigin.m_y = originY;
 	style = GetStyle();
 	if ((style & WS_CHILD) != 0 && m_nativeWindow != NULL) {
 		style = GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE);
@@ -178,9 +178,9 @@ void CGWnd::_OnSize()
 		relX = relX - parentOrigin->m_x;
 		relY = relY - parentOrigin->m_y;
 	}
-	CPVSurface& surface = *target;
-	surface.m_relOriginX = relX;
-	surface.m_relOriginY = relY;
+	CVSPoint& relativeOrigin = target->m_relativeOrigin;
+	relativeOrigin.m_x = relX;
+	relativeOrigin.m_y = relY;
 }
 
 // FUNCTION: LEMBALL 0x00463f30
