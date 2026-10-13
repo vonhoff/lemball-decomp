@@ -1,6 +1,7 @@
 #include "CSuccFailAnimWnd.h"
 
 #include "Application/GameMain.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Engine/Resources/ResourceCatalog.h"
 #include "GameView/Sound/CSoundView.h"
@@ -20,15 +21,15 @@ void CSuccFailAnimWnd::Initialise(CSuccFailDrawer* p_owner, CMain2DDisplay* p_di
 	if (p_success != 0) {
 		m_lowResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_SUCCESS_SUCCESS1;
 		m_highResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_SUCCESS_SUCCESS1;
-		sample = *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
-		*g_pRandomSeed = sample;
+		sample = g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
+		g_pRandomSeed->m_randomSeed = sample;
 		m_variantIndex = sample % 3;
 		return;
 	}
 	m_lowResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_LORES_FAIL_FAIL1;
 	m_highResAnimBase = RES_NEWFRONT_STRINGS_AVINAMES_HIRES_FAIL_FAIL1;
-	sample = *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
-	*g_pRandomSeed = sample;
+	sample = g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
+	g_pRandomSeed->m_randomSeed = sample;
 	m_variantIndex = sample % 3;
 }
 

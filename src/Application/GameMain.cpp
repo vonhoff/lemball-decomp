@@ -2,6 +2,7 @@
 
 #include "CDemo.h"
 #include "CGame.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/VSTrig.h"
 #include "Engine/Memory/SmallMemoryConstants.h"
 #include "Engine/Startup/tagPRE_INIT.h"
@@ -53,7 +54,7 @@ int g_nZoomAvailable = 0;
 int g_nDisplayMode = 0;
 
 // GLOBAL: LEMBALL 0x004a1bcc
-int* g_pRandomSeed = NULL;
+CVSMath* g_pRandomSeed = NULL;
 
 // FUNCTION: LEMBALL 0x00406160
 tagPRE_INIT* VSPreInit(tagPRE_INIT* p_preInit)
@@ -123,14 +124,14 @@ void DisplayHelp()
 // FUNCTION: LEMBALL 0x00406310
 int VSmain(int p_argc, char** p_argv)
 {
-	int* seed;
+	CVSMath* seed;
 	CGame* game;
 
 	g_pVSTrig = new VSTrig();
 
-	seed = new int;
+	seed = new CVSMath;
 	if (seed != NULL) {
-		*seed = GAME_RANDOM_INITIAL_SEED;
+		seed->m_randomSeed = GAME_RANDOM_INITIAL_SEED;
 		g_pRandomSeed = seed;
 	}
 	else {

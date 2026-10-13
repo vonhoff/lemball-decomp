@@ -7,6 +7,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Engine/Math/VSTrig.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -85,8 +86,9 @@ void CSheepGroup::RunAway(AICOORD p_threatPosition)
 				escapeDestination.m_yFixed = 0;
 			}
 			int formationRandomValue =
-				((unsigned int) *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-			*g_pRandomSeed = formationRandomValue;
+				((unsigned int) g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) &
+				RANDOM_SEED_MASK;
+			g_pRandomSeed->m_randomSeed = formationRandomValue;
 			SetFormationIndex(formationRandomValue % 3);
 			SendNewWaypoint(escapeDestination);
 			m_runAwayActive = 1;

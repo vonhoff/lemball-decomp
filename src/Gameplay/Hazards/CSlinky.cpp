@@ -2,6 +2,7 @@
 
 #include "Application/GameMain.h"
 #include "Engine/Math/FixedPointConversion.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CRect3.h"
@@ -99,8 +100,9 @@ bool CSlinky::Move()
 	do {
 		int dx;
 		int dy;
-		int random = ((unsigned int) *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-		*g_pRandomSeed = random;
+		int random = ((unsigned int) g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) &
+					 RANDOM_SEED_MASK;
+		g_pRandomSeed->m_randomSeed = random;
 		m_actionArgument = random % SLINKY_DIRECTION_COUNT;
 		switch ((unsigned short) m_actionArgument) {
 		case SLINKY_DIRECTION_EAST:

@@ -35,7 +35,7 @@ void CMove3d::Set(CPt3& p_start, CPt3& p_end, int p_startTime, int p_speed)
 		return;
 	}
 
-	int root = ((CVSMath*) g_pRandomSeed)->SqRoot(distance);
+	int root = g_pRandomSeed->SqRoot(distance);
 	m_velocity.m_xFixed = dx * FIXED_POINT_ONE;
 	m_velocity.m_yFixed = dy * FIXED_POINT_ONE;
 	m_velocity.m_zFixed = dz * FIXED_POINT_ONE;

@@ -1,9 +1,12 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CVSMATH_H
 #define LEMBALL_VISOS_FOUNDATION_CVSMATH_H
 
+// SIZE 0x04
 class CVSMath {
 public:
 	unsigned int SqRoot(unsigned int p_value);
+
+	int m_randomSeed; // 0x00
 };
 
 inline int VsAbs(int p_val)

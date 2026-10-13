@@ -319,10 +319,10 @@ void CEnemy::EnemyAction_TURNANDFIRESLOW(tEnemyLemmingUnion* p_data)
 // FUNCTION: LEMBALL 0x004201c0
 void CEnemy::EnemyAction_TURNANDFIRERANDOM(tEnemyLemmingUnion* p_data)
 {
-	int seed = *g_pRandomSeed;
+	int seed = g_pRandomSeed->m_randomSeed;
 	seed = seed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT;
 	seed = seed & RANDOM_SEED_MASK;
-	*g_pRandomSeed = seed;
+	g_pRandomSeed->m_randomSeed = seed;
 	RequestFire(seed % ENEMY_FIRE_RANDOM_INTERVAL_RANGE_MS + ENEMY_FIRE_RANDOM_MIN_INTERVAL_MS);
 }
 

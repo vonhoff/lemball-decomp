@@ -6,6 +6,7 @@
 #include "Engine/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/FixedPointConversion.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Gameplay/Behavior/StateMachine.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -163,8 +164,9 @@ void CPlayerLemming::HitBullet(CBullet* p_bullet)
 		if ((int) m_action < ACTION_FLYING || ((int) m_action > ACTION_HIDDEN && m_action != ACTION_ON_BALLOON)) {
 			switch (p_bullet->m_owner) {
 			case OWNER_ENEMY: {
-				int randVal = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-				*g_pRandomSeed = randVal;
+				int randVal =
+					(g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+				g_pRandomSeed->m_randomSeed = randVal;
 				if (randVal % 2) {
 					return;
 				}
@@ -543,8 +545,8 @@ bool CPlayerLemming::AddObject(eObjectType p_objectType, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x0040fa10
 void CPlayerLemming::RandomAction()
 {
-	int randVal = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-	*g_pRandomSeed = randVal;
+	int randVal = (g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+	g_pRandomSeed->m_randomSeed = randVal;
 	int idleAnim = randVal % LEMMING_IDLE_ANIMATION_COUNT;
 	m_actionArgument = (short) idleAnim;
 	switch (idleAnim) {
@@ -802,8 +804,8 @@ void CPlayerLemming::RequestBalloon()
 // FUNCTION: LEMBALL 0x00410090
 void CPlayerLemming::SetBored(unsigned long p_minimumDelay)
 {
-	int random = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-	*g_pRandomSeed = random;
+	int random = (g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+	g_pRandomSeed->m_randomSeed = random;
 	m_boredDeadline = p_minimumDelay + random % GAME_OBJECT_BOREDOM_RANDOM_DELAY_RANGE_MS;
 	m_boredDeadline = m_boredDeadline - m_boredDeadline % PLAYER_LEMMING_BOREDOM_DEADLINE_QUANTUM_MS;
 	m_boredDeadline = m_boredDeadline / GAME_TICK_MILLISECONDS;

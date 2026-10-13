@@ -55,7 +55,7 @@ unsigned int Distance(int p_x1, int p_y1, int p_x2, int p_y2)
 	int dy = abs((int) ((unsigned int) p_y1 - p_y2));
 	dx = (unsigned int) dx * dx;
 	dy = (unsigned int) dy * dy;
-	return ((CVSMath*) g_pRandomSeed)->SqRoot((unsigned int) dy + dx);
+	return g_pRandomSeed->SqRoot((unsigned int) dy + dx);
 }
 
 // FUNCTION: LEMBALL 0x004140d0

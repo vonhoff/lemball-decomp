@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Resources/Archive/CMogRes.h"
@@ -576,8 +577,8 @@ void CBaseFrontendDrawer::Process()
 			now = CurrentMilliTimer();
 			m_ambientUpdatedAt = now;
 			m_ambientAnim->SetStartTime(now);
-			seed = *g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
-			*g_pRandomSeed = seed;
+			seed = g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT & RANDOM_SEED_MASK;
+			g_pRandomSeed->m_randomSeed = seed;
 			m_ambientDelay = seed % 6000;
 		}
 	}

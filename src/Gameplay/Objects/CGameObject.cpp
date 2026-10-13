@@ -2,6 +2,7 @@
 
 #include "Application/GameMain.h"
 #include "Engine/Math/CVector.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/Facing.h"
@@ -1214,8 +1215,8 @@ void CGameObject::StartSommersault()
 		GAME_OBJECT_SOMERSAULT_MINIMUM_DURATION_MS = 50,
 		GAME_OBJECT_SOMERSAULT_RANDOM_DURATION_RANGE_MS = 500
 	};
-	int random = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-	*g_pRandomSeed = random;
+	int random = (g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+	g_pRandomSeed->m_randomSeed = random;
 	m_actionDeadline = g_dwGameTick + (random % GAME_OBJECT_SOMERSAULT_RANDOM_DURATION_RANGE_MS +
 									   GAME_OBJECT_SOMERSAULT_MINIMUM_DURATION_MS) /
 										  GAME_TICK_MILLISECONDS;

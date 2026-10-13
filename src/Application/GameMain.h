@@ -5,6 +5,7 @@
 #define LEMBALL_ENFORCE_STARTUP_CHECKS 1
 #endif
 
+class CVSMath;
 struct tagPRE_INIT;
 tagPRE_INIT* VSPreInit(tagPRE_INIT* p_preInit);
 void SetGameDefaults();
@@ -51,6 +52,6 @@ extern char g_szSwitchPlayPrefix1[8];
 extern char g_szSwitchPlayPrefix2[8];
 extern char g_szSwitchPlayPrefix3[8];
 extern char g_szSwitchGraphics[16];
-extern int* g_pRandomSeed;
+extern CVSMath* g_pRandomSeed;
 
 #endif

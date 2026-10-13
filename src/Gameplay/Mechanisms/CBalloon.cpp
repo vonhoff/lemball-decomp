@@ -3,6 +3,7 @@
 #include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
@@ -31,8 +32,8 @@ int CBalloon::Usage()
 void CBalloon::Restart()
 {
 	CBaseGlobalObject::Restart();
-	int randVal = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-	*g_pRandomSeed = randVal;
+	int randVal = (g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+	g_pRandomSeed->m_randomSeed = randVal;
 	m_stateTimer = g_dwSimulationTimestamp - (randVal % BALLOON_ANIMATION_PHASE_RANDOMIZATION_RANGE_MS);
 }
 

@@ -5,6 +5,7 @@
 #include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
 #include "CGodManager.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
@@ -343,7 +344,7 @@ void CAI::Restart()
 		level = packet[0];
 		skill = (eSkill) packet[1];
 		*g_pSysOutput << "Starting demo mode for level " << level << " on skill " << (int) skill << "\n";
-		*g_pRandomSeed = AI_DEMO_RANDOM_SEED;
+		g_pRandomSeed->m_randomSeed = AI_DEMO_RANDOM_SEED;
 	}
 	else {
 		level = g_pGameStatus->Level();

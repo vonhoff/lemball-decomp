@@ -2,6 +2,7 @@
 
 #include "Application/GameMain.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
@@ -90,16 +91,19 @@ bool CCatapult::Process()
 			pos.m_zFixed = m_position.m_zFixed + CATAPULT_LAUNCH_HEIGHT_OFFSET_FIXED;
 
 			C3DVector vel;
-			int randX = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-			*g_pRandomSeed = randX;
+			int randX =
+				(g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+			g_pRandomSeed->m_randomSeed = randX;
 			vel.m_xFixed =
 				((randX % CATAPULT_RANDOM_VELOCITY_STEPS) * FIXED_POINT_ONE / CATAPULT_RANDOM_VELOCITY_STEPS) +
 				CATAPULT_RANDOM_HORIZONTAL_LAUNCH_SPEED_FIXED;
-			int randY = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-			*g_pRandomSeed = randY;
+			int randY =
+				(g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+			g_pRandomSeed->m_randomSeed = randY;
 			vel.m_yFixed = (randY % CATAPULT_RANDOM_VELOCITY_STEPS) * FIXED_POINT_ONE / CATAPULT_RANDOM_VELOCITY_STEPS;
-			int randZ = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-			*g_pRandomSeed = randZ;
+			int randZ =
+				(g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+			g_pRandomSeed->m_randomSeed = randZ;
 			vel.m_zFixed =
 				((randZ % CATAPULT_RANDOM_VELOCITY_STEPS) * FIXED_POINT_ONE / CATAPULT_RANDOM_VELOCITY_STEPS) +
 				CATAPULT_RANDOM_VERTICAL_LAUNCH_SPEED_FIXED;

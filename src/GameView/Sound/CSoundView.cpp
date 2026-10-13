@@ -4,6 +4,7 @@
 #include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Sound/CSoundManager.h"
@@ -310,8 +311,8 @@ void CSoundView::ChangeState(unsigned short p_state, CLoadUpdate* p_loadUpdate)
 		case SOUND_STATE_GAMEPLAY:
 			g_pSoundManager->SetResId(RES_MUSIC_EFFECTS_BASEEFFECTS);
 			musicId = m_randomMusicIndex + RES_MUSIC_GAME_MUSIC;
-			seed = (*g_pRandomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
-			*g_pRandomSeed = seed;
+			seed = (g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
+			g_pRandomSeed->m_randomSeed = seed;
 			m_randomMusicIndex = seed % SOUND_GAMEPLAY_MUSIC_TRACK_COUNT;
 			break;
 		}
