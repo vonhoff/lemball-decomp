@@ -17,7 +17,7 @@ enum {
 #include "Engine/Resources/Archive/CMogloadStat.h"
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Statistics/CStatManager.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 
 #define RESOURCE_PATH_SEPARATOR '/'
 

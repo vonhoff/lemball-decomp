@@ -2,7 +2,7 @@
 
 #include "Application/SoundEffects.h"
 #include "CBulletManager.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"

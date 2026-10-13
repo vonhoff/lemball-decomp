@@ -3,7 +3,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Startup/VsInit.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/CGameFlaggedMessage.h"
 #include "Multiplayer/CGameRejectMessage.h"
 #include "Multiplayer/CNetworkGameMessage.h"

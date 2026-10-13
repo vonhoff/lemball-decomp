@@ -3,7 +3,7 @@
 #include "CBaseFrontendDrawer.h"
 #include "CUserActionMessage.h"
 #include "Engine/Queues/tagMESSAGE.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CConnect.h"

@@ -1,6 +1,6 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPWriteSocket.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CWriteSocket.h"

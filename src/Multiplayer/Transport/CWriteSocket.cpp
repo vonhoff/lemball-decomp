@@ -2,7 +2,7 @@
 
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Packets/CBasePacketBuff.h"
 #include "Multiplayer/Transport/Packets/CWriteCBuff.h"

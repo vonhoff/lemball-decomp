@@ -1,6 +1,6 @@
 #include "CPlayThruAnim.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 
 // FUNCTION: LEMBALL 0x004671e0
 void CPlayThruAnim::StartAnim(unsigned long p_animTime)

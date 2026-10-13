@@ -1,3 +1,5 @@
+#include "InferredCallbacks.h"
+
 // FUNCTION: LEMBALL 0x00416730
 unsigned int CGameObjectReturnZero()
 {

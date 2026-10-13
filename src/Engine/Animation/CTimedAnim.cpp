@@ -1,7 +1,7 @@
 #include "CTimedAnim.h"
 
 #include "Engine/Animation/AnimationConstants.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 
 // FUNCTION: LEMBALL 0x00435890
 void CTimedAnim::SetAnimTime(unsigned long p_animTime)

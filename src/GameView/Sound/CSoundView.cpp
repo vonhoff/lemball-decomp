@@ -8,7 +8,7 @@
 #include "Engine/Math/RandomConstants.h"
 #include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Sound/CSoundManager.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "GameView/Loading/CLoadUpdate.h"
 #include "Gameplay/Geometry/AICOORD.h"

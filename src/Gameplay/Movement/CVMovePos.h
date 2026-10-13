@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_BASE_CVMOVEPOS_H
 #define LEMBALL_AI_BASE_CVMOVEPOS_H
 
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/CVector.h"
 
 class CVMovePos {

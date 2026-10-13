@@ -3,7 +3,7 @@
 #include "Application/CDemo.h"
 #include "Application/CGameStatus.h"
 #include "Application/GameMain.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/FixedPointConversion.h"
 #include "Engine/Math/CVSMath.h"

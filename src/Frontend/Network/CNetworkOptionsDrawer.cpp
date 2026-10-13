@@ -15,7 +15,7 @@
 #include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Text/TextAdvanceFlags.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CHiliteController.h"

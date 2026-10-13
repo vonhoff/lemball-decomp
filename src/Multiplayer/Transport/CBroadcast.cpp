@@ -8,7 +8,7 @@
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Strings/VsString.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Packets/CBasePacket.h"

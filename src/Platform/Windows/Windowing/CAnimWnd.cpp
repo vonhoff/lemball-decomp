@@ -1,7 +1,7 @@
 #include "CAnimWnd.h"
 
 #include "CGWnd.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Resources/Types/CResMOVIE.h"
 #include "Platform/Windows/CPlatformServices.h"
 #include "Platform/Windows/Entry.h"

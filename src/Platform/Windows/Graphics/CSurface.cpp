@@ -9,7 +9,7 @@
 #include "CPVGDIBitmap.h"
 #include "CPVScrollableSurface.h"
 #include "CPVZBuffSurface.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Graphics/CChangeList.h"
 #include "Engine/Graphics/tagCHANGERECT.h"
 #include "Engine/Graphics/Palettes/CRemap.h"

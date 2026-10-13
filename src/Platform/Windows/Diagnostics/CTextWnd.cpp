@@ -5,7 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include "CTextLine.h"
 #include "CTextLineBuffer.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Platform/Windows/Entry.h"
 
 #include <windows.h>

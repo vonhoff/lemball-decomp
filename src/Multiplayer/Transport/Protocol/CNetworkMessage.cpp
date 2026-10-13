@@ -3,7 +3,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/tagMESSAGE.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"

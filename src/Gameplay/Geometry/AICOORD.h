@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_BASE_AICOORD_H
 #define LEMBALL_AI_BASE_AICOORD_H
 
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 
 // SIZE 0x0c
 class AICOORD {

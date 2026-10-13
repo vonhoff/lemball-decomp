@@ -4,7 +4,7 @@
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Startup/ProcessExitCodes.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/FileTransport/CFileNetwork.h"

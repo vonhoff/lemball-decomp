@@ -4,7 +4,7 @@
 #include "CRawRead.h"
 #include "tagCHUNK.h"
 #include "tagChunkInfo.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Files/VsFile.h"
 
 #include <stddef.h>

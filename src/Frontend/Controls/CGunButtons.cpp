@@ -11,7 +11,7 @@
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResBase.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/Controls/ControlMessages.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"

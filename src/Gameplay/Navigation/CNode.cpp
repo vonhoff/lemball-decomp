@@ -1,6 +1,6 @@
 #include "CNode.h"
 
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/CPt3.h"
 

@@ -1,7 +1,7 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPConnect.h"
 
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"

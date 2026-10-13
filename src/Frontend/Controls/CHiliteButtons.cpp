@@ -7,7 +7,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/Types/CResANIM.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/Controls/ControlMessages.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Platform/Windows/Graphics/CSurface.h"

@@ -4,7 +4,7 @@
 #include "Engine/Diagnostics/CDebugOStream.h"
 #include "Engine/Statistics/CTimeStat.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 
 #include <stddef.h>
 

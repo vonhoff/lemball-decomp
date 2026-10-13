@@ -1,7 +1,7 @@
 #include "CTrampoline.h"
 
 #include "Application/SoundEffects.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/Facing.h"

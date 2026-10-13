@@ -15,7 +15,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 
 #include <stddef.h>

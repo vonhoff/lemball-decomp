@@ -2,7 +2,7 @@
 
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/CGameObject.h"

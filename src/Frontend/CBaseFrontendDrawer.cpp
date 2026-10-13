@@ -17,7 +17,7 @@
 #include "Engine/Resources/Types/CResBITMAP.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Text/CTextManager.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/Controls/CGunButtons.h"
 #include "Frontend/Controls/CGunController.h"
 #include "Frontend/Controls/CHiliteController.h"

@@ -1,6 +1,6 @@
 #include "CVector.h"
 
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "FixedPoint.h"
 
 // FUNCTION: LEMBALL 0x0041a3c0

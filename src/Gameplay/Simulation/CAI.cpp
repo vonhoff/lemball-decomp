@@ -10,7 +10,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "GameView/Animation/CAnimSpecial.h"
 #include "Gameplay/Animation/CGroundAnim.h"
 #include "Gameplay/Characters/CPlayerLemming.h"

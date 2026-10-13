@@ -1,7 +1,7 @@
 #include "CNetworkWnd.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/Entry.h"
 

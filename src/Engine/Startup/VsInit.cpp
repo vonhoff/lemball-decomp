@@ -1,7 +1,7 @@
 #include "VsInit.h"
 
 #include "Application/GameMain.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Memory/CArena.h"
 #include "Engine/Memory/CSmallMemory.h"
 #include "Engine/Memory/SmallMemoryConstants.h"

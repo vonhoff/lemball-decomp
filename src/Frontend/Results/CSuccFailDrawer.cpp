@@ -19,7 +19,7 @@
 #include "Engine/Strings/CString.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Text/TextAdvanceFlags.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Frontend/Controls/CHiliteController.h"
 #include "Frontend/FrontendLayoutMode.h"

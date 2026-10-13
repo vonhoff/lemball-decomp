@@ -2,7 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include "CPVWnd.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
@@ -11,7 +11,7 @@
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Startup/tagPRE_INIT.h"
 #include "Engine/Streams/CVSOStream.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "tagMenuList.h"
 #include "Platform/Windows/CPlatformServices.h"
 #include "Platform/Windows/Entry.h"

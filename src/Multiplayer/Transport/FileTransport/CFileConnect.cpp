@@ -1,6 +1,6 @@
 #include "Multiplayer/Transport/FileTransport/CFileConnect.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/CReadSocket.h"
@@ -9,7 +9,7 @@
 #include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileOpenManagement.h"
 #include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
-#include "Multiplayer/Transport/FileTransport/CNetworkFile.h"
+#include "Platform/Windows/Network/FileTransport/CNetworkFile.h"
 #include "Multiplayer/Transport/FileTransport/COpenCount.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Protocol/CHeaders.h"

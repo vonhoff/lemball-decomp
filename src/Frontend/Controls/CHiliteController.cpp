@@ -14,7 +14,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/Controls/ControlMessages.h"
 #include "Frontend/FrontendLayoutMode.h"
 #include "GameView/Sound/CSoundView.h"

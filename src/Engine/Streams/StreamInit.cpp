@@ -2,7 +2,7 @@
 
 #include "CVSOStream.h"
 #include "Engine/Diagnostics/CVSDebugStreambuf.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 
 #include <stddef.h>
 

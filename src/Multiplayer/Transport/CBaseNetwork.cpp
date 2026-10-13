@@ -6,7 +6,7 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/tagMESSAGE.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/Transport/Protocol/CAckMessage.h"
 #include "Multiplayer/Transport/Protocol/CMessFAILEDConnect.h"

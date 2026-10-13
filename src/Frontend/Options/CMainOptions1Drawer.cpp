@@ -8,7 +8,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResBITMAP.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Frontend/Controls/CGunController.h"
 #include "Frontend/Controls/ControlMessages.h"

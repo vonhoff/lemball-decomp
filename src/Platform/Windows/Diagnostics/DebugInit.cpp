@@ -1,6 +1,6 @@
 #include "DebugInit.h"
 
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Files/VsFile.h"
 #include "Engine/Startup/ProcessExitCodes.h"
 #include "Platform/Windows/WindowsTypes.h"

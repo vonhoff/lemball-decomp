@@ -1,6 +1,6 @@
 #include "CMaze.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"

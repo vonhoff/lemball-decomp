@@ -6,7 +6,7 @@ struct _Filet;
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResBIN.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
 
 #include <stddef.h>

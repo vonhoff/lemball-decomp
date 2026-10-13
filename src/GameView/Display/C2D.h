@@ -19,7 +19,7 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/tagMESSAGE.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "GameView/Pause/CReceiveWindowState.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CViewData.h"

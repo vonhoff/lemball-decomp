@@ -1,7 +1,7 @@
 #ifndef LEMBALL_AI_BASE_C3DVECTOR_H
 #define LEMBALL_AI_BASE_C3DVECTOR_H
 
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 
 class CFixed;
 // SIZE 0x0c

@@ -1,6 +1,6 @@
 #include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 

@@ -1,6 +1,4 @@
-class CArrayElementCallback {};
-
-typedef void (CArrayElementCallback::*ArrayCallback)();
+#include "ArrayDestruction.h"
 
 // FUNCTION: LEMBALL 0x00406130
 void __stdcall DestroyArrayElementsForward(char* p_array, int p_stride, int p_count, ArrayCallback p_callback)

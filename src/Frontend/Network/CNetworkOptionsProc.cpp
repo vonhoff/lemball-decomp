@@ -13,7 +13,7 @@
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Packets/CReadPacket.h"
 
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 

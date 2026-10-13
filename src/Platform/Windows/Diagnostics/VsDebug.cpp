@@ -1,4 +1,4 @@
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 
 #include "CTextWnd.h"
 #include "Engine/Diagnostics/CDebugOStream.h"

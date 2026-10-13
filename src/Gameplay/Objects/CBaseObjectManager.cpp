@@ -2,7 +2,7 @@
 
 #include "CGameObject.h"
 #include "CGlobalGameObject.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "Gameplay/Messages/GameMessageIds.h"
 #include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"

@@ -22,7 +22,7 @@
 #include "Engine/Strings/VsString.h"
 #include "Engine/Text/CTextManager.h"
 #include "Engine/Text/TextAdvanceFlags.h"
-#include "Engine/Time/VsTime.h"
+#include "Platform/Windows/VsTime.h"
 #include "GameView/Display/CMain2DDisplay.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"

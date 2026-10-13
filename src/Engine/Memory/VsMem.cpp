@@ -3,7 +3,7 @@
 #include "CArena.h"
 #include "CBucket.h"
 #include "CSmallMemory.h"
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 
 #include <stddef.h>
 

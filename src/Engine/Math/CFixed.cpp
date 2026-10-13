@@ -1,6 +1,6 @@
 #include "CFixed.h"
 
-#include "Engine/Diagnostics/VsDebug.h"
+#include "Platform/Windows/Diagnostics/VsDebug.h"
 
 // FUNCTION: LEMBALL 0x0042b9c0
 CFixed operator+(const CFixed& p_left, const CFixed& p_right)
