@@ -134,24 +134,22 @@ void CLiftManager::AddLiftFromEndpoints(unsigned short p_id, tCoord3d& p_start, 
 void CLiftManager::Process()
 {
 	int i = 0;
-	CLiftManager* self = this;
-	for (; i < self->m_count; i++) {
-		self->m_lifts[i].m_stateProcessed = true;
-		self->m_lifts[i].Process();
-		self->m_lifts[i].CheckObjects();
+	for (; i < m_count; i++) {
+		m_lifts[i].m_stateProcessed = true;
+		m_lifts[i].Process();
+		m_lifts[i].CheckObjects();
 	}
 }
 
 // FUNCTION: LEMBALL 0x00425d80
 void CLiftManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
-	CLiftManager* self = this;
 	int i = 0;
-	if (self->m_count > 0) {
+	if (m_count > 0) {
 		do {
-			self->m_lifts[i].StepOn(p_position, p_object);
+			m_lifts[i].StepOn(p_position, p_object);
 			i++;
-		} while (i < self->m_count);
+		} while (i < m_count);
 	}
 }
 
