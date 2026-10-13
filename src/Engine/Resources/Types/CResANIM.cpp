@@ -9,7 +9,7 @@
 // FUNCTION: LEMBALL 0x0045d610
 CResANIM* CResANIM::Load(unsigned long p_resourceId)
 {
-	CResANIM* res = (CResANIM*) g_pActiveMogRes->Find(p_resourceId);
+	CResBase* res = g_pActiveMogRes->Find(p_resourceId);
 	if (res == NULL) {
 		return (CResANIM*) (new CResANIM(p_resourceId))->CheckError();
 	}
@@ -17,7 +17,7 @@ CResANIM* CResANIM::Load(unsigned long p_resourceId)
 		res->UnLoad();
 		return NULL;
 	}
-	return res;
+	return (CResANIM*) res;
 }
 
 // FUNCTION: LEMBALL 0x0045d6a0
