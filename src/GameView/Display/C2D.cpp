@@ -2514,20 +2514,20 @@ void C2D::DrawLemmingJump(CViewData& p_viewData, unsigned int p_remapped)
 	unsigned int actionArgument;
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
-	x = p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction][0];
-	y = p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction][1];
+	x = (unsigned int) p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction][0];
+	y = (unsigned int) p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction][1];
 	resource = g_lemmingFlyResources[direction];
 	frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 	actionArgument = (unsigned short) p_viewData.m_actionArgument;
 	switch (actionArgument) {
 	case JUMP_ANIMATION_EARLY_FRAMES:
-		frame = frameDelta * 15 / 1024;
+		frame = (int) ((unsigned int) frameDelta * 15) / 1024;
 		if (frame > 6) {
 			frame = 6;
 		}
 		break;
 	case JUMP_ANIMATION_LATE_FRAMES:
-		frame = frameDelta * 15 / 1024 + 7;
+		frame = (int) ((unsigned int) frameDelta * 15) / 1024 + 7;
 		if (frame > 12) {
 			frame = 12;
 		}
@@ -2554,10 +2554,10 @@ void C2D::DrawLemmingLanding(CViewData& p_viewData, unsigned int p_remapped)
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
 	resource = g_lemmingFlyResources[direction];
-	x = p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction][0];
-	y = p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction][1];
+	x = (unsigned int) p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction][0];
+	y = (unsigned int) p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction][1];
 	frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
-	frame = frameDelta * 15 / 1024 + 7;
+	frame = (int) ((unsigned int) frameDelta * 15) / 1024 + 7;
 	if (frame > 12) {
 		frame = 12;
 	}
