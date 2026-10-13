@@ -399,11 +399,11 @@ bool CMogRes::Load(const CVSRange& p_range, unsigned char*& p_data, CResBase* p_
 // FUNCTION: LEMBALL 0x0045ce50
 void CMogRes::CleanUpResources()
 {
-	unsigned int count = m_resourceCount;
+	int count = m_resourceCount;
 	int i = 0;
 	int scanned = 0;
 
-	if ((int) count > 0) {
+	if (count > 0) {
 		do {
 			while (m_resources[i] == NULL) {
 				i++;
@@ -412,15 +412,13 @@ void CMogRes::CleanUpResources()
 				return;
 			}
 			if (m_resources[i]->m_referenceCount == 0) {
-				if (m_resources[i] != NULL) {
-					delete m_resources[i];
-				}
+				delete m_resources[i];
 				m_resources[i] = NULL;
 				m_resourceCount--;
 			}
 			scanned++;
 			i++;
-		} while (scanned < (int) count);
+		} while (scanned < count);
 	}
 }
 
