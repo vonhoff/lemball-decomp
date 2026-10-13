@@ -208,10 +208,11 @@ void CMover::FindObjectsOnTopOfMe()
 void CMover::MoveObjects(int p_deltaX, int p_deltaY, int p_deltaZ)
 {
 	for (int i = 0; i < m_objectCount; i++) {
-		CGameObject* object = m_objects[i];
-		object->m_position.m_xFixed += (unsigned int) p_deltaX << FIXED_POINT_FRACTION_BITS;
-		object->m_position.m_yFixed += (unsigned int) p_deltaY << FIXED_POINT_FRACTION_BITS;
-		object->m_position.m_zFixed += (unsigned int) p_deltaZ << FIXED_POINT_FRACTION_BITS;
+		AICOORD position = m_objects[i]->m_position;
+		position.m_xFixed += (unsigned int) p_deltaX << FIXED_POINT_FRACTION_BITS;
+		position.m_yFixed += (unsigned int) p_deltaY << FIXED_POINT_FRACTION_BITS;
+		position.m_zFixed += (unsigned int) p_deltaZ << FIXED_POINT_FRACTION_BITS;
+		m_objects[i]->m_position = position;
 	}
 }
 
