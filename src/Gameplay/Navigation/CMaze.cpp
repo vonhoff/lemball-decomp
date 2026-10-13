@@ -1,9 +1,9 @@
 #include "CMaze.h"
 
-#include "Platform/Windows/VsTime.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
+#include "Platform/Windows/VsTime.h"
 #include "tSolution.h"
 
 #include <string.h>
@@ -70,8 +70,6 @@ CMaze::~CMaze()
 // FUNCTION: LEMBALL 0x00423110
 void CMaze::ReInitialise()
 {
-	int width;
-	CMap* map;
 	unsigned short collision;
 	int y = 0;
 	int x;
@@ -80,19 +78,7 @@ void CMaze::ReInitialise()
 			x = 0;
 			if (m_width > 0) {
 				do {
-					if (x < 0 || y < 0) {
-						collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-					}
-					else {
-						map = m_map;
-						width = map->m_ground.m_width;
-						if (width <= x || map->m_ground.m_height <= y) {
-							collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-						}
-						else {
-							collision = map->m_ground.m_ground[(unsigned int) y * width + x].m_collision;
-						}
-					}
+					collision = m_map->m_ground.GetCollision(x, y);
 					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
 						m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
 					}
@@ -266,8 +252,6 @@ void CMaze::SwapChange()
 void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, int p_endX, int p_endY)
 {
 	int x;
-	int width;
-	CMap* map;
 	if (p_resetStats != 0) {
 		m_totalTime = 0;
 		m_solutionCount = 0;
@@ -286,19 +270,7 @@ void CMaze::BInitialise(unsigned int p_resetStats, int p_startX, int p_startY, i
 			if (m_width > 0) {
 				do {
 					unsigned short collision;
-					if (x < 0 || y < 0) {
-						collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-					}
-					else {
-						map = m_map;
-						width = map->m_ground.m_width;
-						if (width <= x || map->m_ground.m_height <= y) {
-							collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-						}
-						else {
-							collision = map->m_ground.m_ground[(unsigned int) y * width + x].m_collision;
-						}
-					}
+					collision = m_map->m_ground.GetCollision(x, y);
 					if ((collision & GROUND_COLLISION_BLOCKS_WALKING) != 0) {
 						m_distances[y][x] = MAZE_DISTANCE_BLOCKED;
 					}
