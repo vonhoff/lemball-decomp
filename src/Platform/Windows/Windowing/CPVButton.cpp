@@ -220,13 +220,13 @@ void CPVButton::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 void CPVButton::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	int i;
-	unsigned int* state;
+	bool* state;
 
 	m_clickPosition = p_point - CVSRect(m_relativeTopLeft, m_rect);
 	state = m_buttonState;
 	i = 6;
 	while (i != 0) {
-		*state = 0;
+		*state = false;
 		++state;
 		--i;
 	}

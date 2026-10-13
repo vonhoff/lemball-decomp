@@ -25,8 +25,8 @@ void CHotAreaHandler::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 // FUNCTION: LEMBALL 0x00439980
 void CHotAreaHandler::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
-	m_buttonState[p_flags + 3] = 0;
-	m_buttonState[p_flags] = 0;
+	m_buttonState[p_flags + 3] = false;
+	m_buttonState[p_flags] = false;
 }
 
 // FUNCTION: LEMBALL 0x004399a0
@@ -38,13 +38,13 @@ void CHotAreaHandler::OnEnter()
 void CHotAreaHandler::OnExit()
 {
 	int i;
-	unsigned int* state;
+	bool* state;
 
 	if (m_externalButtonUpEnabled == 0) {
 		state = m_buttonState;
 		i = 6;
 		while (i != 0) {
-			*state = 0;
+			*state = false;
 			++state;
 			--i;
 		}
@@ -112,7 +112,7 @@ void CHotAreaHandler::Initialise()
 void CHotAreaHandler::Reset()
 {
 	int i;
-	unsigned int* state;
+	bool* state;
 
 	if (m_entered != 0) {
 		m_entered = 0;
@@ -121,7 +121,7 @@ void CHotAreaHandler::Reset()
 	state = m_buttonState;
 	i = 6;
 	while (i != 0) {
-		*state = 0;
+		*state = false;
 		++state;
 		--i;
 	}
@@ -165,11 +165,11 @@ void CHotAreaHandler::ProcessArea(tagMESSAGE* p_message, const CVSPoint& p_point
 			break;
 		}
 		if (type == MESSAGE_MOUSE_BUTTON_DOWN || type == MESSAGE_CURSOR_BUTTON_DOWN) {
-			m_buttonState[button] = 1;
+			m_buttonState[button] = true;
 		}
 		else {
-			m_buttonState[button + 3] = 0;
-			m_buttonState[button] = 0;
+			m_buttonState[button + 3] = false;
+			m_buttonState[button] = false;
 		}
 		if (p_message->m_type != MESSAGE_MOUSE_BUTTON_UP && p_message->m_type != MESSAGE_CURSOR_BUTTON_UP) {
 			OnButtonDown(p_point, button);

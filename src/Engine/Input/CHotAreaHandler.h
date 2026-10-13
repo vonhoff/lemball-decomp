@@ -45,7 +45,7 @@ private:
 	unsigned int m_active;                  // 0x04
 	unsigned int m_entered;                 // 0x08
 	CHotAreaList* m_parent;                 // 0x0c
-	unsigned int m_buttonState[6];          // 0x10
+	bool m_buttonState[6];                  // 0x10
 	unsigned int m_externalEnabled;         // 0x28
 	unsigned int m_externalButtonUpEnabled; // 0x2c
 	CVSRect m_bounds;                       // 0x30

@@ -272,13 +272,13 @@ void CHotAreaList::RemoveFromList(CHotAreaHandler* p_handler)
 void CHotAreaList::OnExit()
 {
 	int i;
-	unsigned int* state;
+	bool* state;
 
 	if (m_externalButtonUpEnabled == 0) {
 		state = m_buttonState;
 		i = 6;
 		while (i != 0) {
-			*state = 0;
+			*state = false;
 			++state;
 			--i;
 		}
