@@ -31,4 +31,8 @@ address,name
 0x0044b360,CCDLoadAnim::NoOp2
 0x0044ded0,CGunController::NoOp
 0x0044fca0,CHiliteController::NoOp
+0x004675d0,CAnimsManager::GetMaxAnimSize
+0x00467660,CAnimsManager::GetMaxAnimHalfSize
+0x004676a0,CAnimsManager::ResolveAnimFrameData
 0x004676f0,NoOpPop4
+0x00467700,CAnimsManager::DetachGdi
