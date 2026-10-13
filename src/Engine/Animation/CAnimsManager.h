@@ -36,13 +36,12 @@ public:
 	virtual void FreeVram(); // vtable+0x00
 	void LoadAnims(unsigned long p_resourceId);
 	void ResetPrimitives();
-	CVSRect* DrawAnimOnGdi(CVSRect* p_bounds,
-						   CGDI* p_gdi,
-						   const CVSPoint& p_position,
-						   unsigned long p_resourceId,
-						   unsigned long p_drawFlags,
-						   CAnimFrameBASE* p_frame,
-						   CRemap* p_remap);
+	CVSRect DrawAnim(CGDI* p_gdi,
+					 const CVSPoint& p_position,
+					 unsigned long p_resourceId,
+					 unsigned long p_drawFlags,
+					 CAnimFrameBASE* p_frame,
+					 CRemap* p_remap);
 	CResZRLE* ResolveAnimFrameData(unsigned long p_resourceId, CAnimFrameBASE* p_frame);
 	void DetachGdi(CGDI* p_gdi);
 	void UnLoadAnims(unsigned long p_resourceId);
@@ -85,5 +84,20 @@ private:
 	unsigned short m_reserved6a;        // 0x6a
 	unsigned int m_reserved6c;          // 0x6c
 };
+
+// FUNCTION: LEMBALL 0x0044e700
+inline CVSRect CAnimsManager::DrawAnim(CGDI* p_gdi,
+									   const CVSPoint& p_position,
+									   unsigned long p_resourceId,
+									   unsigned long p_drawFlags,
+									   CAnimFrameBASE* p_frame,
+									   CRemap* p_remap)
+{
+	CGDI* previous = m_gdi;
+	m_gdi = p_gdi;
+	CVSRect bounds = DrawAnim(p_position, p_resourceId, p_drawFlags, p_frame, p_remap);
+	m_gdi = previous;
+	return bounds;
+}
 
 #endif

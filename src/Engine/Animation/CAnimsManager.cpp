@@ -28,26 +28,6 @@ void CAnimsManager::FreeVram()
 {
 }
 
-// FUNCTION: LEMBALL 0x0044e700
-CVSRect* CAnimsManager::DrawAnimOnGdi(CVSRect* p_bounds,
-									  CGDI* p_gdi,
-									  const CVSPoint& p_position,
-									  unsigned long p_resourceId,
-									  unsigned long p_drawFlags,
-									  CAnimFrameBASE* p_frame,
-									  CRemap* p_remap)
-{
-	CGDI* previous = m_gdi;
-	m_gdi = p_gdi;
-	CVSRect bounds = DrawAnim(p_position, p_resourceId, p_drawFlags, p_frame, p_remap);
-	m_gdi = previous;
-	p_bounds->m_width = bounds.m_width;
-	p_bounds->m_height = bounds.m_height;
-	p_bounds->m_x = bounds.m_x;
-	p_bounds->m_y = bounds.m_y;
-	return p_bounds;
-}
-
 // FUNCTION: LEMBALL 0x00467260
 CAnimsManager::CAnimsManager(CGDI* p_gdi,
 							 unsigned long p_resourceIdCount,
