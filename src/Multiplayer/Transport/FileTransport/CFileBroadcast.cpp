@@ -11,7 +11,6 @@
 #include "Multiplayer/Transport/CNetworkAddress.h"
 #include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileOpenManagement.h"
-#include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
 #include "Multiplayer/Transport/FileTransport/CNetworkFile.h"
 #include "Multiplayer/Transport/FileTransport/COpenCount.h"
@@ -19,6 +18,7 @@
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Protocol/CHeaders.h"
 #include "Multiplayer/Transport/Protocol/CPortsMessage.h"
+#include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
 
 #include <string.h>
 

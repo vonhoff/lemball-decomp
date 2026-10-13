@@ -2,8 +2,8 @@
 
 #include "Multiplayer/Transport/CRWSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
-#include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
+#include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
 
 // FUNCTION: LEMBALL 0x0047a220
 CFileRWSocket::CFileRWSocket() : CRWSocket(), CFileReadSocket(), CFileWriteSocket()

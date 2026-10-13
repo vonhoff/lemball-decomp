@@ -1,6 +1,7 @@
 address,name
 0x004010dc,Thunk of C2D::NoOp1
 0x00401235,Thunk of CPaintGunManager::ReturnZero2
+0x0040169a,Thunk of CFixedTimeAnim::StartAnim
 0x0040194c,Thunk of CGunController::NoOp
 0x004019d8,Thunk of CCDLoadAnim::NoOp1
 0x00401b22,Thunk of CPaintGun::ReturnZero2
@@ -8,6 +9,7 @@ address,name
 0x00401b81,Thunk of CNode::ReturnOne
 0x00402112,Thunk of CMover::ReturnZero
 0x004025d6,Thunk of CIce::ReturnZero
+0x00402d79,Thunk of CFixedTimeAnim::GetFrameNo
 0x00402d83,Thunk of CCDLoadAnim::NoOp2
 0x00402f40,Thunk of C2D::NoOp2
 0x0040324c,Thunk of CLemmingAnimsManager::ForwardLoadAnimNoOp
@@ -27,6 +29,8 @@ address,name
 0x0043bcd0,C2D::NoOp1
 0x0043ed10,C2D::NoOp2
 0x00443350,CPanel::NoOp
+0x0044aa20,CFixedTimeAnim::GetFrameNo
+0x0044aa70,CFixedTimeAnim::StartAnim
 0x0044b330,CCDLoadAnim::NoOp1
 0x0044b360,CCDLoadAnim::NoOp2
 0x0044ded0,CGunController::NoOp

@@ -1,4 +1,4 @@
-#include "Multiplayer/Transport/FileTransport/CFileReadSocket.h"
+#include "CFileReadSocket.h"
 
 #include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
