@@ -4,9 +4,10 @@
 #include "Platform/Windows/Network/CNetworkWnd.h"
 
 extern int g_socketWindowClassRegistered;
-#include "Platform/Windows/WinSock/WinSock.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <stddef.h>
+#include <winsock.h>
 
 // FUNCTION: LEMBALL 0x0046fcf0
 CTCPIPCommonSocket::CTCPIPCommonSocket() : CNetworkWnd("Socket Window", &g_socketWindowClassRegistered)

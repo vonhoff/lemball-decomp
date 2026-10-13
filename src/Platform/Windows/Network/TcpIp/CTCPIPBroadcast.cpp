@@ -13,9 +13,10 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
-#include "Platform/Windows/WinSock/WinSock.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <string.h>
+#include <winsock.h>
 
 // FUNCTION: LEMBALL 0x00470270
 CTCPIPBroadcast::CTCPIPBroadcast()
@@ -72,11 +73,11 @@ void CTCPIPBroadcast::GotName(int p_failed)
 
 	if (p_failed == 0) {
 		CTCPIPNetworkAddress* address;
-		TcpIpHostEntry* hostEntry;
+		hostent* hostEntry;
 		in_addr lookupAddress;
 
-		hostEntry = (TcpIpHostEntry*) m_specificNameBuffer;
-		memcpy(&lookupAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
+		hostEntry = (hostent*) m_specificNameBuffer;
+		memcpy(&lookupAddress, *hostEntry->h_addr_list, hostEntry->h_length);
 		address = new CTCPIPNetworkAddress;
 		m_specificAddress = address;
 		address->m_ipv4Address = lookupAddress.s_addr;
@@ -132,11 +133,11 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 		*g_pErrorOutput << "Local host name not found\n";
 	}
 	else {
-		TcpIpHostEntry* hostEntry;
+		hostent* hostEntry;
 		CTCPIPNetworkAddress* address;
 
-		hostEntry = (TcpIpHostEntry*) m_asyncBuffer;
-		memcpy(&lookupAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
+		hostEntry = (hostent*) m_asyncBuffer;
+		memcpy(&lookupAddress, *hostEntry->h_addr_list, hostEntry->h_length);
 		address = (CTCPIPNetworkAddress*) g_pBroadcastAddress;
 		address->m_ipv4Address = lookupAddress.s_addr;
 		strcpy(address->m_text, inet_ntoa(address->Get()));
@@ -171,7 +172,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 {
 	int option;
 	int selectResult;
-	TcpIpSocketAddress address;
+	sockaddr_in address;
 	tagMESSAGE message;
 
 	if (p_failed) {
@@ -179,10 +180,10 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 		SetPort(0);
 	}
 	else {
-		TcpIpServiceEntry* serviceEntry;
+		servent* serviceEntry;
 
-		serviceEntry = (TcpIpServiceEntry*) m_asyncBuffer;
-		SetPort((short) (ntohs(serviceEntry->m_port) - g_broadcastPort));
+		serviceEntry = (servent*) m_asyncBuffer;
+		SetPort((short) (ntohs(serviceEntry->s_port) - g_broadcastPort));
 	}
 	delete[] m_asyncBuffer;
 	m_asyncBuffer = NULL;
@@ -193,10 +194,10 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 		CBroadcast::SendFailedInit(NETWORK_ERROR_BROADCAST_OPTION);
 		return;
 	}
-	address.m_family = AF_INET;
-	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
-	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
-	if (bind(m_socketHandle, &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
+	address.sin_family = AF_INET;
+	address.sin_port = htons((unsigned short) (m_port + g_broadcastPort));
+	address.sin_addr.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
+	if (bind(m_socketHandle, (const sockaddr*) &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		CBroadcast::SendFailedInit(NETWORK_ERROR_BROADCAST_BIND);
 		return;

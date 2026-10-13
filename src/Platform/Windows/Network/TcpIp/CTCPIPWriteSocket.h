@@ -4,7 +4,9 @@
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
-#include "Platform/Windows/WinSock/WinSock.h"
+#include "Platform/Windows/WindowsTypes.h"
+
+#include <winsock.h>
 
 // SIZE 0xdc
 // VTABLE: LEMBALL 0x0049a088 CNetworkWnd
@@ -23,7 +25,7 @@ public:
 	virtual void SetPort(short p_port);                                                // vtable+0x28
 
 private:
-	TcpIpSocketAddress m_destination; // 0x04
+	sockaddr_in m_destination; // 0x04
 };
 #pragma warning(default : 4250)
 

@@ -8,12 +8,10 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPConnect.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Platform/Windows/ThreadConstants.h"
-#include "Platform/Windows/WinSock/WinSock.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <stddef.h>
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <winsock.h>
 
 // FUNCTION: LEMBALL 0x004713c0
 CTCPIPNetwork::CTCPIPNetwork() : CNetworkWnd("TCPIP Network", &g_tcpIpNetworkWindowClassRegistered)

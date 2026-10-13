@@ -1,30 +1,30 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
 
 #include "Engine/Streams/CVSOStream.h"
+#include "Engine/Time/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <string.h>
-
-#include "Engine/Time/VsTime.h"
-#include "Platform/Windows/WinSock/WinSock.h"
+#include <winsock.h>
 
 extern unsigned int g_tcpIpBytesReceived;
 
 // FUNCTION: LEMBALL 0x0046fe10
 bool CTCPIPReadSocket::ReadBuffFrom()
 {
-	int addressLength = sizeof(TcpIpSocketAddress);
-	TcpIpSocketAddress sourceAddress;
+	int addressLength = sizeof(sockaddr_in);
+	sockaddr_in sourceAddress;
 
 	g_receivedPacketSize = recvfrom(m_socketHandle,
 									(char*) g_pNetworkPacketScratch,
 									g_networkPacketSize,
 									0,
-									&sourceAddress,
+									(sockaddr*) &sourceAddress,
 									&addressLength);
 	if (g_receivedPacketSize == (unsigned int) -1) {
 		*g_pErrorOutput << "Receive error (after receive from):" << WSAGetLastError() << "\n";
@@ -34,7 +34,7 @@ bool CTCPIPReadSocket::ReadBuffFrom()
 
 	{
 		CTCPIPNetworkAddress* address = (CTCPIPNetworkAddress*) g_pBroadcastReceiveAddress;
-		address->m_ipv4Address = sourceAddress.m_address.s_addr;
+		address->m_ipv4Address = sourceAddress.sin_addr.s_addr;
 		strcpy(address->m_text, inet_ntoa(address->Get()));
 	}
 	return ProcessPacket();

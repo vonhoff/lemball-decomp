@@ -6,19 +6,21 @@
 #include "Multiplayer/Transport/CWriteSocket.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
-#include "Platform/Windows/WinSock/WinSock.h"
+#include "Platform/Windows/WindowsTypes.h"
+
+#include <winsock.h>
 
 // FUNCTION: LEMBALL 0x00470030
 CTCPIPWriteSocket::CTCPIPWriteSocket()
 {
-	m_destination.m_family = AF_INET;
+	m_destination.sin_family = AF_INET;
 }
 
 // FUNCTION: LEMBALL 0x004700f0
 void CTCPIPWriteSocket::SetDestAddr(CNetworkAddress* p_address)
 {
 	_SetDestAddr(p_address);
-	m_destination.m_address = ((CTCPIPNetworkAddress*) p_address)->Get();
+	m_destination.sin_addr = ((CTCPIPNetworkAddress*) p_address)->Get();
 }
 
 // FUNCTION: LEMBALL 0x00470120
@@ -29,7 +31,12 @@ bool CTCPIPWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 	if (m_socketFlags == 0) {
 		return false;
 	}
-	sent = sendto(m_socketHandle, (const char*) p_data, p_size, 0, &m_destination, sizeof(m_destination));
+	sent = sendto(m_socketHandle,
+				  (const char*) p_data,
+				  p_size,
+				  0,
+				  (const sockaddr*) &m_destination,
+				  sizeof(m_destination));
 	m_lastSendTime = CurrentMilliTimer();
 	if (sent == NETWORK_SOCKET_ERROR) {
 		if (WSAGetLastError() == WSAEWOULDBLOCK) {
@@ -70,7 +77,7 @@ int CTCPIPWriteSocket::Process(unsigned int p_message, unsigned int p_wParam, lo
 void CTCPIPWriteSocket::SetPort(short p_port)
 {
 	CWriteSocket::SetPort(p_port);
-	m_destination.m_port = htons((unsigned short) (m_port + g_broadcastPort));
+	m_destination.sin_port = htons((unsigned short) (m_port + g_broadcastPort));
 }
 
 // FUNCTION: LEMBALL 0x00471ee0

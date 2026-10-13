@@ -8,10 +8,11 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
-#include "Platform/Windows/WinSock/WinSock.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <stdlib.h>
 #include <string.h>
+#include <winsock.h>
 
 // FUNCTION: LEMBALL 0x00470dd0
 bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)
@@ -39,10 +40,10 @@ void CTCPIPConnect::GotHost(int p_failed)
 {
 	if (p_failed == 0) {
 		in_addr hostAddress;
-		TcpIpHostEntry* hostEntry;
+		hostent* hostEntry;
 
-		hostEntry = (TcpIpHostEntry*) m_asyncBuffer;
-		memcpy(&hostAddress, *hostEntry->m_addressList, hostEntry->m_addressLength);
+		hostEntry = (hostent*) m_asyncBuffer;
+		memcpy(&hostAddress, *hostEntry->h_addr_list, hostEntry->h_length);
 		CTCPIPNetworkAddress address;
 		address.m_ipv4Address = hostAddress.s_addr;
 		strcpy(address.m_text, inet_ntoa(hostAddress));
@@ -74,10 +75,10 @@ void CTCPIPConnect::GotHost(int p_failed)
 void CTCPIPConnect::HandleServiceLookupResult(bool p_failed)
 {
 	if (!p_failed) {
-		TcpIpServiceEntry* serviceEntry;
+		servent* serviceEntry;
 
-		serviceEntry = (TcpIpServiceEntry*) m_asyncBuffer;
-		SetPort((short) (ntohs(serviceEntry->m_port) - g_broadcastPort));
+		serviceEntry = (servent*) m_asyncBuffer;
+		SetPort((short) (ntohs(serviceEntry->s_port) - g_broadcastPort));
 	}
 	else {
 		SetPort(0);
@@ -113,14 +114,14 @@ void CTCPIPConnect::InitSocket()
 // FUNCTION: LEMBALL 0x00471110
 void CTCPIPConnect::Listen(CNetworkAddress* p_address)
 {
-	TcpIpSocketAddress address;
+	sockaddr_in address;
 
 	InitSocket();
 	SetDestAddr(p_address);
-	address.m_family = AF_INET;
-	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
-	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
-	if (bind(m_socketHandle, &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
+	address.sin_family = AF_INET;
+	address.sin_port = htons((unsigned short) (m_port + g_broadcastPort));
+	address.sin_addr.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
+	if (bind(m_socketHandle, (const sockaddr*) &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return;
 	}
@@ -139,13 +140,13 @@ void CTCPIPConnect::Listen(CNetworkAddress* p_address)
 // FUNCTION: LEMBALL 0x00471210
 void CTCPIPConnect::Connect()
 {
-	TcpIpSocketAddress address;
+	sockaddr_in address;
 
 	InitSocket();
-	address.m_family = AF_INET;
-	address.m_port = htons((unsigned short) (m_port + g_broadcastPort));
-	address.m_address.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
-	if (bind(m_socketHandle, &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
+	address.sin_family = AF_INET;
+	address.sin_port = htons((unsigned short) (m_port + g_broadcastPort));
+	address.sin_addr.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
+	if (bind(m_socketHandle, (const sockaddr*) &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return;
 	}
