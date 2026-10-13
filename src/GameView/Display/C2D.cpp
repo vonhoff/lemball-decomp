@@ -4407,7 +4407,7 @@ void C2D::SetOrigin()
 	if (gameX >= 0 && gameY >= 0 && gameX >> GROUND_BLOCK_PIXEL_SHIFT < m_map->m_ground.m_width &&
 		gameY >> GROUND_BLOCK_PIXEL_SHIFT < m_map->m_ground.m_height) {
 		z = m_map->m_ground
-				.m_ground[(gameY >> GROUND_BLOCK_PIXEL_SHIFT) * m_map->m_ground.m_width +
+				.m_ground[(gameY >> GROUND_BLOCK_PIXEL_SHIFT) * (unsigned int) m_map->m_ground.m_width +
 						  (gameX >> GROUND_BLOCK_PIXEL_SHIFT)]
 				.GetZ(gameX & GROUND_BLOCK_PIXEL_MASK, gameY & GROUND_BLOCK_PIXEL_MASK);
 	}
@@ -4433,8 +4433,8 @@ void C2D::SetOrigin()
 		projectedX = origin.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		projectedY = origin.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		int oldViewOriginY = m_viewOriginY;
-		int differenceX = projectedX - m_viewOriginX;
-		int differenceY = projectedY - m_viewOriginY;
+		int differenceX = (unsigned int) projectedX - m_viewOriginX;
+		int differenceY = (unsigned int) projectedY - m_viewOriginY;
 		if (differenceX < marginX) {
 			changed = 1;
 			m_viewOriginX = projectedX - marginX;
