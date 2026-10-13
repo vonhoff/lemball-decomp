@@ -50,12 +50,6 @@
 #define SURFACE_PALETTE_APP_FIRST_INDEX 12
 #define SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT 2
 #define SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES 4
-#define SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES 4
-#define SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES                                                                 \
-	(SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START * SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES)
-#define SURFACE_PALETTE_HIGH_RESERVED_GREEN_OFFSET_BYTES (SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES - 1)
-#define SURFACE_PALETTE_HIGH_RESERVED_BLUE_OFFSET_BYTES (SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES - 2)
-#define SURFACE_PALETTE_HIGH_RESERVED_FLAGS_OFFSET_BYTES (SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES + 1)
 #define SURFACE_PALETTE_BUFFER_BYTES (sizeof(LOGPALETTE) + (SURFACE_PALETTE_ENTRY_COUNT - 1) * sizeof(PALETTEENTRY))
 
 // GLOBAL: LEMBALL 0x004a2010
@@ -186,7 +180,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 	} paletteStorage;
 	int count;
 	PALETTEENTRY* systemEntries = paletteStorage.palPalEntry;
-	unsigned char* output;
+	RGBQUAD* output;
 	PALETTEENTRY* entry;
 	const unsigned char* source;
 	HDC hdc = GetDC(NULL);
@@ -220,34 +214,34 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 	}
 	paletteStorage.palVersion = SURFACE_PALETTE_VERSION_WIN3;
 	paletteStorage.palNumEntries = SURFACE_PALETTE_ENTRY_COUNT;
-	output = &((RGBQUAD*) p_entries)[0].rgbRed;
+	output = (RGBQUAD*) p_entries;
 	entry = systemEntries;
 	do {
-		output[0] = entry->peRed;
-		output[-1] = entry->peGreen;
-		output[-2] = entry->peBlue;
+		output->rgbRed = entry->peRed;
+		output->rgbGreen = entry->peGreen;
+		output->rgbBlue = entry->peBlue;
 		entry->peFlags = 0;
 		unsigned char red = entry[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].peRed;
-		output[1] = 0;
-		output[SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES] = red;
-		output[SURFACE_PALETTE_HIGH_RESERVED_GREEN_OFFSET_BYTES] =
+		output->rgbReserved = 0;
+		output[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].rgbRed = red;
+		output[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].rgbGreen =
 			entry[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].peGreen;
-		output[SURFACE_PALETTE_HIGH_RESERVED_BLUE_OFFSET_BYTES] =
+		output[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].rgbBlue =
 			entry[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].peBlue;
 		entry[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].peFlags = 0;
-		output[SURFACE_PALETTE_HIGH_RESERVED_FLAGS_OFFSET_BYTES] = 0;
+		output[SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START].rgbReserved = 0;
 		entry++;
-		output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
+		output++;
 	} while (entry < systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT);
 	source = &g_anReservedOutputColours[0][0];
-	output = &((RGBQUAD*) p_entries)[SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT].rgbRed;
+	output = (RGBQUAD*) p_entries + SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT;
 	count = SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT;
 	do {
-		output[0] = *source++;
-		output[-1] = *source++;
-		output[-2] = *source++;
-		output[1] = 0;
-		output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
+		output->rgbRed = *source++;
+		output->rgbGreen = *source++;
+		output->rgbBlue = *source++;
+		output->rgbReserved = 0;
+		output++;
 		count--;
 	} while (count != 0);
 	if (p_palette == NULL) {
@@ -255,42 +249,42 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 			PALETTEENTRY* entry;
 			int index = SURFACE_PALETTE_APP_FIRST_INDEX;
 			entry = systemEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
-			output = &((RGBQUAD*) p_entries)[SURFACE_PALETTE_APP_FIRST_INDEX].rgbRed;
+			output = (RGBQUAD*) p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
 			do {
 				unsigned char colour = -index;
 				entry->peRed = colour;
-				output[0] = colour;
+				output->rgbRed = colour;
 				entry->peGreen = colour;
-				output[-1] = colour;
+				output->rgbGreen = colour;
 				entry->peBlue = colour;
-				output[-2] = colour;
-				output[1] = 0;
+				output->rgbBlue = colour;
+				output->rgbReserved = 0;
 				entry->peFlags = PC_RESERVED;
 				entry++;
-				output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
+				output++;
 				index++;
 			} while (entry < systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START);
 		}
 		else {
-			unsigned char* fallback;
+			RGBQUAD* fallback;
 			PALETTEENTRY* entry = systemEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
-			output = &((RGBQUAD*) p_entries)[SURFACE_PALETTE_APP_FIRST_INDEX].rgbRed;
-			fallback = &((RGBQUAD*) p_fallbackEntries)[SURFACE_PALETTE_APP_FIRST_INDEX].rgbRed;
+			output = (RGBQUAD*) p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
+			fallback = (RGBQUAD*) p_fallbackEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
 			do {
-				unsigned char colour = fallback[0];
-				output[0] = colour;
+				unsigned char colour = fallback->rgbRed;
+				output->rgbRed = colour;
 				entry->peRed = colour;
-				colour = fallback[-1];
+				colour = fallback->rgbGreen;
 				entry->peGreen = colour;
-				output[-1] = colour;
-				colour = fallback[-2];
+				output->rgbGreen = colour;
+				colour = fallback->rgbBlue;
 				entry->peBlue = colour;
-				output[-2] = colour;
-				output[1] = 0;
+				output->rgbBlue = colour;
+				output->rgbReserved = 0;
 				entry->peFlags = PC_RESERVED;
 				entry++;
-				output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
-				fallback += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
+				output++;
+				fallback++;
 			} while (entry < systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_HIGH_START);
 		}
 	}
@@ -301,22 +295,22 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 		}
 		if (paletteCount > SURFACE_PALETTE_APP_FIRST_INDEX) {
 			int i = SURFACE_PALETTE_APP_FIRST_INDEX;
-			output = &((RGBQUAD*) p_entries)[SURFACE_PALETTE_APP_FIRST_INDEX].rgbRed;
+			output = (RGBQUAD*) p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
 			paletteCount -= SURFACE_PALETTE_APP_FIRST_INDEX;
 			do {
 				source = p_palette->m_data + i * SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES;
 				unsigned char colour = source[0];
 				systemEntries[i].peRed = colour;
-				output[0] = colour;
+				output->rgbRed = colour;
 				colour = source[1];
 				systemEntries[i].peGreen = colour;
-				output[-1] = colour;
+				output->rgbGreen = colour;
 				colour = source[2];
 				systemEntries[i].peBlue = colour;
-				output[-2] = colour;
-				output[1] = 0;
+				output->rgbBlue = colour;
+				output->rgbReserved = 0;
 				systemEntries[i].peFlags = PC_RESERVED;
-				output += SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES;
+				output++;
 				i++;
 				paletteCount--;
 			} while (paletteCount != 0);
@@ -1169,11 +1163,6 @@ void CSurface::CopyBackBuffToScreen(const CVSRect& p_rect)
 #undef SURFACE_PALETTE_APP_FIRST_INDEX
 #undef SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT
 #undef SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES
-#undef SURFACE_PALETTE_OUTPUT_ENTRY_STRIDE_BYTES
-#undef SURFACE_PALETTE_HIGH_RESERVED_RED_OFFSET_BYTES
-#undef SURFACE_PALETTE_HIGH_RESERVED_GREEN_OFFSET_BYTES
-#undef SURFACE_PALETTE_HIGH_RESERVED_BLUE_OFFSET_BYTES
-#undef SURFACE_PALETTE_HIGH_RESERVED_FLAGS_OFFSET_BYTES
 #undef SURFACE_PALETTE_BUFFER_BYTES
 
 // FUNCTION: LEMBALL 0x00474fd0
