@@ -469,26 +469,24 @@ void CMap::GameToScreen(int p_gameX, int p_gameY, int& p_screenX, int& p_screenY
 // FUNCTION: LEMBALL 0x00430ce0
 void CMap::GameToScreen(int& p_x, int& p_y)
 {
-	int x;
-	int* outputY = &p_y;
-	int y = *outputY;
-	x = p_x;
+	int x = p_x;
+	int y = p_y;
 	switch (m_orientation) {
 	case MAP_ORIENTATION_ROTATION_0_DEGREES:
 		p_x = (unsigned int) x - y + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
-		*outputY = y / 2 + x / 2;
+		p_y = y / 2 + x / 2;
 		break;
 	case MAP_ORIENTATION_ROTATION_90_DEGREES:
 		p_x = MAP_PROJECTION_DOUBLE_BLOCK_PIXEL_SIZE - (unsigned int) y - x;
-		*outputY = (unsigned int) (x / 2) - y / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_y = (unsigned int) (x / 2) - y / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 		break;
 	case MAP_ORIENTATION_ROTATION_180_DEGREES:
 		p_x = (unsigned int) y - x + MAP_PROJECTION_BLOCK_PIXEL_SIZE;
-		*outputY = MAP_PROJECTION_BLOCK_PIXEL_SIZE - (unsigned int) (y / 2) - x / 2;
+		p_y = MAP_PROJECTION_BLOCK_PIXEL_SIZE - (unsigned int) (y / 2) - x / 2;
 		break;
 	case MAP_ORIENTATION_ROTATION_270_DEGREES:
 		p_x = (unsigned int) x + y;
-		*outputY = (unsigned int) (y / 2) - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
+		p_y = (unsigned int) (y / 2) - x / 2 + MAP_PROJECTION_HALF_BLOCK_PIXEL_SIZE;
 	}
 }
 
