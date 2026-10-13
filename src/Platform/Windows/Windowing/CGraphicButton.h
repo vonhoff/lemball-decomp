@@ -33,16 +33,16 @@ public:
 	friend class CPanelPauseButton;
 
 private:
-	unsigned int m_animationId;     // 0x10c
-	unsigned int m_alignmentFlags;  // 0x110
-	unsigned short m_graphicWidth;  // 0x114
-	unsigned short m_graphicHeight; // 0x116
-	short m_graphicOffsetX;         // 0x118
-	short m_graphicOffsetY;         // 0x11a
-	CResANIM* m_animation;          // 0x11c
-	CRemap* m_remap;                // 0x120
-	CAnim* m_primitive;             // 0x124
-	CPushActive m_statRegion[1];    // 0x128
+	unsigned int m_animationId;    // 0x10c
+	unsigned int m_alignmentFlags; // 0x110
+	short m_graphicWidth;          // 0x114
+	short m_graphicHeight;         // 0x116
+	short m_graphicOffsetX;        // 0x118
+	short m_graphicOffsetY;        // 0x11a
+	CResANIM* m_animation;         // 0x11c
+	CRemap* m_remap;               // 0x120
+	CAnim* m_primitive;            // 0x124
+	CPushActive m_statRegion[1];   // 0x128
 };
 
 // SYNTHETIC: LEMBALL 0x004698c0

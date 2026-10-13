@@ -68,18 +68,18 @@ void CGraphicButton::Initialise()
 	animation = m_animation;
 	animation->Lock();
 	entries = m_animation->m_animationEntries;
-	unsigned short& graphicHeight = m_graphicHeight;
+	short& graphicHeight = m_graphicHeight;
 	short firstWidth = entries->m_size.m_width;
 	CResZRLE* second = entries + 1;
-	m_graphicWidth = (unsigned short) firstWidth;
-	graphicHeight = (unsigned short) entries->m_size.m_height;
+	m_graphicWidth = firstWidth;
+	graphicHeight = entries->m_size.m_height;
 	short width = second->m_size.m_width;
 	short height = second->m_size.m_height;
 	if (firstWidth < width) {
-		m_graphicWidth = (unsigned short) width;
+		m_graphicWidth = width;
 	}
-	if ((short) m_graphicHeight < height) {
-		graphicHeight = (unsigned short) height;
+	if (m_graphicHeight < height) {
+		graphicHeight = height;
 	}
 	m_animation->m_directUseCount = m_animation->m_directUseCount - 1;
 	const CVSPoint* position = &m_bounds;
@@ -87,34 +87,34 @@ void CGraphicButton::Initialise()
 	m_graphicOffsetY = position->m_y;
 	boxWidth = m_bounds.m_width;
 	if (boxWidth < 0) {
-		m_bounds.m_width = (short) (-(short) m_graphicWidth * boxWidth);
+		m_bounds.m_width = -m_graphicWidth * boxWidth;
 	}
 	else if (boxWidth == 0) {
-		m_bounds.m_width = (short) m_graphicWidth;
+		m_bounds.m_width = m_graphicWidth;
 	}
 	boxHeight = m_bounds.m_height;
 	if (boxHeight < 0) {
-		m_bounds.m_height = (short) (-(short) m_graphicHeight * boxHeight);
+		m_bounds.m_height = -m_graphicHeight * boxHeight;
 	}
 	else if (boxHeight == 0) {
-		m_bounds.m_height = (short) m_graphicHeight;
+		m_bounds.m_height = m_graphicHeight;
 	}
 	if ((int) m_bounds.m_width * (int) m_bounds.m_height != 0) {
 		CHotAreaHandler::SetActive(1);
 	}
 	short& offsetX = m_graphicOffsetX;
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_HORIZONTAL_CENTER) != 0) {
-		offsetX = (short) (((int) m_bounds.m_width - (int) (short) m_graphicWidth) / 2);
+		offsetX = (m_bounds.m_width - m_graphicWidth) / 2;
 	}
 	else if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_RIGHT) != 0) {
-		offsetX = (short) (m_bounds.m_width - (short) m_graphicWidth);
+		offsetX = m_bounds.m_width - m_graphicWidth;
 	}
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_VERTICAL_CENTER) != 0) {
-		m_graphicOffsetY = (short) (((int) m_bounds.m_height - (int) (short) m_graphicHeight) / 2);
+		m_graphicOffsetY = (m_bounds.m_height - m_graphicHeight) / 2;
 		return;
 	}
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_BOTTOM) != 0) {
-		m_graphicOffsetY = (short) (m_bounds.m_height - (short) m_graphicHeight);
+		m_graphicOffsetY = m_bounds.m_height - m_graphicHeight;
 	}
 }
 
