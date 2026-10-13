@@ -4,6 +4,8 @@
 #include "CPVAnimWnd.h"
 #include "Engine/Strings/CString.h"
 
+#include "Platform/Windows/WindowsTypes.h"
+
 // SIZE 0xbc
 // VTABLE: LEMBALL 0x00499f30
 class CAnimWnd : public CPVAnimWnd {
@@ -16,8 +18,8 @@ public:
 	virtual void OnStart();              // vtable+0xc0
 	virtual void OnStop();               // vtable+0xc4
 	virtual long ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam,
-									  long p_lParam);        // vtable+0xa0
-	virtual void Refresh(CVSRect* p_rect);                   // vtable+0x70
+									  long p_lParam); // vtable+0xa0
+	virtual void Refresh(CVSRect* p_rect);            // vtable+0x70
 	void Initialise();
 	void OnNotifyError(int p_error);
 	void OnNotifyMode(int p_mode);
@@ -40,7 +42,7 @@ private:
 	unsigned int m_paused;          // 0xa8
 	unsigned long m_animResourceId; // 0xac
 	CString m_moviePath;            // 0xb0
-	void* m_movieWindow;            // 0xb8
+	HWND m_movieWindow;             // 0xb8
 };
 
 #endif

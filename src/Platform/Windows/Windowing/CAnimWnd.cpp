@@ -7,9 +7,7 @@
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Graphics/WinGDraw.h"
 
-#define WIN32_LEAN_AND_MEAN
 // clang-format off
-#include <windows.h>
 #include <mmsystem.h>
 #include <stddef.h>
 
@@ -87,7 +85,7 @@ CAnimWnd::~CAnimWnd()
 	}
 	g_pAnimWnd = NULL;
 	if (m_movieWindow != NULL) {
-		SendMessageA((HWND) m_movieWindow, WM_CLOSE, 0, 0);
+		SendMessageA(m_movieWindow, WM_CLOSE, 0, 0);
 		m_movieWindow = NULL;
 	}
 }
@@ -97,14 +95,14 @@ void CAnimWnd::_OnCreate()
 {
 	CGWnd::_OnCreate();
 	if (m_movieWindow != NULL) {
-		SendMessageA((HWND) m_movieWindow, WM_CLOSE, 0, 0);
+		SendMessageA(m_movieWindow, WM_CLOSE, 0, 0);
 		m_movieWindow = NULL;
 	}
 	m_movieWindow = MCIWndCreateA((HWND) m_nativeWindow,
 								  (HINSTANCE) g_pApplicationInstance,
 								  WS_CHILD | WS_VISIBLE | MCIWNDF_NOPLAYBAR | MCIWNDF_NOMENU | MCIWNDF_NOTIFYALL,
 								  NULL);
-	SendMessageA((HWND) m_movieWindow, MCIWNDM_OPENA, 0, (LPARAM) m_moviePath.m_text);
+	SendMessageA(m_movieWindow, MCIWNDM_OPENA, 0, (LPARAM) m_moviePath.m_text);
 }
 
 // FUNCTION: LEMBALL 0x0046df40
@@ -112,7 +110,7 @@ void CAnimWnd::_OnDestroy()
 {
 	Stop();
 	if (m_movieWindow != NULL) {
-		SendMessageA((HWND) m_movieWindow, WM_CLOSE, 0, 0);
+		SendMessageA(m_movieWindow, WM_CLOSE, 0, 0);
 		m_movieWindow = NULL;
 	}
 	CGWnd::_OnDestroy();
@@ -150,7 +148,7 @@ void CAnimWnd::SetMovieWindow(unsigned int p_lParam)
 	(void) p_lParam;
 	params.dwValue = (DWORD) WinGDrawDriverProc;
 	params.dwItem = MCI_AVI_SETVIDEO_DRAW_PROCEDURE;
-	mciId = (unsigned int) SendMessageA((HWND) m_movieWindow, MCIWNDM_GETDEVICEID, 0, 0);
+	mciId = (unsigned int) SendMessageA(m_movieWindow, MCIWNDM_GETDEVICEID, 0, 0);
 	if (mciId != 0) {
 		error = mciSendCommandA(mciId, MCI_SETVIDEO, MCI_DGV_SETVIDEO_ITEM | MCI_DGV_SETVIDEO_VALUE, (DWORD) &params);
 		if (error != 0) {
@@ -253,7 +251,7 @@ void CAnimWnd::SetAnim(unsigned long p_resourceId)
 		movie->UnLoad();
 	}
 	if (m_movieWindow != NULL) {
-		SendMessageA((HWND) m_movieWindow, MCIWNDM_OPENA, 0, (LPARAM) m_moviePath.m_text);
+		SendMessageA(m_movieWindow, MCIWNDM_OPENA, 0, (LPARAM) m_moviePath.m_text);
 	}
 	m_animSet = 1;
 }
@@ -262,8 +260,8 @@ void CAnimWnd::SetAnim(unsigned long p_resourceId)
 void CAnimWnd::Play()
 {
 	if (m_playing == 0) {
-		SendMessageA((HWND) m_movieWindow, MCI_SEEK, 0, (LPARAM) -1);
-		SendMessageA((HWND) m_movieWindow, MCI_PLAY, 0, 0);
+		SendMessageA(m_movieWindow, MCI_SEEK, 0, (LPARAM) -1);
+		SendMessageA(m_movieWindow, MCI_PLAY, 0, 0);
 		m_playing = 1;
 	}
 }
@@ -272,7 +270,7 @@ void CAnimWnd::Play()
 void CAnimWnd::Stop()
 {
 	if (m_paused == 0) {
-		SendMessageA((HWND) m_movieWindow, MCI_PAUSE, 0, 0);
+		SendMessageA(m_movieWindow, MCI_PAUSE, 0, 0);
 		m_paused = 1;
 	}
 }
@@ -281,7 +279,7 @@ void CAnimWnd::Stop()
 void CAnimWnd::Resume()
 {
 	if (m_paused != 0) {
-		SendMessageA((HWND) m_movieWindow, MCI_RESUME, 0, 0);
+		SendMessageA(m_movieWindow, MCI_RESUME, 0, 0);
 		m_paused = 0;
 	}
 }
