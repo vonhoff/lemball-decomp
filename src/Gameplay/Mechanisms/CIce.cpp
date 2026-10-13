@@ -87,42 +87,12 @@ void CIce::Set(unsigned short p_id,
 
 	int minGroundY = (short) minY;
 	int minGroundX = (short) minX;
-	unsigned short minZ;
-	{
-		CMap* map = g_pMap;
-		int width;
-		if (minGroundX < 0 || minGroundY < 0 ||
-			(minGroundX >> GROUND_BLOCK_PIXEL_SHIFT) >= (width = map->m_ground.m_width) ||
-			(minGroundY >> GROUND_BLOCK_PIXEL_SHIFT) >= g_pMap->m_ground.m_height) {
-			minZ = 0;
-		}
-		else {
-			minZ = map->m_ground
-					   .m_ground[(unsigned int) (minGroundY >> GROUND_BLOCK_PIXEL_SHIFT) * width +
-								 (minGroundX >> GROUND_BLOCK_PIXEL_SHIFT)]
-					   .GetZ(minGroundX & GROUND_BLOCK_PIXEL_MASK, minGroundY & GROUND_BLOCK_PIXEL_MASK);
-		}
-	}
+	unsigned short minZ = g_pMap->m_ground.GetZ(minGroundX, minGroundY);
 	m_min.m_z = (short) minZ;
 
 	int maxGroundY = m_max.m_y;
 	int maxGroundX = m_max.m_x;
-	unsigned short maxZ;
-	{
-		CMap* map = g_pMap;
-		int width;
-		if (maxGroundX < 0 || maxGroundY < 0 ||
-			(maxGroundX >> GROUND_BLOCK_PIXEL_SHIFT) >= (width = map->m_ground.m_width) ||
-			(maxGroundY >> GROUND_BLOCK_PIXEL_SHIFT) >= g_pMap->m_ground.m_height) {
-			maxZ = 0;
-		}
-		else {
-			maxZ = map->m_ground
-					   .m_ground[(unsigned int) (maxGroundY >> GROUND_BLOCK_PIXEL_SHIFT) * width +
-								 (maxGroundX >> GROUND_BLOCK_PIXEL_SHIFT)]
-					   .GetZ(maxGroundX & GROUND_BLOCK_PIXEL_MASK, maxGroundY & GROUND_BLOCK_PIXEL_MASK);
-		}
-	}
+	unsigned short maxZ = g_pMap->m_ground.GetZ(maxGroundX, maxGroundY);
 	m_max.m_z = (short) maxZ;
 
 	m_position.m_xFixed = IntegerToFixed(p_cornerA.m_x);
@@ -195,23 +165,8 @@ bool CIce::Process()
 		}
 		position.m_xFixed += (unsigned int) dx;
 		position.m_yFixed += (unsigned int) dy;
-		unsigned short terrainZ;
-		{
-			CMap* map = g_pMap;
-			int width;
-			int y = (position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
-			int x = (position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
-			int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
-			int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-			if (x < 0 || y < 0 || bx >= (width = map->m_ground.m_width) || by >= map->m_ground.m_height) {
-				terrainZ = 0;
-			}
-			else {
-				x &= GROUND_BLOCK_PIXEL_MASK;
-				y &= GROUND_BLOCK_PIXEL_MASK;
-				terrainZ = map->m_ground.m_ground[(unsigned int) by * width + bx].GetZ(x, y);
-			}
-		}
+		unsigned short terrainZ = g_pMap->m_ground.GetZ(position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+														position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 		int groundZ = terrainZ;
 		int z = position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		if (z < groundZ) {
@@ -261,22 +216,8 @@ bool CIce::Process()
 			if (object->m_objectType == OBJECT_PLAYER_2) {
 				object->SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 				object->OnConveyor(0, NULL, 0);
-				{
-					int y = (current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
-					int x = (current.m_xFixed >> FIXED_POINT_FRACTION_BITS);
-					CMap* map = g_pMap;
-					int width;
-					int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
-					int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-					if (x < 0 || y < 0 || bx >= (width = map->m_ground.m_width) || by >= g_pMap->m_ground.m_height) {
-						groundZ = 0;
-					}
-					else {
-						x &= GROUND_BLOCK_PIXEL_MASK;
-						y &= GROUND_BLOCK_PIXEL_MASK;
-						groundZ = map->m_ground.m_ground[(unsigned int) by * width + bx].GetZ(x, y);
-					}
-				}
+				groundZ = g_pMap->m_ground.GetZ(current.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+												current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
 					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
@@ -290,22 +231,8 @@ bool CIce::Process()
 			}
 			i--;
 			m_objectCount--;
-			{
-				CMap* map = g_pMap;
-				int width;
-				int y = (current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
-				int x = (current.m_xFixed >> FIXED_POINT_FRACTION_BITS);
-				int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
-				int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-				if (x < 0 || y < 0 || bx >= (width = map->m_ground.m_width) || by >= g_pMap->m_ground.m_height) {
-					groundZ = 0;
-				}
-				else {
-					x &= GROUND_BLOCK_PIXEL_MASK;
-					y &= GROUND_BLOCK_PIXEL_MASK;
-					groundZ = map->m_ground.m_ground[(unsigned int) by * width + bx].GetZ(x, y);
-				}
-			}
+			groundZ = g_pMap->m_ground.GetZ(current.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+											current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 			if ((current.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
 				g_pAI->StepOn(current, object, object->m_collisionFlags);
 			}
@@ -314,23 +241,8 @@ bool CIce::Process()
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
 		AICOORD position(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
-		unsigned short groundZ;
-		{
-			CMap* map = g_pMap;
-			int y = (position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
-			int x = (position.m_xFixed >> FIXED_POINT_FRACTION_BITS);
-			int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
-			int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-			int width;
-			if (x < 0 || y < 0 || bx >= (width = g_pMap->m_ground.m_width) || by >= g_pMap->m_ground.m_height) {
-				groundZ = 0;
-			}
-			else {
-				x &= GROUND_BLOCK_PIXEL_MASK;
-				y &= GROUND_BLOCK_PIXEL_MASK;
-				groundZ = map->m_ground.m_ground[(unsigned int) by * width + bx].GetZ(x, y);
-			}
-		}
+		unsigned short groundZ = g_pMap->m_ground.GetZ(position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+													   position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 		if ((position.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
 			g_pAI->StepOn(position, object, object->m_collisionFlags);
 		}
@@ -428,22 +340,8 @@ void CIce::Switched()
 			if (object->m_objectType == OBJECT_PLAYER_2) {
 				object->SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 				object->OnConveyor(0, NULL, 0);
-				{
-					int y = (current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
-					int x = (current.m_xFixed >> FIXED_POINT_FRACTION_BITS);
-					CMap* map = g_pMap;
-					int width;
-					int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
-					int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-					if (x < 0 || y < 0 || bx >= (width = map->m_ground.m_width) || by >= g_pMap->m_ground.m_height) {
-						groundZ = 0;
-					}
-					else {
-						x &= 15;
-						y &= 15;
-						groundZ = map->m_ground.m_ground[(unsigned int) by * width + bx].GetZ(x, y);
-					}
-				}
+				groundZ = g_pMap->m_ground.GetZ(current.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+												current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
 					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
@@ -457,22 +355,8 @@ void CIce::Switched()
 			}
 			i--;
 			m_objectCount--;
-			{
-				int y = (current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
-				int x = (current.m_xFixed >> FIXED_POINT_FRACTION_BITS);
-				CMap* map = g_pMap;
-				int width;
-				int by = y >> GROUND_BLOCK_PIXEL_SHIFT;
-				int bx = x >> GROUND_BLOCK_PIXEL_SHIFT;
-				if (x < 0 || y < 0 || bx >= (width = g_pMap->m_ground.m_width) || by >= g_pMap->m_ground.m_height) {
-					groundZ = 0;
-				}
-				else {
-					x &= 15;
-					y &= 15;
-					groundZ = map->m_ground.m_ground[(unsigned int) by * width + bx].GetZ(x, y);
-				}
-			}
+			groundZ = g_pMap->m_ground.GetZ(current.m_xFixed >> FIXED_POINT_FRACTION_BITS,
+											current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 			if ((current.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
 				g_pAI->StepOn(current, object, object->m_collisionFlags);
 			}
