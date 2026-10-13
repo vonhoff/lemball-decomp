@@ -82,7 +82,7 @@ CLemmingAnimsManager::CLemmingAnimsManager(CGDI* p_gdi, CMain2DDisplay* p_displa
 	for (int i = 0; i < RESOURCE_ID_COUNT; i++) {
 		m_animFrames[i] = NULL;
 	}
-	m_loaded = 0;
+	m_loaded = false;
 	m_loadAnim = new CCDLoadAnim(m_gdi, m_display);
 	m_drawOffsetX = 0;
 	m_drawOffsetY = 0;
@@ -412,10 +412,10 @@ void CLemmingAnimsManager::Load(int p_groundStyle)
 	}
 	m_nonCacheState = 0;
 	m_loadProgress = g_pSoundView->GetnEffects(SOUND_STATE_GAMEPLAY);
-	m_countingLoads = 1;
+	m_countingLoads = true;
 	LoadVrammed();
 	LoadMainRammed();
-	m_countingLoads = 0;
+	m_countingLoads = false;
 	g_pSoundView->ChangeState(SOUND_STATE_GAMEPLAY, (CLoadUpdate*) this);
 	SetupStyleSensitive();
 	LoadVrammed();
@@ -425,7 +425,7 @@ void CLemmingAnimsManager::Load(int p_groundStyle)
 		m_loadAnim = NULL;
 	}
 	m_display->AttachPalette(RES_GAME_GAMEPALETTE);
-	m_loaded = 1;
+	m_loaded = true;
 }
 
 // FUNCTION: LEMBALL 0x004338b0
