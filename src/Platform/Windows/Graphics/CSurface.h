@@ -144,6 +144,8 @@ private:
 	void* m_currDb;                                           // 0x554
 };
 
+void BuildSurfaceColourTable(RGBQUAD* p_entries, CResPALETTE* p_palette, void* p_unused, RGBQUAD* p_fallbackEntries);
+
 // SYNTHETIC: LEMBALL 0x0046dc90 SYMBOL
 // ?HasBackBuff@CPVBackBuffSurface@@WEGM@AEHXZ
 

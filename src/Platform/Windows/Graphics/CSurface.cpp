@@ -5,6 +5,7 @@
 #include "CGDIDevice.h"
 #include "CGdiContext.h"
 #include "CGraphicsDriver.h"
+#include "WinGDraw.h"
 #include "CPVBackBuffSurface.h"
 #include "CPVGDIBitmap.h"
 #include "CPVScrollableSurface.h"
@@ -151,7 +152,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface) : m_present
 			CVSSize(SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS, SURFACE_CHANGE_TRACKING_CELL_SIZE_PIXELS));
 	}
 	if (m_parentSurface == g_pGdiHelperTarget) {
-		BuildSurfaceColourTable((unsigned int*) m_colourTable,
+		BuildSurfaceColourTable(m_colourTable,
 								NULL,
 								NULL,
 								g_pTargetGraphicsDriver->HasPalette() ? g_dwWinGDrawColourTable : NULL);
@@ -168,10 +169,7 @@ CSurface::CSurface(const CVSRect& p_rect, CSurface* p_parentSurface) : m_present
 }
 
 // FUNCTION: LEMBALL 0x0046c380
-void BuildSurfaceColourTable(unsigned int* p_entries,
-							 CResPALETTE* p_palette,
-							 void* p_unused,
-							 unsigned int* p_fallbackEntries)
+void BuildSurfaceColourTable(RGBQUAD* p_entries, CResPALETTE* p_palette, void* p_unused, RGBQUAD* p_fallbackEntries)
 {
 	struct PaletteStorage {
 		WORD palVersion;
@@ -214,7 +212,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 	}
 	paletteStorage.palVersion = SURFACE_PALETTE_VERSION_WIN3;
 	paletteStorage.palNumEntries = SURFACE_PALETTE_ENTRY_COUNT;
-	output = (RGBQUAD*) p_entries;
+	output = p_entries;
 	entry = systemEntries;
 	do {
 		output->rgbRed = entry->peRed;
@@ -234,7 +232,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 		output++;
 	} while (entry < systemEntries + SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT);
 	source = &g_anReservedOutputColours[0][0];
-	output = (RGBQUAD*) p_entries + SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT;
+	output = p_entries + SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT;
 	count = SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT;
 	do {
 		output->rgbRed = *source++;
@@ -249,7 +247,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 			PALETTEENTRY* entry;
 			int index = SURFACE_PALETTE_APP_FIRST_INDEX;
 			entry = systemEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
-			output = (RGBQUAD*) p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
+			output = p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
 			do {
 				unsigned char colour = -index;
 				entry->peRed = colour;
@@ -268,8 +266,8 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 		else {
 			RGBQUAD* fallback;
 			PALETTEENTRY* entry = systemEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
-			output = (RGBQUAD*) p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
-			fallback = (RGBQUAD*) p_fallbackEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
+			output = p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
+			fallback = p_fallbackEntries + SURFACE_PALETTE_APP_FIRST_INDEX;
 			do {
 				unsigned char colour = fallback->rgbRed;
 				output->rgbRed = colour;
@@ -295,7 +293,7 @@ void BuildSurfaceColourTable(unsigned int* p_entries,
 		}
 		if (paletteCount > SURFACE_PALETTE_APP_FIRST_INDEX) {
 			int i = SURFACE_PALETTE_APP_FIRST_INDEX;
-			output = (RGBQUAD*) p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
+			output = p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
 			paletteCount -= SURFACE_PALETTE_APP_FIRST_INDEX;
 			do {
 				source = p_palette->m_data + i * SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES;
@@ -633,7 +631,7 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 // FUNCTION: LEMBALL 0x0046d040
 void CSurface::AttachPalette(CResPALETTE* p_palette)
 {
-	unsigned int* fallbackEntries;
+	RGBQUAD* fallbackEntries;
 
 	if (g_pTargetGraphicsDriver->HasPalette()) {
 		fallbackEntries = g_dwWinGDrawColourTable;
@@ -926,7 +924,7 @@ void CSurface::SetDefaultCtable()
 	unsigned char logPalette[SURFACE_PALETTE_BUFFER_BYTES];
 	LOGPALETTE* palette;
 	PALETTEENTRY* entries;
-	unsigned int* source;
+	RGBQUAD* source;
 	int i;
 	CListElement<CSurface>* node;
 	CSurface* surface;
@@ -938,9 +936,9 @@ void CSurface::SetDefaultCtable()
 	i = 0;
 	entries = palette->palPalEntry;
 	while (i < palette->palNumEntries) {
-		entries->peRed = ((unsigned char*) source)[2];
-		entries->peGreen = ((unsigned char*) source)[1];
-		entries->peBlue = ((unsigned char*) source)[0];
+		entries->peRed = source->rgbRed;
+		entries->peGreen = source->rgbGreen;
+		entries->peBlue = source->rgbBlue;
 		entries->peFlags = PC_NOCOLLAPSE;
 		entries++;
 		i++;

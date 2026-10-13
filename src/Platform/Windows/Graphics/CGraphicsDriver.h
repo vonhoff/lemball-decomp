@@ -6,7 +6,6 @@
 #include <stddef.h>
 
 class CPVGDIBitmap;
-class CResPALETTE;
 struct CGraphicsState;
 class CDibContext;
 class CDrawingContext;
@@ -82,11 +81,7 @@ extern CGraphicsDriver* g_pTargetGraphicsDriver;
 extern unsigned int g_dwFullScreenGdi;
 extern void* g_apCResRasterConstructionVtable[15];
 extern CGraphicsState* g_pTargetGraphicsSystem;
-extern unsigned int g_dwWinGDrawColourTable[256];
-void BuildSurfaceColourTable(unsigned int* p_entries,
-							 CResPALETTE* p_palette,
-							 void* p_unused,
-							 unsigned int* p_fallbackEntries);
+
 // SYNTHETIC: LEMBALL 0x00458210
 // CGraphicsDriver::`scalar deleting destructor'
 

@@ -52,8 +52,6 @@ int __stdcall WinGDrawSuggestFormat(WinGDrawState* p_state, void* p_request, lon
 int __stdcall WinGDrawChangePalette(WinGDrawState* p_state, void* p_request);
 unsigned int __stdcall WinGDrawGetInfo(void* p_info, unsigned int p_size);
 
-extern unsigned int g_dwWinGDrawColourTable[256];
-
 // FUNCTION: LEMBALL 0x00478fb0
 long __stdcall WinGDrawDriverProc(unsigned long p_driverId,
 								  void* p_driverHandle,
@@ -309,4 +307,4 @@ int __stdcall WinGDrawEnd(WinGDrawState* p_state)
 }
 
 // GLOBAL: LEMBALL 0x004a9bf8
-unsigned int g_dwWinGDrawColourTable[256];
+RGBQUAD g_dwWinGDrawColourTable[256];
