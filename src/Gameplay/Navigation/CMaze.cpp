@@ -225,11 +225,9 @@ void CMaze::UpdateChangeNext(int p_x, int p_y)
 				*pChangeRow |= currentMask;
 				*pOtherRow |= currentMask;
 			}
-			currentMask >>= 1;
-			if (currentMask == 0) {
+			if (AdvanceBit(currentMask)) {
 				pChangeRow++;
 				pOtherRow++;
-				currentMask = MAZE_CHANGE_BITMAP_FIRST_COLUMN_MASK;
 			}
 			x++;
 		}
@@ -361,23 +359,19 @@ bool CMaze::BIteration(bool& p_reached, bool& p_noChanges)
 	}
 
 	if (yMin <= yMax) {
-		unsigned int mask;
-		memcpy(&mask, &g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK][0], 1);
+		unsigned char mask = g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK][0];
 		int y = yMin;
 		do {
 			unsigned short* pDistance = m_distances[y] + xMin;
 			unsigned char* pChangeRow = pChange;
 			int x;
-			unsigned char currentMask;
-			memcpy(&currentMask, &mask, 1);
+			unsigned char currentMask = mask;
 			for (x = xMin; x <= xMax; x++, pDistance++) {
 				if ((currentMask & *pChangeRow) != 0 && *pDistance != MAZE_DISTANCE_BLOCKED && CalcNewDistance(x, y)) {
 					changed = true;
 					UpdateChangeNext(x, y);
 				}
-				currentMask >>= 1;
-				if (currentMask == 0) {
-					currentMask = MAZE_CHANGE_BITMAP_FIRST_COLUMN_MASK;
+				if (AdvanceBit(currentMask)) {
 					pChangeRow++;
 				}
 			}

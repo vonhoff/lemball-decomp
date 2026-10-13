@@ -21,6 +21,15 @@ enum eMazeChangeBitmapLayout {
 class CMaze {
 public:
 	CMaze(CMap* p_map);
+	bool AdvanceBit(unsigned char& p_mask)
+	{
+		p_mask >>= 1;
+		if (p_mask == 0) {
+			p_mask = MAZE_CHANGE_BITMAP_FIRST_COLUMN_MASK;
+			return true;
+		}
+		return false;
+	}
 	bool BIteration(bool& p_reached, bool& p_noChanges);
 	bool CalcNewDistance(int p_x, int p_y);
 	bool FindSquare(unsigned short p_distance, int& p_x, int& p_y);
