@@ -414,64 +414,42 @@ CVSRect CPauseWindow::CalculateWindow()
 		} while (--cornerBatchCount != 0);
 	}
 
-	CVSPoint firstBorderPosition(0, 0);
-	firstBorderPosition.m_x = horizontalBorder->m_width;
-	CVSPoint secondBorderPosition(firstBorderPosition);
-	secondBorderPosition.m_y += (short) (windowSize.m_height - verticalBorder->m_height);
+	CVSPoint borderPositions[2] = {CVSPoint(horizontalBorder->m_width, 0),
+								   CVSPoint(horizontalBorder->m_width, windowSize.m_height - verticalBorder->m_height)};
 	for (i = 0; i < m_borderTiles.m_width; i++) {
-		int pair = 0;
-		int opposite = 1;
-		do {
-			CResANIM* firstResource = m_verticalBorderAnim;
-			CAnim& firstBorder = m_borderAnims[i + m_borderAnimCount * pair * 2];
-			firstBorder.m_x = firstBorderPosition.m_x;
-			firstBorder.m_y = firstBorderPosition.m_y;
-			firstBorder.m_animResource = firstResource;
-			firstBorder.m_animIndex = 0;
-			firstBorder.m_flags = 0;
-			firstBorder.m_remap = NULL;
-			CResANIM* secondResource = m_verticalBorderAnim;
-			CAnim& secondBorder = m_borderAnims[m_borderAnimCount * opposite + i];
-			secondBorder.m_x = secondBorderPosition.m_x;
-			secondBorder.m_y = secondBorderPosition.m_y;
-			secondBorder.m_animResource = secondResource;
-			secondBorder.m_animIndex = 1;
-			secondBorder.m_flags = 0;
-			secondBorder.m_remap = NULL;
-			pair++;
-			opposite += 2;
-		} while (opposite < 3);
-		firstBorderPosition.m_x = (short) (firstBorderPosition.m_x + verticalBorder->m_width);
-		secondBorderPosition.m_x = (short) (secondBorderPosition.m_x + verticalBorder->m_width);
+		for (int side = 0; side < 2; side++) {
+			CResANIM* resource = m_verticalBorderAnim;
+			CAnim& border = m_borderAnims[i + m_borderAnimCount * side];
+			border.m_x = borderPositions[side].m_x;
+			border.m_y = borderPositions[side].m_y;
+			border.m_animResource = resource;
+			border.m_animIndex = side;
+			border.m_flags = 0;
+			border.m_remap = NULL;
+		}
+		borderPositions[0].m_x = (short) (borderPositions[0].m_x + verticalBorder->m_width);
+		borderPositions[1].m_x = (short) (borderPositions[1].m_x + verticalBorder->m_width);
 	}
 
-	firstBorderPosition.m_x = cornerBounds.m_x;
-	firstBorderPosition.m_y = cornerBounds.m_y;
-	firstBorderPosition.m_y += horizontalBorder->m_height;
-	secondBorderPosition.m_x = firstBorderPosition.m_x;
-	secondBorderPosition.m_y = firstBorderPosition.m_y;
-	secondBorderPosition.m_x += (short) (windowSize.m_width - verticalCorner->m_width);
+	borderPositions[0].m_x = cornerBounds.m_x;
+	borderPositions[0].m_y = cornerBounds.m_y;
+	borderPositions[0].m_y += horizontalBorder->m_height;
+	borderPositions[1].m_x = borderPositions[0].m_x;
+	borderPositions[1].m_y = borderPositions[0].m_y;
+	borderPositions[1].m_x += (short) (windowSize.m_width - verticalCorner->m_width);
 	for (i = 0; i < m_borderTiles.m_height; i++) {
-		for (int pair = 0, opposite = 1; opposite < 3; pair++, opposite += 2) {
-			CResANIM* firstResource = m_verticalBorderAnim;
-			CAnim& firstBorder = m_borderAnims[m_borderTiles.m_width + m_borderAnimCount * pair * 2 + i];
-			firstBorder.m_x = firstBorderPosition.m_x;
-			firstBorder.m_y = firstBorderPosition.m_y;
-			firstBorder.m_animResource = firstResource;
-			firstBorder.m_animIndex = 2;
-			firstBorder.m_flags = 0;
-			firstBorder.m_remap = NULL;
-			CResANIM* secondResource = m_verticalBorderAnim;
-			CAnim& secondBorder = m_borderAnims[m_borderAnimCount * opposite + m_borderTiles.m_width + i];
-			secondBorder.m_x = secondBorderPosition.m_x;
-			secondBorder.m_y = secondBorderPosition.m_y;
-			secondBorder.m_animResource = secondResource;
-			secondBorder.m_animIndex = 3;
-			secondBorder.m_flags = 0;
-			secondBorder.m_remap = NULL;
+		for (int side = 0; side < 2; side++) {
+			CResANIM* resource = m_verticalBorderAnim;
+			CAnim& border = m_borderAnims[m_borderTiles.m_width + m_borderAnimCount * side + i];
+			border.m_x = borderPositions[side].m_x;
+			border.m_y = borderPositions[side].m_y;
+			border.m_animResource = resource;
+			border.m_animIndex = side + 2;
+			border.m_flags = 0;
+			border.m_remap = NULL;
 		}
-		firstBorderPosition.m_y = (short) (firstBorderPosition.m_y + verticalCorner->m_height);
-		secondBorderPosition.m_y = (short) (secondBorderPosition.m_y + verticalCorner->m_height);
+		borderPositions[0].m_y = (short) (borderPositions[0].m_y + verticalCorner->m_height);
+		borderPositions[1].m_y = (short) (borderPositions[1].m_y + verticalCorner->m_height);
 	}
 
 	return CVSRect(positionX, positionY, &windowSize);
