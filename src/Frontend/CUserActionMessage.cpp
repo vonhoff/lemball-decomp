@@ -7,7 +7,7 @@
 CUserActionMessage::CUserActionMessage() : CNetworkMessage(GAME_MESSAGE_USER_ACTION)
 {
 	m_payloadCapacity += sizeof(m_action) + sizeof(m_stage);
-	m_headerEnabled = 1;
+	m_isCritical = true;
 }
 
 // FUNCTION: LEMBALL 0x004453e0

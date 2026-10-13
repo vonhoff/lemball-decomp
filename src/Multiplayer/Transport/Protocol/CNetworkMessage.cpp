@@ -38,9 +38,9 @@ void CNetworkMessage::AddData()
 // FUNCTION: LEMBALL 0x0045ee80
 void CNetworkMessage::Initialise()
 {
-	m_headerEnabled = 0;
+	m_isCritical = false;
 	m_pendingSendCount = 0;
-	m_ownsBuffer = 0;
+	m_ownsBuffer = false;
 	m_buffer = NULL;
 	m_payloadCapacity = 0;
 	m_openDepth = 0;
@@ -239,7 +239,7 @@ void CNetworkMessage::OpenDataStream()
 		unsigned int allocSize = m_payloadCapacity + sizeof(BasePacketHeader);
 		if (m_ownsBuffer == 0) {
 			m_buffer = new unsigned char[allocSize];
-			m_ownsBuffer = 1;
+			m_ownsBuffer = true;
 			m_writeCursor = m_buffer + sizeof(BasePacketHeader);
 			m_bufferEnd = m_writeCursor + m_payloadCapacity;
 		}

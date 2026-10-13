@@ -73,11 +73,11 @@ protected:
 	unsigned char* m_buffer;         // 0x08
 	unsigned char* m_bufferEnd;      // 0x0c
 	int m_openDepth;                 // 0x10
-	unsigned int m_ownsBuffer;       // 0x14
+	bool m_ownsBuffer;               // 0x14
 	unsigned int m_payloadCapacity;  // 0x18
 	unsigned char* m_writeCursor;    // 0x1c
 	unsigned char* m_readCursor;     // 0x20
-	unsigned int m_headerEnabled;    // 0x24
+	bool m_isCritical;               // 0x24
 	unsigned int m_pendingSendCount; // 0x28
 };
 

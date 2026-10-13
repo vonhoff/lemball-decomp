@@ -6,7 +6,7 @@
 CGameFlaggedMessage::CGameFlaggedMessage(unsigned long p_messageId) : CNetworkMessage(p_messageId)
 {
 	m_payloadCapacity += sizeof(m_flag);
-	m_headerEnabled = 1;
+	m_isCritical = true;
 	m_flag = 0;
 }
 

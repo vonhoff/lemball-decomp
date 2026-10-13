@@ -236,7 +236,7 @@ bool CWriteSocket::Send(CNetworkMessage& p_message)
 	}
 	else {
 		m_packetHeader->m_subpacketSequence = BASE_PACKET_UNSEGMENTED;
-		if (p_message.m_headerEnabled == 0) {
+		if (p_message.m_isCritical == 0) {
 			m_packetHeader->m_packetSequence = ++m_nonCriticalSequence;
 			m_packetHeader->m_critical = 0;
 			CopyDataStream(data, 0);

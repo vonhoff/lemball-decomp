@@ -8,7 +8,7 @@ CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(GAME_MESSAGE_GAME_I
 	m_gameName[0] = '\0';
 	m_valid = false;
 	m_payloadCapacity += sizeof(m_gameName) + sizeof(m_peerName);
-	m_headerEnabled = 1;
+	m_isCritical = true;
 }
 
 #include "Engine/Strings/CString.h"

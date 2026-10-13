@@ -7,7 +7,7 @@
 CGameStateMessage::CGameStateMessage() : CNetworkMessage(MESSAGE_GAME_STATE)
 {
 	m_payloadCapacity += sizeof(m_state) + sizeof(m_stage) + sizeof(m_levelTime) + sizeof(m_score);
-	m_headerEnabled = 1;
+	m_isCritical = true;
 }
 
 // FUNCTION: LEMBALL 0x00410bb0

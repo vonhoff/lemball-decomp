@@ -14,7 +14,7 @@ CPBNetworkGame::CPBNetworkGame(CAI* p_ai)
 		GAMEPLAY_STREAM_FIXED_PAYLOAD_BYTES = 8
 	};
 	m_payloadCapacity += p_ai->m_payloadCapacity + GAMEPLAY_STREAM_FIXED_PAYLOAD_BYTES;
-	m_headerEnabled = 0;
+	m_isCritical = false;
 }
 
 // FUNCTION: LEMBALL 0x00453030

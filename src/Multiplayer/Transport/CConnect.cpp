@@ -123,7 +123,7 @@ bool CConnect::Send(CNetworkMessage& p_message)
 		if (!sent) {
 			message.m_type = CONNECT_QUEUE_SEND_FAILED;
 			message.m_code = 0xc;
-			if (p_message.m_headerEnabled == 0) {
+			if (p_message.m_isCritical == 0) {
 				message.m_code = 0xb;
 			}
 			message.m_payload = &p_message;

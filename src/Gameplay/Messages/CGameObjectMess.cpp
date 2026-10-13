@@ -7,7 +7,7 @@
 // FUNCTION: LEMBALL 0x00416850
 CGameObjectMess::CGameObjectMess(unsigned long p_messageId) : CNetworkMessage(p_messageId)
 {
-	m_headerEnabled = 1;
+	m_isCritical = true;
 	m_payloadCapacity += 2 * sizeof(unsigned short);
 }
 

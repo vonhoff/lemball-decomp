@@ -42,7 +42,7 @@ public:
 	{
 		m_transportId = p_transportId;
 		if (g_pBaseNetwork != NULL) {
-			m_headerEnabled = 1;
+			m_isCritical = true;
 			m_payloadCapacity += g_networkPacketSize;
 		}
 	}
