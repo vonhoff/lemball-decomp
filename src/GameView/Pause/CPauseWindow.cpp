@@ -15,7 +15,7 @@
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSPointArithmetic.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVSSize.h"
+#include "Engine/Math/CVSSizeArithmetic.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
@@ -282,11 +282,7 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x00444050
 CVSRect CPauseWindow::CalculateWindow()
 {
-	short positionX;
-	short positionY;
 	CVSSize maxTextSize;
-	short parentWidth;
-	short parentHeight;
 	short horizontalWidth;
 	short verticalHeight;
 	CVSSize* horizontalBorder;
@@ -332,25 +328,17 @@ CVSRect CPauseWindow::CalculateWindow()
 	maxTextSize.m_width += m_windowPadding.m_x;
 
 	CPVGWnd* parent = m_parentWindow;
-	int zoom;
-	if ((int) parent->m_innerRect.m_width * (int) parent->m_innerRect.m_height == 0) {
-		zoom = parent->m_zoom;
-		parentWidth = (short) ((int) parent->m_rect.m_width / zoom);
-		parentHeight = parent->m_rect.m_height;
-	}
-	else {
-		zoom = parent->m_zoom;
-		parentWidth = (short) ((int) parent->m_innerRect.m_width / zoom);
-		parentHeight = parent->m_innerRect.m_height;
-	}
-	parentHeight = (short) ((int) parentHeight / zoom);
+	CVSSize parentSize =
+		static_cast<const CVSSize&>(((int) parent->m_innerRect.m_width * (int) parent->m_innerRect.m_height == 0
+										 ? parent->m_rect
+										 : parent->m_innerRect)) /
+		parent->m_zoom;
 
 	CVSSize paddedTextSize(maxTextSize);
 	paddedTextSize.m_height += m_windowPadding.m_y;
-	positionX = (short) (parentWidth - paddedTextSize.m_width) / 2;
+	CVSPoint position = ((parentSize - paddedTextSize) / 2).toPoint();
 	CVSSize windowSize;
 	windowSize = paddedTextSize;
-	positionY = (short) (parentHeight - paddedTextSize.m_height) / 2;
 
 	verticalCorner = &m_verticalBorderAnim->m_animationEntries[2].m_size;
 	verticalHeight = verticalCorner->m_height;
@@ -452,7 +440,7 @@ CVSRect CPauseWindow::CalculateWindow()
 		borderPositions[1].m_y = (short) (borderPositions[1].m_y + verticalCorner->m_height);
 	}
 
-	return CVSRect(positionX, positionY, &windowSize);
+	return CVSRect(position.m_x, position.m_y, &windowSize);
 }
 
 // FUNCTION: LEMBALL 0x00444680
