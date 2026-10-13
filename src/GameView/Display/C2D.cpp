@@ -4775,7 +4775,7 @@ void C2D::DrawObjects()
 }
 
 // GLOBAL: LEMBALL 0x004a78c8
-// ?$S8@?1??DrawDemo@C2D@@QAEXXZ@4EA
+// ?$S7@?1??DrawDemo@C2D@@QAEXXZ@4EA
 
 // FUNCTION: LEMBALL 0x0043fce0
 void C2D::DrawDemo()
