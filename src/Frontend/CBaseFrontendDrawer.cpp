@@ -479,12 +479,11 @@ void CBaseFrontendDrawer::DrawFrame(CVSRect p_rect)
 	height -= height % tileHeight;
 	{
 		CVSRect frame(p_rect.m_x, p_rect.m_y, (short) width, (short) height);
-		const CVSRect& frameBounds = frame;
 		CSolidRect& line = m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount];
-		line.m_bounds.m_width = frameBounds.m_width;
-		line.m_bounds.m_height = frameBounds.m_height;
-		line.m_bounds.m_x = frameBounds.m_x;
-		line.m_bounds.m_y = frameBounds.m_y;
+		line.m_bounds.m_width = frame.m_width;
+		line.m_bounds.m_height = frame.m_height;
+		line.m_bounds.m_x = frame.m_x;
+		line.m_bounds.m_y = frame.m_y;
 		line.m_colour = 0x10;
 		m_primitiveBundle[m_primitiveBank].m_lines[m_framePrimitiveCount].Draw(m_gdi);
 	}
