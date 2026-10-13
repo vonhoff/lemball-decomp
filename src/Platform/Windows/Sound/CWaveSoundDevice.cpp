@@ -354,18 +354,12 @@ int CWaveSoundDevice::FreeAllPatches()
 // FUNCTION: LEMBALL 0x0047d010
 int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 {
-	CWaveEffect* effect;
-	CWaveSoundDevice* device;
-	unsigned int channelIndex;
-
-	channelIndex = 0;
+	unsigned int channelIndex = 0;
 	while (channelIndex < m_channelCount) {
-		device = this;
-		if (device->m_effectHandles[channelIndex] == p_effectId) {
-			effect = device->m_effects[channelIndex];
-			delete effect;
-			device->m_effectUsed[channelIndex] = false;
-			device->m_effectHandles[channelIndex] = 0;
+		if (m_effectHandles[channelIndex] == p_effectId) {
+			delete m_effects[channelIndex];
+			m_effectUsed[channelIndex] = false;
+			m_effectHandles[channelIndex] = 0;
 		}
 		channelIndex = channelIndex + 1;
 	}
@@ -375,21 +369,16 @@ int CWaveSoundDevice::FreeEffect(unsigned long p_effectId)
 // FUNCTION: LEMBALL 0x0047d080
 int CWaveSoundDevice::FreeAllEffects()
 {
-	CWaveSoundDevice* device = this;
-	unsigned int i;
-	CWaveEffect* effect;
-
-	i = 0;
-	if (i < device->m_channelCount) {
+	unsigned int i = 0;
+	if (i < m_channelCount) {
 		do {
-			if (device->m_effectUsed[i] == 1) {
-				effect = device->m_effects[i];
-				delete effect;
-				device->m_effectUsed[i] = false;
-				device->m_effectHandles[i] = 0;
+			if (m_effectUsed[i] == 1) {
+				delete m_effects[i];
+				m_effectUsed[i] = false;
+				m_effectHandles[i] = 0;
 			}
 			i = i + 1;
-		} while (i < device->m_channelCount);
+		} while (i < m_channelCount);
 	}
 	return 0;
 }
