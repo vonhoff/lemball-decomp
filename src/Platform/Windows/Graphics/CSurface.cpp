@@ -50,7 +50,6 @@
 	(SURFACE_PALETTE_ENTRY_COUNT - 2 * SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT)
 #define SURFACE_PALETTE_APP_FIRST_INDEX 12
 #define SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT 2
-#define SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES 4
 #define SURFACE_PALETTE_BUFFER_BYTES (sizeof(LOGPALETTE) + (SURFACE_PALETTE_ENTRY_COUNT - 1) * sizeof(PALETTEENTRY))
 
 // GLOBAL: LEMBALL 0x004a2010
@@ -296,14 +295,14 @@ void BuildSurfaceColourTable(RGBQUAD* p_entries, CResPALETTE* p_palette, void* p
 			output = p_entries + SURFACE_PALETTE_APP_FIRST_INDEX;
 			paletteCount -= SURFACE_PALETTE_APP_FIRST_INDEX;
 			do {
-				source = p_palette->m_data + i * SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES;
-				unsigned char colour = source[0];
+				const PaletteColour* paletteColour = (const PaletteColour*) p_palette->m_data + i;
+				unsigned char colour = paletteColour->m_red;
 				systemEntries[i].peRed = colour;
 				output->rgbRed = colour;
-				colour = source[1];
+				colour = paletteColour->m_green;
 				systemEntries[i].peGreen = colour;
 				output->rgbGreen = colour;
-				colour = source[2];
+				colour = paletteColour->m_blue;
 				systemEntries[i].peBlue = colour;
 				output->rgbBlue = colour;
 				output->rgbReserved = 0;
@@ -1160,7 +1159,6 @@ void CSurface::CopyBackBuffToScreen(const CVSRect& p_rect)
 #undef SURFACE_PALETTE_SYSTEM_USABLE_ENTRY_COUNT
 #undef SURFACE_PALETTE_APP_FIRST_INDEX
 #undef SURFACE_PALETTE_SPECIAL_OUTPUT_ENTRY_COUNT
-#undef SURFACE_PALETTE_RESOURCE_ENTRY_STRIDE_BYTES
 #undef SURFACE_PALETTE_BUFFER_BYTES
 
 // FUNCTION: LEMBALL 0x00474fd0
