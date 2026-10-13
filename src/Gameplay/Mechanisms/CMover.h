@@ -37,6 +37,15 @@ public:
 	friend class CMoverManager;
 
 private:
+	int NextNode()
+	{
+		int next = (unsigned int) m_currentNode + 1;
+		if (m_nodeCount <= next) {
+			next = 0;
+		}
+		return next;
+	}
+
 	bool AlwaysFalse(unsigned int p_arg0, unsigned int p_arg1);
 
 	bool m_active;               // 0x138

@@ -134,11 +134,7 @@ void CMover::Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode,
 // FUNCTION: LEMBALL 0x0042e850
 void CMover::SetUpNextNode(unsigned long p_time)
 {
-	int nextNode = m_currentNode + 1;
-	if (m_nodeCount <= nextNode) {
-		nextNode = 0;
-	}
-
+	int nextNode = NextNode();
 	CPt3 nextPosition = g_pAI->GetNodePosition(m_startNode + nextNode);
 	CMap* map = g_pMap;
 	int y = nextPosition.m_y >> FIXED_POINT_FRACTION_BITS;
@@ -260,12 +256,9 @@ bool CMover::Process()
 	VerifyObjects();
 	switch (action) {
 	case ACTION_NONE: {
-		int next = m_currentNode + 1;
-		if (m_nodeCount <= next) {
-			next = 0;
-		}
+		int next = NextNode();
 		m_currentNode = next;
-		AICOORD oldPosition(m_position.m_xFixed, m_position.m_yFixed, m_position.m_zFixed);
+		AICOORD oldPosition = m_position;
 		int y;
 		int x;
 		int groundX;
