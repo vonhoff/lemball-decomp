@@ -31,7 +31,7 @@ CBucket::CBucket(int p_blockSize, int p_blockCount, unsigned char* p_memory, uns
 	m_flags = 0;
 	m_activeAllocations = 0;
 	m_totalAllocations = 0;
-	m_totalBytes = m_blockSize * m_blockCount;
+	m_totalBytes = (unsigned int) m_blockSize * m_blockCount;
 	m_freeBytes = m_totalBytes;
 	m_peakAllocations = 0;
 	m_mapWordCount = (int) ((unsigned int) p_blockCount + SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD - 1) /
@@ -107,8 +107,9 @@ bool CBucket::Allocate(unsigned char** p_result)
 		current->m_flags |= BUCKET_FLAG_FULL;
 	}
 	current->m_freeOffset = current->FindFreeOffset(offset);
-	*p_result = current->m_memory +
-				(offset.m_wWord * SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD + offset.m_wBit) * current->m_blockSize;
+	*p_result =
+		current->m_memory +
+		(unsigned int) (offset.m_wWord * SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD + offset.m_wBit) * current->m_blockSize;
 	current->m_totalAllocations++;
 	current->m_activeAllocations++;
 	if ((int) current->m_peakAllocations < (int) current->m_activeAllocations) {
@@ -133,7 +134,7 @@ bool CBucket::Free(unsigned char* p_memory)
 			break;
 		}
 	}
-	int index = (p_memory - current->m_memory) / (int) current->m_blockSize;
+	int index = (p_memory - current->m_memory) / current->m_blockSize;
 	tagBOFFSET offset;
 	offset.m_wWord = index / SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
 	offset.m_wBit = index % SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
@@ -186,7 +187,7 @@ tagBOFFSET CBucket::FindFreeOffset(tagBOFFSET p_offset)
 // FUNCTION: LEMBALL 0x00473050
 CBucket* CBucket::NewChild()
 {
-	*g_pSysOutput << "Allocating Small Memory Child: " << (int) m_blockSize << "\n";
+	*g_pSysOutput << "Allocating Small Memory Child: " << m_blockSize << "\n";
 	int smallMemEnabled = g_nSmallMemoryEnabled;
 	g_nSmallMemoryEnabled = 0;
 	g_pMasterArena->GetAllocSize();
