@@ -30,12 +30,12 @@ CTextManager::CTextManager(unsigned long p_fontIdCount,
 	m_primitiveCount = p_primitiveCount;
 	m_textPrimitives = new CText*[p_primitiveCount];
 	if (p_maxStringLen != 0) {
-		for (int k = 0; k < (int) m_primitiveCount; k++) {
+		for (int k = 0; k < m_primitiveCount; k++) {
 			m_textPrimitives[k] = new CCopyText(p_maxStringLen);
 		}
 	}
 	else {
-		for (int k = 0; k < (int) m_primitiveCount; k++) {
+		for (int k = 0; k < m_primitiveCount; k++) {
 			m_textPrimitives[k] = new CText();
 		}
 	}
@@ -62,7 +62,7 @@ CTextManager::~CTextManager()
 		delete[] m_fontIndices;
 	}
 	if (m_textPrimitives != NULL) {
-		for (int j = 0; j < (int) m_primitiveCount; j++) {
+		for (int j = 0; j < m_primitiveCount; j++) {
 			delete m_textPrimitives[j];
 		}
 		delete[] m_textPrimitives;

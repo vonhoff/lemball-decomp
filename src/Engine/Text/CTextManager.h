@@ -40,7 +40,7 @@ private:
 	unsigned int m_fontCapacity;    // 0x08
 	unsigned int m_fontIdCount;     // 0x0c
 	unsigned int m_loadedFontCount; // 0x10
-	unsigned int m_primitiveCount;  // 0x14
+	int m_primitiveCount;           // 0x14
 	unsigned int m_nextPrimitive;   // 0x18
 	unsigned int m_reserved;        // 0x1c
 	CText** m_textPrimitives;       // 0x20
