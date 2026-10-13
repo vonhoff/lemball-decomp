@@ -159,12 +159,11 @@ void CMoverManager::Add(unsigned short p_id,
 // FUNCTION: LEMBALL 0x0042f620
 void CMoverManager::Switch(swMessage p_message, int p_id)
 {
-	CMoverManager* self = this;
 	int index = 0;
-	while (index < self->m_count) {
-		if ((unsigned short) self->m_movers[index].GetId() == p_id) {
+	while (index < m_count) {
+		if ((unsigned short) m_movers[index].GetId() == p_id) {
 			if (p_message == SW_MOVER) {
-				self->m_movers[index].Switch();
+				m_movers[index].Switch();
 			}
 			return;
 		}

@@ -8,10 +8,9 @@
 void CBitmap::Draw(CGDI* p_gdi)
 {
 	CResBITMAP* resource = m_resource;
-	CBitmap* self = this;
 
 	resource->Lock();
-	p_gdi->AddToList(self);
+	p_gdi->AddToList(this);
 }
 
 // FUNCTION: LEMBALL 0x00447340

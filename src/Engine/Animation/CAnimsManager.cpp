@@ -123,25 +123,24 @@ CAnimsManager::~CAnimsManager()
 // FUNCTION: LEMBALL 0x00467490
 void CAnimsManager::LoadAnims(unsigned long p_resourceId)
 {
-	CAnimsManager* owner = this;
 	unsigned long resourceId = p_resourceId;
 	int slot = 0;
-	if (owner->m_resourceCapacity != owner->m_resourceSlots[resourceId]) {
-		slot = owner->m_resourceSlots[resourceId];
+	if (m_resourceCapacity != m_resourceSlots[resourceId]) {
+		slot = m_resourceSlots[resourceId];
 	}
 	else {
-		while (owner->m_resources[slot] != NULL) {
+		while (m_resources[slot] != NULL) {
 			slot = slot + 1;
 		}
 	}
-	owner->m_resources[slot] = CResANIM::Load(resourceId);
-	CResBase*& resource = owner->m_resources[slot];
+	m_resources[slot] = CResANIM::Load(resourceId);
+	CResBase*& resource = m_resources[slot];
 	if (resource == NULL) {
 		resource = CResZRLE::Load(resourceId);
 	}
-	if (owner->m_resourceSlots[resourceId] == owner->m_resourceCapacity) {
-		owner->m_resourceSlots[resourceId] = slot;
-		owner->m_loadedResourceCount = owner->m_loadedResourceCount + 1;
+	if (m_resourceSlots[resourceId] == m_resourceCapacity) {
+		m_resourceSlots[resourceId] = slot;
+		m_loadedResourceCount = m_loadedResourceCount + 1;
 	}
 }
 

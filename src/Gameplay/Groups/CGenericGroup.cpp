@@ -420,8 +420,7 @@ int CGenericGroup::GetViewData(CViewData* p_viewData)
 {
 	CViewData* output;
 	int count;
-	CGenericGroup* self = this;
-	CGameObject* object = self->GetFirstElementInGroup();
+	CGameObject* object = GetFirstElementInGroup();
 	count = 0;
 	if (object != NULL) {
 		output = p_viewData;
@@ -429,7 +428,7 @@ int CGenericGroup::GetViewData(CViewData* p_viewData)
 			object->GetViewData(*output);
 			output++;
 			count++;
-			object = self->GetNextElementInGroup();
+			object = GetNextElementInGroup();
 		} while (object != NULL);
 	}
 	return count;

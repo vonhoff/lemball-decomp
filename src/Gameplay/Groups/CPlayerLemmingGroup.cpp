@@ -43,8 +43,7 @@ int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 {
 	CViewData* view;
 	int count = 0;
-	CPlayerLemmingGroup* self = this;
-	CGameObject* object = self->GetFirstElementInGroup();
+	CGameObject* object = GetFirstElementInGroup();
 	if (object != NULL) {
 		view = p_viewData;
 		do {
@@ -53,7 +52,7 @@ int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 				view++;
 				count++;
 			}
-			object = self->GetNextElementInGroup();
+			object = GetNextElementInGroup();
 		} while (object != NULL);
 	}
 	return count;

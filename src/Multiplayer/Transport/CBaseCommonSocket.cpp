@@ -6,13 +6,10 @@
 // FUNCTION: LEMBALL 0x0045f680
 CBaseCommonSocket::CBaseCommonSocket()
 {
-	CBaseCommonSocket* self;
-
 	m_socketHandle = NETWORK_SOCKET_HANDLE_INVALID;
-	self = this;
 	m_readReady = 0;
 	m_isOpen = 0;
-	self->m_port = NETWORK_PORT_UNASSIGNED;
+	m_port = NETWORK_PORT_UNASSIGNED;
 	m_writeReady = 0;
 	m_closePending = 0;
 	m_eventPending = 0;
