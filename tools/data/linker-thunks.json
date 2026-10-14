@@ -19036,22 +19036,6 @@
       ]
     },
     {
-      "caller": 4310816,
-      "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CCatapult.cpp.obj",
-      "symbol": "?Process@CCatapult@@UAEHXZ",
-      "size": 604,
-      "fingerprint": "145214eab546ab7b83b73f426817983e27451b3e27fe0c6ff760774e1c4569df",
-      "references": [
-        {
-          "offset": 84,
-          "original_instruction": 4310914,
-          "original_bytes": "e81e62feff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        }
-      ]
-    },
-    {
       "caller": 4311472,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CCatapult.cpp.obj",
       "symbol": "?Activate@CCatapult@@UAEHPAVCGameObject@@@Z",

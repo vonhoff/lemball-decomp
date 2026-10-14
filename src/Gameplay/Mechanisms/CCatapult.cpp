@@ -54,17 +54,7 @@ bool CCatapult::Process()
 	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	CMap* map = g_pMap;
-	int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
-	int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-	unsigned short z;
-	if (x >= 0 && y >= 0 && blockX < map->m_ground.m_width && map->m_ground.m_height > blockY) {
-		int cellX = x & GROUND_BLOCK_PIXEL_MASK;
-		int cellY = y & GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[(unsigned int) blockY * map->m_ground.m_width + blockX].GetZ(cellX, cellY);
-	}
-	else {
-		z = 0;
-	}
+	unsigned short z = map->m_ground.GetZ(x, y);
 	m_position.m_zFixed = z * FIXED_POINT_ONE;
 	if (m_isRemoteObject != 0) {
 		m_actionArgument = REMOTE_PALETTE_REMAP_ENABLED;
