@@ -27806,7 +27806,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "??0C2D@@QAE@PAVCMain2DDisplay@@PAVCAI@@PAVCGDI@@PAVCMap@@ABVCVSRect@@@Z",
       "size": 1883,
-      "fingerprint": "6627c010f757890a69551c6afd1605bd49110c312a185c8cbb4d9d8c0874d0ab",
+      "fingerprint": "f0bfe5bf6c977bdda7dc0de7aa75dd002389aee792a7a0846ea1f74e327f6623",
       "references": [
         {
           "offset": 538,
@@ -27920,7 +27920,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
       "symbol": "??1C2D@@UAE@XZ",
       "size": 333,
-      "fingerprint": "3d70afac87b2502250e8a48c7453d3e01e35f6cdd8e14929220563384220e5fc",
+      "fingerprint": "837e59f8b302ba074660262fcb899a5f36d1b2fb0edcb4aaf0e4b5be49b391fa",
       "references": [
         {
           "offset": 76,

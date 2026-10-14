@@ -4932,8 +4932,8 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 		return SPRITE_SORT_CODE_SPECIAL_OBJECT;
 	case OBJECT_DOOR_1:
 	case OBJECT_DOOR_2:
-		p_x += GROUND_BLOCK_PIXEL_SIZE;
-		p_y += GROUND_BLOCK_PIXEL_SIZE;
+		p_x = (unsigned int) p_x + GROUND_BLOCK_PIXEL_SIZE;
+		p_y = (unsigned int) p_y + GROUND_BLOCK_PIXEL_SIZE;
 		baseCodeOnly = true;
 		break;
 	case OBJECT_HAND:
@@ -4942,8 +4942,8 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 		baseCodeOnly = true;
 		break;
 	case OBJECT_MOVER:
-		p_x = (p_x - GROUND_BLOCK_PIXEL_HALF_SIZE) & ~GROUND_BLOCK_PIXEL_MASK;
-		p_y = (p_y - GROUND_BLOCK_PIXEL_HALF_SIZE) & ~GROUND_BLOCK_PIXEL_MASK;
+		p_x = ((unsigned int) p_x - GROUND_BLOCK_PIXEL_HALF_SIZE) & ~GROUND_BLOCK_PIXEL_MASK;
+		p_y = ((unsigned int) p_y - GROUND_BLOCK_PIXEL_HALF_SIZE) & ~GROUND_BLOCK_PIXEL_MASK;
 		break;
 	}
 
@@ -4956,9 +4956,10 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 
 	p_z += 2;
 
-	unsigned short southZ = m_map->m_ground.GetZ(p_x, p_y + GROUND_BLOCK_PIXEL_SIZE);
-	unsigned short eastZ = m_map->m_ground.GetZ(p_x + GROUND_BLOCK_PIXEL_SIZE, p_y);
-	unsigned short southeastZ = m_map->m_ground.GetZ(p_x + GROUND_BLOCK_PIXEL_SIZE, p_y + GROUND_BLOCK_PIXEL_SIZE);
+	unsigned short southZ = m_map->m_ground.GetZ(p_x, (unsigned int) p_y + GROUND_BLOCK_PIXEL_SIZE);
+	unsigned short eastZ = m_map->m_ground.GetZ((unsigned int) p_x + GROUND_BLOCK_PIXEL_SIZE, p_y);
+	unsigned short southeastZ = m_map->m_ground.GetZ((unsigned int) p_x + GROUND_BLOCK_PIXEL_SIZE,
+													 (unsigned int) p_y + GROUND_BLOCK_PIXEL_SIZE);
 
 	{
 		bool southWithinZ = p_z >= southZ;
