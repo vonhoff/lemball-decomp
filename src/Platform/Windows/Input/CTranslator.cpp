@@ -42,7 +42,8 @@ int CTranslator::ProcessMsg(tagMESSAGE* p_message)
 			}
 			entry = entry + 1;
 			index = index + 1;
-		} while (entry < g_dwInputTranslationPairs + 61);
+		} while (entry <
+				 g_dwInputTranslationPairs + sizeof(g_dwInputTranslationPairs) / sizeof(*g_dwInputTranslationPairs));
 	}
 	m_processedCount = m_processedCount + 1;
 	return 0;
