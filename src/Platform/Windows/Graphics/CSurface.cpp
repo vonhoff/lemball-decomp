@@ -341,8 +341,8 @@ CSurface::~CSurface()
 		locked = 1;
 	}
 	if (m_platformBitmap != NULL) {
-		g_pTargetGraphicsDriver->RestoreDibContext((CDrawingContext*) m_drawingPort, (CDibContext*) m_platformBitmap);
-		g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
+		g_pTargetGraphicsDriver->RestoreDibContext(m_drawingPort, m_platformBitmap);
+		g_pTargetGraphicsDriver->DestroyDibContext(m_platformBitmap);
 		m_platformBitmap = NULL;
 	}
 	if (m_parentSurface == g_pGdiHelperTarget) {
@@ -350,7 +350,7 @@ CSurface::~CSurface()
 		FreeZBuff();
 	}
 	if (m_drawingPort != NULL) {
-		g_pTargetGraphicsDriver->DestroyDrawingContext((CDrawingContext*) m_drawingPort);
+		g_pTargetGraphicsDriver->DestroyDrawingContext(m_drawingPort);
 		m_drawingPort = NULL;
 	}
 	if (m_changeList != NULL) {
@@ -572,7 +572,7 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 
 	EnterCriticalSection(&m_lock);
 	EnterCriticalSection(&p_destinationSurface->m_lock);
-	CDrawingContext* destContext = (CDrawingContext*) p_destinationSurface->m_drawingPort;
+	CDrawingContext* destContext = p_destinationSurface->m_drawingPort;
 	g_pTargetGraphicsDriver->RealizePalette(destContext);
 	if ((int) m_dontUpdateRect.m_height * (int) m_dontUpdateRect.m_width > 0) {
 		m_changeList->AddWithActiveMark(m_dontUpdateRect, 0);
@@ -591,22 +591,14 @@ void CSurface::ToScreen(CSurface* p_destinationSurface)
 			translated.m_y += relativeOrigin.m_y;
 			short zoom = m_zoom;
 			if (zoom == 1) {
-				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
-														   &translated,
-														   (CDrawingContext*) m_drawingPort,
-														   item,
-														   this);
+				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext, &translated, m_drawingPort, item, this);
 			}
 			else {
 				CVSRect destRect(translated.m_x * zoom,
 								 translated.m_y * zoom,
 								 translated.m_width * zoom,
 								 translated.m_height * zoom);
-				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext,
-														   &destRect,
-														   (CDrawingContext*) m_drawingPort,
-														   item,
-														   this);
+				g_pTargetGraphicsDriver->BlitWrappedBitmap(destContext, &destRect, m_drawingPort, item, this);
 			}
 			index++;
 		} while (index < m_changeList->GetNumItems());
@@ -714,8 +706,8 @@ void CSurface::NewBitmap(const CVSRect& p_rect)
 		height = size.m_height;
 	}
 	if (m_platformBitmap != NULL) {
-		g_pTargetGraphicsDriver->RestoreDibContext((CDrawingContext*) m_drawingPort, (CDibContext*) m_platformBitmap);
-		g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
+		g_pTargetGraphicsDriver->RestoreDibContext(m_drawingPort, m_platformBitmap);
+		g_pTargetGraphicsDriver->DestroyDibContext(m_platformBitmap);
 		m_platformBitmap = NULL;
 	}
 	if (m_windowRect.m_width == 0 || m_windowRect.m_height == 0) {
@@ -735,18 +727,16 @@ void CSurface::NewBitmap(const CVSRect& p_rect)
 			m_bitmapInfo.biClrImportant = 0;
 			m_bitmapInfo.biSize = sizeof(BITMAPINFOHEADER);
 			m_bitmapInfo.biBitCount = 8;
-			m_platformBitmap = g_pTargetGraphicsDriver->CreateDibContext((CDrawingContext*) m_drawingPort,
-																		 (BITMAPINFO*) &m_bitmapInfo);
+			m_platformBitmap = g_pTargetGraphicsDriver->CreateDibContext(m_drawingPort, (BITMAPINFO*) &m_bitmapInfo);
 			if (m_platformBitmap != NULL) {
-				g_pTargetGraphicsDriver->SelectDibContext((CDrawingContext*) m_drawingPort,
-														  (CDibContext*) m_platformBitmap);
+				g_pTargetGraphicsDriver->SelectDibContext(m_drawingPort, m_platformBitmap);
 				m_bitmapPixelCount = (int) m_windowRect.m_width * (int) m_windowRect.m_height;
 			}
 		}
 		if (m_platformBitmap == NULL) {
 			_VSRELassert("AllocatedBitmap", "VSGDI.CPP", 736);
 		}
-		CDibContext* dib = (CDibContext*) m_platformBitmap;
+		CDibContext* dib = m_platformBitmap;
 		SetBitsBase(dib->GetBits(), dib->GetStride());
 		m_changeList->SetDrawMark();
 		CVSRect clip;
@@ -866,7 +856,7 @@ void CSurface::Move(const CVSPoint& p_position)
 			Resize(newSize);
 		}
 		if (m_platformBitmap != NULL) {
-			g_pTargetGraphicsDriver->DestroyDibContext((CDibContext*) m_platformBitmap);
+			g_pTargetGraphicsDriver->DestroyDibContext(m_platformBitmap);
 			m_platformBitmap = NULL;
 		}
 		m_bitmapPixelCount = 0;
@@ -881,7 +871,7 @@ void CSurface::Move(const CVSPoint& p_position)
 // FUNCTION: LEMBALL 0x0046d7e0
 void CSurface::SetWindowPtr(void* p_platformPort)
 {
-	((CDrawingContext*) m_drawingPort)->SetDc(p_platformPort);
+	m_drawingPort->SetDc(p_platformPort);
 }
 
 // FUNCTION: LEMBALL 0x0046d800
@@ -948,7 +938,7 @@ void CSurface::SetDefaultCtable()
 		surface = node->m_object;
 		memcpy(m_colourTable, g_dwWinGDrawColourTable, sizeof(m_colourTable));
 		if (surface->m_drawingPort != NULL) {
-			g_pTargetGraphicsDriver->UpdateDibColourTable((CDrawingContext*) surface->m_drawingPort,
+			g_pTargetGraphicsDriver->UpdateDibColourTable(surface->m_drawingPort,
 														  0,
 														  SURFACE_PALETTE_ENTRY_COUNT,
 														  g_dwWinGDrawColourTable);
@@ -964,14 +954,14 @@ bool CSurface::BeginRender()
 		return false;
 	}
 	if (m_parentSurface == g_pGdiHelperTarget) {
-		CDibContext* dib = (CDibContext*) m_platformBitmap;
+		CDibContext* dib = m_platformBitmap;
 		if (dib == NULL) {
 			return false;
 		}
 		if (!dib->Lock()) {
 			return false;
 		}
-		unsigned char* bits = ((CDibContext*) m_platformBitmap)->GetBits();
+		unsigned char* bits = m_platformBitmap->GetBits();
 		if (bits != NULL && m_bitsBase != bits) {
 			m_bitsBase = bits;
 			CreateLinePtrs();
@@ -1000,7 +990,7 @@ void CSurface::EndRender()
 	CSurface* current = this;
 	for (;;) {
 		if (current->m_parentSurface == g_pGdiHelperTarget) {
-			CDibContext* dib = (CDibContext*) current->m_platformBitmap;
+			CDibContext* dib = current->m_platformBitmap;
 			dib->Unlock();
 			return;
 		}

@@ -9,6 +9,8 @@
 
 class GrafPort;
 class CChangeList;
+class CDibContext;
+class CDrawingContext;
 class CResZRLE;
 class CRemap;
 struct CVSPoint;
@@ -131,9 +133,9 @@ public:
 private:
 	short m_presentX;                                         // 0xec
 	short m_presentY;                                         // 0xee
-	void* m_platformBitmap;                                   // 0xf0
+	CDibContext* m_platformBitmap;                            // 0xf0
 	unsigned int m_unk0xf4;                                   // 0xf4
-	void* m_drawingPort;                                      // 0xf8
+	CDrawingContext* m_drawingPort;                           // 0xf8
 	BITMAPINFOHEADER m_bitmapInfo;                            // 0xfc
 	RGBQUAD m_colourTable[SURFACE_PALETTE_ENTRY_COUNT];       // 0x124
 	unsigned int m_bitmapPixelCount;                          // 0x524
