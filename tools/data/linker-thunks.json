@@ -11805,7 +11805,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CInvisibleSwitch.cpp.obj",
       "symbol": "?Load@CInvisibleSwitch@@QAEXAAPAE@Z",
       "size": 253,
-      "fingerprint": "53229313f3f953ec6620ebc256cc5137f5ace7b4223b456075f0092e5b21d8cc",
+      "fingerprint": "b2387d00e1897e3d7cf16b50b59577996b7431b358c45bdf95a3bb33432bce23",
       "references": [
         {
           "offset": 23,

@@ -90,20 +90,8 @@ void CInvisibleSwitch::Set(const tCoord3d& p_cornerA, const tCoord3d& p_cornerB)
 	for (int y = m_minCorner.m_y; y <= m_maxCorner.m_y; y += GROUND_BLOCK_PIXEL_SIZE) {
 		for (int x = m_minCorner.m_x; x <= m_maxCorner.m_x; x += GROUND_BLOCK_PIXEL_SIZE) {
 			int blockX = x / GROUND_BLOCK_PIXEL_SIZE;
-			if (blockX >= 0) {
-				int blockY = y / GROUND_BLOCK_PIXEL_SIZE;
-				if (blockY >= 0) {
-					int width = g_pMap->m_ground.m_width;
-					if (width <= blockX) {
-						continue;
-					}
-					if (g_pMap->m_ground.m_height <= blockY) {
-						continue;
-					}
-					CGround* ground = g_pMap->m_ground.m_ground + ((unsigned int) width * blockY + blockX);
-					ground->m_collision |= GROUND_COLLISION_OBJECT_INTERACTION;
-				}
-			}
+			int blockY = y / GROUND_BLOCK_PIXEL_SIZE;
+			g_pMap->m_ground.SetCollision(blockX, blockY, GROUND_COLLISION_OBJECT_INTERACTION);
 		}
 	}
 	m_targetCount = 0;
