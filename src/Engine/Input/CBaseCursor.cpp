@@ -28,6 +28,34 @@ enum {
 	CURSOR_KEYBOARD_INPUT_MASK = 0x06
 };
 
+inline static CVSRect GetWindowClipBounds(const CVSRect& p_outer, const CVSRect& p_inner)
+{
+	CVSRect bounds(p_outer);
+	CVSRect inner(p_inner);
+	if (inner.m_width * inner.m_height != 0) {
+		inner.m_x += bounds.m_x;
+		inner.m_y += bounds.m_y;
+		if (bounds.m_x < inner.m_x) {
+			bounds.m_width += bounds.m_x - inner.m_x;
+			bounds.m_x = inner.m_x;
+		}
+		if ((short) (inner.m_x + inner.m_width) < (short) (bounds.m_x + bounds.m_width)) {
+			bounds.m_width = inner.m_x - bounds.m_x + inner.m_width;
+		}
+		if (bounds.m_y < inner.m_y) {
+			bounds.m_height += bounds.m_y - inner.m_y;
+			bounds.m_y = inner.m_y;
+		}
+		if ((short) (inner.m_y + inner.m_height) < (short) (bounds.m_y + bounds.m_height)) {
+			bounds.m_height = inner.m_y - bounds.m_y + inner.m_height;
+		}
+		if (bounds.m_width <= 0 || bounds.m_height <= 0) {
+			bounds.m_width = bounds.m_height = bounds.m_x = bounds.m_y = 0;
+		}
+	}
+	return bounds;
+}
+
 // GLOBAL: LEMBALL 0x004a9bec
 CGWnd* g_pCursorLastWindow;
 
@@ -280,32 +308,7 @@ void CBaseCursor::SetMainID(unsigned long p_resourceId, int p_frame)
 // FUNCTION: LEMBALL 0x0046b460
 bool CBaseCursor::InWindow(CGWnd* p_window)
 {
-	CVSRect bounds(p_window->m_rect);
-	CVSRect innerBounds(p_window->m_innerRect);
-	if (innerBounds.m_height * innerBounds.m_width != 0) {
-		innerBounds.m_x = (short) (innerBounds.m_x + bounds.m_x);
-		innerBounds.m_y = (short) (innerBounds.m_y + bounds.m_y);
-		if (bounds.m_x < innerBounds.m_x) {
-			bounds.m_width = (short) (bounds.m_width + (bounds.m_x - innerBounds.m_x));
-			bounds.m_x = innerBounds.m_x;
-		}
-		if ((short) (innerBounds.m_width + innerBounds.m_x) < (short) (bounds.m_x + bounds.m_width)) {
-			bounds.m_width = (short) ((innerBounds.m_x - bounds.m_x) + innerBounds.m_width);
-		}
-		if (bounds.m_y < innerBounds.m_y) {
-			bounds.m_height = (short) (bounds.m_height + (bounds.m_y - innerBounds.m_y));
-			bounds.m_y = innerBounds.m_y;
-		}
-		if ((short) (innerBounds.m_height + innerBounds.m_y) < (short) (bounds.m_height + bounds.m_y)) {
-			bounds.m_height = (short) ((innerBounds.m_height - bounds.m_y) + innerBounds.m_y);
-		}
-		if (bounds.m_width <= 0 || bounds.m_height <= 0) {
-			bounds.m_height = 0;
-			bounds.m_width = 0;
-			bounds.m_y = 0;
-			bounds.m_x = 0;
-		}
-	}
+	CVSRect bounds = GetWindowClipBounds(p_window->m_rect, p_window->m_innerRect);
 	short cursorX = m_position.m_x;
 	short cursorY;
 	if (bounds.m_x <= cursorX && cursorX < (short) (bounds.m_x + bounds.m_width) &&
@@ -318,10 +321,6 @@ bool CBaseCursor::InWindow(CGWnd* p_window)
 // FUNCTION: LEMBALL 0x0046b5c0
 void CBaseCursor::Draw(CGWnd* p_window)
 {
-	short clipX;
-	short clipY;
-	short innerHeight;
-	CVSPoint* innerXY;
 	int zoom;
 	CGDI* gdi;
 	CSurface* surface;
@@ -346,42 +345,7 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	if (m_active == 0) {
 		return;
 	}
-	CVSRect bounds(p_window->m_rect);
-	{
-		CVSSize innerSize(p_window->m_innerRect);
-		innerHeight = innerSize.m_height;
-		innerXY = &p_window->m_innerRect;
-		clipX = innerXY->m_x;
-		clipY = innerXY->m_y;
-		if ((int) innerHeight * (int) innerSize.m_width != 0) {
-			clipX = (short) (clipX + bounds.m_x);
-			clipY = (short) (clipY + bounds.m_y);
-			if (bounds.m_x < clipX) {
-				bounds.m_width = (short) (bounds.m_width + (bounds.m_x - clipX));
-				bounds.m_x = clipX;
-			}
-			if ((short) (innerSize.m_width + clipX) < (short) (bounds.m_x + bounds.m_width)) {
-				clipX = (short) (clipX - bounds.m_x);
-				clipX = (short) (clipX + innerSize.m_width);
-				bounds.m_width = clipX;
-			}
-			if (bounds.m_y < clipY) {
-				bounds.m_height = (short) (bounds.m_height + (bounds.m_y - clipY));
-				bounds.m_y = clipY;
-			}
-			if ((short) (clipY + innerHeight) < (short) (bounds.m_height + bounds.m_y)) {
-				innerHeight = (short) (innerHeight - bounds.m_y);
-				innerHeight = (short) (innerHeight + clipY);
-				bounds.m_height = innerHeight;
-			}
-			if (bounds.m_width <= 0 || bounds.m_height <= 0) {
-				bounds.m_height = 0;
-				bounds.m_width = 0;
-				bounds.m_y = 0;
-				bounds.m_x = 0;
-			}
-		}
-	}
+	CVSRect bounds = GetWindowClipBounds(p_window->m_rect, p_window->m_innerRect);
 	if (InWindow(p_window) == 0) {
 		return;
 	}
