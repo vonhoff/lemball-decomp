@@ -209,7 +209,7 @@ long CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, 
 		switch (g_pTargetGraphicsSystem->m_driverMode) {
 		case GFX_MODE_DD_FS_640X480:
 		case GFX_MODE_DD_FS_320X200:
-			return DefWindowProcA((HWND) g_pTargetGraphicsDriver->m_window, p_message, p_wParam, p_lParam);
+			return DefWindowProcA(g_pTargetGraphicsDriver->m_window, p_message, p_wParam, p_lParam);
 		default: {
 			BeginPaint(m_nativeWindow, &paint);
 			paintX = (short) paint.rcPaint.left;

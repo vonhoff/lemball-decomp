@@ -1,6 +1,8 @@
 #ifndef LEMBALL_PLATFORM_DIRECTX_DIRECTDRAW_H
 #define LEMBALL_PLATFORM_DIRECTX_DIRECTDRAW_H
 
+#include "Platform/Windows/WindowsTypes.h"
+
 struct IDirectDraw;
 
 struct IDirectDrawPalette {
@@ -104,7 +106,7 @@ struct IDirectDraw {
 	virtual long __stdcall GetVerticalBlankStatus(int*) = 0;
 	virtual long __stdcall Initialize(void*) = 0;
 	virtual long __stdcall RestoreDisplayMode() = 0;
-	virtual long __stdcall SetCooperativeLevel(void*, unsigned long) = 0;
+	virtual long __stdcall SetCooperativeLevel(HWND, unsigned long) = 0;
 	virtual long __stdcall SetDisplayMode(unsigned long, unsigned long, unsigned long) = 0;
 };
 

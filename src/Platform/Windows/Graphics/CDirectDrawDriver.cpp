@@ -90,9 +90,9 @@ CDirectDrawDriver::CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen)
 		if (m_window == NULL) {
 			return;
 		}
-		ShowWindow((HWND) m_window, SW_SHOW);
-		UpdateWindow((HWND) m_window);
-		SetForegroundWindow((HWND) m_window);
+		ShowWindow(m_window, SW_SHOW);
+		UpdateWindow(m_window);
+		SetForegroundWindow(m_window);
 		cooperativeFlags = DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE;
 	}
 	else {

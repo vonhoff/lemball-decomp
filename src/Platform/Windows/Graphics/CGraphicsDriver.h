@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 
 #include "Engine/Math/CVSSize.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 #include <stddef.h>
 
@@ -72,7 +73,7 @@ protected:
 	void* m_driverModule;          // 0x04
 	void* m_palette;               // 0x08
 	bool m_ready;                  // 0x0c
-	void* m_window;                // 0x10
+	HWND m_window;                 // 0x10
 	CVSSize m_screenSize;          // 0x14
 	CPVGDIBitmap* m_currentBitmap; // 0x18
 };
