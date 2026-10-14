@@ -3911,30 +3911,11 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 		unsigned short yCollision;
 		unsigned short xCollision;
 		unsigned short diagonalCollision;
-		if (blockX < 0 || blockY + 1 < 0 || m_map->m_ground.m_width <= blockX ||
-			m_map->m_ground.m_height <= blockY + 1) {
-			yCollision = 3;
-		}
-		else {
-			yCollision = m_map->m_ground.m_ground[m_map->m_ground.m_width * (blockY + 1) + blockX].m_collision;
-		}
+		yCollision = m_map->m_ground.GetCollision(blockX, blockY + 1);
 		yCollision &= 1;
-		if (blockX + 1 < 0 || blockY < 0 || m_map->m_ground.m_width <= blockX + 1 ||
-			m_map->m_ground.m_height <= blockY) {
-			xCollision = 3;
-		}
-		else {
-			xCollision = m_map->m_ground.m_ground[m_map->m_ground.m_width * blockY + blockX + 1].m_collision;
-		}
+		xCollision = m_map->m_ground.GetCollision(blockX + 1, blockY);
 		xCollision &= 1;
-		if (blockX + 1 < 0 || blockY + 1 < 0 || m_map->m_ground.m_width <= blockX + 1 ||
-			m_map->m_ground.m_height <= blockY + 1) {
-			diagonalCollision = 3;
-		}
-		else {
-			diagonalCollision =
-				m_map->m_ground.m_ground[m_map->m_ground.m_width * (blockY + 1) + blockX + 1].m_collision;
-		}
+		diagonalCollision = m_map->m_ground.GetCollision(blockX + 1, blockY + 1);
 		diagonalCollision &= 1;
 
 		bool shiftY = yHeight <= p_groundHeight && yCollision == 0;
