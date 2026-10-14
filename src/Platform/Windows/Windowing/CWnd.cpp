@@ -959,8 +959,7 @@ void CWnd::_SetRect(const CVSRect& p_rect)
 	window.left = (short) (position->m_x + origin->m_x);
 	window.top = top;
 	ClientToScreen(((CWnd*) m_parent)->m_nativeWindow, (POINT*) &window);
-	short& windowX = m_rect.m_x;
-	windowX = (short) window.left;
+	m_rect.m_x = (short) window.left;
 	m_rect.m_y = (short) window.top;
 	m_rect.m_width = size->m_width;
 	m_rect.m_height = size->m_height;
