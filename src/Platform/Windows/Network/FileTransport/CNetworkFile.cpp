@@ -4,8 +4,6 @@
 
 #include <string.h>
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <winsock.h>
 
 enum eSetFilePointerResult {
@@ -29,21 +27,27 @@ bool CNetworkFile::Open(const char* p_filename, unsigned char p_mode, int p_crea
 {
 	unsigned int length;
 	unsigned long creation;
-	void* handle;
+	HANDLE handle;
 
 	(void) p_mode;
 	length = strlen(p_filename) + 1;
 	m_filename = new char[length];
 	strcpy(m_filename, p_filename);
 	if (p_create == 0) {
-		creation = 3;
+		creation = OPEN_EXISTING;
 	}
 	else {
-		creation = 1;
+		creation = CREATE_NEW;
 	}
-	handle = CreateFileA(p_filename, 0xc0000000, 3, NULL, creation, 0x80, NULL);
+	handle = CreateFileA(p_filename,
+						 GENERIC_READ | GENERIC_WRITE,
+						 FILE_SHARE_READ | FILE_SHARE_WRITE,
+						 NULL,
+						 creation,
+						 FILE_ATTRIBUTE_NORMAL,
+						 NULL);
 	m_handle = handle;
-	if (handle == (void*) -1) {
+	if (handle == INVALID_HANDLE_VALUE) {
 		return false;
 	}
 
@@ -74,11 +78,17 @@ bool CNetworkFile::Delete(const char* p_filename)
 // FUNCTION: LEMBALL 0x0047f680
 bool CNetworkFile::CheckExists(const char* p_filename)
 {
-	void* handle;
+	HANDLE handle;
 
-	handle = CreateFileA(p_filename, 0xc0000000, 3, NULL, 3, 0x80, NULL);
+	handle = CreateFileA(p_filename,
+						 GENERIC_READ | GENERIC_WRITE,
+						 FILE_SHARE_READ | FILE_SHARE_WRITE,
+						 NULL,
+						 OPEN_EXISTING,
+						 FILE_ATTRIBUTE_NORMAL,
+						 NULL);
 	m_handle = handle;
-	if (handle == (void*) -1) {
+	if (handle == INVALID_HANDLE_VALUE) {
 		return false;
 	}
 
@@ -107,10 +117,6 @@ bool CNetworkFile::Write(const unsigned char* p_data, int p_size)
 	return true;
 }
 
-enum eNetworkFileError {
-	NETWORK_FILE_ERROR_LOCK_VIOLATION = 0x21
-};
-
 // FUNCTION: LEMBALL 0x0047f780
 bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 {
@@ -121,7 +127,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 	success = ReadFile(m_handle, p_data, (unsigned int) p_size, &got, NULL);
 	if (success == 0) {
 		error = GetLastError();
-		if (error != NETWORK_FILE_ERROR_LOCK_VIOLATION) {
+		if (error != ERROR_LOCK_VIOLATION) {
 			*g_pErrorOutput << "Read error: " << error << "\n";
 		}
 		return false;
@@ -140,7 +146,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 bool CNetworkFile::Seek(int p_position)
 {
 	m_position = (unsigned int) p_position;
-	return SetFilePointer(m_handle, p_position, NULL, 0) != SET_FILE_POINTER_FAILURE;
+	return SetFilePointer(m_handle, p_position, NULL, FILE_BEGIN) != SET_FILE_POINTER_FAILURE;
 }
 
 // FUNCTION: LEMBALL 0x0047f8b0

@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_NETWORK_CNETWORKFILE_H
 
 #include "Multiplayer/Transport/FileTransport/CAbstractFile.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 // SIZE 0x14
 // VTABLE: LEMBALL 0x0049a628
@@ -25,7 +26,7 @@ public:
 	virtual char* GetFilename();                                                   // vtable+0x38
 
 private:
-	void* m_handle;          // 0x0c
+	HANDLE m_handle;         // 0x0c
 	unsigned int m_position; // 0x10
 };
 
