@@ -96,7 +96,7 @@ int CGdiDriver::DestroyDibContext(CDibContext* p_dibContext)
 	if (p_dibContext == NULL) {
 		return 1;
 	}
-	deleted = DeleteObject((HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_hBitmap);
+	deleted = DeleteObject(((CGdiDibContext*) p_dibContext)->m_hBitmap);
 	delete p_dibContext;
 	return deleted;
 }
@@ -151,8 +151,7 @@ CDibContext* CGdiDriver::SelectDibContext(CDrawingContext* p_drawingContext, CDi
 {
 	HGDIOBJ prior;
 
-	prior =
-		SelectObject(((CGdiContext*) p_drawingContext)->m_hDC, (HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_hBitmap);
+	prior = SelectObject(((CGdiContext*) p_drawingContext)->m_hDC, ((CGdiDibContext*) p_dibContext)->m_hBitmap);
 	if (prior == NULL) {
 		return NULL;
 	}
@@ -165,8 +164,7 @@ CDibContext* CGdiDriver::RestoreDibContext(CDrawingContext* p_drawingContext, CD
 {
 	HGDIOBJ prior;
 
-	prior = SelectObject(((CGdiContext*) p_drawingContext)->m_hDC,
-						 (HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_previousBitmap);
+	prior = SelectObject(((CGdiContext*) p_drawingContext)->m_hDC, ((CGdiDibContext*) p_dibContext)->m_previousBitmap);
 	if (prior == NULL) {
 		return NULL;
 	}
