@@ -10,6 +10,12 @@ enum eGameResultMessage {
 	GAME_RESULT_MESSAGE_GAVE_UP = 5
 };
 
+enum eGameCheat {
+	GAME_CHEAT_BULLET_HIT_HANDLING_DISABLED = 0,
+	GAME_CHEAT_UNLIMITED_AMMO = 1,
+	GAME_CHEAT_COUNT = 2
+};
+
 enum eSkillLevelCount {
 	SKILL_LEVEL_COUNT_FUN = 24,
 	SKILL_LEVEL_COUNT_TRICKY = 25,
@@ -71,15 +77,14 @@ public:
 	friend class C2D;
 
 private:
-	int m_level;                              // 0x00
-	unsigned int m_levelState;                // 0x04
-	int m_skill;                              // 0x08
-	unsigned int m_skillState;                // 0x0c
-	char m_password[16];                      // 0x10
-	unsigned int m_bulletHitHandlingDisabled; // 0x20
-	unsigned int m_unlimitedAmmo;             // 0x24
-	int m_maxLevels[5];                       // 0x28
-	int m_lastLevels[5];                      // 0x3c
+	int m_level;                     // 0x00
+	unsigned int m_levelState;       // 0x04
+	int m_skill;                     // 0x08
+	unsigned int m_skillState;       // 0x0c
+	char m_password[16];             // 0x10
+	bool m_cheats[GAME_CHEAT_COUNT]; // 0x20
+	int m_maxLevels[5];              // 0x28
+	int m_lastLevels[5];             // 0x3c
 };
 
 extern CGameStatus* g_pGameStatus;

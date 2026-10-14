@@ -160,7 +160,7 @@ CPlayerLemming::~CPlayerLemming()
 // FUNCTION: LEMBALL 0x0040f000
 void CPlayerLemming::HitBullet(CBullet* p_bullet)
 {
-	if (!g_pGameStatus->m_bulletHitHandlingDisabled) {
+	if (!g_pGameStatus->m_cheats[GAME_CHEAT_BULLET_HIT_HANDLING_DISABLED]) {
 		if ((int) m_action < ACTION_FLYING || ((int) m_action > ACTION_HIDDEN && m_action != ACTION_ON_BALLOON)) {
 			switch (p_bullet->m_owner) {
 			case OWNER_ENEMY: {
@@ -313,11 +313,11 @@ void CPlayerLemming::Fire()
 	case ACTION_EXTERNAL_CONTROL:
 		break;
 	default:
-		if (g_pGameStatus->m_unlimitedAmmo || m_ammoCount != 0) {
+		if (g_pGameStatus->m_cheats[GAME_CHEAT_UNLIMITED_AMMO] || m_ammoCount != 0) {
 			SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
 			g_pAI->FireBullet(m_linkedObjectId, BULLET_TYPE_DEFAULT, OWNER_PLAYER, facing, start, m_fireTarget);
 			m_soundEffect = SFX_GUN;
-			if (!g_pGameStatus->m_unlimitedAmmo) {
+			if (!g_pGameStatus->m_cheats[GAME_CHEAT_UNLIMITED_AMMO]) {
 				m_ammoCount--;
 			}
 		}

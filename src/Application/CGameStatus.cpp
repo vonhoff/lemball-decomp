@@ -20,8 +20,9 @@ CGameStatus::CGameStatus()
 	m_levelState = zero;
 	m_skill = zero;
 	m_skillState = zero;
-	m_bulletHitHandlingDisabled = zero;
-	m_unlimitedAmmo = zero;
+	for (index = 0; index < GAME_CHEAT_COUNT; index++) {
+		m_cheats[index] = false;
+	}
 	for (index = 0; index < 5; index++) {
 		m_maxLevels[index] = zero;
 	}
