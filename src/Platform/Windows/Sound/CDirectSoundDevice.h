@@ -59,7 +59,7 @@ private:
 		HMODULE m_library;                                                        // 0x04
 		long(__stdcall* m_createDirectSound)(const void*, IDirectSound**, void*); // 0x08
 		bool m_open;                                                              // 0x0c
-		void* m_nativeWindow;                                                     // 0x10
+		HWND m_nativeWindow;                                                      // 0x10
 		int m_effectCapacity;                                                     // 0x14
 		int m_buffersPerEffect;                                                   // 0x18
 		bool m_musicAvailable;                                                    // 0x1c

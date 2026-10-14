@@ -1,6 +1,8 @@
 #ifndef LEMBALL_PLATFORM_DIRECTX_DIRECTSOUND_H
 #define LEMBALL_PLATFORM_DIRECTX_DIRECTSOUND_H
 
+#include "Platform/Windows/WindowsTypes.h"
+
 struct tWAVEFORMATEX;
 
 #define DSBCAPS_PRIMARYBUFFER 0x00000001
@@ -32,7 +34,7 @@ public:
 											 void* p_outer) = 0;
 	virtual long __stdcall GetCaps(void* p_caps) = 0;
 	virtual long __stdcall DuplicateSoundBuffer(IDirectSoundBuffer* p_original, IDirectSoundBuffer** p_duplicate) = 0;
-	virtual long __stdcall SetCooperativeLevel(void* p_window, unsigned long p_level) = 0;
+	virtual long __stdcall SetCooperativeLevel(HWND p_window, unsigned long p_level) = 0;
 };
 
 class IDirectSoundBuffer {
