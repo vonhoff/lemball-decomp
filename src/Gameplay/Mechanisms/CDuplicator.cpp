@@ -62,19 +62,8 @@ void CDuplicator::Set(const AICOORD& p_position)
 	m_terrainCell1Set = 1;
 	int blockX = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	int blockY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
-	if (blockX >= 0) {
-		if (blockY >= 0 && blockX < g_pMap->m_ground.m_width && g_pMap->m_ground.m_height > blockY) {
-			g_pMap->m_ground.m_ground[(unsigned int) blockY * g_pMap->m_ground.m_width + blockX].m_collision |=
-				GROUND_COLLISION_BLOCKS_WALKING;
-		}
-		if (blockX >= 0 && --blockY >= 0) {
-			int width = g_pMap->m_ground.m_width;
-			if (blockX < width && g_pMap->m_ground.m_height > blockY) {
-				g_pMap->m_ground.m_ground[(unsigned int) width * blockY + blockX].m_collision |=
-					GROUND_COLLISION_BLOCKS_WALKING;
-			}
-		}
-	}
+	g_pMap->m_ground.SetCollision(blockX, blockY, GROUND_COLLISION_BLOCKS_WALKING);
+	g_pMap->m_ground.SetCollision(blockX, blockY - 1, GROUND_COLLISION_BLOCKS_WALKING);
 }
 
 // FUNCTION: LEMBALL 0x004276f0

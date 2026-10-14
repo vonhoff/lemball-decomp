@@ -22993,7 +22993,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CDuplicator.cpp.obj",
       "symbol": "?DoActivate@CDuplicator@@UAEXXZ",
       "size": 125,
-      "fingerprint": "dc00335746b54567c5cdc91d1cdaebde33e30923577cbf854b560037b26578ef",
+      "fingerprint": "fe2eba3f2777b8b51e408771a9b56c68e35360ebdf73fb44284cecc6da2e9dde",
       "references": [
         {
           "offset": 117,
