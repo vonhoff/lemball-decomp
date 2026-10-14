@@ -115,9 +115,9 @@ void CPlayerLemming::Restart()
 		int& objectCount = g_pAI->m_objectCount;
 		g_pAI->m_objects[objectCount] = this;
 		objectCount++;
-		m_flightVelocity.m_xFixed = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
-		m_flightVelocity.m_yFixed = 0;
-		m_flightVelocity.m_zFixed = PLAYER_LEMMING_INITIAL_FALL_VERTICAL_VELOCITY_FIXED;
+		m_flightVelocity.m_xFixed.m_value = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
+		m_flightVelocity.m_yFixed.m_value = 0;
+		m_flightVelocity.m_zFixed.m_value = PLAYER_LEMMING_INITIAL_FALL_VERTICAL_VELOCITY_FIXED;
 		m_isGroupLeader = 0;
 		m_wasHitByBullet = false;
 		m_hasDestination = 0;
@@ -412,10 +412,10 @@ void CPlayerLemming::Die()
 void CPlayerLemming::HitMine()
 {
 	C3DVector vel;
-	vel.m_xFixed = 0;
-	vel.m_yFixed = 0;
+	vel.m_xFixed.m_value = 0;
+	vel.m_yFixed.m_value = 0;
 	m_wasHitByMine = true;
-	vel.m_zFixed = PLAYER_LEMMING_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
+	vel.m_zFixed.m_value = PLAYER_LEMMING_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
 	StartFly(vel, NULL);
 	m_deathRequested = true;
 }
@@ -591,10 +591,10 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_liftId = INVALID_OBJECT_ID;
 	m_balloonPostActive = 0;
 	m_balloonPostId = 0;
-	m_flightVelocity.m_xFixed = 0;
-	m_flightVelocity.m_yFixed = 0;
+	m_flightVelocity.m_xFixed.m_value = 0;
+	m_flightVelocity.m_yFixed.m_value = 0;
 	m_invisibleSwitchId = INVALID_OBJECT_ID;
-	m_flightVelocity.m_zFixed = 0;
+	m_flightVelocity.m_zFixed.m_value = 0;
 	m_desiredFacingDirection = 0;
 	m_unk0x58 = 0;
 	m_onMover = false;
@@ -834,9 +834,9 @@ void CPlayerLemming::StartStanding()
 	if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
 		m_isFalling = true;
 		C3DVector velocity;
-		velocity.m_xFixed = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
-		velocity.m_yFixed = 0;
-		velocity.m_zFixed = (((tileZ - groundZ) / 8) + 1) * FIXED_POINT_ONE;
+		velocity.m_xFixed.m_value = PLAYER_LEMMING_INITIAL_FALL_HORIZONTAL_VELOCITY_FIXED;
+		velocity.m_yFixed.m_value = 0;
+		velocity.m_zFixed.m_value = (((tileZ - groundZ) / 8) + 1) * FIXED_POINT_ONE;
 		m_flightVelocity = velocity;
 		unsigned int now = g_dwGameTick;
 		int posY = m_position.m_yFixed;

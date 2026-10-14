@@ -144,9 +144,9 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 	}
 
 	C3DVector flightVelocity;
-	CFixed incomingVelocity[3] = {CFixed(p_object->m_flightVelocity.m_xFixed),
-								  CFixed(p_object->m_flightVelocity.m_yFixed),
-								  CFixed(p_object->m_flightVelocity.m_zFixed)};
+	CFixed incomingVelocity[3] = {CFixed(p_object->m_flightVelocity.m_xFixed.m_value),
+								  CFixed(p_object->m_flightVelocity.m_yFixed.m_value),
+								  CFixed(p_object->m_flightVelocity.m_zFixed.m_value)};
 	if (incomingVelocity[2].m_value < 0) {
 		incomingVelocity[2].m_value = (int) (0U - (unsigned int) incomingVelocity[2].m_value);
 	}
@@ -196,20 +196,20 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 		}
 	}
 
-	if (flightVelocity.m_xFixed > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
-		flightVelocity.m_xFixed = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
+	if (flightVelocity.m_xFixed.m_value > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_xFixed.m_value = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
-	if (flightVelocity.m_xFixed < -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
-		flightVelocity.m_xFixed = -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
+	if (flightVelocity.m_xFixed.m_value < -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_xFixed.m_value = -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
-	if (flightVelocity.m_yFixed > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
-		flightVelocity.m_yFixed = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
+	if (flightVelocity.m_yFixed.m_value > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_yFixed.m_value = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
-	if (flightVelocity.m_yFixed < -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
-		flightVelocity.m_yFixed = -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
+	if (flightVelocity.m_yFixed.m_value < -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_yFixed.m_value = -TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
-	if (flightVelocity.m_zFixed > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
-		flightVelocity.m_zFixed = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
+	if (flightVelocity.m_zFixed.m_value > TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED) {
+		flightVelocity.m_zFixed.m_value = TRAMPOLINE_BOUNCE_VELOCITY_LIMIT_FIXED;
 	}
 
 	AICOORD position(m_position.m_xFixed,

@@ -72,8 +72,8 @@ void CSheep::HitMine()
 {
 	g_pAI->Score(AI_SCORE_SHEEP_HIT_POINTS);
 	C3DVector velocity;
-	velocity.m_xFixed = 0;
-	velocity.m_yFixed = 0;
-	velocity.m_zFixed = SHEEP_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
+	velocity.m_xFixed.m_value = 0;
+	velocity.m_yFixed.m_value = 0;
+	velocity.m_zFixed.m_value = SHEEP_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
 	StartFly(velocity, NULL);
 }

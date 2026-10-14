@@ -469,9 +469,9 @@ void CEnemy::HitMine()
 	m_wasHitByMine = true;
 	g_pAI->Score(AI_SCORE_ENEMY_HIT_POINTS);
 	C3DVector velocity;
-	velocity.m_xFixed = 0;
-	velocity.m_yFixed = 0;
-	velocity.m_zFixed = ENEMY_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
+	velocity.m_xFixed.m_value = 0;
+	velocity.m_yFixed.m_value = 0;
+	velocity.m_zFixed.m_value = ENEMY_MINE_LAUNCH_VERTICAL_VELOCITY_FIXED;
 	StartFly(velocity, NULL);
 	m_deathRequested = true;
 }

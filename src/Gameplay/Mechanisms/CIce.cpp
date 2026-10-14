@@ -220,9 +220,9 @@ bool CIce::Process()
 												current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
-					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
-					velocity.m_yFixed = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
-					velocity.m_zFixed = 0;
+					velocity.m_xFixed.m_value = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_yFixed.m_value = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_zFixed.m_value = 0;
 					object->StartFly(velocity, NULL);
 				}
 			}
@@ -344,9 +344,9 @@ void CIce::Switched()
 												current.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 				if (groundZ < (current.m_zFixed >> FIXED_POINT_FRACTION_BITS)) {
 					C3DVector velocity;
-					velocity.m_xFixed = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
-					velocity.m_yFixed = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
-					velocity.m_zFixed = 0;
+					velocity.m_xFixed.m_value = (int) ((unsigned int) m_velocityX << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_yFixed.m_value = (int) ((unsigned int) m_velocityY << FIXED_POINT_FRACTION_BITS) / 6;
+					velocity.m_zFixed.m_value = 0;
 					object->StartFly(velocity, NULL);
 				}
 			}

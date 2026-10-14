@@ -76,25 +76,26 @@ bool CCatapult::Process()
 	case ACTION_ACTIVATED: {
 		if (g_dwGameTick > m_actionPhase2Deadline) {
 			C3DVector pos;
-			pos.m_xFixed = (unsigned int) m_position.m_xFixed - CATAPULT_LAUNCH_ORIGIN_OFFSET_FIXED;
-			pos.m_yFixed = (unsigned int) m_position.m_yFixed - CATAPULT_LAUNCH_ORIGIN_OFFSET_FIXED;
-			pos.m_zFixed = m_position.m_zFixed + CATAPULT_LAUNCH_HEIGHT_OFFSET_FIXED;
+			pos.m_xFixed.m_value = (unsigned int) m_position.m_xFixed - CATAPULT_LAUNCH_ORIGIN_OFFSET_FIXED;
+			pos.m_yFixed.m_value = (unsigned int) m_position.m_yFixed - CATAPULT_LAUNCH_ORIGIN_OFFSET_FIXED;
+			pos.m_zFixed.m_value = m_position.m_zFixed + CATAPULT_LAUNCH_HEIGHT_OFFSET_FIXED;
 
 			C3DVector vel;
 			int randX =
 				(g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 			g_pRandomSeed->m_randomSeed = randX;
-			vel.m_xFixed =
+			vel.m_xFixed.m_value =
 				((randX % CATAPULT_RANDOM_VELOCITY_STEPS) * FIXED_POINT_ONE / CATAPULT_RANDOM_VELOCITY_STEPS) +
 				CATAPULT_RANDOM_HORIZONTAL_LAUNCH_SPEED_FIXED;
 			int randY =
 				(g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 			g_pRandomSeed->m_randomSeed = randY;
-			vel.m_yFixed = (randY % CATAPULT_RANDOM_VELOCITY_STEPS) * FIXED_POINT_ONE / CATAPULT_RANDOM_VELOCITY_STEPS;
+			vel.m_yFixed.m_value =
+				(randY % CATAPULT_RANDOM_VELOCITY_STEPS) * FIXED_POINT_ONE / CATAPULT_RANDOM_VELOCITY_STEPS;
 			int randZ =
 				(g_pRandomSeed->m_randomSeed * RANDOM_SEED_MULTIPLIER + RANDOM_SEED_INCREMENT) & RANDOM_SEED_MASK;
 			g_pRandomSeed->m_randomSeed = randZ;
-			vel.m_zFixed =
+			vel.m_zFixed.m_value =
 				((randZ % CATAPULT_RANDOM_VELOCITY_STEPS) * FIXED_POINT_ONE / CATAPULT_RANDOM_VELOCITY_STEPS) +
 				CATAPULT_RANDOM_VERTICAL_LAUNCH_SPEED_FIXED;
 

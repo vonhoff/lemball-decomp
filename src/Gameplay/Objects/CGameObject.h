@@ -284,9 +284,9 @@ inline void CGameObject::GetViewData(CViewData& p_viewData)
 	p_viewData.m_stateTimer = timer;
 	p_viewData.m_statusFlags = 0;
 	p_viewData.m_hidden = m_hidden;
-	p_viewData.m_momentum.m_xFixed = m_momentum.m_xFixed;
-	p_viewData.m_momentum.m_yFixed = m_momentum.m_yFixed;
-	p_viewData.m_momentum.m_zFixed = m_momentum.m_zFixed;
+	p_viewData.m_momentum.m_xFixed.m_value = m_momentum.m_xFixed.m_value;
+	p_viewData.m_momentum.m_yFixed.m_value = m_momentum.m_yFixed.m_value;
+	p_viewData.m_momentum.m_zFixed.m_value = m_momentum.m_zFixed.m_value;
 	p_viewData.m_soundEffect = m_soundEffect;
 	unsigned long timestamp;
 	if (m_isRemoteObject != 0) {

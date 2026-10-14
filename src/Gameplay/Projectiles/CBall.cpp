@@ -2,7 +2,7 @@
 
 #include "CBallManager.h"
 #include "Engine/Math/CVector.h"
-#include "Engine/Math/FixedPoint.h"
+#include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/Facing.h"
@@ -185,9 +185,9 @@ found:
 		return true;
 	}
 
-	m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
-	m_position.m_xFixed = x * FIXED_POINT_ONE;
-	m_position.m_yFixed = y * FIXED_POINT_ONE;
+	m_position.m_zFixed = IntegerToFixed(z);
+	m_position.m_xFixed = IntegerToFixed(x);
+	m_position.m_yFixed = IntegerToFixed(y);
 	return true;
 }
 
@@ -236,7 +236,7 @@ void CBall::SetHeightCorrect()
 	else {
 		z = 0;
 	}
-	m_position.m_zFixed = z << FIXED_POINT_FRACTION_BITS;
+	m_position.m_zFixed = IntegerToFixed(z);
 }
 
 // FUNCTION: LEMBALL 0x00421bc0
@@ -326,23 +326,23 @@ void CBall::LoadLevel(unsigned char*& p_data)
 		SetId(id);
 	}
 
-	const int startX = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
+	const int startX = IntegerToFixed(*(unsigned short*) p_data);
 	start.m_xFixed = startX;
 	p_data += LEVEL_WORD_BYTES;
-	const int startY = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
+	const int startY = IntegerToFixed(*(unsigned short*) p_data);
 	start.m_yFixed = startY;
 	p_data += LEVEL_WORD_BYTES;
-	const int startZ = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
+	const int startZ = IntegerToFixed(*(unsigned short*) p_data);
 	start.m_zFixed = startZ;
 	p_data += LEVEL_WORD_BYTES;
 
-	const int destinationX = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
+	const int destinationX = IntegerToFixed(*(unsigned short*) p_data);
 	destination.m_xFixed = destinationX;
 	p_data += LEVEL_WORD_BYTES;
-	const int destinationY = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
+	const int destinationY = IntegerToFixed(*(unsigned short*) p_data);
 	destination.m_yFixed = destinationY;
 	p_data += LEVEL_WORD_BYTES;
-	const int destinationZ = *(unsigned short*) p_data << FIXED_POINT_FRACTION_BITS;
+	const int destinationZ = IntegerToFixed(*(unsigned short*) p_data);
 	destination.m_zFixed = destinationZ;
 	p_data += LEVEL_WORD_BYTES;
 

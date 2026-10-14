@@ -8,8 +8,6 @@
 // VTABLE: LEMBALL 0x00498ab0
 class CResRaster : public CResBase {
 public:
-	CResRaster() {}
-
 	friend class CBaseFrontendDrawer;
 	friend class CMainOptions1Drawer;
 	friend class CMainOptions2Drawer;
