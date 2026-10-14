@@ -5176,62 +5176,9 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 
 	p_z += 2;
 
-	unsigned short southZ;
-	int southTileX = p_x >> GROUND_BLOCK_PIXEL_SHIFT;
-	int southTileY = (p_y + GROUND_BLOCK_PIXEL_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
-	{
-		CMap* map = m_map;
-		int width;
-		if (p_x < 0 || p_y + GROUND_BLOCK_PIXEL_SIZE < 0 || (width = map->m_ground.m_width, width <= southTileX) ||
-			map->m_ground.m_height <= southTileY) {
-			southZ = 0;
-		}
-		else {
-			int cellY;
-			int cellX = p_x;
-			cellY = p_y;
-			cellY &= GROUND_BLOCK_PIXEL_MASK;
-			width = (unsigned int) width * southTileY;
-			cellX &= GROUND_BLOCK_PIXEL_MASK;
-			southZ = (map->m_ground.m_ground + width + southTileX)->GetZ(cellX, cellY);
-		}
-	}
-
-	unsigned short eastZ;
-	int eastTileX = (p_x + GROUND_BLOCK_PIXEL_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
-	int eastTileY = p_y >> GROUND_BLOCK_PIXEL_SHIFT;
-	{
-		CMap* map = m_map;
-		if (p_x + GROUND_BLOCK_PIXEL_SIZE < 0 || p_y < 0 || map->m_ground.m_width <= eastTileX ||
-			map->m_ground.m_height <= eastTileY) {
-			eastZ = 0;
-		}
-		else {
-			int cellY;
-			int cellX = p_x;
-			cellY = p_y;
-			cellY &= GROUND_BLOCK_PIXEL_MASK;
-			eastTileY = (unsigned int) eastTileY * map->m_ground.m_width;
-			cellX &= GROUND_BLOCK_PIXEL_MASK;
-			eastZ = (map->m_ground.m_ground + eastTileY + eastTileX)->GetZ(cellX, cellY);
-		}
-	}
-
-	unsigned short southeastZ;
-	{
-		CMap* map = m_map;
-		int width;
-		if (p_x + GROUND_BLOCK_PIXEL_SIZE < 0 || p_y + GROUND_BLOCK_PIXEL_SIZE < 0 ||
-			(width = map->m_ground.m_width, width <= eastTileX) || map->m_ground.m_height <= southTileY) {
-			southeastZ = 0;
-		}
-		else {
-			p_x &= GROUND_BLOCK_PIXEL_MASK;
-			p_y &= GROUND_BLOCK_PIXEL_MASK;
-			width = (unsigned int) width * southTileY;
-			southeastZ = (map->m_ground.m_ground + width + eastTileX)->GetZ(p_x, p_y);
-		}
-	}
+	unsigned short southZ = m_map->m_ground.GetZ(p_x, p_y + GROUND_BLOCK_PIXEL_SIZE);
+	unsigned short eastZ = m_map->m_ground.GetZ(p_x + GROUND_BLOCK_PIXEL_SIZE, p_y);
+	unsigned short southeastZ = m_map->m_ground.GetZ(p_x + GROUND_BLOCK_PIXEL_SIZE, p_y + GROUND_BLOCK_PIXEL_SIZE);
 
 	{
 		bool southWithinZ = p_z >= southZ;
@@ -5244,22 +5191,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			southSolid = false;
 		}
 		else {
-			int collisionY = tileY + 1;
-			unsigned short collision;
-			if (collisionY < 0) {
-				collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-			}
-			else {
-				CMap* map = m_map;
-				int collisionX = tileX;
-				int width = map->m_ground.m_width;
-				if (width <= collisionX || map->m_ground.m_height <= collisionY) {
-					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-				}
-				else {
-					collision = map->m_ground.m_ground[(unsigned int) width * collisionY + collisionX].m_collision;
-				}
-			}
+			unsigned short collision = m_map->m_ground.GetCollision(tileX, tileY + 1);
 			if ((collision & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
 				goto southClear;
 			}
@@ -5272,21 +5204,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			eastSolid = false;
 		}
 		else {
-			int collisionX = tileX;
-			unsigned short collision;
-			if (collisionX + 1 < 0) {
-				collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-			}
-			else {
-				CMap* map = m_map;
-				int width = map->m_ground.m_width;
-				if (width <= collisionX + 1 || map->m_ground.m_height <= tileY) {
-					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-				}
-				else {
-					collision = map->m_ground.m_ground[(unsigned int) width * tileY + collisionX + 1].m_collision;
-				}
-			}
+			unsigned short collision = m_map->m_ground.GetCollision(tileX + 1, tileY);
 			if ((collision & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
 				goto eastClear;
 			}
@@ -5299,22 +5217,7 @@ unsigned short C2D::CalcGroundCode(eObjectType p_objectType, int p_x, int p_y, u
 			southeastSolid = false;
 		}
 		else {
-			int collisionX = tileX;
-			int collisionY = tileY + 1;
-			unsigned short collision;
-			if (collisionX + 1 < 0 || collisionY < 0) {
-				collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-			}
-			else {
-				CMap* map = m_map;
-				int width = map->m_ground.m_width;
-				if (width <= collisionX + 1 || map->m_ground.m_height <= collisionY) {
-					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-				}
-				else {
-					collision = map->m_ground.m_ground[(unsigned int) width * collisionY + collisionX + 1].m_collision;
-				}
-			}
+			unsigned short collision = m_map->m_ground.GetCollision(tileX + 1, tileY + 1);
 			if ((collision & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
 				goto southeastClear;
 			}
