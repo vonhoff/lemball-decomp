@@ -20,7 +20,6 @@ void CGroundArray::SetCollision(int p_x, int p_y, int p_collision)
 // FUNCTION: LEMBALL 0x00430370
 void CGroundArray::Clear()
 {
-	CGround* ground;
 	int y = 0;
 	if (m_height > 0) {
 		do {
@@ -29,7 +28,7 @@ void CGroundArray::Clear()
 				if (x >= m_width) {
 					break;
 				}
-				ground = m_ground + ((unsigned int) y * m_width + x);
+				CGround* ground = GetGroundCell(x, y);
 				ground->m_objectType = TERRAIN_BLOX_4;
 				ground->m_objectData = 0;
 				ground->m_collision = GROUND_COLLISION_NONE;
