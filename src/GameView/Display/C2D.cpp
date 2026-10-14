@@ -4088,20 +4088,7 @@ void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 			{
 				int gameX = (unsigned short) p_viewData.m_gameX;
 				int gameY = (unsigned short) p_viewData.m_gameY;
-				CMap* map = m_map;
-				int blockX = gameX >> GROUND_BLOCK_PIXEL_SHIFT;
-				int blockY = gameY >> GROUND_BLOCK_PIXEL_SHIFT;
-				unsigned short groundHeight;
-				if (gameX < 0 || gameY < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
-					groundHeight = 0;
-				}
-				else {
-					int localX = gameX & GROUND_BLOCK_PIXEL_MASK;
-					int localY = gameY & GROUND_BLOCK_PIXEL_MASK;
-					groundHeight =
-						map->m_ground.m_ground[(unsigned int) map->m_ground.m_width * blockY + blockX].GetZ(localX,
-																											localY);
-				}
+				unsigned short groundHeight = m_map->m_ground.GetZ(gameX, gameY);
 				gameX = (gameX << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
 				gameY = (gameY << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
 				m_map->GameToScreen(gameX, gameY);
