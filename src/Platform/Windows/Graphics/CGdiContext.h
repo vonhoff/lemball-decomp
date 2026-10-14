@@ -11,13 +11,13 @@ class CDibContext;
 // VTABLE: LEMBALL 0x00498770
 class CGdiContext : public CDrawingContext {
 public:
-	CGdiContext(void* p_hDC = NULL)
+	CGdiContext(HDC p_hDC = NULL)
 	{
 		m_hDC = p_hDC;
 		m_dibContext = NULL;
 	}
-	virtual ~CGdiContext() {}        // vtable+0x00
-	virtual void SetDc(void* p_hDC); // vtable+0x04
+	virtual ~CGdiContext() {}      // vtable+0x00
+	virtual void SetDc(HDC p_hDC); // vtable+0x04
 
 	friend class CGraphicsDriver;
 	friend class CGdiDriver;
@@ -26,7 +26,7 @@ public:
 	friend class CSurface;
 
 private:
-	void* m_hDC;               // 0x04
+	HDC m_hDC;                 // 0x04
 	CDibContext* m_dibContext; // 0x08
 };
 

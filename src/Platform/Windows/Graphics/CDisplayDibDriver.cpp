@@ -64,7 +64,7 @@ unsigned int CDisplayDibDriver::UpdateDibColourTable(CDrawingContext* p_context,
 													 unsigned int p_count,
 													 void* p_colours)
 {
-	SetDIBColorTable((HDC) ((CGdiContext*) p_context)->m_hDC, p_start, p_count, (RGBQUAD*) p_colours);
+	SetDIBColorTable(((CGdiContext*) p_context)->m_hDC, p_start, p_count, (RGBQUAD*) p_colours);
 	unsigned short port = VGA_DAC_INDEX_PORT;
 	_outp(port, p_start);
 	port++;
@@ -86,12 +86,12 @@ int CDisplayDibDriver::BitBltContexts(CDrawingContext* p_destination,
 									  CVSPoint* p_position)
 {
 	if (g_dwFullScreenGdi != 0) {
-		return BitBlt((HDC) ((CGdiContext*) p_destination)->m_hDC,
+		return BitBlt(((CGdiContext*) p_destination)->m_hDC,
 					  p_rect->m_x,
 					  p_rect->m_y,
 					  p_rect->m_width,
 					  p_rect->m_height,
-					  (HDC) ((CGdiContext*) p_source)->m_hDC,
+					  ((CGdiContext*) p_source)->m_hDC,
 					  p_position->m_x,
 					  p_position->m_y,
 					  SRCCOPY);

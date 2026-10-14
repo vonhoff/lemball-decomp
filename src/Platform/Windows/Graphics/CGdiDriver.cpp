@@ -44,7 +44,7 @@ int CGdiDriver::DestroyDrawingContext(CDrawingContext* p_drawingContext)
 	if (p_drawingContext == NULL) {
 		return 0;
 	}
-	deleted = DeleteDC((HDC) ((CGdiContext*) p_drawingContext)->m_hDC);
+	deleted = DeleteDC(((CGdiContext*) p_drawingContext)->m_hDC);
 	delete p_drawingContext;
 	return deleted;
 }
@@ -77,7 +77,7 @@ CDibContext* CGdiDriver::CreateDibContext(CDrawingContext* p_drawingContext, voi
 	BITMAPINFO* info;
 
 	info = (BITMAPINFO*) p_bitmapInfo;
-	bitmap = CreateDIBSection((HDC) ((CGdiContext*) p_drawingContext)->m_hDC, info, 0, &bits, NULL, 0);
+	bitmap = CreateDIBSection(((CGdiContext*) p_drawingContext)->m_hDC, info, 0, &bits, NULL, 0);
 	if (bitmap == NULL) {
 		return NULL;
 	}
@@ -107,10 +107,7 @@ unsigned int CGdiDriver::UpdateDibColourTable(CDrawingContext* p_drawingContext,
 											  unsigned int p_entryCount,
 											  void* p_colours)
 {
-	return SetDIBColorTable((HDC) ((CGdiContext*) p_drawingContext)->m_hDC,
-							p_startIndex,
-							p_entryCount,
-							(RGBQUAD*) p_colours);
+	return SetDIBColorTable(((CGdiContext*) p_drawingContext)->m_hDC, p_startIndex, p_entryCount, (RGBQUAD*) p_colours);
 }
 
 // FUNCTION: LEMBALL 0x00456c70
@@ -119,12 +116,12 @@ int CGdiDriver::BitBltContexts(CDrawingContext* p_destination,
 							   CDrawingContext* p_source,
 							   CVSPoint* p_sourcePosition)
 {
-	return BitBlt((HDC) ((CGdiContext*) p_destination)->m_hDC,
+	return BitBlt(((CGdiContext*) p_destination)->m_hDC,
 				  (int) p_destinationRect->m_x,
 				  (int) p_destinationRect->m_y,
 				  (int) p_destinationRect->m_width,
 				  (int) p_destinationRect->m_height,
-				  (HDC) ((CGdiContext*) p_source)->m_hDC,
+				  ((CGdiContext*) p_source)->m_hDC,
 				  (int) p_sourcePosition->m_x,
 				  (int) p_sourcePosition->m_y,
 				  SRCCOPY);
@@ -136,12 +133,12 @@ int CGdiDriver::StretchBltContexts(CDrawingContext* p_destination,
 								   CDrawingContext* p_source,
 								   CVSRect* p_sourceRect)
 {
-	return StretchBlt((HDC) ((CGdiContext*) p_destination)->m_hDC,
+	return StretchBlt(((CGdiContext*) p_destination)->m_hDC,
 					  (int) p_destinationRect->m_x,
 					  (int) p_destinationRect->m_y,
 					  (int) p_destinationRect->m_width,
 					  (int) p_destinationRect->m_height,
-					  (HDC) ((CGdiContext*) p_source)->m_hDC,
+					  ((CGdiContext*) p_source)->m_hDC,
 					  (int) p_sourceRect->m_x,
 					  (int) p_sourceRect->m_y,
 					  (int) p_sourceRect->m_width,
@@ -154,8 +151,8 @@ CDibContext* CGdiDriver::SelectDibContext(CDrawingContext* p_drawingContext, CDi
 {
 	HGDIOBJ prior;
 
-	prior = SelectObject((HDC) ((CGdiContext*) p_drawingContext)->m_hDC,
-						 (HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_hBitmap);
+	prior =
+		SelectObject(((CGdiContext*) p_drawingContext)->m_hDC, (HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_hBitmap);
 	if (prior == NULL) {
 		return NULL;
 	}
@@ -168,7 +165,7 @@ CDibContext* CGdiDriver::RestoreDibContext(CDrawingContext* p_drawingContext, CD
 {
 	HGDIOBJ prior;
 
-	prior = SelectObject((HDC) ((CGdiContext*) p_drawingContext)->m_hDC,
+	prior = SelectObject(((CGdiContext*) p_drawingContext)->m_hDC,
 						 (HGDIOBJ) ((CGdiDibContext*) p_dibContext)->m_previousBitmap);
 	if (prior == NULL) {
 		return NULL;

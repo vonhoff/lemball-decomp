@@ -41,8 +41,8 @@ bool CGraphicsDriver::CreatePalette(void* p_paletteDescription)
 bool CGraphicsDriver::RealizePalette(CDrawingContext* p_drawingContext)
 {
 	if (m_palette != NULL) {
-		SelectPalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC, m_palette, 0);
-		::RealizePalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC);
+		SelectPalette(((CGdiContext*) p_drawingContext)->m_hDC, m_palette, 0);
+		::RealizePalette(((CGdiContext*) p_drawingContext)->m_hDC);
 	}
 	return true;
 }
