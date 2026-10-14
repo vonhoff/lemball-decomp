@@ -2970,8 +2970,8 @@ void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_r
 void C2D::DrawBalloon(CViewData& p_viewData, int p_playerIndex)
 {
 	CRemap* remap;
-	short x = p_viewData.m_position.m_x;
-	short y = p_viewData.m_position.m_y;
+	unsigned int x = p_viewData.m_position.m_x;
+	unsigned int y = p_viewData.m_position.m_y;
 	int xOffset;
 	int yOffset;
 	unsigned int phase = ((p_viewData.m_animationTime - p_viewData.m_stateTimer) & ANIMATION_PHASE_TIME_MASK) >>
