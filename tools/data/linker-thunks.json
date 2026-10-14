@@ -11632,11 +11632,11 @@
       "caller": 4233520,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Animation/CAnimSpecial.cpp.obj",
       "symbol": "?Initialise@CAnimSpecial@@QAEXPAVCMap@@@Z",
-      "size": 673,
-      "fingerprint": "b662362eadd75473b88029a7c0ce03ac455549680d312a9c8f980b9cba082a4b",
+      "size": 661,
+      "fingerprint": "677eb9d031a142e86d3bf8c0a2ce3aaf0ca8995710f87d3e3f5267340d8ff04a",
       "references": [
         {
-          "offset": 556,
+          "offset": 542,
           "original_instruction": 4234077,
           "original_bytes": "68c12b4000",
           "thunk": 4205505,

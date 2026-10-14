@@ -52,13 +52,7 @@ void CAnimSpecial::Initialise(CMap* p_map)
 				entryCount++;
 				break;
 			default: {
-				unsigned short collision;
-				if (column >= 0 && row >= 0 && column < map->m_ground.m_width && row < map->m_ground.m_height) {
-					collision = ground->m_collision;
-				}
-				else {
-					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-				}
+				unsigned short collision = map->m_ground.GetCollision(column, row);
 				if (collision & GROUND_COLLISION_SPECIAL_RENDER) {
 					entryCount++;
 					column++;
@@ -105,14 +99,7 @@ void CAnimSpecial::Initialise(CMap* p_map)
 				entryIndex++;
 				break;
 			default: {
-				unsigned short collision;
-				if (entryColumn >= 0 && entryRow >= 0 && entryColumn < map->m_ground.m_width &&
-					map->m_ground.m_height > entryRow) {
-					collision = ground->m_collision;
-				}
-				else {
-					collision = GROUND_COLLISION_OUT_OF_BOUNDS;
-				}
+				unsigned short collision = map->m_ground.GetCollision(entryColumn, entryRow);
 				if (collision & GROUND_COLLISION_SPECIAL_RENDER) {
 					int sortOffset = 0;
 					switch (objectType) {
