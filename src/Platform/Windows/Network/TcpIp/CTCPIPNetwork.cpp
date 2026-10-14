@@ -38,13 +38,13 @@ void CTCPIPNetwork::Initialise()
 	if ((int) g_networkPacketSize > maxDatagram) {
 		g_networkPacketSize = (unsigned int) maxDatagram;
 	}
-	m_timerId = SetTimer((HWND) m_windowHandle, TCPIP_TIMER_ID, TCPIP_TIMER_INTERVAL_MS, NULL);
+	m_timerId = SetTimer(m_windowHandle, TCPIP_TIMER_ID, TCPIP_TIMER_INTERVAL_MS, NULL);
 }
 
 // FUNCTION: LEMBALL 0x00471460
 void CTCPIPNetwork::UnInitialise()
 {
-	KillTimer((HWND) m_windowHandle, m_timerId);
+	KillTimer(m_windowHandle, m_timerId);
 	WSACleanup();
 }
 
@@ -70,7 +70,7 @@ int CTCPIPNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p
 // FUNCTION: LEMBALL 0x004714d0
 void CTCPIPNetwork::ForceProcess()
 {
-	PostMessageA((HWND) m_windowHandle, TCPIP_MESSAGE_FORCE_PROCESS, 0, 0);
+	PostMessageA(m_windowHandle, TCPIP_MESSAGE_FORCE_PROCESS, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x004715c0

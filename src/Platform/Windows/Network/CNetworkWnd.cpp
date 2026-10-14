@@ -57,7 +57,7 @@ CNetworkWnd::CNetworkWnd(const char* p_className, int* p_registered)
 // FUNCTION: LEMBALL 0x0047c140
 CNetworkWnd::~CNetworkWnd()
 {
-	DestroyWindow((HWND) m_windowHandle);
+	DestroyWindow(m_windowHandle);
 }
 
 // FUNCTION: LEMBALL 0x0047c160

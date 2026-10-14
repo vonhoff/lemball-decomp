@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_TARGET_NETWORK_CNETWORKWND_H
 
 #include "Multiplayer/Transport/NetworkConstants.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 // SIZE 0x10
 // VTABLE: LEMBALL 0x0049ac30
@@ -16,7 +17,7 @@ public:
 	~CNetworkWnd();
 
 public:
-	void* m_windowHandle;        // 0x04
+	HWND m_windowHandle;         // 0x04
 	unsigned int m_firstMessage; // 0x08
 	unsigned int m_lastMessage;  // 0x0c
 };

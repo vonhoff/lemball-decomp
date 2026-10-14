@@ -94,9 +94,6 @@ void CTCPIPConnect::HandleServiceLookupResult(bool p_failed)
 // FUNCTION: LEMBALL 0x00471090
 void CTCPIPConnect::InitSocket()
 {
-	enum {
-		SOCKET_IOCTL_SET_NONBLOCKING = 0x8004667e
-	};
 	unsigned long nonBlocking;
 
 	m_socketHandle = socket(AF_INET, SOCK_DGRAM, 0);
@@ -106,7 +103,7 @@ void CTCPIPConnect::InitSocket()
 	}
 	m_isOpen = 1;
 	nonBlocking = 1;
-	if (ioctlsocket(m_socketHandle, SOCKET_IOCTL_SET_NONBLOCKING, &nonBlocking) == NETWORK_SOCKET_ERROR) {
+	if (ioctlsocket(m_socketHandle, FIONBIO, &nonBlocking) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 	}
 }

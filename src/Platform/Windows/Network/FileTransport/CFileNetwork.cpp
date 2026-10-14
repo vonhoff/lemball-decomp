@@ -26,13 +26,13 @@ void CFileNetwork::Initialise()
 {
 	*g_pDebugOutput << "Network Initialised:\n";
 	*g_pDebugOutput << "Windows file-based networking\n";
-	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, FILE_NETWORK_TIMER_INTERVAL_MS, NULL);
+	m_timerId = SetTimer(m_windowHandle, FILE_NETWORK_TIMER_ID, FILE_NETWORK_TIMER_INTERVAL_MS, NULL);
 }
 
 // FUNCTION: LEMBALL 0x0046f730
 void CFileNetwork::UnInitialise()
 {
-	KillTimer((HWND) m_windowHandle, m_timerId);
+	KillTimer(m_windowHandle, m_timerId);
 }
 
 // FUNCTION: LEMBALL 0x0046f740
@@ -40,8 +40,8 @@ void CFileNetwork::ResetTimer(unsigned long p_interval)
 {
 	*g_pDebugOutput << "Setting next timer event to " << p_interval << "ms from now\n";
 
-	KillTimer((HWND) m_windowHandle, m_timerId);
-	m_timerId = SetTimer((HWND) m_windowHandle, FILE_NETWORK_TIMER_ID, p_interval, NULL);
+	KillTimer(m_windowHandle, m_timerId);
+	m_timerId = SetTimer(m_windowHandle, FILE_NETWORK_TIMER_ID, p_interval, NULL);
 	m_alternateTimer = m_alternateTimer == 0;
 }
 
@@ -88,7 +88,7 @@ int CFileNetwork::Process(unsigned int p_message, unsigned int p_wParam, long p_
 // FUNCTION: LEMBALL 0x0046f840
 void CFileNetwork::ForceProcess()
 {
-	PostMessageA((HWND) m_windowHandle, FILE_NETWORK_MESSAGE_FORCE_PROCESS, 0, 0);
+	PostMessageA(m_windowHandle, FILE_NETWORK_MESSAGE_FORCE_PROCESS, 0, 0);
 }
 
 // FUNCTION: LEMBALL 0x0046f860
