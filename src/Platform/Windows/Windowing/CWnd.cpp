@@ -43,7 +43,7 @@ HWND g_hFocusWindow = NULL;
 CWnd* g_pFocusWindow = NULL;
 
 // GLOBAL: LEMBALL 0x004a1f6c
-int g_nMouseCaptureCount = 0;
+unsigned int g_nMouseCaptureCount = 0;
 
 // GLOBAL: LEMBALL 0x004a1f70
 int g_nDisplayDibActive = 0;
@@ -352,7 +352,7 @@ long __stdcall CWnd::ProcessMessage(HWND p_hwnd, unsigned int p_message, unsigne
 				GetSystemMetrics(SM_CYSCREEN);
 				short screenWidth = (short) GetSystemMetrics(SM_CXSCREEN);
 				CVSSize* screenSize = &g_pTargetGraphicsDriver->m_screenSize;
-				mouseParameters[2] = screenSize->m_width * mouseParameters[2] / screenWidth;
+				mouseParameters[2] = (int) ((unsigned int) screenSize->m_width * mouseParameters[2]) / screenWidth;
 				SystemParametersInfoA(SPI_SETMOUSE, 0, mouseParameters, 0);
 				SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &g_nSavedScreenSaverActive, 0);
 				if (g_nSavedScreenSaverActive != 0) {

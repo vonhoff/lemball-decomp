@@ -65,6 +65,6 @@ private:
 };
 
 extern CWnd* g_pFocusWindow;
-extern int g_nMouseCaptureCount;
+extern unsigned int g_nMouseCaptureCount;
 
 #endif
