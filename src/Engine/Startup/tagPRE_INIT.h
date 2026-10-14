@@ -2,6 +2,7 @@
 #define LEMBALL_CONTROL_SUPPORT_TAGPRE_INIT_H
 
 #include "Engine/Memory/SmallMemoryConstants.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 // SIZE 0x1c
 struct tagPRE_INIT {
@@ -11,7 +12,7 @@ struct tagPRE_INIT {
 	int m_capabilityCount;        // 0x0c
 	unsigned int* m_capabilities; // 0x10
 	int m_shift;                  // 0x14
-	void* m_icon;                 // 0x18
+	HICON m_icon;                 // 0x18
 };
 
 extern unsigned int g_anPreInitCapabilities[SMALL_MEMORY_BUCKET_COUNT];

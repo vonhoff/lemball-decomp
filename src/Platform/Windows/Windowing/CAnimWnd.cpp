@@ -99,7 +99,7 @@ void CAnimWnd::_OnCreate()
 		m_movieWindow = NULL;
 	}
 	m_movieWindow = MCIWndCreateA(m_nativeWindow,
-								  (HINSTANCE) g_pApplicationInstance,
+								  g_pApplicationInstance,
 								  WS_CHILD | WS_VISIBLE | MCIWNDF_NOPLAYBAR | MCIWNDF_NOMENU | MCIWNDF_NOTIFYALL,
 								  NULL);
 	SendMessageA(m_movieWindow, MCIWNDM_OPENA, 0, (LPARAM) m_moviePath.m_text);

@@ -64,7 +64,7 @@ int g_nNativeWindowCount = 0;
 CList<CPVWnd, CListElement<CPVWnd> >* g_pWindowOwnerList = NULL;
 
 // GLOBAL: LEMBALL 0x004a8188
-void* g_pApplicationInstance;
+HINSTANCE g_pApplicationInstance;
 
 // GLOBAL: LEMBALL 0x004a1f7c
 char g_szVsBaseWindowClass[24] = "VS_Base_Window_Class";

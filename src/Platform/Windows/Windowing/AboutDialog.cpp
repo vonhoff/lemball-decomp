@@ -186,7 +186,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 		systemInfo = BuildAboutSystemInfo();
 		SetDlgItemTextA((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO, systemInfo);
 		SendMessageA(GetDlgItem((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO), WM_SETFONT, (unsigned int) g_hAboutFont, TRUE);
-		GetModuleFileNameA((HINSTANCE) g_pApplicationInstance, modulePath, sizeof(modulePath));
+		GetModuleFileNameA(g_pApplicationInstance, modulePath, sizeof(modulePath));
 		versionSize = GetFileVersionInfoSizeA(modulePath, &handle);
 		if (versionSize != 0) {
 			versionData = new unsigned char[versionSize];

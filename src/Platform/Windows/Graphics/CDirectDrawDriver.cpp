@@ -62,7 +62,7 @@ CDirectDrawDriver::CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen)
 		windowClass.lpfnWndProc = CWnd::ProcessMessage;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
-		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
+		windowClass.hInstance = g_pApplicationInstance;
 		windowClass.hIcon = LoadIconA(NULL, IDI_APPLICATION);
 		windowClass.hCursor = NULL;
 		windowClass.hbrBackground = (HBRUSH) GetStockObject(BLACK_BRUSH);
@@ -85,7 +85,7 @@ CDirectDrawDriver::CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen)
 								   m_screenSize.m_height,
 								   NULL,
 								   NULL,
-								   (HINSTANCE) g_pApplicationInstance,
+								   g_pApplicationInstance,
 								   NULL);
 		if (m_window == NULL) {
 			return;

@@ -24,7 +24,7 @@ CNetworkWnd::CNetworkWnd(const char* p_className, int* p_registered)
 		windowClass.lpfnWndProc = NetworkWndProc;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 4;
-		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
+		windowClass.hInstance = g_pApplicationInstance;
 		windowClass.hIcon = NULL;
 		windowClass.hCursor = NULL;
 		windowClass.hbrBackground = NULL;
@@ -46,7 +46,7 @@ CNetworkWnd::CNetworkWnd(const char* p_className, int* p_registered)
 									 CW_USEDEFAULT,
 									 NULL,
 									 NULL,
-									 (HINSTANCE) g_pApplicationInstance,
+									 g_pApplicationInstance,
 									 this);
 	if (m_windowHandle == NULL) {
 		unsigned long error = GetLastError();

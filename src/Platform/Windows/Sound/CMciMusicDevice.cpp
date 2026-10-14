@@ -66,7 +66,7 @@ CMciMusicDevice::CMciMusicDevice()
 	mciSendCommandA(m_deviceId, MCI_CLOSE, 0, 0);
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
-	windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
+	windowClass.hInstance = g_pApplicationInstance;
 	windowClass.hIcon = NULL;
 	windowClass.hCursor = NULL;
 	windowClass.hbrBackground = NULL;
@@ -85,7 +85,7 @@ CMciMusicDevice::CMciMusicDevice()
 									 CW_USEDEFAULT,
 									 NULL,
 									 NULL,
-									 (HINSTANCE) g_pApplicationInstance,
+									 g_pApplicationInstance,
 									 NULL);
 	if (m_notifyWindow == NULL) {
 		*g_pErrorOutput << "Error! Unable to Create Window for HL Music.\n";

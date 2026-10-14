@@ -70,7 +70,7 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 		windowClass.lpfnWndProc = (WNDPROC) WindowProc;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = sizeof(LONG);
-		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;
+		windowClass.hInstance = g_pApplicationInstance;
 		windowClass.hIcon = LoadIconA(NULL, IDI_APPLICATION);
 		windowClass.hCursor = LoadCursorA(NULL, IDC_ARROW);
 		windowClass.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
@@ -94,7 +94,7 @@ CTextWnd::CTextWnd(const char* p_title, int p_lineCapacity)
 									 GetSystemMetrics(SM_CYSCREEN) / 2,
 									 NULL,
 									 NULL,
-									 (HINSTANCE) g_pApplicationInstance,
+									 g_pApplicationInstance,
 									 this);
 	if (m_windowHandle == NULL) {
 		// STRING: LEMBALL 0x004a2c00
