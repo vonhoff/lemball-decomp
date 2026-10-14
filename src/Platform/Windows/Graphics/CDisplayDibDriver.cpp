@@ -38,11 +38,11 @@ CDisplayDibDriver::CDisplayDibDriver(const CVSSize& p_size)
 	g_pDisplayDib = NULL;
 	m_driverModule = LoadLibraryA("DSPDIB32.DLL");
 	if (m_driverModule != NULL) {
-		m_displayDibStart = (void(__stdcall*)()) GetProcAddress((HMODULE) m_driverModule, "DisplayDibStart32");
-		m_displayDibEnd = (void(__stdcall*)()) GetProcAddress((HMODULE) m_driverModule, "DisplayDibEnd32");
+		m_displayDibStart = (void(__stdcall*)()) GetProcAddress(m_driverModule, "DisplayDibStart32");
+		m_displayDibEnd = (void(__stdcall*)()) GetProcAddress(m_driverModule, "DisplayDibEnd32");
 		m_displayDibGetAddress =
-			(unsigned char*(__stdcall*) ()) GetProcAddress((HMODULE) m_driverModule, "DisplayDibGetAddress32");
-		g_pDisplayDib = (DisplayDibProc) GetProcAddress((HMODULE) m_driverModule, "DisplayDib32");
+			(unsigned char*(__stdcall*) ()) GetProcAddress(m_driverModule, "DisplayDibGetAddress32");
+		g_pDisplayDib = (DisplayDibProc) GetProcAddress(m_driverModule, "DisplayDib32");
 		m_frameBuffer = m_displayDibGetAddress();
 		m_displayDibStart();
 		m_ready = 1;

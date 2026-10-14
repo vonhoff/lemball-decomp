@@ -16,11 +16,11 @@ class CDrawingContext;
 CGraphicsDriver::~CGraphicsDriver()
 {
 	if (m_driverModule != NULL) {
-		FreeLibrary((HMODULE) m_driverModule);
+		FreeLibrary(m_driverModule);
 		m_driverModule = NULL;
 	}
 	if (m_palette != NULL) {
-		DeleteObject((HGDIOBJ) m_palette);
+		DeleteObject(m_palette);
 	}
 }
 
@@ -30,7 +30,7 @@ bool CGraphicsDriver::CreatePalette(void* p_paletteDescription)
 	HPALETTE palette;
 
 	if (m_palette != NULL) {
-		DeleteObject((HGDIOBJ) m_palette);
+		DeleteObject(m_palette);
 	}
 	palette = ::CreatePalette((LOGPALETTE*) p_paletteDescription);
 	m_palette = palette;
@@ -41,7 +41,7 @@ bool CGraphicsDriver::CreatePalette(void* p_paletteDescription)
 bool CGraphicsDriver::RealizePalette(CDrawingContext* p_drawingContext)
 {
 	if (m_palette != NULL) {
-		SelectPalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC, (HPALETTE) m_palette, 0);
+		SelectPalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC, m_palette, 0);
 		::RealizePalette((HDC) ((CGdiContext*) p_drawingContext)->m_hDC);
 	}
 	return true;

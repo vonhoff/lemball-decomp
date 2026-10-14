@@ -70,8 +70,8 @@ public:
 	friend bool PumpEvents();
 
 protected:
-	void* m_driverModule;          // 0x04
-	void* m_palette;               // 0x08
+	HMODULE m_driverModule;        // 0x04
+	HPALETTE m_palette;            // 0x08
 	bool m_ready;                  // 0x0c
 	HWND m_window;                 // 0x10
 	CVSSize m_screenSize;          // 0x14

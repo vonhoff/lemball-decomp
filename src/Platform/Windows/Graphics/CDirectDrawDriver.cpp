@@ -48,7 +48,7 @@ CDirectDrawDriver::CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen)
 		return;
 	}
 	typedef long(__stdcall * CreateFunction)(GUID*, IDirectDraw**, IUnknown*);
-	m_contextSurfaces[0] = (void*) GetProcAddress((HMODULE) m_driverModule, "DirectDrawCreate");
+	m_contextSurfaces[0] = (void*) GetProcAddress(m_driverModule, "DirectDrawCreate");
 	if (m_contextSurfaces[0] == NULL) {
 		return;
 	}
