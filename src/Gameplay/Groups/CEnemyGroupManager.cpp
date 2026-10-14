@@ -15,6 +15,14 @@ extern CAI* g_pGenericGroupAI;
 extern CObjectManager* g_pGenericGroupObjectManager;
 extern CFormationManager* g_pGenericGroupFormationManager;
 
+// SIZE 0x04
+struct EnemyWaypointDescriptor {
+	unsigned char m_patrolMode;
+	unsigned char m_waypointCount;
+	unsigned char m_waypointIndex;
+	unsigned char m_waypointStep;
+};
+
 // FUNCTION: LEMBALL 0x00420b50
 unsigned long ENEMY_GetLONG(unsigned long* p_data)
 {
@@ -193,21 +201,21 @@ tagLoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoi
 	tagLoadEnemyDataAdditionalAction* p_data,
 	tagWaypointInformation*& p_waypointInfo)
 {
-	const int ENEMY_WAYPOINT_DESCRIPTOR_BYTES = 4;
 	const int ENEMY_WAYPOINT_STEP_SIGN_BIT = 0x80;
 	const unsigned int ENEMY_WAYPOINT_STEP_SIGN_EXTENSION_MASK = 0xffffff00;
 
 	unsigned char* data = (unsigned char*) p_data;
 	ENEMY_GetLONG((unsigned long*) data);
 	data += sizeof(unsigned long);
+	EnemyWaypointDescriptor* descriptor = (EnemyWaypointDescriptor*) data;
 
 	p_waypointInfo = new tagWaypointInformation;
-	unsigned int waypointCount = data[1];
-	p_waypointInfo->m_patrolMode = (eWaypointPatrolMode) data[0];
+	unsigned int waypointCount = descriptor->m_waypointCount;
+	p_waypointInfo->m_patrolMode = (eWaypointPatrolMode) descriptor->m_patrolMode;
 	p_waypointInfo->m_waypointCount = waypointCount;
-	p_waypointInfo->m_waypointIndex = data[2];
+	p_waypointInfo->m_waypointIndex = descriptor->m_waypointIndex;
 
-	unsigned char rawWaypointStep = data[3];
+	unsigned char rawWaypointStep = descriptor->m_waypointStep;
 	int waypointStep;
 	if ((rawWaypointStep & ENEMY_WAYPOINT_STEP_SIGN_BIT) != 0) {
 		waypointStep = rawWaypointStep | ENEMY_WAYPOINT_STEP_SIGN_EXTENSION_MASK;
@@ -219,7 +227,7 @@ tagLoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoi
 
 	p_waypointInfo->m_waypoints = new unsigned short[waypointCount];
 	if ((int) waypointCount > 0) {
-		unsigned short* waypointData = (unsigned short*) (data + ENEMY_WAYPOINT_DESCRIPTOR_BYTES);
+		unsigned short* waypointData = (unsigned short*) (data + sizeof(*descriptor));
 		int i = 0;
 		unsigned int remaining = waypointCount;
 		do {
@@ -230,5 +238,5 @@ tagLoadEnemyDataAdditionalAction* CEnemyGroupManager::LoadLevelAdditional_Waypoi
 	}
 
 	return (tagLoadEnemyDataAdditionalAction*) (data + waypointCount * sizeof(*p_waypointInfo->m_waypoints) +
-												ENEMY_WAYPOINT_DESCRIPTOR_BYTES);
+												sizeof(*descriptor));
 }

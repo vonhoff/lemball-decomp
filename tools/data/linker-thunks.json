@@ -20635,7 +20635,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CEnemyGroupManager.cpp.obj",
       "symbol": "?AddEnemyGroup@CEnemyGroupManager@@QAEXHHHW4eEnemyStateActions@@W4eEnemyStateRules@@0101GH@Z",
       "size": 287,
-      "fingerprint": "51c790b8c892e5e8d1531c4d1c517dd9c47b3f6dc3ebd6c996dd4c5f0eec5cbc",
+      "fingerprint": "a7e2c2828c8e6fbfa99ef9fa14ca1c5d9dfb2371f60f105d27c07e629ad59308",
       "references": [
         {
           "offset": 51,
