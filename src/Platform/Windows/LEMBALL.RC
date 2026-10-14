@@ -212,7 +212,7 @@ BEGIN
     EDITTEXT 1077, 10, 25, 55, 15, WS_VISIBLE | WS_DISABLED | WS_TABSTOP | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL
     DEFPUSHBUTTON "OK", IDOK, 130, 6, 50, 14
     PUSHBUTTON "Cancel", IDCANCEL, 130, 23, 50, 14
-    LTEXT "Time (secs)", 1079, 70, 30, 45, 10
+    LTEXT "Time (secs)", 1079, 70, 30, 45, 10, WS_DISABLED
 END
 
 114 DIALOG 0, 0, 157, 46
@@ -256,7 +256,7 @@ BEGIN
             VALUE "InternalName", "Lemmings Paintball\0"
             VALUE "LegalCopyright", "Copyright \251 Psygnosis Ltd. 1990-1995\0"
             VALUE "LegalTrademarks", "Lemmings\256 is a registered trademark of Psygnosis Ltd. Windows(TM) is a trademark of Microsoft Corporation.\0"
-            VALUE "OriginalFilename", "LEMBALL.EXE\0"
+            VALUE "OriginalFilename", "\0"
             VALUE "ProductName", "Lemmings\0"
             VALUE "ProductVersion", "1.0.0.0\0"
         END

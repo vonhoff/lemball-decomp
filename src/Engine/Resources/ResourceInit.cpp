@@ -5,8 +5,6 @@
 #include "Engine/Resources/ResourceTypeList.h"
 #include "ResourceChunkTypes.h"
 
-#include <stddef.h>
-
 namespace
 {
 enum {
@@ -19,46 +17,19 @@ bool _RES_Init()
 {
 	ResourceTypeList* list;
 
-	list = new ResourceTypeList;
-	if (list != NULL) {
-		list->m_capacity = 2;
-		list->m_currentIndex = -1;
-		list->m_count = 0;
-		list->m_typeCodes = new CHUNKID[list->m_capacity];
-	}
-	else {
-		list = NULL;
-	}
+	list = new ResourceTypeList(2);
 	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_INT;
 	list->m_count = list->m_count + 1;
 	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_ZRLE;
 	list->m_count = list->m_count + 1;
 	g_pResourceTypes = list;
 
-	list = new ResourceTypeList;
-	if (list != NULL) {
-		list->m_capacity = 1;
-		list->m_currentIndex = -1;
-		list->m_count = 0;
-		list->m_typeCodes = new CHUNKID[list->m_capacity];
-	}
-	else {
-		list = NULL;
-	}
+	list = new ResourceTypeList(1);
 	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_ZRLE;
 	list->m_count = list->m_count + 1;
 	g_pCompressedResourceTypes = list;
 
-	list = new ResourceTypeList;
-	if (list != NULL) {
-		list->m_capacity = 2;
-		list->m_currentIndex = -1;
-		list->m_count = 0;
-		list->m_typeCodes = new CHUNKID[list->m_capacity];
-	}
-	else {
-		list = NULL;
-	}
+	list = new ResourceTypeList(2);
 	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_STRING;
 	list->m_count = list->m_count + 1;
 	list->m_typeCodes[list->m_count] = RESOURCE_CHUNK_INT;
@@ -72,23 +43,9 @@ bool _RES_Init()
 // FUNCTION: LEMBALL 0x0045ba50
 bool _RES_Quit()
 {
-	ResourceTypeList* list;
-
 	delete g_pBasePalManager;
-	list = g_pPreloadedResourceTypes;
-	if (list != NULL) {
-		delete[] list->m_typeCodes;
-		delete list;
-	}
-	list = g_pResourceTypes;
-	if (list != NULL) {
-		delete[] list->m_typeCodes;
-		delete list;
-	}
-	list = g_pCompressedResourceTypes;
-	if (list != NULL) {
-		delete[] list->m_typeCodes;
-		delete list;
-	}
+	delete g_pPreloadedResourceTypes;
+	delete g_pResourceTypes;
+	delete g_pCompressedResourceTypes;
 	return true;
 }
