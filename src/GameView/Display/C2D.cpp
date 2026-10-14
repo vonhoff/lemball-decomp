@@ -4520,41 +4520,7 @@ void C2D::UpdateSpriteGroundLookupRegions()
 	m_spriteGroundTranslatedPointRect.m_x = translatedX;
 	m_spriteGroundTranslatedPointRect.m_y = translatedY;
 
-	short pixelX = m_spriteGroundLookupRectA.m_x;
-	int cellX = (short) (pixelX / GROUND_BLOCK_PIXEL_SIZE);
-	int cellY = (short) (m_spriteGroundLookupRectA.m_y / GROUND_BLOCK_PIXEL_SIZE);
-	int columns = (pixelX + m_spriteGroundLookupRectA.m_width - 1) / GROUND_BLOCK_PIXEL_SIZE - cellX + 1;
-	int rows =
-		(m_spriteGroundLookupRectA.m_y + m_spriteGroundLookupRectA.m_height - 1) / GROUND_BLOCK_PIXEL_SIZE - cellY + 1;
-	short width = lookup->m_width;
-	short height;
-	if (cellX < width && ((height = lookup->m_height), cellY < height)) {
-		if (cellX < 0) {
-			columns += cellX;
-			cellX = 0;
-		}
-		if (cellY < 0) {
-			rows += cellY;
-			cellY = 0;
-		}
-		if (cellX + columns >= width) {
-			columns = width - cellX;
-		}
-		if (cellY + rows >= height) {
-			rows = height - cellY;
-		}
-		if (columns > 0 && rows > 0) {
-			int offset = cellX + cellY * width;
-			unsigned char* maskA = lookup->m_maskA + offset;
-			unsigned char* maskB = lookup->m_maskB + offset;
-			for (; rows != 0; rows--) {
-				memset(maskA, 1, columns);
-				memset(maskB, 1, columns);
-				maskA += lookup->m_width;
-				maskB += lookup->m_width;
-			}
-		}
-	}
+	lookup->MarkRect(m_spriteGroundLookupRectA);
 	m_spriteGroundLookup->MarkRect(m_spriteGroundLookupRectB);
 }
 
