@@ -10,7 +10,7 @@ public:
 	unsigned short GetCollision(int p_x, int p_y)
 	{
 		if (p_x >= 0 && p_y >= 0 && p_x < m_width && p_y < m_height) {
-			return GetGroundCell(p_x, p_y)->m_collision;
+			return m_ground[(unsigned int) m_width * p_y + p_x].m_collision;
 		}
 		return GROUND_COLLISION_OUT_OF_BOUNDS;
 	}
