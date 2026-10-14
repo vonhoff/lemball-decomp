@@ -34,7 +34,7 @@ bool CTCPIPReadSocket::ReadBuffFrom()
 
 	{
 		CTCPIPNetworkAddress* address = (CTCPIPNetworkAddress*) g_pBroadcastReceiveAddress;
-		address->m_ipv4Address = sourceAddress.sin_addr.s_addr;
+		address->m_ipv4Address = sourceAddress.sin_addr;
 		strcpy(address->m_text, inet_ntoa(address->Get()));
 	}
 	return ProcessPacket();

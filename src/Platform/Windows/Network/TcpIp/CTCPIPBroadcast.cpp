@@ -80,7 +80,7 @@ void CTCPIPBroadcast::GotName(int p_failed)
 		memcpy(&lookupAddress, *hostEntry->h_addr_list, hostEntry->h_length);
 		address = new CTCPIPNetworkAddress;
 		m_specificAddress = address;
-		address->m_ipv4Address = lookupAddress.s_addr;
+		address->m_ipv4Address = lookupAddress;
 		strcpy(address->m_text, inet_ntoa(address->Get()));
 		address->GetStr();
 	}
@@ -139,7 +139,7 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 		hostEntry = (hostent*) m_asyncBuffer;
 		memcpy(&lookupAddress, *hostEntry->h_addr_list, hostEntry->h_length);
 		address = (CTCPIPNetworkAddress*) g_pBroadcastAddress;
-		address->m_ipv4Address = lookupAddress.s_addr;
+		address->m_ipv4Address = lookupAddress;
 		strcpy(address->m_text, inet_ntoa(address->Get()));
 		g_pBroadcastAddress->GetStr();
 	}
@@ -196,7 +196,7 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 	}
 	address.sin_family = AF_INET;
 	address.sin_port = htons((unsigned short) (m_port + g_broadcastPort));
-	address.sin_addr.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
+	address.sin_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
 	if (bind(m_socketHandle, (const sockaddr*) &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		CBroadcast::SendFailedInit(NETWORK_ERROR_BROADCAST_BIND);

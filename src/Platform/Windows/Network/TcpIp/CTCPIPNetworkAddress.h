@@ -11,12 +11,7 @@
 class CTCPIPNetworkAddress : public CNetworkAddress {
 public:
 	CTCPIPNetworkAddress() { m_text[0] = '\0'; }
-	in_addr Get()
-	{
-		in_addr address;
-		address.s_addr = m_ipv4Address;
-		return address;
-	}
+	in_addr Get() { return m_ipv4Address; }
 	virtual char* GetStr();                              // vtable+0x00
 	virtual void operator=(CNetworkAddress& p_address);  // vtable+0x0c
 	virtual void operator=(const char* p_text);          // vtable+0x08
@@ -31,8 +26,8 @@ public:
 	friend class CTCPIPConnect;
 
 private:
-	char m_text[16];            // 0x04
-	unsigned int m_ipv4Address; // 0x14
+	char m_text[16];       // 0x04
+	in_addr m_ipv4Address; // 0x14
 };
 
 #endif

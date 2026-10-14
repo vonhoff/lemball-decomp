@@ -45,7 +45,7 @@ void CTCPIPConnect::GotHost(int p_failed)
 		hostEntry = (hostent*) m_asyncBuffer;
 		memcpy(&hostAddress, *hostEntry->h_addr_list, hostEntry->h_length);
 		CTCPIPNetworkAddress address;
-		address.m_ipv4Address = hostAddress.s_addr;
+		address.m_ipv4Address = hostAddress;
 		strcpy(address.m_text, inet_ntoa(hostAddress));
 		SetDestAddr(&address);
 		m_port = (short) atoi(m_address);
@@ -120,7 +120,7 @@ void CTCPIPConnect::Listen(CNetworkAddress* p_address)
 	SetDestAddr(p_address);
 	address.sin_family = AF_INET;
 	address.sin_port = htons((unsigned short) (m_port + g_broadcastPort));
-	address.sin_addr.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
+	address.sin_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
 	if (bind(m_socketHandle, (const sockaddr*) &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return;
@@ -145,7 +145,7 @@ void CTCPIPConnect::Connect()
 	InitSocket();
 	address.sin_family = AF_INET;
 	address.sin_port = htons((unsigned short) (m_port + g_broadcastPort));
-	address.sin_addr.s_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
+	address.sin_addr = ((CTCPIPNetworkAddress*) g_pBroadcastAddress)->m_ipv4Address;
 	if (bind(m_socketHandle, (const sockaddr*) &address, sizeof(address)) == NETWORK_SOCKET_ERROR) {
 		SocketError();
 		return;
