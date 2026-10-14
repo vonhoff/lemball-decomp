@@ -3,11 +3,10 @@
 #include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
 #include "CGenericGroup.h"
-#include "Engine/Math/CFixed.h"
+#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/FixedPoint.h"
-#include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
 #include "Engine/Math/VSTrig.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -57,26 +56,7 @@ void CSheepGroup::RunAway(AICOORD p_threatPosition)
 								1) &
 							   FACING_DIRECTION_MASK) *
 							  TRIG_ANGLE_EIGHTH_TURN;
-			VSTrig* trigTable = g_pVSTrig;
-			int sineValue;
-			int cosineValue;
-			if (escapeAngle < 0) {
-				sineValue = -trigTable->m_sine[(-escapeAngle) % TRIG_ANGLE_FULL_TURN].m_value;
-			}
-			else {
-				sineValue = g_pVSTrig->m_sine[escapeAngle % TRIG_ANGLE_FULL_TURN].m_value;
-			}
-			CFixed sine(sineValue);
-			int cosineAngle = escapeAngle + TRIG_ANGLE_QUARTER_TURN;
-			if (cosineAngle < 0) {
-				cosineValue =
-					-g_pVSTrig->m_sine[(-TRIG_ANGLE_QUARTER_TURN - escapeAngle) % TRIG_ANGLE_FULL_TURN].m_value;
-			}
-			else {
-				cosineValue = g_pVSTrig->m_sine[cosineAngle % TRIG_ANGLE_FULL_TURN].m_value;
-			}
-			CFixed cosine(cosineValue);
-			CVector rotatedEscapeVector = trigTable->Rotate(escapeVector, sine, cosine);
+			CVector rotatedEscapeVector = g_pVSTrig->Rotate(escapeVector, escapeAngle);
 			escapeDestination.m_xFixed = (unsigned int) escapeDestination.m_xFixed + rotatedEscapeVector.m_xFixed;
 			escapeDestination.m_yFixed = (unsigned int) escapeDestination.m_yFixed + rotatedEscapeVector.m_yFixed;
 			if ((escapeDestination.m_xFixed >> FIXED_POINT_FRACTION_BITS) < 0) {

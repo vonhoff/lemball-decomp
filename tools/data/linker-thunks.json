@@ -19824,8 +19824,8 @@
       "caller": 4322608,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CSheepGroup.cpp.obj",
       "symbol": "?RunAway@CSheepGroup@@QAEXVAICOORD@@@Z",
-      "size": 512,
-      "fingerprint": "daaf901850ee1fb9aff92bb8f1589fed9caa189cfd02134ecdf9373645fc3371",
+      "size": 417,
+      "fingerprint": "b658137e09e2d4ce8bf56d948bf73a465f70206ca95ce8abd1faf0f6efd0e695",
       "references": [
         {
           "offset": 60,
@@ -19842,21 +19842,21 @@
           "source_symbol": "?ReturnFacingDirection@@YAIHHHH@Z"
         },
         {
-          "offset": 348,
+          "offset": 253,
           "original_instruction": 4322956,
           "original_bytes": "e8091bfeff",
           "thunk": 4198810,
           "source_symbol": "??0CVector@@QAE@ABV0@@Z"
         },
         {
-          "offset": 360,
+          "offset": 265,
           "original_instruction": 4322968,
           "original_bytes": "e8d123feff",
           "thunk": 4201070,
           "source_symbol": "?Rotate@VSTrig@@QBE?AVCVector@@V2@AAVCFixed@@1@Z"
         },
         {
-          "offset": 479,
+          "offset": 384,
           "original_instruction": 4323087,
           "original_bytes": "e8091ffeff",
           "thunk": 4199965,
@@ -19941,7 +19941,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Groups/CSheepGroup.cpp.obj",
       "symbol": "?Process@CSheepGroup@@UAEHXZ",
       "size": 70,
-      "fingerprint": "1c9f098080e06e2b9f7ceb7dd98c47d223af637671f54363a1b9ea32f9b2c17f",
+      "fingerprint": "c0031f87690ec38ff6326640dd658bc33a7de035adff4011bf011c7256483842",
       "references": [
         {
           "offset": 52,
