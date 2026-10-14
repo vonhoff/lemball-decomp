@@ -418,9 +418,8 @@ void CSurface::SetLinePtrs()
 		}
 		if (m_parentSurface->CPVZBuffSurface::m_enabled != 0) {
 			CPVZBuffSurface::m_enabled = m_parentSurface->CPVZBuffSurface::m_enabled;
-			CPVZBuffSurface::m_buffer =
-				(unsigned short*) ((int) m_parentSurface->CPVZBuffSurface::m_buffer +
-								   ((int) m_windowRect.m_y * parentStride + (int) m_windowRect.m_x) * 2);
+			CPVZBuffSurface::m_buffer = m_parentSurface->CPVZBuffSurface::m_buffer +
+										((int) m_windowRect.m_y * parentStride + (int) m_windowRect.m_x);
 		}
 		else {
 			CPVZBuffSurface::m_enabled = 0;

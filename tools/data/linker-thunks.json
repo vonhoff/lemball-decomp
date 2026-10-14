@@ -37453,7 +37453,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Graphics/CSurface.cpp.obj",
       "symbol": "?Blit@CSurface@@UAEXPAVCBitmap@@PAVCResBITMAP@@@Z",
       "size": 582,
-      "fingerprint": "f7d524f769fd49a40b95b1259161f8db20752038b007518ddcc2a696fb0c9ab5",
+      "fingerprint": "db4cbeed099402ac2d8b6775809b6cc18fb60bc39364c30f0527d9c7ceed9b02",
       "references": [
         {
           "offset": 258,
