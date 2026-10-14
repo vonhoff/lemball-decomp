@@ -152,7 +152,7 @@ bool CIce::Process()
 	int i;
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AICOORD position(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
+		AICOORD position(object->m_position);
 		int dx = (int) ((unsigned int) m_velocityX * elapsed * FIXED_POINT_ONE) / 8;
 		int dy = (int) ((unsigned int) m_velocityY * elapsed * FIXED_POINT_ONE) / 8;
 		int ax = abs(dx >> FIXED_POINT_FRACTION_BITS);
@@ -205,7 +205,7 @@ bool CIce::Process()
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AICOORD current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
+		AICOORD current(object->m_position);
 		int x = current.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int y = current.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		if (x < minX || x > maxX || y < minY || y > maxY) {
@@ -240,7 +240,7 @@ bool CIce::Process()
 	}
 	for (i = 0; i < m_objectCount; i++) {
 		CGameObject* object = m_objects[i];
-		AICOORD position(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
+		AICOORD position(object->m_position);
 		unsigned short groundZ = g_pMap->m_ground.GetZ(position.m_xFixed >> FIXED_POINT_FRACTION_BITS,
 													   position.m_yFixed >> FIXED_POINT_FRACTION_BITS);
 		if ((position.m_zFixed >> FIXED_POINT_FRACTION_BITS) <= groundZ) {
@@ -332,7 +332,7 @@ void CIce::Switched()
 	{
 		for (int i = 0; i < m_objectCount; i++) {
 			CGameObject* object = m_objects[i];
-			AICOORD current(object->m_position.m_xFixed, object->m_position.m_yFixed, object->m_position.m_zFixed);
+			AICOORD current(object->m_position);
 			object->m_hidden = 0;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
