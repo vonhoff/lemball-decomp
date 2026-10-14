@@ -49,7 +49,7 @@ void CPVGDIBitmap::Initialise()
 // FUNCTION: LEMBALL 0x00472340
 void CPVGDIBitmap::CreateLinePtrs()
 {
-	if ((int) m_lineCapacity < m_size.m_height) {
+	if (m_lineCapacity < m_size.m_height) {
 		if (m_lines != NULL) {
 			delete[] m_lines;
 			m_lines = NULL;
@@ -58,7 +58,7 @@ void CPVGDIBitmap::CreateLinePtrs()
 			m_lines = new unsigned char*[m_size.m_height];
 			ResetLinePtrs();
 		}
-		m_lineCapacity = (unsigned int) m_size.m_height;
+		m_lineCapacity = m_size.m_height;
 		return;
 	}
 	ResetLinePtrs();
@@ -70,7 +70,7 @@ void CPVGDIBitmap::ResetLinePtrs()
 	m_xOffset = 0;
 	m_firstLine = 0;
 	SetLinePtrs();
-	if ((int) m_rowPadding > 0) {
+	if (m_rowPadding > 0) {
 		memset(m_bitsBase, 0, m_rowPadding);
 		memset(m_bitsBase + abs(m_stride) * m_size.m_height + m_rowPadding, 0, m_rowPadding);
 	}
@@ -188,7 +188,7 @@ CVSSize CPVGDIBitmap::SetSize(const CVSSize& p_size, int p_pitch)
 		m_extraRows = 0;
 	}
 	else {
-		m_extraRows = (int) (p_size.m_width - 1 + m_rowPadding * 2) / (int) p_size.m_width;
+		m_extraRows = (int) (p_size.m_width - 1 + (unsigned int) m_rowPadding * 2) / (int) p_size.m_width;
 	}
 	return m_size + CVSSize(0, m_extraRows);
 }

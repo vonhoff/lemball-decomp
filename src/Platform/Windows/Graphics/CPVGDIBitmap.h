@@ -41,9 +41,9 @@ private:
 	unsigned int m_firstLine;    // 0x14
 	unsigned int m_xOffset;      // 0x18
 	int m_stride;                // 0x1c
-	unsigned int m_rowPadding;   // 0x20
-	unsigned int m_extraRows;    // 0x24
-	unsigned int m_lineCapacity; // 0x28
+	int m_rowPadding;            // 0x20
+	int m_extraRows;             // 0x24
+	int m_lineCapacity;          // 0x28
 	CVSSize m_size;              // 0x2c
 	CVSRect m_rect0;             // 0x30
 	CVSRect m_rect1;             // 0x38
