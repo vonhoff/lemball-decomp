@@ -1146,18 +1146,7 @@ bool CGameObject::OnLift(tCoord3d& p_liftPosition)
 	if (left > x || right < x || y < top || y > bottom) {
 		return false;
 	}
-	CMap* map = g_pMap;
-	int blockX = left >> GROUND_BLOCK_PIXEL_SHIFT;
-	int blockY = top >> GROUND_BLOCK_PIXEL_SHIFT;
-	unsigned short groundZ;
-	if (left < 0 || top < 0 || blockX >= map->m_ground.m_width || blockY >= map->m_ground.m_height) {
-		groundZ = 0;
-	}
-	else {
-		int offsetX = left & GROUND_BLOCK_PIXEL_MASK;
-		int offsetY = top & GROUND_BLOCK_PIXEL_MASK;
-		groundZ = map->m_ground.m_ground[blockY * map->m_ground.m_width + blockX].GetZ(offsetX, offsetY);
-	}
+	unsigned short groundZ = g_pMap->m_ground.GetZ(left, top);
 	m_position.m_zFixed = IntegerToFixed(groundZ);
 	return true;
 }
@@ -1185,19 +1174,7 @@ bool CGameObject::OnLift(tCoord3d& p_liftMin, tCoord3d& p_liftMax)
 	if (x < left || x > right || y < top || y > bottom) {
 		return false;
 	}
-	CMap* map = g_pMap;
-	int blockX = left >> GROUND_BLOCK_PIXEL_SHIFT;
-	int blockY = top >> GROUND_BLOCK_PIXEL_SHIFT;
-	int width;
-	unsigned short groundZ;
-	if (left < 0 || top < 0 || (width = map->m_ground.m_width) <= blockX || map->m_ground.m_height <= blockY) {
-		groundZ = 0;
-	}
-	else {
-		left &= GROUND_BLOCK_PIXEL_MASK;
-		top &= GROUND_BLOCK_PIXEL_MASK;
-		groundZ = map->m_ground.m_ground[width * blockY + blockX].GetZ(left, top);
-	}
+	unsigned short groundZ = g_pMap->m_ground.GetZ(left, top);
 	m_position.m_zFixed = IntegerToFixed(groundZ);
 	return true;
 }

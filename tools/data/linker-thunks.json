@@ -16249,38 +16249,6 @@
       ]
     },
     {
-      "caller": 4285248,
-      "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
-      "symbol": "?OnLift@CGameObject@@UAEHAAUtCoord3d@@@Z",
-      "size": 207,
-      "fingerprint": "c7c7d615189f402785aaddae11c9dc83edc2ff92b5caf9a3b136de35ab9e3b32",
-      "references": [
-        {
-          "offset": 158,
-          "original_instruction": 4285406,
-          "original_bytes": "e8c2c5feff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        }
-      ]
-    },
-    {
-      "caller": 4285472,
-      "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
-      "symbol": "?OnLift@CGameObject@@UAEHAAUtCoord3d@@0@Z",
-      "size": 204,
-      "fingerprint": "4dcdd2ee95a71f249cdadafa32a7f1abc7774f14233a83e7b0bbacf493e8bbf7",
-      "references": [
-        {
-          "offset": 155,
-          "original_instruction": 4285627,
-          "original_bytes": "e8e5c4feff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        }
-      ]
-    },
-    {
       "caller": 4285984,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CGameObject.cpp.obj",
       "symbol": "?SetId@CGameObject@@QAEXG@Z",
