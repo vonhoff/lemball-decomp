@@ -33,7 +33,7 @@ CGraphicButton::CGraphicButton(const CVSPoint& p_position,
 							   CPVGWnd* p_parent,
 							   unsigned long p_animId,
 							   unsigned long p_alignmentFlags)
-	: CDepressedButton(p_parent), m_graphicWidth(m_graphicHeight = 0), m_graphicOffsetX(m_graphicOffsetY = 0)
+	: CDepressedButton(p_parent)
 {
 	CHotAreaHandler* area;
 
@@ -68,53 +68,53 @@ void CGraphicButton::Initialise()
 	animation = m_animation;
 	animation->Lock();
 	entries = m_animation->m_animationEntries;
-	short& graphicHeight = m_graphicHeight;
+	short& graphicHeight = m_graphicSize.m_height;
 	short firstWidth = entries->m_size.m_width;
 	CResZRLE* second = entries + 1;
-	m_graphicWidth = firstWidth;
+	m_graphicSize.m_width = firstWidth;
 	graphicHeight = entries->m_size.m_height;
 	short width = second->m_size.m_width;
 	short height = second->m_size.m_height;
 	if (firstWidth < width) {
-		m_graphicWidth = width;
+		m_graphicSize.m_width = width;
 	}
-	if (m_graphicHeight < height) {
+	if (m_graphicSize.m_height < height) {
 		graphicHeight = height;
 	}
 	m_animation->m_directUseCount = m_animation->m_directUseCount - 1;
 	const CVSPoint* position = &m_bounds;
-	m_graphicOffsetX = position->m_x;
-	m_graphicOffsetY = position->m_y;
+	m_graphicOffset.m_x = position->m_x;
+	m_graphicOffset.m_y = position->m_y;
 	boxWidth = m_bounds.m_width;
 	if (boxWidth < 0) {
-		m_bounds.m_width = -m_graphicWidth * boxWidth;
+		m_bounds.m_width = -m_graphicSize.m_width * boxWidth;
 	}
 	else if (boxWidth == 0) {
-		m_bounds.m_width = m_graphicWidth;
+		m_bounds.m_width = m_graphicSize.m_width;
 	}
 	boxHeight = m_bounds.m_height;
 	if (boxHeight < 0) {
-		m_bounds.m_height = -m_graphicHeight * boxHeight;
+		m_bounds.m_height = -m_graphicSize.m_height * boxHeight;
 	}
 	else if (boxHeight == 0) {
-		m_bounds.m_height = m_graphicHeight;
+		m_bounds.m_height = m_graphicSize.m_height;
 	}
 	if ((int) m_bounds.m_width * (int) m_bounds.m_height != 0) {
 		CHotAreaHandler::SetActive(1);
 	}
-	short& offsetX = m_graphicOffsetX;
+	short& offsetX = m_graphicOffset.m_x;
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_HORIZONTAL_CENTER) != 0) {
-		offsetX = (m_bounds.m_width - m_graphicWidth) / 2;
+		offsetX = (m_bounds.m_width - m_graphicSize.m_width) / 2;
 	}
 	else if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_RIGHT) != 0) {
-		offsetX = m_bounds.m_width - m_graphicWidth;
+		offsetX = m_bounds.m_width - m_graphicSize.m_width;
 	}
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_VERTICAL_CENTER) != 0) {
-		m_graphicOffsetY = (m_bounds.m_height - m_graphicHeight) / 2;
+		m_graphicOffset.m_y = (m_bounds.m_height - m_graphicSize.m_height) / 2;
 		return;
 	}
 	if ((m_alignmentFlags & GRAPHIC_BUTTON_ALIGN_BOTTOM) != 0) {
-		m_graphicOffsetY = m_bounds.m_height - m_graphicHeight;
+		m_graphicOffset.m_y = m_bounds.m_height - m_graphicSize.m_height;
 	}
 }
 
@@ -150,9 +150,9 @@ void CGraphicButton::OnDestroy()
 // FUNCTION: LEMBALL 0x004689a0
 void CGraphicButton::DrawButton()
 {
-	short x = m_graphicOffsetX;
+	short x = m_graphicOffset.m_x;
 	unsigned int pressed;
-	short y = m_graphicOffsetY;
+	short y = m_graphicOffset.m_y;
 
 	if (m_enabled == 0 || (pressed = 1, CHotAreaHandler::m_active == 0)) {
 		pressed = 0;

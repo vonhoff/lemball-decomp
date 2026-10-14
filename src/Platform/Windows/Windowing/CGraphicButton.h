@@ -3,8 +3,9 @@
 
 #include "CDepressedButton.h"
 #include "Engine/Graphics/Primitives/CPushActive.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSSize.h"
 
-struct CVSPoint;
 class CPVGWnd;
 class CResANIM;
 class CRemap;
@@ -35,10 +36,8 @@ public:
 private:
 	unsigned int m_animationId;    // 0x10c
 	unsigned int m_alignmentFlags; // 0x110
-	short m_graphicWidth;          // 0x114
-	short m_graphicHeight;         // 0x116
-	short m_graphicOffsetX;        // 0x118
-	short m_graphicOffsetY;        // 0x11a
+	CVSSize m_graphicSize;         // 0x114
+	CVSPoint m_graphicOffset;      // 0x118
 	CResANIM* m_animation;         // 0x11c
 	CRemap* m_remap;               // 0x120
 	CAnim* m_primitive;            // 0x124
