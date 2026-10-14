@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_FOUNDATION_CSMALLMEMORY_H
 
 #include "SmallMemoryConstants.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 class CBucket;
 
@@ -23,7 +24,7 @@ private:
 
 extern CSmallMemory* g_pSmallMemory;
 extern int g_nSmallMemoryEnabled;
-extern void* g_pMasterArenaMemory;
+extern HGLOBAL g_pMasterArenaMemory;
 extern unsigned int g_maxSmallMemorySize;
 extern char* g_pCurrentAllocDescription;
 #endif

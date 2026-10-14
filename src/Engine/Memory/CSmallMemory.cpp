@@ -98,4 +98,4 @@ CSmallMemory* g_pSmallMemory;
 int g_nSmallMemoryEnabled = 1;
 
 // GLOBAL: LEMBALL 0x004a2180
-void* g_pMasterArenaMemory = NULL;
+HGLOBAL g_pMasterArenaMemory = NULL;
