@@ -1417,12 +1417,12 @@ bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 	bool includeSpecial;
 
 	initialMap = m_map;
-	maxGameX = initialMap->m_ground.m_width * 0x10 - 1;
-	maxGameY = initialMap->m_ground.m_height * 0x10 - 1;
-	searchY = p_screenY + 0x50;
+	maxGameX = (int) ((unsigned int) initialMap->m_ground.m_width * 0x10 - 1);
+	maxGameY = (int) ((unsigned int) initialMap->m_ground.m_height * 0x10 - 1);
+	searchY = (int) ((unsigned int) p_screenY + 0x50);
 	if (searchY >= p_screenY) {
-		searchMinX = p_screenX - 0x20;
-		searchMaxX = p_screenX + 0x20;
+		searchMinX = (int) ((unsigned int) p_screenX - 0x20);
+		searchMaxX = (int) ((unsigned int) p_screenX + 0x20);
 		do {
 			searchX = searchMinX;
 			if (searchMaxX >= searchX) {
@@ -1436,16 +1436,20 @@ bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 											gameY << GROUND_BLOCK_PIXEL_SHIFT,
 											groundScreenX,
 											groundScreenY);
-						groundScreenY -= m_map->m_ground.m_ground[m_map->m_ground.m_width * gameY + gameX].m_height;
+						groundScreenY =
+							(int) ((unsigned int) groundScreenY -
+								   m_map->m_ground.m_ground[(unsigned int) m_map->m_ground.m_width * gameY + gameX]
+									   .m_height);
 
-						left = groundScreenX - GROUND_BLOCK_PIXEL_SIZE;
-						right = groundScreenX + GROUND_BLOCK_PIXEL_MASK;
-						top = groundScreenY - GROUND_BLOCK_PIXEL_SIZE;
-						bottom = groundScreenY + GROUND_BLOCK_PIXEL_MASK;
+						left = (int) ((unsigned int) groundScreenX - GROUND_BLOCK_PIXEL_SIZE);
+						right = (int) ((unsigned int) groundScreenX + GROUND_BLOCK_PIXEL_MASK);
+						top = (int) ((unsigned int) groundScreenY - GROUND_BLOCK_PIXEL_SIZE);
+						bottom = (int) ((unsigned int) groundScreenY + GROUND_BLOCK_PIXEL_MASK);
 						if (left <= p_screenX && right >= p_screenX && top <= p_screenY && bottom >= p_screenY) {
-							ground = m_map->m_ground.m_ground + m_map->m_ground.m_width * gameY + gameX;
-							hitX = p_screenX - left;
-							hitY = p_screenY - top;
+							ground =
+								m_map->m_ground.m_ground + ((unsigned int) m_map->m_ground.m_width * gameY + gameX);
+							hitX = (int) ((unsigned int) p_screenX - left);
+							hitY = (int) ((unsigned int) p_screenY - top);
 							if (hitX >= 0 && hitY >= 0 && hitX <= GROUND_HIT_MASK_LAST_INDEX &&
 								hitY <= GROUND_HIT_MASK_LAST_INDEX) {
 								includeSpecial = m_groundHitMode >= 1;
@@ -1457,10 +1461,10 @@ bool C2D::ScreenToGame(int p_screenX, int p_screenY, int& p_gameX, int& p_gameY)
 							}
 						}
 					}
-					searchX += 0x10;
+					searchX = (int) ((unsigned int) searchX + 0x10);
 				} while (searchMaxX >= searchX);
 			}
-			searchY -= 8;
+			searchY = (int) ((unsigned int) searchY - 8);
 		} while (searchY >= p_screenY);
 	}
 	return false;
