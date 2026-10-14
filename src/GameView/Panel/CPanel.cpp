@@ -12,6 +12,7 @@
 #include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResZRLE.h"
+#include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
@@ -44,7 +45,7 @@ CPanel::CPanel(C2D* p_gameView) : CBaseQueueHandler()
 {
 	int i;
 	m_game = p_gameView;
-	m_window = (CPVGWnd*) p_gameView->m_display;
+	m_window = p_gameView->m_display;
 	m_ai = p_gameView->m_ai;
 	m_resources[0] = CResANIM::Load(RES_GAME_BUTPAWS);
 	m_resources[1] = CResANIM::Load(RES_GAME_BUTAMMO);
