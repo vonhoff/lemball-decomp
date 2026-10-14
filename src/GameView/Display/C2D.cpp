@@ -4341,17 +4341,7 @@ void C2D::SetOrigin()
 
 	int gameX = origin.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	int gameY = origin.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-	unsigned short z;
-	if (gameX >= 0 && gameY >= 0 && gameX >> GROUND_BLOCK_PIXEL_SHIFT < m_map->m_ground.m_width &&
-		gameY >> GROUND_BLOCK_PIXEL_SHIFT < m_map->m_ground.m_height) {
-		z = m_map->m_ground
-				.m_ground[(gameY >> GROUND_BLOCK_PIXEL_SHIFT) * (unsigned int) m_map->m_ground.m_width +
-						  (gameX >> GROUND_BLOCK_PIXEL_SHIFT)]
-				.GetZ(gameX & GROUND_BLOCK_PIXEL_MASK, gameY & GROUND_BLOCK_PIXEL_MASK);
-	}
-	else {
-		z = 0;
-	}
+	unsigned short z = m_map->m_ground.GetZ(gameX, gameY);
 	origin.m_zFixed = (int) z << FIXED_POINT_FRACTION_BITS;
 
 	if (m_ai->m_gameStatus == GAME_STATUS_NOT_STARTED || m_ai->m_gameStatus == GAME_STATUS_RUNNING) {
