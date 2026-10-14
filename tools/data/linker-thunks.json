@@ -23700,43 +23700,6 @@
       ]
     },
     {
-      "caller": 4366704,
-      "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CBalloonPost.cpp.obj",
-      "symbol": "?Process@CBalloonPost@@QAEXXZ",
-      "size": 417,
-      "fingerprint": "047b51c6931b4f541c20c11a68cd468470e54db6a4f802c76f948b3a15e58410",
-      "references": [
-        {
-          "offset": 81,
-          "original_instruction": 4366785,
-          "original_bytes": "e8df87fdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        },
-        {
-          "offset": 181,
-          "original_instruction": 4366885,
-          "original_bytes": "e87b87fdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        },
-        {
-          "offset": 281,
-          "original_instruction": 4366985,
-          "original_bytes": "e81787fdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        },
-        {
-          "offset": 381,
-          "original_instruction": 4367085,
-          "original_bytes": "e8b386fdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        }
-      ]
-    },
-    {
       "caller": 4367808,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CTheBalloonPost.cpp.obj",
       "symbol": "??0CTheBalloonPost@@QAE@W4eObjectType@@I@Z",
