@@ -42,10 +42,10 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 	}
 	if (m_loaded == 0 && m_bodyLoaded != 0 && m_headerLoaded != 0) {
 		unsigned int count;
-		unsigned int directed;
+		bool directed;
 		unsigned char* dataCursor;
 		count = m_totalSize / m_listHeader->m_capacity;
-		directed = 0;
+		directed = false;
 		dataCursor = m_data;
 		if (m_vramReady == 0) {
 			unsigned char* headerCursor = m_headerData;
@@ -54,12 +54,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 				m_vramEntryCount = VRAM_ENTRIES_NOT_TRACKED;
 			}
 			for (unsigned int i = 0; i < count; i++) {
-				if (DirectResources(i, headerCursor, dataCursor) != 0 || directed != 0) {
-					directed = 1;
-				}
-				else {
-					directed = 0;
-				}
+				directed = DirectResources(i, headerCursor, dataCursor) || directed;
 			}
 			g_pActiveMogRes->DeallocateMem(m_headerData, 1);
 			m_headerData = NULL;
@@ -67,12 +62,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 		}
 		else {
 			for (unsigned int i = 0; i < count; i++) {
-				if (DirectResources(i, dataCursor) != 0 || directed != 0) {
-					directed = 1;
-				}
-				else {
-					directed = 0;
-				}
+				directed = DirectResources(i, dataCursor) || directed;
 			}
 		}
 		m_loaded = true;
