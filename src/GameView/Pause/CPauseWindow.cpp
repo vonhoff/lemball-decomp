@@ -268,7 +268,7 @@ void CPauseWindow::CreateTheWindow(const CVSRect& p_rect)
 		m_borderPadding.m_width = 8;
 		m_borderPadding.m_height = 8;
 	}
-	CVSPoint padding(m_borderPadding.m_width, m_borderPadding.m_height);
+	CVSPoint padding = m_borderPadding.toPoint();
 	borderRect.AddInPlace(&padding);
 	size.m_width = (short) (m_borderPadding.m_width * 2);
 	size.m_height = (short) (m_borderPadding.m_height * 2);
