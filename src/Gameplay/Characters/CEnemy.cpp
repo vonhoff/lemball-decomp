@@ -432,16 +432,7 @@ void CEnemy::EndFiring()
 	if (x >= 0 && y >= 0 && x < pixelWidth && y < pixelHeight) {
 		int z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 		CMap* map = g_pMap;
-		int blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
-		int blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-		unsigned short groundZ;
-		if (x < 0 || y < 0 || blockX >= width || blockY >= height) {
-			groundZ = 0;
-		}
-		else {
-			groundZ = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(x & GROUND_BLOCK_PIXEL_MASK,
-																						  y & GROUND_BLOCK_PIXEL_MASK);
-		}
+		unsigned short groundZ = map->m_ground.GetZ(x, y);
 		if (groundZ == z) {
 			if ((MapCheck(x, y) & GROUND_COLLISION_BLOCKS_WALKING) == 0) {
 				m_position.m_xFixed = (unsigned int) x << FIXED_POINT_FRACTION_BITS;
