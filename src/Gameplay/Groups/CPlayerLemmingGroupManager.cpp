@@ -35,6 +35,19 @@ enum {
 	PLAYER_GROUP_TRAP_DOOR_FINAL_DELAY_MS = 4100
 };
 
+// SIZE 0x06
+struct PlayerStartCoordinates {
+	unsigned short m_x;
+	unsigned short m_y;
+	unsigned short m_z;
+};
+
+// SIZE 0x08
+struct PlayerStartDescriptor {
+	PlayerStartCoordinates m_position;
+	unsigned short m_lemmingCount;
+};
+
 // GLOBAL: LEMBALL 0x0049d138
 int g_anDefaultPlayerLemmingCounts[5][4] = {{0, 0, 0, 0}, {4, 0, 0, 0}, {3, 1, 0, 0}, {2, 1, 1, 0}, {1, 1, 1, 1}};
 
@@ -476,13 +489,13 @@ void CPlayerLemmingGroupManager::InitialiseNetwork()
 // FUNCTION: LEMBALL 0x00418d20
 void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long p_dataSize, bool p_skip)
 {
-	unsigned short* data = (unsigned short*) p_data;
+	PlayerStartCoordinates* data = (PlayerStartCoordinates*) p_data;
 	m_startPositionCount = 1;
-	int x = *data++;
+	int x = data->m_x;
 	m_startX[0] = x;
-	int y = *data++;
+	int y = data->m_y;
 	m_startY[0] = y;
-	m_startZ[0] = *data++;
+	m_startZ[0] = data->m_z;
 	CMap* map = g_pMap;
 	int blockY;
 	int blockX;
@@ -586,14 +599,14 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 																	bool p_skip)
 {
 	CMap* map = g_pMap;
-	unsigned short* data = (unsigned short*) p_data;
-	m_startPositionCount = *data++;
+	PlayerStartDescriptor* data = (PlayerStartDescriptor*) (p_data + sizeof(unsigned short));
+	m_startPositionCount = *(unsigned short*) p_data;
 	int total = 0;
 	int i;
 	for (i = 0; i < m_startPositionCount; i++) {
-		m_startX[i] = *data++;
-		m_startY[i] = *data++;
-		m_startZ[i] = *data++;
+		m_startX[i] = data->m_position.m_x;
+		m_startY[i] = data->m_position.m_y;
+		m_startZ[i] = data->m_position.m_z;
 		int y;
 		int x;
 		x = m_startX[i];
@@ -615,7 +628,8 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 			z = 0;
 		}
 		m_startZ[i] = z;
-		m_lemmingCounts[i] = *data++;
+		m_lemmingCounts[i] = data->m_lemmingCount;
+		data++;
 		total += m_lemmingCounts[i];
 	}
 	g_pGenericGroupAI->NLemmings(total);
