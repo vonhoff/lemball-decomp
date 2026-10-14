@@ -422,7 +422,7 @@ void CNetworkOptionsDrawer::DrawEntry(unsigned long p_index, int& p_value, int p
 				trimmedPeerName[len] = 0;
 				short measuredWidth = font->GetSize(trimmedPeerName, TEXT_ADVANCE_X_POSITIVE).m_width;
 				len--;
-				if (m_layoutTable->m_peerNameWidth >= (int) measuredWidth) {
+				if (m_layoutTable->m_peerNameWidth >= measuredWidth) {
 					break;
 				}
 			} while (1);
@@ -487,7 +487,7 @@ void CNetworkOptionsDrawer::DrawText()
 								  NULL);
 
 		short dividerWidth = font->GetSize(divider, TEXT_ADVANCE_X_POSITIVE).m_width;
-		posDivider.m_x = (short) (((int) m_size.m_width - (int) dividerWidth) / 2);
+		posDivider.m_x = (short) ((m_size.m_width - dividerWidth) / 2);
 		m_textManager->DrawString(m_gdi, posDivider, CVSSize(), m_chalkFontId, divider, TEXT_ADVANCE_X_POSITIVE, NULL);
 
 		if (g_szNetworkGameName[0] != 0) {
@@ -495,14 +495,24 @@ void CNetworkOptionsDrawer::DrawText()
 			CVSPoint posMyIp((short) m_layoutTable->m_headerIpX, (short) m_layoutTable->m_localPlayerY);
 			CVSPoint posMyComputer((short) m_layoutTable->m_headerComputerX, (short) m_layoutTable->m_localPlayerY);
 			posMyName.m_x -= font->GetSize(g_szNetworkGameName, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
-			m_textManager
-				->DrawString(m_gdi, posMyName, CVSSize(), m_chalkFontId, g_szNetworkGameName, 0x20, m_remaps[0]);
+			m_textManager->DrawString(m_gdi,
+									  posMyName,
+									  CVSSize(),
+									  m_chalkFontId,
+									  g_szNetworkGameName,
+									  TEXT_ADVANCE_X_POSITIVE,
+									  m_remaps[0]);
 
 			char* myIp = m_localAddressText;
 			if (myIp != NULL && *myIp != 0) {
 				posMyIp.m_x -= font->GetSize(myIp, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
-				m_textManager
-					->DrawString(m_gdi, posMyIp, CVSSize(), m_chalkFontId, m_localAddressText, 0x20, m_remaps[0]);
+				m_textManager->DrawString(m_gdi,
+										  posMyIp,
+										  CVSSize(),
+										  m_chalkFontId,
+										  m_localAddressText,
+										  TEXT_ADVANCE_X_POSITIVE,
+										  m_remaps[0]);
 			}
 
 			char* myPeer = m_localComputerName;
@@ -517,7 +527,13 @@ void CNetworkOptionsDrawer::DrawText()
 				CString lowerPeer(trimmed);
 				lowerPeer.lower();
 				posMyComputer.m_x -= font->GetSize(trimmed, TEXT_ADVANCE_X_POSITIVE).m_width / 2;
-				m_textManager->DrawString(m_gdi, posMyComputer, CVSSize(), m_chalkFontId, lowerPeer, 0x20, m_remaps[0]);
+				m_textManager->DrawString(m_gdi,
+										  posMyComputer,
+										  CVSSize(),
+										  m_chalkFontId,
+										  lowerPeer,
+										  TEXT_ADVANCE_X_POSITIVE,
+										  m_remaps[0]);
 			}
 		}
 
