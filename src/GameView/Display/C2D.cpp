@@ -2468,8 +2468,8 @@ void C2D::DrawLemmingFlyShadow(CViewData& p_viewData)
 	viewY = (viewY << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS;
 	m_map->GameToScreen(screenX, viewY);
 	viewX = viewY - ((int) ((unsigned int) groundZ << FIXED_POINT_FRACTION_BITS) >> FIXED_POINT_FRACTION_BITS);
-	int drawX = (screenX - m_viewOriginX) << FIXED_POINT_FRACTION_BITS;
-	int drawY = (viewX - m_viewOriginY) << FIXED_POINT_FRACTION_BITS;
+	int drawX = (int) (((unsigned int) screenX - (unsigned int) m_viewOriginX) << FIXED_POINT_FRACTION_BITS);
+	int drawY = (int) (((unsigned int) viewX - (unsigned int) m_viewOriginY) << FIXED_POINT_FRACTION_BITS);
 
 	m_lemmingAnims->DrawAnim((short) (drawX >> FIXED_POINT_FRACTION_BITS),
 							 (short) (drawY >> FIXED_POINT_FRACTION_BITS),
