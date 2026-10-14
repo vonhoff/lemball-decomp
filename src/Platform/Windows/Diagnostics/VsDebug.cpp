@@ -27,7 +27,7 @@ struct FILE;
 struct _Filet;
 
 // GLOBAL: LEMBALL 0x004a071c
-void* g_pDebugAcceleratorTable = NULL;
+HACCEL g_pDebugAcceleratorTable = NULL;
 
 // GLOBAL: LEMBALL 0x004a0e68
 int g_nDebugInitialised = 0;
@@ -39,10 +39,10 @@ int g_nDebugFileOutputEnabled = 0;
 int g_nAsyncDebugEnabled = 0;
 
 // GLOBAL: LEMBALL 0x004a29f4
-void* g_pDebugThread = NULL;
+HANDLE g_pDebugThread = NULL;
 
 // GLOBAL: LEMBALL 0x004a2a04
-void* g_pDebugSyncEvent = NULL;
+HANDLE g_pDebugSyncEvent = NULL;
 
 // GLOBAL: LEMBALL 0x004a2a08
 unsigned long g_nDebugThreadId = THREAD_ID_BEFORE_CREATE;

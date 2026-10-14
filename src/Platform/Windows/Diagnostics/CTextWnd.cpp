@@ -19,9 +19,6 @@ enum {
 	TEXT_WINDOW_POINT_ABOVE_FIRST_ROW_OFFSET = -1
 };
 
-extern void* g_pDebugAcceleratorTable;
-extern void* g_pDebugSyncEvent;
-
 // FUNCTION: LEMBALL 0x00472b10
 unsigned long __cdecl DebugMessageThreadMain()
 {
@@ -31,7 +28,7 @@ unsigned long __cdecl DebugMessageThreadMain()
 	MSG message;
 	while (GetMessageA(&message, NULL, 0, 0) != 0) {
 		if (g_pDebugAcceleratorTable == NULL ||
-			TranslateAcceleratorA(message.hwnd, (HACCEL) g_pDebugAcceleratorTable, &message) == 0) {
+			TranslateAcceleratorA(message.hwnd, g_pDebugAcceleratorTable, &message) == 0) {
 			TranslateMessage(&message);
 			DispatchMessageA(&message);
 		}
