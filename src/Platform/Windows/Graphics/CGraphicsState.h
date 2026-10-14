@@ -3,6 +3,8 @@
 
 #include "CGraphicsDriver.h"
 
+class CWnd;
+
 enum eGraphicsDriverMode {
 	GFX_MODE_NONE = 0,
 	GFX_MODE_GDI = 1,
@@ -29,7 +31,7 @@ struct CGraphicsState {
 	void UpdateDriverSize(const struct CVSSize& p_size);
 
 	int m_driverMode;            // 0x00
-	unsigned int m_targetWindow; // 0x04
+	CWnd* m_targetWindow;        // 0x04
 	bool m_fallbackWarningShown; // 0x08
 };
 

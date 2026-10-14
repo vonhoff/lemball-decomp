@@ -192,7 +192,7 @@ long __stdcall CWnd::ProcessMessage(HWND p_hwnd, unsigned int p_message, unsigne
 		}
 	}
 	else {
-		window = (CWnd*) g_pTargetGraphicsSystem->m_targetWindow;
+		window = g_pTargetGraphicsSystem->m_targetWindow;
 		if (window == NULL) {
 			return DefWindowProcA(p_hwnd, p_message, p_wParam, p_lParam);
 		}
@@ -716,7 +716,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 		short relativeY = relativeOrigin->m_y;
 		m_relativeTopLeft.m_x = relativeOrigin->m_x;
 		m_relativeTopLeft.m_y = relativeY;
-		g_pTargetGraphicsSystem->m_targetWindow = (unsigned int) this;
+		g_pTargetGraphicsSystem->m_targetWindow = this;
 		m_nativeWindow = g_pTargetGraphicsDriver->m_window;
 		SetFocusWindow();
 		OnFocusGained();
