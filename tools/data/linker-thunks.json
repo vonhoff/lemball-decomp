@@ -24940,29 +24940,22 @@
       "caller": 4384608,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?Set@CMover@@QAEXGHIHH@Z",
-      "size": 240,
-      "fingerprint": "911f3dcc928d92d58acd8e5ab71c6558d875470fafabb06677e69dc3cc8a9d61",
+      "size": 167,
+      "fingerprint": "f0e2159ed56f4b6a8f9ccc722455d5444e5cc98626654bd46fae813ef99c1e10",
       "references": [
         {
-          "offset": 14,
+          "offset": 12,
           "original_instruction": 4384622,
           "original_bytes": "e8203bfdff",
           "thunk": 4203155,
           "source_symbol": "?SetId@CGameObject@@QAEXG@Z"
         },
         {
-          "offset": 35,
+          "offset": 33,
           "original_instruction": 4384643,
           "original_bytes": "e8882cfdff",
           "thunk": 4199440,
           "source_symbol": "?GetNodePosition@CAI@@QAE?AUCPt3@@H@Z"
-        },
-        {
-          "offset": 143,
-          "original_instruction": 4384737,
-          "original_bytes": "e8bf41fdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         }
       ]
     },
@@ -24970,32 +24963,25 @@
       "caller": 4384848,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?SetUpNextNode@CMover@@QAEXK@Z",
-      "size": 292,
-      "fingerprint": "6f4ca00046bbcac5574855f23d51b085b109658729d4df92b65b79d55bd1f16f",
+      "size": 225,
+      "fingerprint": "d57e880127f78ad7e2d0af6c2fb67435cee8379dd0ce3555a72c14311ebf132e",
       "references": [
         {
-          "offset": 46,
+          "offset": 45,
           "original_instruction": 4384894,
           "original_bytes": "e88d2bfdff",
           "thunk": 4199440,
           "source_symbol": "?GetNodePosition@CAI@@QAE?AUCPt3@@H@Z"
         },
         {
-          "offset": 136,
-          "original_instruction": 4384984,
-          "original_bytes": "e8c840fdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        },
-        {
-          "offset": 232,
+          "offset": 166,
           "original_instruction": 4385080,
           "original_bytes": "e80d3cfdff",
           "thunk": 4203850,
           "source_symbol": "?Distance@@YAIHHHH@Z"
         },
         {
-          "offset": 277,
+          "offset": 211,
           "original_instruction": 4385125,
           "original_bytes": "e8743efdff",
           "thunk": 4204510,
@@ -25008,7 +24994,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?FindObjectsOnTopOfMe@CMover@@QAEXXZ",
       "size": 192,
-      "fingerprint": "34cf542cba51f1ca561c231ff7dc8f5f8d0298e2b74fd17e331261738c1f5026",
+      "fingerprint": "25ed273a49a4c1523955143d61ca4f9eb108bea5d08f7291c653d4a09f8cd228",
       "references": [
         {
           "offset": 86,
@@ -25044,18 +25030,18 @@
       "caller": 4385472,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?MoveOccupantsToDestination@CMover@@QAEXXZ",
-      "size": 61,
-      "fingerprint": "c180c7fde3b28389aa891196538139f74d5b69fb38ab1b449130e138785cece0",
+      "size": 62,
+      "fingerprint": "573ace7ef17f7cd6e98e76db13efab9c4bb0aad079085ffb032a1a48c7f68a18",
       "references": [
         {
-          "offset": 34,
+          "offset": 35,
           "original_instruction": 4385507,
           "original_bytes": "e86a32fdff",
           "thunk": 4201810,
           "source_symbol": "?AddDestination@CGameObject@@QAEXABVAICOORD@@@Z"
         },
         {
-          "offset": 43,
+          "offset": 44,
           "original_instruction": 4385516,
           "original_bytes": "e81b4bfdff",
           "thunk": 4208140,
@@ -25067,8 +25053,8 @@
       "caller": 4385536,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?Process@CMover@@UAEHXZ",
-      "size": 937,
-      "fingerprint": "4ddc413ff2e8e0446797b180ed54beb6f60d03463f9eab5509afa14da81facb3",
+      "size": 853,
+      "fingerprint": "a4616ed7f97bf68d32152999faf07f33fd4447a3d9621e66f55cbb684ae29ea5",
       "references": [
         {
           "offset": 52,
@@ -25099,70 +25085,63 @@
           "source_symbol": "?VerifyObjects@CMover@@QAEXXZ"
         },
         {
-          "offset": 278,
+          "offset": 270,
           "original_instruction": 4385814,
           "original_bytes": "e8f527fdff",
           "thunk": 4199440,
           "source_symbol": "?GetNodePosition@CAI@@QAE?AUCPt3@@H@Z"
         },
         {
-          "offset": 391,
-          "original_instruction": 4385927,
-          "original_bytes": "e8193dfdff",
-          "thunk": 4204965,
-          "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
-        },
-        {
-          "offset": 472,
+          "offset": 386,
           "original_instruction": 4386008,
           "original_bytes": "e8223dfdff",
           "thunk": 4205055,
           "source_symbol": "?MoveObjects@CMover@@QAEXHHH@Z"
         },
         {
-          "offset": 582,
+          "offset": 496,
           "original_instruction": 4386118,
           "original_bytes": "e8d629fdff",
           "thunk": 4200225,
           "source_symbol": "?StopObjectsMoving@CMover@@QAEXXZ"
         },
         {
-          "offset": 599,
+          "offset": 513,
           "original_instruction": 4386135,
           "original_bytes": "e81043fdff",
           "thunk": 4206700,
           "source_symbol": "?SetUpNextNode@CMover@@QAEXK@Z"
         },
         {
-          "offset": 611,
+          "offset": 525,
           "original_instruction": 4386147,
           "original_bytes": "e8a245fdff",
           "thunk": 4207370,
           "source_symbol": "?SetPos@CMover@@QAEXXZ"
         },
         {
-          "offset": 685,
+          "offset": 599,
           "original_instruction": 4386221,
           "original_bytes": "e88e37fdff",
           "thunk": 4203840,
           "source_symbol": "?Position@CMove3d@@QAEXAAUCPt3@@H@Z"
         },
         {
-          "offset": 740,
+          "offset": 654,
           "original_instruction": 4386276,
           "original_bytes": "e8163cfdff",
           "thunk": 4205055,
           "source_symbol": "?MoveObjects@CMover@@QAEXHHH@Z"
         },
         {
-          "offset": 789,
+          "offset": 703,
           "original_instruction": 4386325,
           "original_bytes": "e85242fdff",
           "thunk": 4206700,
           "source_symbol": "?SetUpNextNode@CMover@@QAEXK@Z"
         },
         {
-          "offset": 796,
+          "offset": 710,
           "original_instruction": 4386332,
           "original_bytes": "e8e944fdff",
           "thunk": 4207370,

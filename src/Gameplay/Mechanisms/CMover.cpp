@@ -108,18 +108,7 @@ void CMover::Set(unsigned short p_id, int p_pathId, unsigned int p_movementMode,
 
 	int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-	int groundX = x >> GROUND_BLOCK_PIXEL_SHIFT;
-	int groundY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-	CMap* map = g_pMap;
-	unsigned short z;
-	if (x < 0 || y < 0 || map->m_ground.m_width <= groundX || map->m_ground.m_height <= groundY) {
-		z = 0;
-	}
-	else {
-		x &= GROUND_BLOCK_PIXEL_MASK;
-		y &= GROUND_BLOCK_PIXEL_MASK;
-		z = map->m_ground.m_ground[(unsigned int) groundY * map->m_ground.m_width + groundX].GetZ(x, y);
-	}
+	unsigned short z = g_pMap->m_ground.GetZ(x, y);
 
 	m_active = true;
 	m_actionArgument = p_pathId;
@@ -136,23 +125,9 @@ void CMover::SetUpNextNode(unsigned long p_time)
 {
 	int nextNode = NextNode();
 	CPt3 nextPosition = g_pAI->GetNodePosition(m_startNode + nextNode);
-	CMap* map = g_pMap;
 	int y = nextPosition.m_y >> FIXED_POINT_FRACTION_BITS;
 	int x = nextPosition.m_x >> FIXED_POINT_FRACTION_BITS;
-	int blockX;
-	int blockY;
-	blockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-	blockX = x >> GROUND_BLOCK_PIXEL_SHIFT;
-	unsigned short z;
-	int width;
-	if (x < 0 || y < 0 || blockX >= (width = g_pMap->m_ground.m_width) || blockY >= g_pMap->m_ground.m_height) {
-		z = 0;
-	}
-	else {
-		x &= 15;
-		y &= 15;
-		z = map->m_ground.m_ground[(unsigned int) blockY * width + blockX].GetZ(x, y);
-	}
+	unsigned short z = g_pMap->m_ground.GetZ(x, y);
 	const unsigned int height = z;
 	nextPosition.m_z = height << FIXED_POINT_FRACTION_BITS;
 
@@ -261,27 +236,15 @@ bool CMover::Process()
 		AICOORD oldPosition = m_position;
 		int y;
 		int x;
-		int groundX;
 		{
 			const CPt3& position = g_pAI->GetNodePosition(m_startNode + next);
 			m_position.m_xFixed = position.m_x;
 			x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 			m_position.m_yFixed = position.m_y;
 			y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-			groundX = x >> GROUND_BLOCK_PIXEL_SHIFT;
 			m_position.m_zFixed = position.m_z;
 		}
-		int groundY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-		CMap* map = g_pMap;
-		unsigned short z;
-		if (x < 0 || y < 0 || groundX >= map->m_ground.m_width || g_pMap->m_ground.m_height <= groundY) {
-			z = 0;
-		}
-		else {
-			x &= GROUND_BLOCK_PIXEL_MASK;
-			y &= GROUND_BLOCK_PIXEL_MASK;
-			z = map->m_ground.m_ground[(unsigned int) groundY * map->m_ground.m_width + groundX].GetZ(x, y);
-		}
+		unsigned short z = g_pMap->m_ground.GetZ(x, y);
 		const unsigned int height = z;
 		m_position.m_zFixed = height << FIXED_POINT_FRACTION_BITS;
 		oldPosition.m_xFixed =
