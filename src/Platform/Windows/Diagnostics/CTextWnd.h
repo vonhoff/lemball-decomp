@@ -20,7 +20,7 @@ public:
 	int UpdateVisibleRows();
 	int UpdateClientWidth();
 	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_arg2);
-	void Paint(void* p_dc, const tagPAINTSTRUCT* p_paint);
+	void Paint(HDC p_dc, const tagPAINTSTRUCT* p_paint);
 	void Scroll(int p_scrollCode, int p_thumbPos);
 	void BeginSelection(int p_x, int p_y, unsigned int p_mouseFlags);
 	void EndSelection(unsigned int p_x, unsigned int p_y, unsigned int p_mouseFlags);
@@ -29,11 +29,11 @@ public:
 	void UpdateSelection(int p_x, int p_y, unsigned int p_mouseFlags);
 	char* GetSelectionText();
 	void CopySelection();
-	static long __stdcall WindowProc(void* p_window, unsigned int p_message, unsigned int p_wParam, long p_lParam);
+	static long __stdcall WindowProc(HWND p_window, unsigned int p_message, unsigned int p_wParam, long p_lParam);
 
 private:
-	void* m_windowHandle;          // 0x1c
-	void* m_fontHandle;            // 0x20
+	HWND m_windowHandle;           // 0x1c
+	HFONT m_fontHandle;            // 0x20
 	CTextLineBuffer* m_lineBuffer; // 0x24
 	int m_lineCapacity;            // 0x28
 	int m_lineCount;               // 0x2c
