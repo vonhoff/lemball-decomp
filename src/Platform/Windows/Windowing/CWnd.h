@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_CWND_H
 
 #include "CPVWnd.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 struct CVSPoint;
 struct tagMenuList;
@@ -18,7 +19,7 @@ class CWnd : public CPVWnd {
 public:
 	CWnd();
 	int SelectMenu(unsigned int p_message, unsigned int p_wParam, unsigned int p_lParam);
-	static long __stdcall ProcessMessage(void* p_hwnd, unsigned int p_message, unsigned int p_wParam, long p_lParam);
+	static long __stdcall ProcessMessage(HWND p_hwnd, unsigned int p_message, unsigned int p_wParam, long p_lParam);
 	static void ProcessMouseMoves();
 	virtual bool IsFocusWindow();                                                // vtable+0x60
 	virtual unsigned int GetStyle();                                             // vtable+0x64
@@ -59,7 +60,7 @@ public:
 private:
 	tagMenuList** m_menuLists;     // 0x3c
 	unsigned int m_menuResourceId; // 0x40
-	void* m_nativeWindow;          // 0x44
+	HWND m_nativeWindow;           // 0x44
 	CPVWnd* m_createRect;          // 0x48
 };
 

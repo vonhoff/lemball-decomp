@@ -112,7 +112,7 @@ void CGraphicsState::NotifyDriverChange()
 		CListElement<CPVWnd>* node = g_pWindowOwnerList->m_head;
 		while (node != NULL) {
 			CWnd* window = (CWnd*) node->m_object;
-			HWND nativeWindow = (HWND) window->m_nativeWindow;
+			HWND nativeWindow = window->m_nativeWindow;
 			if (nativeWindow != NULL) {
 				if ((window->GetStyle() & WINDOW_STYLE_DIRECT_SCROLL) != 0) {
 					int directScroll = 1;

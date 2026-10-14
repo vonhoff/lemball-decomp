@@ -59,7 +59,7 @@ CDirectDrawDriver::CDirectDrawDriver(const CVSSize& p_size, int p_fullScreen)
 	}
 	if (p_fullScreen != 0) {
 		windowClass.style = 0xb;
-		windowClass.lpfnWndProc = (WNDPROC) CWnd::ProcessMessage;
+		windowClass.lpfnWndProc = CWnd::ProcessMessage;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
 		windowClass.hInstance = (HINSTANCE) g_pApplicationInstance;

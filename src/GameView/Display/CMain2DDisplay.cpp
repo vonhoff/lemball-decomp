@@ -364,7 +364,7 @@ int CMain2DDisplay::ProcessMsg(tagMESSAGE* p_message)
 			cdDir = g_pTargetPlatformServices->GetCDDir(g_szLemballHelpFile);
 			strcpy(helpPath, cdDir);
 			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
-			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, HELP_KEY, (unsigned long) g_szHelpContentsKey);
+			helpOk = WinHelpA(m_nativeWindow, helpPath, HELP_KEY, (unsigned long) g_szHelpContentsKey);
 			if (helpOk == 0) {
 				*g_pErrorOutput << g_szCouldntHelpYa;
 			}
@@ -374,19 +374,19 @@ int CMain2DDisplay::ProcessMsg(tagMESSAGE* p_message)
 			cdDir = g_pTargetPlatformServices->GetCDDir("lemball\\lemball.hlp");
 			strcpy(helpPath, cdDir);
 			memcpy(helpPath + strlen(helpPath), "lemball\\lemball.hlp", sizeof("lemball\\lemball.hlp"));
-			helpOk = WinHelpA((HWND) m_nativeWindow, helpPath, HELP_PARTIALKEY, (unsigned long) "");
+			helpOk = WinHelpA(m_nativeWindow, helpPath, HELP_PARTIALKEY, (unsigned long) "");
 			if (helpOk == 0) {
 				*g_pErrorOutput << searchHelpError;
 			}
 			break;
 		case MAIN_MENU_ABOUT:
-			DialogBoxParamA(g_pApplicationInstance, g_szAboutBox, (HWND) m_nativeWindow, (DLGPROC) AboutDialogProc, 0);
+			DialogBoxParamA(g_pApplicationInstance, g_szAboutBox, m_nativeWindow, (DLGPROC) AboutDialogProc, 0);
 			break;
 		case MAIN_MENU_TOGGLE_FULLSCREEN:
 			ToggleResolution();
 			break;
 		case MAIN_MENU_HELP_ON_HELP:
-			helpOk = WinHelpA((HWND) m_nativeWindow, NULL, HELP_HELPONHELP, 0);
+			helpOk = WinHelpA(m_nativeWindow, NULL, HELP_HELPONHELP, 0);
 			if (helpOk == 0) {
 				*g_pErrorOutput << quitHelpError;
 			}

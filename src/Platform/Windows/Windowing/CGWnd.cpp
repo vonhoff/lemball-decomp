@@ -107,7 +107,7 @@ void CGWnd::_OnCreate()
 	relativeOrigin.m_y = originY;
 	style = GetStyle();
 	if ((style & WS_CHILD) != 0 && m_nativeWindow != NULL) {
-		style = GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE);
+		style = GetWindowLongA(m_nativeWindow, GWL_STYLE);
 		if ((style & WS_CHILD) != 0) {
 			CVSPoint* createOrigin = &m_createRect->m_relativeTopLeft;
 			localRect.m_x = localRect.m_x - createOrigin->m_x;
@@ -138,7 +138,7 @@ void CGWnd::_OnDestroy()
 	}
 	style = GetStyle();
 	if ((style & WS_CHILD) != 0 && m_nativeWindow != NULL) {
-		if ((GetWindowLongA((HWND) m_nativeWindow, GWL_STYLE) & WS_CHILD) != 0) {
+		if ((GetWindowLongA(m_nativeWindow, GWL_STYLE) & WS_CHILD) != 0) {
 			CVSRect emptyRect(0, 0, 0, 0);
 			m_createRect->SetDontUpdateRect(emptyRect);
 		}
@@ -211,7 +211,7 @@ long CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, 
 		case GFX_MODE_DD_FS_320X200:
 			return DefWindowProcA((HWND) g_pTargetGraphicsDriver->m_window, p_message, p_wParam, p_lParam);
 		default: {
-			BeginPaint((HWND) m_nativeWindow, &paint);
+			BeginPaint(m_nativeWindow, &paint);
 			paintX = (short) paint.rcPaint.left;
 			paintWidth = (short) paint.rcPaint.right - (unsigned short) paint.rcPaint.left;
 			paintY = (short) paint.rcPaint.top;
@@ -235,7 +235,7 @@ long CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, 
 					m_refreshRect.m_height = (paintHeight - m_refreshRect.m_y) + (unsigned short) paintY;
 				}
 			}
-			EndPaint((HWND) m_nativeWindow, &paint);
+			EndPaint(m_nativeWindow, &paint);
 			return 0;
 		}
 		}
@@ -266,7 +266,7 @@ long CGWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wParam, 
 		break;
 	}
 	if (m_nativeWindow != NULL) {
-		return DefWindowProcA((HWND) m_nativeWindow, p_message, p_wParam, p_lParam);
+		return DefWindowProcA(m_nativeWindow, p_message, p_wParam, p_lParam);
 	}
 	return 0;
 }
@@ -303,7 +303,7 @@ void CGWnd::Flush()
 		return;
 	}
 	if (m_nativeWindow != NULL) {
-		dc = GetDC((HWND) m_nativeWindow);
+		dc = GetDC(m_nativeWindow);
 		EnterCriticalSection(&g_pGdiHelperTarget->m_lock);
 		g_pGdiHelperTarget->SetWindowPtr(dc);
 	}
@@ -314,7 +314,7 @@ void CGWnd::Flush()
 	}
 	m_gdi->m_renderTarget->Flush();
 	if (m_nativeWindow != NULL) {
-		ReleaseDC((HWND) m_nativeWindow, dc);
+		ReleaseDC(m_nativeWindow, dc);
 		LeaveCriticalSection(&g_pGdiHelperTarget->m_lock);
 	}
 }

@@ -10579,7 +10579,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
       "symbol": "??0CGame@@QAE@PAD@Z",
       "size": 988,
-      "fingerprint": "dfcd0967d8059cae2efa00240dff59d581f97f8db15871d9ded7c381c6bc5485",
+      "fingerprint": "70853541f1ea3e361bccac81f647b6d61e518039021080bc4bb2a42de0a5ba82",
       "references": [
         {
           "offset": 173,
@@ -33101,7 +33101,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Loading/CFrontendResourceLoader.cpp.obj",
       "symbol": "??0CFrontendResourceLoader@@QAE@PAVCMain2DDisplay@@H@Z",
       "size": 609,
-      "fingerprint": "a9d0782ff5bf505f81dd45e9347b22d1f6e17bd56bac4cb9c6f4858e060306ec",
+      "fingerprint": "f757978a0d4895c6238e57d77be1498cde2b763e21996e86a109dc18f436e1b3",
       "references": [
         {
           "offset": 338,
@@ -33658,7 +33658,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Preview/CPreviewDrawer.cpp.obj",
       "symbol": "?Load@CPreviewDrawer@@UAEXXZ",
       "size": 756,
-      "fingerprint": "dc52332004fceb44ac38842bc7811d4a8575fd21c783b1a12f1252cc989b4173",
+      "fingerprint": "9dd9cec0c1c3373893495d05d13e7ae2903bc2750c3c3d123da58c1ed3f30e00",
       "references": [
         {
           "offset": 541,
@@ -33910,7 +33910,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Preview/CPreviewDrawer.cpp.obj",
       "symbol": "?LoadLevelInformation@CPreviewDrawer@@QAEXXZ",
       "size": 729,
-      "fingerprint": "0a977980b67deb59874c42cac1bc3876fb90bf2bba6bf0b8081e2edc4bea2dec",
+      "fingerprint": "bb7cea5c5cf85657d90b68d9499f284f7fdb9f76969ea606a5ce721af9c69803",
       "references": [
         {
           "offset": 56,
@@ -36258,7 +36258,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
       "symbol": "?DrawText@CNetworkOptionsDrawer@@UAEXXZ",
       "size": 1808,
-      "fingerprint": "db36447a78bc7b57e9aac7e9610e1c3c53feeed46af662917973cbc8eadf29d1",
+      "fingerprint": "1405fb2e26f3ab8fb52e0c72467d0539e9ad6c603800cb6e1f3349bc801f0c20",
       "references": [
         {
           "offset": 1051,
@@ -36575,7 +36575,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
       "symbol": "?Processing@CNetworkOptionsDrawer@@UAEXXZ",
       "size": 522,
-      "fingerprint": "f71e7397869914bbeebaac91fa6628abbf0fde39986f71aa45dd5ec252282511",
+      "fingerprint": "d4a9eb1da33e07f20a02bcb20b47563240c5031aa3a95156e0b4ea0a8b97d61c",
       "references": [
         {
           "offset": 36,
@@ -36695,7 +36695,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
       "symbol": "?ResetHandlers@CNetworkOptionsDrawer@@QAEXXZ",
       "size": 125,
-      "fingerprint": "45f66c2137483921adbf2ce0ff56b64372ecea5c8178d1971d06c7e4516797fc",
+      "fingerprint": "cc535eef55cb3a647042918af7c9baf0908b1123970e1b043b4e586f415ad3b8",
       "references": [
         {
           "offset": 62,
@@ -37088,7 +37088,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CGWnd.cpp.obj",
       "symbol": "??0CGWnd@@QAE@XZ",
       "size": 115,
-      "fingerprint": "f8ce34bc098fd91fd8f5c1213c7df41f7e2f7c34456c6dbbe614e6531ce2d362",
+      "fingerprint": "df5927f4f16ec8f9292a3a858b4dcc7bffd285a970fabaa7a8b0682d08a7b7bb",
       "references": [
         {
           "offset": 20,
@@ -37148,7 +37148,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Windowing/CGWnd.cpp.obj",
       "symbol": "?ProcessOtherMessages@CGWnd@@UAEJIIJ@Z",
       "size": 543,
-      "fingerprint": "e8439ed6e9fd8fb2958e98c4250d086766bc8485381d9f7517b04ca0c229d1ca",
+      "fingerprint": "bbf05f4a8db90d145d659727891aa32b49256222ff2ea8676e4241eb412e18df",
       "references": [
         {
           "offset": 345,

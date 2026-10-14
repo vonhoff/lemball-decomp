@@ -98,7 +98,7 @@ void CAnimWnd::_OnCreate()
 		SendMessageA(m_movieWindow, WM_CLOSE, 0, 0);
 		m_movieWindow = NULL;
 	}
-	m_movieWindow = MCIWndCreateA((HWND) m_nativeWindow,
+	m_movieWindow = MCIWndCreateA(m_nativeWindow,
 								  (HINSTANCE) g_pApplicationInstance,
 								  WS_CHILD | WS_VISIBLE | MCIWNDF_NOPLAYBAR | MCIWNDF_NOMENU | MCIWNDF_NOTIFYALL,
 								  NULL);
@@ -193,7 +193,7 @@ long CAnimWnd::ProcessOtherMessages(unsigned int p_message, unsigned int p_wPara
 		return 0;
 	}
 	if (m_nativeWindow != NULL) {
-		return DefWindowProcA((HWND) m_nativeWindow, p_message, p_wParam, p_lParam);
+		return DefWindowProcA(m_nativeWindow, p_message, p_wParam, p_lParam);
 	}
 	return 0;
 }

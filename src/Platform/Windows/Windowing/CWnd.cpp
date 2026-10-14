@@ -1,6 +1,5 @@
 #include "CWnd.h"
 
-#define WIN32_LEAN_AND_MEAN
 #include "CPVWnd.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/CVSPoint.h"
@@ -20,7 +19,6 @@
 
 #include <conio.h>
 #include <string.h>
-#include <windows.h>
 #include <windowsx.h>
 #include <dispdib.h>
 
@@ -39,7 +37,7 @@ enum eDisplayDibFlag {
 };
 
 // GLOBAL: LEMBALL 0x004a1f64
-void* g_hFocusWindow = NULL;
+HWND g_hFocusWindow = NULL;
 
 // GLOBAL: LEMBALL 0x004a1f68
 CWnd* g_pFocusWindow = NULL;
@@ -169,7 +167,7 @@ void CWnd::OnSize()
 }
 
 // FUNCTION: LEMBALL 0x00464520
-long __stdcall CWnd::ProcessMessage(void* p_hwnd, unsigned int p_message, unsigned int p_wParam, long p_lParam)
+long __stdcall CWnd::ProcessMessage(HWND p_hwnd, unsigned int p_message, unsigned int p_wParam, long p_lParam)
 {
 	CWnd* window;
 	CREATESTRUCTA* create;
