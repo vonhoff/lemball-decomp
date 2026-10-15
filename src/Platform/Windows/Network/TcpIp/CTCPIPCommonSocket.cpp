@@ -1,11 +1,12 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 
-#include "Multiplayer/Transport/CBaseCommonSocket.h"
-#include "Platform/Windows/Network/CNetworkWnd.h"
+#include <stddef.h>
 
 #include "Platform/Windows/WindowsTypes.h"
-#include <stddef.h>
 #include <winsock.h>
+
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Platform/Windows/Network/CNetworkWnd.h"
 
 extern int g_socketWindowClassRegistered;
 

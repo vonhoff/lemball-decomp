@@ -1,12 +1,14 @@
 #include "CNetworkWnd.h"
 
+#include <stddef.h>
+
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/Entry.h"
-
-#include <stddef.h>
-#include <windows.h>
+#include "Multiplayer/Transport/NetworkConstants.h"
 
 extern unsigned int g_windowDispatchDisabled;
 

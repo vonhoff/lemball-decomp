@@ -4,6 +4,7 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPWriteSocket.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00470220
 int CTCPIPRWSocket::Process(unsigned int p_message, unsigned int p_wParam, long p_lParam)

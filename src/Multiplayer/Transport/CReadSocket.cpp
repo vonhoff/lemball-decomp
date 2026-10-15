@@ -1,5 +1,7 @@
 #include "CReadSocket.h"
 
+#include <stddef.h>
+
 #include "CBaseCommonSocket.h"
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
@@ -15,9 +17,6 @@
 #include "Multiplayer/Transport/Protocol/CAckMessage.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "NetworkConstants.h"
-
-#include <new.h>
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045f820
 CReadSocket::CReadSocket()

@@ -1,5 +1,11 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPConnect.h"
 
+#include <stdlib.h>
+#include <string.h>
+
+#include "Platform/Windows/WindowsTypes.h"
+#include <winsock.h>
+
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
@@ -8,11 +14,9 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
-#include "Platform/Windows/WindowsTypes.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <winsock.h>
+#include "Multiplayer/Transport/CReadSocket.h"
+#include "Multiplayer/Transport/CWriteSocket.h"
+#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 
 // FUNCTION: LEMBALL 0x00470dd0
 bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)

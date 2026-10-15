@@ -1,5 +1,10 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
 
+#include <stddef.h>
+
+#include "Platform/Windows/WindowsTypes.h"
+#include <winsock.h>
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
@@ -8,10 +13,11 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPConnect.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Platform/Windows/ThreadConstants.h"
-#include "Platform/Windows/WindowsTypes.h"
+#include "Multiplayer/Transport/CBaseNetwork.h"
 
-#include <stddef.h>
-#include <winsock.h>
+class CBroadcast;
+class CConnect;
+class CNetworkAddress;
 
 // FUNCTION: LEMBALL 0x004713c0
 CTCPIPNetwork::CTCPIPNetwork() : CNetworkWnd("TCPIP Network", &g_tcpIpNetworkWindowClassRegistered)

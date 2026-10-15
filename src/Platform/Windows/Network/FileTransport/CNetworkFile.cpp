@@ -1,10 +1,11 @@
 #include "Platform/Windows/Network/FileTransport/CNetworkFile.h"
 
-#include "Engine/Streams/CVSOStream.h"
-
 #include <string.h>
 
+#include "Platform/Windows/WindowsTypes.h"
 #include <winsock.h>
+
+#include "Engine/Streams/CVSOStream.h"
 
 enum eSetFilePointerResult {
 	SET_FILE_POINTER_FAILURE = 0xffffffffUL

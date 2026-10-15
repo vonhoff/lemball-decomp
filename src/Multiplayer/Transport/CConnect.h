@@ -4,6 +4,8 @@
 #include "CBaseCommonSocket.h"
 #include "CRWSocket.h"
 
+class CBasePacket;
+
 class CNetworkAddress;
 enum eNetworkRole {
 	NETWORK_ROLE_CLIENT = 0,

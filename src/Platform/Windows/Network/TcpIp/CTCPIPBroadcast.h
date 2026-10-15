@@ -3,6 +3,7 @@
 
 #include "Multiplayer/Transport/CBroadcast.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x0049a158 CNetworkWnd

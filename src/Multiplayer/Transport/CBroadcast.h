@@ -4,6 +4,8 @@
 #include "CBaseCommonSocket.h"
 #include "CRWSocket.h"
 
+class CBasePacket;
+
 #define BROADCAST_ADDRESS_SPECIFIC 2
 
 class CBroadcastMessage;

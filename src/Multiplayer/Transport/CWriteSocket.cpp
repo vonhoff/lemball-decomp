@@ -1,10 +1,11 @@
 #include "CWriteSocket.h"
 
+#include <string.h>
+
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
 #include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
-#include "Multiplayer/Transport/Packets/CBasePacketBuff.h"
 #include "Multiplayer/Transport/Packets/CWriteCBuff.h"
 #include "Multiplayer/Transport/Packets/CWriteNcBuff.h"
 #include "Multiplayer/Transport/Packets/CWritePacket.h"
@@ -12,9 +13,6 @@
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "Multiplayer/Transport/Protocol/CPulseMessage.h"
 #include "NetworkConstants.h"
-
-#include <new.h>
-#include <string.h>
 
 extern "C" unsigned long __stdcall timeGetTime(void);
 

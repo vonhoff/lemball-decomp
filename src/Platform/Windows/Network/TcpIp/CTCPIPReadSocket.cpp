@@ -1,5 +1,10 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
 
+#include <string.h>
+
+#include "Platform/Windows/WindowsTypes.h"
+#include <winsock.h>
+
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
@@ -7,10 +12,7 @@
 #include "Multiplayer/Transport/CNetworkAddress.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
-#include "Platform/Windows/WindowsTypes.h"
-
-#include <string.h>
-#include <winsock.h>
+#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 
 extern unsigned int g_tcpIpBytesReceived;
 

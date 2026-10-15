@@ -1,5 +1,10 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPBroadcast.h"
 
+#include <string.h>
+
+#include "Platform/Windows/WindowsTypes.h"
+#include <winsock.h>
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/tagMESSAGE.h"
@@ -13,10 +18,7 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPRWSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
-#include "Platform/Windows/WindowsTypes.h"
-
-#include <string.h>
-#include <winsock.h>
+#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 
 // FUNCTION: LEMBALL 0x00470270
 CTCPIPBroadcast::CTCPIPBroadcast()

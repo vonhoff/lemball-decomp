@@ -5,7 +5,6 @@
 #include "Multiplayer/Transport/CRWSocket.h"
 #include "Multiplayer/Transport/CReadSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
-#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPReadSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPWriteSocket.h"
 

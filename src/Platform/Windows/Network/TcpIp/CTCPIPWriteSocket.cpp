@@ -1,14 +1,15 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPWriteSocket.h"
 
+#include "Platform/Windows/WindowsTypes.h"
+#include <winsock.h>
+
 #include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
-#include "Platform/Windows/WindowsTypes.h"
-
-#include <winsock.h>
+#include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
 
 // FUNCTION: LEMBALL 0x00470030
 CTCPIPWriteSocket::CTCPIPWriteSocket()

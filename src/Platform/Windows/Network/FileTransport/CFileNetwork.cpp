@@ -1,5 +1,10 @@
 #include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
 
+#include <stddef.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Streams/CVSOStream.h"
@@ -10,10 +15,9 @@
 #include "Platform/Windows/Network/CNetworkWnd.h"
 #include "Platform/Windows/ThreadConstants.h"
 
-#include <stddef.h>
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+class CBroadcast;
+class CConnect;
+class CNetworkAddress;
 
 // FUNCTION: LEMBALL 0x0046f6b0
 CFileNetwork::CFileNetwork()

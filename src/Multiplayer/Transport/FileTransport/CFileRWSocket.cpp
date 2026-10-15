@@ -1,7 +1,6 @@
 #include "Multiplayer/Transport/FileTransport/CFileRWSocket.h"
 
 #include "Multiplayer/Transport/CRWSocket.h"
-#include "Multiplayer/Transport/FileTransport/CFileCommonSocket.h"
 #include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
 #include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
 
