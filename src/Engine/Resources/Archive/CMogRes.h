@@ -39,16 +39,16 @@ public:
 	friend class CResBase;
 
 private:
-	CMogDir* m_rootDirectory;     // 0x00
-	CMogDir* m_workingDirectory;  // 0x04
-	unsigned int m_error;         // 0x08
-	char* m_workingPath;          // 0x0c
-	CResBase** m_resources;       // 0x10
-	int m_resourceCount;          // 0x14
-	unsigned int m_arenaSize;     // 0x18
-	unsigned int m_skipCleanup;   // 0x1c
-	unsigned int m_unk0x20;       // 0x20
-	unsigned int m_externalArena; // 0x24
+	CMogDir* m_rootDirectory;    // 0x00
+	CMogDir* m_workingDirectory; // 0x04
+	bool m_openFailed;           // 0x08
+	char* m_workingPath;         // 0x0c
+	CResBase** m_resources;      // 0x10
+	int m_resourceCount;         // 0x14
+	unsigned long m_arenaSize;   // 0x18
+	bool m_deleteOnUnload;       // 0x1c
+	unsigned int m_unk0x20;      // 0x20
+	bool m_externalArena;        // 0x24
 };
 
 extern CMogRes* g_pMogRes;

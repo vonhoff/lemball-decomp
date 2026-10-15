@@ -148,7 +148,7 @@ void CResBase::UnLoad()
 {
 	if (--m_referenceCount == 0) {
 		UnLoadData(true);
-		if (g_pActiveMogRes->m_skipCleanup != 0) {
+		if (g_pActiveMogRes->m_deleteOnUnload != 0) {
 			if (m_resourceId != 0) {
 				g_pActiveMogRes->Remove(this);
 			}

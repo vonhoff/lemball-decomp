@@ -36,20 +36,20 @@ CMogRes::CMogRes(char* p_path, unsigned long p_arenaSize)
 
 	g_mogRootPath[0] = RESOURCE_PATH_SEPARATOR;
 	g_pActiveMogRes = this;
-	m_error = 0;
+	m_openFailed = false;
 	m_resources = NULL;
 	m_workingPath = NULL;
 	m_rootDirectory = NULL;
 	m_workingDirectory = NULL;
 	m_resourceCount = 0;
-	m_skipCleanup = 0;
+	m_deleteOnUnload = false;
 	m_arenaSize = p_arenaSize;
 	if (g_pMasterArena->AllocateArena(&arena, p_arenaSize, "Resource Data Arena") == 1) {
-		m_externalArena = 0;
+		m_externalArena = false;
 	}
 	g_pMogloadArena = arena;
 	if (!Open(p_path, "rb")) {
-		m_error = 1;
+		m_openFailed = true;
 		return;
 	}
 	CurrentMilliTimer();
@@ -73,7 +73,7 @@ CMogRes::~CMogRes()
 		vsClose(g_pMogFile);
 	}
 	CheckAllUnloaded();
-	if (m_skipCleanup == 0) {
+	if (m_deleteOnUnload == 0) {
 		CleanUpResources();
 	}
 	if (m_resources != NULL) {
