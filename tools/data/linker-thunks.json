@@ -8344,7 +8344,7 @@
     {
       "address": 4206725,
       "target": 4540048,
-      "target_symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@I@Z"
+      "target_symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@H@Z"
     },
     {
       "address": 4206730,
@@ -36342,14 +36342,14 @@
           "original_instruction": 4539801,
           "original_bytes": "e8e7eafaff",
           "thunk": 4206725,
-          "source_symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@I@Z"
+          "source_symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@H@Z"
         },
         {
           "offset": 137,
           "original_instruction": 4539817,
           "original_bytes": "e8d7eafaff",
           "thunk": 4206725,
-          "source_symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@I@Z"
+          "source_symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@H@Z"
         }
       ]
     },
@@ -36416,7 +36416,7 @@
     {
       "caller": 4540048,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
-      "symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@I@Z",
+      "symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@H@Z",
       "size": 165,
       "fingerprint": "6d2ea8e90c83e35cbe374f89d9fa974034c47e0d74918f4adfca3044c25b96f9",
       "references": [
@@ -36508,7 +36508,7 @@
           "original_instruction": 4540674,
           "original_bytes": "e87ee7faff",
           "thunk": 4206725,
-          "source_symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@I@Z"
+          "source_symbol": "?StartEditing@CNetworkOptionsDrawer@@QAEXW4eEditingStage@@H@Z"
         },
         {
           "offset": 92,

@@ -241,18 +241,18 @@ CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_
 {
 	int playerEntryIndex;
 
-	m_editingActive = 0;
+	m_editingActive = false;
 	m_message = NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT;
 	m_drawnMessage = NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT;
 	m_messageDuration = 0;
 	m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
-	m_broadcasting = 0;
+	m_broadcasting = false;
 	m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
 	m_redrawPending = false;
 	m_lastDrawTime = CurrentMilliTimer();
 	m_localAddressText = NULL;
 	m_localComputerName = NULL;
-	m_locked = 0;
+	m_locked = false;
 	m_startPending = false;
 	m_pendingStage = NETWORK_OPTIONS_EDIT_NONE;
 	m_visibleEntryCount = 0;
@@ -708,8 +708,8 @@ bool CNetworkOptionsDrawer::ProcessMessages(tagMESSAGE* p_message)
 					}
 					break;
 				case INPUT_KEY_ESCAPE:
-					m_broadcasting = 0;
-					m_editingActive = 0;
+					m_broadcasting = false;
+					m_editingActive = false;
 					m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
 					SetMessage(NETWORK_OPTIONS_MESSAGE_NETWORK_TYPE_PROMPT);
 					goto input_accepted;
@@ -835,22 +835,22 @@ void CNetworkOptionsDrawer::Start(unsigned int p_mode)
 		}
 	}
 	m_networkMode = p_mode;
-	m_broadcasting = 0;
-	m_editingActive = 0;
+	m_broadcasting = false;
+	m_editingActive = false;
 	m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
 	((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->StopBroadcast();
 	if (g_szNetworkGameName[0] != 0) {
 		*m_editor = g_szNetworkGameName;
-		StartEditing(NETWORK_OPTIONS_EDIT_GAME_NAME, 0);
+		StartEditing(NETWORK_OPTIONS_EDIT_GAME_NAME, false);
 		return;
 	}
-	StartEditing(NETWORK_OPTIONS_EDIT_GAME_NAME, 1);
+	StartEditing(NETWORK_OPTIONS_EDIT_GAME_NAME, true);
 }
 
 // FUNCTION: LEMBALL 0x004545c0
 void CNetworkOptionsDrawer::StartBroadcast()
 {
-	m_broadcasting = 1;
+	m_broadcasting = true;
 	((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Start();
 	if (((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_started != 0 &&
 		((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->m_startFailed == 0) {
@@ -869,7 +869,7 @@ void CNetworkOptionsDrawer::Stop()
 		((CNetworkOptionsProc*) g_pCurrentFrontendProcess)->Stop();
 	}
 	SetMessage(NETWORK_OPTIONS_MESSAGE_NONE);
-	m_editingActive = 0;
+	m_editingActive = false;
 }
 
 // FUNCTION: LEMBALL 0x00454650
@@ -886,13 +886,13 @@ void CNetworkOptionsDrawer::SetMessage(eNetOptsMessages p_message)
 }
 
 // FUNCTION: LEMBALL 0x00454690
-void CNetworkOptionsDrawer::StartEditing(eEditingStage p_stage, unsigned int p_clear)
+void CNetworkOptionsDrawer::StartEditing(eEditingStage p_stage, bool p_clear)
 {
 	eEditingStage stage;
 	CEditString* editor;
 
 	stage = p_stage;
-	m_editingActive = 0;
+	m_editingActive = false;
 	if (stage != NETWORK_OPTIONS_EDIT_KEEP_CURRENT) {
 		m_editingStage = stage;
 	}
@@ -911,7 +911,7 @@ void CNetworkOptionsDrawer::StartEditing(eEditingStage p_stage, unsigned int p_c
 	}
 	m_editor->m_maxLength = g_anNetworkOptionsEditMaxLength[m_editingStage - 1];
 	SetMessage(g_anNetworkOptionsEditMessages[m_editingStage - 1]);
-	m_editingActive = 1;
+	m_editingActive = true;
 }
 
 // FUNCTION: LEMBALL 0x00454740
@@ -921,7 +921,7 @@ void CNetworkOptionsDrawer::StopEditing()
 	char* text;
 
 	stage = m_editingStage;
-	m_editingActive = 0;
+	m_editingActive = false;
 	switch (stage) {
 	case NETWORK_OPTIONS_EDIT_GAME_NAME:
 		text = m_editor->m_text;
@@ -999,7 +999,7 @@ void CNetworkOptionsDrawer::Processing()
 		m_startPending = false;
 	}
 	if (m_pendingStage != NETWORK_OPTIONS_EDIT_NONE) {
-		StartEditing(m_pendingStage, 1);
+		StartEditing(m_pendingStage, true);
 		m_pendingStage = NETWORK_OPTIONS_EDIT_NONE;
 	}
 	if (m_pendingEvent != NETWORK_OPTIONS_MESSAGE_NONE) {
@@ -1290,7 +1290,7 @@ void CNetworkOptionsDrawer::Lock()
 {
 	int i;
 
-	m_locked = 1;
+	m_locked = true;
 	i = 0;
 	do {
 		m_playerEntries[i].SetActive(0);
@@ -1301,14 +1301,14 @@ void CNetworkOptionsDrawer::Lock()
 // FUNCTION: LEMBALL 0x00454fb0
 void CNetworkOptionsDrawer::UnLock()
 {
-	m_locked = 0;
+	m_locked = false;
 	InitialiseHandlers();
 }
 
 // FUNCTION: LEMBALL 0x00454fc0
 bool CNetworkOptionsDrawer::AcceptingLock()
 {
-	int unlocked;
+	bool unlocked;
 	int skill;
 	CConnect** connections;
 	CGameStatus* status;
@@ -1328,7 +1328,7 @@ bool CNetworkOptionsDrawer::AcceptingLock()
 			return unlocked;
 		}
 	}
-	m_locked = 0;
+	m_locked = false;
 	UnLock();
 	return false;
 }

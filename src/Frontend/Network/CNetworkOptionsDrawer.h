@@ -104,7 +104,7 @@ public:
 	void SetMessage(eNetOptsMessages p_message);
 	void Start(unsigned int p_mode);
 	void StartBroadcast();
-	void StartEditing(eEditingStage p_stage, unsigned int p_clear);
+	void StartEditing(eEditingStage p_stage, bool p_clear);
 	void StartMessageTimeout(eNetOptsMessages p_message, unsigned long p_duration);
 	void Stop();
 	void StopEditing();
@@ -117,14 +117,14 @@ public:
 
 private:
 	CEditString* m_editor;                      // 0x398
-	unsigned int m_editingActive;               // 0x39c
+	bool m_editingActive;                       // 0x39c
 	eEditingStage m_editingStage;               // 0x3a0
 	eEditingStage m_pendingStage;               // 0x3a4
 	eNetOptsMessages m_message;                 // 0x3a8
 	eNetOptsMessages m_drawnMessage;            // 0x3ac
 	unsigned long m_messageStartTime;           // 0x3b0
 	unsigned long m_messageDuration;            // 0x3b4
-	unsigned int m_broadcasting;                // 0x3b8
+	bool m_broadcasting;                        // 0x3b8
 	unsigned int m_networkMode;                 // 0x3bc
 	bool m_redrawPending;                       // 0x3c0
 	eNetworkOptionsHandlerState m_networkState; // 0x3c4
@@ -133,7 +133,7 @@ private:
 	int m_acceptedPlayer;                       // 0x3d0
 	int m_highlightedPlayer;                    // 0x3d4
 	int m_visibleEntryCount;                    // 0x3d8
-	unsigned int m_locked;                      // 0x3dc
+	bool m_locked;                              // 0x3dc
 	bool m_startPending;                        // 0x3e0
 	char* m_localAddressText;                   // 0x3e4
 	char* m_localComputerName;                  // 0x3e8
