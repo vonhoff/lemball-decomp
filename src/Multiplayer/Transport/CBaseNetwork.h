@@ -66,7 +66,7 @@ public:
 	friend class C2D;
 
 private:
-	char* m_networkName; // 0x10
+	const char* m_networkName; // 0x10
 
 public:
 	unsigned int m_shutdownRequested; // 0x14

@@ -87,7 +87,7 @@ bool CBaseNetwork::Initialise(const char* p_networkName, int p_packetSize)
 	unsigned long waitStart;
 
 	m_initialisePending = 1;
-	m_networkName = (char*) p_networkName;
+	m_networkName = p_networkName;
 	g_networkPacketSize = p_packetSize;
 	ForceProcess();
 	start = CurrentMilliTimer();
