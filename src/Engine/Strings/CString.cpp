@@ -131,9 +131,9 @@ CString operator+(CString& p_left, const char* p_right)
 	int length = p_left.getlength();
 	capacity = length + strlen(p_right) + 1;
 	result.SetTextPointer(new char[capacity]);
-	result.m_capacity = capacity;
-	strcpy(result.m_text, p_left.m_text);
-	strcat(result.m_text, p_right);
+	result.SetCapacity(capacity);
+	strcpy(result.GetText(), p_left.GetText());
+	strcat(result.GetText(), p_right);
 	return result;
 }
 
