@@ -31577,7 +31577,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?DrawButton@CPanelButton@@UAEXXZ",
       "size": 790,
-      "fingerprint": "8ceb11fbdcb3bf993fce044956b060ca90afb87b4e0508beaba01a8bd600f287",
+      "fingerprint": "ac2a9cb6fdcab847187f3b129803d5046761935f5a65114cc1387c05f5b860d9",
       "references": [
         {
           "offset": 572,
@@ -31646,7 +31646,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?OnPressed@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z",
       "size": 454,
-      "fingerprint": "d5a45f9ecf4ee20a196b0f0141799dd95f31d04d94690088c84ee3cccb780859",
+      "fingerprint": "b63bbc64f570b93072475568345efa24af61d7d2ab2d0832016b4835227ffab7",
       "references": [
         {
           "offset": 186,

@@ -58,7 +58,7 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVG
 		m_statusRect.m_x = 0;
 		m_statusRect.m_y = 0;
 	}
-	m_unavailable = (unsigned int) (m_lemming->m_lemming->m_action == ACTION_DEAD);
+	m_unavailable = m_lemming->m_lemming->m_action == ACTION_DEAD;
 	m_alternatePlayer = m_lemming->m_lemming->HasObject(OBJECT_FLAG_2);
 	m_lastAmmo = AMMO_COUNT_CACHE_UNSET;
 	m_lastBalloonRemap = PANEL_REMAP_INDEX_NONE;
@@ -86,7 +86,7 @@ CPanelButton::CPanelButton(CPanelLemming* p_lemming, const CVSRect& p_rect, CPVG
 	m_ownerWindow->m_hotAreaList->AddToList(static_cast<CHotAreaHandler*>(this));
 	m_gdi->m_renderTarget->m_propagateChanges = false;
 	m_externalEnabled = 1;
-	m_pressedInside = 0;
+	m_pressedInside = false;
 }
 
 // FUNCTION: LEMBALL 0x004425e0
@@ -236,11 +236,11 @@ void CPanelButton::OnPaint(const CVSRect& p_rect)
 		m_forceDrawCount = 1;
 		m_inventoryCount = panelLemming->m_inventoryCount;
 	}
-	if ((unsigned int) (panelLemming->m_lemming->m_action == ACTION_DEAD) != m_unavailable) {
+	if ((panelLemming->m_lemming->m_action == ACTION_DEAD) != m_unavailable) {
 		m_forceDrawCount = 1;
 		m_unavailable = !m_unavailable;
 	}
-	if ((unsigned int) panelLemming->m_lemming->HasObject(OBJECT_FLAG_2) != m_alternatePlayer) {
+	if (panelLemming->m_lemming->HasObject(OBJECT_FLAG_2) != m_alternatePlayer) {
 		m_forceDrawCount = 1;
 		m_alternatePlayer = !m_alternatePlayer;
 	}
@@ -254,7 +254,7 @@ void CPanelButton::OnPaint(const CVSRect& p_rect)
 // FUNCTION: LEMBALL 0x00442aa0
 void CPanelButton::OnReleased(BUTTON_FLAGS p_flags)
 {
-	m_pressedInside = 0;
+	m_pressedInside = false;
 	CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 }
 
@@ -262,7 +262,7 @@ void CPanelButton::OnReleased(BUTTON_FLAGS p_flags)
 void CPanelButton::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
 	if (m_pressedInside != 0) {
-		m_pressedInside = 0;
+		m_pressedInside = false;
 		CursorChangeType(CURSOR_DISPLAY_HAND, 0);
 	}
 }
@@ -342,7 +342,7 @@ alternate:
 	m_lemming->m_lemming->GetGroup()->SetPlayerControlled(1, m_lemming->m_lemming);
 
 pressed:
-	m_pressedInside = 1;
+	m_pressedInside = true;
 	CursorChangeType(CURSOR_DISPLAY_HAND, 1);
 	g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 }

@@ -27,15 +27,15 @@ public:
 	virtual ~CPanelButton();                                                        // vtable+0x00
 
 private:
-	unsigned int m_pressedInside;        // 0x10c
+	bool m_pressedInside;                // 0x10c
 	CPanelLemming* m_lemming;            // 0x110
 	CSolidRect m_statusLine[1];          // 0x114
 	CSolidRect m_inventoryLines[3];      // 0x124
 	CVSRect m_statusRect;                // 0x154
 	CVSRect m_inventoryRect;             // 0x15c
 	unsigned int m_lastAmmo;             // 0x164
-	unsigned int m_unavailable;          // 0x168
-	unsigned int m_alternatePlayer;      // 0x16c
+	bool m_unavailable;                  // 0x168
+	bool m_alternatePlayer;              // 0x16c
 	ePanelRemapIndex m_lastBalloonRemap; // 0x170
 	unsigned int m_inventoryCount;       // 0x174
 	CAnim m_statusAnim[1];               // 0x178
