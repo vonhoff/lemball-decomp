@@ -13,15 +13,15 @@ class CMain2DDisplay;
 class CRemap;
 class CResFONT;
 
-extern unsigned int g_dwGroundStyleResourceId;
-extern unsigned int g_anGroundStyleResourceIds[10];
-extern unsigned int g_groundBlox1ResourceId;
-extern unsigned int g_groundBlox2ResourceId;
-extern unsigned int g_groundBlox3ResourceId;
-extern unsigned int g_groundBlox4ResourceId;
-extern unsigned int g_groundBlox5ResourceId;
-extern unsigned int g_groundBlox6ResourceId;
-extern unsigned int g_groundBlox7ResourceId;
+extern unsigned long g_dwGroundStyleResourceId;
+extern unsigned long g_anGroundStyleResourceIds[10];
+extern unsigned long g_groundBlox1ResourceId;
+extern unsigned long g_groundBlox2ResourceId;
+extern unsigned long g_groundBlox3ResourceId;
+extern unsigned long g_groundBlox4ResourceId;
+extern unsigned long g_groundBlox5ResourceId;
+extern unsigned long g_groundBlox6ResourceId;
+extern unsigned long g_groundBlox7ResourceId;
 
 // SIZE 0xb4
 enum eGroundStyle {

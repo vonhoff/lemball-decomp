@@ -50,25 +50,25 @@ const unsigned int g_style2ObjectClip[4] = {34, 96, 68, 96};
 const unsigned int* g_styleObjectClip = NULL;
 
 // GLOBAL: LEMBALL 0x004a7850
-unsigned int g_groundBlox1ResourceId;
+unsigned long g_groundBlox1ResourceId;
 // GLOBAL: LEMBALL 0x004a7854
-unsigned int g_groundBlox2ResourceId;
+unsigned long g_groundBlox2ResourceId;
 // GLOBAL: LEMBALL 0x004a7858
-unsigned int g_groundBlox3ResourceId;
+unsigned long g_groundBlox3ResourceId;
 // GLOBAL: LEMBALL 0x004a785c
-unsigned int g_groundBlox4ResourceId;
+unsigned long g_groundBlox4ResourceId;
 // GLOBAL: LEMBALL 0x004a7860
-unsigned int g_groundBlox5ResourceId;
+unsigned long g_groundBlox5ResourceId;
 // GLOBAL: LEMBALL 0x004a7864
-unsigned int g_groundBlox6ResourceId;
+unsigned long g_groundBlox6ResourceId;
 // GLOBAL: LEMBALL 0x004a7868
-unsigned int g_groundBlox7ResourceId;
+unsigned long g_groundBlox7ResourceId;
 
 // GLOBAL: LEMBALL 0x004a784c
-unsigned int g_dwGroundStyleResourceId;
+unsigned long g_dwGroundStyleResourceId;
 
 // GLOBAL: LEMBALL 0x004a786c
-unsigned int g_anGroundStyleResourceIds[10];
+unsigned long g_anGroundStyleResourceIds[10];
 
 // FUNCTION: LEMBALL 0x00432b50
 CLemmingAnimsManager::CLemmingAnimsManager(CGDI* p_gdi, CMain2DDisplay* p_display, CAI* p_ai)
