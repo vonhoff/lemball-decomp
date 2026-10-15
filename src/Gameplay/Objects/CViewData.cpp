@@ -18,5 +18,5 @@ int ViewDataCmp(const void* p_left, const void* p_right)
 
 	left = (const CViewData*) p_left;
 	right = (const CViewData*) p_right;
-	return (int) left->m_sortZKey - (int) right->m_sortZKey;
+	return (int) (left->m_sortZKey - right->m_sortZKey);
 }
