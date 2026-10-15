@@ -91,7 +91,7 @@ CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigne
 	m_messageSent = false;
 	g_pMasterInputQueue->Attach(this, 0);
 	if (m_mode == FRONTEND_LAYOUT_COMPACT) {
-		m_useCompactAssets = 1;
+		m_useCompactAssets = true;
 		g_gunBulletLeftResourceId = RES_NEWFRONT_ANIMS_LORES_BULLET_LEFT;
 		g_gunBulletRightResourceId = RES_NEWFRONT_ANIMS_LORES_BULLET_RIGHT;
 		g_gunFireLeftResourceId = RES_NEWFRONT_ANIMS_LORES_FIRE_LEFT;
@@ -103,7 +103,7 @@ CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigne
 		g_gunSplatRightResourceId = RES_NEWFRONT_ANIMS_LORES_SPLAT_RIGHT;
 	}
 	else {
-		m_useCompactAssets = 0;
+		m_useCompactAssets = false;
 		g_gunBulletLeftResourceId = RES_NEWFRONT_ANIMS_HIRES_BULLET_LEFT;
 		g_gunBulletRightResourceId = RES_NEWFRONT_ANIMS_HIRES_BULLET_RIGHT;
 		g_gunFireLeftResourceId = RES_NEWFRONT_ANIMS_HIRES_FIRE_LEFT;
@@ -378,7 +378,7 @@ void CGunController::DrawSpriteWindow()
 	m_cursorRect[0].m_flags = CClipRect::CLIP_IGNORE_PARENT;
 	m_cursorRect[0].Draw(m_spriteSurface);
 	offsets = g_anGunSpriteOffsetCompact;
-	if (m_useCompactAssets != 1) {
+	if (m_useCompactAssets != true) {
 		offsets = g_anGunSpriteOffset;
 	}
 	switch (m_selectionState) {
@@ -653,7 +653,7 @@ void CGunController::SelectOption()
 			i = i + 1;
 		}
 		offsets = g_anGunSpriteOffsetCompact;
-		if (m_useCompactAssets != 1) {
+		if (m_useCompactAssets != true) {
 			offsets = g_anGunSpriteOffset;
 		}
 		m_cursorAnim->StartAnim(GUN_CONTROLLER_CURSOR_ANIMATION_DURATION_MS);
