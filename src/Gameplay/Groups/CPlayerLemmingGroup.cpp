@@ -224,8 +224,6 @@ bool CPlayerLemmingGroup::AddLemmingToGroup(CPlayerLemming* p_lemming)
 // FUNCTION: LEMBALL 0x00414660
 void CPlayerLemmingGroup::AddUseObject(int p_objectId)
 {
-	unsigned short count;
-	CAiDestinationList* list;
 	CGameObject* p_object = NULL;
 	int objectCount = g_wObjectCount;
 	for (unsigned int i = 0; (int) i < objectCount; i++) {
@@ -234,28 +232,7 @@ void CPlayerLemmingGroup::AddUseObject(int p_objectId)
 			break;
 		}
 	}
-	AICOORD position = p_object->ActivatePosition();
-	list = m_destinationList;
-	count = list->m_count;
-	if (count < list->m_capacity) {
-		list->m_count = count + 1;
-		CAiDestinationEntry* entry = &list->m_entries[count];
-		entry->m_type = DESTINATION_COORD;
-		entry->m_coordinate.m_xFixed = position.m_xFixed;
-		entry->m_coordinate.m_yFixed = position.m_yFixed;
-		entry->m_coordinate.m_zFixed = position.m_zFixed;
-	}
-	CAiDestinationList* useList = m_destinationList;
-	unsigned short useCount = useList->m_count;
-	if (useCount < useList->m_capacity) {
-		useList->m_count = useCount + 1;
-		CAiDestinationEntry* entry = &useList->m_entries[useCount];
-		entry->m_type = DESTINATION_OBJECT;
-		entry->m_coordinate.m_xFixed = position.m_xFixed;
-		entry->m_coordinate.m_yFixed = position.m_yFixed;
-		entry->m_coordinate.m_zFixed = position.m_zFixed;
-		entry->m_metadata = (unsigned short) p_objectId;
-	}
+	AddUseObject(p_object, p_objectId);
 }
 
 // FUNCTION: LEMBALL 0x00414730
