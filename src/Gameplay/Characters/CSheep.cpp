@@ -4,12 +4,13 @@
 #include "Gameplay/Behavior/StateMachine.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
+#include "Gameplay/Geometry/CRect3.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
 
-#include <string.h>
+#include <stddef.h>
 
 enum {
 	SHEEP_DESTINATION_CAPACITY = 20,
@@ -38,14 +39,14 @@ void CSheep::Restart()
 	int tileX = m_spawnPosition.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 	int tileY = m_spawnPosition.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int tileZ = m_spawnPosition.m_zFixed >> FIXED_POINT_FRACTION_BITS;
-	int collision[6];
-	collision[0] = tileX - GAME_OBJECT_COLLISION_XY_MIN_INSET;
-	collision[1] = tileY - GAME_OBJECT_COLLISION_XY_MIN_INSET;
-	collision[2] = tileZ;
-	collision[3] = tileX + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
-	collision[4] = tileY + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
-	collision[5] = tileZ + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
-	memcpy(&m_collisionBounds, collision, sizeof(collision));
+	CRect3 collision;
+	collision.m_x1 = tileX - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+	collision.m_y1 = tileY - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+	collision.m_z1 = tileZ;
+	collision.m_x2 = tileX + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+	collision.m_y2 = tileY + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+	collision.m_z2 = tileZ + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	m_collisionBounds = collision;
 	m_facingDirection = m_initialFacingDirection;
 	CAI* objectAi = g_pAI;
 	CAI* countAi = g_pAI;

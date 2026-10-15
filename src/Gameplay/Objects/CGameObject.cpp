@@ -1361,14 +1361,14 @@ void CGameObject::UpdateCollision()
 	x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - GAME_OBJECT_COLLISION_XY_MIN_INSET;
 	y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - GAME_OBJECT_COLLISION_XY_MIN_INSET;
 	z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
-	int collision[6];
-	collision[0] = x;
-	collision[1] = y;
-	collision[2] = z;
-	collision[3] = x + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
-	collision[4] = y + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
-	collision[5] = z + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
-	memcpy(&m_collisionBounds, collision, sizeof(collision));
+	CRect3 collision;
+	collision.m_x1 = x;
+	collision.m_y1 = y;
+	collision.m_z1 = z;
+	collision.m_x2 = x + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	collision.m_y2 = y + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	collision.m_z2 = z + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	m_collisionBounds = collision;
 }
 
 // FUNCTION: LEMBALL 0x00416820
