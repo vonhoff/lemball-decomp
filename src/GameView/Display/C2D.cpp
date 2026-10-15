@@ -2487,7 +2487,7 @@ void C2D::DrawLemmingFlyShadow(CViewData& p_viewData)
 }
 
 // FUNCTION: LEMBALL 0x0043bee0
-void C2D::DrawLemmingJump(CViewData& p_viewData, unsigned int p_remapped)
+void C2D::DrawLemmingJump(CViewData& p_viewData, bool p_remapped)
 {
 	unsigned int direction;
 	int frame;
@@ -2527,7 +2527,7 @@ void C2D::DrawLemmingJump(CViewData& p_viewData, unsigned int p_remapped)
 }
 
 // FUNCTION: LEMBALL 0x0043bfc0
-void C2D::DrawLemmingLanding(CViewData& p_viewData, unsigned int p_remapped)
+void C2D::DrawLemmingLanding(CViewData& p_viewData, bool p_remapped)
 {
 	int x;
 	int y;
@@ -2555,13 +2555,13 @@ void C2D::DrawLemmingLanding(CViewData& p_viewData, unsigned int p_remapped)
 }
 
 // FUNCTION: LEMBALL 0x0043c070
-void C2D::DrawLemmingFall(CViewData& p_viewData, unsigned int p_remapped)
+void C2D::DrawLemmingFall(CViewData& p_viewData, bool p_remapped)
 {
 	DrawLemmingJump(p_viewData, p_remapped);
 }
 
 // FUNCTION: LEMBALL 0x0043c090
-void C2D::DrawLemmingExternal(CViewData& p_viewData, unsigned int p_remapped)
+void C2D::DrawLemmingExternal(CViewData& p_viewData, bool p_remapped)
 {
 	int x = p_viewData.m_position.m_x;
 	int y = p_viewData.m_position.m_y;
@@ -2601,7 +2601,7 @@ void C2D::DrawLemmingExternal(CViewData& p_viewData, unsigned int p_remapped)
 }
 
 // FUNCTION: LEMBALL 0x0043c1a0
-void C2D::DrawLemmingOnConveyor(CViewData& p_viewData, int p_remapped)
+void C2D::DrawLemmingOnConveyor(CViewData& p_viewData, bool p_remapped)
 {
 	int x;
 	int y;
@@ -2622,7 +2622,7 @@ void C2D::DrawLemmingOnConveyor(CViewData& p_viewData, int p_remapped)
 }
 
 // FUNCTION: LEMBALL 0x0043c200
-void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, unsigned int p_remapped)
+void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, bool p_remapped)
 {
 	int x;
 	int y;
@@ -2921,7 +2921,7 @@ void C2D::DrawHand(CViewData& p_viewData)
 }
 
 // FUNCTION: LEMBALL 0x0043c8a0
-void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, int p_remapped)
+void C2D::DrawLemmingOnBalloon(CViewData& p_viewData, int p_balloonType, bool p_remapped)
 {
 	unsigned int phase;
 	int x;
@@ -3742,10 +3742,10 @@ void C2D::DrawObject(CViewData& p_viewData)
 	int objectNo = p_viewData.m_objectId;
 	switch (p_viewData.m_objectType) {
 	case OBJECT_PLAYER_1:
-		DrawLemming(p_viewData, objectNo, 1);
+		DrawLemming(p_viewData, objectNo, true);
 		return;
 	case OBJECT_PLAYER_2:
-		DrawLemming(p_viewData, objectNo, 0);
+		DrawLemming(p_viewData, objectNo, false);
 		return;
 	case OBJECT_BULLET:
 		DrawBullet(p_viewData, objectNo);
