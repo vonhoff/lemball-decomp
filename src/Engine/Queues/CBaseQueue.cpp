@@ -116,13 +116,9 @@ bool CBaseQueue::Send(tagMESSAGE& p_message)
 	m_sendCount = m_sendCount + 1;
 	p_message.m_time = m_nextSequence;
 	m_nextSequence = m_nextSequence + 1;
-	result = Process(&p_message);
-	if (result != 0) {
-		LeaveCritical();
-		return true;
-	}
+	result = Process(&p_message) != 0;
 	LeaveCritical();
-	return false;
+	return result;
 }
 
 // FUNCTION: LEMBALL 0x00463280
