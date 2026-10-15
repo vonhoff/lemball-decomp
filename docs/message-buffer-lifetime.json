@@ -74,6 +74,22 @@
       "behavior": "Pass a parent read cursor to child Set. Adopt the child's resulting cursor only on success. Source storage is shared; Set does not copy it or associate it with the write-buffer owner."
     }
   ],
+  "bounded_send_lifetime_trace": {
+    "status": "Queue-to-send-to-acknowledgement pointer flow inspected. Full cancellation and concurrency behavior remains an integration task.",
+    "steps": [
+      {"function": "0x0045f2b0 CNetworkMessage::Send", "behavior": "Open the stream, set pendingSendCount=1, post a tagMESSAGE carrying this and the connection pointer, then call network ForceProcess. Post's result is ignored."},
+      {"function": "0x004631a0 CBaseQueue::Post", "behavior": "Copy the 20-byte tagMESSAGE into the queue. This copies its pointers, not the message object or buffer. A full queue processes one item and recursively retries Post before returning; callbacks can run during posting."},
+      {"function": "0x004627b0 CBaseNetwork::ProcessMsg", "behavior": "For send-one/send-all requests, pass the stored stream pointer to Send/SendAll, then CloseDataStream regardless of the send result. This closes the posted operation's open depth; it does not free the message."},
+      {"function": "0x004600d0 CWriteSocket::Send", "behavior": "The normal send epilogue sets pendingSendCount=0. The socket-flags-zero entry return skips that assignment. A return from this routine is not an acknowledgement of every queued or transport-side reference."},
+      {"function": "0x004611e0 CWritePacket::Fill", "behavior": "Critical packet storage copies the narrowed unsigned-short byte count into packet-owned data and stores the original message pointer separately. Retry payload storage and message identity therefore have different lifetimes."},
+      {"function": "0x004601e0 CWriteSocket::ReceiveAcknowledgement", "behavior": "A matching outstanding packet becomes available and returns its stored message pointer. The acknowledgement path does not free that message."},
+      {"function": "0x00460f60 CConnect::ReceiveAcknowledgement", "behavior": "Post another tagMESSAGE to the packet queue with the connection and original message pointers. Acknowledgement notification can outlive the initial send call."}
+    ],
+    "shutdown_source_trace": "CBaseNetwork::ShutDown stops/deletes connections, broadcast storage and shared messages, then calls UnInitialise. Its destructor deletes the packet queue and detaches itself before deleting the status queue. CBaseQueue destruction attempts to process its queued count. This source order alone does not prove pending pointers remain live under every callback or worker interleaving.",
+    "consequence": "Treat pendingSendCount as observed send state, not a reference count or proof that all borrowed pointers have expired. A port must decide queue cancellation, acknowledgement delivery and buffer/object lifetime together.",
+    "remaining": "Representative cancellation/shutdown traces and transport completion timing; no proven use-after-free claim from pointer storage alone.",
+    "native_evidence": "build-msvc400/fidelity-batch-f2fd81b3/send-lifetime-native.txt"
+  },
   "port_requirements": [
     "Distinguish owned output allocation, borrowed output span and borrowed input cursor. Do not replace the current state with one owning byte container without accounting for these roles.",
     "Separate buffer capacity, initialized length, current cursor and open depth. Their native updates differ; CopyDataStream is not an ownership-transfer operation.",

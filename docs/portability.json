@@ -10,8 +10,8 @@
       "Original Windows build, linker routes and canonical matching workflow established.",
       "Packet assembly and scalar/socket header codecs have reproducible original/rebuilt checks."
     ],
-    "current_work": "Document message-buffer ownership, initialization and callback timing. Finish a bounded deferred-send lifetime trace; then move to resource formats and core simulation behavior.",
-    "not_yet_established": "Reusable resource/core-simulation fixtures, complete service replacement contracts, representative gameplay/media/network lifecycle traces, and the external-port handoff package.",
+    "current_work": "Bounded send-lifetime trace recorded; MOG directory-entry fixtures are now reproducible. Next: resource arena/cache ownership and failures, then core simulation behavior.",
+    "not_yet_established": "Resource lifetime/payload-decoder and core-simulation fixtures, complete service replacement contracts, representative gameplay/media/network lifecycle traces, and the external-port handoff package.",
     "progress_measure": "Stage and deliverable completion. Exact/Effective scores remain source-validation gates; they are not percentages of port readiness. Stage 2 does not mean 40% complete."
   },
   "delivery_stages": [
@@ -52,8 +52,7 @@
     }
   ],
   "next_deliverables": [
-    "Finish deferred-send lifetime tracing: queue posting, consumption, completion and shutdown; document which object owns each buffer at those boundaries.",
-    "Make MOG directory/resource parsing checks reproducible and record serialized widths, bounds, allocation and lock/release behavior.",
+    "Trace resource arena/cache ownership and lock/release; record allocation and read-failure behavior. The MOG entry parser now has a reproducible check.",
     "Capture representative fixed-point movement/RNG and timer-wrap cases; identify event-pump ordering needed by a replacement platform.",
     "Use those contracts to make focused type, ownership and platform-boundary improvements; retain the whole-executable source-batch metric gate."
   ],
@@ -116,7 +115,7 @@
     {
       "id": "data_contracts",
       "priority": 2,
-      "status": "network scalar/header contract checked; other formats pending",
+      "status": "network scalar/header and MOG entry contracts checked; payload formats pending",
       "work": "Inventory fixed-format data separately from runtime classes. Specify exact field widths, padding, endian order, sentinels and ownership. Audit bool=int, unsigned long, pointer fields and enum widths before any modern or 64-bit build.",
       "evidence": [
         "cmake/msvc400-toolchain.cmake",
@@ -124,7 +123,8 @@
         "src/Engine/Resources/Archive/tagChunkInfo.h",
         "src/Engine/Queues/tagMESSAGE.h",
         "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp",
-        "docs/message-codec.json"
+        "docs/message-codec.json",
+        "docs/archive-entries.json"
       ],
       "concrete_blocker": "CNetworkMessage::Get(unsigned long&) writes four bytes. A wider unsigned long would leave part of the result uninitialized. MogDirectoryEntry also uses unsigned long and sizeof for an on-disk stride.",
       "completion": "Representative original resource and packet bytes decode and encode identically using explicit format widths; original-build layouts remain verified; host pointers and runtime state are not treated as serialized structures."
@@ -147,7 +147,7 @@
     {
       "id": "behavior_fixtures",
       "priority": 2,
-      "status": "packet assembly and message codec checks reusable; other fixtures pending",
+      "status": "packet assembly, message codec and MOG entry checks reusable; other fixtures pending",
       "work": "Create a small, deliberate set of reference fixtures: fixed-point movement and RNG, timer wrap, event ordering, resource parsing, palette/clipping pixels and network messages. Add runtime scenarios for menu-to-level flow, selection, movement, shooting, media transitions and multiplayer connection lifecycle.",
       "evidence": [
         "src/Gameplay/Movement/CMove3d.cpp",
@@ -157,10 +157,12 @@
         "tools/check_packet_assembly.py",
         "docs/packet-assembly.json",
         "tools/check_message_codec.py",
-        "docs/message-codec.json"
+        "docs/message-codec.json",
+        "tools/check_archive_entries.py",
+        "docs/archive-entries.json"
       ],
       "completion": "Reference input/output or state traces are reproducible, with provenance from original execution or cited x86. Each relevant cleanup/port change can be checked against these observations. Broader unobserved behavior stays explicitly unverified.",
-      "existing_evidence": "Packet assembly and scalar/socket header checks reproduce original/rebuilt/model results. Shared x86 fixture support avoids duplicate emulator setup. Archived MOG directory-parser, text-paint and resource-lock fixtures still need reusable forms."
+      "existing_evidence": "Packet assembly, scalar/socket headers and all 694 supplied MOG directory entries have reusable original/rebuilt checks using shared x86 support. Archived text-paint and resource-lock fixtures still need reusable forms."
     },
     {
       "id": "platform_services",
@@ -256,26 +258,21 @@
     "user_clarification": "SDL3 must not be part of this codebase."
   },
   "next_reference_contract": {
-    "subject": "Deferred send completion and borrowed message lifetimes",
+    "subject": "Resource arena/cache ownership and failure behavior",
     "original_functions": [
-      "0x0045eea0 CNetworkMessage destructor",
-      "0x0045f2b0 CNetworkMessage::Send",
-      "0x00460e40 CConnect::Send"
+      "0x0045bfa0 CMogDir::GetChunkInfo"
     ],
     "confirmed": [
-      "Scalar and socket header codecs now have reproducible byte and access-order fixtures; see docs/message-codec.json.",
-      "OpenDataStream allocates payload capacity plus a 16-byte header on first open of unowned storage; invokes virtual AddHeader/AddData.",
-      "CopyDataStream replaces buffer/cursors and invokes virtual AddHeader/AddData without changing the ownership flag.",
-      "Initialization, open/reuse, copy, set and destruction contracts recorded in docs/message-buffer-lifetime.json.",
-      "Destruction can release an owned buffer after a 2000ms timeout while pendingSendCount remains nonzero."
+      "MOG entries are 36 serialized bytes; runtime nodes are 56 bytes with pointers and different field order.",
+      "All 694 supplied entries reproduce original/rebuilt fields, untouched heap and ordered file/heap events; see docs/archive-entries.json.",
+      "Bounded queue/send/retry/acknowledgement pointer trace recorded in docs/message-buffer-lifetime.json. Pending-send state alone does not prove all references have expired."
     ],
     "remaining": [
-      "Trace queue consumption and transport completion through shutdown; identify when queued message and borrowed buffer pointers stop being used.",
-      "Prove ownership flags and lifetime constraints across nested-message and broadcast call sequences; direct call-site review alone is insufficient.",
-      "Establish allocator/new-handler failure behavior and concrete callback effects before introducing failure handling.",
-      "Separate 32-bit wire values from host unsigned long width without changing the reference ABI."
+      "Trace resource allocation, cache locks and releases through callers before changing ownership APIs.",
+      "Record short-read and allocation-failure behavior separately from successful archive parsing.",
+      "Then move to fixed-point movement/RNG, timer wrap and event ordering. Network cancellation/shutdown integration remains tracked under stage 4."
     ],
-    "qualification": "Controlled codec aliases expose native access timing. Actual caller alias reachability and complete ownership paths remain unproved."
+    "qualification": "Entry checks cover valid supplied records and modeled CRT success. They do not prove resource payload decoding, allocation failure handling or complete runtime lifetimes."
   },
   "latest_batch": {
     "base_commit": "840804fa",

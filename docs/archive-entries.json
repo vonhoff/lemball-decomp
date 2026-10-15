@@ -1,0 +1,77 @@
+{
+  "subject": "MOG archive directory-entry contract",
+  "authority": "Original Windows x86 plus the supplied PBAIMOG.VSR. Record field names are inferred; widths, offsets and transfers are evidenced. Mac tagChunkInfo/tagCHUNK names support runtime naming, not serialized layout.",
+  "sources": [
+    "src/Engine/Resources/Archive/CMogDir.cpp",
+    "src/Engine/Resources/Archive/tagChunkInfo.h",
+    "src/Engine/Resources/Archive/CRawRead.cpp",
+    "src/Engine/Files/VsFile.cpp"
+  ],
+  "reproduce": {
+    "dependencies": "python -m pip install -r requirements.txt",
+    "build": "python tools/make_binary.py",
+    "check": "python tools/check_archive_entries.py",
+    "evidence": "build-msvc400/archive-entry-check.json",
+    "implementation": "Execute original and rebuilt GetChunkInfo, InputDword, vsRead and vsSeek. Model only CRT fread/fseek/ftell from archive bytes. Resolve current addresses through reccmp/PDB; check the existing original executable hash. No matching-score changes."
+  },
+  "container_header": {
+    "bytes": 20,
+    "fields": [
+      {"offset": 0, "bytes": 4, "meaning": "kind; DIRC numeric value 0x44495243 in observed containers"},
+      {"offset": 4, "bytes": 4, "meaning": "container extent excluding the first 8 bytes, as observed in this archive"},
+      {"offset": 8, "bytes": 4, "meaning": "entry count"},
+      {"offset": 12, "bytes": 4, "meaning": "format version; 3"},
+      {"offset": 16, "bytes": 4, "meaning": "absolute entry-table file offset"}
+    ],
+    "metadata": "Bytes after the header and before the entry table form the directory metadata block. Entry metadata offsets address this block in file coordinates.",
+    "validation_limit": "Original CMogDir constructor discards the first two DWORDs and asserts the version. The fixture reader's container, range and cycle checks do not describe original validation behavior."
+  },
+  "serialized_entry": {
+    "bytes": 36,
+    "byte_order": "Five little-endian 32-bit words, then 16 unchanged name bytes.",
+    "fields": [
+      {"offset": 0, "bytes": 4, "meaning": "absolute metadata file offset"},
+      {"offset": 4, "bytes": 4, "meaning": "resource ID"},
+      {"offset": 8, "bytes": 4, "meaning": "chunk kind"},
+      {"offset": 12, "bytes": 4, "meaning": "absolute payload/child-container file offset"},
+      {"offset": 16, "bytes": 4, "meaning": "declared payload size"},
+      {"offset": 20, "bytes": 16, "meaning": "fixed name bytes; parser adds no terminator"}
+    ],
+    "name_limit": "All names in the supplied archive contain a null byte. This does not establish a general guarantee or text encoding.",
+    "directory_size_limit": "Twenty DIRC entries declare zero payload size but point to nonempty child containers. Original GetNextDir follows the file offset without a size-nonzero guard."
+  },
+  "native_entry_parser": {
+    "function": "0x0045bfa0 CMogDir::GetChunkInfo",
+    "runtime_node_bytes": 56,
+    "seek": "low32((iterator.index+1)*36 + directoryTableOffset), absolute origin 0. The first entry uses iterator.index=-1.",
+    "initialization": "Clear next.info (+0x18), child.info (+0x20), directory (+0x24). Keep next.index (+0x14) and child.index (+0x1c) untouched.",
+    "metadata_pointer": "runtime metadata base + low32(serialized metadata offset - directory metadata file start), stored at node+0.",
+    "field_mapping": "ID -> node+8; kind -> node+4; file offset -> node+12; size -> node+16; name bytes -> node+40. Disk and runtime field orders differ.",
+    "transfers": "One seek; five separate four-byte reads; one 16-byte read. InputDword reads into a stack local. This body ignores read counts and adds no bounds or overflow checks.",
+    "abi": "ECX receiver, one pointer argument, RET 4. Node pointers and class offsets belong to the original 32-bit Windows runtime."
+  },
+  "fixture_coverage": {
+    "archive": "data/PBAIMOG.VSR",
+    "archive_sha256": "e1943b1b577059c4a302af23c3dc1f7c0ea66055b0091e32c825c645a5345359",
+    "archive_bytes": 9885876,
+    "directories": 50,
+    "entries": 694,
+    "native_executions": 1388,
+    "heap_bytes_checked_per_execution": 65536,
+    "ordered_events_per_image": 15962,
+    "original_instructions_exercised": {"GetChunkInfo": 47, "InputDword": 11, "vsRead": 10, "vsSeek": 14},
+    "checks": [
+      "Decoded runtime fields and complete untouched heap match an independent fixed-width record model.",
+      "Original/rebuilt file operations and heap writes agree in order, values and destinations. Internal stack destinations are normalized; stack placement is not a port contract.",
+      "Next/child index fields retain their initial poison bytes.",
+      "Callee-saved registers and one-argument stack cleanup are preserved."
+    ],
+    "source_baseline": "f2fd81b3bd005c008bda16a3b9f851f0e57b4d5d"
+  },
+  "limits_and_next_work": [
+    "Valid supplied archive, disjoint objects and modeled CRT success. No short-read/error, allocator, recursive-constructor or full-game equivalence claim.",
+    "Fixture input guards establish safe test inputs; they do not retrofit validation into the original parser.",
+    "A separate port needs fixed serialized widths independent of host unsigned long and pointer sizes. Do not read disk bytes directly into the runtime node.",
+    "Next resource work: arena ownership, cache lock/release, allocation and read failures, then representative resource payload decoders."
+  ]
+}
