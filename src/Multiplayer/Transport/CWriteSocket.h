@@ -52,7 +52,7 @@ private:
 	CWriteCBuff* m_criticalBuffer;          // 0x4c
 	CWriteCBuff* m_secondaryCriticalBuffer; // 0x50
 	CNetworkMessage* m_segmentedMessage;    // 0x54
-	unsigned int m_segmentSequence;         // 0x58
+	int m_segmentSequence;                  // 0x58
 	int m_segmentIndex;                     // 0x5c
 	BasePacketHeader m_savedHeader;         // 0x60
 	CNetworkAddress* m_destinationAddress;  // 0x70
