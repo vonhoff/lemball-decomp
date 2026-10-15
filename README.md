@@ -13,8 +13,8 @@ matching the original machine code as closely as possible. The resulting codebas
 foundation for future ports.
 
 > [!NOTE]
-> This project targets 32-bit Windows using Microsoft Visual C++ 4.0. For a modern, cross-platform version,
-see [lemball-portable](https://github.com/vonhoff/lemball-portable).
+> This project targets 32-bit Windows using Microsoft Visual C++ 4.0. </br>
+> For a modern, cross-platform version, see [lemball-portable](https://github.com/vonhoff/lemball-portable).
 
 ## Reconstruction
 
