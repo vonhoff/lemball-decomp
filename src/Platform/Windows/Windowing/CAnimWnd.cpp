@@ -1,24 +1,25 @@
 #include "CAnimWnd.h"
 
+#include <stddef.h>
+
+// clang-format off
+#include "Platform/Windows/WindowsTypes.h"
+#include <mmsystem.h>
+#define NOAVIFILE
+#include <vfw.h>
+#include <digitalv.h>
+#include <mciavi.h>
+// clang-format on
+
 #include "CGWnd.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Resources/Types/CResMOVIE.h"
 #include "Platform/Windows/CPlatformServices.h"
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Graphics/WinGDraw.h"
-
-// clang-format off
-#include <mmsystem.h>
-#include <stddef.h>
-
+#include "Engine/Math/CVSRect.h"
 #include "Engine/Strings/CString.h"
 #include "Engine/Resources/Types/CResSTRING.h"
-
-#define NOAVIFILE
-#include <vfw.h>
-#include <digitalv.h>
-#include <mciavi.h>
-// clang-format on
 
 // GLOBAL: LEMBALL 0x004a20c0
 CAnimWnd* g_pAnimWnd = NULL;

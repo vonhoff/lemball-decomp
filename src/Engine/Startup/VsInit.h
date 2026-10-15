@@ -1,16 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSINIT_H
 #define LEMBALL_VISOS_FOUNDATION_VSINIT_H
 
-#include "Engine/Resources/ResourceInit.h"
-#include "Engine/Statistics/StatInit.h"
-#include "Engine/Streams/StreamInit.h"
-#include "Engine/Time/TimeInit.h"
-#include "Platform/Windows/Diagnostics/DebugInit.h"
-#include "Platform/Windows/Graphics/GraphicsInit.h"
-#include "Platform/Windows/Input/InputInit.h"
-#include "Platform/Windows/MemoryInit.h"
-#include "Platform/Windows/Network/NetworkInit.h"
-
 #include <setjmp.h>
 
 extern jmp_buf g_vsExitJumpBuffer;

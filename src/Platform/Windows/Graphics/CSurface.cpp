@@ -1,5 +1,11 @@
 #include "CSurface.h"
 
+#include <stdlib.h>
+#include <string.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "CDibContext.h"
 #include "CDrawingContext.h"
 #include "CGDIDevice.h"
@@ -8,7 +14,6 @@
 #include "WinGDraw.h"
 #include "CPVBackBuffSurface.h"
 #include "CPVGDIBitmap.h"
-#include "CPVScrollableSurface.h"
 #include "CPVZBuffSurface.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Graphics/CChangeList.h"
@@ -34,13 +39,8 @@
 #include "Engine/Resources/Types/CResPALETTE.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Engine/Streams/CVSOStream.h"
-
-#include <stdlib.h>
-#include <string.h>
-#define WIN32_LEAN_AND_MEAN
+#include "Engine/Containers/CList.h"
 #include "Engine/Graphics/Primitives/CCopyColourToBackBuff.h"
-
-#include <windows.h>
 
 #define SURFACE_PALETTE_VERSION_WIN3 0x0300
 #define SURFACE_PALETTE_SYSTEM_RESERVED_LOW_COUNT 10

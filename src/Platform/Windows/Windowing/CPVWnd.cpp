@@ -1,11 +1,12 @@
 #include "CPVWnd.h"
 
+#include <stddef.h>
+
 #include "Engine/Input/CHotAreaList.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-
-#include <stddef.h>
+#include "Engine/Containers/CList.h"
 
 struct tagMenuList;
 

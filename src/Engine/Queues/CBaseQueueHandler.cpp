@@ -1,6 +1,8 @@
 #include "CBaseQueueHandler.h"
 
 #include <stddef.h>
+
+class CVSOStream;
 struct tagMESSAGE;
 
 namespace

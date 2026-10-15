@@ -1,5 +1,7 @@
 #include "CCritical.h"
 
+#include "Platform/Windows/WindowsTypes.h"
+
 // FUNCTION: LEMBALL 0x00459990
 void CCritical::EnterCritical()
 {

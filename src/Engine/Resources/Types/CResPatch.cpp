@@ -1,8 +1,9 @@
 #include "CResPatch.h"
 
-#include "Engine/Resources/Archive/CMogRes.h"
-
 #include <stddef.h>
+
+#include "Engine/Resources/Archive/CMogRes.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
 
 // FUNCTION: LEMBALL 0x0045e3f0
 CResPatch* CResPatch::Load(unsigned long p_resourceId)

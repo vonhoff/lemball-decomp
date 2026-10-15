@@ -1,9 +1,12 @@
 #include "CCopyText.h"
 
+#include <string.h>
+
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Strings/CString.h"
 
-#include <string.h>
+class CResFONT;
+class CRemap;
 
 // FUNCTION: LEMBALL 0x0046a080
 void CCopyText::Set(int p_x, int p_y, CResFONT* p_font, const char* p_text, unsigned long p_flags, CRemap* p_remap)

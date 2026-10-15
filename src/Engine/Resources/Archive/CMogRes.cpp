@@ -2,6 +2,7 @@
 
 #include <string.h>
 
+#include "Engine/Resources/Archive/RECURSE.h"
 #include "CMogDir.h"
 #include "CMogloadArena.h"
 #include "CRawRead.h"

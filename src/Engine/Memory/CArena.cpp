@@ -1,12 +1,11 @@
 #include "CArena.h"
 
-#include "CMBlock.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Platform/Windows/CCritical.h"
-
 #include <stddef.h>
 #include <string.h>
 
+#include "CMBlock.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Platform/Windows/CCritical.h"
 #include "Engine/Statistics/CBaseStat.h"
 
 // GLOBAL: LEMBALL 0x004a117c

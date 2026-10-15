@@ -10579,7 +10579,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CGame.cpp.obj",
       "symbol": "??0CGame@@QAE@PAD@Z",
       "size": 988,
-      "fingerprint": "adc36fa2fee25483086a9e3103df6fa3372f56430b3e871391458fa9311b0bba",
+      "fingerprint": "f81dd3c74efa2b027bc8f2b9502931e08c26506b6a83720ab2cc8e31835b020f",
       "references": [
         {
           "offset": 173,
@@ -35907,7 +35907,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Multiplayer/CNetworkManager.cpp.obj",
       "symbol": "?ProcessMsg@CNetworkManager@@UAEHPAUtagMESSAGE@@@Z",
       "size": 497,
-      "fingerprint": "573f46f67e3bbcb2707eddb8793dc8a30591543b6ee831240c0e3e012edbc47b",
+      "fingerprint": "dcaeb48342aa4b189f455a5048ac6952905a515ac4b1603bc8ee790ca4a9b5ff",
       "references": [
         {
           "offset": 386,
@@ -35969,7 +35969,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Multiplayer/CNetworkManager.cpp.obj",
       "symbol": "??_ECNetworkGameMessage@@UAEPAXI@Z",
       "size": 99,
-      "fingerprint": "6fcb42ccccbc0868acfae8bfc7cd836d7ce96d86a7259682217dbf53c270a783",
+      "fingerprint": "f7d5e905a663e419492e9719a91682bc97fa3a0cfee3eec9d232ed5f169144bf",
       "references": [
         {
           "offset": 40,

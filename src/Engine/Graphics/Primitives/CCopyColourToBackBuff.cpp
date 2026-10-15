@@ -1,7 +1,6 @@
 #include "CCopyColourToBackBuff.h"
 
 #include "CGDI.h"
-
 #include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00439720

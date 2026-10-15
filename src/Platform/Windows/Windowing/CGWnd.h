@@ -3,6 +3,8 @@
 
 #include "CPVGWnd.h"
 
+struct CVSPoint;
+
 // SIZE 0x90
 // VTABLE: LEMBALL 0x00499318
 class CGWnd : public CPVGWnd {

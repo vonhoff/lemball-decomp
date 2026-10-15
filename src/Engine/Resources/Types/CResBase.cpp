@@ -1,11 +1,12 @@
 #include "CResBase.h"
 
+#include <string.h>
+
 #include "CResBaseLIST.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/Archive/CVSRange.h"
 #include "Engine/Resources/Archive/RECURSE.h"
-
-#include <string.h>
+#include "Engine/Resources/ResourceChunkTypes.h"
 
 // SIZE 0x08
 struct ResourceEntryHeader {

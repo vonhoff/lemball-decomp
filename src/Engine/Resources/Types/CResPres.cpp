@@ -1,8 +1,9 @@
 #include "CResPres.h"
 
-#include "Engine/Resources/Archive/CMogRes.h"
-
 #include <stddef.h>
+
+#include "Engine/Resources/Archive/CMogRes.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
 
 // FUNCTION: LEMBALL 0x0045e4d0
 CResPres* CResPres::Load(unsigned long p_resourceId)

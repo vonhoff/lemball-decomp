@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_TARGET_UI_CTEXTWND_H
 
 #include "Platform/Windows/CCritical.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 struct tagPAINTSTRUCT;
 struct CTextLineBuffer;

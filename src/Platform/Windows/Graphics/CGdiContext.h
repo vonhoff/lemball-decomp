@@ -1,9 +1,10 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CGDICONTEXT_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CGDICONTEXT_H
 
-#include "CDrawingContext.h"
-
 #include <stddef.h>
+
+#include "CDrawingContext.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 class CDibContext;
 

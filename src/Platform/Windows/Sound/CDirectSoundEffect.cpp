@@ -1,17 +1,18 @@
 #include "CDirectSoundEffect.h"
 
+#include <string.h>
+
+// clang-format off
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <mmsystem.h>
+// clang-format on
+
 #include "DirectSound.h"
 #include "Engine/Sound/EffectFormat.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/VsString.h"
 #include "Platform/Windows/DirectX/DirectSound.h"
-#include <string.h>
-#define WIN32_LEAN_AND_MEAN
-// clang-format off
-#include <windows.h>
-#include <mmsystem.h>
-
-// clang-format on
 
 enum {
 	SOUND_EFFECT_NO_BUFFER_INDEX = -1

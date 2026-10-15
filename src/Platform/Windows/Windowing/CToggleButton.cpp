@@ -1,5 +1,7 @@
 #include "CToggleButton.h"
 
+#include "Engine/Queues/tagMESSAGE.h"
+
 // FUNCTION: LEMBALL 0x00443830
 void CToggleButton::OnReleased(BUTTON_FLAGS p_flags)
 {

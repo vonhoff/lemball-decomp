@@ -1,20 +1,20 @@
 #include "WinGDraw.h"
 
+#include <string.h>
+
+// clang-format off
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <mmsystem.h>
+#define NOAVIFILE
+#include <vfw.h>
+// clang-format on
+
 #include "CSurface.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
-
-#include <string.h>
-#define WIN32_LEAN_AND_MEAN
-// clang-format off
-#include <windows.h>
-#include <mmsystem.h>
-
-#define NOAVIFILE
-#include <vfw.h>
-// clang-format on
 
 // SIZE 0x474
 struct WinGDrawState {

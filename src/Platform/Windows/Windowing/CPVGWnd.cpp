@@ -1,5 +1,7 @@
 #include "CPVGWnd.h"
 
+#include <stddef.h>
+
 #include "CPVWnd.h"
 #include "CWnd.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
@@ -7,9 +9,6 @@
 #include "Engine/Math/CVSSize.h"
 #include "Platform/Windows/Graphics/CPVSurface.h"
 #include "Platform/Windows/Graphics/CSurface.h"
-
-#include <stddef.h>
-
 #include "Engine/Graphics/CChangeList.h"
 #include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Platform/Windows/CPlatformServices.h"

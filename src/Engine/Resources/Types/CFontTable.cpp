@@ -1,11 +1,9 @@
-#include "Engine/Resources/Types/CFontTable.h"
+#include <stddef.h>
 
-#include "Engine/Resources/Types/CResBaseLIST.h"
+#include "Engine/Resources/Types/CFontTable.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Resources/Types/CResINT.h"
 #include "Engine/Resources/Types/CResZRLE.h"
-
-#include <stddef.h>
 
 const int FONT_GLYPH_COUNT = 0x100;
 

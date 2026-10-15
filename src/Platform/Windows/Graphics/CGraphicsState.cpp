@@ -1,5 +1,9 @@
-
 #include "CGraphicsState.h"
+
+#include <stddef.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 #include "CDirectDrawDriver.h"
 #include "CDisplayDibDriver.h"
@@ -12,15 +16,10 @@
 #include "Engine/Strings/CString.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
 #include "Platform/Windows/Windowing/CWnd.h"
-
-#include <stddef.h>
-
-#define WIN32_LEAN_AND_MEAN
+#include "Engine/Containers/CList.h"
 #include "CGraphicsDriver.h"
 #include "Engine/Math/CVSSize.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-
-#include <windows.h>
 
 // GLOBAL: LEMBALL 0x004a0778
 static const char* g_graphicsDriverNames[] = {"NO",

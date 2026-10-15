@@ -1,14 +1,15 @@
 #include "CMciMusicDevice.h"
 
+#include <string.h>
+
+#include <windows.h>
+#include <mmsystem.h>
+
 #include "Engine/Resources/Types/CResSTRING.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/CString.h"
 #include "Platform/Windows/CPlatformServices.h"
 #include "Platform/Windows/Entry.h"
-
-#include <mmsystem.h>
-#include <string.h>
-#include <windows.h>
 
 const int MCI_ERROR_TEXT_CAPACITY = 128;
 
@@ -22,10 +23,10 @@ static unsigned long g_nPreparedMciMusicTrackHandle;
 static char g_szMciDeviceInfo[256];
 
 // GLOBAL: LEMBALL 0x004a3af8
-static const char g_szMciSequencerDevice[] = "sequencer";
+static char g_szMciSequencerDevice[] = "sequencer";
 
 // GLOBAL: LEMBALL 0x004a3ae8
-static const char g_szMciMusicWindow[] = "HLMusicWindow";
+static char g_szMciMusicWindow[] = "HLMusicWindow";
 
 // FUNCTION: LEMBALL 0x0047e900
 static LRESULT CALLBACK MciMusicWindowProc(HWND p_hwnd, UINT p_message, WPARAM p_wParam, LPARAM p_lParam)

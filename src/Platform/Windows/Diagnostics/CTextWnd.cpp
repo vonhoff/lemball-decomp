@@ -2,13 +2,15 @@
 
 #include <stdlib.h>
 #include <string.h>
+
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include "Platform/Windows/CCritical.h"
 #include "CTextLine.h"
 #include "CTextLineBuffer.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Platform/Windows/Entry.h"
-
-#include <windows.h>
 
 #define TEXT_WINDOW_APPEND_MESSAGE (WM_USER + 32)
 #define TEXT_WINDOW_COPY_COMMAND 0x421

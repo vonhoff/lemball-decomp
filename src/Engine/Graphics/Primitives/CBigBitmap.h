@@ -3,6 +3,8 @@
 
 #include "CBitmap.h"
 
+class CGDI;
+
 // SIZE 0x24
 // VTABLE: LEMBALL 0x00497918
 class CBigBitmap : public CBitmap {

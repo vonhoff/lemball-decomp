@@ -4,8 +4,6 @@
 #include "Engine/Diagnostics/CVSDebugStreambuf.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 
-#include <stddef.h>
-
 // GLOBAL: LEMBALL 0x004a93b0
 char g_szStreamFixedBuffer[0x400];
 

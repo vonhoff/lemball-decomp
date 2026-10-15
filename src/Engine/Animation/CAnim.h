@@ -3,6 +3,8 @@
 
 #include "Engine/Graphics/Primitives/CZRLE.h"
 
+class CGDI;
+
 class CResANIM;
 
 // SIZE 0x20

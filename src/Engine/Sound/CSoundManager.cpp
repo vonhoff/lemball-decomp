@@ -1,13 +1,13 @@
 #include "CSoundManager.h"
 
+#include <stddef.h>
+
 #include "CBaseSoundDevice.h"
 #include "CPVMusicDevice.h"
 #include "Engine/Resources/Types/CResEFFECT.h"
 #include "Engine/Strings/CString.h"
 #include "VsSound.h"
-
-#include <stddef.h>
-
+#include "Platform/Windows/Sound/MachineSoundDetect.h"
 #include "Engine/Diagnostics/CDebugOStream.h"
 #include "Engine/Streams/CVSOStream.h"
 

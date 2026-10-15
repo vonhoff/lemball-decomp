@@ -1,11 +1,12 @@
 #include "CPVGDIBitmap.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSizeArithmetic.h"
-
-#include <stdlib.h>
-#include <string.h>
+#include "Engine/Math/CVSSize.h"
 
 // FUNCTION: LEMBALL 0x00472290
 CPVGDIBitmap::CPVGDIBitmap()

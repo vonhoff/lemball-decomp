@@ -1,10 +1,11 @@
 #include "CSmallMemory.h"
 
+#include <string.h>
+
 #include "CBucket.h"
 #include "Engine/Memory/SmallMemoryConstants.h"
 #include "Engine/Startup/tagPRE_INIT.h"
-
-#include <string.h>
+#include "Platform/Windows/WindowsTypes.h"
 
 // GLOBAL: LEMBALL 0x004a1174
 char* g_pCurrentAllocDescription = "new";

@@ -1,8 +1,10 @@
 #include "CNetworkManager.h"
 
+#include <stddef.h>
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
-#include "Engine/Startup/VsInit.h"
+#include "Platform/Windows/Network/NetworkInit.h"
 #include "Platform/Windows/VsTime.h"
 #include "Multiplayer/CGameFlaggedMessage.h"
 #include "Multiplayer/CGameRejectMessage.h"
@@ -16,8 +18,6 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
-
-#include <stddef.h>
 
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Streams/CVSOStream.h"

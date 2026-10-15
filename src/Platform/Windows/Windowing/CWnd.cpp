@@ -1,5 +1,12 @@
 #include "CWnd.h"
 
+#include <conio.h>
+#include <string.h>
+
+#include "Platform/Windows/WindowsTypes.h"
+#include <windowsx.h>
+#include <dispdib.h>
+
 #include "CPVWnd.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/CVSPoint.h"
@@ -16,11 +23,7 @@
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "Platform/Windows/Graphics/CGraphicsState.h"
-
-#include <conio.h>
-#include <string.h>
-#include <windowsx.h>
-#include <dispdib.h>
+#include "Engine/Containers/CList.h"
 
 extern unsigned int g_windowDispatchDisabled;
 extern int(__stdcall* g_pDisplayDib)(void*, void*, unsigned short);

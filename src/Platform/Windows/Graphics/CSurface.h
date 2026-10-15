@@ -7,6 +7,19 @@
 #include "Engine/Containers/CList.h"
 #include "Platform/Windows/WindowsTypes.h"
 
+struct CVSSize;
+class CResPALETTE;
+class CZRLE;
+class CBitmap;
+class CResBITMAP;
+class CBigBitmap;
+class CLine;
+class CFilledCircle;
+class CCircle;
+class CScreenScroll;
+class CSolidRect;
+class CPoint;
+
 class GrafPort;
 class CChangeList;
 class CDibContext;

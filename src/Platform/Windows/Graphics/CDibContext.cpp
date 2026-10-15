@@ -1,8 +1,5 @@
 #include "CDibContext.h"
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 // FUNCTION: LEMBALL 0x004582b0
 bool CDibContext::Lock()
 {

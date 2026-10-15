@@ -1,6 +1,9 @@
 #include "CBasePalManager.h"
-#include "CRemap.h"
+
 #include <stddef.h>
+
+#include "CRemap.h"
+#include "Engine/Graphics/Palettes/CBaseRemap.h"
 
 // FUNCTION: LEMBALL 0x0046acd0
 CBasePalManager::CBasePalManager(int p_capacity)

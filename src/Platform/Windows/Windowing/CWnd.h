@@ -4,6 +4,8 @@
 #include "CPVWnd.h"
 #include "Platform/Windows/WindowsTypes.h"
 
+class CVSRect;
+
 struct CVSPoint;
 struct tagMenuList;
 

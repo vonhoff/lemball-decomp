@@ -1,14 +1,15 @@
 #include "CGraphicsDriver.h"
 
-#include "CGdiContext.h"
-#include "CPVGDIBitmap.h"
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSRect.h"
-
 #include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+#include "CGdiContext.h"
+#include "CPVGDIBitmap.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVSSize.h"
 
 class CDrawingContext;
 

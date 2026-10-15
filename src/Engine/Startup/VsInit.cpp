@@ -1,5 +1,10 @@
 #include "VsInit.h"
 
+#include <ctype.h>
+#include <setjmp.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "Application/GameMain.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Memory/CArena.h"
@@ -12,11 +17,14 @@
 #include "Platform/Windows/CPlatformServices.h"
 #include "VisosVersion.h"
 #include "tagPRE_INIT.h"
-
-#include <ctype.h>
-#include <setjmp.h>
-#include <stdlib.h>
-#include <string.h>
+#include "Engine/Resources/ResourceInit.h"
+#include "Engine/Statistics/StatInit.h"
+#include "Engine/Streams/StreamInit.h"
+#include "Engine/Time/TimeInit.h"
+#include "Platform/Windows/Diagnostics/DebugInit.h"
+#include "Platform/Windows/Graphics/GraphicsInit.h"
+#include "Platform/Windows/Input/InputInit.h"
+#include "Platform/Windows/MemoryInit.h"
 
 enum ePreInitDisplayMode {
 	PREINIT_DISPLAY_MODE_WING = 0,

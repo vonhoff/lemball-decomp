@@ -1,13 +1,15 @@
 #include "CMogDir.h"
 
+#include <stddef.h>
+
 #include "CMogloadArena.h"
 #include "CRawRead.h"
 #include "tagCHUNK.h"
 #include "tagChunkInfo.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Files/VsFile.h"
-
-#include <stddef.h>
+#include "Engine/Resources/Archive/RECURSE.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
 
 // GLOBAL: LEMBALL 0x004a1d78
 int g_emptyChunkIndex = CHUNK_INDEX_BEFORE_FIRST_ENTRY;

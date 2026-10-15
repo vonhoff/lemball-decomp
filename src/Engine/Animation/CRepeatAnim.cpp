@@ -1,6 +1,7 @@
 #include "CRepeatAnim.h"
 
 #include "Platform/Windows/VsTime.h"
+#include "Engine/Animation/AnimationConstants.h"
 
 // FUNCTION: LEMBALL 0x004671b0
 void CRepeatAnim::StartAnim(unsigned long p_animTime)

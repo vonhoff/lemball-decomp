@@ -1,5 +1,7 @@
 #include "CAnimsManager.h"
 
+#include <stddef.h>
+
 #include "CAnim.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
@@ -12,9 +14,6 @@
 #include "Engine/Resources/Types/CResBaseLIST.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Platform/Windows/Graphics/CSurface.h"
-
-#include <stddef.h>
-
 #include "CAnimFrameBASE.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
 

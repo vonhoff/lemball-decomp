@@ -1,5 +1,7 @@
 #include "CText.h"
 
+#include <stddef.h>
+
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Math/CVSPoint.h"
@@ -10,8 +12,7 @@
 #include "Engine/Strings/CString.h"
 #include "Engine/Text/TextAdvanceFlags.h"
 #include "Platform/Windows/Graphics/CSurface.h"
-
-#include <stddef.h>
+#include "Engine/Math/CVSSize.h"
 
 // FUNCTION: LEMBALL 0x00469a50
 void CText::Set(int p_x, int p_y, CResFONT* p_font, const char* p_text, unsigned long p_flags, CRemap* p_remap)

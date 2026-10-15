@@ -1,15 +1,19 @@
 #include "CDirectSoundDevice.h"
 
+#include <stddef.h>
+#include <string.h>
+
+#include <windows.h>
+#include <mmsystem.h>
+#include <winver.h>
+
 #include "CDirectSoundEffect.h"
 #include "DirectSound.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/DirectX/DirectSound.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 
-#include <stddef.h>
-#include <string.h>
-#include <windows.h>
-#include <winver.h>
+struct VSPATCH;
 
 enum {
 	DIRECT_SOUND_DEFAULT_SAMPLE_RATE_HZ = 22050,

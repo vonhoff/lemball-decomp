@@ -3,6 +3,8 @@
 
 #include "CText.h"
 
+class CString;
+
 // SIZE 0x4c
 // VTABLE: LEMBALL 0x00499ce8
 class CCopyText : public CText {

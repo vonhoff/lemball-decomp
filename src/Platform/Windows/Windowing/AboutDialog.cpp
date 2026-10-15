@@ -1,13 +1,14 @@
 #include "AboutDialog.h"
 
-#include "Engine/Sound/CSoundManager.h"
-#include "Engine/Startup/VisosVersion.h"
-#include "Platform/Windows/Entry.h"
+#include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <winver.h>
-#include <string.h>
+
+#include "Engine/Sound/CSoundManager.h"
+#include "Engine/Startup/VisosVersion.h"
+#include "Platform/Windows/Entry.h"
 
 enum {
 	ABOUT_SYSTEM_INFO_BUFFER_SIZE = 1024,

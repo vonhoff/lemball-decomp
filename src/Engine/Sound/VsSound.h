@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_VSSOUND_H
 #define LEMBALL_VISOS_FOUNDATION_VSSOUND_H
 
-#include "Platform/Windows/Sound/MachineSoundDetect.h"
-
 class CWnd;
 
 bool InitSound(unsigned int p_musicEnabled,

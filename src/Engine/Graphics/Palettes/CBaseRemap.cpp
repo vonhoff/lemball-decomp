@@ -1,10 +1,9 @@
 #include "CBaseRemap.h"
 
-#include "Engine/Resources/Types/CResPALETTE.h"
-
 #include <stddef.h>
-
 #include <stdlib.h>
+
+#include "Engine/Resources/Types/CResPALETTE.h"
 
 // FUNCTION: LEMBALL 0x0046aa80
 CBaseRemap::CBaseRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)

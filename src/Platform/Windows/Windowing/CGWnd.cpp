@@ -1,6 +1,10 @@
 #include "CGWnd.h"
 
+#include <stddef.h>
+
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "CPVWnd.h"
 #include "CWnd.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
@@ -13,10 +17,7 @@
 #include "Platform/Windows/Graphics/CPVSurface.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"
-
-#include <stddef.h>
-#include <windows.h>
-
+#include "Engine/Containers/CList.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 
 // FUNCTION: LEMBALL 0x0043a510

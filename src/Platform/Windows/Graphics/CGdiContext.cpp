@@ -1,5 +1,7 @@
 #include "CGdiContext.h"
 
+#include "Platform/Windows/WindowsTypes.h"
+
 // FUNCTION: LEMBALL 0x00458250
 void CGdiContext::SetDc(HDC p_hDC)
 {

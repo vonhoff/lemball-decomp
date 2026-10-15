@@ -3,6 +3,10 @@
 
 #include "CDisplayDibDriver.h"
 
+struct CVSPoint;
+class CDrawingContext;
+class CVSRect;
+
 struct CVSSize;
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498840

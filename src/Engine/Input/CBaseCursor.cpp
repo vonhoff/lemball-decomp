@@ -1,12 +1,12 @@
-#include "Engine/Input/CBaseCursor.h"
+#include <stddef.h>
 
+#include "Engine/Input/CBaseCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CPushActive.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
 #include "Engine/Input/CMasterInput.h"
 #include "Engine/Math/CVSPointArithmetic.h"
 #include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVSSize.h"
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Queues/CBaseQueue.h"
@@ -18,8 +18,6 @@
 #include "Platform/Windows/VsTime.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-
-#include <stddef.h>
 
 enum {
 	CURSOR_FRAME_UNSELECTED = -1,

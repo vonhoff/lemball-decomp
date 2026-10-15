@@ -1,5 +1,7 @@
 #include "CTextButton.h"
 
+#include <stddef.h>
+
 #include "CPVGWnd.h"
 #include "Engine/Graphics/CChangeList.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
@@ -11,8 +13,7 @@
 #include "Engine/Text/TextAdvanceFlags.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CFramedButton.h"
-
-#include <stddef.h>
+#include "Engine/Math/CVSSize.h"
 
 extern char g_szButton[];
 

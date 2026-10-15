@@ -2,6 +2,8 @@
 
 #include <stddef.h>
 
+#include "Engine/Memory/SmallMemoryConstants.h"
+
 // GLOBAL: LEMBALL 0x004aa108
 unsigned int g_anPreInitCapabilities[SMALL_MEMORY_BUCKET_COUNT];
 

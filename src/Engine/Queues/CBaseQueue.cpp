@@ -1,9 +1,11 @@
 #include "CBaseQueue.h"
 
+#include <stddef.h>
+
 #include "CBaseQueueHandler.h"
 #include "tagMESSAGE.h"
 
-#include <stddef.h>
+class CVSOStream;
 
 struct QueueHandlerNode {
 	CBaseQueueHandler* m_handler;
