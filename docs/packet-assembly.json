@@ -1,0 +1,71 @@
+{
+  "subject": "CReadMSBuff::FillPacket Windows behavior contract",
+  "original_function": "0x00461470",
+  "original_extent_bytes": 228,
+  "source": "src/Multiplayer/Transport/Packets/CReadMSBuff.cpp",
+  "caller": "src/Multiplayer/Transport/Packets/CReadNCMSBuff.cpp: CReadNCMSBuff::UpdateSubPacket",
+  "reproduce": {
+    "dependencies": "python -m pip install -r requirements.txt",
+    "build": "python tools/make_binary.py",
+    "check": "python tools/check_packet_assembly.py",
+    "evidence": "build-msvc400/packet-assembly-check.json",
+    "implementation": "Unicorn executes both complete x86 functions. Reccmp resolves the current PDB function/global addresses; its PE reader supplies the images. The existing project reference hash is checked. No mocked callees or changes to matching reports."
+  },
+  "native_state": {
+    "this_register": "ECX",
+    "stack_arguments": 0,
+    "object_fields": [
+      {"offset": "0x04", "bytes": 4, "meaning": "destination buffer pointer"},
+      {"offset": "0x08", "bytes": 4, "meaning": "subpacket payload size"},
+      {"offset": "0x10", "bytes": 4, "meaning": "received subpacket count; this function tests zero and increments low 32 bits"},
+      {"offset": "0x14", "bytes": 4, "meaning": "assembled byte count; low-32-bit additions"}
+    ],
+    "scratch_pointer_global": "0x004a1e28",
+    "received_size_global": "0x004a1e2c",
+    "header_bytes": 16,
+    "sequence": "Unsigned 16-bit value at scratch+12, read in Windows little-endian order."
+  },
+  "branches": [
+    {"sequence": "zero", "received_count": "zero", "operation": "Copy received-size bytes, including the header, to the destination; add received-size to assembled count."},
+    {"sequence": "zero", "received_count": "nonzero", "operation": "Copy received-size minus 16 bytes from scratch+16 to destination+16; add that payload length to assembled count."},
+    {"sequence": "nonzero", "received_count": "zero", "operation": "Copy the 16-byte header as four interleaved DWORD loads/stores; add 16 to assembled count. Reread the captured sequence location, then copy payload to destination+16+low32(payload-size*sequence); add payload length."},
+    {"sequence": "nonzero", "received_count": "nonzero", "operation": "Copy payload to destination+16+low32(payload-size*sequence); add payload length."}
+  ],
+  "access_and_arithmetic": [
+    "Every branch increments received count using low-32-bit arithmetic.",
+    "The sequence address is captured before branch selection. The nonzero-sequence path rereads that address after the optional header copy.",
+    "Received size is reloaded after copying before updating assembled count.",
+    "Native variable-size copies proceed forward: DWORD transfers, then remaining bytes. Controlled overlap behavior is an observation of these binaries, not a portable memcpy guarantee.",
+    "CNetworkMessage scalar Add/Get uses a separate big-endian codec. Do not apply one byte-order assumption to every network structure."
+  ],
+  "fixture_coverage": {
+    "seed": "0x00461470",
+    "cases": 2048,
+    "cases_per_branch": 512,
+    "received_size_range": "16..143, plus 0..15 in the first-header branch",
+    "heap_bytes_checked_per_execution": 65536,
+    "checks": [
+      "Original, rebuilt and a native-copy model agree on the complete heap.",
+      "Every ordered heap write agrees in address, width and value.",
+      "Preserved registers and no-argument RET cleanup agree.",
+      "All original function instructions execute across the fixtures.",
+      "An early sequence snapshot fails controlled overlap cases."
+    ],
+    "latest_result": {
+      "source_baseline": "314c9fa24acb6db9df818bd2077377366051607d",
+      "native_executions": 4096,
+      "nearby_or_overlapping_buffer_cases": 434,
+      "actual_wrapping_product_cases": 113,
+      "sequence_changed_during_execution": 106,
+      "early_snapshot_disagreements": 30,
+      "original_instructions_exercised": 82
+    }
+  },
+  "limits_and_remaining_work": [
+    "Finite fixtures with mapped memory and bounded copies; no live network, allocator, malformed-packet rejection, full-game or universal equivalence claim.",
+    "The runtime object stays separate from serialized header and message formats. Its pointers and offsets belong to the original Windows ABI.",
+    "Prove live caller ownership and alias constraints before simplifying access timing or choosing portable copy semantics.",
+    "Capture scalar-codec, complete packet, retry/discovery/disconnect and pointer-token lifecycle fixtures separately.",
+    "SDL dependencies and backend implementation belong in a separate repository."
+  ]
+}

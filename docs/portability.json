@@ -76,16 +76,18 @@
     {
       "id": "behavior_fixtures",
       "priority": 2,
-      "status": "partial local evidence; reusable suite still needed",
+      "status": "packet assembly check reusable; other fixtures pending",
       "work": "Create a small, deliberate set of reference fixtures: fixed-point movement and RNG, timer wrap, event ordering, resource parsing, palette/clipping pixels and network messages. Add runtime scenarios for menu-to-level flow, selection, movement, shooting, media transitions and multiplayer connection lifecycle.",
       "evidence": [
         "src/Gameplay/Movement/CMove3d.cpp",
         "src/Engine/Math/FixedPointConversion.h",
         "src/Platform/Windows/Entry.cpp",
-        "src/Platform/Windows/Graphics/CSurface.cpp"
+        "src/Platform/Windows/Graphics/CSurface.cpp",
+        "tools/check_packet_assembly.py",
+        "docs/packet-assembly.json"
       ],
       "completion": "Reference input/output or state traces are reproducible, with provenance from original execution or cited x86. Each relevant cleanup/port change can be checked against these observations. Broader unobserved behavior stays explicitly unverified.",
-      "existing_evidence": "Archived original/rebuilt MOG directory-parser, text-paint and resource-lock fixtures exist in reconstruction memory. Preserve their provenance and limits when making reusable checks; they are not a complete game-equivalence suite."
+      "existing_evidence": "tools/check_packet_assembly.py now reproduces original/rebuilt/model packet assembly checks. Archived MOG directory-parser, text-paint and resource-lock fixtures still need reusable forms."
     },
     {
       "id": "platform_services",
@@ -135,12 +137,13 @@
     {
       "id": "network",
       "priority": 4,
-      "status": "64-bit blocker confirmed",
+      "status": "packet assembly contract checked; other protocol/lifecycle work remains",
       "work": "Recover packet layout, byte order, sequence arithmetic, discovery, retry and disconnect contracts. Trace pointer-derived connection IDs and their identity/lifetime/echo semantics; document the stable 32-bit token requirement for a separate portable implementation.",
       "evidence": [
         "src/Multiplayer/Transport/CBaseNetwork.cpp",
         "src/Multiplayer/Transport/Packets/BasePacketHeader.h",
-        "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp"
+        "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp",
+        "docs/packet-assembly.json"
       ],
       "completion": "Packet fixtures and connection lifecycle traces established; protocol compatibility and pointer-token assumptions explicit. Original Windows behavior and ABI preserved here."
     },
@@ -189,7 +192,7 @@
       "Original code reloads the cursor between individual byte stores. Preserve access timing when simplifying."
     ],
     "remaining": [
-      "Capture executable byte fixtures and caller buffer/alias assumptions.",
+      "Capture scalar-codec byte fixtures and caller buffer/alias assumptions; the separate packet-assembly fixture is now reusable.",
       "Separate 32-bit wire values from host unsigned long width without changing the reference ABI."
     ],
     "qualification": "Access order is confirmed in original x86; no claim that actual callers alias cursor or destination storage."
