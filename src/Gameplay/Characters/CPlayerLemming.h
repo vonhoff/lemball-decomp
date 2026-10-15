@@ -98,7 +98,7 @@ private:
 	short m_cachedFacingDirection;                              // 0x1a0
 	eAction m_cachedAction;                                     // 0x1a4
 	short m_cachedActionArgument;                               // 0x1a8
-	unsigned int m_cachedStateTimer;                            // 0x1ac
+	unsigned long m_cachedStateTimer;                           // 0x1ac
 	eSoundEffect m_cachedSoundEffect;                           // 0x1b0
 	AICOORD m_fireTarget;                                       // 0x1b4
 	eObjectType m_inventoryTypes[PLAYER_INVENTORY_CAPACITY];    // 0x1c0

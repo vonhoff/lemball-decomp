@@ -5255,7 +5255,7 @@
     {
       "address": 4203650,
       "target": 4365952,
-      "target_symbol": "?SetViewActionTuple@CViewData@@QAEXW4eAction@@II@Z"
+      "target_symbol": "?SetViewActionTuple@CViewData@@QAEXW4eAction@@IK@Z"
     },
     {
       "address": 4203655,
@@ -13373,8 +13373,8 @@
       "caller": 4259088,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Characters/CPlayerLemming.cpp.obj",
       "symbol": "?OnBalloon@CPlayerLemming@@UAEXXZ",
-      "size": 584,
-      "fingerprint": "6517c16d14a12ea0d0b6d65102ab7ccb5f39911300a3009ff387c453c6a84952",
+      "size": 598,
+      "fingerprint": "cf72a29d8f5c056316c922ee48811581c8ae6187361f8f12cd610e0c516a2360",
       "references": [
         {
           "offset": 49,
@@ -13405,7 +13405,7 @@
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 397,
+          "offset": 411,
           "original_instruction": 4259493,
           "original_bytes": "e8fb2affff",
           "thunk": 4204965,
@@ -22187,7 +22187,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLift.cpp.obj",
       "symbol": "?StepOn@CLift@@QAEHABVAICOORD@@PAVCGameObject@@@Z",
       "size": 407,
-      "fingerprint": "4ad496abdf1806f73d0d8af2ec57e949458686137f1122c692f2b345298a9e0d",
+      "fingerprint": "ae71a2a74fba82bd7c9b6e2b4341170228af5e759ae83b3934e2443b6b1f4ebd",
       "references": [
         {
           "offset": 220,
@@ -23432,7 +23432,7 @@
           "original_instruction": 4362592,
           "original_bytes": "e81d93fdff",
           "thunk": 4203650,
-          "source_symbol": "?SetViewActionTuple@CViewData@@QAEXW4eAction@@II@Z"
+          "source_symbol": "?SetViewActionTuple@CViewData@@QAEXW4eAction@@IK@Z"
         }
       ]
     },

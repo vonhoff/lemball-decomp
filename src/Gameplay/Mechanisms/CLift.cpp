@@ -165,7 +165,7 @@ void CLift::Set(tCoord3d& p_start,
 // FUNCTION: LEMBALL 0x00425100
 bool CLift::Process()
 {
-	unsigned int time;
+	unsigned long time;
 	if (g_pActiveConnection != NULL && !g_pActiveConnection->m_isHost) {
 		time = g_dwRemoteGameTick;
 	}
@@ -202,7 +202,7 @@ bool CLift::Process()
 		break;
 	}
 	case ACTION_OPENING:
-		m_start.m_z = m_movementStartHeight - m_stateTimer + time;
+		m_start.m_z = (short) (m_movementStartHeight - m_stateTimer + time);
 		if (m_start.m_z >= m_highHeight) {
 			m_start.m_z = m_highHeight;
 			m_active = m_defaultActive;
@@ -217,7 +217,7 @@ bool CLift::Process()
 		}
 		break;
 	case ACTION_CLOSING:
-		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
+		m_start.m_z = (short) (m_movementStartHeight - time + m_stateTimer);
 		if (m_start.m_z <= m_lowHeight) {
 			m_start.m_z = m_lowHeight;
 			m_active = m_defaultActive;
@@ -234,7 +234,7 @@ bool CLift::Process()
 	case ACTION_LEAVING:
 		m_movementStartHeight = m_start.m_z;
 		m_direction = LIFT_DIRECTION_LOWERING;
-		m_start.m_z = m_movementStartHeight - time + m_stateTimer;
+		m_start.m_z = (short) (m_movementStartHeight - time + m_stateTimer);
 		m_action = ACTION_CLOSING;
 		m_active = 1;
 		break;

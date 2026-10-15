@@ -469,7 +469,7 @@ void CGameObject::Initialise()
 	m_isFalling = false;
 	m_wasHitByMine = false;
 	m_balloonPostActive = 0;
-	m_balloonPostId = 0;
+	m_trampolineBounceActive = false;
 	m_flightVelocity.m_xFixed.m_value = 0;
 	m_flightVelocity.m_yFixed.m_value = 0;
 	m_desiredFacingDirection = 0;
@@ -488,7 +488,7 @@ void CGameObject::StartFly(C3DVector& p_velocity, C3DVector* p_origin)
 	m_isJumping = false;
 	m_isFalling = false;
 	m_balloonPostActive = 0;
-	m_balloonPostId = 0;
+	m_trampolineBounceActive = false;
 	if (p_origin != NULL) {
 		m_flightOrigin = *p_origin;
 		m_position.m_xFixed = m_flightOrigin.m_xFixed.m_value;
@@ -539,7 +539,7 @@ void CGameObject::Fly()
 		int flightZ = z >> FIXED_POINT_FRACTION_BITS;
 		if (flightZ <= groundZ) {
 			m_isFlying = false;
-			m_balloonPostId = 0;
+			m_trampolineBounceActive = false;
 			if (groundZ - 12 >= flightZ) {
 				m_actionDeadline = g_dwGameTick;
 				if ((m_collisionFlags & GAME_OBJECT_COLLISION_ALLOW_FALL) != 0) {
@@ -579,8 +579,8 @@ void CGameObject::Fly()
 			m_position.m_yFixed = y;
 			m_position.m_zFixed = z;
 		}
-		if (m_balloonPostId == 0 && m_actionDeadline <= g_dwGameTick) {
-			m_balloonPostId = 0;
+		if (m_trampolineBounceActive == 0 && m_actionDeadline <= g_dwGameTick) {
+			m_trampolineBounceActive = false;
 			g_pAI->HitTrampoline(m_position, this);
 		}
 	}
@@ -1122,9 +1122,9 @@ bool CGameObject::Fall()
 			}
 		}
 
-		if (m_balloonPostId == 0) {
+		if (m_trampolineBounceActive == 0) {
 			g_pAI->HitTrampoline(m_position, this);
-			if (m_balloonPostId == 0) {
+			if (m_trampolineBounceActive == 0) {
 				g_pAI->StepOn(m_position, this, m_collisionFlags);
 			}
 		}

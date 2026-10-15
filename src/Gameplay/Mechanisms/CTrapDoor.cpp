@@ -84,7 +84,7 @@ void CTrapDoor::GetViewData(CViewData& p_viewData)
 	p_viewData.m_position.m_z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	p_viewData.m_facingDirection = m_facingDirection;
 	unsigned int actionArgument = (unsigned short) m_actionArgument;
-	unsigned int stateTimer = m_stateTimer;
+	unsigned long stateTimer = m_stateTimer;
 	p_viewData.m_action = m_action;
 	p_viewData.m_actionArgument = actionArgument;
 	p_viewData.m_stateTimer = stateTimer;

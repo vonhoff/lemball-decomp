@@ -30,9 +30,9 @@ struct CGraphicsState {
 	bool IsDisplayDibDriver();
 	void UpdateDriverSize(const struct CVSSize& p_size);
 
-	int m_driverMode;            // 0x00
-	CWnd* m_targetWindow;        // 0x04
-	bool m_fallbackWarningShown; // 0x08
+	eGraphicsDriverMode m_driverMode; // 0x00
+	CWnd* m_targetWindow;             // 0x04
+	bool m_fallbackWarningShown;      // 0x08
 };
 
 #endif

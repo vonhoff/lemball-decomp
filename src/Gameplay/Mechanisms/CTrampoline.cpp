@@ -216,7 +216,7 @@ int CTrampoline::Hit(const AICOORD& p_position, CGameObject* p_object)
 					 (int) ((unsigned int) m_position.m_zFixed + TRAMPOLINE_SURFACE_HEIGHT_FIXED));
 	p_object->m_position = position;
 	p_object->StartFly(flightVelocity, NULL);
-	p_object->m_balloonPostId = 1;
+	p_object->m_trampolineBounceActive = true;
 	p_object->ResetInstructions();
 	m_actionDeadline = g_dwGameTick + TRAMPOLINE_ACTIVE_DURATION_TICKS;
 	m_stateTimer = g_dwSimulationTimestamp;

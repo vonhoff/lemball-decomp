@@ -208,7 +208,7 @@ protected:
 	CRect3 m_collisionBounds;              // 0x14
 	bool m_deathRequested;                 // 0x2c
 	unsigned int m_balloonPostActive;      // 0x30
-	unsigned int m_balloonPostId;          // 0x34
+	bool m_trampolineBounceActive;         // 0x34
 	int m_objectActive;                    // 0x38
 	unsigned int m_initiallyActive;        // 0x3c
 	AICOORD m_spawnPosition;               // 0x40
@@ -227,7 +227,7 @@ protected:
 	int m_moveDurationTicks;               // 0x88
 	unsigned int m_activationReserved;     // 0x8c
 	unsigned int m_activatorObjectType;    // 0x90
-	unsigned int m_stateTimer;             // 0x94
+	unsigned long m_stateTimer;            // 0x94
 	eSoundEffect m_soundEffect;            // 0x98
 	AICOORD m_position;                    // 0x9c
 	AICOORD m_destination;                 // 0xa8
@@ -278,7 +278,7 @@ inline void CGameObject::GetViewData(CViewData& p_viewData)
 	p_viewData.m_position.m_z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	p_viewData.m_facingDirection = m_facingDirection;
 	unsigned int argument = (unsigned short) m_actionArgument;
-	unsigned int timer = m_stateTimer;
+	unsigned long timer = m_stateTimer;
 	p_viewData.m_action = m_action;
 	p_viewData.m_actionArgument = argument;
 	p_viewData.m_stateTimer = timer;

@@ -456,7 +456,7 @@ void CPlayerLemming::AddData()
 	if (g_dwSimulationTimestamp < m_stateTimer) {
 		m_stateTimer = g_dwSimulationTimestamp;
 	}
-	Add((unsigned long) m_stateTimer);
+	Add(m_stateTimer);
 	m_sfxChanged = false;
 }
 
@@ -593,7 +593,7 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_wasHitByMine = false;
 	m_liftId = INVALID_OBJECT_ID;
 	m_balloonPostActive = 0;
-	m_balloonPostId = 0;
+	m_trampolineBounceActive = false;
 	m_flightVelocity.m_xFixed.m_value = 0;
 	m_flightVelocity.m_yFixed.m_value = 0;
 	m_invisibleSwitchId = INVALID_OBJECT_ID;

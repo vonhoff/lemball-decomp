@@ -18,7 +18,7 @@ void CObjectChangeStateMess::AddData()
 	CGameObjectMess::AddData();
 	Add(g_dwSimulationTimestamp);
 	Add((unsigned long) m_object->m_action);
-	Add((unsigned long) m_object->m_stateTimer);
+	Add(m_object->m_stateTimer);
 	Add((unsigned short) m_object->m_actionArgument);
 }
 

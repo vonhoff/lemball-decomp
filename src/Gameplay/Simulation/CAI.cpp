@@ -1011,7 +1011,7 @@ void CAI::StepOn(const AICOORD& p_position, CGameObject* p_object, unsigned shor
 		}
 	}
 
-	if (p_object->m_balloonPostId != 0) {
+	if (p_object->m_trampolineBounceActive != 0) {
 		return;
 	}
 

@@ -290,7 +290,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 	p_viewData->m_position.InitializeFromAiCoord(m_position);
 	p_viewData->m_facingDirection = m_facingDirection;
 	unsigned int argument = (unsigned short) m_actionArgument;
-	const unsigned int timer = m_stateTimer;
+	const unsigned long timer = m_stateTimer;
 	p_viewData->m_action = m_action;
 	p_viewData->m_actionArgument = argument;
 	p_viewData->m_stateTimer = timer;

@@ -23,7 +23,7 @@ class CViewData {
 public:
 	CPt3 Coord() { return m_position; }
 
-	void SetViewActionTuple(eAction p_action, unsigned int p_argument, unsigned int p_stateTimer);
+	void SetViewActionTuple(eAction p_action, unsigned int p_argument, unsigned long p_stateTimer);
 
 	// FUNCTION: LEMBALL 0x00439340
 	CViewData()
@@ -53,7 +53,7 @@ private:
 	unsigned int m_statusFlags;    // 0x14
 	eAction m_action;              // 0x18
 	short m_actionArgument;        // 0x1c
-	unsigned int m_stateTimer;     // 0x20
+	unsigned long m_stateTimer;    // 0x20
 	unsigned long m_animationTime; // 0x24
 	eObjectType m_objectType;      // 0x28
 	unsigned short m_objectId;     // 0x2c
