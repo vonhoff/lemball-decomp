@@ -3965,8 +3965,7 @@ void C2D::AddViewIndexToObjectClipGrid(int p_x, int p_y, int p_viewIndex, int p_
 // FUNCTION: LEMBALL 0x0043e220
 void C2D::BuildObjectClipData(CViewData& p_viewData, int p_viewIndex)
 {
-	CVSRect boundsValue;
-	CVSRect& bounds = boundsValue;
+	CVSRect bounds;
 	eObjectType objectType = p_viewData.m_objectType;
 	int screenX = p_viewData.m_position.m_x;
 	int screenY = p_viewData.m_position.m_y;
