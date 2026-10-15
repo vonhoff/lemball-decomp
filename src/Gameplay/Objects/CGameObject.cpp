@@ -926,20 +926,7 @@ bool CGameObject::FacingDestination()
 // FUNCTION: LEMBALL 0x00415e80
 void CGameObject::DeleteFirstEntryFromDestinationList()
 {
-	CAiDestinationList* list = m_destinationList;
-	int i;
-	if (list->m_count != 0) {
-		for (i = 0; i < list->m_count - 1; i++) {
-			CAiDestinationEntry* entry = &list->m_entries[i];
-			CAiDestinationEntry* next = entry + 1;
-			entry->m_type = next->m_type;
-			entry->m_coordinate.m_xFixed = next->m_coordinate.m_xFixed;
-			entry->m_coordinate.m_yFixed = next->m_coordinate.m_yFixed;
-			entry->m_coordinate.m_zFixed = next->m_coordinate.m_zFixed;
-			entry->m_metadata = next->m_metadata;
-		}
-		list->m_count--;
-	}
+	m_destinationList->RemoveFirst();
 	m_hasDestination = (unsigned short) 0 < m_destinationList->m_count;
 }
 
@@ -961,34 +948,12 @@ void CGameObject::AddDestination(const AICOORD& p_destination)
 // FUNCTION: LEMBALL 0x00415f30
 void CGameObject::AlterDestination(const AICOORD& p_destination)
 {
-	int i;
-	CAiDestinationList* list = m_destinationList;
-	if (list->m_count != 0) {
-		for (i = 0; i < list->m_count - 1; i++) {
-			CAiDestinationEntry* entry = &list->m_entries[i];
-			CAiDestinationEntry* next = entry + 1;
-			entry->m_type = next->m_type;
-			entry->m_coordinate.m_xFixed = next->m_coordinate.m_xFixed;
-			entry->m_coordinate.m_yFixed = next->m_coordinate.m_yFixed;
-			entry->m_coordinate.m_zFixed = next->m_coordinate.m_zFixed;
-			entry->m_metadata = next->m_metadata;
-		}
-		list->m_count--;
-	}
+	m_destinationList->RemoveFirst();
 
 	CAiDestinationList* destinationList = m_destinationList;
 	unsigned short count = destinationList->m_count;
 	if (count < destinationList->m_capacity) {
-		for (int i = count; i > 0; i--) {
-			CAiDestinationEntry* entry = &destinationList->m_entries[i];
-			CAiDestinationEntry* previous = entry - 1;
-			entry->m_type = previous->m_type;
-			entry->m_coordinate.m_xFixed = previous->m_coordinate.m_xFixed;
-			entry->m_coordinate.m_yFixed = previous->m_coordinate.m_yFixed;
-			entry->m_coordinate.m_zFixed = previous->m_coordinate.m_zFixed;
-			entry->m_metadata = previous->m_metadata;
-		}
-		destinationList->m_count++;
+		destinationList->PrependSlot();
 		CAiDestinationEntry* entry = destinationList->m_entries;
 		entry->m_type = DESTINATION_COORD;
 		entry->m_coordinate.m_xFixed = p_destination.m_xFixed;
@@ -1010,19 +975,7 @@ AICOORD CGameObject::GetDestination()
 // FUNCTION: LEMBALL 0x00416050
 AICOORD CGameObject::GetNextDestination()
 {
-	CAiDestinationList* list = m_destinationList;
-	if (list->m_count != 0) {
-		for (int index = 0; index < list->m_count - 1; ++index) {
-			CAiDestinationEntry* entry = &list->m_entries[index];
-			CAiDestinationEntry* next = entry + 1;
-			entry->m_type = next->m_type;
-			entry->m_coordinate.m_xFixed = next->m_coordinate.m_xFixed;
-			entry->m_coordinate.m_yFixed = next->m_coordinate.m_yFixed;
-			entry->m_coordinate.m_zFixed = next->m_coordinate.m_zFixed;
-			entry->m_metadata = next->m_metadata;
-		}
-		--list->m_count;
-	}
+	m_destinationList->RemoveFirst();
 	return GetDestination();
 }
 
