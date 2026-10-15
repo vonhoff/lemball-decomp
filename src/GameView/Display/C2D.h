@@ -274,7 +274,7 @@ private:
 	CRemap* m_paletteRemap;                      // 0x968
 	CAI* m_ai;                                   // 0x96c
 	CGDI* m_gdi;                                 // 0x970
-	CBaseQueue* m_lemmingManager;                // 0x974
+	CBaseQueue* m_aiQueue;                       // 0x974
 	CMain2DDisplay* m_display;                   // 0x978
 	CPanel* m_panel;                             // 0x97c
 	CPauseWindow* m_pauseWindow;                 // 0x980

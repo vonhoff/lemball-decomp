@@ -426,7 +426,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	m_groupSelectionCount = 0;
 	m_groupingMode = GROUPING_INACTIVE;
 	m_externalEnabled = 1;
-	m_lemmingManager = m_ai->m_aiQueue;
+	m_aiQueue = m_ai->m_aiQueue;
 
 	m_display->m_hotAreaList->AddToList(this);
 
@@ -1091,7 +1091,7 @@ void C2D::FormGroup()
 
 	CheckValidFormGroup();
 	if (m_groupCount > 0) {
-		m_lemmingManager->Post(message);
+		m_aiQueue->Post(message);
 		m_groupCount = 0;
 		m_groupingMode = GROUPING_INACTIVE;
 		g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
@@ -1106,7 +1106,7 @@ void C2D::MoveGroup(const CVSPoint& p_point)
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
 	msg.m_code = p_point.m_x;
 	msg.m_payload = (void*) (int) p_point.m_y;
-	m_lemmingManager->Post(msg);
+	m_aiQueue->Post(msg);
 	m_groupCount = 0;
 	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_DRUM1;
@@ -1118,7 +1118,7 @@ void C2D::CancelMoves()
 	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_CANCEL_MOVES;
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
-	m_lemmingManager->Post(msg);
+	m_aiQueue->Post(msg);
 	m_groupCount = 0;
 	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_DRUM1;
@@ -1130,7 +1130,7 @@ void C2D::NextGroup()
 	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_NEXT_GROUP;
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
-	m_lemmingManager->Post(msg);
+	m_aiQueue->Post(msg);
 	m_groupCount = 0;
 	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_CHANGEOP;
@@ -1142,7 +1142,7 @@ void C2D::PrevGroup()
 	tagMESSAGE msg;
 	msg.m_type = AI_MESSAGE_PREVIOUS_GROUP;
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
-	m_lemmingManager->Post(msg);
+	m_aiQueue->Post(msg);
 	m_groupCount = 0;
 	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_CHANGEOP;
@@ -1156,7 +1156,7 @@ void C2D::SelectLemming(int p_playerIndex)
 	msg.m_time = 0;
 	msg.m_code = m_ai->m_networkLemmings[p_playerIndex]->m_objectId;
 	memset(&msg.m_payload, 0, sizeof(msg.m_payload) + sizeof(msg.m_source));
-	m_lemmingManager->Post(msg);
+	m_aiQueue->Post(msg);
 	m_groupCount = 0;
 	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
@@ -1170,7 +1170,7 @@ void C2D::SelectObject(int p_viewIndex)
 	msg.m_time = 0;
 	msg.m_code = m_viewData[p_viewIndex].m_objectId;
 	memset(&msg.m_payload, 0, sizeof(msg.m_payload) + sizeof(msg.m_source));
-	m_lemmingManager->Post(msg);
+	m_aiQueue->Post(msg);
 	m_groupCount = 0;
 	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
@@ -1377,7 +1377,7 @@ void C2D::NoStateRightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gam
 	}
 	message.m_code = p_gamePoint.m_x;
 	message.m_payload = (void*) (int) p_gamePoint.m_y;
-	m_lemmingManager->Post(message);
+	m_aiQueue->Post(message);
 	m_groupingMode = GROUPING_INACTIVE;
 }
 
@@ -1667,7 +1667,7 @@ void C2D::SendCursorMsg()
 		}
 		message.m_code = gameX;
 		message.m_payload = (void*) gameY;
-		m_lemmingManager->Post(message);
+		m_aiQueue->Post(message);
 	}
 }
 
