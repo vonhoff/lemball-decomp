@@ -66,7 +66,7 @@ bool CAmmo::Process()
 	case ACTION_ACTIVATED:
 		if (m_actionPhase2Deadline < g_dwGameTick) {
 			if (m_ammo == 0) {
-				m_objectActive = 0;
+				m_objectActive = false;
 			}
 			else {
 				m_actionDeadline = g_dwGameTick + (m_ammo * MILLISECONDS_PER_SECOND) / GAME_TICK_MILLISECONDS;

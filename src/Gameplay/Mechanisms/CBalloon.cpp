@@ -66,7 +66,7 @@ bool CBalloon::Process()
 	}
 	if (m_action == ACTION_ACTIVATED) {
 		Action(ACTION_READY);
-		m_objectActive = 0;
+		m_objectActive = false;
 		return true;
 	}
 	return true;

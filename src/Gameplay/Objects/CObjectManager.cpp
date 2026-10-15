@@ -65,7 +65,7 @@ void CObjectManager::Restart()
 								crate->m_contentsType = contents->m_objectType;
 								m_objects[j]->Restart();
 								removedCount++;
-								m_objects[j]->m_objectActive = 1;
+								m_objects[j]->m_objectActive = true;
 								m_objects[j] = NULL;
 								break;
 							}
@@ -73,7 +73,7 @@ void CObjectManager::Restart()
 					}
 				}
 				m_objects[i]->Restart();
-				m_objects[i]->m_objectActive = 1;
+				m_objects[i]->m_objectActive = true;
 			}
 			i++;
 		} while (i < m_capacity);
@@ -153,14 +153,14 @@ void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
 }
 
 // FUNCTION: LEMBALL 0x0041b2a0
-CGlobalGameObject* CObjectManager::AddObject(unsigned short p_id, CGlobalGameObject* p_object, unsigned int p_active)
+CGlobalGameObject* CObjectManager::AddObject(unsigned short p_id, CGlobalGameObject* p_object, bool p_active)
 {
 	if (m_count < m_capacity) {
 		m_objects[m_count] = p_object;
 		if (p_id != INVALID_OBJECT_ID) {
 			p_object->SetId(p_id);
 		}
-		m_objects[m_count]->m_objectActive = 1;
+		m_objects[m_count]->m_objectActive = true;
 		m_objects[m_count]->m_initiallyActive = p_active;
 		return m_objects[m_count++];
 	}
@@ -251,7 +251,7 @@ CGlobalGameObject* CObjectManager::Add(unsigned short p_id,
 		linkedObject->m_manager = this;
 		linkedObject->Restart();
 	}
-	return AddObject(p_id, object, 1);
+	return AddObject(p_id, object, true);
 }
 
 // FUNCTION: LEMBALL 0x0041b740
@@ -270,7 +270,7 @@ CSwitch* CObjectManager::AddSwitch(unsigned short p_id,
 	position.m_zFixed = (unsigned int) p_z << FIXED_POINT_FRACTION_BITS;
 	CSwitch* object = new CSwitch(position, (swMessage) p_message, p_legacyFirst, p_legacyLast, p_legacyAux);
 	object->Restart();
-	return (CSwitch*) AddObject(p_id, object, 1);
+	return (CSwitch*) AddObject(p_id, object, true);
 }
 
 // FUNCTION: LEMBALL 0x0041b7d0
@@ -355,7 +355,7 @@ void CObjectManager::RemoveById(short p_id)
 // FUNCTION: LEMBALL 0x0041b990
 void CObjectManager::DeactivateObjectAtIndex(int p_index)
 {
-	m_objects[p_index]->m_objectActive = 0;
+	m_objects[p_index]->m_objectActive = false;
 }
 
 // FUNCTION: LEMBALL 0x0041b9b0
@@ -363,7 +363,7 @@ void CObjectManager::Remove(CGlobalGameObject* p_object)
 {
 	for (int i = 0; i < m_count; i++) {
 		if (m_objects[i] == p_object) {
-			m_objects[i]->m_objectActive = 0;
+			m_objects[i]->m_objectActive = false;
 			break;
 		}
 	}

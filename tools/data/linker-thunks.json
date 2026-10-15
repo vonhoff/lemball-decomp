@@ -7359,7 +7359,7 @@
     {
       "address": 4205740,
       "target": 4305568,
-      "target_symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@I@Z"
+      "target_symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@H@Z"
     },
     {
       "address": 4205745,
@@ -18457,7 +18457,7 @@
     {
       "caller": 4305568,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CObjectManager.cpp.obj",
-      "symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@I@Z",
+      "symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@H@Z",
       "size": 111,
       "fingerprint": "016502bf92e699d750915b34e8de57391a168336b0724efd76d24f821c4faf86",
       "references": [
@@ -18554,7 +18554,7 @@
           "original_instruction": 4306616,
           "original_bytes": "e8ef75feff",
           "thunk": 4205740,
-          "source_symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@I@Z"
+          "source_symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@H@Z"
         },
         {
           "offset": 78,
@@ -18647,7 +18647,7 @@
           "original_instruction": 4306869,
           "original_bytes": "e8f274feff",
           "thunk": 4205740,
-          "source_symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@I@Z"
+          "source_symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@H@Z"
         }
       ]
     },
@@ -19113,7 +19113,7 @@
           "original_instruction": 4312327,
           "original_bytes": "e8a05ffeff",
           "thunk": 4205740,
-          "source_symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@I@Z"
+          "source_symbol": "?AddObject@CObjectManager@@QAEPAVCGlobalGameObject@@GPAV2@H@Z"
         }
       ]
     },

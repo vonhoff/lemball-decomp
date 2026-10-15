@@ -34,7 +34,7 @@ public:
 						   eObjectType p_objectType,
 						   unsigned short p_linkedObjectId,
 						   eObjectType p_linkedObjectType);
-	CGlobalGameObject* AddObject(unsigned short p_id, CGlobalGameObject* p_object, unsigned int p_active);
+	CGlobalGameObject* AddObject(unsigned short p_id, CGlobalGameObject* p_object, bool p_active);
 	CGlobalGameObject* FindObject(int p_id);
 	CGlobalGameObject* FindNearbyObject(AICOORD p_position);
 	CGlobalGameObject* FindNearbyObject(AICOORD p_position, eObjectType p_objectType);

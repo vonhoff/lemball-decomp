@@ -209,8 +209,8 @@ protected:
 	bool m_deathRequested;                 // 0x2c
 	unsigned int m_balloonPostActive;      // 0x30
 	bool m_trampolineBounceActive;         // 0x34
-	int m_objectActive;                    // 0x38
-	unsigned int m_initiallyActive;        // 0x3c
+	bool m_objectActive;                   // 0x38
+	bool m_initiallyActive;                // 0x3c
 	AICOORD m_spawnPosition;               // 0x40
 	C3DVector m_flightVelocity;            // 0x4c
 	unsigned int m_unk0x58;                // 0x58

@@ -113,7 +113,7 @@ bool CCrate::Process()
 	case ACTION_ACTIVATED:
 		if (m_actionPhase2Deadline < g_dwGameTick) {
 			Action(ACTION_READY);
-			m_objectActive = 0;
+			m_objectActive = false;
 		}
 		break;
 	}
