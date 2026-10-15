@@ -4,7 +4,7 @@
 
 ## Style
 
-- Documents and communication: telegraphese. Short phrases; concrete facts; explicit uncertainty.
+- Write human-facing documentation and responses in natural, complete sentences. Be concise, but avoid telegraphese and clipped status reports. Explain concrete facts clearly and state uncertainty where it matters.
 - Tools: single responsibility; upstream APIs first. Remove unused features and duplicate logic.
 
 ## Evidence

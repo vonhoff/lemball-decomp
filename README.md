@@ -8,12 +8,12 @@
 This project reconstructs *Lemmings Paintball*, an action video game from the *Lemmings* franchise
 developed by Visual Sciences and published by Psygnosis in 1996 for Windows 95.
 
-The goal is a stable, faithful reference and foundation for future ports, using idiomatic, maintainable C++ that
-preserves the original game's behavior. Work focuses on concrete correctness and portability obstacles.
+The goal is to reconstruct the game in clear, maintainable C++ while preserving its original behavior. The codebase
+should provide a reliable reference for understanding the game and a practical starting point for future ports.
 
-Matching helps validate the reconstruction. Good Exact and Effective results remain important, and changes should
-preserve existing matches by default. Full matching is not a completion requirement; necessary regressions need
-concrete evidence and a measured explanation.
+Comparing the reconstructed code with the original executable helps us check our work. Exact and Effective matching
+scores remain important, and changes should normally preserve or improve them. A complete byte-for-byte match is not
+required. When a change needs to reduce matching, its benefit and measured cost should be explained before it is committed.
 
 > [!NOTE]
 > This reconstruction exclusively targets 32-bit Windows and uses Microsoft Visual C++ 4.0. <br/>
