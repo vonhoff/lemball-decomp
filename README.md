@@ -2,8 +2,8 @@
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/vonhoff/lemball-decomp/build.yml)](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml)
 [![Effective Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Feffective.json)](#matching)
-[![Exact Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](https://bytematch.dev/vonhoff/lemball-decomp)
-[![Fuzzy Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](https://bytematch.dev/vonhoff/lemball-decomp)
+[![Exact Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](#matching)
+[![Fuzzy Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](#matching)
 
 This project is a matching decompilation of *Lemmings Paintball*, an action video game from the *Lemmings* franchise
 developed by Visual Sciences and published by Psygnosis in 1996 for Windows 95.
@@ -18,12 +18,36 @@ and foundation for future ports.
 
 ## Reconstruction
 
-The original function and class names were recovered from the Macintosh 68000 version, which preserved debugging symbols
-from Metrowerks and MacsBug. These provided over 2,800 original function names and revealed C++ class hierarchies
+The original function and class names were recovered from the Macintosh 68000 version, which retained Metrowerks and
+MacsBug debugging symbols. These provided over 2,800 original function names and revealed C++ class hierarchies
 throughout the game and engine.
 
-Since the Windows executable had its symbols removed, functions were matched between the two versions using strings,
+The Windows executable contains no debugging symbols, so functions were matched between the two versions using strings,
 constants, algorithms, virtual tables, object layouts, and call relationships.
+
+## Matching
+
+Each function is compared against the original executable using [reccmp](https://github.com/isledecomp/reccmp).
+
+- **Exact:** Non-stub functions with a raw 100% assembly comparison score.
+- **Fuzzy:** Raw assembly similarity, including equivalent functions with lower scores.
+- **Effective:** Non-stub raw 100% matches and reccmp's own equivalence results.
+
+Exact and fuzzy matching metrics are tracked on both [decomp.dev](https://decomp.dev/vonhoff/lemball-decomp)
+and [bytematch.dev](https://bytematch.dev/vonhoff/lemball-decomp).
+
+### Prerequisites
+
+Matching requires the built executable in `build-msvc400` and the original `LEMBALL.EXE` placed in `data`.
+
+SHA-256: `d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63`
+
+### Workflow
+
+1. Find target: `python tools/triage_targets.py`
+2. Rebuild and diff: `python tools/make_binary.py && python tools/check_function.py 0xADDR`
+3. Check source: `python tools/check_source.py`
+4. Update report: `python tools/make_report.py` (writes to `build-msvc400/report.json`)
 
 ## Building
 
@@ -51,33 +75,6 @@ python tools/make_binary.py
 
 Pass `--disable-startup-checks` to `make_binary.py` to bypass the CD-ROM and installation checks.
 
-## Matching
-
-Each function is compared against the original executable using [reccmp](https://github.com/isledecomp/reccmp).
-
-- **Exact:** Non-stub functions with a raw 100% assembly comparison score.
-- **Fuzzy:** Raw assembly similarity, including equivalent functions with lower scores.
-- **Effective:** Non-stub raw 100% matches and reccmp's own equivalence results.
-
-Exact and fuzzy matching metrics are tracked on both [decomp.dev](https://decomp.dev/vonhoff/lemball-decomp) and [bytematch.dev](https://bytematch.dev/vonhoff/lemball-decomp).
-
-### Prerequisites
-
-Matching requires the built executable in `build-msvc400` and the original `LEMBALL.EXE` placed in `data`.
-
-SHA-256: `d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63`
-
-### Workflow
-
-1. Find target: `python tools/triage_targets.py`
-2. Rebuild and diff: `python tools/make_binary.py && python tools/check_function.py 0xADDR`
-3. Check source: `python tools/check_source.py`
-4. Update report: `python tools/make_report.py` (writes to `build-msvc400/report.json`)
-
-## AI Disclosure
-
-This project uses AI for tooling, research, and code reconstruction. All code is manually reviewed.
-
 ## References
 
 ### Resources
@@ -90,6 +87,10 @@ This project uses AI for tooling, research, and code reconstruction. All code is
 
 - [isledecomp/isle](https://github.com/isledecomp/isle)
 - [marijnvdwerf/legoland](https://github.com/marijnvdwerf/legoland)
+
+## AI Disclosure
+
+This project uses AI for tooling, research, and code reconstruction. All code is manually reviewed.
 
 ## Legal
 
