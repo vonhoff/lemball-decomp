@@ -55,13 +55,13 @@ bool CFileReadSocket::ReadBuff(int p_index)
 		return false;
 	}
 	CHeaderMessage* header = &m_file->m_headers[p_index];
-	if (!CNetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, header->m_headerValue)) {
+	if (!CNetworkFile::Read((unsigned char*) g_pNetworkPacketScratch, header->m_packetSize)) {
 		SocketError();
 		return false;
 	}
 	m_lastReceiveTime = CurrentMilliTimer();
-	g_receivedPacketSize = m_file->m_headers[p_index].m_headerValue;
-	*g_pBroadcastReceiveAddress = header->m_text0;
+	g_receivedPacketSize = m_file->m_headers[p_index].m_packetSize;
+	*g_pBroadcastReceiveAddress = header->m_sourceAddressText;
 	if (m_readReady == 0) {
 		FirstReceive();
 	}

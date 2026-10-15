@@ -22,9 +22,9 @@ private:
 	friend class CFileReadSocket;
 	friend class CFileWriteSocket;
 	HeaderSequenceState m_sequenceState; // 0x2c
-	unsigned long m_headerValue;         // 0x30
-	char m_text0[21];                    // 0x34
-	char m_text1[21];                    // 0x49
+	unsigned long m_packetSize;          // 0x30
+	char m_sourceAddressText[21];        // 0x34
+	char m_destinationAddressText[21];   // 0x49
 };
 
 // SYNTHETIC: LEMBALL 0x0047b7f0

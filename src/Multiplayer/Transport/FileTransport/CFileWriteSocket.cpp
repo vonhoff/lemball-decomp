@@ -79,9 +79,9 @@ bool CFileWriteSocket::SendPacket(const unsigned char* p_data, int p_size)
 	headerOffset = m_file->m_headers->m_payloadCapacity * m_nextWriteSlot + m_headersOffset;
 	Seek(headerOffset);
 	header = &m_file->m_headers[m_nextWriteSlot];
-	strcpy(header->m_text0, g_pBroadcastAddress->GetStr());
-	strcpy(header->m_text1, m_destinationAddress->GetStr());
-	header->m_headerValue = p_size;
+	strcpy(header->m_sourceAddressText, g_pBroadcastAddress->GetStr());
+	strcpy(header->m_destinationAddressText, m_destinationAddress->GetStr());
+	header->m_packetSize = p_size;
 
 	lockLength = Write(m_file->m_headers[m_nextWriteSlot], 1, 0);
 	if (lockLength != 0) {
