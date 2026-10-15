@@ -8,135 +8,19 @@ import random
 import struct
 from pathlib import Path
 
-from capstone import Cs, CS_ARCH_X86, CS_MODE_32
-from reccmp.formats.pe import PEImage
-from reccmp.project.detect import RecCmpProject
 from reccmp.types import ImageId
-from unicorn import (
-    Uc,
-    UcError,
-    UC_ARCH_X86,
-    UC_MODE_32,
-    UC_HOOK_CODE,
-    UC_HOOK_MEM_WRITE,
-)
-from unicorn.x86_const import (
-    UC_X86_REG_EAX,
-    UC_X86_REG_EBX,
-    UC_X86_REG_ECX,
-    UC_X86_REG_EDX,
-    UC_X86_REG_ESI,
-    UC_X86_REG_EDI,
-    UC_X86_REG_EBP,
-    UC_X86_REG_ESP,
-    UC_X86_REG_EIP,
-    UC_X86_REG_EFLAGS,
-)
+from unicorn import UcError
 
-from lib import BUILD, TARGET_ID
-from lib.compare import Compare
+from lib import BUILD
+from lib.x86_fixture import HEAP, HEAP_SIZE, X86Fixture, load, put, reference_build
 
 FILL_PACKET = 0x00461470
 PACKET_SCRATCH = 0x004A1E28
 PACKET_SIZE = 0x004A1E2C
 HEADER_SIZE = 16
 CASE_COUNT = 2048
-HEAP = 0x01000000
-HEAP_SIZE = 0x10000
 OBJECT = HEAP + 0x1000
 SOURCE = HEAP + 0x2000
-STACK = 0x02000000
-STACK_SIZE = 0x10000
-STACK_POINTER = STACK + 0x8000
-STOP = 0x03000000
-PRESERVED_REGISTERS = (UC_X86_REG_EBX, UC_X86_REG_ESI, UC_X86_REG_EDI, UC_X86_REG_EBP)
-PRESERVED_VALUES = (0x11223344, 0x55667788, 0x99AABBCC, 0x13579BDF)
-
-
-def dword(value):
-    return struct.pack("<I", value & 0xFFFFFFFF)
-
-
-def load(memory, address, size=4):
-    offset = address - HEAP
-    if not 0 <= offset <= len(memory) - size:
-        raise ValueError(f"Fixture read outside heap: {address:#x}, size {size}")
-    return int.from_bytes(memory[offset : offset + size], "little")
-
-
-def put(memory, address, value):
-    struct.pack_into("<I", memory, address - HEAP, value & 0xFFFFFFFF)
-
-
-class PacketMachine:
-    """Run a real x86 body; record heap writes and reject other side effects."""
-
-    def __init__(self, image, entry, size, scratch, packet_size):
-        if not isinstance(image, PEImage):
-            raise ValueError("Packet fixtures require Windows x86 PE images")
-        self.entry = entry
-        self.scratch = scratch
-        self.packet_size = packet_size
-        self.machine = Uc(UC_ARCH_X86, UC_MODE_32)
-        self.writes = []
-        self.visited = set()
-        machine = self.machine
-        image_size = (image.optional_header.size_of_image + 4095) & ~4095
-        machine.mem_map(image.imagebase, image_size)
-        for section in image.sections:
-            machine.mem_write(section.virtual_address, bytes(section.view))
-        machine.mem_map(HEAP, HEAP_SIZE)
-        machine.mem_map(STACK, STACK_SIZE)
-        machine.mem_map(STOP, 4096)
-        machine.hook_add(UC_HOOK_MEM_WRITE, self.record_write)
-        machine.hook_add(UC_HOOK_CODE, self.record_instruction)
-        self.context = machine.context_save()
-        self.instructions = {
-            instruction.address
-            for instruction in Cs(CS_ARCH_X86, CS_MODE_32).disasm(
-                image.read(entry, size), entry
-            )
-            if instruction.mnemonic != "int3"
-        }
-
-    def record_instruction(self, _machine, address, _size, _user_data):
-        self.visited.add(address)
-
-    def record_write(self, _machine, _access, address, size, value, _user_data):
-        if HEAP <= address <= HEAP + HEAP_SIZE - size:
-            self.writes.append((address, size, value & ((1 << (8 * size)) - 1)))
-        elif not STACK <= address <= STACK + STACK_SIZE - size:
-            raise ValueError(
-                f"Unexpected write outside fixture heap/stack: {address:#x}"
-            )
-
-    def run(self, memory, packet_size):
-        machine = self.machine
-        machine.context_restore(self.context)
-        machine.mem_write(HEAP, bytes(memory))
-        machine.mem_write(STACK, bytes(STACK_SIZE))
-        machine.mem_write(STACK_POINTER, dword(STOP))
-        machine.mem_write(self.scratch, dword(SOURCE))
-        machine.mem_write(self.packet_size, dword(packet_size))
-        self.writes = []
-        for register, value in zip(PRESERVED_REGISTERS, PRESERVED_VALUES, strict=True):
-            machine.reg_write(register, value)
-        for register, value in (
-            (UC_X86_REG_EAX, 0xABCDEF01),
-            (UC_X86_REG_ECX, OBJECT),
-            (UC_X86_REG_EDX, 0x23456789),
-            (UC_X86_REG_ESP, STACK_POINTER),
-            (UC_X86_REG_EFLAGS, 0x202),
-        ):
-            machine.reg_write(register, value)
-        machine.emu_start(self.entry, STOP, count=10000)
-        if machine.reg_read(UC_X86_REG_EIP) != STOP:
-            raise ValueError("Packet assembly did not return within 10000 instructions")
-        if machine.reg_read(UC_X86_REG_ESP) != STACK_POINTER + 4:
-            raise ValueError("Packet assembly changed the no-argument RET contract")
-        if tuple(machine.reg_read(r) for r in PRESERVED_REGISTERS) != PRESERVED_VALUES:
-            raise ValueError("Packet assembly clobbered a preserved register")
-        return bytes(machine.mem_read(HEAP, HEAP_SIZE)), self.writes
 
 
 def expected_assembly(memory, packet_size, *, early_sequence=False):
@@ -236,19 +120,16 @@ def fixtures():
 def check(engine):
     entities = {entity.orig_addr: entity for entity in engine.get_all()}
     function = entities[FILL_PACKET]
-    machines = [
-        PacketMachine(
-            image,
-            function.addr(image_id),
-            function.size(image_id),
-            entities[PACKET_SCRATCH].addr(image_id),
-            entities[PACKET_SIZE].addr(image_id),
-        )
-        for image, image_id in (
-            (engine.orig_bin, ImageId.ORIG),
-            (engine.recomp_bin, ImageId.RECOMP),
-        )
+    machines = [X86Fixture(image) for image in (engine.orig_bin, engine.recomp_bin)]
+    image_ids = (ImageId.ORIG, ImageId.RECOMP)
+    entries = [function.addr(image_id) for image_id in image_ids]
+    globals_ = [
+        (entities[PACKET_SCRATCH].addr(image_id), entities[PACKET_SIZE].addr(image_id))
+        for image_id in image_ids
     ]
+    instructions = machines[0].instruction_addresses(
+        entries[0], function.size(ImageId.ORIG)
+    )
     digest = hashlib.sha256()
     branches = [0, 0, 0, 0]
     nearby = wraps = changed_sequences = snapshot_disagreements = 0
@@ -259,7 +140,18 @@ def check(engine):
         wraps += load(memory, OBJECT + 8) * sequence > 0xFFFFFFFF
         try:
             expected = expected_assembly(memory, size)
-            actual = [machine.run(memory, size) for machine in machines]
+            results = [
+                machine.run(
+                    entry,
+                    memory,
+                    OBJECT,
+                    global_values=((scratch, SOURCE), (packet_size, size)),
+                )
+                for machine, entry, (scratch, packet_size) in zip(
+                    machines, entries, globals_, strict=True
+                )
+            ]
+            actual = [(result.heap, result.writes) for result in results]
             if actual[0] != expected:
                 raise ValueError("Original differs from the native-copy model")
             if actual[1] != actual[0]:
@@ -279,7 +171,7 @@ def check(engine):
         raise ValueError(
             "Sequence-reread negative control did not distinguish early capture"
         )
-    missing = machines[0].instructions - machines[0].visited
+    missing = instructions - machines[0].visited
     if missing:
         raise ValueError(f"Original instructions not exercised: {sorted(missing)}")
     return {
@@ -290,10 +182,12 @@ def check(engine):
         "wrapping_product_fixtures": wraps,
         "sequence_changed_during_execution": changed_sequences,
         "early_sequence_snapshot_control_disagreements": snapshot_disagreements,
-        "original_instructions_exercised": len(machines[0].instructions),
+        "original_instructions_exercised": len(instructions),
         "digest": digest.hexdigest(),
-        "entries": [f"0x{machine.entry:08x}" for machine in machines],
-        "globals": [[f"0x{m.scratch:08x}", f"0x{m.packet_size:08x}"] for m in machines],
+        "entries": [f"0x{entry:08x}" for entry in entries],
+        "globals": [
+            [f"0x{scratch:08x}", f"0x{size:08x}"] for scratch, size in globals_
+        ],
         "checks": "Complete 64 KiB heap, ordered write addresses/widths/values, saved registers and no-argument RET. No mocked callees.",
         "limits": "Finite mapped-memory fixtures and bounded packet sizes; no live network, full-game or universal equivalence claim. Overlap checks describe these native copies, not portable C++ memcpy guarantees.",
     }
@@ -308,21 +202,9 @@ def main():
         help="Evidence JSON (default: build-msvc400/packet-assembly-check.json)",
     )
     args = parser.parse_args()
-    target = RecCmpProject.from_directory(BUILD).get(TARGET_ID)
-    original_hash = hashlib.sha256(target.original_path.read_bytes()).hexdigest()
-    if original_hash.lower() != target.sha256.lower():
-        raise ValueError(
-            "Original executable does not match the existing project reference hash"
-        )
-    engine = Compare.from_target(target)
+    engine, provenance = reference_build()
     result = check(engine)
-    result["images"] = {
-        "original": original_hash,
-        "rebuilt": hashlib.sha256(target.recompiled_path.read_bytes()).hexdigest(),
-    }
-    result["pdb_sha256"] = hashlib.sha256(
-        target.recompiled_pdb.read_bytes()
-    ).hexdigest()
+    result.update(provenance)
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(
         f"Packet assembly: {result['cases']} fixtures, {result['native_executions']} native executions; pass."

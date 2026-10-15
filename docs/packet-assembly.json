@@ -36,7 +36,7 @@
     "The sequence address is captured before branch selection. The nonzero-sequence path rereads that address after the optional header copy.",
     "Received size is reloaded after copying before updating assembled count.",
     "Native variable-size copies proceed forward: DWORD transfers, then remaining bytes. Controlled overlap behavior is an observation of these binaries, not a portable memcpy guarantee.",
-    "CNetworkMessage scalar Add/Get uses a separate big-endian codec. Do not apply one byte-order assumption to every network structure."
+    "Socket GetData converts multi-byte header fields in place before assembly. Its codec advances by 15 within the 16-byte header area; byte 15 stays untouched. See docs/message-codec.json for scalar and socket codec fixtures."
   ],
   "fixture_coverage": {
     "seed": "0x00461470",
@@ -65,7 +65,7 @@
     "Finite fixtures with mapped memory and bounded copies; no live network, allocator, malformed-packet rejection, full-game or universal equivalence claim.",
     "The runtime object stays separate from serialized header and message formats. Its pointers and offsets belong to the original Windows ABI.",
     "Prove live caller ownership and alias constraints before simplifying access timing or choosing portable copy semantics.",
-    "Capture scalar-codec, complete packet, retry/discovery/disconnect and pointer-token lifecycle fixtures separately.",
+    "Scalar and socket codec fixtures are now reproducible. Complete packet, retry/discovery/disconnect and pointer-token lifecycle traces remain separate work.",
     "SDL dependencies and backend implementation belong in a separate repository."
   ]
 }

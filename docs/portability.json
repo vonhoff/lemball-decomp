@@ -47,14 +47,15 @@
     {
       "id": "data_contracts",
       "priority": 2,
-      "status": "identified",
+      "status": "network scalar/header contract checked; other formats pending",
       "work": "Inventory fixed-format data separately from runtime classes. Specify exact field widths, padding, endian order, sentinels and ownership. Audit bool=int, unsigned long, pointer fields and enum widths before any modern or 64-bit build.",
       "evidence": [
         "cmake/msvc400-toolchain.cmake",
         "src/Engine/Resources/Archive/CMogDir.cpp",
         "src/Engine/Resources/Archive/tagChunkInfo.h",
         "src/Engine/Queues/tagMESSAGE.h",
-        "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp"
+        "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp",
+        "docs/message-codec.json"
       ],
       "concrete_blocker": "CNetworkMessage::Get(unsigned long&) writes four bytes. A wider unsigned long would leave part of the result uninitialized. MogDirectoryEntry also uses unsigned long and sizeof for an on-disk stride.",
       "completion": "Representative original resource and packet bytes decode and encode identically using explicit format widths; original-build layouts remain verified; host pointers and runtime state are not treated as serialized structures."
@@ -76,7 +77,7 @@
     {
       "id": "behavior_fixtures",
       "priority": 2,
-      "status": "packet assembly check reusable; other fixtures pending",
+      "status": "packet assembly and message codec checks reusable; other fixtures pending",
       "work": "Create a small, deliberate set of reference fixtures: fixed-point movement and RNG, timer wrap, event ordering, resource parsing, palette/clipping pixels and network messages. Add runtime scenarios for menu-to-level flow, selection, movement, shooting, media transitions and multiplayer connection lifecycle.",
       "evidence": [
         "src/Gameplay/Movement/CMove3d.cpp",
@@ -84,10 +85,12 @@
         "src/Platform/Windows/Entry.cpp",
         "src/Platform/Windows/Graphics/CSurface.cpp",
         "tools/check_packet_assembly.py",
-        "docs/packet-assembly.json"
+        "docs/packet-assembly.json",
+        "tools/check_message_codec.py",
+        "docs/message-codec.json"
       ],
       "completion": "Reference input/output or state traces are reproducible, with provenance from original execution or cited x86. Each relevant cleanup/port change can be checked against these observations. Broader unobserved behavior stays explicitly unverified.",
-      "existing_evidence": "tools/check_packet_assembly.py now reproduces original/rebuilt/model packet assembly checks. Archived MOG directory-parser, text-paint and resource-lock fixtures still need reusable forms."
+      "existing_evidence": "Packet assembly and scalar/socket header checks reproduce original/rebuilt/model results. Shared x86 fixture support avoids duplicate emulator setup. Archived MOG directory-parser, text-paint and resource-lock fixtures still need reusable forms."
     },
     {
       "id": "platform_services",
@@ -137,13 +140,14 @@
     {
       "id": "network",
       "priority": 4,
-      "status": "packet assembly contract checked; other protocol/lifecycle work remains",
+      "status": "packet assembly and scalar/header codecs checked; caller ownership and lifecycle work remains",
       "work": "Recover packet layout, byte order, sequence arithmetic, discovery, retry and disconnect contracts. Trace pointer-derived connection IDs and their identity/lifetime/echo semantics; document the stable 32-bit token requirement for a separate portable implementation.",
       "evidence": [
         "src/Multiplayer/Transport/CBaseNetwork.cpp",
         "src/Multiplayer/Transport/Packets/BasePacketHeader.h",
         "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp",
-        "docs/packet-assembly.json"
+        "docs/packet-assembly.json",
+        "docs/message-codec.json"
       ],
       "completion": "Packet fixtures and connection lifecycle traces established; protocol compatibility and pointer-token assumptions explicit. Original Windows behavior and ABI preserved here."
     },
@@ -181,21 +185,23 @@
     "user_clarification": "SDL3 must not be part of this codebase."
   },
   "next_reference_contract": {
-    "subject": "CNetworkMessage four-byte scalar serialization",
+    "subject": "CNetworkMessage borrowed buffer and cursor ownership",
     "original_functions": [
-      "0x0045ef10 Add(unsigned long)",
-      "0x0045f010 Get(unsigned long&)"
+      "0x0045f1e0 OpenDataStream",
+      "0x0045f250 CopyDataStream",
+      "0x0045f280 Set"
     ],
     "confirmed": [
-      "Four-byte big-endian encoding.",
-      "Read/write cursor advances by four.",
-      "Original code reloads the cursor between individual byte stores. Preserve access timing when simplifying."
+      "Scalar and socket header codecs now have reproducible byte and access-order fixtures; see docs/message-codec.json.",
+      "OpenDataStream allocates payload capacity plus a 16-byte header on first open of unowned storage; invokes virtual AddHeader/AddData.",
+      "CopyDataStream replaces buffer/cursors and invokes virtual AddHeader/AddData without changing the ownership flag."
     ],
     "remaining": [
-      "Capture scalar-codec byte fixtures and caller buffer/alias assumptions; the separate packet-assembly fixture is now reusable.",
+      "Trace nested message serialization, shared broadcast buffers and socket callers; identify owners and lifetime constraints before simplifying access timing.",
+      "Record initialization, failed allocation and destruction behavior; do not assume CopyDataStream changes ownership.",
       "Separate 32-bit wire values from host unsigned long width without changing the reference ABI."
     ],
-    "qualification": "Access order is confirmed in original x86; no claim that actual callers alias cursor or destination storage."
+    "qualification": "Controlled codec aliases expose native access timing. Actual caller alias reachability and complete ownership paths remain unproved."
   },
   "latest_batch": {
     "base_commit": "840804fa",

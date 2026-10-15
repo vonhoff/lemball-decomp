@@ -1,0 +1,81 @@
+{
+  "subject": "Windows scalar message codec and socket header contract",
+  "sources": [
+    "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp",
+    "src/Multiplayer/Transport/CBaseSocket.cpp",
+    "src/Multiplayer/Transport/Packets/BasePacketHeader.h"
+  ],
+  "authority": "Original Windows x86; current source names describe inferred fields. Runtime offsets and unsigned long width belong to the Windows ABI.",
+  "reproduce": {
+    "dependencies": "python -m pip install -r requirements.txt",
+    "build": "python tools/make_binary.py",
+    "check": "python tools/check_message_codec.py",
+    "evidence": "build-msvc400/message-codec-check.json",
+    "implementation": "Unicorn executes original and rebuilt bodies, including their real scalar callees. Reccmp resolves current PDB addresses and reads PE images. The existing original reference hash is checked."
+  },
+  "scalar_functions": [
+    {"bytes": 4, "add": "0x0045ef10", "get_value": "0x0045eff0", "get_reference": "0x0045f010", "convert": "0x0045f040"},
+    {"bytes": 2, "add": "0x0045ef40", "get_value": "0x0045f070", "get_reference": "0x0045f090", "convert": "0x0045f0b0"},
+    {"bytes": 1, "add": "0x0045ef60", "get_value": "0x0045f0d0", "get_reference": "0x0045f0f0", "convert": "0x0045f110"}
+  ],
+  "scalar_contract": {
+    "wire_order": "Big endian; exactly 4, 2 or 1 bytes. Use explicit format widths in a separate port, independent of host unsigned long.",
+    "add": "Store low argument bytes at descending destination offsets; reload this+0x1c between stores. Advance the current write cursor by the scalar width.",
+    "get_reference": "Read descending source offsets into ascending result bytes; reload this+0x20 between stores. Advance the current read cursor by the scalar width.",
+    "get_value": "Call the reference overload with a stack temporary. DWORD returns EAX; WORD and BYTE define only AX and AL respectively.",
+    "convert_dword": "Capture bytes 0 and 1; copy byte 3 to 0, then byte 2 to 1; write captured bytes to 2 and 3. Reload the read cursor between stores; advance by four.",
+    "convert_word": "Capture bytes 1 and 0; write captured byte 0 to offset 1, then captured byte 1 to offset 0. Reload the cursor before the second store; advance by two.",
+    "convert_byte": "Advance the read cursor by one; no payload write.",
+    "abi": "This in ECX. Add/reference-Get consume one four-byte stack slot and RET 4. Value-Get/Convert have no stack arguments. Callee-saved registers preserved.",
+    "bounds": "No length or end-pointer checks in these scalar bodies. Fixture buffers are mapped and sufficiently large; malformed-input policy remains separate work."
+  },
+  "socket_header": {
+    "add_function": "0x0045f790 CBaseSocket::AddData",
+    "get_function": "0x0045f7f0 CBaseSocket::GetData",
+    "storage_bytes": 16,
+    "codec_cursor_advance": 15,
+    "fields": [
+      {"offset": 0, "bytes": 4, "source_name": "m_magic"},
+      {"offset": 4, "bytes": 4, "source_name": "m_packetSize"},
+      {"offset": 8, "bytes": 2, "source_name": "m_messageId"},
+      {"offset": 10, "bytes": 2, "source_name": "m_packetSequence"},
+      {"offset": 12, "bytes": 2, "source_name": "m_subpacketSequence"},
+      {"offset": 14, "bytes": 1, "source_name": "m_critical"}
+    ],
+    "add": "Load the header pointer at this+0x2c and each field immediately before its scalar Add call. Earlier stores can affect later field loads in controlled overlap cases.",
+    "get": "Convert the first two DWORDs and three WORDs in place, then advance past the critical byte. Resulting multi-byte fields use Windows little-endian order.",
+    "byte_15": "Neither codec reads or writes this byte. No zero value or protocol meaning established. Packet assembly still copies a 16-byte header.",
+    "fixture_vector": {
+      "native_header_hex": "39305356040302012211443366557fa5",
+      "wire_header_hex": "56533039010203041122334455667fa5",
+      "qualification": "Constructed codec vector, not a captured valid network packet. Final a5 is a preserved sentinel."
+    },
+    "receive_boundary": "Current CReadSocket::ProcessPacket calls Set on scratch storage before inspecting header fields or dispatching packet assembly. Set invokes virtual GetHeader/GetData. docs/packet-assembly.json describes the later assembly boundary; the end-to-end receive lifecycle is not exercised here."
+  },
+  "fixture_coverage": {
+    "seed": "0x0045ef10",
+    "cases": 3478,
+    "native_executions": 6956,
+    "functions": 14,
+    "original_instructions_exercised": 157,
+    "controlled_alias_cases": 150,
+    "scalar_snapshot_disagreements": 54,
+    "header_snapshot_disagreements": 2,
+    "checks": [
+      "Complete 64 KiB heap and ordered heap write addresses, widths and values agree with the native model in both images.",
+      "Scalar return widths, thiscall cleanup and preserved registers agree.",
+      "All 256 byte values; wider edge/random values; aligned and unaligned buffers; selected output/source and cursor-field aliases.",
+      "Both socket codecs advance by 15 and preserve the following byte.",
+      "Every original instruction in the 14 bodies executes across the fixtures."
+    ],
+    "source_baseline": "314c9fa24acb6db9df818bd2077377366051607d"
+  },
+  "limits_and_remaining_work": [
+    "Finite fixtures; no argument-stack aliasing, live network, complete packet lifecycle or universal equivalence claim.",
+    "Controlled native aliases establish sensitivity to access timing, not that normal game callers create those aliases or that portable C++ must admit them.",
+    "Trace CopyDataStream/Set callers, buffer owners and lifetimes before simplifying cursor access. CopyDataStream assigns buffer/cursors without resetting the ownership flag.",
+    "Distinguish serialized widths from runtime pointers and native class layout in a separate port.",
+    "Still needed: string/blob codecs, complete packet traces, pointer-token lifecycle, retry/discovery/disconnect and allocation-failure behavior.",
+    "SDL dependencies and backend implementation belong in a separate repository."
+  ]
+}
