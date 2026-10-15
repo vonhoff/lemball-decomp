@@ -398,9 +398,9 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	m_frameTime = 0;
 	m_paused = 0;
 	m_pauser = 0;
-	m_connectionTimeoutActive = 0;
+	m_connectionTimeoutActive = false;
 	m_pad0x920 = 0;
-	m_mouseButtonDown = 0;
+	m_mouseButtonDown = false;
 	m_cursorBlinkPhase = 0;
 	m_zBufferEnabled = 1;
 	InitSpriteGroundLU();
@@ -422,7 +422,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	m_viewOrientation = 0;
 	p_map->m_orientation = MAP_ORIENTATION_ROTATION_0_DEGREES;
 	m_groupCount = 0;
-	m_quitRequested = 0;
+	m_quitRequested = false;
 	m_groupSelectionCount = 0;
 	m_groupingMode = GROUPING_INACTIVE;
 	m_externalEnabled = 1;
@@ -437,7 +437,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	ResetPrimitives();
 	RegisterRemaps();
 	m_cursorState = C2D_CURSOR_STATE_GROUND;
-	m_clipConfigured = 1;
+	m_clipConfigured = true;
 	m_viewDataCount = 0;
 
 	m_viewData = new CViewData[C2D_VIEW_DATA_CAPACITY];
@@ -674,8 +674,8 @@ void C2D::OnLoaded()
 
 	m_display->m_gdi->m_renderTarget->SetWorldWidth(3000);
 	m_gdi->m_renderTarget->EnableZBuff(1);
-	m_redrawPending = 1;
-	m_scrollPending = 0;
+	m_redrawPending = true;
+	m_scrollPending = false;
 	if (g_pDemo != NULL) {
 		g_pDemo->m_window = m_display;
 	}
@@ -709,7 +709,7 @@ void C2D::OnSize(const CVSRect& p_rect)
 		m_viewSize.m_width = size.m_width;
 		m_viewSize.m_height = size.m_height;
 		DoButtons();
-		m_redrawPending = 1;
+		m_redrawPending = true;
 		if (m_panel != NULL) {
 			m_panel->OnSize();
 		}
@@ -759,7 +759,7 @@ void C2D::Restart()
 {
 	m_viewOriginX = 0;
 	m_viewOriginY = 0;
-	m_redrawPending = 1;
+	m_redrawPending = true;
 	m_panel->SetPause(0);
 	m_ai->Restart();
 	m_display->Clear(0);
@@ -806,7 +806,7 @@ void C2D::Process()
 	}
 	if (m_connectionTimeoutActive != 0) {
 		if (CurrentMilliTimer() - m_connectionTimeoutStart >= CONNECTION_LOST_RETURN_DELAY_MS) {
-			m_quitRequested = 1;
+			m_quitRequested = true;
 			m_returnState = FLOW_MAIN_OPTIONS_1;
 		}
 		return;
@@ -910,12 +910,12 @@ optionHandled:
 				}
 			}
 		}
-		m_quitRequested = 1;
+		m_quitRequested = true;
 		NewPauseWindow(PAUSE_MSG_LOADING);
 		m_display->RefreshView();
 		break;
 	case GAME_STATUS_FAILURE:
-		m_quitRequested = 1;
+		m_quitRequested = true;
 		if (g_nDemoMode != 0) {
 			m_returnState = FLOW_MAIN_OPTIONS_1;
 		}
@@ -936,7 +936,7 @@ optionHandled:
 
 	if (m_ai->m_networkMode != NETWORK_MODE_SINGLE_PLAYER && g_pActiveConnection == NULL) {
 		NewPauseWindow(PAUSE_MSG_CONNECTION_LOST);
-		m_connectionTimeoutActive = 1;
+		m_connectionTimeoutActive = true;
 		m_connectionTimeoutStart = CurrentMilliTimer();
 	}
 	if (g_nTestAllLevels != 0) {
@@ -1688,7 +1688,7 @@ void C2D::OnInside(const CVSPoint& p_point)
 // FUNCTION: LEMBALL 0x004381c0
 void C2D::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
-	m_mouseButtonDown = 0;
+	m_mouseButtonDown = false;
 	if (m_paused == 0) {
 		if ((g_pDemo == NULL || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
 			return;
@@ -1700,7 +1700,7 @@ void C2D::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 // FUNCTION: LEMBALL 0x00438210
 void C2D::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
-	m_mouseButtonDown = 1;
+	m_mouseButtonDown = true;
 	if (m_paused == 0) {
 		if ((g_pDemo == NULL || g_pDemo->m_demoMode == 0) && !m_display->IsFocusWindow()) {
 			return;
@@ -1833,7 +1833,7 @@ void C2D::SetClipSize()
 	clipSizeX = m_clipSize.m_width;
 	m_spriteGroundLookupRectA.m_width = 0x33;
 	translatedX = clipSizeX - 0x43;
-	m_clipConfigured = 1;
+	m_clipConfigured = true;
 	m_spriteGroundLookupRectA.m_height = 0x20;
 	m_spriteGroundLookupRectB.m_width = 0x60;
 	m_spriteGroundLookupRectB.m_x = 0x10;
@@ -1843,7 +1843,7 @@ void C2D::SetClipSize()
 	m_spriteGroundLookupRectB.m_y = 8;
 	g_nLevelViewportHorizontalRemainder = m_viewSize.m_width - clipSizeX;
 	g_nLevelViewportVerticalRemainder = m_viewSize.m_height - m_clipSize.m_height;
-	m_redrawPending = 1;
+	m_redrawPending = true;
 	if (g_pDemo != NULL && g_pDemo->m_demoMode != 0) {
 		font = m_textManager->GetFont(0xf8);
 		short remainingWidth = m_clipSize.m_width;
@@ -4317,7 +4317,7 @@ void C2D::SetOrigin()
 		}
 		if (changed != 0) {
 			SendCursorMsg();
-			m_scrollPending = 1;
+			m_scrollPending = true;
 			m_scrollDeltaX = (short) oldViewOriginX - (short) m_viewOriginX;
 			m_scrollDeltaY = (short) oldViewOriginY - (short) m_viewOriginY;
 		}
@@ -4531,9 +4531,9 @@ void C2D::DrawObjects()
 		m_depthClear.m_depth = 0;
 		m_depthClear.Draw(m_gdi);
 		DrawClippedRectangle(CVSRect(0, 0, m_clipSize.m_width, m_clipSize.m_height));
-		m_redrawPending = 0;
+		m_redrawPending = false;
 	}
-	m_scrollPending = 0;
+	m_scrollPending = false;
 	DrawObjectsZBuff();
 	m_lemmingAnims->m_drawFlags = 0;
 }
@@ -4669,10 +4669,10 @@ void C2D::SortViewData()
 	if (m_viewDataCount > 0) {
 		do {
 			if (m_redrawPending == 0 && m_viewData[index].m_transientFlags == 0) {
-				m_redrawPending = 0;
+				m_redrawPending = false;
 			}
 			else {
-				m_redrawPending = 1;
+				m_redrawPending = true;
 			}
 
 			m_viewData[index].m_sortZKey = CalcZValue_Sprite(index);
@@ -4753,7 +4753,7 @@ void C2D::Draw(const CVSRect& p_rect)
 
 	if (m_clipConfigured != 0 || m_redrawPending != 0) {
 		CVSRect translatedBounds;
-		m_clipConfigured = 0;
+		m_clipConfigured = false;
 		translatedBounds.m_width = m_clipSize.m_width;
 		translatedBounds.m_height = m_clipSize.m_height;
 		translatedBounds.m_x = 0;

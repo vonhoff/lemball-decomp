@@ -231,7 +231,7 @@ private:
 	char m_pad0x178[0x0c];                       // 0x178
 	int m_clipScreenX;                           // 0x184
 	int m_clipScreenY;                           // 0x188
-	unsigned int m_mouseButtonDown;              // 0x18c
+	bool m_mouseButtonDown;                      // 0x18c
 	unsigned int m_frameCount;                   // 0x190
 	unsigned long m_frameTime;                   // 0x194
 	unsigned int m_levelTestFrame;               // 0x198
@@ -285,7 +285,7 @@ private:
 	ePauseWindowMessages m_pauseMessage;         // 0x988
 	ePauseWindowMessages m_previousPauseMessage; // 0x98c
 	CDrawingMark m_drawingMark;                  // 0x990
-	unsigned int m_clipConfigured;               // 0x994
+	bool m_clipConfigured;                       // 0x994
 	CSolidRect m_lineAt998;                      // 0x998
 	CSolidRect m_lineAt9a8;                      // 0x9a8
 	CVSRect m_spriteGroundTranslatedPointRect;   // 0x9b8
@@ -297,10 +297,10 @@ private:
 	unsigned short m_groupCount;                 // 0xa4c
 	unsigned short m_groupSelectionCount;        // 0xa4e
 	unsigned short m_groupObjectIds[20];         // 0xa50
-	unsigned int m_quitRequested;                // 0xa78
+	bool m_quitRequested;                        // 0xa78
 	unsigned int m_paused;                       // 0xa7c
 	unsigned int m_pauser;                       // 0xa80
-	unsigned int m_connectionTimeoutActive;      // 0xa84
+	bool m_connectionTimeoutActive;              // 0xa84
 	unsigned long m_connectionTimeoutStart;      // 0xa88
 	char m_pad0xa8c[0x204];                      // 0xa8c
 	unsigned int m_unk0xc90;                     // 0xc90
@@ -317,8 +317,8 @@ private:
 	CZBuffClear m_scrollDepthClears[2];          // 0x21d0
 	unsigned int m_backBufferCopyCount;          // 0x21f0
 	CCopyToBackBuff m_backBufferCopies[2];       // 0x21f4
-	unsigned int m_redrawPending;                // 0x2214
-	unsigned int m_scrollPending;                // 0x2218
+	bool m_redrawPending;                        // 0x2214
+	bool m_scrollPending;                        // 0x2218
 	short m_scrollDeltaX;                        // 0x221c
 	short m_scrollDeltaY;                        // 0x221e
 	AnimSpecialEntry* m_zBufferAnimations;       // 0x2220
