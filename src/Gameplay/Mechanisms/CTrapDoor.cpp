@@ -5,7 +5,7 @@
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Objects/CViewData.h"
+#include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
 #include "Gameplay/Objects/ObjectTypes.h"
@@ -76,31 +76,7 @@ void CTrapDoor::GetViewData(CViewData& p_viewData)
 	}
 	m_position.m_zFixed = (z + TRAP_DOOR_HEIGHT_ABOVE_GROUND_PIXELS) << FIXED_POINT_FRACTION_BITS;
 
-	p_viewData.m_objectId = m_objectId;
-	p_viewData.m_objectType = m_objectType;
-	p_viewData.m_playerIndex = 0;
-	p_viewData.m_position.m_x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-	p_viewData.m_position.m_y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-	p_viewData.m_position.m_z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
-	p_viewData.m_facingDirection = m_facingDirection;
-	unsigned int actionArgument = (unsigned short) m_actionArgument;
-	unsigned long stateTimer = m_stateTimer;
-	p_viewData.m_action = m_action;
-	p_viewData.m_actionArgument = actionArgument;
-	p_viewData.m_stateTimer = stateTimer;
-	p_viewData.m_statusFlags = 0;
-	p_viewData.m_hidden = m_hidden;
-	p_viewData.m_momentum = m_momentum;
-	p_viewData.m_soundEffect = m_soundEffect;
-	if (m_isRemoteObject != 0) {
-		p_viewData.m_animationTime = g_dwNetworkSimulationTimestamp;
-	}
-	else {
-		p_viewData.m_animationTime = g_dwSimulationTimestamp;
-	}
-	SetSndEffect(SFX_NONE);
-	p_viewData.m_redrawRequested = m_redrawRequested;
-	m_redrawRequested = false;
+	CGameObject::GetViewData(p_viewData);
 }
 
 // FUNCTION: LEMBALL 0x0040c4f0

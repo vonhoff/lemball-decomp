@@ -23407,36 +23407,6 @@
       ]
     },
     {
-      "caller": 4362128,
-      "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaser.cpp.obj",
-      "symbol": "?GetViewData@CLaser@@QAEHPAVCViewData@@@Z",
-      "size": 936,
-      "fingerprint": "b0ad428d35a12766db3b947e6f11d97f912bc27ab90518e6731445c1fec86a28",
-      "references": [
-        {
-          "offset": 43,
-          "original_instruction": 4362171,
-          "original_bytes": "e80a84fdff",
-          "thunk": 4199370,
-          "source_symbol": "?InitializeFromAiCoord@CPt3@@QAEXABVAICOORD@@@Z"
-        },
-        {
-          "offset": 348,
-          "original_instruction": 4362551,
-          "original_bytes": "e88e82fdff",
-          "thunk": 4199370,
-          "source_symbol": "?InitializeFromAiCoord@CPt3@@QAEXABVAICOORD@@@Z"
-        },
-        {
-          "offset": 389,
-          "original_instruction": 4362592,
-          "original_bytes": "e81d93fdff",
-          "thunk": 4203650,
-          "source_symbol": "?SetViewActionTuple@CViewData@@QAEXW4eAction@@IK@Z"
-        }
-      ]
-    },
-    {
       "caller": 4363184,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaserManager.cpp.obj",
       "symbol": "?Initialise@CLaserManager@@QAEXH@Z",

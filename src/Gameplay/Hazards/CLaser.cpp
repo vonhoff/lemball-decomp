@@ -5,7 +5,6 @@
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Objects/CGameObject.h"
@@ -284,24 +283,7 @@ bool CLaser::StepOn(const AICOORD& p_position, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00428f90
 int CLaser::GetViewData(CViewData* p_viewData)
 {
-	p_viewData->m_objectId = m_objectId;
-	p_viewData->m_objectType = m_objectType;
-	p_viewData->m_playerIndex = 0;
-	p_viewData->m_position.InitializeFromAiCoord(m_position);
-	p_viewData->m_facingDirection = m_facingDirection;
-	unsigned int argument = (unsigned short) m_actionArgument;
-	const unsigned long timer = m_stateTimer;
-	p_viewData->m_action = m_action;
-	p_viewData->m_actionArgument = argument;
-	p_viewData->m_stateTimer = timer;
-	p_viewData->m_statusFlags = 0;
-	p_viewData->m_hidden = m_hidden;
-	p_viewData->m_momentum = m_momentum;
-	p_viewData->m_soundEffect = m_soundEffect;
-	p_viewData->m_animationTime = m_isRemoteObject ? g_dwNetworkSimulationTimestamp : g_dwSimulationTimestamp;
-	SetSndEffect(SFX_NONE);
-	p_viewData->m_redrawRequested = m_redrawRequested;
-	m_redrawRequested = false;
+	CGameObject::GetViewData(*p_viewData);
 	p_viewData++;
 	int count = 1;
 	if (m_action == ACTION_ACTIVATED) {
@@ -316,21 +298,7 @@ int CLaser::GetViewData(CViewData* p_viewData)
 				if (height > z) {
 					break;
 				}
-				p_viewData->m_objectId = m_objectId;
-				p_viewData->m_objectType = m_objectType;
-				p_viewData->m_playerIndex = 0;
-				p_viewData->m_position.InitializeFromAiCoord(m_position);
-				p_viewData->m_facingDirection = m_facingDirection;
-				p_viewData->SetViewActionTuple(m_action, (unsigned short) m_actionArgument, m_stateTimer);
-				p_viewData->m_statusFlags = 0;
-				p_viewData->m_hidden = m_hidden;
-				p_viewData->m_momentum = m_momentum;
-				p_viewData->m_soundEffect = m_soundEffect;
-				p_viewData->m_animationTime =
-					m_isRemoteObject ? g_dwNetworkSimulationTimestamp : g_dwSimulationTimestamp;
-				SetSndEffect(SFX_NONE);
-				p_viewData->m_redrawRequested = m_redrawRequested;
-				m_redrawRequested = false;
+				CGameObject::GetViewData(*p_viewData);
 				p_viewData->m_position.m_x = x;
 				p_viewData->m_position.m_y = y;
 				p_viewData->m_position.m_z = z;
