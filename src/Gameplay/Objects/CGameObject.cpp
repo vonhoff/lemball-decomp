@@ -117,9 +117,9 @@ eSoundEffect CGameObject::GetSndEffect()
 // FUNCTION: LEMBALL 0x0040a890
 bool CGameObject::Collision(const CPt3& p_point)
 {
-	if (m_collisionBounds.m_x1 <= p_point.m_x && p_point.m_x <= m_collisionBounds.m_x2 &&
-		m_collisionBounds.m_y1 <= p_point.m_y && p_point.m_y <= m_collisionBounds.m_y2 &&
-		m_collisionBounds.m_z1 <= p_point.m_z && p_point.m_z <= m_collisionBounds.m_z2) {
+	if (m_collisionBounds.m_min.m_x <= p_point.m_x && p_point.m_x <= m_collisionBounds.m_max.m_x &&
+		m_collisionBounds.m_min.m_y <= p_point.m_y && p_point.m_y <= m_collisionBounds.m_max.m_y &&
+		m_collisionBounds.m_min.m_z <= p_point.m_z && p_point.m_z <= m_collisionBounds.m_max.m_z) {
 		return true;
 	}
 	return false;
@@ -128,9 +128,9 @@ bool CGameObject::Collision(const CPt3& p_point)
 // FUNCTION: LEMBALL 0x0040a8e0
 bool CGameObject::Collision(const CRect3& p_bounds)
 {
-	if (m_collisionBounds.m_x1 <= p_bounds.m_x2 && p_bounds.m_x1 <= m_collisionBounds.m_x2 &&
-		m_collisionBounds.m_y1 <= p_bounds.m_y2 && p_bounds.m_y1 <= m_collisionBounds.m_y2 &&
-		m_collisionBounds.m_z1 <= p_bounds.m_z2 && p_bounds.m_z1 <= m_collisionBounds.m_z2) {
+	if (m_collisionBounds.m_min.m_x <= p_bounds.m_max.m_x && p_bounds.m_min.m_x <= m_collisionBounds.m_max.m_x &&
+		m_collisionBounds.m_min.m_y <= p_bounds.m_max.m_y && p_bounds.m_min.m_y <= m_collisionBounds.m_max.m_y &&
+		m_collisionBounds.m_min.m_z <= p_bounds.m_max.m_z && p_bounds.m_min.m_z <= m_collisionBounds.m_max.m_z) {
 		return true;
 	}
 	return false;
@@ -1317,12 +1317,12 @@ void CGameObject::UpdateCollision()
 	y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - GAME_OBJECT_COLLISION_XY_MIN_INSET;
 	z = m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	CRect3 collision;
-	collision.m_x1 = x;
-	collision.m_y1 = y;
-	collision.m_z1 = z;
-	collision.m_x2 = x + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
-	collision.m_y2 = y + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
-	collision.m_z2 = z + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	collision.m_min.m_x = x;
+	collision.m_min.m_y = y;
+	collision.m_min.m_z = z;
+	collision.m_max.m_x = x + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	collision.m_max.m_y = y + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	collision.m_max.m_z = z + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
 	m_collisionBounds = collision;
 }
 

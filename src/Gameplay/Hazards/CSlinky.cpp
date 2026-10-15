@@ -161,12 +161,12 @@ bool CSlinky::Process()
 	int z = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) - 4;
 	int y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - 4;
 	int x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - 4;
-	rect.m_x1 = x;
-	rect.m_y1 = y;
-	rect.m_z1 = z;
-	rect.m_x2 = x + 7;
-	rect.m_y2 = y + 7;
-	rect.m_z2 = z + 7;
+	rect.m_min.m_x = x;
+	rect.m_min.m_y = y;
+	rect.m_min.m_z = z;
+	rect.m_max.m_x = x + 7;
+	rect.m_max.m_y = y + 7;
+	rect.m_max.m_z = z + 7;
 	CGameObject* hit;
 	CAI* ai = g_pAI;
 	CGameObject*& exclude = ai->m_collisionExclude;

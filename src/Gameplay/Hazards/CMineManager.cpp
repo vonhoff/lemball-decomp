@@ -129,12 +129,12 @@ void CMineManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 		STEP_ON_BOUND_SPAN = 15
 	};
 	CRect3 bounds;
-	bounds.m_x1 = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
-	bounds.m_y1 = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
-	bounds.m_z1 = (p_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
-	bounds.m_x2 = bounds.m_x1 + STEP_ON_BOUND_SPAN;
-	bounds.m_y2 = bounds.m_y1 + STEP_ON_BOUND_SPAN;
-	bounds.m_z2 = bounds.m_y1 + STEP_ON_BOUND_SPAN;
+	bounds.m_min.m_x = (p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	bounds.m_min.m_y = (p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	bounds.m_min.m_z = (p_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) - STEP_ON_HALF_WIDTH;
+	bounds.m_max.m_x = bounds.m_min.m_x + STEP_ON_BOUND_SPAN;
+	bounds.m_max.m_y = bounds.m_min.m_y + STEP_ON_BOUND_SPAN;
+	bounds.m_max.m_z = bounds.m_min.m_y + STEP_ON_BOUND_SPAN;
 	int i = 0;
 	if (m_count <= 0) {
 		return;
@@ -144,8 +144,8 @@ void CMineManager::StepOn(const AICOORD& p_position, CGameObject* p_object)
 			int py = m_positions[i].m_y;
 			int px = m_positions[i].m_x;
 			int pz = m_positions[i].m_z;
-			if (bounds.m_x1 < px && px < bounds.m_x2 && bounds.m_y1 < py && py < bounds.m_y2 && bounds.m_z1 < pz &&
-				pz < bounds.m_z2) {
+			if (bounds.m_min.m_x < px && px < bounds.m_max.m_x && bounds.m_min.m_y < py && py < bounds.m_max.m_y &&
+				bounds.m_min.m_z < pz && pz < bounds.m_max.m_z) {
 				m_mines[i].StepOn(p_object);
 				Trigger(i, 0);
 				return;

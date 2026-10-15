@@ -40,12 +40,12 @@ void CSheep::Restart()
 	int tileY = m_spawnPosition.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 	int tileZ = m_spawnPosition.m_zFixed >> FIXED_POINT_FRACTION_BITS;
 	CRect3 collision;
-	collision.m_x1 = tileX - GAME_OBJECT_COLLISION_XY_MIN_INSET;
-	collision.m_y1 = tileY - GAME_OBJECT_COLLISION_XY_MIN_INSET;
-	collision.m_z1 = tileZ;
-	collision.m_x2 = tileX + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
-	collision.m_y2 = tileY + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
-	collision.m_z2 = tileZ + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
+	collision.m_min.m_x = tileX - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+	collision.m_min.m_y = tileY - GAME_OBJECT_COLLISION_XY_MIN_INSET;
+	collision.m_min.m_z = tileZ;
+	collision.m_max.m_x = tileX + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+	collision.m_max.m_y = tileY + GAME_OBJECT_COLLISION_XY_MAX_OFFSET;
+	collision.m_max.m_z = tileZ + GAME_OBJECT_COLLISION_BOX_LAST_PIXEL_OFFSET;
 	m_collisionBounds = collision;
 	m_facingDirection = m_initialFacingDirection;
 	CAI* objectAi = g_pAI;
