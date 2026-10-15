@@ -199,12 +199,10 @@ bool CBaseQueue::Detach(CBaseQueueHandler* p_handler, int p_priority)
 		if (current->m_priority == p_priority && current->m_handler == p_handler) {
 			if (index == 0) {
 				m_handlerList = current->m_next;
-				delete current;
-				m_handlerCount = m_handlerCount - 1;
-				LeaveCritical();
-				return true;
 			}
-			previous->m_next = current->m_next;
+			else {
+				previous->m_next = current->m_next;
+			}
 			delete current;
 			m_handlerCount = m_handlerCount - 1;
 			LeaveCritical();

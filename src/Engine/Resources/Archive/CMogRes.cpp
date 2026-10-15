@@ -184,23 +184,13 @@ int CMogRes::KillLeastResource(unsigned long p_requiredSize)
 				if (resource->m_directUseCount == 0) {
 					unsigned int used = resource->GetSizeUsed();
 					unsigned int refs = m_resources[i]->m_referenceCount;
-					if (used >= p_requiredSize) {
-						if (used > bestSize || bestRefs > refs) {
-							goto update;
-						}
-						if (used >= p_requiredSize) {
-							goto next;
-						}
-					}
-					if (bestRefs > refs) {
-					update:
+					if ((used >= p_requiredSize && used > bestSize) || bestRefs > refs) {
 						bestRefs = refs;
 						bestSize = used;
 						bestIndex = i;
 					}
 				}
 			}
-		next:
 			i++;
 			scanned++;
 		} while (scanned < m_resourceCount);
@@ -250,9 +240,7 @@ unsigned char* CMogRes::AllocateMainMem(unsigned long p_size)
 			int handle = KillLeastResource(needed);
 			if (handle != RESOURCE_INDEX_NONE) {
 				m_resources[handle]->UnLoadData(true);
-				if (handle != RESOURCE_INDEX_NONE) {
-					continue;
-				}
+				continue;
 			}
 			int i = 0;
 			int remaining = m_resourceCount;

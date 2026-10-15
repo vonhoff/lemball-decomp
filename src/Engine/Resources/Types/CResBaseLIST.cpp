@@ -105,14 +105,10 @@ void CResBaseLIST::LoadData()
 bool CResBaseLIST::ForceLoadVram()
 {
 	if (!GetfVramLoaded()) {
-		unsigned int i = 0;
-		if (m_totalSize / m_listHeader->m_capacity != 0) {
-			do {
-				if (!ForceLoadVram(i)) {
-					return false;
-				}
-				i++;
-			} while (i < m_totalSize / m_listHeader->m_capacity);
+		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_capacity; i++) {
+			if (!ForceLoadVram(i)) {
+				return false;
+			}
 		}
 	}
 	return GetfVramLoaded();
@@ -121,24 +117,16 @@ bool CResBaseLIST::ForceLoadVram()
 // FUNCTION: LEMBALL 0x0045d540
 void CResBaseLIST::UnLoadData(bool p_force)
 {
-	if (m_loaded == 0) {
-		if (!GetfAnyVramLoaded()) {
-			return;
-		}
-		if (m_loaded == 0) {
-			goto unload_entries;
-		}
+	if (m_loaded == 0 && !GetfAnyVramLoaded()) {
+		return;
 	}
-	m_loaded = false;
-	g_pActiveMogRes->DeallocateMem(m_data, 1);
-	m_data = NULL;
-unload_entries:
-	unsigned int i = 0;
-	if (m_totalSize / m_listHeader->m_capacity != 0) {
-		do {
-			UnLoadResources(i, p_force);
-			i++;
-		} while (i < m_totalSize / m_listHeader->m_capacity);
+	if (m_loaded != 0) {
+		m_loaded = false;
+		g_pActiveMogRes->DeallocateMem(m_data, 1);
+		m_data = NULL;
+	}
+	for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_capacity; i++) {
+		UnLoadResources(i, p_force);
 	}
 	OnUnLoad();
 }
