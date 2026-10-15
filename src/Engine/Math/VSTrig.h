@@ -18,7 +18,7 @@ public:
 	CFixed Cos(int p_angle) const;
 	CFixed Sin(int p_angle) const;
 	CVector Rotate(CVector p_vector, CFixed& p_sin, CFixed& p_cos) const;
-	CVector Rotate(CVector& p_vector, int p_angle);
+	CVector Rotate(CVector& p_vector, int p_angle) const;
 	VSTrig();
 
 private:
@@ -30,7 +30,7 @@ private:
 extern VSTrig* g_pVSTrig;
 extern int g_nVSTrigSource[TRIG_TABLE_SIZE];
 extern unsigned int g_dwVSTrigInitialised;
-inline CVector VSTrig::Rotate(CVector& p_vector, int p_angle)
+inline CVector VSTrig::Rotate(CVector& p_vector, int p_angle) const
 {
 	CFixed sine = Sin(p_angle);
 	CFixed cosine = Sin((unsigned int) p_angle + TRIG_ANGLE_QUARTER_TURN);
