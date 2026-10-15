@@ -59,7 +59,7 @@ Each function is compared against the original executable using [reccmp](https:/
 - **Fuzzy:** Raw assembly similarity, including equivalent functions with lower scores.
 - **Effective:** Non-stub raw 100% matches and reccmp's own equivalence results.
 
-The [bytematch.dev report](https://bytematch.dev/vonhoff/lemball-decomp) only includes exact and fuzzy matches.
+Exact and fuzzy matching metrics are tracked on both [decomp.dev](https://decomp.dev/vonhoff/lemball-decomp) and [bytematch.dev](https://bytematch.dev/vonhoff/lemball-decomp).
 
 ### Prerequisites
 
