@@ -202,23 +202,23 @@ public:
 
 private:
 	unsigned int m_unk0x48;                            // 0x48
-	int m_initialised;                                 // 0x4c
+	bool m_initialised;                                // 0x4c
 	unsigned int* m_objectRequired;                    // 0x50
 	unsigned short m_levelVersion;                     // 0x54
 	unsigned short m_pad0x56;                          // 0x56
-	unsigned int m_gameplayEnabled;                    // 0x58
+	bool m_gameplayEnabled;                            // 0x58
 	unsigned long m_gameplayStartDelay;                // 0x5c
 	unsigned int m_mapType;                            // 0x60
 	unsigned int m_networkMode;                        // 0x64
-	unsigned int m_started;                            // 0x68
-	unsigned int m_gameStatePending;                   // 0x6c
-	unsigned int m_networkStartReady;                  // 0x70
+	bool m_started;                                    // 0x68
+	bool m_gameStatePending;                           // 0x6c
+	bool m_networkStartReady;                          // 0x70
 	CGameStateMessage* m_gameStateMessage;             // 0x74
 	CPBNetworkGame* m_networkGame;                     // 0x78
 	unsigned int m_isHost;                             // 0x7c
 	unsigned int m_unk0x80;                            // 0x80
 	unsigned long m_lastNetworkSendCheckTick;          // 0x84
-	unsigned int m_clockSourceReady;                   // 0x88
+	bool m_clockSourceReady;                           // 0x88
 	CAnimSpecial* m_animSpecial;                       // 0x8c
 	int m_networkStartsX[4];                           // 0x90
 	int m_networkStartsY[4];                           // 0xa0
@@ -227,7 +227,7 @@ private:
 	int m_networkTrapDoorCount;                        // 0xd0
 	int m_unk0xd4;                                     // 0xd4
 	int m_paused;                                      // 0xd8
-	int m_clockStartPending;                           // 0xdc
+	bool m_clockStartPending;                          // 0xdc
 	unsigned long m_levelStartTick;                    // 0xe0
 	int m_levelTimeRemaining;                          // 0xe4
 	int m_gameTime;                                    // 0xe8
@@ -238,7 +238,7 @@ private:
 	int m_flagCounts[2];                               // 0xfc
 	unsigned long m_gameOverDeadline;                  // 0x104
 	eGameStatus m_gameStatus;                          // 0x108
-	int m_isSinglePlayer;                              // 0x10c
+	bool m_remotePauseRequest;                         // 0x10c
 	CMap* m_map;                                       // 0x110
 	CMaze* m_maze;                                     // 0x114
 	int m_objectCount;                                 // 0x118

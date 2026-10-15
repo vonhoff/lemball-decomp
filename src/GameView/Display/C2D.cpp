@@ -1560,7 +1560,7 @@ void C2D::TriggerPause(unsigned int p_paused)
 // FUNCTION: LEMBALL 0x00437de0
 void C2D::SetPause(unsigned int p_paused)
 {
-	m_pauser = m_ai->m_isSinglePlayer == 0;
+	m_pauser = m_ai->m_remotePauseRequest == 0;
 	if (p_paused != 0) {
 		if (m_ai->m_gameStatus < GAME_STATUS_PAUSED || m_ai->m_gameStatus > GAME_STATUS_RUNNING) {
 			return;
