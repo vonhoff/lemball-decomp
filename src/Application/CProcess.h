@@ -29,8 +29,8 @@ public:
 	friend class CAbout;
 
 private:
-	int m_returnState;  // 0x04
-	int m_processState; // 0x08
+	int m_returnState;             // 0x04
+	eProcessResult m_processState; // 0x08
 };
 
 // SYNTHETIC: LEMBALL 0x00407ef0
