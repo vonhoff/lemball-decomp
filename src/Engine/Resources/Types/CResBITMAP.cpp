@@ -23,7 +23,7 @@ CResBITMAP* CResBITMAP::Load(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x0045e290
 void CResBITMAP::SetHeader()
 {
-	BitmapHeader* header = (BitmapHeader*) m_name;
+	const BitmapHeader* header = (const BitmapHeader*) m_entryHeader;
 	unsigned short height = (unsigned short) header->m_height;
 	unsigned int width = header->m_width;
 	m_rasterPoint.m_x = (unsigned short) width;

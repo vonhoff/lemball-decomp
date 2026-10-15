@@ -34,7 +34,7 @@ CResImage* CResImage::Load(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x0045e1e0
 void CResImage::SetHeader()
 {
-	ImageResourceHeader* header = (ImageResourceHeader*) m_name;
+	const ImageResourceHeader* header = (const ImageResourceHeader*) m_entryHeader;
 	unsigned int width = header->m_width;
 	unsigned short height = header->m_height;
 	m_rasterPoint.m_x = (short) width;

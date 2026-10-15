@@ -23,7 +23,7 @@ CResZRLE* CResZRLE::Load(unsigned long p_resourceId)
 // FUNCTION: LEMBALL 0x0045e340
 void CResZRLE::SetHeader()
 {
-	ZrleHeader* header = (ZrleHeader*) m_name;
+	const ZrleHeader* header = (const ZrleHeader*) m_entryHeader;
 	short y = header->m_y;
 	short x = header->m_x;
 	m_rasterPoint.m_x = x;

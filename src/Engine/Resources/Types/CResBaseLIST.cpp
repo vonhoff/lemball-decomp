@@ -15,7 +15,7 @@ const unsigned int RESOURCE_LIST_HEADER_UNSET = 0xffffffff;
 // FUNCTION: LEMBALL 0x0045d290
 void CResBaseLIST::SetHeader()
 {
-	ResListHeader* header = (ResListHeader*) m_name;
+	const ResListHeader* header = (const ResListHeader*) m_entryHeader;
 	m_subresourceCount = header->m_subresourceCount;
 	m_headerSize = header->m_headerSize;
 	m_bodySize = header->m_bodySize;

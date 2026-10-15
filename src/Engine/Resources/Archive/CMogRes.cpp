@@ -301,7 +301,7 @@ bool CMogRes::Load(CResBase* p_resource, tagCHUNK p_chunk)
 	}
 	p_resource->m_dataSize = p_chunk.m_info->m_size;
 	p_resource->m_fileOffset = p_chunk.m_info->m_fileOffset;
-	p_resource->m_name = p_chunk.m_info->m_name;
+	p_resource->m_entryHeader = p_chunk.m_info->m_name;
 	return true;
 }
 

@@ -31,6 +31,6 @@ void CResPALETTE::SetType()
 // FUNCTION: LEMBALL 0x0045ea40
 void CResPALETTE::SetHeader()
 {
-	PaletteHeader* header = (PaletteHeader*) m_name;
+	const PaletteHeader* header = (const PaletteHeader*) m_entryHeader;
 	m_entryCount = header->m_entryCount;
 }

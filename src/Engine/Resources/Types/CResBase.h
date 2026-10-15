@@ -79,7 +79,7 @@ protected:
 	unsigned int m_dataSize;       // 0x28
 	unsigned int m_fileOffset;     // 0x2c
 	unsigned long m_resourceId;    // 0x30
-	char* m_name;                  // 0x34
+	const void* m_entryHeader;     // 0x34
 	unsigned char* m_data;         // 0x38
 	unsigned int m_headerSkip;     // 0x3c
 	CHUNKID m_chunkType;           // 0x40

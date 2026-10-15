@@ -60,7 +60,7 @@ bool CResBase::Direct(unsigned char*& p_headerCursor, unsigned char*& p_dataCurs
 		return true;
 	}
 	m_dataSize = entry->m_dataSize;
-	m_name = (char*) (entry + 1);
+	m_entryHeader = entry + 1;
 	SetHeader();
 	p_headerCursor = (unsigned char*) (entry + 1) + m_headerSkip;
 	m_data = p_dataCursor;
@@ -88,7 +88,7 @@ void CResBase::Initialise()
 	m_loaded = false;
 	m_dataSize = 0;
 	m_fileOffset = 0;
-	m_name = NULL;
+	m_entryHeader = NULL;
 	m_data = NULL;
 	m_externalList = NULL;
 	m_headerSkip = 0;
@@ -109,7 +109,7 @@ void CResBase::OnRead(unsigned char* p_source, unsigned char** p_data, unsigned 
 			memcpy(m_data, p_source, p_size);
 		}
 	}
-	if (m_name != NULL) {
+	if (m_entryHeader != NULL) {
 		m_loaded = true;
 		OnLoad();
 	}
