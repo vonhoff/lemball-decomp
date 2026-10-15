@@ -113,7 +113,7 @@ bool CTCPIPBroadcast::Start(const char* p_name)
 	g_szBroadcastPeerName = new char[strlen(hostName) + 1];
 	strcpy(g_szBroadcastPeerName, hostName);
 	m_asyncBuffer = new char[MAXGETHOSTSTRUCT];
-	m_writeReady = 1;
+	m_writeReady = true;
 	m_asyncRequest = WSAAsyncGetHostByName(m_windowHandle,
 										   TCPIP_MESSAGE_LOCAL_HOST_RESOLVED,
 										   g_szBroadcastPeerName,
@@ -154,9 +154,9 @@ void CTCPIPBroadcast::GotHost(int p_failed)
 		CBroadcast::SendFailedInit(NETWORK_ERROR_SOCKET_CREATE);
 		return;
 	}
-	m_isOpen = 1;
+	m_isOpen = true;
 	m_asyncBuffer = new char[MAXGETHOSTSTRUCT];
-	m_writeReady = 1;
+	m_writeReady = true;
 	m_asyncRequest = WSAAsyncGetServByName(m_windowHandle,
 										   TCPIP_MESSAGE_SERVICE_RESOLVED,
 										   "tftp",
@@ -215,8 +215,8 @@ void CTCPIPBroadcast::HandleServiceLookupResult(bool p_failed)
 		CBroadcast::SendFailedInit(NETWORK_ERROR_EVENT_SELECT);
 		return;
 	}
-	m_readReady = 1;
-	m_writeReady = 0;
+	m_readReady = true;
+	m_writeReady = false;
 	m_lastBroadcastTime = CurrentMilliTimer() - NETWORK_BROADCAST_INTERVAL_MS;
 	message.m_type = 2;
 	message.m_code = 0;

@@ -66,7 +66,7 @@ int CTCPIPWriteSocket::Process(unsigned int p_message, unsigned int p_wParam, lo
 		switch (event) {
 		case FD_WRITE:
 			if (error == 0) {
-				m_socketFlags = 1;
+				m_socketFlags = true;
 			}
 			return 0;
 		}

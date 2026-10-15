@@ -7,13 +7,13 @@
 CBaseCommonSocket::CBaseCommonSocket()
 {
 	m_socketHandle = NETWORK_SOCKET_HANDLE_INVALID;
-	m_readReady = 0;
-	m_isOpen = 0;
+	m_readReady = false;
+	m_isOpen = false;
 	m_port = NETWORK_PORT_UNASSIGNED;
-	m_writeReady = 0;
-	m_closePending = 0;
-	m_eventPending = 0;
-	m_socketFlags = 0;
+	m_writeReady = false;
+	m_closePending = false;
+	m_eventPending = false;
+	m_socketFlags = false;
 	m_lastError = NETWORK_ERROR_NONE;
 	m_platformState = new unsigned char[0x10];
 }
@@ -31,10 +31,10 @@ void CBaseCommonSocket::SocketError(NetworkErrors p_error)
 	g_lastNetworkError = p_error;
 	if (p_error != 0 && m_isOpen != 0) {
 		SysCloseSocket();
-		m_readReady = 0;
-		m_isOpen = 0;
+		m_readReady = false;
+		m_isOpen = false;
 		m_socketHandle = NETWORK_SOCKET_HANDLE_INVALID;
-		m_writeReady = 0;
+		m_writeReady = false;
 	}
 }
 
@@ -42,8 +42,8 @@ void CBaseCommonSocket::SocketError(NetworkErrors p_error)
 void CBaseCommonSocket::CloseSocket()
 {
 	if (m_isOpen != 0) {
-		m_readReady = 0;
-		m_isOpen = 0;
+		m_readReady = false;
+		m_isOpen = false;
 		if (SysCloseSocket() == NETWORK_SOCKET_ERROR) {
 			SocketError();
 		}

@@ -73,8 +73,8 @@ void CFileConnect::Listen(CNetworkAddress* p_address)
 {
 	InitSocket();
 	SetDestAddr(p_address);
-	m_closePending = 1;
-	m_eventPending = 1;
+	m_closePending = true;
+	m_eventPending = true;
 	m_isHost = false;
 	CWriteSocket::m_lastSendTime = CurrentMilliTimer() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
@@ -85,7 +85,7 @@ void CFileConnect::Listen(CNetworkAddress* p_address)
 void CFileConnect::Connect()
 {
 	InitSocket();
-	m_eventPending = 1;
+	m_eventPending = true;
 	m_isHost = true;
 	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 	ConnectSetup();
@@ -153,8 +153,8 @@ void CFileConnect::ConnectSetup()
 	}
 
 setupComplete:
-	m_isOpen = 1;
-	m_socketFlags = 1;
+	m_isOpen = true;
+	m_socketFlags = true;
 }
 
 // FUNCTION: LEMBALL 0x0047b990

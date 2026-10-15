@@ -91,11 +91,11 @@ void CConnect::FirstReceive()
 	m_established = true;
 	message.m_code = 0;
 	message.m_payload = this;
-	m_writeReady = 0;
+	m_writeReady = false;
 	m_eventPending = m_writeReady;
-	m_readReady = 1;
+	m_readReady = true;
 	if (m_isHost != 0) {
-		m_closePending = 1;
+		m_closePending = true;
 		CWriteSocket::m_lastSendTime = CurrentMilliTimer() - NETWORK_CLOSE_PENDING_PULSE_INTERVAL_MS;
 		CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 		if (g_pBaseNetwork->m_suspendBroadcastOnConnect != 0) {

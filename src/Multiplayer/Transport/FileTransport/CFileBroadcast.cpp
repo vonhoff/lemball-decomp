@@ -117,10 +117,10 @@ bool CFileBroadcast::Start(const char* p_name)
 	CFileReadSocket::m_dataOffset = CFileWriteSocket::m_dataOffset;
 
 	if (created) {
-		m_isOpen = 1;
-		m_readReady = 1;
-		m_writeReady = 0;
-		m_socketFlags = 1;
+		m_isOpen = true;
+		m_readReady = true;
+		m_writeReady = false;
+		m_socketFlags = true;
 		m_lastBroadcastTime = CurrentMilliTimer() - NETWORK_BROADCAST_INTERVAL_MS;
 
 		tagMESSAGE message;

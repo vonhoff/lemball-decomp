@@ -26,7 +26,7 @@ bool CTCPIPConnect::Start(const char* p_localName, const char* p_remoteName)
 	m_asyncBuffer = new char[MAXGETHOSTSTRUCT];
 	m_name = new char[strlen(p_localName) + 1];
 	strcpy(m_name, p_localName);
-	m_writeReady = 1;
+	m_writeReady = true;
 	m_asyncRequest = WSAAsyncGetHostByName(m_windowHandle,
 										   TCPIP_MESSAGE_LOCAL_HOST_RESOLVED,
 										   p_localName,
@@ -54,7 +54,7 @@ void CTCPIPConnect::GotHost(int p_failed)
 		SetDestAddr(&address);
 		m_port = (short) atoi(m_address);
 		if (m_port == 0) {
-			m_writeReady = 1;
+			m_writeReady = true;
 			m_asyncRequest = WSAAsyncGetServByName(m_windowHandle,
 												   TCPIP_MESSAGE_SERVICE_RESOLVED,
 												   m_address,
@@ -105,7 +105,7 @@ void CTCPIPConnect::InitSocket()
 		SocketError();
 		return;
 	}
-	m_isOpen = 1;
+	m_isOpen = true;
 	nonBlocking = 1;
 	if (ioctlsocket(m_socketHandle, FIONBIO, &nonBlocking) == NETWORK_SOCKET_ERROR) {
 		SocketError();
@@ -131,8 +131,8 @@ void CTCPIPConnect::Listen(CNetworkAddress* p_address)
 		SocketError();
 		return;
 	}
-	m_closePending = 1;
-	m_eventPending = 1;
+	m_closePending = true;
+	m_eventPending = true;
 	m_isHost = false;
 	CWriteSocket::m_lastSendTime = CurrentMilliTimer() - NETWORK_CRITICAL_PACKET_RETRY_INTERVAL_MS;
 	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
@@ -156,7 +156,7 @@ void CTCPIPConnect::Connect()
 		SocketError();
 		return;
 	}
-	m_eventPending = 1;
+	m_eventPending = true;
 	m_isHost = true;
 	CReadSocket::m_lastReceiveTime = CurrentMilliTimer();
 }
