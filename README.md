@@ -5,12 +5,15 @@
 [![Exact Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](https://bytematch.dev/vonhoff/lemball-decomp)
 [![Fuzzy Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](https://bytematch.dev/vonhoff/lemball-decomp)
 
-This project is a matching decompilation of *Lemmings Paintball*, an action video game from the *Lemmings* franchise
+This project reconstructs *Lemmings Paintball*, an action video game from the *Lemmings* franchise
 developed by Visual Sciences and published by Psygnosis in 1996 for Windows 95.
 
-The goal is to reconstruct the game's codebase using idiomatic, maintainable C++ that preserves the original behavior
-and matches the original machine code as closely as possible. The resulting codebase will serve as a faithful reference
-and foundation for future ports.
+The goal is a stable, faithful reference and foundation for future ports, using idiomatic, maintainable C++ that
+preserves the original game's behavior. Work focuses on concrete correctness and portability obstacles.
+
+Matching helps validate the reconstruction. Good Exact and Effective results remain important, and changes should
+preserve existing matches by default. Full matching is not a completion requirement; necessary regressions need
+concrete evidence and a measured explanation.
 
 > [!NOTE]
 > This reconstruction exclusively targets 32-bit Windows and uses Microsoft Visual C++ 4.0. <br/>
