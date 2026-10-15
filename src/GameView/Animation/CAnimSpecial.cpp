@@ -42,7 +42,7 @@ void CAnimSpecial::Initialise(CMap* p_map)
 			if (column >= width) {
 				break;
 			}
-			CGround* ground = map->m_ground.m_ground + row * map->m_ground.m_width + column;
+			CGround* ground = map->m_ground.GetGroundCell(column, row);
 			switch (ground->m_objectType) {
 			case TERRAIN_ANIM:
 			case TERRAIN_FLAME:
@@ -82,7 +82,7 @@ void CAnimSpecial::Initialise(CMap* p_map)
 			if (entryColumn >= width) {
 				break;
 			}
-			CGround* ground = map->m_ground.m_ground + entryRow * map->m_ground.m_width + entryColumn;
+			CGround* ground = map->m_ground.GetGroundCell(entryColumn, entryRow);
 			eObjectType objectType = ground->m_objectType;
 			switch (objectType) {
 			case TERRAIN_ANIM:
@@ -93,9 +93,8 @@ void CAnimSpecial::Initialise(CMap* p_map)
 				m_entries[entryIndex].m_x = (short) entryColumn;
 				m_entries[entryIndex].m_y = (short) entryRow;
 				m_entries[entryIndex].m_sortKey =
-					(unsigned short) ((entryRow + entryColumn) * ANIM_SPECIAL_DIAGONAL_DEPTH_STEP);
-				m_entries[entryIndex].m_groundEntry =
-					map->m_ground.m_ground + map->m_ground.m_width * entryRow + entryColumn;
+					(unsigned short) (((unsigned int) entryRow + entryColumn) * ANIM_SPECIAL_DIAGONAL_DEPTH_STEP);
+				m_entries[entryIndex].m_groundEntry = map->m_ground.GetGroundCell(entryColumn, entryRow);
 				entryIndex++;
 				break;
 			default: {
@@ -117,9 +116,9 @@ void CAnimSpecial::Initialise(CMap* p_map)
 					m_entries[entryIndex].m_x = (short) entryColumn;
 					m_entries[entryIndex].m_y = (short) entryRow;
 					m_entries[entryIndex].m_sortKey =
-						(unsigned short) ((entryRow + entryColumn) * ANIM_SPECIAL_DIAGONAL_DEPTH_STEP + sortOffset);
-					m_entries[entryIndex].m_groundEntry =
-						map->m_ground.m_ground + map->m_ground.m_width * entryRow + entryColumn;
+						(unsigned short) (((unsigned int) entryRow + entryColumn) * ANIM_SPECIAL_DIAGONAL_DEPTH_STEP +
+										  sortOffset);
+					m_entries[entryIndex].m_groundEntry = map->m_ground.GetGroundCell(entryColumn, entryRow);
 					entryIndex++;
 					entryColumn++;
 					continue;
