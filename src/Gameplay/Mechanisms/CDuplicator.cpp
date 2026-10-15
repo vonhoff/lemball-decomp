@@ -107,7 +107,7 @@ bool CDuplicator::Process()
 	m_actionArgument = REMOTE_PALETTE_REMAP_DISABLED;
 	if (m_action == ACTION_ACTIVATED && m_actionDeadline < g_dwGameTick) {
 		CGameObject* duplicatedObject = m_duplicatedObject;
-		duplicatedObject->m_hidden = 0;
+		duplicatedObject->m_hidden = false;
 		duplicatedObject->m_action = ACTION_NONE;
 		m_duplicatedObject->Action(ACTION_NONE);
 		m_duplicatedObject->ResetInstructions();
@@ -164,7 +164,7 @@ void CDuplicator::DoActivate()
 	m_actionDeadline += g_dwGameTick;
 	m_duplicatedObject = activator;
 	int x = m_position.m_xFixed;
-	activator->m_hidden = 1;
+	activator->m_hidden = true;
 	activator->m_action = ACTION_HIDDEN;
 	CGameObject* dup = m_duplicatedObject;
 	dup->m_position.m_xFixed = x;

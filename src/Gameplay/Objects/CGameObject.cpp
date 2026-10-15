@@ -455,13 +455,13 @@ void CGameObject::Initialise()
 	m_actionArgument = 0;
 	m_deathRequested = false;
 	m_action = ACTION_NONE;
-	m_isRemoteObject = 0;
+	m_isRemoteObject = false;
 	m_facingDirection = 0;
 	m_objectActive = 0;
 	m_unk0xc4 = 0;
 	m_initiallyActive = 0;
 	m_isFlying = false;
-	m_hidden = 0;
+	m_hidden = false;
 	m_activationReserved = 0;
 	m_routeSearchFailed = false;
 	m_routeSearchActive = false;
@@ -476,7 +476,7 @@ void CGameObject::Initialise()
 	m_flightVelocity.m_zFixed.m_value = 0;
 	m_unk0x58 = 0;
 	m_onMover = false;
-	m_hasDestination = 0;
+	m_hasDestination = false;
 	m_actionDeadline = g_dwGameTick;
 	m_soundEffect = SFX_NONE;
 	m_transientFlags = 0;

@@ -209,7 +209,7 @@ bool CIce::Process()
 		int x = current.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int y = current.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		if (x < minX || x > maxX || y < minY || y > maxY) {
-			object->m_hidden = 0;
+			object->m_hidden = false;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
 			unsigned short groundZ;
@@ -333,7 +333,7 @@ void CIce::Switched()
 		for (int i = 0; i < m_objectCount; i++) {
 			CGameObject* object = m_objects[i];
 			AICOORD current(object->m_position);
-			object->m_hidden = 0;
+			object->m_hidden = false;
 			object->m_action = ACTION_NONE;
 			object->m_actionDeadline = g_dwGameTick;
 			unsigned short groundZ;

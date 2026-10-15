@@ -99,7 +99,7 @@ bool CCatapult::Process()
 				CATAPULT_RANDOM_VERTICAL_LAUNCH_SPEED_FIXED;
 
 			CGameObject* activator = m_activator;
-			activator->m_hidden = 0;
+			activator->m_hidden = false;
 			activator->m_action = ACTION_NONE;
 			m_activator->StartFly(vel, &pos);
 			m_activator = NULL;
@@ -141,7 +141,7 @@ void CCatapult::DoActivate()
 	m_actionDeadline += g_dwGameTick;
 	CGameObject* activator = m_activator;
 	m_activatorObjectType = activator->m_objectType;
-	activator->m_hidden = 1;
+	activator->m_hidden = true;
 	activator->m_action = ACTION_HIDDEN;
 	g_pAI->Score(AI_SCORE_CATAPULT_USE_POINTS);
 }

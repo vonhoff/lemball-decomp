@@ -262,7 +262,7 @@ void CBullet::GetData()
 	}
 	m_sourceObjectId = GetWORD();
 	m_active = 1;
-	m_isRemoteObject = 1;
+	m_isRemoteObject = true;
 }
 
 // FUNCTION: LEMBALL 0x0041ac70
@@ -272,7 +272,7 @@ void CBullet::Free()
 	if (m_action != ACTION_DEAD) {
 		Action(ACTION_DEAD);
 	}
-	m_isRemoteObject = 0;
+	m_isRemoteObject = false;
 }
 
 // FUNCTION: LEMBALL 0x0041aca0

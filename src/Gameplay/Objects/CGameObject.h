@@ -222,7 +222,7 @@ protected:
 	unsigned short m_linkedObjectId;       // 0x6c
 	short m_desiredFacingDirection;        // 0x6e
 	CAiDestinationList* m_destinationList; // 0x70
-	unsigned int m_hasDestination;         // 0x74
+	bool m_hasDestination;                 // 0x74
 	CVMovePos m_movement;                  // 0x78
 	int m_moveDurationTicks;               // 0x88
 	unsigned int m_activationReserved;     // 0x8c
@@ -235,7 +235,7 @@ protected:
 	short m_initialFacingDirection;        // 0xb6
 	eAction m_action;                      // 0xb8
 	short m_actionArgument;                // 0xbc
-	unsigned int m_hidden;                 // 0xc0
+	bool m_hidden;                         // 0xc0
 	short m_unk0xc4;                       // 0xc4
 	unsigned long m_lastMovementTick;      // 0xc8
 	unsigned long m_actionDeadline;        // 0xcc
@@ -250,7 +250,7 @@ protected:
 	bool m_isFalling;                      // 0x108
 	bool m_wasHitByMine;                   // 0x10c
 	unsigned int m_liftId;                 // 0x110
-	unsigned int m_isRemoteObject;         // 0x114
+	bool m_isRemoteObject;                 // 0x114
 	unsigned int m_unk0x118;               // 0x118
 	bool m_onMover;                        // 0x11c
 	unsigned short m_invisibleSwitchId;    // 0x120

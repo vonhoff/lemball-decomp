@@ -31044,6 +31044,13 @@
           "original_bytes": "e80f27fcff",
           "thunk": 4201755,
           "source_symbol": "?MarkRect@SpriteGroundLookup@@QAEXABVCVSRect@@@Z"
+        },
+        {
+          "offset": 85,
+          "original_instruction": 4453895,
+          "original_bytes": "e80f27fcff",
+          "thunk": 4201755,
+          "source_symbol": "?MarkRect@SpriteGroundLookup@@QAEXABVCVSRect@@@Z"
         }
       ]
     },

@@ -123,7 +123,7 @@ void CPlayerLemming::Restart()
 		m_flightVelocity.m_zFixed.m_value = PLAYER_LEMMING_INITIAL_FALL_VERTICAL_VELOCITY_FIXED;
 		m_isGroupLeader = 0;
 		m_wasHitByBullet = false;
-		m_hasDestination = 0;
+		m_hasDestination = false;
 		m_fireRequestState = FIRE_REQUEST_NONE;
 		m_desiredFacingDirection = m_initialFacingDirection;
 		SetBored(GAME_OBJECT_BOREDOM_MINIMUM_DELAY_MS);
@@ -147,7 +147,7 @@ void CPlayerLemming::Restart()
 		m_playerIndex = g_wLocalLemmingIndex;
 		g_wLocalLemmingIndex++;
 		g_pAI->m_networkLemmings[m_playerIndex + NETWORK_LEMMING_SLOTS_PER_PLAYER] = this;
-		m_isRemoteObject = 1;
+		m_isRemoteObject = true;
 		m_action = ACTION_DEAD;
 	}
 	m_position.m_zFixed += PLAYER_LEMMING_SPAWN_HEIGHT_OFFSET_FIXED;
@@ -183,7 +183,7 @@ void CPlayerLemming::HitBullet(CBullet* p_bullet)
 			default:
 				return;
 			}
-			m_hidden = 0;
+			m_hidden = false;
 			m_wasHitByBullet = true;
 			m_actionDeadline = g_dwGameTick + PLAYER_LEMMING_BULLET_HIT_STUN_TICKS;
 			m_facingDirection =
@@ -580,11 +580,11 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_wasHitByBullet = false;
 	m_ice = NULL;
 	m_onConveyor = 0;
-	m_hasDestination = 0;
+	m_hasDestination = false;
 	m_unk0xc4 = 0;
 	m_fireRequestState = FIRE_REQUEST_NONE;
 	m_isFlying = false;
-	m_hidden = 0;
+	m_hidden = false;
 	m_activationReserved = 0;
 	m_routeSearchFailed = false;
 	m_routeSearchActive = false;
