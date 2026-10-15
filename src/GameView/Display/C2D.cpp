@@ -1237,8 +1237,8 @@ bool C2D::IsInGrouping(CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00437520
 void C2D::NoStateLeftClick(const CVSPoint& p_screenPoint,
 						   const CVSPoint& p_gamePoint,
-						   unsigned int p_cancelMoves,
-						   unsigned int p_alternate)
+						   bool p_cancelMoves,
+						   bool p_alternate)
 {
 	CVSPoint destination(p_gamePoint);
 	int index;
@@ -1295,7 +1295,7 @@ void C2D::NoStateLeftClick(const CVSPoint& p_screenPoint,
 }
 
 // FUNCTION: LEMBALL 0x004376b0
-void C2D::GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint, unsigned int p_alternate)
+void C2D::GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint, bool p_alternate)
 {
 	int index;
 	if (FindGameObject(p_screenPoint, index, 0)) {
@@ -1346,10 +1346,7 @@ void C2D::GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gam
 }
 
 // FUNCTION: LEMBALL 0x00437840
-void C2D::LeftClick(const CVSPoint& p_screenPoint,
-					const CVSPoint& p_gamePoint,
-					unsigned int p_cancelMoves,
-					unsigned int p_alternate)
+void C2D::LeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint, bool p_cancelMoves, bool p_alternate)
 {
 	switch (m_groupingMode) {
 	case GROUPING_INACTIVE:
@@ -1716,7 +1713,7 @@ void C2D::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 		switch (p_flags) {
 		case MOUSE_BUTTON_INDEX_LEFT:
 		case MOUSE_BUTTON_INDEX_LEFT_DOUBLE_CLICK:
-			LeftClick(screenPoint, gamePoint, 1, 0);
+			LeftClick(screenPoint, gamePoint, true, false);
 			break;
 		case MOUSE_BUTTON_INDEX_RIGHT:
 		case MOUSE_BUTTON_INDEX_RIGHT_DOUBLE_CLICK:

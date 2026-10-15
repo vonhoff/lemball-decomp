@@ -170,21 +170,18 @@ public:
 	void DrawZBuff_Anim(int p_index, unsigned short p_z);
 	void DrawZBuff_Sprite(int p_index, unsigned short p_z);
 	void FormGroup();
-	void GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint, unsigned int p_alternate);
+	void GroupingLeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint, bool p_alternate);
 	void InitSpriteGroundLU();
 	void KillRemapPalettes();
-	void LeftClick(const CVSPoint& p_screenPoint,
-				   const CVSPoint& p_gamePoint,
-				   unsigned int p_cancelMoves,
-				   unsigned int p_alternate);
+	void LeftClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint, bool p_cancelMoves, bool p_alternate);
 	void MoveGroup(const CVSPoint& p_point);
 	void MarkGroundAnimAndLiftBounds();
 	void NewPauseWindow(ePauseWindowMessages p_message);
 	void NextGroup();
 	void NoStateLeftClick(const CVSPoint& p_screenPoint,
 						  const CVSPoint& p_gamePoint,
-						  unsigned int p_cancelMoves,
-						  unsigned int p_alternate);
+						  bool p_cancelMoves,
+						  bool p_alternate);
 	void NoStateRightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint);
 	void OnLoaded();
 	void PrevGroup();

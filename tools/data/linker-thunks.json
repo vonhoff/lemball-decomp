@@ -645,7 +645,7 @@
     {
       "address": 4199040,
       "target": 4420896,
-      "target_symbol": "?NoStateLeftClick@C2D@@QAEXABUCVSPoint@@0II@Z"
+      "target_symbol": "?NoStateLeftClick@C2D@@QAEXABUCVSPoint@@0HH@Z"
     },
     {
       "address": 4199045,
@@ -820,7 +820,7 @@
     {
       "address": 4199215,
       "target": 4421296,
-      "target_symbol": "?GroupingLeftClick@C2D@@QAEXABUCVSPoint@@0I@Z"
+      "target_symbol": "?GroupingLeftClick@C2D@@QAEXABUCVSPoint@@0H@Z"
     },
     {
       "address": 4199220,
@@ -3655,7 +3655,7 @@
     {
       "address": 4202050,
       "target": 4421696,
-      "target_symbol": "?LeftClick@C2D@@QAEXABUCVSPoint@@0II@Z"
+      "target_symbol": "?LeftClick@C2D@@QAEXABUCVSPoint@@0HH@Z"
     },
     {
       "address": 4202055,
@@ -28305,7 +28305,7 @@
     {
       "caller": 4420896,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-      "symbol": "?NoStateLeftClick@C2D@@QAEXABUCVSPoint@@0II@Z",
+      "symbol": "?NoStateLeftClick@C2D@@QAEXABUCVSPoint@@0HH@Z",
       "size": 375,
       "fingerprint": "c2c93d0a6b8e19206720c34daec544f07c32383e291d1b33905d8eee4313e06d",
       "references": [
@@ -28363,7 +28363,7 @@
     {
       "caller": 4421296,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-      "symbol": "?GroupingLeftClick@C2D@@QAEXABUCVSPoint@@0I@Z",
+      "symbol": "?GroupingLeftClick@C2D@@QAEXABUCVSPoint@@0H@Z",
       "size": 391,
       "fingerprint": "0eca4a70034088324f666bb391d60c0cfd0b4b0af20ac32ea7068841572edecc",
       "references": [
@@ -28435,7 +28435,7 @@
     {
       "caller": 4421696,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/C2D.cpp.obj",
-      "symbol": "?LeftClick@C2D@@QAEXABUCVSPoint@@0II@Z",
+      "symbol": "?LeftClick@C2D@@QAEXABUCVSPoint@@0HH@Z",
       "size": 69,
       "fingerprint": "92933eb42a083094f20f11634575add4b6ca9dbc1c57b6ca599b89ed953ee9f4",
       "references": [
@@ -28444,14 +28444,14 @@
           "original_instruction": 4421734,
           "original_bytes": "e8159afcff",
           "thunk": 4199040,
-          "source_symbol": "?NoStateLeftClick@C2D@@QAEXABUCVSPoint@@0II@Z"
+          "source_symbol": "?NoStateLeftClick@C2D@@QAEXABUCVSPoint@@0HH@Z"
         },
         {
           "offset": 61,
           "original_instruction": 4421757,
           "original_bytes": "e8ad9afcff",
           "thunk": 4199215,
-          "source_symbol": "?GroupingLeftClick@C2D@@QAEXABUCVSPoint@@0I@Z"
+          "source_symbol": "?GroupingLeftClick@C2D@@QAEXABUCVSPoint@@0H@Z"
         }
       ]
     },
@@ -28846,7 +28846,7 @@
           "original_instruction": 4424426,
           "original_bytes": "e8539bfcff",
           "thunk": 4202050,
-          "source_symbol": "?LeftClick@C2D@@QAEXABUCVSPoint@@0II@Z"
+          "source_symbol": "?LeftClick@C2D@@QAEXABUCVSPoint@@0HH@Z"
         },
         {
           "offset": 245,
