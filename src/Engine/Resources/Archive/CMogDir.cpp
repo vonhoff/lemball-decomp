@@ -15,6 +15,16 @@ int g_emptyChunkIndex = CHUNK_INDEX_BEFORE_FIRST_ENTRY;
 // GLOBAL: LEMBALL 0x004a1d7c
 tagChunkInfo* g_pEmptyChunkInfo = NULL;
 
+// SIZE 0x24
+struct MogDirectoryEntry {
+	unsigned int m_dataOffset; // 0x00
+	unsigned long m_id;        // 0x04
+	CHUNKID m_type;            // 0x08
+	unsigned int m_fileOffset; // 0x0c
+	unsigned int m_size;       // 0x10
+	char m_name[16];           // 0x14
+};
+
 const int MOG_SEEK_FROM_START = 0;
 
 // FUNCTION: LEMBALL 0x0045bda0
@@ -107,10 +117,8 @@ CMogDir::~CMogDir()
 // FUNCTION: LEMBALL 0x0045bfa0
 void CMogDir::GetChunkInfo(tagChunkInfo* p_info)
 {
-	const int MOG_DIRECTORY_ENTRY_STRIDE = 36;
-
 	vsSeek(g_pMogFile,
-		   ((unsigned int) m_iterator.m_index + 1) * MOG_DIRECTORY_ENTRY_STRIDE + m_directoryEndOffset,
+		   ((unsigned int) m_iterator.m_index + 1) * sizeof(MogDirectoryEntry) + m_directoryEndOffset,
 		   MOG_SEEK_FROM_START);
 	p_info->m_next.m_info = NULL;
 	p_info->m_child.m_info = NULL;
