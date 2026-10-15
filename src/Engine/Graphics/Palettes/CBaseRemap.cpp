@@ -41,15 +41,17 @@ void CBaseRemap::MapRemap(const unsigned char* p_mapping)
 
 	unsigned int paletteSize = m_paletteResource->m_entryCount;
 	m_remap = new unsigned char[paletteSize];
-	unsigned int mappingCount = *p_mapping++;
+	unsigned char mappingCount = *p_mapping++;
+	const unsigned char* sourceIndices = p_mapping;
+	const unsigned char* mappedIndices = p_mapping + mappingCount;
 	int i;
 	for (i = 0; i < (int) paletteSize; ++i) {
 		m_remap[i] = (unsigned char) i;
 	}
-	for (i = 0; i < (int) mappingCount; ++i) {
-		unsigned char mappedColour = p_mapping[mappingCount + i];
+	for (i = 0; i < mappingCount; ++i) {
+		unsigned char mappedColour = mappedIndices[i];
 		if (mappedColour != 0) {
-			m_remap[p_mapping[i]] = mappedColour;
+			m_remap[sourceIndices[i]] = mappedColour;
 		}
 	}
 
