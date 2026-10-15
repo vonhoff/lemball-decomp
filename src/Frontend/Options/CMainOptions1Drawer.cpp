@@ -1,5 +1,7 @@
 #include "CMainOptions1Drawer.h"
 
+#include <stddef.h>
+
 #include "Application/CGameStatus.h"
 #include "Application/FlowProcesses.h"
 #include "Application/GameMain.h"
@@ -16,9 +18,6 @@
 #include "Frontend/tagPRIMS.h"
 #include "GameView/Display/CMain2DDisplay.h"
 #include "Level/CLevelLoader.h"
-
-#include <stddef.h>
-
 #include "Engine/Queues/tagMESSAGE.h"
 
 class CGWnd;

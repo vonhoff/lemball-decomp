@@ -1,5 +1,7 @@
 #include "CMainOptions2Drawer.h"
 
+#include <stddef.h>
+
 #include "Application/FlowProcesses.h"
 #include "Application/GameMain.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
@@ -14,8 +16,7 @@
 #include "Frontend/tagPRIMS.h"
 #include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/Sound/CSoundView.h"
-
-#include <stddef.h>
+#include "Frontend/CBaseFrontendDrawer.h"
 
 const unsigned int MAIN_OPTIONS2_ZOOM_TOGGLE_MESSAGE = 0xacef0004;
 const unsigned int MAIN_OPTIONS2_EFFECTS_VOLUME_MESSAGE = 0xacef0005;

@@ -1,5 +1,7 @@
 #include "CFrontendResourceLoader.h"
 
+#include <stddef.h>
+
 #include "Application/GameMain.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceCatalog.h"
@@ -12,8 +14,6 @@
 #include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/Loading/CCDLoadAnim.h"
 #include "GameView/Sound/CSoundView.h"
-
-#include <stddef.h>
 
 class CCdLoadAnimDraw;
 

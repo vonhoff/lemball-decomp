@@ -1,5 +1,7 @@
 #include "CNetworkOptionsProc.h"
 
+#include <stddef.h>
+
 #include "CNetworkOptionsDrawer.h"
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "Multiplayer/CGameAcceptMessage.h"
@@ -12,12 +14,10 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Packets/CReadPacket.h"
-
 #include "Platform/Windows/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
-#include <stddef.h>
+#include "Multiplayer/Transport/CBaseCommonSocket.h"
 
 // FUNCTION: LEMBALL 0x00455050
 CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p_game)

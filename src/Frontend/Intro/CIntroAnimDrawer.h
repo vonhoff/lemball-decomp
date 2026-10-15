@@ -4,6 +4,7 @@
 #include "CIntroAnimAnimWindow.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Frontend/CBaseFrontendDrawer.h"
+#include "Application/FlowProcesses.h"
 
 class CGDI;
 class CMain2DDisplay;
@@ -16,11 +17,11 @@ class CIntroAnimDrawer : public CBaseFrontendDrawer {
 public:
 	CIntroAnimDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect, unsigned int p_completionSequence);
 	virtual bool ProcessMessages(tagMESSAGE* p_message); // vtable+0x3c
-	virtual void Load();                              // vtable+0x40
-	virtual void Processing();                        // vtable+0x38
-	virtual void UnLoad();                            // vtable+0x44
-	virtual ~CIntroAnimDrawer();                      // vtable+0x00
-	virtual void DestroyDrawer();                     // vtable+0x18
+	virtual void Load();                                 // vtable+0x40
+	virtual void Processing();                           // vtable+0x38
+	virtual void UnLoad();                               // vtable+0x44
+	virtual ~CIntroAnimDrawer();                         // vtable+0x00
+	virtual void DestroyDrawer();                        // vtable+0x18
 	void EndPhase();
 
 private:

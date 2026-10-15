@@ -1,5 +1,7 @@
 #include "CBaseFrontendDrawer.h"
 
+#include <stddef.h>
+
 #include "Application/CGameStatus.h"
 #include "Application/GameMain.h"
 #include "CBaseFrontendProcess.h"
@@ -7,7 +9,6 @@
 #include "Engine/Animation/CPlayThruAnim.h"
 #include "Engine/Graphics/CChangeList.h"
 #include "Engine/Graphics/Primitives/CCopyToBackBuff.h"
-#include "Engine/Graphics/Primitives/CDrawingMark.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Math/CVSMath.h"
 #include "Engine/Math/RandomConstants.h"
@@ -32,7 +33,6 @@
 #include "Multiplayer/Transport/NetworkMode.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"
-
 #include "Application/FlowProcesses.h"
 #include "Application/SoundEffects.h"
 #include "CUserActionMessage.h"
@@ -48,7 +48,6 @@
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "tagPRIMS.h"
-#include <stddef.h>
 #include "Engine/Animation/CStaticAnim.h"
 
 extern char g_szUnknownUserActionSpecified[];

@@ -1,5 +1,7 @@
 #include "CPreviewDrawer.h"
 
+#include <string.h>
+
 #include "Application/CGameStatus.h"
 #include "Application/FlowProcesses.h"
 #include "Application/GameMain.h"
@@ -24,10 +26,10 @@
 #include "Level/CLevelLoader.h"
 #include "Level/tPreviewData.h"
 #include "Multiplayer/Transport/NetworkMode.h"
-
-#include <string.h>
-
-#include "Engine/Graphics/Palettes/CRemap.h"
+#include "Engine/Graphics/Palettes/CBasePalManager.h"
+#include "Engine/Graphics/Palettes/CBaseRemap.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/CUserActionMessage.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 
 class CGWnd;

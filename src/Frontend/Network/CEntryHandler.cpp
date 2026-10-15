@@ -1,5 +1,8 @@
 #include "CEntryHandler.h"
 
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Queues/tagMESSAGE.h"
+
 // FUNCTION: LEMBALL 0x00453250
 void CEntryHandler::Reset()
 {

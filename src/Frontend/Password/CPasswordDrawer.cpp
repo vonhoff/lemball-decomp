@@ -1,5 +1,7 @@
 #include "CPasswordDrawer.h"
 
+#include <string.h>
+
 #include "Application/CGameStatus.h"
 #include "Application/FlowProcesses.h"
 #include "Application/SoundEffects.h"
@@ -28,8 +30,9 @@
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 #include "Platform/Windows/Windowing/CPVButton.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
+#include "Frontend/CBaseFrontendDrawer.h"
 
-#include <string.h>
+struct tagCoordPair;
 
 class CAnimFrameBASE;
 class CResBITMAP;

@@ -1,5 +1,7 @@
 #include "CNetworkOptionsDrawer.h"
 
+#include <string.h>
+
 #include "Application/CGameStatus.h"
 #include "Application/FlowProcesses.h"
 #include "Application/SoundEffects.h"
@@ -26,9 +28,8 @@
 #include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
-
-#include <string.h>
-
+#include "Engine/Graphics/Palettes/CBasePalManager.h"
+#include "Engine/Graphics/Palettes/CBaseRemap.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Resources/Types/CResFONT.h"

@@ -1,5 +1,7 @@
 #include "CBaseFrontendProcess.h"
 
+#include <stddef.h>
+
 #include "CBaseFrontendDrawer.h"
 #include "CUserActionMessage.h"
 #include "Engine/Queues/tagMESSAGE.h"
@@ -9,9 +11,6 @@
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Packets/CReadPacket.h"
-
-#include <stddef.h>
-
 #include "Application/CGameStatus.h"
 #include "Level/CLevelLoader.h"
 #include "Multiplayer/CGameFlaggedMessage.h"

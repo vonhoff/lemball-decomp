@@ -14,6 +14,7 @@
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Platform/Windows/Windowing/CWnd.h"
+#include "Platform/Windows/Windowing/CPVWnd.h"
 
 enum {
 	TRACK_WINDOW_CONTEXT_ID_UNASSIGNED = -1

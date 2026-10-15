@@ -1,5 +1,8 @@
 #include "CSuccFailDrawer.h"
 
+#include <stddef.h>
+#include <string.h>
+
 #include "Application/CGameStatus.h"
 #include "Application/FlowProcesses.h"
 #include "Application/GameMain.h"
@@ -30,14 +33,11 @@
 #include "Level/CLevelLoader.h"
 #include "Multiplayer/Transport/NetworkMode.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-
-#include <stddef.h>
-
+#include "Frontend/CUserActionMessage.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Multiplayer/CNetworkGameMessage.h"
 #include "Multiplayer/CNetworkManager.h"
 #include "Multiplayer/Transport/CConnect.h"
-#include <string.h>
 
 class CGWnd;
 
