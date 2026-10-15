@@ -204,7 +204,7 @@ protected:
 	unsigned short m_runtimeFlags;         // 0x04
 	bool m_routeSearchFailed;              // 0x08
 	bool m_routeSearchActive;              // 0x0c
-	unsigned int m_transientFlags;         // 0x10
+	bool m_redrawRequested;                // 0x10
 	CRect3 m_collisionBounds;              // 0x14
 	bool m_deathRequested;                 // 0x2c
 	unsigned int m_balloonPostActive;      // 0x30
@@ -297,8 +297,8 @@ inline void CGameObject::GetViewData(CViewData& p_viewData)
 	}
 	p_viewData.m_animationTime = timestamp;
 	SetSndEffect(SFX_NONE);
-	p_viewData.m_transientFlags = m_transientFlags;
-	m_transientFlags = 0;
+	p_viewData.m_redrawRequested = m_redrawRequested;
+	m_redrawRequested = false;
 }
 
 // SYNTHETIC: LEMBALL 0x00417ad0

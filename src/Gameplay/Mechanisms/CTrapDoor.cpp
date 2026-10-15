@@ -99,8 +99,8 @@ void CTrapDoor::GetViewData(CViewData& p_viewData)
 		p_viewData.m_animationTime = g_dwSimulationTimestamp;
 	}
 	SetSndEffect(SFX_NONE);
-	p_viewData.m_transientFlags = m_transientFlags;
-	m_transientFlags = 0;
+	p_viewData.m_redrawRequested = m_redrawRequested;
+	m_redrawRequested = false;
 }
 
 // FUNCTION: LEMBALL 0x0040c4f0

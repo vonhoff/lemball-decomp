@@ -4668,7 +4668,7 @@ void C2D::SortViewData()
 	int index = 0;
 	if (m_viewDataCount > 0) {
 		do {
-			if (m_redrawPending == 0 && m_viewData[index].m_transientFlags == 0) {
+			if (m_redrawPending == 0 && m_viewData[index].m_redrawRequested == 0) {
 				m_redrawPending = false;
 			}
 			else {

@@ -300,8 +300,8 @@ int CLaser::GetViewData(CViewData* p_viewData)
 	p_viewData->m_soundEffect = m_soundEffect;
 	p_viewData->m_animationTime = m_isRemoteObject ? g_dwNetworkSimulationTimestamp : g_dwSimulationTimestamp;
 	SetSndEffect(SFX_NONE);
-	p_viewData->m_transientFlags = m_transientFlags;
-	m_transientFlags = 0;
+	p_viewData->m_redrawRequested = m_redrawRequested;
+	m_redrawRequested = false;
 	p_viewData++;
 	int count = 1;
 	if (m_action == ACTION_ACTIVATED) {
@@ -329,8 +329,8 @@ int CLaser::GetViewData(CViewData* p_viewData)
 				p_viewData->m_animationTime =
 					m_isRemoteObject ? g_dwNetworkSimulationTimestamp : g_dwSimulationTimestamp;
 				SetSndEffect(SFX_NONE);
-				p_viewData->m_transientFlags = m_transientFlags;
-				m_transientFlags = 0;
+				p_viewData->m_redrawRequested = m_redrawRequested;
+				m_redrawRequested = false;
 				p_viewData->m_position.m_x = x;
 				p_viewData->m_position.m_y = y;
 				p_viewData->m_position.m_z = z;

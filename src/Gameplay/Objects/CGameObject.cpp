@@ -479,7 +479,7 @@ void CGameObject::Initialise()
 	m_hasDestination = false;
 	m_actionDeadline = g_dwGameTick;
 	m_soundEffect = SFX_NONE;
-	m_transientFlags = 0;
+	m_redrawRequested = false;
 }
 
 // FUNCTION: LEMBALL 0x00415240

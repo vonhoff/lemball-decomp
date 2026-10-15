@@ -29,7 +29,7 @@ public:
 	CViewData()
 	{
 		m_objectId = INVALID_OBJECT_REGISTRY_INDEX;
-		m_transientFlags = 0;
+		m_redrawRequested = false;
 		m_hidden = false;
 		m_action = ACTION_NONE;
 		m_stateTimer = 0;
@@ -59,7 +59,7 @@ private:
 	unsigned short m_objectId;     // 0x2c
 	unsigned short m_playerIndex;  // 0x2e
 	bool m_hidden;                 // 0x30
-	unsigned int m_transientFlags; // 0x34
+	bool m_redrawRequested;        // 0x34
 	C3DVector m_momentum;          // 0x38
 	eSoundEffect m_soundEffect;    // 0x44
 	unsigned int m_sortZKey;       // 0x48

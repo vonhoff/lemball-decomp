@@ -105,7 +105,7 @@ void CMine::SetTerrain()
 	int blockY = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) / GROUND_BLOCK_PIXEL_SIZE;
 	if (m_terrainSet == 0) {
 		g_pMap->SetTerrain(blockX, blockY, TERRAIN_BLOX_5, (unsigned short) g_mineTerrainOffsets[g_pMap->m_mapType]);
-		m_transientFlags = 1;
+		m_redrawRequested = true;
 		if (blockX >= 0 && blockY >= 0) {
 			CMap* map = g_pMap;
 			width = map->m_ground.m_width;
