@@ -37,8 +37,6 @@
 
 extern char* g_szBroadcastPeerName;
 
-#define NETWORK_OPTIONS_MODE_LAN 0
-#define NETWORK_OPTIONS_MODE_SPECIFIC_HOST 1
 #define NETWORK_OPTIONS_BUTTON_MESSAGE_LAN 0xacef000c
 #define NETWORK_OPTIONS_BUTTON_MESSAGE_SPECIFIC_HOST 0xacef000d
 #define NETWORK_OPTIONS_BUTTON_MESSAGE_RETURN 0xacef000e
@@ -817,12 +815,12 @@ bool CNetworkOptionsDrawer::ProcessMessages(tagMESSAGE* p_message)
 }
 
 // FUNCTION: LEMBALL 0x00454520
-void CNetworkOptionsDrawer::Start(unsigned int p_mode)
+void CNetworkOptionsDrawer::Start(eNetworkSearchMode p_mode)
 {
-	unsigned int mode;
+	eNetworkSearchMode mode;
 
 	if (m_editingActive != 0) {
-		mode = m_networkMode;
+		mode = m_searchMode;
 		if (mode != NETWORK_OPTIONS_MODE_LAN) {
 			if (p_mode != NETWORK_OPTIONS_MODE_LAN) {
 				goto stop_editing;
@@ -834,7 +832,7 @@ void CNetworkOptionsDrawer::Start(unsigned int p_mode)
 			return;
 		}
 	}
-	m_networkMode = p_mode;
+	m_searchMode = p_mode;
 	m_broadcasting = false;
 	m_editingActive = false;
 	m_pendingEvent = NETWORK_OPTIONS_MESSAGE_NONE;
@@ -930,7 +928,7 @@ void CNetworkOptionsDrawer::StopEditing()
 			return;
 		}
 		strcpy(g_szNetworkGameName, text);
-		if (m_networkMode != NETWORK_OPTIONS_MODE_LAN) {
+		if (m_searchMode != NETWORK_OPTIONS_MODE_LAN) {
 			m_pendingStage = NETWORK_OPTIONS_EDIT_BROADCAST_ADDRESS;
 		}
 		else {

@@ -27,6 +27,11 @@ enum {
 	NETWORK_OPTIONS_NO_PLAYER_INDEX = -1
 };
 
+enum eNetworkSearchMode {
+	NETWORK_OPTIONS_MODE_LAN = 0,
+	NETWORK_OPTIONS_MODE_SPECIFIC_HOST = 1
+};
+
 enum eNetworkOptionsHandlerState {
 	NETWORK_OPTIONS_HANDLERS_CURRENT = 0,
 	NETWORK_OPTIONS_HANDLERS_STALE = 1
@@ -102,7 +107,7 @@ public:
 	void RegisterRemaps();
 	void ResetHandlers();
 	void SetMessage(eNetOptsMessages p_message);
-	void Start(unsigned int p_mode);
+	void Start(eNetworkSearchMode p_mode);
 	void StartBroadcast();
 	void StartEditing(eEditingStage p_stage, bool p_clear);
 	void StartMessageTimeout(eNetOptsMessages p_message, unsigned long p_duration);
@@ -125,7 +130,7 @@ private:
 	unsigned long m_messageStartTime;           // 0x3b0
 	unsigned long m_messageDuration;            // 0x3b4
 	bool m_broadcasting;                        // 0x3b8
-	unsigned int m_networkMode;                 // 0x3bc
+	eNetworkSearchMode m_searchMode;            // 0x3bc
 	bool m_redrawPending;                       // 0x3c0
 	eNetworkOptionsHandlerState m_networkState; // 0x3c4
 	unsigned long m_lastDrawTime;               // 0x3c8
