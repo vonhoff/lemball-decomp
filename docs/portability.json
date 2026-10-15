@@ -2,7 +2,69 @@
   "title": "Lemmings Paintball: readiness for a separate port",
   "baseline_commit": "840804fa",
   "objective": "Clean, idiomatic MSVC 4.00 reconstruction with understood Windows behavior, explicit format and ownership contracts, and clear platform boundaries. Perfection and 100% matching are not requirements.",
-  "status": "Preparation in progress. No SDL3 dependency or backend belongs in this repository.",
+  "status": "Stage 2 of 5: behavior contracts and ownership. Substantial validation and platform-boundary work remains. No SDL3 dependency or backend belongs in this repository.",
+  "current_position": {
+    "assessment": "Achievable as a port-ready Windows reference. This is an engineering judgment, not a claim of runtime equivalence or a completion-date estimate.",
+    "completed_foundation": [
+      "Initial direct-include and include-order sweep; formatter policy and reviewed SDK exceptions recorded.",
+      "Original Windows build, linker routes and canonical matching workflow established.",
+      "Packet assembly and scalar/socket header codecs have reproducible original/rebuilt checks."
+    ],
+    "current_work": "Document message-buffer ownership, initialization and callback timing. Finish a bounded deferred-send lifetime trace; then move to resource formats and core simulation behavior.",
+    "not_yet_established": "Reusable resource/core-simulation fixtures, complete service replacement contracts, representative gameplay/media/network lifecycle traces, and the external-port handoff package.",
+    "progress_measure": "Stage and deliverable completion. Exact/Effective scores remain source-validation gates; they are not percentages of port readiness. Stage 2 does not mean 40% complete."
+  },
+  "delivery_stages": [
+    {
+      "stage": 1,
+      "name": "Source hygiene foundation",
+      "status": "initial sweep complete; maintain during changes",
+      "milestones": ["headers"],
+      "exit": "Direct dependencies and include policy established; necessary ABI/SDK exceptions recorded. No further global cosmetic sweep required."
+    },
+    {
+      "stage": 2,
+      "name": "Formats, ownership and core behavior",
+      "status": "in progress; current stage",
+      "milestones": ["data_contracts", "ownership", "behavior_fixtures"],
+      "exit": "Contracts and representative reference cases for resource/packet formats, buffer lifetimes, initialization/failure, fixed-point movement/RNG and timer wrap. Native-only layouts clearly separated from serialized data."
+    },
+    {
+      "stage": 3,
+      "name": "Platform replacement contracts",
+      "status": "boundaries inventoried; contracts incomplete",
+      "milestones": ["platform_services", "graphics", "audio_movies", "network"],
+      "exit": "For each required service, identify its caller-facing operations, inputs/results, state ownership and event/completion order. Cover window/input/time/files, software-pixel presentation, audio/MIDI/AVI and transport. Keep the Windows implementation here."
+    },
+    {
+      "stage": 4,
+      "name": "Representative integration validation",
+      "status": "pending; isolated codec checks already available",
+      "milestones": ["behavior_fixtures"],
+      "exit": "Reproducible reference traces for menu-to-level-to-exit, selection/movement/shooting, palette/clipping changes, audio/media transitions and multiplayer connect/send/disconnect. Resolve failures that block these scenarios; explicitly record untested edges."
+    },
+    {
+      "stage": 5,
+      "name": "Handoff to a separate port",
+      "status": "pending",
+      "milestones": ["port_handoff"],
+      "exit": "Component replacement map, format/lifetime/service contracts, fixture commands and provenance, build instructions and a bounded known-limitations list. A port author can implement the platform layer without rediscovering these contracts. No SDL source or dependency added here."
+    }
+  ],
+  "next_deliverables": [
+    "Finish deferred-send lifetime tracing: queue posting, consumption, completion and shutdown; document which object owns each buffer at those boundaries.",
+    "Make MOG directory/resource parsing checks reproducible and record serialized widths, bounds, allocation and lock/release behavior.",
+    "Capture representative fixed-point movement/RNG and timer-wrap cases; identify event-pump ordering needed by a replacement platform.",
+    "Use those contracts to make focused type, ownership and platform-boundary improvements; retain the whole-executable source-batch metric gate."
+  ],
+  "practical_stopping_rules": [
+    "A documented, evidenced Windows ABI requirement is an accepted constraint. Every legacy cast, type or construct need not disappear.",
+    "Do not pursue Exact 100 solely for a register choice, equivalent instruction encoding or compiler-context effect.",
+    "The existing packet primitive checks are sufficient for their stated scope. Extend them when a concrete failure, source change or newly discovered contract requires it.",
+    "Use representative normal, boundary and failure cases; do not attempt exhaustive state-space or universal equivalence proofs.",
+    "Broaden validation for observed failures or unresolved material behavior. Otherwise complete the deliverable and move to the next stage.",
+    "Port readiness requires the stage exit criteria and known blockers to be addressed, not perfection or a 100% matching score."
+  ],
   "baseline": {
     "original_bytes": 433937,
     "exact_bytes": 234301,
@@ -42,7 +104,14 @@
       ],
       "completion": "Touched headers provide their own required declarations; implementation files include their direct providers; source/build checks pass; compiler-context effects measured across the full executable.",
       "next_step": "Keep direct dependencies explicit as source changes. Revisit reviewed IWYU exceptions only with provider/type evidence; preserve SDK prerequisites and the formatter policy. Next substantive work: fixed-format contracts and reusable behavior fixtures.",
-      "completed": "Direct-dependency cleanup across transport, frontend, engine/platform and GameView/Gameplay; remaining CRT/system include groups moved before project headers. Own implementation header remains first. Formatter preserves deliberate groups and order."
+      "completed": "Direct-dependency cleanup across transport, frontend, engine/platform and GameView/Gameplay; remaining CRT/system include groups moved before project headers. Own implementation header remains first. Formatter preserves deliberate groups and order.",
+      "reviewed_exception": {
+        "path": "src/Multiplayer/Transport/CWriteSocket.cpp",
+        "declaration": "timeGetTime: C linkage, unsigned long return, __stdcall, no arguments",
+        "reason": "Original ResendCritical calls an import thunk directly. The available mmsystem.h marks the API dllimport and compiles an indirect IAT call.",
+        "measured_trial": "WindowsTypes.h plus mmsystem.h, removing the hand declaration: Exact -90 bytes, Effective -69 bytes; no gains. Full executable report, routes and original-byte denominator checked on c0607b60.",
+        "decision": "Trial reverted. Keep this ABI declaration under the current source-batch rule; no compiler controls added to alter import lowering. A separate port can use its platform clock interface."
+      }
     },
     {
       "id": "data_contracts",
@@ -63,14 +132,15 @@
     {
       "id": "ownership",
       "priority": 2,
-      "status": "audit needed",
+      "status": "message-buffer base contract recorded; broader ownership audit needed",
       "work": "Trace allocation/free pairs, borrowed versus owned storage, initialization paths and shutdown order in resource arenas, queues, surfaces and sound. Preserve native failure behavior, access timing and destruction order. Recover typed ownership and shared operations where original x86 supports them.",
       "evidence": [
         "src/Engine/Resources/Archive/CMogRes.cpp",
         "src/Platform/Windows/Graphics/CPVGDIBitmap.h",
         "src/Platform/Windows/Input/InputInit.cpp",
         "src/Platform/Windows/CCritical.h",
-        "src/Platform/MSVC/ArrayDestruction.cpp"
+        "src/Platform/MSVC/ArrayDestruction.cpp",
+        "docs/message-buffer-lifetime.json"
       ],
       "completion": "Owners and lifetimes are clear at interfaces; failed initialization and repeated shutdown have reference-backed behavior; no redundant parallel ownership mechanisms."
     },
@@ -140,14 +210,15 @@
     {
       "id": "network",
       "priority": 4,
-      "status": "packet assembly and scalar/header codecs checked; caller ownership and lifecycle work remains",
+      "status": "packet codecs checked; message-buffer ownership contract recorded; lifecycle work remains",
       "work": "Recover packet layout, byte order, sequence arithmetic, discovery, retry and disconnect contracts. Trace pointer-derived connection IDs and their identity/lifetime/echo semantics; document the stable 32-bit token requirement for a separate portable implementation.",
       "evidence": [
         "src/Multiplayer/Transport/CBaseNetwork.cpp",
         "src/Multiplayer/Transport/Packets/BasePacketHeader.h",
         "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp",
         "docs/packet-assembly.json",
-        "docs/message-codec.json"
+        "docs/message-codec.json",
+        "docs/message-buffer-lifetime.json"
       ],
       "completion": "Packet fixtures and connection lifecycle traces established; protocol compatibility and pointer-token assumptions explicit. Original Windows behavior and ABI preserved here."
     },
@@ -185,20 +256,23 @@
     "user_clarification": "SDL3 must not be part of this codebase."
   },
   "next_reference_contract": {
-    "subject": "CNetworkMessage borrowed buffer and cursor ownership",
+    "subject": "Deferred send completion and borrowed message lifetimes",
     "original_functions": [
-      "0x0045f1e0 OpenDataStream",
-      "0x0045f250 CopyDataStream",
-      "0x0045f280 Set"
+      "0x0045eea0 CNetworkMessage destructor",
+      "0x0045f2b0 CNetworkMessage::Send",
+      "0x00460e40 CConnect::Send"
     ],
     "confirmed": [
       "Scalar and socket header codecs now have reproducible byte and access-order fixtures; see docs/message-codec.json.",
       "OpenDataStream allocates payload capacity plus a 16-byte header on first open of unowned storage; invokes virtual AddHeader/AddData.",
-      "CopyDataStream replaces buffer/cursors and invokes virtual AddHeader/AddData without changing the ownership flag."
+      "CopyDataStream replaces buffer/cursors and invokes virtual AddHeader/AddData without changing the ownership flag.",
+      "Initialization, open/reuse, copy, set and destruction contracts recorded in docs/message-buffer-lifetime.json.",
+      "Destruction can release an owned buffer after a 2000ms timeout while pendingSendCount remains nonzero."
     ],
     "remaining": [
-      "Trace nested message serialization, shared broadcast buffers and socket callers; identify owners and lifetime constraints before simplifying access timing.",
-      "Record initialization, failed allocation and destruction behavior; do not assume CopyDataStream changes ownership.",
+      "Trace queue consumption and transport completion through shutdown; identify when queued message and borrowed buffer pointers stop being used.",
+      "Prove ownership flags and lifetime constraints across nested-message and broadcast call sequences; direct call-site review alone is insufficient.",
+      "Establish allocator/new-handler failure behavior and concrete callback effects before introducing failure handling.",
       "Separate 32-bit wire values from host unsigned long width without changing the reference ABI."
     ],
     "qualification": "Controlled codec aliases expose native access timing. Actual caller alias reachability and complete ownership paths remain unproved."
