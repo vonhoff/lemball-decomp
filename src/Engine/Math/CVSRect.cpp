@@ -20,16 +20,14 @@ CVSRect* CVSRect::ExpandToInclude(const CVSRect& p_rect)
 		return this;
 	}
 	{
-		short left;
 		short rectX = p_rect.m_x;
-		left = m_x;
+		short left = m_x;
 		if (rectX < left) {
 			m_width = m_width + (left - rectX);
 			m_x = p_rect.m_x;
 		}
-		short rectWidth;
 		short sourceX = p_rect.m_x;
-		rectWidth = p_rect.m_width;
+		short rectWidth = p_rect.m_width;
 		left = m_x;
 		short rectRight = rectWidth + sourceX;
 		short right = m_width + left;
@@ -38,16 +36,14 @@ CVSRect* CVSRect::ExpandToInclude(const CVSRect& p_rect)
 		}
 	}
 	{
-		short top;
 		short rectY = p_rect.m_y;
-		top = m_y;
+		short top = m_y;
 		if (rectY < top) {
 			m_height = m_height + (top - rectY);
 			m_y = p_rect.m_y;
 		}
-		short sourceY;
 		short rectHeight = p_rect.m_height;
-		sourceY = p_rect.m_y;
+		short sourceY = p_rect.m_y;
 		top = m_y;
 		short rectBottom = rectHeight + sourceY;
 		short bottom = m_height + top;
