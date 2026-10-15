@@ -27,6 +27,9 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "GameView/Display/C2D.h"
+#include "Platform/Windows/Windowing/CGWnd.h"
+
 class CResANIM;
 class CHotAreaHandler;
 
@@ -36,9 +39,6 @@ enum {
 	PANEL_AMMO_AVAILABLE_COLOUR_INDEX = 0x76,
 	PANEL_AMMO_UNAVAILABLE_COLOUR_INDEX = 0x45,
 };
-
-#include "GameView/Display/C2D.h"
-#include "Platform/Windows/Windowing/CGWnd.h"
 
 enum eAmmoCountCacheState {
 	AMMO_COUNT_CACHE_UNSET = 0xffffffff

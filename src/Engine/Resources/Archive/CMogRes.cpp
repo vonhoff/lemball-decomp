@@ -2,10 +2,6 @@
 
 #include <string.h>
 
-enum {
-	RESOURCE_INDEX_NONE = -1
-};
-
 #include "CMogDir.h"
 #include "CMogloadArena.h"
 #include "CRawRead.h"
@@ -18,6 +14,10 @@ enum {
 #include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Statistics/CStatManager.h"
 #include "Platform/Windows/VsTime.h"
+
+enum {
+	RESOURCE_INDEX_NONE = -1
+};
 
 #define RESOURCE_PATH_SEPARATOR '/'
 

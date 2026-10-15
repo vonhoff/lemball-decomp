@@ -8,6 +8,16 @@
 
 #include <stddef.h>
 
+#include "Application/SoundEffects.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Objects/CBaseGlobalObject.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Gameplay/Objects/CObjectManager.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Map/CGround.h"
+#include "Map/CGroundArray.h"
+#include "Map/CMap.h"
+
 enum {
 	CRATE_ACTIVATION_FIRST_PHASE_TICKS = 16,
 	CRATE_ACTIVATION_SECOND_PHASE_TICKS = 30
@@ -46,16 +56,6 @@ void CCrate::Restart()
 	CBaseGlobalObject::Restart();
 	m_pendingAction = ACTION_READY;
 }
-
-#include "Application/SoundEffects.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Objects/CBaseGlobalObject.h"
-#include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Objects/CObjectManager.h"
-#include "Gameplay/Objects/ObjectActions.h"
-#include "Map/CGround.h"
-#include "Map/CGroundArray.h"
-#include "Map/CMap.h"
 
 // FUNCTION: LEMBALL 0x0041ccc0
 void CCrate::TriggerContents()

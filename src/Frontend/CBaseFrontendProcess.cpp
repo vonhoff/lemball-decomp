@@ -12,16 +12,16 @@
 
 #include <stddef.h>
 
+#include "Application/CGameStatus.h"
+#include "Level/CLevelLoader.h"
+#include "Multiplayer/CGameFlaggedMessage.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+
 // GLOBAL: LEMBALL 0x0049f140
 CBaseFrontendProcess* g_pCurrentFrontendProcess = NULL;
 
 // GLOBAL: LEMBALL 0x0049f4f0
 int g_nFrontendAutoFlowToggle = 1;
-
-#include "Application/CGameStatus.h"
-#include "Level/CLevelLoader.h"
-#include "Multiplayer/CGameFlaggedMessage.h"
-#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 
 // FUNCTION: LEMBALL 0x00407f20
 void CBaseFrontendProcess::Processing()

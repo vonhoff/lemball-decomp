@@ -33,9 +33,6 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"
 
-extern char g_szUnknownUserActionSpecified[];
-extern char g_szUnknownUserActionReceived[];
-
 #include "Application/FlowProcesses.h"
 #include "Application/SoundEffects.h"
 #include "CUserActionMessage.h"
@@ -51,8 +48,11 @@ extern char g_szUnknownUserActionReceived[];
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Resources/ResourceLimits.h"
 #include "tagPRIMS.h"
-
 #include <stddef.h>
+#include "Engine/Animation/CStaticAnim.h"
+
+extern char g_szUnknownUserActionSpecified[];
+extern char g_szUnknownUserActionReceived[];
 
 enum {
 	BASE_FRONTEND_AMBIENT_ANIMATION_DURATION_MS = 500
@@ -78,8 +78,6 @@ int g_nMusicVolume = 0;
 
 // GLOBAL: LEMBALL 0x004a627c
 int g_nEffectsVolume = 0;
-
-#include "Engine/Animation/CStaticAnim.h"
 
 // FUNCTION: LEMBALL 0x00445420
 CBaseFrontendDrawer::CBaseFrontendDrawer(CMain2DDisplay* p_display,

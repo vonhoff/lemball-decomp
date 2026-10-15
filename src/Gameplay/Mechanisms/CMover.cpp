@@ -16,14 +16,14 @@
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
 
-enum {
-	AUTOMATIC_MOVER_TURNING_DELAY_TICKS = 20
-};
 #include "Gameplay/Simulation/CAI.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-
 #include <stddef.h>
+
+enum {
+	AUTOMATIC_MOVER_TURNING_DELAY_TICKS = 20
+};
 
 #define MOVER_FOOTPRINT_HALF_SIZE 8
 #define MOVER_FOOTPRINT_LAST_OFFSET 15

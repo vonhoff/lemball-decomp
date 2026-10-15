@@ -5,12 +5,6 @@
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
 
-// FUNCTION: LEMBALL 0x00422b30
-void CFlag::SetSFX()
-{
-	SetSndEffect(SFX_YIPPEE);
-}
-
 #include "Application/SoundEffects.h"
 #include "CCollectable.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -19,6 +13,12 @@ void CFlag::SetSFX()
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
+
+// FUNCTION: LEMBALL 0x00422b30
+void CFlag::SetSFX()
+{
+	SetSndEffect(SFX_YIPPEE);
+}
 
 // FUNCTION: LEMBALL 0x00422b40
 bool CFlag::Process()

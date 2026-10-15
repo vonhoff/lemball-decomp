@@ -16,6 +16,9 @@
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
 
+#include "Gameplay/Simulation/CAI.h"
+#include <stddef.h>
+
 enum {
 	LASER_REACTIVATION_DELAY_TICKS = 60,
 	LASER_ACTIVATION_PHASE_ONE_DURATION_TICKS = 6,
@@ -108,10 +111,6 @@ void CLaser::Set(unsigned short p_id, const AICOORD& p_position, eObjectType p_o
 	}
 	m_actionDeadline = g_dwGameTick + LASER_REACTIVATION_DELAY_TICKS;
 }
-
-#include "Gameplay/Simulation/CAI.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00428ab0
 bool CLaser::CheckHits()

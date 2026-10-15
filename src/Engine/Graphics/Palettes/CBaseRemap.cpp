@@ -4,6 +4,8 @@
 
 #include <stddef.h>
 
+#include <stdlib.h>
+
 // FUNCTION: LEMBALL 0x0046aa80
 CBaseRemap::CBaseRemap(unsigned long p_resourceId, unsigned char* p_mapping, ePaletteTypes p_type)
 {
@@ -54,8 +56,6 @@ void CBaseRemap::MapRemap(const unsigned char* p_mapping)
 
 	--m_paletteResource->m_directUseCount;
 }
-
-#include <stdlib.h>
 
 #define REMAP_BEST_DISTANCE_INITIAL_VALUE 0x7fffffff
 

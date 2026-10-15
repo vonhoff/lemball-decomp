@@ -15,15 +15,14 @@
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 
+#include "Engine/Math/CFixed.h"
+#include "Gameplay/Geometry/C3DVector.h"
+#include <stddef.h>
+
 enum {
 	TRAMPOLINE_ACTIVATION_RADIUS_PIXELS = 32,
 	TRAMPOLINE_OBJECT_RELOCATION_OFFSET_FIXED = 4 * FIXED_POINT_ONE
 };
-
-#include "Engine/Math/CFixed.h"
-#include "Gameplay/Geometry/C3DVector.h"
-
-#include <stddef.h>
 
 enum {
 	TRAMPOLINE_HIT_BOUNDS_INSET_PIXELS = 12,

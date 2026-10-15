@@ -33,6 +33,12 @@
 
 #include <stddef.h>
 
+#include "Engine/Resources/Types/CResFONT.h"
+#include "Multiplayer/CNetworkGameMessage.h"
+#include "Multiplayer/CNetworkManager.h"
+#include "Multiplayer/Transport/CConnect.h"
+#include <string.h>
+
 class CGWnd;
 
 const unsigned int SUCC_FAIL_BUTTON_MESSAGE_GO = 0xacef0010;
@@ -175,13 +181,6 @@ unsigned long g_dwSuccFailSuccessBitmapIdCompact = RES_NEWFRONT_BITMAPS_LORES_SU
 
 // GLOBAL: LEMBALL 0x0049fe18
 char g_szPaintballSequence[] = "Paintball Sequence";
-
-#include "Engine/Resources/Types/CResFONT.h"
-#include "Multiplayer/CNetworkGameMessage.h"
-#include "Multiplayer/CNetworkManager.h"
-#include "Multiplayer/Transport/CConnect.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x00450020
 CSuccFailDrawer::CSuccFailDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect, unsigned int p_success)

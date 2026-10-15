@@ -7,10 +7,10 @@
 
 #include <stddef.h>
 
-class CDrawingContext;
-
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+class CDrawingContext;
 
 // FUNCTION: LEMBALL 0x00456790
 CGraphicsDriver::~CGraphicsDriver()

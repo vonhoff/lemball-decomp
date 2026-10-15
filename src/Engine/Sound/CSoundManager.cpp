@@ -8,6 +8,9 @@
 
 #include <stddef.h>
 
+#include "Engine/Diagnostics/CDebugOStream.h"
+#include "Engine/Streams/CVSOStream.h"
+
 // FUNCTION: LEMBALL 0x0045af80
 CSoundManager::CSoundManager(unsigned int p_musicEnabled,
 							 unsigned int p_effectsEnabled,
@@ -370,9 +373,6 @@ void CSoundManager::UseMusicCD(unsigned int p_enabled)
 {
 	m_musicDevice->m_useCdDirectory = p_enabled;
 }
-
-#include "Engine/Diagnostics/CDebugOStream.h"
-#include "Engine/Streams/CVSOStream.h"
 
 // GLOBAL: LEMBALL 0x004a1ca8
 char g_szEffectsDriverPrefix[12] = "Effects : ";

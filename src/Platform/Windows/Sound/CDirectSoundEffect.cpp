@@ -1,29 +1,27 @@
 #include "CDirectSoundEffect.h"
 
-enum {
-	SOUND_EFFECT_NO_BUFFER_INDEX = -1
-};
-
 #include "DirectSound.h"
 #include "Engine/Sound/EffectFormat.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/VsString.h"
 #include "Platform/Windows/DirectX/DirectSound.h"
-
 #include <string.h>
-
-enum {
-	DIRECT_SOUND_EFFECT_CONTROL_VOLUME = 0x01,
-	DIRECT_SOUND_EFFECT_CONTROL_PAN = 0x02,
-	DIRECT_SOUND_EFFECT_CONTROL_FREQUENCY = 0x04
-};
-
 #define WIN32_LEAN_AND_MEAN
 // clang-format off
 #include <windows.h>
 #include <mmsystem.h>
 
 // clang-format on
+
+enum {
+	SOUND_EFFECT_NO_BUFFER_INDEX = -1
+};
+
+enum {
+	DIRECT_SOUND_EFFECT_CONTROL_VOLUME = 0x01,
+	DIRECT_SOUND_EFFECT_CONTROL_PAN = 0x02,
+	DIRECT_SOUND_EFFECT_CONTROL_FREQUENCY = 0x04
+};
 
 struct DirectSoundError {
 	const char* m_name;

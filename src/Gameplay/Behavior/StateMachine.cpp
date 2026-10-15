@@ -5,6 +5,9 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Simulation/GameTime.h"
 
+#include "Application/SoundEffects.h"
+#include <stddef.h>
+
 // SIZE 0x10
 struct tStateEntry {
 	bool (*m_predicate)(CAI*, CGameObject*, tInfo*);      // 0x00
@@ -12,9 +15,6 @@ struct tStateEntry {
 	eAction m_nextAction;                                 // 0x08
 	eSoundEffect m_soundEffect;                           // 0x0c
 };
-#include "Application/SoundEffects.h"
-
-#include <stddef.h>
 
 // GLOBAL: LEMBALL 0x0049d198
 tStateEntry g_userLemmingStateEntries[] = {

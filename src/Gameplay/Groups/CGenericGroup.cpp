@@ -11,6 +11,14 @@
 #include <string.h>
 
 #define GENERIC_GROUP_ELEMENT_CAPACITY 10
+
+#include "Engine/Math/CVSRect.h"
+#include "Engine/Math/CVector.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Navigation/CAiDestinationEntry.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+
 // FUNCTION: LEMBALL 0x00414c60
 eGroupState CGenericGroup::GetGroupState()
 {
@@ -271,13 +279,6 @@ void CGenericGroup::CalculateBoundingBox(int p_radius)
 	m_bounds.m_width = (short) maxX;
 	m_bounds.m_height = (short) maxY;
 }
-
-#include "Engine/Math/CVSRect.h"
-#include "Engine/Math/CVector.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Navigation/CAiDestinationEntry.h"
-#include "Gameplay/Objects/CGameObject.h"
-#include "Gameplay/Objects/ObjectTypes.h"
 
 // FUNCTION: LEMBALL 0x0041e290
 void CGenericGroup::AddNewWaypoint(AICOORD p_coordinate, CFormationManager* p_formationManager)

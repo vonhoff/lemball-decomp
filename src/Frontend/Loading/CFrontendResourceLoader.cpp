@@ -13,6 +13,8 @@
 #include "GameView/Loading/CCDLoadAnim.h"
 #include "GameView/Sound/CSoundView.h"
 
+#include <stddef.h>
+
 class CCdLoadAnimDraw;
 
 // GLOBAL: LEMBALL 0x0049f1c0
@@ -175,8 +177,6 @@ unsigned int g_dwFrontendPaletteIds[2] = {RES_PALETTES_TITLEPALETTE, RES_REGISTR
 
 // GLOBAL: LEMBALL 0x0049f410
 unsigned int g_dwFrontendStringIds[1] = {RES_REGISTRATION_FINGERPRINT};
-
-#include <stddef.h>
 
 enum {
 	FRONTEND_COMPACT_ANIM_COUNT = sizeof(g_dwFrontendCompactAnimIds) / sizeof(*g_dwFrontendCompactAnimIds),

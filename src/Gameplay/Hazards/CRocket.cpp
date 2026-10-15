@@ -8,6 +8,17 @@
 
 #include <stddef.h>
 
+#include "Gameplay/Simulation/GameTime.h"
+#include "Gameplay/Messages/CObjectPosMess.h"
+#include "Multiplayer/Transport/CConnect.h"
+#include "Application/SoundEffects.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Objects/ObjectTypes.h"
+#include "Map/CGroundArray.h"
+
 enum {
 	ROCKET_ACTIVATION_RADIUS_PIXELS = 32,
 	ROCKET_ACTIVATION_POSITION_XY_OFFSET_FIXED = 4 * FIXED_POINT_ONE
@@ -65,8 +76,6 @@ void CRocket::Set(unsigned short p_id, const AICOORD& p_position)
 		}
 	}
 }
-
-#include "Gameplay/Simulation/GameTime.h"
 
 // FUNCTION: LEMBALL 0x004268e0
 bool CRocket::Process()
@@ -132,9 +141,6 @@ int CRocket::StepOn(const AICOORD& p_position, CGameObject* p_object)
 	return 0;
 }
 
-#include "Gameplay/Messages/CObjectPosMess.h"
-#include "Multiplayer/Transport/CConnect.h"
-
 // FUNCTION: LEMBALL 0x00426a60
 void CRocket::DoActivate()
 {
@@ -147,14 +153,6 @@ void CRocket::DoActivate()
 		g_pObjectPosMessage->Send(this);
 	}
 }
-
-#include "Application/SoundEffects.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Objects/CGameObject.h"
-#include "Gameplay/Objects/CGlobalGameObject.h"
-#include "Gameplay/Objects/ObjectActions.h"
-#include "Gameplay/Objects/ObjectTypes.h"
-#include "Map/CGroundArray.h"
 
 // FUNCTION: LEMBALL 0x004273f0
 void CRocket::GetViewData(CViewData& p_viewData)

@@ -15,12 +15,12 @@
 #include "Gameplay/Simulation/GameTime.h"
 #include "Map/CMap.h"
 
+#include "Map/CGround.h"
+#include "Map/CGroundArray.h"
+
 enum {
 	BALLOON_ANIMATION_PHASE_RANDOMIZATION_RANGE_MS = 4096
 };
-
-#include "Map/CGround.h"
-#include "Map/CGroundArray.h"
 
 // FUNCTION: LEMBALL 0x0041c630
 int CBalloon::Usage()

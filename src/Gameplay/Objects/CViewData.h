@@ -1,17 +1,17 @@
 #ifndef LEMBALL_AI_OBJECTS_CVIEWDATA_H
 #define LEMBALL_AI_OBJECTS_CVIEWDATA_H
 
-enum eLemmingViewStatusFlag {
-	LEMMING_VIEW_STATUS_GROUP_LEADER = 0x01,
-	LEMMING_VIEW_STATUS_IN_GROUP = 0x02
-};
-
 #include "Application/SoundEffects.h"
 #include "Gameplay/Geometry/C3DVector.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "ObjectActions.h"
 #include "ObjectIds.h"
 #include "ObjectTypes.h"
+
+enum eLemmingViewStatusFlag {
+	LEMMING_VIEW_STATUS_GROUP_LEADER = 0x01,
+	LEMMING_VIEW_STATUS_IN_GROUP = 0x02
+};
 
 enum eRemotePaletteRemap {
 	REMOTE_PALETTE_REMAP_DISABLED = 0,

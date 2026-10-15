@@ -11506,8 +11506,8 @@
       "caller": 4231760,
       "object": "CMakeFiles/LEMBALL.dir/src/Application/CDemo.cpp.obj",
       "symbol": "?SendNextPacket@CDemo@@QAEHH@Z",
-      "size": 460,
-      "fingerprint": "112ee92a3d79b79b18dc145de083279e679a4a891e1f2ffd6d1a37162ff46a42",
+      "size": 456,
+      "fingerprint": "a7eff4f0989950fba31695ecde75263aeb5bd1730b227911131823ff3a5e804f",
       "references": [
         {
           "offset": 15,
@@ -23342,7 +23342,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaser.cpp.obj",
       "symbol": "?Set@CLaser@@QAEXGABVAICOORD@@W4eObjectType@@@Z",
       "size": 436,
-      "fingerprint": "0b9a57d1cc6247776b23682cbd4982f6efe3c5633584b6fe0c86846f7805f894",
+      "fingerprint": "8b7ee8695e2be91f6e46789f8c9774dfce86902c9e77153823f11f95eac2cf43",
       "references": [
         {
           "offset": 11,
@@ -23441,7 +23441,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaserManager.cpp.obj",
       "symbol": "?Initialise@CLaserManager@@QAEXH@Z",
       "size": 154,
-      "fingerprint": "964830481263990f0c834ac835fc4de0d7613276e4d69773188067d2fe5eb017",
+      "fingerprint": "942397548e2527cfa6a7aff98187f39bcb3afe2388b11f9e826c6667330d8f98",
       "references": [
         {
           "offset": 86,
@@ -23522,7 +23522,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaserManager.cpp.obj",
       "symbol": "?StepOn@CLaserManager@@QAEHABVAICOORD@@PAVCGameObject@@@Z",
       "size": 96,
-      "fingerprint": "10082ee101c5d1b4be350195f3632f2198cba1647fcc888c52e6e4fb1affceab",
+      "fingerprint": "fd7d3476d0016db0d22cacc30d46747fab4a014a4c90792ff4a942bbeca4a487",
       "references": [
         {
           "offset": 57,
@@ -23538,7 +23538,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Hazards/CLaserManager.cpp.obj",
       "symbol": "?GetViewData@CLaserManager@@UAEHPAVCViewData@@@Z",
       "size": 76,
-      "fingerprint": "e6c92fcea6cac4ad7e1ecedced92f819afb09a35ab6dadcc9bdecd1ef4308737",
+      "fingerprint": "cf6b3e2081468677d73a8a411a58c2b8484ec4cd9198faddbc2e0030013e7228",
       "references": [
         {
           "offset": 39,

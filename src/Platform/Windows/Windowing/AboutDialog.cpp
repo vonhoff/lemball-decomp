@@ -4,6 +4,11 @@
 #include "Engine/Startup/VisosVersion.h"
 #include "Platform/Windows/Entry.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <winver.h>
+#include <string.h>
+
 enum {
 	ABOUT_SYSTEM_INFO_BUFFER_SIZE = 1024,
 	ABOUT_MODULE_PATH_BUFFER_SIZE = 256,
@@ -28,10 +33,6 @@ char g_szWindows95Build[16] = "Windows95 %u.%u";
 // GLOBAL: LEMBALL 0x004a0638
 char g_szAboutSystemFormat[152] = "Operating System : %s\nBuild Number : %d\nViSOS Build Number : %d\nPhysical Memory "
 								  "Size : %ld bytes\nPercent Used : %d%%\nAvail Memory Free : %ld bytes\n";
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <winver.h>
 
 // GLOBAL: LEMBALL 0x004a06cc
 char g_szAboutFontFace[4] = "";
@@ -102,7 +103,6 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 	SetWindowPos((HWND) p_window, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
-#include <string.h>
 // FUNCTION: LEMBALL 0x00455ff0
 char* BuildAboutSystemInfo()
 {

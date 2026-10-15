@@ -11,14 +11,14 @@
 
 #include <stddef.h>
 
+#include "Level/LevelFormat.h"
+
 enum {
 	LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS = 48
 };
 
 // GLOBAL: LEMBALL 0x0049e1c0
 unsigned short g_wMovingLiftCount = 0;
-
-#include "Level/LevelFormat.h"
 
 // FUNCTION: LEMBALL 0x00425680
 CLiftManager::CLiftManager(CAI* p_ai, int p_capacity)

@@ -10,6 +10,17 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Simulation/GameTime.h"
 
+#include "Application/SoundEffects.h"
+#include "Gameplay/Geometry/AICOORD.h"
+#include "Gameplay/Geometry/C3DVector.h"
+#include "Gameplay/Objects/CBaseGlobalObject.h"
+#include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Map/CGround.h"
+#include "Map/CGroundArray.h"
+#include "Map/CMap.h"
+#include <stddef.h>
+
 // FUNCTION: LEMBALL 0x0041c3f0
 int CCatapult::Usage()
 {
@@ -22,18 +33,6 @@ void CCatapult::Restart()
 	CBaseGlobalObject::Restart();
 	m_actionArgument = REMOTE_PALETTE_REMAP_DISABLED;
 }
-
-#include "Application/SoundEffects.h"
-#include "Gameplay/Geometry/AICOORD.h"
-#include "Gameplay/Geometry/C3DVector.h"
-#include "Gameplay/Objects/CBaseGlobalObject.h"
-#include "Gameplay/Objects/CGameObject.h"
-#include "Gameplay/Objects/ObjectActions.h"
-#include "Map/CGround.h"
-#include "Map/CGroundArray.h"
-#include "Map/CMap.h"
-
-#include <stddef.h>
 
 enum {
 	CATAPULT_LAUNCH_HEIGHT_OFFSET_FIXED = 32 * FIXED_POINT_ONE,

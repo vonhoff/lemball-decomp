@@ -15,13 +15,13 @@
 
 #include <stddef.h>
 
+#include "CAnimFrameBASE.h"
+#include "Engine/Resources/ResourceChunkTypes.h"
+
 enum eAnimationBufferHalf {
 	ANIMATION_BUFFER_HALF_FIRST = 0,
 	ANIMATION_BUFFER_HALF_ALTERNATE = 1
 };
-
-#include "CAnimFrameBASE.h"
-#include "Engine/Resources/ResourceChunkTypes.h"
 
 // FUNCTION: LEMBALL 0x004358c0
 void CAnimsManager::FreeVram()

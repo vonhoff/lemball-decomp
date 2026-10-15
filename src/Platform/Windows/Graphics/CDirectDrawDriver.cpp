@@ -17,12 +17,12 @@
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
 
+#include <stddef.h>
+#include <windows.h>
+
 enum {
 	DIRECTDRAW_DISPLAY_COLOR_DEPTH_BITS = 8
 };
-
-#include <stddef.h>
-#include <windows.h>
 
 struct IUnknown;
 

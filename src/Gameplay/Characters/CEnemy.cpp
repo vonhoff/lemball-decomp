@@ -25,11 +25,11 @@
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 
+#include <stddef.h>
+
 enum {
 	ENEMY_HIT_RESPONSE_DELAY_TICKS = 60
 };
-
-#include <stddef.h>
 
 enum eEnemyBehaviorStage {
 	ENEMY_BEHAVIOR_STAGE_FIRST = 0,
@@ -50,7 +50,7 @@ struct EnemyFacingOffset {
 };
 
 // GLOBAL: LEMBALL 0x004950c0
-EnemyFacingOffset g_enemyFacingOffsets[FACING_DIRECTION_COUNT] =
+extern const EnemyFacingOffset g_enemyFacingOffsets[FACING_DIRECTION_COUNT] =
 	{{0, 3}, {-4, 1}, {-5, 0}, {-4, -3}, {0, -4}, {6, -3}, {5, 0}, {4, 1}};
 
 enum {

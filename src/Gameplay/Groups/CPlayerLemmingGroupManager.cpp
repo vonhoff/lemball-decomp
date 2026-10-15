@@ -2,10 +2,6 @@
 
 #include <stddef.h>
 
-enum {
-	LEMMING_COUNTS_USE_DEFAULTS = -1
-};
-
 #include "CFormationManager.h"
 #include "CPlayerLemmingGroup.h"
 #include "Engine/Math/FixedPoint.h"
@@ -24,6 +20,10 @@ enum {
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
+
+enum {
+	LEMMING_COUNTS_USE_DEFAULTS = -1
+};
 
 enum {
 	DEFAULT_PLAYER_START_X_MAP_COORDINATE = 0x112,

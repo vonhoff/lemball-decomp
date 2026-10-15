@@ -10,6 +10,10 @@
 
 #include <stddef.h>
 
+#include "Engine/Graphics/CChangeList.h"
+#include "Engine/Graphics/Primitives/CDrawingMark.h"
+#include "Platform/Windows/CPlatformServices.h"
+
 // FUNCTION: LEMBALL 0x00432530
 void CPVGWnd::OnVisibilityChange()
 {
@@ -32,10 +36,6 @@ unsigned int CPVGWnd::GetStyle()
 {
 	return WINDOW_STYLE_DIRECT_SCROLL;
 }
-
-#include "Engine/Graphics/CChangeList.h"
-#include "Engine/Graphics/Primitives/CDrawingMark.h"
-#include "Platform/Windows/CPlatformServices.h"
 
 // FUNCTION: LEMBALL 0x00465aa0
 void CPVGWnd::Clear(int p_colour)

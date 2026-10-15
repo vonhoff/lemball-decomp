@@ -2,6 +2,9 @@
 
 #include "Multiplayer/CGameFlaggedMessage.h"
 
+#include "Engine/Strings/CString.h"
+#include <string.h>
+
 // FUNCTION: LEMBALL 0x004523e0
 CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(GAME_MESSAGE_GAME_INFO)
 {
@@ -10,10 +13,6 @@ CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(GAME_MESSAGE_GAME_I
 	m_payloadCapacity += sizeof(m_gameName) + sizeof(m_peerName);
 	m_isCritical = true;
 }
-
-#include "Engine/Strings/CString.h"
-
-#include <string.h>
 
 extern char* g_szBroadcastPeerName;
 extern char* g_szGameName;

@@ -29,6 +29,11 @@
 
 #include <string.h>
 
+#include "Multiplayer/Transport/CNetworkAddress.h"
+#include "Engine/Math/CVSSize.h"
+#include "Engine/Resources/Types/CResFONT.h"
+#include "Engine/Strings/CString.h"
+
 extern char* g_szBroadcastPeerName;
 
 #define NETWORK_OPTIONS_MODE_LAN 0
@@ -213,20 +218,13 @@ int g_nNetworkOptionsShiftHeld = 0;
 // GLOBAL: LEMBALL 0x004a0394
 int g_nNetworkOptionsCapsOrShift = 0;
 
-#include "Multiplayer/Transport/CNetworkAddress.h"
-
 enum {
 	NETWORK_OPTIONS_REDRAW_INTERVAL_MS = 500
 };
 
-#include "Engine/Math/CVSSize.h"
-#include "Engine/Resources/Types/CResFONT.h"
-
 enum {
 	NETWORK_OPTIONS_REMAP_NONE = 6
 };
-
-#include "Engine/Strings/CString.h"
 
 // FUNCTION: LEMBALL 0x00453280
 CNetworkOptionsDrawer::CNetworkOptionsDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)

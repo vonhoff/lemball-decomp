@@ -6,6 +6,16 @@
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
 
+#include <string.h>
+#define WIN32_LEAN_AND_MEAN
+// clang-format off
+#include <windows.h>
+#include <mmsystem.h>
+
+#define NOAVIFILE
+#include <vfw.h>
+// clang-format on
+
 // SIZE 0x474
 struct WinGDrawState {
 	void* m_reserved0;         // 0x00
@@ -28,16 +38,6 @@ struct WinGDrawState {
 	char m_reserved44[0x42c];  // 0x44
 	CGWnd* m_window;           // 0x470
 };
-
-#include <string.h>
-#define WIN32_LEAN_AND_MEAN
-// clang-format off
-#include <windows.h>
-#include <mmsystem.h>
-
-#define NOAVIFILE
-#include <vfw.h>
-// clang-format on
 
 class CAnimWnd;
 

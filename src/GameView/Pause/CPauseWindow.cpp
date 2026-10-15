@@ -30,6 +30,8 @@
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
 
+#include <stddef.h>
+
 enum ePauseSelectionKey {
 	PAUSE_KEY_SELECT_OPTION = 0x2a,
 	PAUSE_PLATFORM_DELETE_KEY = 0x2e
@@ -110,8 +112,6 @@ char g_szPauseNo[] = "No";
 
 // GLOBAL: LEMBALL 0x0049f0f4
 char g_szPauseConnectionLost[] = "Connection Lost...";
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00443af0
 void CPauseWindow::Initialise()

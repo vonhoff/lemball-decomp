@@ -1,15 +1,18 @@
 #include "CDemo.h"
 
-struct _Filet;
-
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResBIN.h"
 #include "Platform/Windows/VsTime.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
-
 #include <stddef.h>
+#include "Engine/Files/VsFile.h"
+#include "Engine/Math/CVSPoint.h"
+#include "Engine/Math/CVSRect.h"
+#include <string.h>
+
+struct _Filet;
 
 enum {
 	DEMO_PACKET_INDEX_BYTE_MASK = 0xff,
@@ -128,8 +131,6 @@ bool CDemo::SendNextPacket(int p_packetIndex)
 	return true;
 }
 
-#include "Engine/Files/VsFile.h"
-
 // FUNCTION: LEMBALL 0x00409460
 bool CDemo::LoadBuffer()
 {
@@ -165,11 +166,6 @@ bool CDemo::LoadBuffer()
 	m_readCursor = cursor + 4;
 	return true;
 }
-
-#include "Engine/Math/CVSPoint.h"
-#include "Engine/Math/CVSRect.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x00409560
 void CDemo::GetUserPacket(unsigned char* p_data, unsigned long& p_size)

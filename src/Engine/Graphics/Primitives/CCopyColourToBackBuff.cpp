@@ -2,12 +2,12 @@
 
 #include "CGDI.h"
 
+#include "Platform/Windows/Graphics/CSurface.h"
+
 // FUNCTION: LEMBALL 0x00439720
 CCopyColourToBackBuff::~CCopyColourToBackBuff()
 {
 }
-
-#include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x004398d0
 void CCopyColourToBackBuff::Draw(CGDI* p_gdi)

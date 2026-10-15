@@ -7,13 +7,13 @@
 #include <stddef.h>
 #include <string.h>
 
+#include "Engine/Statistics/CBaseStat.h"
+
 // GLOBAL: LEMBALL 0x004a117c
 unsigned char* g_pArenaHighWater = NULL;
 
 // GLOBAL: LEMBALL 0x004aa100
 CArena* g_pMasterArena;
-
-#include "Engine/Statistics/CBaseStat.h"
 
 enum {
 	ARENA_ALLOCATION_ALIGNMENT_BYTES = 4

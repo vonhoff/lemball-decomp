@@ -19,6 +19,13 @@
 
 #include <stddef.h>
 
+#include "Engine/Queues/tagMESSAGE.h"
+#include "Engine/Streams/CVSOStream.h"
+#include "Frontend/CBaseFrontendDrawer.h"
+#include "Frontend/Network/CNetworkOptionsProc.h"
+#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Packets/CReadPacket.h"
+
 // FUNCTION: LEMBALL 0x00452550
 CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler()
 {
@@ -122,13 +129,6 @@ void CNetworkManager::Stop()
 		network->ForceProcess();
 	}
 }
-
-#include "Engine/Queues/tagMESSAGE.h"
-#include "Engine/Streams/CVSOStream.h"
-#include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/Network/CNetworkOptionsProc.h"
-#include "Multiplayer/Transport/Packets/BasePacketHeader.h"
-#include "Multiplayer/Transport/Packets/CReadPacket.h"
 
 extern char* g_szGameName;
 extern char g_szNetworkGameName[16];

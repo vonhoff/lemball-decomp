@@ -27,6 +27,9 @@
 
 #include <string.h>
 
+#include "Engine/Graphics/Palettes/CRemap.h"
+#include "Engine/Resources/Types/CResPALETTE.h"
+
 class CGWnd;
 
 enum {
@@ -104,9 +107,6 @@ char g_szPreviewNone[] = "None";
 
 // GLOBAL: LEMBALL 0x0049f910
 char g_szPreviewUnnamedLevel[] = "UN-NAMED LEVEL";
-
-#include "Engine/Graphics/Palettes/CRemap.h"
-#include "Engine/Resources/Types/CResPALETTE.h"
 
 // FUNCTION: LEMBALL 0x004491b0
 CPreviewDrawer::CPreviewDrawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)

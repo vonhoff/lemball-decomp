@@ -19,6 +19,8 @@
 
 #include <stddef.h>
 
+#include "Engine/Queues/tagMESSAGE.h"
+
 class CGWnd;
 
 // GLOBAL: LEMBALL 0x0049f490
@@ -53,8 +55,6 @@ unsigned long g_dwMainOptions1CompactAnimIds[12] = {RES_NEWFRONT_ICONS_LORES_ONE
 													RES_NEWFRONT_ICONS_LORES_SKILL_MAYHEM,
 													RES_NEWFRONT_ICONS_LORES_OKAY,
 													RES_NEWFRONT_ICONS_LORES_FULLSCREEN};
-
-#include "Engine/Queues/tagMESSAGE.h"
 
 // FUNCTION: LEMBALL 0x00448200
 CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
