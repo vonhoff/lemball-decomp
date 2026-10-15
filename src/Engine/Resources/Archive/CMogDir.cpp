@@ -20,7 +20,7 @@ tagChunkInfo* g_pEmptyChunkInfo = NULL;
 // SIZE 0x24
 struct MogDirectoryEntry {
 	unsigned int m_dataOffset; // 0x00
-	unsigned long m_id;        // 0x04
+	unsigned int m_id;         // 0x04
 	CHUNKID m_type;            // 0x08
 	unsigned int m_fileOffset; // 0x0c
 	unsigned int m_size;       // 0x10

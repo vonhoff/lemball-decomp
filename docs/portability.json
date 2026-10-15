@@ -116,7 +116,7 @@
     {
       "id": "data_contracts",
       "priority": 2,
-      "status": "network scalar/header and MOG entry contracts checked; payload formats pending",
+      "status": "network scalar/header and MOG entry contracts checked; MOG entry layout verified on x86 and Linux x64; payload formats pending",
       "work": "Inventory fixed-format data separately from runtime classes. Specify exact field widths, padding, endian order, sentinels and ownership. Audit bool=int, unsigned long, pointer fields and enum widths before any modern or 64-bit build.",
       "evidence": [
         "cmake/msvc400-toolchain.cmake",
@@ -127,7 +127,7 @@
         "docs/message-codec.json",
         "docs/archive-entries.json"
       ],
-      "concrete_blocker": "CNetworkMessage::Get(unsigned long&) writes four bytes. A wider unsigned long would leave part of the result uninitialized. MogDirectoryEntry also uses unsigned long and sizeof for an on-disk stride.",
+      "concrete_blocker": "CNetworkMessage::Get(unsigned long&) writes four bytes. A wider unsigned long would leave part of the result uninitialized. MOG serialized entries now retain their 36-byte layout on Windows x86 and Linux x64; runtime resource-ID and file-offset APIs still use unsigned long.",
       "completion": "Representative original resource and packet bytes decode and encode identically using explicit format widths; original-build layouts remain verified; host pointers and runtime state are not treated as serialized structures."
     },
     {
@@ -275,7 +275,7 @@
     ],
     "qualification": "Entry checks cover valid supplied records and modeled CRT success. They do not prove resource payload decoding, allocation failure handling or complete runtime lifetimes."
   },
-  "latest_batch": {
+  "verified_batch_example": {
     "base_commit": "bc5d7978",
     "exact_bytes_before": 234524,
     "exact_bytes_after": 234524,
