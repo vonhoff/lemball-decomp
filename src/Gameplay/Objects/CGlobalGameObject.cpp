@@ -97,7 +97,7 @@ void CGlobalGameObject::CancelRequest()
 	if (m_requestActive != 0) {
 		m_isRemoteObject = false;
 		m_requestActive = 0;
-		m_activationReserved = 0;
+		m_activationReserved = false;
 	}
 }
 

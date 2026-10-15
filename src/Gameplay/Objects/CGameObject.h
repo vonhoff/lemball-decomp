@@ -225,8 +225,8 @@ protected:
 	bool m_hasDestination;                 // 0x74
 	CVMovePos m_movement;                  // 0x78
 	int m_moveDurationTicks;               // 0x88
-	unsigned int m_activationReserved;     // 0x8c
-	unsigned int m_activatorObjectType;    // 0x90
+	bool m_activationReserved;             // 0x8c
+	eObjectType m_activatorObjectType;     // 0x90
 	unsigned long m_stateTimer;            // 0x94
 	eSoundEffect m_soundEffect;            // 0x98
 	AICOORD m_position;                    // 0x9c

@@ -585,7 +585,7 @@ void CPlayerLemming::Resurrect(const AICOORD& p_position)
 	m_fireRequestState = FIRE_REQUEST_NONE;
 	m_isFlying = false;
 	m_hidden = false;
-	m_activationReserved = 0;
+	m_activationReserved = false;
 	m_routeSearchFailed = false;
 	m_routeSearchActive = false;
 	m_isJumping = false;

@@ -462,7 +462,7 @@ void CGameObject::Initialise()
 	m_initiallyActive = 0;
 	m_isFlying = false;
 	m_hidden = false;
-	m_activationReserved = 0;
+	m_activationReserved = false;
 	m_routeSearchFailed = false;
 	m_routeSearchActive = false;
 	m_isJumping = false;

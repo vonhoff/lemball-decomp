@@ -61,7 +61,7 @@ int CPlayerLemmingGroup::GetViewData(CViewData* p_viewData)
 void CPlayerLemmingGroup::Delete()
 {
 	if (m_useObject != NULL) {
-		m_useObject->m_activationReserved = 0;
+		m_useObject->m_activationReserved = false;
 	}
 	m_useObject = NULL;
 }
@@ -115,13 +115,13 @@ bool CPlayerLemmingGroup::Process()
 								memberPosition = member->m_position;
 								if (CloseTo(memberPosition, position)) {
 									m_useObject = object;
-									object->m_activationReserved = 1;
+									object->m_activationReserved = true;
 									m_currentUseElement = 0;
 									if (m_useObject->Activate(member)) {
 										SetGroupState(GROUP_STATE_USING_OBJECT);
 									}
 									else {
-										m_useObject->m_activationReserved = 0;
+										m_useObject->m_activationReserved = false;
 									}
 								}
 								else {
@@ -140,7 +140,7 @@ bool CPlayerLemmingGroup::Process()
 			member = CGenericGroup::GetNthElementInGroup(m_currentUseElement);
 			if (member == NULL) {
 				SetGroupState(GROUP_STATE_IDLE);
-				m_useObject->m_activationReserved = 0;
+				m_useObject->m_activationReserved = false;
 				m_useObject = NULL;
 			}
 			else {
@@ -158,7 +158,7 @@ bool CPlayerLemmingGroup::Process()
 					break;
 				case GROUP_OBJECT_USAGE_SINGLE:
 					SetGroupState(GROUP_STATE_IDLE);
-					m_useObject->m_activationReserved = 0;
+					m_useObject->m_activationReserved = false;
 					m_useObject = NULL;
 					break;
 				}
@@ -168,7 +168,7 @@ bool CPlayerLemmingGroup::Process()
 			if (m_useObject->m_action == ACTION_READY && moving == 0) {
 				if (GetElementsInGroup() <= m_currentUseElement) {
 					SetGroupState(GROUP_STATE_IDLE);
-					m_useObject->m_activationReserved = 0;
+					m_useObject->m_activationReserved = false;
 					m_useObject = NULL;
 				}
 				else {
@@ -181,7 +181,7 @@ bool CPlayerLemmingGroup::Process()
 		case GROUP_STATE_USING_OBJECT:
 			switch (m_useObject->UsableState()) {
 			case GROUP_OBJECT_REQUEST_REJECTED:
-				m_useObject->m_activationReserved = 0;
+				m_useObject->m_activationReserved = false;
 				if (m_useObject->m_objectActive != 0) {
 					position = m_useObject->ActivatePosition();
 					int id = m_useObject->m_objectId;
@@ -371,7 +371,7 @@ void CPlayerLemmingGroup::ClearExistingWaypoints()
 			if (g_pActiveConnection != NULL) {
 				m_useObject->SendCancel();
 			}
-			m_useObject->m_activationReserved = 0;
+			m_useObject->m_activationReserved = false;
 		}
 		m_currentUseElement = GetElementsInGroup();
 	}

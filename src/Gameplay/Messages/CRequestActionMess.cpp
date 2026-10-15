@@ -33,7 +33,7 @@ void CRequestActionMess::GetData()
 	m_object->m_requestActive = active;
 	m_object->m_isRemoteObject = active;
 	if (active != 0) {
-		m_object->m_activationReserved = 1;
+		m_object->m_activationReserved = true;
 	}
 	g_pRequestReplyMessage->Send(m_object);
 }
