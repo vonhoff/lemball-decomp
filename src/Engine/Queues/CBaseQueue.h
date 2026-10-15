@@ -40,7 +40,7 @@ private:
 	unsigned int m_capacity;         // 0x24
 	unsigned int m_messageCount;     // 0x28
 	unsigned int m_handlerCount;     // 0x2c
-	unsigned int m_nextSequence;     // 0x30
+	unsigned long m_nextSequence;    // 0x30
 	unsigned int m_overflowCount;    // 0x34
 	unsigned int m_postCount;        // 0x38
 	unsigned int m_sendCount;        // 0x3c

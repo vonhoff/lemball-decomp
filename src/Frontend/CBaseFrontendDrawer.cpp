@@ -535,7 +535,7 @@ void CBaseFrontendDrawer::DrawFrame(CVSRect p_rect)
 // FUNCTION: LEMBALL 0x00446480
 int CBaseFrontendDrawer::ProcessMsg(tagMESSAGE* p_message)
 {
-	unsigned int sequence;
+	unsigned long sequence;
 
 	if (m_actionPending != 0) {
 		return 0;
