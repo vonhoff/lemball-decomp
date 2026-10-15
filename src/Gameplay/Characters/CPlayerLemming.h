@@ -86,14 +86,14 @@ private:
 	unsigned short m_playerIndex;                               // 0x168
 	eObjectType m_balloonObjectType;                            // 0x16c
 	unsigned int m_alternatePlayer;                             // 0x170
-	unsigned int m_spawnDelay;                                  // 0x174
+	unsigned long m_spawnDelay;                                 // 0x174
 	bool m_wasHitByBullet;                                      // 0x178
 	unsigned int m_isGroupLeader;                               // 0x17c
 	unsigned int m_groupIndex;                                  // 0x180
 	eFireRequestState m_fireRequestState;                       // 0x184
 	unsigned int m_onConveyor;                                  // 0x188
 	CIce* m_ice;                                                // 0x18c
-	unsigned int m_boredDeadline;                               // 0x190
+	unsigned long m_boredDeadline;                              // 0x190
 	AICOORD m_networkPositionCache;                             // 0x194
 	short m_cachedFacingDirection;                              // 0x1a0
 	eAction m_cachedAction;                                     // 0x1a4
