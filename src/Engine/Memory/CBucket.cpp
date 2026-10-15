@@ -102,8 +102,8 @@ bool CBucket::Allocate(unsigned char** p_result)
 	*p_result = NULL;
 	tagBOFFSET offset = current->m_freeOffset;
 	current->m_map[offset.m_wWord] |= g_bitMasks[offset.m_wBit];
-	current->m_freeBytes -= current->m_blockSize;
-	if ((int) current->m_freeBytes <= 0) {
+	current->m_freeBytes = (unsigned int) current->m_freeBytes - current->m_blockSize;
+	if (current->m_freeBytes <= 0) {
 		current->m_flags |= BUCKET_FLAG_FULL;
 	}
 	current->m_freeOffset = current->FindFreeOffset(offset);
@@ -111,8 +111,8 @@ bool CBucket::Allocate(unsigned char** p_result)
 		current->m_memory +
 		(unsigned int) (offset.m_wWord * SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD + offset.m_wBit) * current->m_blockSize;
 	current->m_totalAllocations++;
-	current->m_activeAllocations++;
-	if ((int) current->m_peakAllocations < (int) current->m_activeAllocations) {
+	current->m_activeAllocations = (unsigned int) current->m_activeAllocations + 1;
+	if (current->m_peakAllocations < current->m_activeAllocations) {
 		current->m_peakAllocations = current->m_activeAllocations;
 	}
 	current->LeaveCritical();
@@ -140,14 +140,14 @@ bool CBucket::Free(unsigned char* p_memory)
 	offset.m_wBit = index % SMALL_MEMORY_BLOCKS_PER_BITMAP_WORD;
 	unsigned short oldFlags = current->m_flags;
 	current->m_map[offset.m_wWord] &= ~g_bitMasks[offset.m_wBit];
-	current->m_freeBytes += current->m_blockSize;
+	current->m_freeBytes = (unsigned int) current->m_freeBytes + current->m_blockSize;
 	current->m_flags &= ~BUCKET_FLAG_FULL;
-	current->m_activeAllocations--;
+	current->m_activeAllocations = (unsigned int) current->m_activeAllocations - 1;
 	if ((oldFlags & BUCKET_FLAG_FULL) != 0 ||
 		(current->m_freeOffset.m_wWord > offset.m_wWord && current->m_freeOffset.m_wBit > offset.m_wBit)) {
 		current->m_freeOffset = offset;
 	}
-	if (current->m_totalBytes == current->m_freeBytes && current->m_parent != NULL) {
+	if (current->m_totalBytes == (unsigned int) current->m_freeBytes && current->m_parent != NULL) {
 		current->RemoveThis();
 	}
 	current->LeaveCritical();
