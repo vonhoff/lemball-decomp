@@ -10,9 +10,9 @@
       "Original Windows build, linker routes and canonical matching workflow established.",
       "Packet assembly and scalar/socket header codecs have reproducible original/rebuilt checks."
     ],
-    "current_work": "Bounded send-lifetime trace recorded; MOG directory-entry fixtures are now reproducible. Next: resource arena/cache ownership and failures, then core simulation behavior.",
-    "not_yet_established": "Resource lifetime/payload-decoder and core-simulation fixtures, complete service replacement contracts, representative gameplay/media/network lifecycle traces, and the external-port handoff package.",
-    "progress_measure": "Stage and deliverable completion. Exact/Effective scores remain source-validation gates; they are not percentages of port readiness. Stage 2 does not mean 40% complete."
+    "current_work": "Source cleanup in resource/queue control flow and socket state. Next: resource arena/cache ownership and failure paths, fixed-width file/packet data, then event and service boundaries.",
+    "not_yet_established": "Complete separation of serialized and runtime types; clear ownership across resource, graphics and audio lifecycles; replaceable Windows services; representative integration behavior.",
+    "progress_measure": "Concrete source improvements and resolved porting obstacles. Exact/Effective scores support fidelity review; they are not percentages of port readiness. Matching-neutral source improvements are allowed. Stage 2 does not mean 40% complete."
   },
   "delivery_stages": [
     {
@@ -27,7 +27,7 @@
       "name": "Formats, ownership and core behavior",
       "status": "in progress; current stage",
       "milestones": ["data_contracts", "ownership", "behavior_fixtures"],
-      "exit": "Contracts and representative reference cases for resource/packet formats, buffer lifetimes, initialization/failure, fixed-point movement/RNG and timer wrap. Native-only layouts clearly separated from serialized data."
+      "exit": "Source makes resource/packet widths, buffer lifetimes, initialization/failure, fixed-point arithmetic and timer wrap understandable. Native-only layouts are distinguished from serialized data. Investigate concrete uncertainties with original x86 and existing checks."
     },
     {
       "stage": 3,
@@ -41,20 +41,20 @@
       "name": "Representative integration validation",
       "status": "pending; isolated codec checks already available",
       "milestones": ["behavior_fixtures"],
-      "exit": "Reproducible reference traces for menu-to-level-to-exit, selection/movement/shooting, palette/clipping changes, audio/media transitions and multiplayer connect/send/disconnect. Resolve failures that block these scenarios; explicitly record untested edges."
+      "exit": "Representative checks of menu-to-level-to-exit, selection/movement/shooting, palette/clipping changes, audio/media transitions and multiplayer connect/send/disconnect. Resolve observed blockers; state untested edges. New fixture infrastructure is not a prerequisite."
     },
     {
       "stage": 5,
       "name": "Handoff to a separate port",
       "status": "pending",
       "milestones": ["port_handoff"],
-      "exit": "Component replacement map, format/lifetime/service contracts, fixture commands and provenance, build instructions and a bounded known-limitations list. A port author can implement the platform layer without rediscovering these contracts. No SDL source or dependency added here."
+      "exit": "Reusable game and software-rendering source is clearly distinguished from Windows/compiler infrastructure. A port author can replace services using the source and a short list of remaining assumptions. No separate handoff package, SDL source or dependency required here."
     }
   ],
   "next_deliverables": [
-    "Trace resource arena/cache ownership and lock/release; record allocation and read-failure behavior. The MOG entry parser now has a reproducible check.",
-    "Capture representative fixed-point movement/RNG and timer-wrap cases; identify event-pump ordering needed by a replacement platform.",
-    "Use those contracts to make focused type, ownership and platform-boundary improvements; retain the whole-executable source-batch metric gate."
+    "Clarify resource arena/cache ownership and lock/release in source; preserve allocation and read-failure behavior.",
+    "Separate fixed-width file/packet data from host types and pointer identity; preserve original arithmetic and event ordering.",
+    "Make focused service-boundary improvements using existing interfaces. Measure full-executable matching; a numerical gain is not required for useful source cleanup."
   ],
   "practical_stopping_rules": [
     "A documented, evidenced Windows ABI requirement is an accepted constraint. Every legacy cast, type or construct need not disappear.",
@@ -87,7 +87,8 @@
     "Each cleanup needs a concrete readability, ownership, type, dependency or portability benefit.",
     "Preserve the MSVC 4.00 reference target and its original layout/calling convention. Portable runtime objects may need different layouts.",
     "Preserve narrowing, wrap, signedness, access order and allocation failure behavior; assess changes explicitly.",
-    "Retain current source-batch metric rule unless the user approves an evidence-backed exception. No score-driven source permutations.",
+    "Commit verified behavior-preserving source improvements without requiring a metric increase. Track and explain matching changes; present correctness fixes with measured regressions separately. No score-driven source permutations.",
+    "Source first. Reuse existing checks; add docs, fixtures or tools only when a concrete task needs them. No general fixture-building or documentation milestone.",
     "Tests target meaningful behavior contracts. One appropriate verification pass per batch; broaden only for a new concern.",
     "Select source matching targets through triage_targets.py and read their reconstruction memory before editing."
   ],
@@ -102,14 +103,14 @@
         "src/Level/CLevelLoader.cpp"
       ],
       "completion": "Touched headers provide their own required declarations; implementation files include their direct providers; source/build checks pass; compiler-context effects measured across the full executable.",
-      "next_step": "Keep direct dependencies explicit as source changes. Revisit reviewed IWYU exceptions only with provider/type evidence; preserve SDK prerequisites and the formatter policy. Next substantive work: fixed-format contracts and reusable behavior fixtures.",
+      "next_step": "Keep direct dependencies explicit as source changes. Revisit reviewed IWYU exceptions only with provider/type evidence; preserve SDK prerequisites and the formatter policy. Next substantive work: fixed-format data and clear ownership in source.",
       "completed": "Direct-dependency cleanup across transport, frontend, engine/platform and GameView/Gameplay; remaining CRT/system include groups moved before project headers. Own implementation header remains first. Formatter preserves deliberate groups and order.",
       "reviewed_exception": {
         "path": "src/Multiplayer/Transport/CWriteSocket.cpp",
         "declaration": "timeGetTime: C linkage, unsigned long return, __stdcall, no arguments",
         "reason": "Original ResendCritical calls an import thunk directly. The available mmsystem.h marks the API dllimport and compiles an indirect IAT call.",
         "measured_trial": "WindowsTypes.h plus mmsystem.h, removing the hand declaration: Exact -90 bytes, Effective -69 bytes; no gains. Full executable report, routes and original-byte denominator checked on c0607b60.",
-        "decision": "Trial reverted. Keep this ABI declaration under the current source-batch rule; no compiler controls added to alter import lowering. A separate port can use its platform clock interface."
+        "decision": "Trial reverted. Keep the declaration that matches the original direct import-thunk call; no compiler controls added to alter import lowering. A separate port can use its platform clock interface."
       }
     },
     {
@@ -147,8 +148,8 @@
     {
       "id": "behavior_fixtures",
       "priority": 2,
-      "status": "packet assembly, message codec and MOG entry checks reusable; other fixtures pending",
-      "work": "Create a small, deliberate set of reference fixtures: fixed-point movement and RNG, timer wrap, event ordering, resource parsing, palette/clipping pixels and network messages. Add runtime scenarios for menu-to-level flow, selection, movement, shooting, media transitions and multiplayer connection lifecycle.",
+      "status": "packet assembly, message codec and MOG entry checks available; representative integration checks pending",
+      "work": "Use existing checks and original x86 to resolve material source questions about movement/RNG, timer wrap, event ordering, resource parsing, pixels and network messages. Exercise representative gameplay/media/network paths; add a fixture only for a concrete unresolved behavior or regression.",
       "evidence": [
         "src/Gameplay/Movement/CMove3d.cpp",
         "src/Engine/Math/FixedPointConversion.h",
@@ -161,8 +162,8 @@
         "tools/check_archive_entries.py",
         "docs/archive-entries.json"
       ],
-      "completion": "Reference input/output or state traces are reproducible, with provenance from original execution or cited x86. Each relevant cleanup/port change can be checked against these observations. Broader unobserved behavior stays explicitly unverified.",
-      "existing_evidence": "Packet assembly, scalar/socket headers and all 694 supplied MOG directory entries have reusable original/rebuilt checks using shared x86 support. Archived text-paint and resource-lock fixtures still need reusable forms."
+      "completion": "Changed behavior has proportionate reference-backed checks; representative integration paths have been exercised. Broader unobserved behavior stays explicitly unverified. No comprehensive fixture suite required.",
+      "existing_evidence": "Packet assembly, scalar/socket headers and all 694 supplied MOG directory entries have reusable original/rebuilt checks using shared x86 support. Archived text-paint and resource-lock checks may be reused when relevant."
     },
     {
       "id": "platform_services",
@@ -193,7 +194,7 @@
         "src/Platform/Windows/Graphics/CPVGDIBitmap.h",
         "src/Platform/Windows/Graphics/WinGDraw.cpp"
       ],
-      "completion": "Representative indexed pixels and palette transitions have reference fixtures; presentation, focus/fullscreen and scaling contracts are clear enough for a separate backend implementation."
+      "completion": "Software pixels, palette/clipping behavior and buffer ownership are understood; presentation, focus/fullscreen and coordinate handling are clear enough for a separate backend implementation."
     },
     {
       "id": "audio_movies",
@@ -207,7 +208,7 @@
         "src/Engine/Sound/CPVMusicDevice.h",
         "src/Platform/Windows/Windowing/CAnimWnd.cpp"
       ],
-      "completion": "Audio conversion fixtures and media state/event traces established; backend obligations and asset/codec requirements explicit. No SDL, synth or decoder dependency added here."
+      "completion": "Sample conversion, voice/media ownership, completion ordering and actual asset formats are clear in the source. A separate port can select its audio/media implementation. No SDL, synth or decoder dependency added here."
     },
     {
       "id": "network",
@@ -222,27 +223,27 @@
         "docs/message-codec.json",
         "docs/message-buffer-lifetime.json"
       ],
-      "completion": "Packet fixtures and connection lifecycle traces established; protocol compatibility and pointer-token assumptions explicit. Original Windows behavior and ABI preserved here."
+      "completion": "Packet layout, connection lifetimes and pointer-token assumptions are explicit; representative connect/send/disconnect behavior checked. Original Windows behavior and ABI preserved here."
     },
     {
       "id": "port_handoff",
       "priority": 5,
       "status": "later milestone",
-      "work": "Keep the original build reproducible. Identify compiler/runtime ABI machinery and separate its responsibilities from game behavior. Provide source boundaries, format contracts, fixture provenance and remaining uncertainties for a separate port.",
+      "work": "Keep the original build reproducible. Distinguish compiler/runtime ABI machinery and Windows services from reusable game and software-rendering source. Keep remaining porting assumptions concise.",
       "evidence": [
         "CMakeLists.txt",
         "cmake/msvc400-toolchain.cmake",
         "src/Platform/MSVC/ArrayDestruction.cpp"
       ],
-      "completion": "A separate port has a concrete component replacement map and reproducible behavior references. This repository gains no SDL dependency or backend.",
-      "open_item": "Establish the separate port repository and its integration contract before work there. No port source or dependency is introduced here."
+      "completion": "A separate port can reuse the source and replace identified infrastructure without rediscovering essential game behavior. This repository gains no SDL dependency or backend.",
+      "open_item": "The separate port's implementation and modern build remain later work; creating that repository is not a prerequisite for finishing this foundation."
     }
   ],
   "readiness_definition": [
     "Important behavior contracts captured and meaningful uncertainties listed.",
     "Core types, ownership and initialization understandable; required platform services explicit.",
     "Native ABI/compiler runtime responsibilities isolated and documented so a separate port can implement its own runtime.",
-    "Representative gameplay, rendering, resource, audio/media and protocol cases have reference evidence and reproducible fixtures.",
+    "Representative gameplay, rendering, resource, audio/media and protocol behavior has proportionate checks; untested edges are explicit.",
     "Original Windows build and matching remain verified; SDL implementation belongs elsewhere.",
     "No requirement for every function to match 100% or every legacy construct to disappear."
   ],
@@ -255,7 +256,7 @@
   "scope": {
     "this_repository": "Windows reconstruction and behavior reference; prepare clean source and explicit contracts for a separate port.",
     "external_port": "SDL3 dependency, SDL backend implementation, and portable application integration belong in a separate codebase.",
-    "user_clarification": "SDL3 must not be part of this codebase."
+    "user_clarification": "SDL3 belongs in a separate codebase. Prioritize reusable, idiomatic source; extra docs, fixtures and tools are not deliverables by themselves. Matching gains are not a hard requirement."
   },
   "next_reference_contract": {
     "subject": "Resource arena/cache ownership and failure behavior",
@@ -275,14 +276,14 @@
     "qualification": "Entry checks cover valid supplied records and modeled CRT success. They do not prove resource payload decoding, allocation failure handling or complete runtime lifetimes."
   },
   "latest_batch": {
-    "base_commit": "840804fa",
-    "exact_bytes_before": 234301,
+    "base_commit": "bc5d7978",
+    "exact_bytes_before": 234524,
     "exact_bytes_after": 234524,
     "effective_bytes_before": 289976,
     "effective_bytes_after": 289976,
     "original_bytes": 433937,
-    "exact_gain": "CNetworkFile::Read: 260 bytes, now 100%.",
-    "exact_loss": "CPVBackBuffSurface::HasBackBuff: 37 bytes, swapped equality operands; Effective remains 100%.",
-    "validation": "Build, source policy, formatter, linker routes and full canonical report; full changed-body review and original resource payload comparison. No live multiplayer or whole-game runtime claim."
+    "exact_gain": "None. CFileConnect::ConnectSetup remains 100% after structured lock/setup control flow replaces goto.",
+    "exact_loss": "None. All Exact and Effective address sets and report rows unchanged.",
+    "validation": "Build, source policy, formatter, linker routes and full canonical report; executable code byte-identical to baseline. Original lock-timeout, unlock-failure and buffer/write ordering preserved. No live multiplayer or whole-game runtime claim."
   }
 }

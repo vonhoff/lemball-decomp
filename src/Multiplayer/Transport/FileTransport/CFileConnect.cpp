@@ -123,36 +123,32 @@ void CFileConnect::ConnectSetup()
 		locked = CNetworkFile::Lock(0, m_message.m_payloadCapacity);
 	} while (!locked && CurrentMilliTimer() - started < NETWORK_FILE_LOCK_RETRY_TIMEOUT_MS);
 
-	if (!locked) {
-		goto setupComplete;
-	}
+	if (locked) {
+		while (GetFileSize() < requiredSize) {
+			unsigned char* data = new unsigned char[g_networkPacketSize];
+			memset(data, 0, g_networkPacketSize);
+			Seek(GetFileSize());
 
-	while (GetFileSize() < requiredSize) {
-		unsigned char* data = new unsigned char[g_networkPacketSize];
-		memset(data, 0, g_networkPacketSize);
-		Seek(GetFileSize());
+			CFileWriteSocket::Write(*CFileWriteSocket::m_file, 0, 0);
+			int i;
+			for (i = 0; i < m_headerSlotCount; i++) {
+				CNetworkFile::Write(data, g_networkPacketSize);
+			}
 
-		CFileWriteSocket::Write(*CFileWriteSocket::m_file, 0, 0);
-		int i = 0;
-		for (; i < m_headerSlotCount; i++) {
-			CNetworkFile::Write(data, g_networkPacketSize);
+			CFileWriteSocket::Write(*CFileReadSocket::m_file, 0, 0);
+			for (i = 0; i < m_headerSlotCount; i++) {
+				CNetworkFile::Write(data, g_networkPacketSize);
+			}
+
+			delete[] data;
 		}
 
-		CFileWriteSocket::Write(*CFileReadSocket::m_file, 0, 0);
-		i = 0;
-		for (; i < m_headerSlotCount; i++) {
-			CNetworkFile::Write(data, g_networkPacketSize);
+		if (!CNetworkFile::UnLock(0, m_message.m_payloadCapacity)) {
+			SocketError();
+			return;
 		}
-
-		delete[] data;
 	}
 
-	if (!CNetworkFile::UnLock(0, m_message.m_payloadCapacity)) {
-		SocketError();
-		return;
-	}
-
-setupComplete:
 	m_isOpen = true;
 	m_socketFlags = true;
 }
