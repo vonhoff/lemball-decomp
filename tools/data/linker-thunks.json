@@ -13585,11 +13585,11 @@
       "caller": 4262928,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "??0CAI@@QAE@PAVCGame@@@Z",
-      "size": 256,
-      "fingerprint": "3173543f316686920afc92c6e6d2fa2251f24770234c062ac465b12af03cee6f",
+      "size": 219,
+      "fingerprint": "fce7d7584a301f353b78a7a5710430f7a543fd33eddf03d6e4258393113eca12",
       "references": [
         {
-          "offset": 243,
+          "offset": 206,
           "original_instruction": 4263144,
           "original_bytes": "e80115ffff",
           "thunk": 4202990,
@@ -14741,60 +14741,60 @@
       "caller": 4270224,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?StepOn@CAI@@QAEXABVAICOORD@@PAVCGameObject@@G@Z",
-      "size": 571,
-      "fingerprint": "b57aef306880a76b223b55b4e2a5f33b0c4aae7386f7d8b1ce854b54413ecf53",
+      "size": 567,
+      "fingerprint": "1e77fcb0252b80dd2fb6cdca20dc99fbdfcb2041ad7d031621f64aecc3e1a9bf",
       "references": [
         {
-          "offset": 159,
+          "offset": 155,
           "original_instruction": 4270379,
           "original_bytes": "e87500ffff",
           "thunk": 4204965,
           "source_symbol": "?GetZ@CGround@@QAEGHH@Z"
         },
         {
-          "offset": 464,
+          "offset": 460,
           "original_instruction": 4270681,
           "original_bytes": "e815fafeff",
           "thunk": 4203635,
           "source_symbol": "?StepOn@CMineManager@@QAEXABVAICOORD@@PAVCGameObject@@@Z"
         },
         {
-          "offset": 484,
+          "offset": 480,
           "original_instruction": 4270701,
           "original_bytes": "e8c8e7feff",
           "thunk": 4198970,
           "source_symbol": "?StepOn@CLiftManager@@QAEXABVAICOORD@@PAVCGameObject@@@Z"
         },
         {
-          "offset": 497,
+          "offset": 493,
           "original_instruction": 4270714,
           "original_bytes": "e8b100ffff",
           "thunk": 4205360,
           "source_symbol": "?StepOn@CRocketManager@@QAEHABVAICOORD@@PAVCGameObject@@@Z"
         },
         {
-          "offset": 510,
+          "offset": 506,
           "original_instruction": 4270727,
           "original_bytes": "e848f8feff",
           "thunk": 4203220,
           "source_symbol": "?StepOn@CHandManager@@QAEHABVAICOORD@@PAVCGameObject@@@Z"
         },
         {
-          "offset": 523,
+          "offset": 519,
           "original_instruction": 4270740,
           "original_bytes": "e8c103ffff",
           "thunk": 4206170,
           "source_symbol": "?StepOn@CLaserManager@@QAEHABVAICOORD@@PAVCGameObject@@@Z"
         },
         {
-          "offset": 536,
+          "offset": 532,
           "original_instruction": 4270753,
           "original_bytes": "e88ff1feff",
           "thunk": 4201525,
           "source_symbol": "?StepOn@CIceManager@@QAEHABVAICOORD@@PAVCGameObject@@@Z"
         },
         {
-          "offset": 556,
+          "offset": 552,
           "original_instruction": 4270773,
           "original_bytes": "e8f9e6feff",
           "thunk": 4198835,

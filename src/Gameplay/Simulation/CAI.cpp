@@ -102,10 +102,6 @@ enum {
 	CAI_NETWORK_STATE_BUFFER_RESERVE_BYTES = 0x60
 };
 
-enum {
-	AI_EMPTY_COLLISION_RECT_MAX_COORDINATE = -1
-};
-
 // GLOBAL: LEMBALL 0x004a782c
 CAI* g_pGenericGroupAI;
 
@@ -122,17 +118,8 @@ CAI* g_pActiveAI = NULL;
 int g_anDefaultTrapDoorLemmings[4][4] = {{4, 0, 0, 0}, {3, 1, 0, 0}, {2, 1, 1, 0}, {1, 1, 1, 1}};
 
 // FUNCTION: LEMBALL 0x00410c10
-CAI::CAI(CGame* p_game)
+CAI::CAI(CGame* p_game) : m_collisionPoint(0, 0, 0)
 {
-	m_collisionPoint.m_x = 0;
-	m_collisionPoint.m_y = 0;
-	m_collisionPoint.m_z = 0;
-	m_collisionRect.m_min.m_x = 0;
-	m_collisionRect.m_min.m_y = 0;
-	m_collisionRect.m_min.m_z = 0;
-	m_collisionRect.m_max.m_x = AI_EMPTY_COLLISION_RECT_MAX_COORDINATE;
-	m_collisionRect.m_max.m_y = AI_EMPTY_COLLISION_RECT_MAX_COORDINATE;
-	m_collisionRect.m_max.m_z = AI_EMPTY_COLLISION_RECT_MAX_COORDINATE;
 	m_objectCount = 0;
 	m_objectCapacity = AI_GAME_OBJECT_CAPACITY;
 	m_objects = new CGameObject*[AI_GAME_OBJECT_CAPACITY];
