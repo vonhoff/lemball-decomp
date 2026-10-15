@@ -2,8 +2,8 @@
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/vonhoff/lemball-decomp/build.yml)](https://github.com/vonhoff/lemball-decomp/actions/workflows/build.yml)
 [![Effective Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Feffective.json)](#matching)
-[![Exact Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](https://decomp.dev/vonhoff/lemball-decomp)
-[![Fuzzy Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](https://decomp.dev/vonhoff/lemball-decomp)
+[![Exact Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](https://bytematch.dev/vonhoff/lemball-decomp)
+[![Fuzzy Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](https://bytematch.dev/vonhoff/lemball-decomp)
 
 This project is a matching decompilation of *Lemmings Paintball*, an action video game from the *Lemmings* franchise
 developed by Visual Sciences and published by Psygnosis in 1996 for Windows 95.
@@ -59,7 +59,7 @@ Each function is compared against the original executable using [reccmp](https:/
 - **Fuzzy:** Raw assembly similarity, including equivalent functions with lower scores.
 - **Effective:** Non-stub raw 100% matches and reccmp's own equivalence results.
 
-The [decomp.dev report](https://decomp.dev/vonhoff/lemball-decomp) only includes exact and fuzzy matches.
+The [bytematch.dev report](https://bytematch.dev/vonhoff/lemball-decomp) only includes exact and fuzzy matches.
 
 ### Prerequisites
 
