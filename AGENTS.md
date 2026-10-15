@@ -4,7 +4,7 @@
 
 ## Style
 
-- Write human-facing documentation and responses in natural, complete sentences. Be concise, but avoid telegraphese and clipped status reports. Explain concrete facts clearly and state uncertainty where it matters.
+- Documents and communication: telegraphese. Short phrases; concrete facts; explicit uncertainty.
 - Tools: single responsibility; upstream APIs first. Remove unused features and duplicate logic.
 
 ## Evidence
@@ -18,15 +18,11 @@
 
 ## Reconstruction priorities
 
-- Goal: stable, readable, behavior-equivalent reference and foundation for future ports. Full matching is not a completion requirement.
 - Target: plausible original source; idiomatic MSVC 4.00 C++. Preserve Windows behavior and ABI.
 - Evidence-backed inference; explicit uncertainty. No invented semantics or constants.
-- Good Exact and Effective metrics matter. Preserve both totals by default; gains are not required. Present necessary regressions with concrete evidence and measured cost before committing. Cleanup alone does not justify losses.
-- No score-driven assembly, registers, compiler controls, or source shaping. Do not pursue full matching through source permutations.
+- Clean source over scores; explain losses. No score-driven assembly, registers, compiler controls, or source shaping.
 - Recover types, ownership, shared operations. Remove raw object offsets, scaffolding, and redundancy.
 - Preserve narrowing, signedness, overflow, access timing, serialized layouts. Validate; record limits; commit verified batches.
-- Essential source work first: demonstrated defects, portability blockers and clear platform replacement points. Keep platform backends for future ports separate.
-- Reuse existing checks. No broad audits, documentation or custom-tool projects without a concrete need. Verify proportionately; broaden only for a failure or unresolved concern. Commit useful verified batches promptly.
 
 ## Commands
 
@@ -54,9 +50,9 @@ The source reconstruction workflow below applies to C/C++ source changes. Tool c
 
 ## Source changes
 
-1. Select a focused source task. For matching targets, use `tools/triage_targets.py` from the current report; sole selection/ranking entry point. Generate missing reports with `tools/make_report.py` after building. When reconstruction-memory tools are available: `get_function_memory(addr)` before editing reconstructed functions.
+1. Select a focused target with `tools/triage_targets.py` from the current report; sole selection/ranking entry point. Generate missing reports with `tools/make_report.py` after building. When reconstruction-memory tools are available: `get_function_memory(addr)` before editing.
 2. Read the full function, declarations, relevant original callers/callees. Preserve ABI, dispatch, side effects, reload timing, narrowing, ownership, initialization, allocation failures. Ambiguous diff: inspect raw x86.
-3. Build and match trials with `tools/make_binary.py && tools/check_function.py 0xADDR`. Use `--summary` for compact multi-address checks. Revert unsupported or behavior/ABI-breaking trials. Retry from evidence; avoid extended compiler-context experiments. `record_attempt`: actual trials only. `record_observation`: durable x86 facts with address/citation. Tools unavailable: continue locally.
+3. Build and match trials with `tools/make_binary.py && tools/check_function.py 0xADDR`. Use `--summary` for compact multi-address checks. Revert unsupported or behavior/ABI-breaking trials; score loss alone is insufficient. Retry from evidence. `record_attempt`: actual trials only. `record_observation`: durable x86 facts with address/citation. Tools unavailable: continue locally.
 4. Batch boundary: `tools/make_report.py` to inspect progress and diff against git. Header/ABI/multi-TU changes: `detect_changes`. Explain regressions. No full reports per speculative trial.
 5. Clang-format touched C/C++; run `tools/check_source.py`, `tools/recover_thunks.py --verify`, and relevant checks; commit verified work.
 
