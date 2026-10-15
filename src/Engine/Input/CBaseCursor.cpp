@@ -1,6 +1,7 @@
+#include "Engine/Input/CBaseCursor.h"
+
 #include <stddef.h>
 
-#include "Engine/Input/CBaseCursor.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
 #include "Engine/Graphics/Primitives/CPushActive.h"
 #include "Engine/Graphics/Primitives/CZRLE.h"
