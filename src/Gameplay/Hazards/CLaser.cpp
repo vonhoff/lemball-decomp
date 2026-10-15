@@ -283,58 +283,57 @@ bool CLaser::StepOn(const AICOORD& p_position, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00428f90
 int CLaser::GetViewData(CViewData* p_viewData)
 {
+	enum {
+		MAX_VIEW_RECORDS = 8
+	};
 	CGameObject::GetViewData(*p_viewData);
 	p_viewData++;
 	int count = 1;
-	if (m_action == ACTION_ACTIVATED) {
-		switch (m_objectType) {
-		case OBJECT_LASER_HORIZONTAL:
-		case OBJECT_LASER_EMITTER_H: {
-			int x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_HORIZONTAL_START_OFFSET_PIXELS;
-			int y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
-			int z = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_HEIGHT_ABOVE_EMITTER_PIXELS;
-			for (unsigned int i = 1; i < 8; i++) {
-				unsigned short height = g_pMap->m_ground.GetZ(x, y);
-				if (height > z) {
-					break;
-				}
-				CGameObject::GetViewData(*p_viewData);
-				p_viewData->m_position.m_x = x;
-				p_viewData->m_position.m_y = y;
-				p_viewData->m_position.m_z = z;
-				p_viewData->m_objectType = OBJECT_LASER_VERTICAL_BEAM;
-				p_viewData->m_facingDirection = 0;
-				p_viewData->m_action = ACTION_ACTIVATED;
-				p_viewData++;
-				count++;
-				x += GROUND_BLOCK_PIXEL_SIZE;
-			}
+	if (m_action != ACTION_ACTIVATED) {
+		return count;
+	}
+
+	CPt3 position;
+	int stepX;
+	int stepY;
+	eObjectType beamType;
+	switch (m_objectType) {
+	case OBJECT_LASER_HORIZONTAL:
+	case OBJECT_LASER_EMITTER_H:
+		position.m_x = (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_HORIZONTAL_START_OFFSET_PIXELS;
+		position.m_y = m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
+		position.m_z = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_HEIGHT_ABOVE_EMITTER_PIXELS;
+		stepX = GROUND_BLOCK_PIXEL_SIZE;
+		stepY = 0;
+		beamType = OBJECT_LASER_VERTICAL_BEAM;
+		break;
+	case OBJECT_LASER_VERTICAL:
+	case OBJECT_LASER_EMITTER_V:
+		position.m_x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
+		position.m_y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_VERTICAL_START_OFFSET_PIXELS;
+		position.m_z = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_HEIGHT_ABOVE_EMITTER_PIXELS;
+		stepX = 0;
+		stepY = GROUND_BLOCK_PIXEL_SIZE;
+		beamType = OBJECT_LASER_HORIZONTAL_BEAM;
+		break;
+	default:
+		return count;
+	}
+
+	for (unsigned int i = 1; i < MAX_VIEW_RECORDS; i++) {
+		unsigned short height = g_pMap->m_ground.GetZ(position.m_x, position.m_y);
+		if (height > position.m_z) {
 			break;
 		}
-		case OBJECT_LASER_VERTICAL:
-		case OBJECT_LASER_EMITTER_V: {
-			int x = m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
-			int y = (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_VERTICAL_START_OFFSET_PIXELS;
-			int z = (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS) + LASER_BEAM_HEIGHT_ABOVE_EMITTER_PIXELS;
-			for (unsigned int i = 1; i < 8; i++) {
-				unsigned short height = g_pMap->m_ground.GetZ(x, y);
-				if (height > z) {
-					break;
-				}
-				CGameObject::GetViewData(*p_viewData);
-				p_viewData->m_position.m_x = x;
-				p_viewData->m_position.m_y = y;
-				p_viewData->m_position.m_z = z;
-				p_viewData->m_objectType = OBJECT_LASER_HORIZONTAL_BEAM;
-				p_viewData->m_facingDirection = 0;
-				p_viewData->m_action = ACTION_ACTIVATED;
-				p_viewData++;
-				count++;
-				y += GROUND_BLOCK_PIXEL_SIZE;
-			}
-			break;
-		}
-		}
+		CGameObject::GetViewData(*p_viewData);
+		p_viewData->m_position = position;
+		p_viewData->m_objectType = beamType;
+		p_viewData->m_facingDirection = 0;
+		p_viewData->m_action = ACTION_ACTIVATED;
+		p_viewData++;
+		count++;
+		position.m_x += stepX;
+		position.m_y += stepY;
 	}
 	return count;
 }
