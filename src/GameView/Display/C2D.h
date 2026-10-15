@@ -293,7 +293,7 @@ private:
 	CCopyColourToBackBuff m_backBufferFills[4];  // 0xa00
 	CLemmingAnimsManager* m_lemmingAnims;        // 0xa40
 	char m_pad0xa44[4];                          // 0xa44
-	unsigned int m_groupingActive;               // 0xa48
+	eGroupingMode m_groupingMode;                // 0xa48
 	unsigned short m_groupCount;                 // 0xa4c
 	unsigned short m_groupSelectionCount;        // 0xa4e
 	unsigned short m_groupObjectIds[20];         // 0xa50

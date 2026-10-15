@@ -424,7 +424,7 @@ C2D::C2D(CMain2DDisplay* p_display, CAI* p_ai, CGDI* p_gdi, CMap* p_map, const C
 	m_groupCount = 0;
 	m_quitRequested = 0;
 	m_groupSelectionCount = 0;
-	m_groupingActive = GROUPING_INACTIVE;
+	m_groupingMode = GROUPING_INACTIVE;
 	m_externalEnabled = 1;
 	m_lemmingManager = m_ai->m_aiQueue;
 
@@ -788,7 +788,7 @@ void C2D::CheckValidFormGroup()
 {
 	int i;
 
-	if (m_groupingActive == GROUPING_SELECTING) {
+	if (m_groupingMode == GROUPING_SELECTING) {
 		for (i = 0; i < m_groupCount; i++) {
 			if (!g_pObjects[m_groupObjectIds[i]]->IsSelectable()) {
 				RemoveFromGroupByObjectNo(m_groupObjectIds[i]);
@@ -1093,7 +1093,7 @@ void C2D::FormGroup()
 	if (m_groupCount > 0) {
 		m_lemmingManager->Post(message);
 		m_groupCount = 0;
-		m_groupingActive = GROUPING_INACTIVE;
+		m_groupingMode = GROUPING_INACTIVE;
 		g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 	}
 }
@@ -1108,7 +1108,7 @@ void C2D::MoveGroup(const CVSPoint& p_point)
 	msg.m_payload = (void*) (int) p_point.m_y;
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
-	m_groupingActive = GROUPING_INACTIVE;
+	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_DRUM1;
 }
 
@@ -1120,7 +1120,7 @@ void C2D::CancelMoves()
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
-	m_groupingActive = GROUPING_INACTIVE;
+	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_DRUM1;
 }
 
@@ -1132,7 +1132,7 @@ void C2D::NextGroup()
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
-	m_groupingActive = GROUPING_INACTIVE;
+	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_CHANGEOP;
 }
 
@@ -1144,7 +1144,7 @@ void C2D::PrevGroup()
 	memset(&msg.m_time, 0, sizeof(msg.m_time) + sizeof(msg.m_code) + sizeof(msg.m_payload) + sizeof(msg.m_source));
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
-	m_groupingActive = GROUPING_INACTIVE;
+	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_CHANGEOP;
 }
 
@@ -1158,7 +1158,7 @@ void C2D::SelectLemming(int p_playerIndex)
 	memset(&msg.m_payload, 0, sizeof(msg.m_payload) + sizeof(msg.m_source));
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
-	m_groupingActive = GROUPING_INACTIVE;
+	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 }
 
@@ -1172,7 +1172,7 @@ void C2D::SelectObject(int p_viewIndex)
 	memset(&msg.m_payload, 0, sizeof(msg.m_payload) + sizeof(msg.m_source));
 	m_lemmingManager->Post(msg);
 	m_groupCount = 0;
-	m_groupingActive = GROUPING_INACTIVE;
+	m_groupingMode = GROUPING_INACTIVE;
 	g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 }
 
@@ -1218,7 +1218,7 @@ void C2D::RemoveFromGroupByObjectNo(int p_objectNo)
 		m_groupSelectionCount = m_groupSelectionCount - 1;
 	}
 	if (m_groupCount == 0) {
-		m_groupingActive = GROUPING_INACTIVE;
+		m_groupingMode = GROUPING_INACTIVE;
 	}
 }
 
@@ -1250,7 +1250,7 @@ void C2D::NoStateLeftClick(const CVSPoint& p_screenPoint,
 			if (p_alternate == 0) {
 				m_groupCount = 0;
 				m_groupSelectionCount = 0;
-				m_groupingActive = 1;
+				m_groupingMode = GROUPING_SELECTING;
 				AddObjectToGroup(views[index].m_objectId, 0);
 				g_pSoundView->m_pendingEffect = SFX_MOUSE_CLICK;
 				return;
@@ -1351,7 +1351,7 @@ void C2D::LeftClick(const CVSPoint& p_screenPoint,
 					unsigned int p_cancelMoves,
 					unsigned int p_alternate)
 {
-	switch (m_groupingActive) {
+	switch (m_groupingMode) {
 	case GROUPING_INACTIVE:
 		NoStateLeftClick(p_screenPoint, p_gamePoint, p_cancelMoves, p_alternate);
 		break;
@@ -1381,19 +1381,19 @@ void C2D::NoStateRightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gam
 	message.m_code = p_gamePoint.m_x;
 	message.m_payload = (void*) (int) p_gamePoint.m_y;
 	m_lemmingManager->Post(message);
-	m_groupingActive = GROUPING_INACTIVE;
+	m_groupingMode = GROUPING_INACTIVE;
 }
 
 // FUNCTION: LEMBALL 0x00437930
 void C2D::RightClick(const CVSPoint& p_screenPoint, const CVSPoint& p_gamePoint)
 {
-	if (m_groupingActive != GROUPING_INACTIVE) {
-		if (m_groupingActive != GROUPING_SELECTING) {
+	if (m_groupingMode != GROUPING_INACTIVE) {
+		if (m_groupingMode != GROUPING_SELECTING) {
 			return;
 		}
 		FormGroup();
 		if (m_groupCount == 0) {
-			m_groupingActive = GROUPING_INACTIVE;
+			m_groupingMode = GROUPING_INACTIVE;
 		}
 	}
 	NoStateRightClick(p_screenPoint, p_gamePoint);
@@ -4268,7 +4268,7 @@ void C2D::SetOrigin()
 	unsigned int player;
 	int changed = 0;
 
-	if (m_groupingActive == GROUPING_SELECTING && m_groupSelectionCount != 0) {
+	if (m_groupingMode == GROUPING_SELECTING && m_groupSelectionCount != 0) {
 		m_ai->GetPlayerPos(m_groupObjectIds[m_groupSelectionCount - 1], origin);
 	}
 	else if (m_ai->GetOrigin(origin, player) == 0) {

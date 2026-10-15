@@ -59,7 +59,7 @@ void CPanelLemming::UpdateStatus()
 	}
 	else {
 		C2D* game = m_panel->m_game;
-		if (game->m_groupingActive != 1) {
+		if (game->m_groupingMode != GROUPING_SELECTING) {
 			CPlayerLemmingGroup* controlled = game->m_ai->m_playerGroupManager->GetPlayerControlledGroup();
 			selected = lemming->GetGroup() == controlled;
 		}

@@ -313,7 +313,7 @@ normal:
 		}
 	}
 groupSelection:
-	if (game->m_groupingActive == 1) {
+	if (game->m_groupingMode == GROUPING_SELECTING) {
 		if (game->InGroupByObjectNo(m_lemming->m_lemming->m_objectId) != 0) {
 			game->RemoveFromGroupByObjectNo(m_lemming->m_lemming->m_objectId);
 		}
@@ -322,7 +322,7 @@ groupSelection:
 		}
 	}
 	else {
-		game->m_groupingActive = 1;
+		game->m_groupingMode = GROUPING_SELECTING;
 		game->m_groupCount = 0;
 		game->m_groupSelectionCount = 0;
 		game->AddObjectToGroup(m_lemming->m_lemming->m_objectId, 1);
