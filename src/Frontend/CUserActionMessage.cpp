@@ -13,8 +13,8 @@ CUserActionMessage::CUserActionMessage() : CNetworkMessage(GAME_MESSAGE_USER_ACT
 // FUNCTION: LEMBALL 0x004453e0
 void CUserActionMessage::AddData()
 {
-	Add((Dword) m_action);
-	Add((Dword) m_stage);
+	Add((unsigned long) m_action);
+	Add((unsigned long) m_stage);
 }
 
 // FUNCTION: LEMBALL 0x00445400

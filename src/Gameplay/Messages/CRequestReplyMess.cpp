@@ -5,19 +5,18 @@
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00416ac0
 CRequestReplyMess::CRequestReplyMess() : CGameObjectMess(MESSAGE_REQUEST_REPLY)
 {
-	m_payloadCapacity += sizeof(Dword);
+	m_payloadCapacity += sizeof(unsigned long);
 }
 
 // FUNCTION: LEMBALL 0x00416ae0
 void CRequestReplyMess::AddData()
 {
 	CGameObjectMess::AddData();
-	Add((Dword) m_object->m_requestActive);
+	Add((unsigned long) m_object->m_requestActive);
 }
 
 // FUNCTION: LEMBALL 0x00416b00

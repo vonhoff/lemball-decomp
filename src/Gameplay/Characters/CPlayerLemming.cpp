@@ -40,7 +40,6 @@
 #include "Application/SoundEffects.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Objects/ObjectTypes.h"
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 #define PLAYER_LEMMING_ACTION_ARGUMENT_MASK 0x07
 #define PLAYER_LEMMING_ACTION_ARGUMENT_FIELD_MASK 0x38
@@ -457,7 +456,7 @@ void CPlayerLemming::AddData()
 	if (g_dwSimulationTimestamp < m_stateTimer) {
 		m_stateTimer = g_dwSimulationTimestamp;
 	}
-	Add((Dword) m_stateTimer);
+	Add((unsigned long) m_stateTimer);
 	m_sfxChanged = false;
 }
 

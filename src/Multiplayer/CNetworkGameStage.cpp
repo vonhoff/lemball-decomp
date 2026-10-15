@@ -11,7 +11,7 @@ CNetworkGameStage::CNetworkGameStage() : CNetworkMessage(NETWORK_MESSAGE_GAME_ST
 // FUNCTION: LEMBALL 0x00452e40
 void CNetworkGameStage::AddData()
 {
-	Add((Dword) m_stage);
+	Add((unsigned long) m_stage);
 }
 
 // FUNCTION: LEMBALL 0x00452e50

@@ -4,7 +4,6 @@
 
 #include "CBroadcastMessage.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x0045f580
 CMessGOConnect::CMessGOConnect(const char* p_header) : CBroadcastMessage(p_header)
@@ -24,7 +23,7 @@ void CMessGOConnect::GetData()
 void CMessGOConnect::AddData()
 {
 	Add(m_assignedPort);
-	Add((Dword) m_connectionId);
+	Add((unsigned long) m_connectionId);
 }
 
 // GLOBAL: LEMBALL 0x004a1e5c

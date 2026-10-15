@@ -21,7 +21,7 @@ CPBNetworkGame::CPBNetworkGame(CAI* p_ai)
 void CPBNetworkGame::AddData()
 {
 	CNetworkMessage::Add((unsigned short) MESSAGE_SIMULATION_TIME);
-	CNetworkMessage::Add((Dword) g_dwSimulationTimestamp);
+	CNetworkMessage::Add(g_dwSimulationTimestamp);
 	CAI& ai = *m_ai;
 	ai.CopyDataStream(m_writeCursor, 0);
 	m_writeCursor += ai.m_writeCursor - ai.m_buffer;

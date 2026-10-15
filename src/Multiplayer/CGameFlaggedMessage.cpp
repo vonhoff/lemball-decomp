@@ -13,7 +13,7 @@ CGameFlaggedMessage::CGameFlaggedMessage(unsigned long p_messageId) : CNetworkMe
 // FUNCTION: LEMBALL 0x004524f0
 void CGameFlaggedMessage::AddData()
 {
-	Add((Dword) m_flag);
+	Add((unsigned long) m_flag);
 }
 
 // FUNCTION: LEMBALL 0x00452500

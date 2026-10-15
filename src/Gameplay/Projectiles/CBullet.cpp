@@ -227,7 +227,7 @@ void CBullet::AddData()
 {
 	Add((unsigned short) MESSAGE_BULLET_STATE);
 	Add(m_linkedObjectId);
-	Add((Dword) g_dwSimulationTimestamp);
+	Add(g_dwSimulationTimestamp);
 	Add((unsigned short) (m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS));
 	Add((unsigned short) (m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS));
 	Add((unsigned short) (m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS));
@@ -235,10 +235,10 @@ void CBullet::AddData()
 	Add((unsigned short) (m_destination.m_yFixed >> FIXED_POINT_FRACTION_BITS));
 	Add((unsigned short) (m_destination.m_zFixed >> FIXED_POINT_FRACTION_BITS));
 	Add((unsigned short) m_facingDirection);
-	Add((Dword) m_soundEffect);
-	Add((Dword) m_lastMovementTick);
-	Add((Dword) m_bulletType);
-	Add((Dword) m_owner);
+	Add((unsigned long) m_soundEffect);
+	Add(m_lastMovementTick);
+	Add((unsigned long) m_bulletType);
+	Add((unsigned long) m_owner);
 	Add(m_sourceObjectId);
 }
 
