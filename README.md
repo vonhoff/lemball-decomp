@@ -21,8 +21,8 @@ see [lemball-portable](https://github.com/vonhoff/lemball-portable).
 The Macintosh 68000 version retained Metrowerks and MacsBug debugging symbols, providing over 2,800 original function
 names and revealing C++ class hierarchies.
 
-The Windows executable lacks debugging symbols, so functions were matched across versions using strings, constants,
-algorithms, virtual tables, object layouts, and call relationships.
+The original Windows executable lacks debugging symbols, so functions were matched across versions using strings,
+constants, algorithms, virtual tables, object layouts, and call relationships.
 
 ## Matching
 
