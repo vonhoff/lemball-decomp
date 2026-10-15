@@ -47,14 +47,14 @@ public:
 			  int p_lowHeight,
 			  int p_highHeight,
 			  eLiftActivateType p_activateType,
-			  unsigned int p_initialActive);
+			  bool p_initialActive);
 	void Set(tCoord3d& p_start,
 			 tCoord3d& p_end,
 			 short p_direction,
 			 int p_lowHeight,
 			 int p_highHeight,
 			 eLiftActivateType p_activateType,
-			 unsigned int p_initialActive);
+			 bool p_initialActive);
 	void Set(int p_x,
 			 int p_y,
 			 int p_z,
@@ -62,7 +62,7 @@ public:
 			 int p_lowHeight,
 			 int p_highHeight,
 			 eLiftActivateType p_activateType,
-			 unsigned int p_initialActive);
+			 bool p_initialActive);
 
 	friend class CLiftManager;
 
@@ -77,8 +77,8 @@ private:
 	unsigned int m_unk0x158;                       // 0x158
 	eLiftActivateType m_activateType;              // 0x15c
 	CGround* m_mapCell;                            // 0x160
-	unsigned int m_active;                         // 0x164
-	unsigned int m_defaultActive;                  // 0x168
+	bool m_active;                                 // 0x164
+	bool m_defaultActive;                          // 0x168
 	eLiftActivationLatchState m_activationLatched; // 0x16c
 	CGameObject* m_objects[8];                     // 0x170
 };

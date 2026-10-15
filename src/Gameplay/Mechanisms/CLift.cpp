@@ -65,7 +65,7 @@ void CLift::Edit(int p_height,
 				 int p_lowHeight,
 				 int p_highHeight,
 				 eLiftActivateType p_activateType,
-				 unsigned int p_initialActive)
+				 bool p_initialActive)
 {
 	if (p_lowHeight == LIFT_LOW_HEIGHT_FOLLOWS_START_HEIGHT) {
 		p_lowHeight = p_height;
@@ -94,20 +94,20 @@ void CLift::Edit(int p_height,
 			int by = y / GROUND_BLOCK_PIXEL_SIZE;
 			switch (p_activateType) {
 			case LIFT_ACTIVATE_SWITCH_TOGGLE:
-				m_active = 0;
+				m_active = false;
 				break;
 			case LIFT_ACTIVATE_STEP:
-				m_active = 0;
+				m_active = false;
 				break;
 			case LIFT_ACTIVATE_CONTINUOUS:
 				Activate();
 				break;
 			case LIFT_ACTIVATE_SWITCH_ONCE:
-				m_active = 0;
+				m_active = false;
 				break;
 			case LIFT_ACTIVATE_STEP_ONCE:
-				m_active = 0;
-				m_defaultActive = 0;
+				m_active = false;
+				m_defaultActive = false;
 				break;
 			}
 			if (bx >= 0 && by >= 0 && bx < g_pActiveMap->m_ground.m_width && by < g_pActiveMap->m_ground.m_height) {
@@ -132,7 +132,7 @@ void CLift::Set(int p_x,
 				int p_lowHeight,
 				int p_highHeight,
 				eLiftActivateType p_activateType,
-				unsigned int p_initialActive)
+				bool p_initialActive)
 {
 	tCoord3d position;
 	position.m_x = p_x;
@@ -148,7 +148,7 @@ void CLift::Set(tCoord3d& p_start,
 				int p_lowHeight,
 				int p_highHeight,
 				eLiftActivateType p_activateType,
-				unsigned int p_initialActive)
+				bool p_initialActive)
 {
 	int startY = p_start.m_y;
 	int startZ = p_start.m_z;
@@ -174,11 +174,11 @@ bool CLift::Process()
 	}
 	switch (m_action) {
 	case ACTION_DEAD:
-		m_active = 0;
+		m_active = false;
 		m_action = ACTION_READY;
 		break;
 	case ACTION_ACTIVATING:
-		m_active = 1;
+		m_active = true;
 		m_activationLatched = LIFT_ACTIVATION_LATCHED;
 		SetSndEffect(SFX_LIFT);
 		if (m_active && (g_pActiveConnection == NULL || g_pActiveConnection->m_isHost)) {
@@ -197,7 +197,7 @@ bool CLift::Process()
 		m_movementStartHeight = startHeight;
 		m_direction = LIFT_DIRECTION_RISING;
 		m_start.m_z = elapsedTicks + startHeight;
-		m_active = 1;
+		m_active = true;
 		m_action = ACTION_OPENING;
 		break;
 	}
@@ -236,7 +236,7 @@ bool CLift::Process()
 		m_direction = LIFT_DIRECTION_LOWERING;
 		m_start.m_z = (short) (m_movementStartHeight - time + m_stateTimer);
 		m_action = ACTION_CLOSING;
-		m_active = 1;
+		m_active = true;
 		break;
 	}
 	int height = m_start.m_z;
@@ -333,7 +333,7 @@ int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00425640
 int CLift::Activate()
 {
-	m_active = 1;
+	m_active = true;
 	Action(ACTION_ACTIVATING);
 	return 1;
 }

@@ -113,7 +113,7 @@ void CLiftManager::AddLiftFromXyz(unsigned short p_id, int p_x, int p_y, int p_z
 	if (m_count < m_capacity) {
 		m_lifts[m_count].SetId(p_id);
 		m_lifts[m_count]
-			.Set(p_x, p_y, p_z, 1, -1, LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS, LIFT_ACTIVATE_CONTINUOUS, 1);
+			.Set(p_x, p_y, p_z, 1, -1, LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS, LIFT_ACTIVATE_CONTINUOUS, true);
 		m_count++;
 	}
 }
@@ -124,7 +124,7 @@ void CLiftManager::AddLiftFromEndpoints(unsigned short p_id, tCoord3d& p_start, 
 	if (m_count < m_capacity) {
 		m_lifts[m_count].SetId(p_id);
 		m_lifts[m_count]
-			.Set(p_start, p_end, 1, -1, LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS, LIFT_ACTIVATE_CONTINUOUS, 1);
+			.Set(p_start, p_end, 1, -1, LIFT_MANAGER_DEFAULT_UPPER_HEIGHT_PIXELS, LIFT_ACTIVATE_CONTINUOUS, true);
 		m_count++;
 	}
 }
@@ -227,7 +227,7 @@ void CLiftManager::LoadLevel(unsigned char* p_data, int p_dataSize, bool p_skip)
 		unsigned int remaining = count;
 		do {
 			unsigned short id;
-			unsigned int initialActive;
+			bool initialActive;
 			eLiftActivateType activateType;
 			int lowHeight;
 			int highHeight;

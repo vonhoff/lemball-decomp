@@ -1455,7 +1455,7 @@
     {
       "address": 4199850,
       "target": 4345952,
-      "target_symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@I@Z"
+      "target_symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@H@Z"
     },
     {
       "address": 4199855,
@@ -4455,7 +4455,7 @@
     {
       "address": 4202850,
       "target": 4345328,
-      "target_symbol": "?Edit@CLift@@QAEXHFHHW4eLiftActivateType@@I@Z"
+      "target_symbol": "?Edit@CLift@@QAEXHFHHW4eLiftActivateType@@H@Z"
     },
     {
       "address": 4202855,
@@ -5890,7 +5890,7 @@
     {
       "address": 4204285,
       "target": 4345872,
-      "target_symbol": "?Set@CLift@@QAEXHHHFHHW4eLiftActivateType@@I@Z"
+      "target_symbol": "?Set@CLift@@QAEXHHHFHHW4eLiftActivateType@@H@Z"
     },
     {
       "address": 4204290,
@@ -22130,7 +22130,7 @@
     {
       "caller": 4345328,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLift.cpp.obj",
-      "symbol": "?Edit@CLift@@QAEXHFHHW4eLiftActivateType@@I@Z",
+      "symbol": "?Edit@CLift@@QAEXHFHHW4eLiftActivateType@@H@Z",
       "size": 540,
       "fingerprint": "2669292f2dc41559785c5d78c7ef7046e7a29152545636093231847ce532273c",
       "references": [
@@ -22153,7 +22153,7 @@
     {
       "caller": 4345872,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLift.cpp.obj",
-      "symbol": "?Set@CLift@@QAEXHHHFHHW4eLiftActivateType@@I@Z",
+      "symbol": "?Set@CLift@@QAEXHHHFHHW4eLiftActivateType@@H@Z",
       "size": 77,
       "fingerprint": "6aed9e54aa275b270c832b4cacb093152dc1e624a976277c8f0d5478668cd6e0",
       "references": [
@@ -22162,14 +22162,14 @@
           "original_instruction": 4345938,
           "original_bytes": "e853c5fdff",
           "thunk": 4199850,
-          "source_symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@I@Z"
+          "source_symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@H@Z"
         }
       ]
     },
     {
       "caller": 4345952,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CLift.cpp.obj",
-      "symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@I@Z",
+      "symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@H@Z",
       "size": 148,
       "fingerprint": "d16cf3323e5ef1d2c343a2afe64443b5f3d5215e7a4f258427a3909c5f89385c",
       "references": [
@@ -22178,7 +22178,7 @@
           "original_instruction": 4346090,
           "original_bytes": "e873d0fdff",
           "thunk": 4202850,
-          "source_symbol": "?Edit@CLift@@QAEXHFHHW4eLiftActivateType@@I@Z"
+          "source_symbol": "?Edit@CLift@@QAEXHFHHW4eLiftActivateType@@H@Z"
         }
       ]
     },
@@ -22335,7 +22335,7 @@
           "original_instruction": 4349129,
           "original_bytes": "e82fcafdff",
           "thunk": 4204285,
-          "source_symbol": "?Set@CLift@@QAEXHHHFHHW4eLiftActivateType@@I@Z"
+          "source_symbol": "?Set@CLift@@QAEXHHHFHHW4eLiftActivateType@@H@Z"
         }
       ]
     },
@@ -22358,7 +22358,7 @@
           "original_instruction": 4349220,
           "original_bytes": "e881b8fdff",
           "thunk": 4199850,
-          "source_symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@I@Z"
+          "source_symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@H@Z"
         }
       ]
     },
@@ -22489,7 +22489,7 @@
           "original_instruction": 4350166,
           "original_bytes": "e8cfb4fdff",
           "thunk": 4199850,
-          "source_symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@I@Z"
+          "source_symbol": "?Set@CLift@@QAEXAAUtCoord3d@@0FHHW4eLiftActivateType@@H@Z"
         },
         {
           "offset": 391,
@@ -22503,7 +22503,7 @@
           "original_instruction": 4350334,
           "original_bytes": "e87ac5fdff",
           "thunk": 4204285,
-          "source_symbol": "?Set@CLift@@QAEXHHHFHHW4eLiftActivateType@@I@Z"
+          "source_symbol": "?Set@CLift@@QAEXHHHFHHW4eLiftActivateType@@H@Z"
         }
       ]
     },
