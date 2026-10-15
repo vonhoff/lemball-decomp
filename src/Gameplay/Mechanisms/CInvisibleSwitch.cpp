@@ -40,7 +40,7 @@ void CInvisibleSwitch::Initialise()
 	m_objectCount = 0;
 	m_repeatable = 0;
 	m_activator = NULL;
-	m_scoreAwarded = 0;
+	m_scoreAwarded = false;
 }
 
 // FUNCTION: LEMBALL 0x00409d10
@@ -157,7 +157,7 @@ void CInvisibleSwitch::DoActivate()
 {
 	if (m_scoreAwarded == 0) {
 		g_pAI->Score(AI_SCORE_INVISIBLE_SWITCH_ACTIVATION_POINTS);
-		m_scoreAwarded = 1;
+		m_scoreAwarded = true;
 	}
 }
 

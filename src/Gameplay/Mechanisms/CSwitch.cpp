@@ -51,7 +51,7 @@ void CSwitch::Restart()
 {
 	CBaseGlobalObject::Restart();
 	m_entryCount = 0;
-	m_scoreAwarded = 0;
+	m_scoreAwarded = false;
 	m_actionArgument = SWITCH_STATE_INACTIVE;
 }
 
@@ -91,7 +91,7 @@ bool CSwitch::Process()
 	else {
 		x &= 15;
 		y &= 15;
-		z = map->m_ground.m_ground[blockY * g_pMap->m_ground.m_width + blockX].GetZ(x, y);
+		z = map->m_ground.m_ground[(unsigned int) blockY * g_pMap->m_ground.m_width + blockX].GetZ(x, y);
 	}
 	m_position.m_zFixed = ((int) z) << FIXED_POINT_FRACTION_BITS;
 	if (m_isRemoteObject != 0) {
@@ -149,7 +149,7 @@ void CSwitch::DoActivate()
 	m_actionPhase2Deadline += g_dwGameTick;
 	if (m_scoreAwarded == 0) {
 		g_pAI->Score(AI_SCORE_SWITCH_ACTIVATION_POINTS);
-		m_scoreAwarded = 1;
+		m_scoreAwarded = true;
 	}
 }
 

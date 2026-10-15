@@ -37,7 +37,7 @@ public:
 	void Throw();
 
 private:
-	unsigned int m_scoreAwarded;                  // 0x144
+	bool m_scoreAwarded;                          // 0x144
 	unsigned short m_switchId;                    // 0x148
 	unsigned int m_legacyType;                    // 0x14c
 	int m_legacyFirst;                            // 0x150

@@ -41,7 +41,7 @@ private:
 	tCoord3d m_maxCorner;                                              // 0x13e
 	unsigned int m_repeatable;                                         // 0x144
 	unsigned int m_triggered;                                          // 0x148
-	unsigned int m_scoreAwarded;                                       // 0x14c
+	bool m_scoreAwarded;                                               // 0x14c
 	unsigned short m_targetCount;                                      // 0x150
 	InvisibleSwitchTarget m_targets[INVISIBLE_SWITCH_TARGET_CAPACITY]; // 0x154
 	int m_objectCount;                                                 // 0x254
