@@ -26,18 +26,6 @@
 #include "Multiplayer/Transport/NetworkMode.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"
-
-// SIZE 0x1a4
-struct ObjectClipGrid {
-	unsigned int m_cellCount;    // 0x00
-	short m_width;               // 0x04
-	short m_height;              // 0x06
-	short m_cellWidth;           // 0x08
-	short m_cellHeight;          // 0x0a
-	CObjSq* m_cells;             // 0x0c
-	unsigned int m_touchedCount; // 0x10
-	CObjSq* m_touchedCells[100]; // 0x14
-};
 #include "Application/CGameStatus.h"
 #include "Application/FlowProcesses.h"
 #include "Application/SoundEffects.h"
@@ -75,6 +63,18 @@ struct ObjectClipGrid {
 #include <new.h>
 #include <stdlib.h>
 #include <string.h>
+
+// SIZE 0x1a4
+struct ObjectClipGrid {
+	unsigned int m_cellCount;    // 0x00
+	short m_width;               // 0x04
+	short m_height;              // 0x06
+	short m_cellWidth;           // 0x08
+	short m_cellHeight;          // 0x0a
+	CObjSq* m_cells;             // 0x0c
+	unsigned int m_touchedCount; // 0x10
+	CObjSq* m_touchedCells[100]; // 0x14
+};
 
 enum eLemmingPaletteIndex {
 	LEMMING_RED_SHADOW = 0x37,
@@ -171,8 +171,14 @@ enum eMoverVisualState {
 	MOVER_VISUAL_STAR = 1
 };
 
+// SIZE 0x04
+struct SpriteOffset {
+	short m_x; // 0x00
+	short m_y; // 0x02
+};
+
 // GLOBAL: LEMBALL 0x00497018
-static const short g_lemmingFlyOffsets[8][2] = {
+static const SpriteOffset g_lemmingFlyOffsets[8] = {
 	{10, 16},
 	{10, 16},
 	{14, 17},
@@ -2495,8 +2501,8 @@ void C2D::DrawLemmingJump(CViewData& p_viewData, unsigned int p_remapped)
 	unsigned int actionArgument;
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
-	x = (unsigned int) p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction][0];
-	y = (unsigned int) p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction][1];
+	x = (unsigned int) p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction].m_x;
+	y = (unsigned int) p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction].m_y;
 	resource = g_lemmingFlyResources[direction];
 	frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 	actionArgument = (unsigned short) p_viewData.m_actionArgument;
@@ -2535,8 +2541,8 @@ void C2D::DrawLemmingLanding(CViewData& p_viewData, unsigned int p_remapped)
 
 	direction = ((unsigned short) p_viewData.m_facingDirection + m_viewOrientation * 2) & FACING_DIRECTION_MASK;
 	resource = g_lemmingFlyResources[direction];
-	x = (unsigned int) p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction][0];
-	y = (unsigned int) p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction][1];
+	x = (unsigned int) p_viewData.m_position.m_x - g_lemmingFlyOffsets[direction].m_x;
+	y = (unsigned int) p_viewData.m_position.m_y - g_lemmingFlyOffsets[direction].m_y;
 	frameDelta = p_viewData.m_animationTime - p_viewData.m_stateTimer;
 	frame = (int) ((unsigned int) frameDelta * 15) / 1024 + 7;
 	if (frame > 12) {
