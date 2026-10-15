@@ -1,9 +1,9 @@
 #include "CResEFFECT.h"
 
+#include <stddef.h>
+
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e380
 CResEFFECT* CResEFFECT::Load(unsigned long p_resourceId)

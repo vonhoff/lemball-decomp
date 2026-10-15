@@ -1,10 +1,10 @@
 #include "CInvisibleSwitchManager.h"
 
+#include <stddef.h>
+
 #include "CInvisibleSwitch.h"
 #include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0040a210
 CInvisibleSwitchManager::CInvisibleSwitchManager(CAI* p_ai, int p_capacity)

@@ -1,11 +1,11 @@
 #include "VsMem.h"
 
+#include <stddef.h>
+
 #include "CArena.h"
 #include "CBucket.h"
 #include "CSmallMemory.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045a6b0
 void* InternalNew(unsigned long p_size)

@@ -1,8 +1,8 @@
 #include "CBasePacketBuff.h"
 
-#include "CBasePacket.h"
-
 #include <stddef.h>
+
+#include "CBasePacket.h"
 
 // FUNCTION: LEMBALL 0x00461210
 CBasePacketBuff::CBasePacketBuff(int p_packetCount, unsigned short p_packetSize)

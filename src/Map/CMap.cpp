@@ -1,12 +1,12 @@
 #include "CMap.h"
 
+#include <stddef.h>
+
 #include "CGround.h"
 #include "CGroundArray.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
 
 #define WALK_MAX_HEIGHT_STEP 15
 #define WALK_BLOCKING_COLLISION_MASK                                                                                   \

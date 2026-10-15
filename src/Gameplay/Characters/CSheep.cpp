@@ -1,5 +1,7 @@
 #include "CSheep.h"
 
+#include <stddef.h>
+
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Behavior/StateMachine.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -9,8 +11,6 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
-
-#include <stddef.h>
 
 enum {
 	SHEEP_DESTINATION_CAPACITY = 20,

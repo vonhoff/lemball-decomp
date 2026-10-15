@@ -1,5 +1,7 @@
 #include "CObjectManager.h"
 
+#include <stddef.h>
+
 #include "CBaseGlobalObject.h"
 #include "CBaseObjectManager.h"
 #include "CGameObject.h"
@@ -23,9 +25,6 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Multiplayer/Transport/CConnect.h"
-
-#include <stddef.h>
-
 #include "Level/LevelFormat.h"
 
 // GLOBAL: LEMBALL 0x004a74c0

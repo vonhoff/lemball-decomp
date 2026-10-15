@@ -1,5 +1,7 @@
 #include "CBall.h"
 
+#include <stddef.h>
+
 #include "CBallManager.h"
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/FixedPointConversion.h"
@@ -17,8 +19,7 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-
-#include <stddef.h>
+#include "Engine/Math/FixedPoint.h"
 
 enum {
 	BALL_EXPLOSION_DURATION_TICKS = 22

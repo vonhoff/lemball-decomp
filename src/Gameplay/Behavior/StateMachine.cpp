@@ -1,12 +1,12 @@
 #include "StateMachine.h"
 
+#include <stddef.h>
+
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Simulation/GameTime.h"
-
 #include "Application/SoundEffects.h"
-#include <stddef.h>
 
 // SIZE 0x10
 struct tStateEntry {

@@ -1,5 +1,7 @@
 #include "CBullet.h"
 
+#include <stddef.h>
+
 #include "Application/SoundEffects.h"
 #include "CBulletManager.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
@@ -22,8 +24,6 @@
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
-#include <stddef.h>
 
 enum {
 	BULLET_TRAVEL_DURATION_TICKS = 10

@@ -1,13 +1,13 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CMCIMUSICDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CMCIMUSICDEVICE_H
 
-#include "Engine/Sound/CPVMusicDevice.h"
-
 #define WIN32_LEAN_AND_MEAN
 // clang-format off
 #include <windows.h>
 #include <mmsystem.h>
 // clang-format on
+
+#include "Engine/Sound/CPVMusicDevice.h"
 
 // SIZE 0x34
 // VTABLE: LEMBALL 0x0049ad78

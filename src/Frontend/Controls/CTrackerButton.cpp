@@ -1,5 +1,7 @@
 #include "CTrackerButton.h"
 
+#include <stddef.h>
+
 #include "CTrackWindow.h"
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Math/CVSPoint.h"
@@ -7,8 +9,6 @@
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0044ec30
 CTrackerButton::CTrackerButton(const CVSPoint& p_position,

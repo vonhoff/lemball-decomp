@@ -1,5 +1,7 @@
 #include "CPVButton.h"
 
+#include <stddef.h>
+
 #include "CGWnd.h"
 #include "CPVGWnd.h"
 #include "CPVWnd.h"
@@ -17,8 +19,6 @@
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/VsTime.h"
 #include "Platform/Windows/Graphics/CSurface.h"
-
-#include <stddef.h>
 
 extern int g_nGunButtonsRedrawPending;
 

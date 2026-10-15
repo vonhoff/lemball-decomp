@@ -5,6 +5,8 @@
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 
+class CGameObject;
+
 // SIZE 0x150
 // VTABLE: LEMBALL 0x004943b0
 class CKey : public CBaseGlobalObject {

@@ -1,9 +1,9 @@
 #include "CResPALETTE.h"
 
+#include <stddef.h>
+
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045dd90
 CResPALETTE* CResPALETTE::Load(unsigned long p_resourceId)

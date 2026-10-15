@@ -1,13 +1,13 @@
 #include "MemoryInit.h"
 
+#include <stddef.h>
+
 #include "Engine/Memory/CArena.h"
 #include "Engine/Memory/CRAMArena.h"
 #include "Engine/Memory/CSmallMemory.h"
 #include "Engine/Startup/tagPRE_INIT.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "WindowsTypes.h"
-
-#include <stddef.h>
 
 // GLOBAL: LEMBALL 0x004a2184
 char g_szMasterMainRamArena[24] = "Master Main Ram Arena";

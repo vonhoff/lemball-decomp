@@ -1,5 +1,10 @@
 #include "CMain2DDisplay.h"
 
+#include <string.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "../../Engine/Resources/ResourceCatalog.h"
 #include "../../Platform/Windows/Entry.h"
 #include "Application/CGame.h"
@@ -30,11 +35,6 @@
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/AboutDialog.h"
 #include "Platform/Windows/Windowing/tagMenuList.h"
-
-#include <new.h>
-#include <string.h>
-
-#define WIN32_LEAN_AND_MEAN
 #include "Application/FlowProcesses.h"
 #include "Engine/Input/CBaseCursor.h"
 #include "Engine/Math/CVSRect.h"
@@ -43,8 +43,6 @@
 #include "Engine/Queues/tagMESSAGE.h"
 #include "GameView/Loading/LoadAnimCallbacks.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
-
-#include <windows.h>
 
 extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int p_index);
 enum eDisplayStyleThreshold {

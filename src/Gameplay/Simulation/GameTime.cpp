@@ -1,9 +1,9 @@
 #include "Gameplay/Simulation/GameTime.h"
 
+#include <stddef.h>
+
 #include "Application/CDemo.h"
 #include "Platform/Windows/VsTime.h"
-
-#include <stddef.h>
 
 // GLOBAL: LEMBALL 0x0049ce04
 unsigned long g_dwGameTick = 0;

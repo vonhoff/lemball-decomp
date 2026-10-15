@@ -1,5 +1,8 @@
 #include "CPanelButton.h"
 
+#include <stddef.h>
+#include <string.h>
+
 #include "Application/SoundEffects.h"
 #include "CPanel.h"
 #include "CPanelLemming.h"
@@ -23,10 +26,6 @@
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CDepressedButton.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-
-#include <stddef.h>
-#include <string.h>
-
 #include "GameView/Display/C2D.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 

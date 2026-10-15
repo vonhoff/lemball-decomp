@@ -1,11 +1,11 @@
 #include "CReadNCMSBuff.h"
 
+#include <stddef.h>
+
 #include "BasePacketHeader.h"
 #include "CReadMSBuff.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00461610
 CReadNCMSBuff::CReadNCMSBuff(unsigned long p_firstMessageId,

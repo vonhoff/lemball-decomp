@@ -1,5 +1,7 @@
 #include "GameView/Loading/CCDLoadAnim.h"
 
+#include <stddef.h>
+
 #include "Application/GameMain.h"
 #include "Engine/Animation/AnimationConstants.h"
 #include "Engine/Animation/CAnimsManager.h"
@@ -27,8 +29,6 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-
-#include <stddef.h>
 
 class CAnimFrameBASE;
 

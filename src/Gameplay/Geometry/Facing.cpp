@@ -1,12 +1,12 @@
 #include "Facing.h"
 
+#include <stdlib.h>
+
 #include "AICOORD.h"
 #include "Application/GameMain.h"
 #include "Engine/Math/CVSMath.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/FixedPointConversion.h"
-
-#include <stdlib.h>
 
 // GLOBAL: LEMBALL 0x0049d020
 int g_anRotationDirections[FACING_DIRECTION_COUNT] = {0, 1, 1, 1, 1, -1, -1, -1};

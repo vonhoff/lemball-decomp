@@ -1,9 +1,9 @@
 #include "CMessGOConnect.h"
 
+#include <stddef.h>
+
 #include "CBroadcastMessage.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045f580
 CMessGOConnect::CMessGOConnect(const char* p_header) : CBroadcastMessage(p_header)

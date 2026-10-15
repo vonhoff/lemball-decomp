@@ -8,6 +8,8 @@
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 
+struct tagMenuList;
+
 enum {
 	DISPLAY_COORDINATE_AUTO_CENTER = -1
 };

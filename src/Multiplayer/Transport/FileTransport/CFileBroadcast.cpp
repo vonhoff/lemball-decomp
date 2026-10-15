@@ -1,5 +1,7 @@
 #include "Multiplayer/Transport/FileTransport/CFileBroadcast.h"
 
+#include <string.h>
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/tagMESSAGE.h"
@@ -19,8 +21,6 @@
 #include "Multiplayer/Transport/Protocol/CHeaders.h"
 #include "Multiplayer/Transport/Protocol/CPortsMessage.h"
 #include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x0046f4f0
 void CFileBroadcast::Setup(const char* p_peerName, const char* p_path)

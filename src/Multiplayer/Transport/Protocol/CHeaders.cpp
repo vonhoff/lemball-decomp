@@ -1,8 +1,8 @@
 #include "CHeaders.h"
 
-#include "CHeaderMessage.h"
-
 #include <stddef.h>
+
+#include "CHeaderMessage.h"
 
 enum {
 	HEADER_SEQUENCE_ITERATION_EXHAUSTED = -1

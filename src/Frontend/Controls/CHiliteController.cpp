@@ -1,5 +1,7 @@
 #include "CHiliteController.h"
 
+#include <stddef.h>
+
 #include "../../Engine/Resources/ResourceCatalog.h"
 #include "Application/SoundEffects.h"
 #include "CHiliteButtons.h"
@@ -22,8 +24,6 @@
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-
-#include <stddef.h>
 
 class CAnimFrameBASE;
 

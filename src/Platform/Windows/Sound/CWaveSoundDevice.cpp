@@ -1,12 +1,13 @@
 #include "CWaveSoundDevice.h"
 
+#include <stddef.h>
+
+#include <windows.h>
+#include <mmsystem.h>
+
 #include "CWaveEffect.h"
 #include "Engine/Sound/CBaseSoundDevice.h"
 #include "Engine/Streams/CVSOStream.h"
-
-#include <mmsystem.h>
-#include <stddef.h>
-#include <windows.h>
 
 const int WAVE_CHANNEL_COUNT = 8;
 const int WAVE_LOW_SAMPLE_RATE = 11025;

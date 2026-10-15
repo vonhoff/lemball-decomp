@@ -1,10 +1,10 @@
 #ifndef LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 #define LEMBALL_VISOS_TARGET_GRAPHICS_CGRAPHICSDRIVER_H
 
+#include <stddef.h>
+
 #include "Engine/Math/CVSSize.h"
 #include "Platform/Windows/WindowsTypes.h"
-
-#include <stddef.h>
 
 class CPVGDIBitmap;
 struct CGraphicsState;

@@ -1,5 +1,10 @@
 #include "CLevelLoader.h"
 
+#include <string.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "Engine/Files/VsFile.h"
 #include "Engine/Resources/ResourceCatalog.h"
 #include "Engine/Resources/Types/CResBIN.h"
@@ -32,11 +37,6 @@
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/NetworkMode.h"
 #include "tPreviewData.h"
-
-#include <string.h>
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 
 #define LEVEL_AI_UNVERSIONED_DATA_BYTES (2 * sizeof(unsigned short))
 #define LEVEL_AI_LEGACY_LEMMING_COUNT 4

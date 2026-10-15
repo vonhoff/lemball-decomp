@@ -1,5 +1,8 @@
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 
+#include <setjmp.h>
+#include <string.h>
+
 #include "CTextWnd.h"
 #include "Engine/Diagnostics/CDebugOStream.h"
 #include "Engine/Files/VsFile.h"
@@ -10,9 +13,6 @@
 #include "Engine/Strings/VsString.h"
 #include "Platform/Windows/ThreadConstants.h"
 #include "Platform/Windows/WindowsTypes.h"
-
-#include <setjmp.h>
-#include <string.h>
 
 namespace
 {

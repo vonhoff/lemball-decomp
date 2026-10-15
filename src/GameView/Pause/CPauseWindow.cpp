@@ -1,5 +1,7 @@
 #include "CPauseWindow.h"
 
+#include <stddef.h>
+
 #include "../../Engine/Resources/ResourceCatalog.h"
 #include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
@@ -29,8 +31,6 @@
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
-
-#include <stddef.h>
 
 enum ePauseSelectionKey {
 	PAUSE_KEY_SELECT_OPTION = 0x2a,

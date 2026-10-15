@@ -1,5 +1,7 @@
 #include "GameView/Sound/CSoundView.h"
 
+#include <stddef.h>
+
 #include "Application/CDemo.h"
 #include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
@@ -15,8 +17,6 @@
 #include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Gameplay/Simulation/GameTime.h"
-
-#include <stddef.h>
 
 enum {
 	SOUND_GAMEPLAY_MUSIC_TRACK_COUNT = RES_MUSIC_FRONTEND_MUSIC3 - RES_MUSIC_GAME_MUSIC,

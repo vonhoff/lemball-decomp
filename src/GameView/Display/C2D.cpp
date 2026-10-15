@@ -1,5 +1,9 @@
 #include "C2D.h"
 
+#include <new.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "Application/CDemo.h"
 #include "Application/GameMain.h"
 #include "CObjSq.h"
@@ -59,10 +63,6 @@
 #include "Map/CGroundArray.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "SpriteGroundLookup.h"
-
-#include <new.h>
-#include <stdlib.h>
-#include <string.h>
 
 // SIZE 0x1a4
 struct ObjectClipGrid {

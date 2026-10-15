@@ -1,5 +1,7 @@
 #include "CGame.h"
 
+#include <string.h>
+
 #include "Application/FlowProcesses.h"
 #include "CDemo.h"
 #include "CGameStatus.h"
@@ -37,8 +39,6 @@
 #include "Platform/Windows/Entry.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
 #include "Platform/Windows/WindowsTypes.h"
-
-#include <string.h>
 
 enum {
 	GAME_FLOW_TIMING_WARMUP_TICKS = 50,

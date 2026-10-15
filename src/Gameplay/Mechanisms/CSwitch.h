@@ -4,6 +4,9 @@
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "SwitchEntry.h"
 
+class CGameObject;
+class CViewData;
+
 class AICOORD;
 
 enum {

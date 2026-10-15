@@ -1,5 +1,7 @@
 #include "CGunController.h"
 
+#include <stdlib.h>
+
 #include "../../Engine/Animation/CPlayThruAnim.h"
 #include "../../Engine/Resources/ResourceCatalog.h"
 #include "Application/SoundEffects.h"
@@ -27,8 +29,6 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
-
-#include <stdlib.h>
 
 class CAnimFrameBASE;
 

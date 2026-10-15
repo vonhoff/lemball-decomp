@@ -18,7 +18,7 @@ ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
 EmptyLineBeforeAccessModifier: Always
 FixNamespaceComments: false
-IncludeBlocks: Regroup
+IncludeBlocks: Preserve
 IndentAccessModifiers: false
 IndentWidth: 4
 InsertBraces: true
@@ -34,5 +34,6 @@ QualifierOrder:
   - type
 RemoveSemicolon: true
 SpaceAfterCStyleCast: true
+SortIncludes: Never
 TabWidth: 4
 UseTab: ForContinuationAndIndentation

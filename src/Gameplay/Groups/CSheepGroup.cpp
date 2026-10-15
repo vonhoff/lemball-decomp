@@ -1,5 +1,7 @@
 #include "CSheepGroup.h"
 
+#include <stddef.h>
+
 #include "Application/GameMain.h"
 #include "Application/SoundEffects.h"
 #include "CGenericGroup.h"
@@ -13,8 +15,6 @@
 #include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Simulation/CAI.h"
-
-#include <stddef.h>
 
 enum {
 	SHEEP_ESCAPE_VECTOR_DISTANCE_FIXED = 50 * FIXED_POINT_ONE

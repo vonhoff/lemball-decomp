@@ -1,12 +1,12 @@
 #include "CSlinkyManager.h"
 
+#include <stddef.h>
+
 #include "CSlinky.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0040b8e0
 CSlinkyManager::CSlinkyManager(CAI* p_ai, int p_capacity)

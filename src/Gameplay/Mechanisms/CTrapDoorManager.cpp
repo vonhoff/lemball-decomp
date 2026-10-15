@@ -1,5 +1,7 @@
 #include "CTrapDoorManager.h"
 
+#include <stddef.h>
+
 #include "CTrapDoor.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/FixedPointConversion.h"
@@ -11,8 +13,6 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0040c750
 CTrapDoorManager::CTrapDoorManager()

@@ -1,10 +1,10 @@
 #include "Engine/Graphics/CChangeList.h"
 
+#include <string.h>
+
 #include "Engine/Graphics/tagCHANGERECT.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-
-#include <string.h>
 
 enum {
 	CHANGE_LIST_ITEMS_NEED_REBUILD = -1

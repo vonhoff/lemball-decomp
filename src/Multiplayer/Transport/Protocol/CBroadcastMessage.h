@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CBROADCASTMESSAGE_H
 #define LEMBALL_VISOS_MESSAGING_CBROADCASTMESSAGE_H
 
-#include "CNetworkMessage.h"
-
 #include <string.h>
+
+#include "CNetworkMessage.h"
 
 // SIZE 0x30
 // VTABLE: LEMBALL 0x00498ea0

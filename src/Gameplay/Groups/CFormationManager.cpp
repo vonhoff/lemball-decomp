@@ -1,11 +1,12 @@
 #include "CFormationManager.h"
 
+#include <stddef.h>
+
 #include "Engine/Math/CFixed.h"
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/VSTrig.h"
 
-#include <stddef.h>
 const int FORMATION_VECTOR_COUNT = 8;
 
 // FUNCTION: LEMBALL 0x0041a140

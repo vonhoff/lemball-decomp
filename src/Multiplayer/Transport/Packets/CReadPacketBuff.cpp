@@ -1,10 +1,10 @@
 #include "CReadPacketBuff.h"
 
+#include <stddef.h>
+
 #include "CBasePacketBuff.h"
 #include "CReadPacket.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00461290
 CReadPacketBuff::CReadPacketBuff(int p_packetCount, unsigned short p_packetSize)

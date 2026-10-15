@@ -1,5 +1,7 @@
 #include "CPlayerLemming.h"
 
+#include <stddef.h>
+
 #include "Application/CDemo.h"
 #include "Application/CGameStatus.h"
 #include "Application/GameMain.h"
@@ -35,8 +37,9 @@
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
-
-#include <stddef.h>
+#include "Application/SoundEffects.h"
+#include "Gameplay/Objects/ObjectActions.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 #define PLAYER_LEMMING_ACTION_ARGUMENT_MASK 0x07
 #define PLAYER_LEMMING_ACTION_ARGUMENT_FIELD_MASK 0x38

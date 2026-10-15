@@ -1,13 +1,13 @@
 #include "CResMOVIE.h"
 
+#include <stddef.h>
+
 #include "CResBaseLIST.h"
 #include "CResINT.h"
 #include "CResSTRING.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
 #include "Engine/Resources/ResourceTypeList.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045de70
 CResMOVIE* CResMOVIE::Load(unsigned long p_resourceId)

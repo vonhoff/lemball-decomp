@@ -1,9 +1,9 @@
 #include "CResBIN.h"
 
+#include <stddef.h>
+
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e540
 CResBIN* CResBIN::Load(unsigned long p_resourceId)

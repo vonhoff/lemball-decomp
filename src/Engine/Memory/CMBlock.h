@@ -1,9 +1,9 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CMBLOCK_H
 #define LEMBALL_VISOS_FOUNDATION_CMBLOCK_H
 
-#include "CArenaBase.h"
-
 #include <stddef.h>
+
+#include "CArenaBase.h"
 
 enum {
 	MEMORY_BLOCK_FLAG_FREE = 0x01,

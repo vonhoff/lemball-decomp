@@ -1,12 +1,12 @@
 #include "CBucket.h"
 
+#include <string.h>
+
 #include "CArena.h"
 #include "CSmallMemory.h"
 #include "Engine/Memory/SmallMemoryConstants.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/CCritical.h"
-
-#include <string.h>
 
 enum {
 	BUCKET_FLAG_OWNS_ALLOCATION_MAP = 0x01,

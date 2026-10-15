@@ -1,5 +1,7 @@
 #include "Multiplayer/Transport/FileTransport/CFileConnect.h"
 
+#include <string.h>
+
 #include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CConnect.h"
@@ -14,8 +16,6 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Protocol/CHeaders.h"
 #include "Platform/Windows/Network/FileTransport/CFileReadSocket.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x0047af30
 CFileConnect::CFileConnect()

@@ -1,10 +1,11 @@
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetworkAddress.h"
 
-#include "Multiplayer/Transport/CNetworkAddress.h"
-#include "Platform/Windows/WindowsTypes.h"
-
 #include <string.h>
+
+#include "Platform/Windows/WindowsTypes.h"
 #include <winsock.h>
+
+#include "Multiplayer/Transport/CNetworkAddress.h"
 
 // FUNCTION: LEMBALL 0x0046f9b0
 void CTCPIPNetworkAddress::operator=(eBroadcastTypes p_type)

@@ -3,6 +3,8 @@
 
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 
+class CViewData;
+
 enum eTrapDoorMode {
 	TRAPDOOR_MODE_LOCAL_AUTOMATIC = 0,
 	TRAPDOOR_MODE_NETWORK_START = 1

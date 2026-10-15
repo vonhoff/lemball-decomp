@@ -1,9 +1,9 @@
 #include "CRawRead.h"
 
-#include "Engine/Files/VsFile.h"
-
 #include <ctype.h>
 #include <stddef.h>
+
+#include "Engine/Files/VsFile.h"
 
 // GLOBAL: LEMBALL 0x004a1d50
 _Filet* g_pMogFile = NULL;

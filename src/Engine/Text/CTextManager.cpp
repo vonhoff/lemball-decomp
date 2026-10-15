@@ -1,13 +1,13 @@
 #include "CTextManager.h"
 
+#include <stddef.h>
+
 #include "CCopyText.h"
 #include "CText.h"
 #include "Engine/Math/CVSSize.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Engine/Strings/CString.h"
 #include "Engine/Text/TextAdvanceFlags.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00469c60
 CTextManager::CTextManager(unsigned long p_fontIdCount,

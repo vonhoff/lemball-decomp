@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_TAGCHUNKINFO_H
 #define LEMBALL_VISOS_FOUNDATION_TAGCHUNKINFO_H
 
+#include <stddef.h>
+
 #include "CMogloadArena.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
 #include "tagCHUNK.h"
-
-#include <stddef.h>
 
 class CMogDir;
 

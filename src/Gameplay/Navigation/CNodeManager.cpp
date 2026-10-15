@@ -1,10 +1,10 @@
 #include "CNodeManager.h"
 
+#include <stddef.h>
+
 #include "CNode.h"
 #include "Gameplay/Geometry/CPt3.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00421180
 CNodeManager::CNodeManager(int p_capacity)

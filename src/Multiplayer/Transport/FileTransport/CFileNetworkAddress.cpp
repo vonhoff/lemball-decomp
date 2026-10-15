@@ -1,9 +1,9 @@
 #include "Multiplayer/Transport/FileTransport/CFileNetworkAddress.h"
 
+#include <string.h>
+
 #include "Engine/Streams/CVSOStream.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x0046f880
 void CFileNetworkAddress::operator=(CNetworkAddress& p_address)

@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CRESANIM_H
 #define LEMBALL_VISOS_RESOURCES_CRESANIM_H
 
+#include <stddef.h>
+
 #include "CResBaseLIST.h"
 #include "CResZRLE.h"
 #include "Engine/Resources/ResourceTypeList.h"
-
-#include <stddef.h>
 
 // SIZE 0x7c
 // VTABLE: LEMBALL 0x00498a18

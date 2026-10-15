@@ -1,9 +1,9 @@
 #include "CPlatformServices.h"
 
+#include <string.h>
+
 #include "Engine/Files/VsFile.h"
 #include "WindowsTypes.h"
-
-#include <string.h>
 
 struct _Filet;
 

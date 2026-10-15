@@ -1,10 +1,10 @@
 #include "CGameStatus.h"
 
+#include <string.h>
+
 #include "Engine/Streams/CVSOStream.h"
 #include "Engine/Strings/VsString.h"
 #include "Level/CLevelLoader.h"
-
-#include <string.h>
 
 extern char g_szPasswordZeroes[9];
 extern char g_szUnlockPassword[11];

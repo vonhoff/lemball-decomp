@@ -25,6 +25,7 @@
 #include "Gameplay/Objects/CViewData.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Platform/Windows/Windowing/CDrawer.h"
+#include "Engine/Math/CVSSize.h"
 
 enum {
 	VIEW_DATA_INDEX_NOT_FOUND = -1,

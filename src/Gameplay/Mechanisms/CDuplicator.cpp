@@ -1,5 +1,7 @@
 #include "CDuplicator.h"
 
+#include <stddef.h>
+
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
@@ -17,8 +19,6 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-
-#include <stddef.h>
 
 enum {
 	DUPLICATOR_ACTIVATION_DELAY_TICKS = 82,

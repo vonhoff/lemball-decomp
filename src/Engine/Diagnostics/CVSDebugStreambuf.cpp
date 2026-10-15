@@ -1,8 +1,8 @@
 #include "CVSDebugStreambuf.h"
 
-#include "Engine/Streams/CVSStreambuf.h"
-
 #include <string.h>
+
+#include "Engine/Streams/CVSStreambuf.h"
 
 // FUNCTION: LEMBALL 0x0045ad70
 CVSDebugStreambuf::CVSDebugStreambuf(char* p_buffer, int p_size, int (*p_flushCallback)(char*))

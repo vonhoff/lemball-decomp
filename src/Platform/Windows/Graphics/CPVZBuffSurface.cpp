@@ -1,10 +1,10 @@
 #include "CPVZBuffSurface.h"
 
+#include <stddef.h>
+
 #include "CPVGDIBitmap.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00466670
 CPVZBuffSurface::CPVZBuffSurface()

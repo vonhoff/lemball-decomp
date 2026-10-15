@@ -4,6 +4,8 @@
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Windowing/CToggleButton.h"
 
+class CVSRect;
+
 class CPanel;
 class CPVGWnd;
 struct CVSPoint;

@@ -1,5 +1,7 @@
 #include "CInvisibleSwitch.h"
 
+#include <stddef.h>
+
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -16,8 +18,6 @@
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 #include "SwitchEntry.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00409ca0
 CInvisibleSwitch::CInvisibleSwitch() : CGlobalGameObject(OBJECT_INVISIBLE_SWITCH, 0, 0)

@@ -1,9 +1,8 @@
 #include "CResBaseLIST.h"
 
-#include "Engine/Resources/ResourceChunkTypes.h"
-
 #include <string.h>
 
+#include "Engine/Resources/ResourceChunkTypes.h"
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/Archive/CVSRange.h"
 

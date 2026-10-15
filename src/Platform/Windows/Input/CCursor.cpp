@@ -1,12 +1,12 @@
 #include "Platform/Windows/Input/CCursor.h"
 
+#include <stddef.h>
+
 #include "Application/CDemo.h"
 #include "Engine/Input/CBaseCursor.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Resources/ResourceCatalog.h"
 #include "Platform/Windows/WindowsTypes.h"
-
-#include <stddef.h>
 
 // GLOBAL: LEMBALL 0x004a9bf4
 CCursor* g_pCursor;

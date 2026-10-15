@@ -1,8 +1,8 @@
 #include "DirectDrawError.h"
 
-#include "Engine/Strings/VsString.h"
-
 #include <string.h>
+
+#include "Engine/Strings/VsString.h"
 
 // GLOBAL: LEMBALL 0x004a0aa8
 static const char* g_directDrawErrorPrefix = "UNKNOWN DIRECT DRAW ERROR: ";

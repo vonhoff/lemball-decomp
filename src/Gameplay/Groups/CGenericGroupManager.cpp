@@ -1,5 +1,7 @@
 #include "CGenericGroupManager.h"
 
+#include <string.h>
+
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
 #include "Engine/Math/CVSRect.h"
@@ -8,8 +10,6 @@
 #include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Gameplay/Simulation/CAI.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x0041e8f0
 CGenericGroupManager::CGenericGroupManager(CAI* p_ai,

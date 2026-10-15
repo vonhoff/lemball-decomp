@@ -1,5 +1,7 @@
 #include "CHiliteButtons.h"
 
+#include <stddef.h>
+
 #include "Application/SoundEffects.h"
 #include "CHiliteController.h"
 #include "Engine/Graphics/Primitives/CGDI.h"
@@ -13,8 +15,6 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
-
-#include <stddef.h>
 
 class CPVGWnd;
 

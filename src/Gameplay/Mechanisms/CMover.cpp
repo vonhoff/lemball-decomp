@@ -1,5 +1,7 @@
 #include "CMover.h"
 
+#include <stddef.h>
+
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Characters/CPlayerLemming.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -15,11 +17,9 @@
 #include "Gameplay/Simulation/GameTime.h"
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
-
 #include "Gameplay/Simulation/CAI.h"
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
-#include <stddef.h>
 
 enum {
 	AUTOMATIC_MOVER_TURNING_DELAY_TICKS = 20

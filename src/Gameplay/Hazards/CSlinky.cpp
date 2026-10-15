@@ -1,5 +1,7 @@
 #include "CSlinky.h"
 
+#include <stddef.h>
+
 #include "Application/GameMain.h"
 #include "Engine/Math/FixedPointConversion.h"
 #include "Engine/Math/CVSMath.h"
@@ -14,8 +16,7 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-
-#include <stddef.h>
+#include "Engine/Math/FixedPoint.h"
 
 enum {
 	SLINKY_READY_INTERVAL_TICKS = 16,

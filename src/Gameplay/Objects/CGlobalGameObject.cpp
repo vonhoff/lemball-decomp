@@ -1,5 +1,7 @@
 #include "CGlobalGameObject.h"
 
+#include <stddef.h>
+
 #include "CGameObject.h"
 #include "Gameplay/Messages/CGameObjectMess.h"
 #include "Gameplay/Messages/CObjectChangeStateMess.h"
@@ -17,8 +19,6 @@
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "ObjectActions.h"
 #include "ObjectInteractionStates.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0040ce40
 void CGlobalGameObject::DoActivate()

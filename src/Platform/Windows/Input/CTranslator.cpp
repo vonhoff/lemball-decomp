@@ -1,12 +1,11 @@
 #include "CTranslator.h"
 
-#include "Engine/Queues/CBaseQueue.h"
-
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Input/InputTranslation.h"
-
-#include <windows.h>
 
 // FUNCTION: LEMBALL 0x00472a60
 int CTranslator::ProcessMsg(tagMESSAGE* p_message)

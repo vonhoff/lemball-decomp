@@ -1,9 +1,9 @@
 #include "CResImage.h"
 
+#include <stddef.h>
+
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
-
-#include <stddef.h>
 
 // SIZE 0x10
 struct ImageResourceHeader {

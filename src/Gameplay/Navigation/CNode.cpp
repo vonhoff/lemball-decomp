@@ -1,10 +1,10 @@
 #include "CNode.h"
 
+#include <stddef.h>
+
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/CPt3.h"
-
-#include <stddef.h>
 
 // SIZE 0x08
 struct NodeNeighbour {

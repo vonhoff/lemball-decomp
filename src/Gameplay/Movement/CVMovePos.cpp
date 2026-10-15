@@ -1,5 +1,7 @@
 #include "CVMovePos.h"
 
+#include "Engine/Math/CVector.h"
+
 // FUNCTION: LEMBALL 0x00417b00
 void CVMovePos::SetEndpoints(CVector p_start, CVector p_end)
 {

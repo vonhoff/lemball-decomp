@@ -1,5 +1,7 @@
 #include "CGunButtons.h"
 
+#include <stddef.h>
+
 #include "CGunButton.h"
 #include "CGunController.h"
 #include "CTrackWindow.h"
@@ -16,8 +18,6 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Windowing/CGWnd.h"
 #include "Platform/Windows/Windowing/CGraphicButton.h"
-
-#include <stddef.h>
 
 class CPVGWnd;
 

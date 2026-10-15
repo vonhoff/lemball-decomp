@@ -1,11 +1,11 @@
 #include "CReadCBuff.h"
 
+#include <stddef.h>
+
 #include "BasePacketHeader.h"
 #include "CReadPacket.h"
 #include "CReadPacketBuff.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
-
-#include <stddef.h>
 
 enum {
 	PACKET_SEQUENCE_NEXT_EXPECTED_DELTA = -1

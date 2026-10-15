@@ -3,6 +3,8 @@
 
 #include "Gameplay/Objects/CGlobalGameObject.h"
 
+class CViewData;
+
 class AICOORD;
 class CGameObject;
 // SIZE 0x144

@@ -1,19 +1,19 @@
 #include "CDisplayDibDriver.h"
 
-#include "CGdiContext.h"
+#include <conio.h>
+#include <string.h>
 
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <windowsx.h>
+#include <dispdib.h>
+
+#include "CGdiContext.h"
 #include "CDibContext.h"
 #include "CGraphicsDriver.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-
-#include <conio.h>
-#include <string.h>
-#include <windows.h>
-#include <windowsx.h>
-#include <dispdib.h>
 
 enum {
 	VGA_DAC_INDEX_PORT = 0x3c8,

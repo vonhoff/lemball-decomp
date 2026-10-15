@@ -1,5 +1,7 @@
 #include "CBulletManager.h"
 
+#include <stddef.h>
+
 #include "CBullet.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/FixedPoint.h"
@@ -7,8 +9,6 @@
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Multiplayer/Transport/CConnect.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00417d80
 CBulletManager::CBulletManager()

@@ -1,10 +1,11 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CARENA_H
 #define LEMBALL_VISOS_FOUNDATION_CARENA_H
 
+#include <stddef.h>
+
 #include "CArenaBase.h"
 #include "Platform/Windows/CCritical.h"
 
-#include <stddef.h>
 class CMBlock;
 class CBaseStat;
 

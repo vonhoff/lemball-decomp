@@ -1,5 +1,7 @@
 #include "CGraphicButton.h"
 
+#include <stddef.h>
+
 #include "CDepressedButton.h"
 #include "CGWnd.h"
 #include "CPVGWnd.h"
@@ -12,8 +14,6 @@
 #include "Engine/Resources/Types/CResANIM.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Platform/Windows/Graphics/CSurface.h"
-
-#include <stddef.h>
 
 enum {
 	GRAPHIC_BUTTON_ALIGN_HORIZONTAL_CENTER = 0x04,

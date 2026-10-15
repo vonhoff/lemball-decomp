@@ -1,8 +1,6 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CDIRECTSOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CDIRECTSOUNDDEVICE_H
 
-#include "Engine/Sound/CBaseSoundDevice.h"
-
 // clang-format off
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -10,6 +8,8 @@
 #include <windows.h>
 #include <mmsystem.h>
 // clang-format on
+
+#include "Engine/Sound/CBaseSoundDevice.h"
 
 class IDirectSound;
 class CDirectSoundEffect;

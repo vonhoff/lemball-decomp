@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_FOUNDATION_CDEBUGOSTREAM_H
 #define LEMBALL_VISOS_FOUNDATION_CDEBUGOSTREAM_H
 
+#include <stddef.h>
+
 #include "CVSDebugStreambuf.h"
 #include "Engine/Streams/CVSIOs.h"
 #include "Engine/Streams/CVSOStream.h"
-
-#include <stddef.h>
 
 // SIZE 0x16c
 // VTABLE: LEMBALL 0x00493020

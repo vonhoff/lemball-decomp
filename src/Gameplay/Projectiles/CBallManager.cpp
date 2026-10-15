@@ -1,8 +1,8 @@
 #include "CBallManager.h"
 
-#include "CBall.h"
-
 #include <stddef.h>
+
+#include "CBall.h"
 
 // GLOBAL: LEMBALL 0x0049e1bc
 CBallManager* g_pBallManager = NULL;

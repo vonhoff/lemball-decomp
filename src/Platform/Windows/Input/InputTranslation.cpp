@@ -1,10 +1,10 @@
 #include "Platform/Windows/Input/InputTranslation.h"
 
+#include <stddef.h>
+
 #include "Engine/Input/CMasterInput.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/WindowsTypes.h"
-
-#include <stddef.h>
 
 enum eWindowsVirtualKey {
 	WINDOWS_VK_OEM_COMMA = 0xbc,

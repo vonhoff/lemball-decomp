@@ -1,11 +1,11 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CMOGRES_H
 #define LEMBALL_VISOS_RESOURCES_CMOGRES_H
 
+#include <stddef.h>
+
 #include "CMogloadArena.h"
 #include "CRawRead.h"
 #include "RECURSE.h"
-
-#include <stddef.h>
 
 class CResBase;
 class CMogDir;

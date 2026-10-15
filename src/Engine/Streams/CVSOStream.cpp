@@ -1,11 +1,11 @@
 #include "CVSOStream.h"
 
+#include <string.h>
+
 #include "CVSIOs.h"
 #include "CVSStreambuf.h"
 #include "Engine/Diagnostics/CVSDebugStreambuf.h"
 #include "Engine/Strings/VsString.h"
-
-#include <string.h>
 
 enum {
 	VSO_HEX8_DIGIT_WIDTH = 8,

@@ -1,5 +1,7 @@
 #include "GameMain.h"
 
+#include <string.h>
+
 #include "CDemo.h"
 #include "CGame.h"
 #include "Engine/Math/CVSMath.h"
@@ -15,8 +17,6 @@
 #include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "Platform/Windows/Graphics/CGraphicsState.h"
 #include "Platform/Windows/WindowsTypes.h"
-
-#include <string.h>
 
 enum {
 	GAME_GDI_SURFACE_SLOT_CAPACITY = 80,

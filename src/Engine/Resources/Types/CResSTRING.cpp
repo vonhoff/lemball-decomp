@@ -1,9 +1,9 @@
 #include "CResSTRING.h"
 
+#include <stddef.h>
+
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045de00
 CResSTRING* CResSTRING::Load(unsigned long p_resourceId)

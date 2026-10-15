@@ -1,5 +1,7 @@
 #include "CIntroAnimDrawer.h"
 
+#include <stddef.h>
+
 #include "Application/FlowProcesses.h"
 #include "CIntroAnimAnimWindow.h"
 #include "Engine/Math/CVSRect.h"
@@ -9,8 +11,6 @@
 #include "Frontend/CBaseFrontendDrawer.h"
 #include "GameView/Display/CMain2DDisplay.h"
 #include "GameView/Sound/CSoundView.h"
-
-#include <stddef.h>
 
 enum {
 	INTRO_ANIMATION_COUNTDOWN_COMPLETE = -1

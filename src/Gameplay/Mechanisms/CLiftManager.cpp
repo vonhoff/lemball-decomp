@@ -1,5 +1,7 @@
 #include "CLiftManager.h"
 
+#include <stddef.h>
+
 #include "CLift.h"
 #include "Gameplay/Geometry/tCoord3d.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
@@ -8,9 +10,6 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "LiftEndpointRecord.h"
 #include "SwitchEntry.h"
-
-#include <stddef.h>
-
 #include "Level/LevelFormat.h"
 
 enum {

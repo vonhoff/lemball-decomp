@@ -1,6 +1,7 @@
 #include "CTheBalloonPost.h"
 
 #include "Gameplay/Objects/CGameObject.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 enum {
 	BALLOON_POST_DESTINATION_CAPACITY = 10

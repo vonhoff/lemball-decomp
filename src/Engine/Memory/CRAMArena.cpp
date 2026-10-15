@@ -1,10 +1,10 @@
 #include "CRAMArena.h"
 
+#include <stddef.h>
+
 #include "CArena.h"
 #include "CMBlock.h"
 #include "CMRAMBlock.h"
-
-#include <stddef.h>
 
 namespace
 {

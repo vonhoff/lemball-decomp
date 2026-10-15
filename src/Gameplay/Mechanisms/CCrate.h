@@ -4,6 +4,8 @@
 #include "Gameplay/Objects/CBaseGlobalObject.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 
+class CGameObject;
+
 class CGlobalGameObject;
 class AICOORD;
 

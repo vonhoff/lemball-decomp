@@ -1,9 +1,9 @@
 #include "CWritePacketBuff.h"
 
+#include <stddef.h>
+
 #include "CBasePacketBuff.h"
 #include "CWritePacket.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00461340
 CWritePacketBuff::CWritePacketBuff(int p_packetCount, unsigned short p_packetSize)

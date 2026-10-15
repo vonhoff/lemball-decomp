@@ -1,5 +1,7 @@
 #include "CPanel.h"
 
+#include <stddef.h>
+
 #include "../Display/C2D.h"
 #include "Application/SoundEffects.h"
 #include "CPanelLemming.h"
@@ -16,8 +18,7 @@
 #include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-
-#include <stddef.h>
+#include "Engine/Math/CVSSize.h"
 
 // FUNCTION: LEMBALL 0x00442f00
 CVSPoint CPanel::GetPausePos()

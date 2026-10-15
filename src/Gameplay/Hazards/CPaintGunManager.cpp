@@ -1,5 +1,7 @@
 #include "CPaintGunManager.h"
 
+#include <stddef.h>
+
 #include "CPaintGun.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -8,8 +10,6 @@
 #include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0042bfe0
 CPaintGunManager::CPaintGunManager(CAI* p_ai, int p_capacity)

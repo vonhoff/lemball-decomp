@@ -1,5 +1,7 @@
 #include "CConnect.h"
 
+#include <string.h>
+
 #include "CBaseNetwork.h"
 #include "CBroadcast.h"
 #include "CRWSocket.h"
@@ -12,8 +14,6 @@
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "NetworkConstants.h"
-
-#include <string.h>
 
 enum {
 	CONNECT_TIMEOUT_MS = 4000

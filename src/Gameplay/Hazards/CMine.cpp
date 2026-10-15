@@ -11,6 +11,7 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
+#include "Gameplay/Objects/ObjectActions.h"
 
 enum {
 	MINE_DETONATION_DURATION_TICKS = 20,

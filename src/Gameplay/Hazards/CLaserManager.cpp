@@ -1,13 +1,12 @@
 #include "CLaserManager.h"
 
+#include <stddef.h>
+
 #include "CLaser.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Objects/CViewData.h"
 #include "Gameplay/Objects/ObjectIds.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
-
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/CGameObject.h"

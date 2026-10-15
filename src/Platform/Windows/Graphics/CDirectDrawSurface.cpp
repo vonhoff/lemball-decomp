@@ -1,10 +1,10 @@
 #include "CDirectDrawSurface.h"
 
+#include <stddef.h>
+
 #include "DirectDrawError.h"
 #include "Engine/Streams/CVSOStream.h"
 #include "Platform/Windows/DirectX/DirectDraw.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00457310
 DDSURFACEDESC* CDirectDrawSurface::RefreshDescription()

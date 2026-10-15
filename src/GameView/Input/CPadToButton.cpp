@@ -1,11 +1,11 @@
 #include "CPadToButton.h"
 
+#include <stddef.h>
+
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Platform/Windows/Windowing/CPVButton.h"
-
-#include <stddef.h>
 
 // SIZE 0x08
 struct PadToButtonEntry {

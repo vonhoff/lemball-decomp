@@ -1,5 +1,10 @@
 #include "NetworkInit.h"
 
+#include <stddef.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Startup/ProcessExitCodes.h"
@@ -9,10 +14,6 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Platform/Windows/Network/FileTransport/CFileNetwork.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPNetwork.h"
-
-#define WIN32_LEAN_AND_MEAN
-#include <stddef.h>
-#include <windows.h>
 
 // FUNCTION: LEMBALL 0x0046f210
 unsigned int FileNetworkMessageThread()

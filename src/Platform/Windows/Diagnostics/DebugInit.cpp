@@ -1,12 +1,12 @@
 #include "DebugInit.h"
 
+#include <setjmp.h>
+#include <stddef.h>
+
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Files/VsFile.h"
 #include "Engine/Startup/ProcessExitCodes.h"
 #include "Platform/Windows/WindowsTypes.h"
-
-#include <setjmp.h>
-#include <stddef.h>
 
 struct _Filet;
 

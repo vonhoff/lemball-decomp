@@ -1,5 +1,7 @@
 #include "GameView/Animation/CLemmingAnimsManager.h"
 
+#include <stddef.h>
+
 #include "Engine/Animation/CAnimFrameBASE.h"
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Animation/CFrames.h"
@@ -17,8 +19,6 @@
 #include "GameView/Sound/CSoundView.h"
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Gameplay/Simulation/CAI.h"
-
-#include <stddef.h>
 
 enum {
 	LEMMING_WALK_STAND_CYCLE_DURATION_MS = 1000,

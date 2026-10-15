@@ -1,9 +1,9 @@
 #include "CResZRLE.h"
 
+#include <stddef.h>
+
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045e2b0
 CResZRLE* CResZRLE::Load(unsigned long p_resourceId)

@@ -1,5 +1,7 @@
 #include "CBaseObjectManager.h"
 
+#include <stddef.h>
+
 #include "CGameObject.h"
 #include "CGlobalGameObject.h"
 #include "Platform/Windows/VsTime.h"
@@ -11,8 +13,6 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Packets/CWriteCBuff.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0040ab70
 void CBaseObjectManager::Restart()

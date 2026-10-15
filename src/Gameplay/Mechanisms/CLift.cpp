@@ -1,5 +1,7 @@
 #include "CLift.h"
 
+#include <stddef.h>
+
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -14,8 +16,6 @@
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
-
-#include <stddef.h>
 
 extern unsigned short g_wMovingLiftCount;
 

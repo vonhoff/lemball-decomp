@@ -1,9 +1,9 @@
 #include "CStatManager.h"
 
+#include <stddef.h>
+
 #include "CBaseStat.h"
 #include "Engine/Streams/CVSOStream.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045aaf0
 CStatManager::CStatManager(int p_capacity)

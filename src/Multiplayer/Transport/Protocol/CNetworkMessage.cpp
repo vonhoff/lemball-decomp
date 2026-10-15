@@ -1,5 +1,7 @@
 #include "CNetworkMessage.h"
 
+#include <string.h>
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 #include "Engine/Queues/tagMESSAGE.h"
@@ -7,8 +9,6 @@
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x0040abd0
 bool CNetworkMessage::CheckMessage(const unsigned char* p_arg0)

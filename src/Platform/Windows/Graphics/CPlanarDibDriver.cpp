@@ -1,17 +1,17 @@
 #include "CPlanarDibDriver.h"
 
-#include "CGdiContext.h"
-#include "CPVGDIBitmap.h"
+#include <conio.h>
 
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include "CGdiContext.h"
+#include "CPVGDIBitmap.h"
 #include "CDibContext.h"
 #include "CGraphicsDriver.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-
-#include <conio.h>
-#include <windows.h>
 
 enum {
 	PLANAR_DIB_PLANE_INDEX_MASK = 3,

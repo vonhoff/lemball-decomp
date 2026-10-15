@@ -1,5 +1,7 @@
 #include "CAboutScreen.h"
 
+#include <string.h>
+
 #include "Application/FlowProcesses.h"
 #include "Engine/Graphics/CChangeList.h"
 #include "Engine/Graphics/tagCHANGERECT.h"
@@ -27,8 +29,6 @@
 #include "Platform/Windows/Graphics/CSurface.h"
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CPVButton.h"
-
-#include <string.h>
 
 enum {
 	ABOUT_SCREEN_DISPLAY_DURATION_MS = 5 * MILLISECONDS_PER_SECOND

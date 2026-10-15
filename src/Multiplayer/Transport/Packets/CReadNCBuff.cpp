@@ -1,12 +1,12 @@
 #include "CReadNCBuff.h"
 
+#include <stddef.h>
+
 #include "BasePacketHeader.h"
 #include "CReadPacket.h"
 #include "CReadPacketBuff.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00461560
 CReadNCBuff::CReadNCBuff(unsigned long p_lastMessageId, unsigned short p_packetSize)

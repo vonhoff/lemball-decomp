@@ -1,8 +1,8 @@
 #include "CReadPacket.h"
 
-#include "BasePacketHeader.h"
-
 #include <string.h>
+
+#include "BasePacketHeader.h"
 
 // FUNCTION: LEMBALL 0x00461090
 CReadPacket::CReadPacket(unsigned short p_capacity)

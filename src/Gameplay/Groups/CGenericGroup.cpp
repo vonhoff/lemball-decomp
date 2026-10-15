@@ -1,5 +1,7 @@
 #include "CGenericGroup.h"
 
+#include <string.h>
+
 #include "CFormationManager.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSSize.h"
@@ -7,17 +9,14 @@
 #include "Engine/Math/VSTrig.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "Gameplay/Navigation/CAiDestinationList.h"
-
-#include <string.h>
-
-#define GENERIC_GROUP_ELEMENT_CAPACITY 10
-
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVector.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Navigation/CAiDestinationEntry.h"
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Objects/ObjectTypes.h"
+
+#define GENERIC_GROUP_ELEMENT_CAPACITY 10
 
 // FUNCTION: LEMBALL 0x00414c60
 eGroupState CGenericGroup::GetGroupState()

@@ -1,5 +1,7 @@
 #include "CSheepGroupManager.h"
 
+#include <stddef.h>
+
 #include "CFormationManager.h"
 #include "CGenericGroup.h"
 #include "CGenericGroupManager.h"
@@ -9,8 +11,6 @@
 #include "Gameplay/Objects/CObjectManager.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0041f0b0
 CSheepGroupManager::CSheepGroupManager(CAI* p_ai,

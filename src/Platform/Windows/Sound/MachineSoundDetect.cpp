@@ -1,12 +1,12 @@
 #include "MachineSoundDetect.h"
 
+#include <stddef.h>
+
 #include "CDirectSoundDevice.h"
 #include "CMciMusicDevice.h"
 #include "CWaveSoundDevice.h"
 #include "Engine/Sound/CBaseSoundDevice.h"
 #include "Engine/Sound/CPVMusicDevice.h"
-
-#include <stddef.h>
 
 enum {
 	DIRECT_SOUND_BUFFERS_PER_EFFECT = 5

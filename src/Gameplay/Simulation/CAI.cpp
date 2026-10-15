@@ -1,5 +1,7 @@
 #include "CAI.h"
 
+#include <stddef.h>
+
 #include "Application/CDemo.h"
 #include "Application/CGameStatus.h"
 #include "Application/GameMain.h"
@@ -67,8 +69,8 @@
 #include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/NetworkMode.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
-#include <stddef.h>
+#include "Application/CProcess.h"
+#include "Gameplay/Objects/ObjectTypes.h"
 
 extern int g_anDefaultTrapDoorLemmings[4][4];
 

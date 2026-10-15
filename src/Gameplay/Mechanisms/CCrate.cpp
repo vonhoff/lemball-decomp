@@ -1,13 +1,12 @@
 #include "CCrate.h"
 
+#include <stddef.h>
+
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Objects/ObjectInteractionStates.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Simulation/GameTime.h"
-
-#include <stddef.h>
-
 #include "Application/SoundEffects.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CBaseGlobalObject.h"

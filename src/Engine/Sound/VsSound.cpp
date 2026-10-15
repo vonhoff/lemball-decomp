@@ -1,8 +1,8 @@
 #include "VsSound.h"
 
-#include "CSoundManager.h"
-
 #include <stddef.h>
+
+#include "CSoundManager.h"
 
 // FUNCTION: LEMBALL 0x0045b770
 bool InitSound(unsigned int p_musicEnabled,

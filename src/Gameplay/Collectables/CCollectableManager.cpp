@@ -1,5 +1,7 @@
 #include "CCollectableManager.h"
 
+#include <stddef.h>
+
 #include "CBonus.h"
 #include "CCollectable.h"
 #include "CFlag.h"
@@ -12,8 +14,6 @@
 #include "Level/LevelFormat.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/NetworkMode.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x004223c0
 CCollectableManager::CCollectableManager(CAI* p_ai, int p_capacity)

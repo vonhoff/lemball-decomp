@@ -1,5 +1,7 @@
 #include "CIce.h"
 
+#include <stdlib.h>
+
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/FixedPointConversion.h"
@@ -14,8 +16,6 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-
-#include <stdlib.h>
 
 enum {
 	ICE_EXTERNAL_CONTROL_TIMEOUT_TICKS = 1000

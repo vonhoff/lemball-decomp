@@ -1,5 +1,7 @@
 #include "CEnemyGroupManager.h"
 
+#include <stddef.h>
+
 #include "CEnemyGroup.h"
 #include "CGenericGroup.h"
 #include "CGenericGroupManager.h"
@@ -8,8 +10,6 @@
 #include "Gameplay/Objects/CGameObject.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
 
 extern CAI* g_pGenericGroupAI;
 extern CObjectManager* g_pGenericGroupObjectManager;

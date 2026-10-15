@@ -1,9 +1,9 @@
 #include "SpriteGroundLookup.h"
 
+#include <string.h>
+
 #include "Engine/Math/CVSRect.h"
 #include "Map/CGround.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x00441fe0
 void SpriteGroundLookup::MarkRect(const CVSRect& p_rect)

@@ -1,10 +1,10 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPNETWORKADDRESS_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPNETWORKADDRESS_H
 
-#include "Multiplayer/Transport/CNetworkAddress.h"
 #include "Platform/Windows/WindowsTypes.h"
-
 #include <winsock.h>
+
+#include "Multiplayer/Transport/CNetworkAddress.h"
 
 // SIZE 0x18
 // VTABLE: LEMBALL 0x0049a290

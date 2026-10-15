@@ -1,5 +1,7 @@
 #include "CCatapult.h"
 
+#include <stddef.h>
+
 #include "Application/GameMain.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/CVSMath.h"
@@ -9,7 +11,6 @@
 #include "Gameplay/Simulation/AIScoreConstants.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Gameplay/Simulation/GameTime.h"
-
 #include "Application/SoundEffects.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Geometry/C3DVector.h"
@@ -19,7 +20,6 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0041c3f0
 int CCatapult::Usage()

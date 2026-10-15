@@ -1,9 +1,9 @@
 #include "StatInit.h"
 
+#include <stddef.h>
+
 #include "CStatManager.h"
 #include "Engine/Streams/CVSOStream.h"
-
-#include <stddef.h>
 
 enum {
 	STAT_MANAGER_INITIAL_CAPACITY = 32

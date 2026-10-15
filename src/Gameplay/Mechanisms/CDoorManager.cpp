@@ -1,5 +1,7 @@
 #include "CDoorManager.h"
 
+#include <stddef.h>
+
 #include "CDoor.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/CGameObject.h"
@@ -9,8 +11,6 @@
 #include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
 #include "SwitchEntry.h"
-
-#include <stddef.h>
 
 class AICOORD;
 

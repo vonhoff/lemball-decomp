@@ -1,5 +1,7 @@
 #include "CPaintGun.h"
 
+#include <stddef.h>
+
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPointConversion.h"
 #include "Platform/Windows/VsTime.h"
@@ -14,8 +16,7 @@
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
-
-#include <stddef.h>
+#include "Engine/Math/FixedPoint.h"
 
 enum {
 	PAINT_GUN_MOVEMENT_INTERVAL_TICKS = 70,

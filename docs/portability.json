@@ -1,0 +1,208 @@
+{
+  "title": "Lemmings Paintball: readiness for a separate port",
+  "baseline_commit": "840804fa",
+  "objective": "Clean, idiomatic MSVC 4.00 reconstruction with understood Windows behavior, explicit format and ownership contracts, and clear platform boundaries. Perfection and 100% matching are not requirements.",
+  "status": "Preparation in progress. No SDL3 dependency or backend belongs in this repository.",
+  "baseline": {
+    "original_bytes": 433937,
+    "exact_bytes": 234301,
+    "effective_bytes": 289976,
+    "functions": 5958,
+    "exact_addresses": 5241,
+    "effective_addresses": 5505,
+    "cpp_files": 368,
+    "header_files": 443,
+    "direct_platform_include_sites_outside_platform": 196,
+    "files_with_direct_platform_includes": 115,
+    "stub_annotations": 0,
+    "qualifications": [
+      "Include counts identify coupling, not 196 independent defects.",
+      "453 functions without Effective 100 are investigation candidates, not 453 proven behavioral bugs.",
+      "No complete runtime equivalence suite exists in the reviewed workflow; matching is static evidence."
+    ]
+  },
+  "principles": [
+    "Original Windows x86 remains behavioral and ABI authority; Mac symbols support names/types.",
+    "Each cleanup needs a concrete readability, ownership, type, dependency or portability benefit.",
+    "Preserve the MSVC 4.00 reference target and its original layout/calling convention. Portable runtime objects may need different layouts.",
+    "Preserve narrowing, wrap, signedness, access order and allocation failure behavior; assess changes explicitly.",
+    "Retain current source-batch metric rule unless the user approves an evidence-backed exception. No score-driven source permutations.",
+    "Tests target meaningful behavior contracts. One appropriate verification pass per batch; broaden only for a new concern.",
+    "Select source matching targets through triage_targets.py and read their reconstruction memory before editing."
+  ],
+  "milestones": [
+    {
+      "id": "headers",
+      "priority": 1,
+      "status": "initial sweep complete; maintain and review exceptions",
+      "work": "Complete direct include/forward-declaration coverage. Group each implementation header first, then CRT/system headers, then project headers. Preserve required Windows SDK and macro prerequisites. Make formatting preserve that policy. Keep complete types at deletion and layout sites.",
+      "evidence": [
+        "src/GameView/Display/CMain2DDisplay.cpp",
+        "src/Level/CLevelLoader.cpp"
+      ],
+      "completion": "Touched headers provide their own required declarations; implementation files include their direct providers; source/build checks pass; compiler-context effects measured across the full executable.",
+      "next_step": "Keep direct dependencies explicit as source changes. Revisit reviewed IWYU exceptions only with provider/type evidence; preserve SDK prerequisites and the formatter policy. Next substantive work: fixed-format contracts and reusable behavior fixtures.",
+      "completed": "Direct-dependency cleanup across transport, frontend, engine/platform and GameView/Gameplay; remaining CRT/system include groups moved before project headers. Own implementation header remains first. Formatter preserves deliberate groups and order."
+    },
+    {
+      "id": "data_contracts",
+      "priority": 2,
+      "status": "identified",
+      "work": "Inventory fixed-format data separately from runtime classes. Specify exact field widths, padding, endian order, sentinels and ownership. Audit bool=int, unsigned long, pointer fields and enum widths before any modern or 64-bit build.",
+      "evidence": [
+        "cmake/msvc400-toolchain.cmake",
+        "src/Engine/Resources/Archive/CMogDir.cpp",
+        "src/Engine/Resources/Archive/tagChunkInfo.h",
+        "src/Engine/Queues/tagMESSAGE.h",
+        "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp"
+      ],
+      "concrete_blocker": "CNetworkMessage::Get(unsigned long&) writes four bytes. A wider unsigned long would leave part of the result uninitialized. MogDirectoryEntry also uses unsigned long and sizeof for an on-disk stride.",
+      "completion": "Representative original resource and packet bytes decode and encode identically using explicit format widths; original-build layouts remain verified; host pointers and runtime state are not treated as serialized structures."
+    },
+    {
+      "id": "ownership",
+      "priority": 2,
+      "status": "audit needed",
+      "work": "Trace allocation/free pairs, borrowed versus owned storage, initialization paths and shutdown order in resource arenas, queues, surfaces and sound. Preserve native failure behavior, access timing and destruction order. Recover typed ownership and shared operations where original x86 supports them.",
+      "evidence": [
+        "src/Engine/Resources/Archive/CMogRes.cpp",
+        "src/Platform/Windows/Graphics/CPVGDIBitmap.h",
+        "src/Platform/Windows/Input/InputInit.cpp",
+        "src/Platform/Windows/CCritical.h",
+        "src/Platform/MSVC/ArrayDestruction.cpp"
+      ],
+      "completion": "Owners and lifetimes are clear at interfaces; failed initialization and repeated shutdown have reference-backed behavior; no redundant parallel ownership mechanisms."
+    },
+    {
+      "id": "behavior_fixtures",
+      "priority": 2,
+      "status": "partial local evidence; reusable suite still needed",
+      "work": "Create a small, deliberate set of reference fixtures: fixed-point movement and RNG, timer wrap, event ordering, resource parsing, palette/clipping pixels and network messages. Add runtime scenarios for menu-to-level flow, selection, movement, shooting, media transitions and multiplayer connection lifecycle.",
+      "evidence": [
+        "src/Gameplay/Movement/CMove3d.cpp",
+        "src/Engine/Math/FixedPointConversion.h",
+        "src/Platform/Windows/Entry.cpp",
+        "src/Platform/Windows/Graphics/CSurface.cpp"
+      ],
+      "completion": "Reference input/output or state traces are reproducible, with provenance from original execution or cited x86. Each relevant cleanup/port change can be checked against these observations. Broader unobserved behavior stays explicitly unverified.",
+      "existing_evidence": "Archived original/rebuilt MOG directory-parser, text-paint and resource-lock fixtures exist in reconstruction memory. Preserve their provenance and limits when making reusable checks; they are not a complete game-equivalence suite."
+    },
+    {
+      "id": "platform_services",
+      "priority": 3,
+      "status": "boundaries identified",
+      "work": "Separate required game services from Win32 implementation: clocks, event delivery, locks, files/paths, installation discovery, diagnostics and window lifecycle. Preserve existing queue ordering and use the smallest useful interfaces.",
+      "evidence": [
+        "src/Platform/Windows/VsTime.cpp",
+        "src/Platform/Windows/Entry.cpp",
+        "src/Platform/Windows/CCritical.h",
+        "src/Engine/Files/VsFile.cpp",
+        "src/Platform/Windows/CPlatformServices.cpp"
+      ],
+      "concrete_blockers": [
+        "PumpEvents orders mouse processing, network queue draining, Win32 dispatch, input queue processing, resource aging and cursor processing.",
+        "CurrentMilliTimer uses the Win32 millisecond clock. Document 32-bit elapsed-time, wrap and time-origin assumptions before another clock implementation replaces it in a separate port.",
+        "CCritical embeds CRITICAL_SECTION and calls its API inline. This layout belongs to the Windows reference implementation."
+      ],
+      "completion": "Required services and their ordering are explicit; Windows handles, SDK types and inline synchronization are confined to understood reference interfaces. Avoid abstractions that only move existing coupling."
+    },
+    {
+      "id": "graphics",
+      "priority": 4,
+      "status": "design pending",
+      "work": "Preserve software rasterization, palette changes, clipping, depth buffers and integer coordinates. Clarify the window/display presentation boundary and document frame and input-coordinate contracts for a separate port.",
+      "evidence": [
+        "src/Platform/Windows/Graphics/CSurface.cpp",
+        "src/Platform/Windows/Graphics/CPVGDIBitmap.h",
+        "src/Platform/Windows/Graphics/WinGDraw.cpp"
+      ],
+      "completion": "Representative indexed pixels and palette transitions have reference fixtures; presentation, focus/fullscreen and scaling contracts are clear enough for a separate backend implementation."
+    },
+    {
+      "id": "audio_movies",
+      "priority": 4,
+      "status": "requirements identified",
+      "work": "Recover sample conversions, voice ownership, volume/pan/frequency mapping, looping and completion timing. Document MIDI and AVI state/notification behavior and actual asset formats for a separate port to choose implementations.",
+      "evidence": [
+        "src/Platform/Windows/Sound/CWaveEffect.cpp",
+        "src/Platform/Windows/Sound/CDirectSoundEffect.cpp",
+        "src/Platform/Windows/Sound/CMciMusicDevice.cpp",
+        "src/Engine/Sound/CPVMusicDevice.h",
+        "src/Platform/Windows/Windowing/CAnimWnd.cpp"
+      ],
+      "completion": "Audio conversion fixtures and media state/event traces established; backend obligations and asset/codec requirements explicit. No SDL, synth or decoder dependency added here."
+    },
+    {
+      "id": "network",
+      "priority": 4,
+      "status": "64-bit blocker confirmed",
+      "work": "Recover packet layout, byte order, sequence arithmetic, discovery, retry and disconnect contracts. Trace pointer-derived connection IDs and their identity/lifetime/echo semantics; document the stable 32-bit token requirement for a separate portable implementation.",
+      "evidence": [
+        "src/Multiplayer/Transport/CBaseNetwork.cpp",
+        "src/Multiplayer/Transport/Packets/BasePacketHeader.h",
+        "src/Multiplayer/Transport/Protocol/CNetworkMessage.cpp"
+      ],
+      "completion": "Packet fixtures and connection lifecycle traces established; protocol compatibility and pointer-token assumptions explicit. Original Windows behavior and ABI preserved here."
+    },
+    {
+      "id": "port_handoff",
+      "priority": 5,
+      "status": "later milestone",
+      "work": "Keep the original build reproducible. Identify compiler/runtime ABI machinery and separate its responsibilities from game behavior. Provide source boundaries, format contracts, fixture provenance and remaining uncertainties for a separate port.",
+      "evidence": [
+        "CMakeLists.txt",
+        "cmake/msvc400-toolchain.cmake",
+        "src/Platform/MSVC/ArrayDestruction.cpp"
+      ],
+      "completion": "A separate port has a concrete component replacement map and reproducible behavior references. This repository gains no SDL dependency or backend.",
+      "open_item": "Establish the separate port repository and its integration contract before work there. No port source or dependency is introduced here."
+    }
+  ],
+  "readiness_definition": [
+    "Important behavior contracts captured and meaningful uncertainties listed.",
+    "Core types, ownership and initialization understandable; required platform services explicit.",
+    "Native ABI/compiler runtime responsibilities isolated and documented so a separate port can implement its own runtime.",
+    "Representative gameplay, rendering, resource, audio/media and protocol cases have reference evidence and reproducible fixtures.",
+    "Original Windows build and matching remain verified; SDL implementation belongs elsewhere.",
+    "No requirement for every function to match 100% or every legacy construct to disappear."
+  ],
+  "evidence_limits": [
+    "Initial, focused inventory; other porting obstacles may remain.",
+    "Static matching supports source hypotheses; it does not establish complete runtime equivalence.",
+    "Source paths and named operations are evidence pointers. Read the original Windows x86 before changing behavior or ABI.",
+    "Baseline counts describe the recorded commit, not automatically the current working tree."
+  ],
+  "scope": {
+    "this_repository": "Windows reconstruction and behavior reference; prepare clean source and explicit contracts for a separate port.",
+    "external_port": "SDL3 dependency, SDL backend implementation, and portable application integration belong in a separate codebase.",
+    "user_clarification": "SDL3 must not be part of this codebase."
+  },
+  "next_reference_contract": {
+    "subject": "CNetworkMessage four-byte scalar serialization",
+    "original_functions": [
+      "0x0045ef10 Add(unsigned long)",
+      "0x0045f010 Get(unsigned long&)"
+    ],
+    "confirmed": [
+      "Four-byte big-endian encoding.",
+      "Read/write cursor advances by four.",
+      "Original code reloads the cursor between individual byte stores. Preserve access timing when simplifying."
+    ],
+    "remaining": [
+      "Capture executable byte fixtures and caller buffer/alias assumptions.",
+      "Separate 32-bit wire values from host unsigned long width without changing the reference ABI."
+    ],
+    "qualification": "Access order is confirmed in original x86; no claim that actual callers alias cursor or destination storage."
+  },
+  "latest_batch": {
+    "base_commit": "840804fa",
+    "exact_bytes_before": 234301,
+    "exact_bytes_after": 234524,
+    "effective_bytes_before": 289976,
+    "effective_bytes_after": 289976,
+    "original_bytes": 433937,
+    "exact_gain": "CNetworkFile::Read: 260 bytes, now 100%.",
+    "exact_loss": "CPVBackBuffSurface::HasBackBuff: 37 bytes, swapped equality operands; Effective remains 100%.",
+    "validation": "Build, source policy, formatter, linker routes and full canonical report; full changed-body review and original resource payload comparison. No live multiplayer or whole-game runtime claim."
+  }
+}

@@ -1,9 +1,9 @@
 #include "CString.h"
 
-#include "Engine/Streams/CVSOStream.h"
-
 #include <ctype.h>
 #include <string.h>
+
+#include "Engine/Streams/CVSOStream.h"
 
 // GLOBAL: LEMBALL 0x004a44b4
 // __mb_cur_max

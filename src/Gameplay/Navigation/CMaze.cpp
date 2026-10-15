@@ -1,12 +1,12 @@
 #include "CMaze.h"
 
+#include <string.h>
+
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 #include "Platform/Windows/VsTime.h"
 #include "tSolution.h"
-
-#include <string.h>
 
 extern const int g_mazeNeighborOffsetsX[10];
 extern const int g_mazeNeighborOffsetsY[10];

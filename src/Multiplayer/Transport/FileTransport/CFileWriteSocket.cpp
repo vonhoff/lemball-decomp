@@ -1,5 +1,7 @@
 #include "Multiplayer/Transport/FileTransport/CFileWriteSocket.h"
 
+#include <string.h>
+
 #include "Platform/Windows/VsTime.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CNetworkAddress.h"
@@ -12,8 +14,6 @@
 #include "Multiplayer/Transport/Protocol/CHeaderMessage.h"
 #include "Multiplayer/Transport/Protocol/CHeaders.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x00479e20
 CFileWriteSocket::CFileWriteSocket() : CFileBaseSocket(), CWriteSocket(), CFileCommonSocket()

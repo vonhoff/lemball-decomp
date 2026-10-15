@@ -1,5 +1,7 @@
 #include "CHotAreaList.h"
 
+#include <stddef.h>
+
 #include "CHotAreaHandler.h"
 #include "Engine/Math/CVSPointArithmetic.h"
 #include "Engine/Math/CVSRect.h"
@@ -7,8 +9,6 @@
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
-
-#include <stddef.h>
 
 // SIZE 0x0c
 struct CHotAreaElement {

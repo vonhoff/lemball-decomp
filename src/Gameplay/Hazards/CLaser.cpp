@@ -1,5 +1,7 @@
 #include "CLaser.h"
 
+#include <stddef.h>
+
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -15,9 +17,7 @@
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
-
 #include "Gameplay/Simulation/CAI.h"
-#include <stddef.h>
 
 enum {
 	LASER_REACTIVATION_DELAY_TICKS = 60,

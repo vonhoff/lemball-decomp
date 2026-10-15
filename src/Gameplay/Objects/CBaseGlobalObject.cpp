@@ -1,12 +1,12 @@
 #include "CBaseGlobalObject.h"
 
+#include <stddef.h>
+
 #include "CGlobalGameObject.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Messages/CObjectPosMess.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "ObjectActions.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0041c670
 void CBaseGlobalObject::OldRestart()

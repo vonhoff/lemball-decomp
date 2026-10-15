@@ -1,5 +1,7 @@
 #include "CGodManager.h"
 
+#include <stddef.h>
+
 #include "CAI.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Gameplay/Messages/CGameStateMessage.h"
@@ -14,8 +16,6 @@
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
 #include "Multiplayer/Transport/Packets/CReadPacket.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
-#include <stddef.h>
 
 enum {
 	OBJECT_TRANSPORT_MAP_CAPACITY = OBJECT_MANAGER_TRANSPORT_PLAYER_LEMMING_GROUPS + 1,

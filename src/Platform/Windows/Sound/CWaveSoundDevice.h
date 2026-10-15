@@ -1,13 +1,13 @@
 #ifndef LEMBALL_VISOS_TARGET_SOUND_CWAVESOUNDDEVICE_H
 #define LEMBALL_VISOS_TARGET_SOUND_CWAVESOUNDDEVICE_H
 
-#include "Engine/Sound/CBaseSoundDevice.h"
-
 #define WIN32_LEAN_AND_MEAN
 // clang-format off
 #include <windows.h>
 #include <mmsystem.h>
 // clang-format on
+
+#include "Engine/Sound/CBaseSoundDevice.h"
 
 class CWaveEffect;
 

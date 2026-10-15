@@ -1,9 +1,9 @@
 #ifndef LEMBALL_AI_MANAGERS_CBASEOBJECTMANAGER_H
 #define LEMBALL_AI_MANAGERS_CBASEOBJECTMANAGER_H
 
-#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-
 #include <stddef.h>
+
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 class CGlobalGameObject;
 class CViewData;

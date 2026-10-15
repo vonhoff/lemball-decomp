@@ -1,5 +1,7 @@
 #include "CCollectable.h"
 
+#include <stddef.h>
+
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -12,8 +14,7 @@
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
 #include "Multiplayer/Transport/CConnect.h"
-
-#include <stddef.h>
+#include "Gameplay/Objects/ObjectTypes.h"
 
 // FUNCTION: LEMBALL 0x00422870
 CCollectable::CCollectable(int p_x, int p_y, int p_z, eObjectType p_objectType) : CGlobalGameObject(p_objectType, 0, 0)

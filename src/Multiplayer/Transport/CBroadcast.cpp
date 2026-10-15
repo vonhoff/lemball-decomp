@@ -1,5 +1,7 @@
 #include "CBroadcast.h"
 
+#include <string.h>
+
 #include "CBaseNetwork.h"
 #include "CNetworkAddress.h"
 #include "CRWSocket.h"
@@ -16,8 +18,6 @@
 #include "Multiplayer/Transport/Protocol/CBroadcastMessage.h"
 #include "Multiplayer/Transport/Protocol/CMessReqConnect.h"
 #include "NetworkConstants.h"
-
-#include <string.h>
 
 // GLOBAL: LEMBALL 0x004a1e08
 int g_vsNetMajorVersion = 0;

@@ -1,5 +1,7 @@
 #include "CMoverManager.h"
 
+#include <stddef.h>
+
 #include "CMover.h"
 #include "Gameplay/Mechanisms/SwitchEntry.h"
 #include "Gameplay/Objects/CBaseObjectManager.h"
@@ -7,8 +9,6 @@
 #include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
 
 enum {
 	MOVER_PATH_WAIT_FOR_SWITCH_FLAG = 0x8000,

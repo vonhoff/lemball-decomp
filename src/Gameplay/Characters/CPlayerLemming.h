@@ -8,6 +8,9 @@
 #include "Gameplay/Objects/ObjectTypes.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
+class CBullet;
+class CViewData;
+
 class CGameObject;
 class CIce;
 class CPlayerLemmingGroup;

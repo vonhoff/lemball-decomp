@@ -1,5 +1,7 @@
 #include "CMineManager.h"
 
+#include <stddef.h>
+
 #include "CMine.h"
 #include "Engine/Math/FixedPoint.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -11,8 +13,6 @@
 #include "Gameplay/Objects/ObjectIds.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Level/LevelFormat.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00424020
 CMineManager::CMineManager(CAI* p_ai, int p_capacity)

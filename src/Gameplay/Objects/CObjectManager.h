@@ -4,6 +4,8 @@
 #include "CBaseObjectManager.h"
 #include "ObjectTypes.h"
 
+class CNetworkMessage;
+
 class AICOORD;
 class CAI;
 class CSwitch;

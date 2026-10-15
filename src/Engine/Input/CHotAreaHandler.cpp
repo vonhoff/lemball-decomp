@@ -1,12 +1,12 @@
 #include "CHotAreaHandler.h"
 
+#include <stddef.h>
+
 #include "CHotAreaList.h"
 #include "CMasterInput.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Queues/tagMESSAGE.h"
-
-#include <stddef.h>
 
 enum {
 	HOT_AREA_CURSOR_BLOCKED_MASK = 0x01

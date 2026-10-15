@@ -1,20 +1,18 @@
-
 #include "CGdiDriver.h"
-
-#include "CGdiContext.h"
-#include "CGdiDibContext.h"
-#include "Platform/Windows/Graphics/CGraphicsDriver.h"
 
 #include <stddef.h>
 
 #define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#include "CGdiContext.h"
+#include "CGdiDibContext.h"
+#include "Platform/Windows/Graphics/CGraphicsDriver.h"
 #include "CDibContext.h"
 #include "CDrawingContext.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-
-#include <windows.h>
 
 // FUNCTION: LEMBALL 0x00456a90
 CGdiDriver::CGdiDriver()

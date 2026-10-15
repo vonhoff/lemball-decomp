@@ -1,12 +1,12 @@
 #include "CPVBackBuffSurface.h"
 
+#include <stddef.h>
+
 #include "CGDIDevice.h"
 #include "CPVGDIBitmap.h"
 #include "CSurface.h"
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/CVSSize.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x00466440
 CPVBackBuffSurface::CPVBackBuffSurface()

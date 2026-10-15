@@ -1,12 +1,12 @@
 #ifndef LEMBALL_VISOS_NETWORK_CTCPIPWRITESOCKET_H
 #define LEMBALL_VISOS_NETWORK_CTCPIPWRITESOCKET_H
 
+#include "Platform/Windows/WindowsTypes.h"
+#include <winsock.h>
+
 #include "Multiplayer/Transport/CBaseCommonSocket.h"
 #include "Multiplayer/Transport/CWriteSocket.h"
 #include "Platform/Windows/Network/TcpIp/CTCPIPCommonSocket.h"
-#include "Platform/Windows/WindowsTypes.h"
-
-#include <winsock.h>
 
 // SIZE 0xdc
 // VTABLE: LEMBALL 0x0049a088 CNetworkWnd

@@ -1,13 +1,12 @@
 #include "CRocket.h"
 
+#include <stddef.h>
+
 #include "Engine/Math/FixedPoint.h"
 #include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/Facing.h"
 #include "Map/CGround.h"
 #include "Map/CMap.h"
-
-#include <stddef.h>
-
 #include "Gameplay/Simulation/GameTime.h"
 #include "Gameplay/Messages/CObjectPosMess.h"
 #include "Multiplayer/Transport/CConnect.h"

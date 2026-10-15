@@ -1,12 +1,13 @@
 #ifndef LEMBALL_VISOS_RESOURCES_CMOGDIR_H
 #define LEMBALL_VISOS_RESOURCES_CMOGDIR_H
+
+#include <stddef.h>
+
 #include "CMogloadArena.h"
 #include "CRawRead.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
 #include "RECURSE.h"
 #include "tagCHUNK.h"
-
-#include <stddef.h>
 
 struct tagChunkInfo;
 

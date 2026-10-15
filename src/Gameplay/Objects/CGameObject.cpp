@@ -1,5 +1,7 @@
 #include "CGameObject.h"
 
+#include <string.h>
+
 #include "Application/GameMain.h"
 #include "Engine/Math/CVector.h"
 #include "Engine/Math/CVSMath.h"
@@ -16,8 +18,8 @@
 #include "Gameplay/Simulation/GameTime.h"
 #include "Map/CMap.h"
 #include "ObjectInteractionStates.h"
-
-#include <string.h>
+#include "Application/SoundEffects.h"
+#include "Engine/Math/FixedPoint.h"
 
 #define PLAYER_ONE_RUNTIME_FLAGS 0x200
 #define PLAYER_TWO_RUNTIME_FLAGS 0x100

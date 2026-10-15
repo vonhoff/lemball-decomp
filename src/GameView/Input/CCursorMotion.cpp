@@ -1,5 +1,7 @@
 #include "CCursorMotion.h"
 
+#include <string.h>
+
 #include "../../Engine/Resources/ResourceCatalog.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/CFixed.h"
@@ -11,8 +13,6 @@
 #include "GameView/Animation/CLemmingAnimsManager.h"
 #include "Gameplay/Simulation/CAI.h"
 #include "Map/CMap.h"
-
-#include <string.h>
 
 namespace
 {

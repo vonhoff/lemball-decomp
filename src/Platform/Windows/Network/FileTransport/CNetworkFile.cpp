@@ -103,7 +103,7 @@ bool CNetworkFile::Write(const unsigned char* p_data, int p_size)
 	int success;
 	unsigned long written;
 
-	success = WriteFile(m_handle, p_data, (unsigned int) p_size, &written, NULL);
+	success = WriteFile(m_handle, p_data, p_size, &written, NULL);
 	if (success == 0) {
 		int error = GetLastError();
 		*g_pErrorOutput << "Write error: " << error << "\n";
@@ -112,7 +112,7 @@ bool CNetworkFile::Write(const unsigned char* p_data, int p_size)
 
 	m_position += written;
 	if (written != (unsigned int) p_size) {
-		*g_pErrorOutput << "Write error: " << (unsigned long) written << " bytes written instead of " << p_size << "\n";
+		*g_pErrorOutput << "Write error: " << written << " bytes written instead of " << p_size << "\n";
 		return false;
 	}
 	return true;
@@ -125,7 +125,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 	unsigned long got;
 	int error;
 
-	success = ReadFile(m_handle, p_data, (unsigned int) p_size, &got, NULL);
+	success = ReadFile(m_handle, p_data, p_size, &got, NULL);
 	if (success == 0) {
 		error = GetLastError();
 		if (error != ERROR_LOCK_VIOLATION) {
@@ -136,7 +136,7 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 
 	m_position += got;
 	if (got != (unsigned int) p_size) {
-		*g_pErrorOutput << "Read error: " << (unsigned long) got << " bytes read instead of " << p_size << "\n";
+		*g_pErrorOutput << "Read error: " << got << " bytes read instead of " << p_size << "\n";
 		*g_pErrorOutput << "in file " << m_filename << " which is " << GetFileSize() << " bytes long.\n";
 		return false;
 	}
@@ -146,14 +146,14 @@ bool CNetworkFile::Read(unsigned char* p_data, int p_size)
 // FUNCTION: LEMBALL 0x0047f890
 bool CNetworkFile::Seek(int p_position)
 {
-	m_position = (unsigned int) p_position;
+	m_position = p_position;
 	return SetFilePointer(m_handle, p_position, NULL, FILE_BEGIN) != SET_FILE_POINTER_FAILURE;
 }
 
 // FUNCTION: LEMBALL 0x0047f8b0
 int CNetworkFile::Tell()
 {
-	return (int) m_position;
+	return m_position;
 }
 
 // FUNCTION: LEMBALL 0x0047f8c0

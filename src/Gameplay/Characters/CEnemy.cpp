@@ -1,5 +1,7 @@
 #include "CEnemy.h"
 
+#include <stddef.h>
+
 #include "Application/GameMain.h"
 #include "Engine/Math/CVSMath.h"
 #include "Engine/Math/CVSPoint.h"
@@ -24,8 +26,6 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-
-#include <stddef.h>
 
 enum {
 	ENEMY_HIT_RESPONSE_DELAY_TICKS = 60

@@ -1,16 +1,17 @@
 #include "CDemo.h"
 
+#include <stddef.h>
+#include <string.h>
+
 #include "Engine/Queues/CBaseQueue.h"
 #include "Engine/Queues/tagMESSAGE.h"
 #include "Engine/Queues/PackParam.h"
 #include "Engine/Resources/Types/CResBIN.h"
 #include "Platform/Windows/VsTime.h"
 #include "Platform/Windows/Windowing/CPVWnd.h"
-#include <stddef.h>
 #include "Engine/Files/VsFile.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
-#include <string.h>
 
 struct _Filet;
 

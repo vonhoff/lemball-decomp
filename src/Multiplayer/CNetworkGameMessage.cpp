@@ -1,9 +1,9 @@
 #include "Multiplayer/CNetworkGameMessage.h"
 
-#include "Multiplayer/CGameFlaggedMessage.h"
-
-#include "Engine/Strings/CString.h"
 #include <string.h>
+
+#include "Multiplayer/CGameFlaggedMessage.h"
+#include "Engine/Strings/CString.h"
 
 // FUNCTION: LEMBALL 0x004523e0
 CNetworkGameMessage::CNetworkGameMessage() : CNetworkMessage(GAME_MESSAGE_GAME_INFO)

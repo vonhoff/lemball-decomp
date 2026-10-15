@@ -1,9 +1,9 @@
 #include "CResINT.h"
 
+#include <stddef.h>
+
 #include "Engine/Resources/Archive/CMogRes.h"
 #include "Engine/Resources/ResourceChunkTypes.h"
-
-#include <stddef.h>
 
 // FUNCTION: LEMBALL 0x0045dcb0
 CResINT* CResINT::Load(unsigned long p_resourceId)

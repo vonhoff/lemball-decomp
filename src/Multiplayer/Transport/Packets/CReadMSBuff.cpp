@@ -1,9 +1,9 @@
 #include "CReadMSBuff.h"
 
+#include <string.h>
+
 #include "BasePacketHeader.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
-
-#include <string.h>
 
 // FUNCTION: LEMBALL 0x004613d0
 CReadMSBuff::CReadMSBuff(int p_messageSlots, int p_messageCapacity, unsigned short p_packetSize)

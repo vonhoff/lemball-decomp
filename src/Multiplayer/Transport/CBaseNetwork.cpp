@@ -1,5 +1,7 @@
 #include "CBaseNetwork.h"
 
+#include <stddef.h>
+
 #include "CBroadcast.h"
 #include "CConnect.h"
 #include "CNetworkAddress.h"
@@ -17,8 +19,6 @@
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 #include "Multiplayer/Transport/Protocol/CPulseMessage.h"
 #include "NetworkConstants.h"
-
-#include <stddef.h>
 
 struct BasePacketHeader;
 

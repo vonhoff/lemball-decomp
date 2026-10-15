@@ -1,5 +1,7 @@
 #include "CTrampoline.h"
 
+#include <stddef.h>
+
 #include "Application/SoundEffects.h"
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Engine/Math/FixedPoint.h"
@@ -14,10 +16,8 @@
 #include "Map/CGround.h"
 #include "Map/CGroundArray.h"
 #include "Map/CMap.h"
-
 #include "Engine/Math/CFixed.h"
 #include "Gameplay/Geometry/C3DVector.h"
-#include <stddef.h>
 
 enum {
 	TRAMPOLINE_ACTIVATION_RADIUS_PIXELS = 32,

@@ -1,13 +1,13 @@
 #include "GraphicsInit.h"
 
+#include <stddef.h>
+
 #include "CGDIDevice.h"
 #include "CGraphicsDriver.h"
 #include "CGraphicsState.h"
 #include "CSurface.h"
 #include "Engine/Startup/tagPRE_INIT.h"
 #include "Platform/Windows/Input/CCursor.h"
-
-#include <stddef.h>
 
 class GrafPort;
 
