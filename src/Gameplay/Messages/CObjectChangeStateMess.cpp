@@ -5,20 +5,21 @@
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/ObjectActions.h"
 #include "Gameplay/Simulation/GameTime.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x004168d0
 CObjectChangeStateMess::CObjectChangeStateMess() : CGameObjectMess(MESSAGE_OBJECT_CHANGE_STATE)
 {
-	m_payloadCapacity += 3 * sizeof(unsigned long) + sizeof(unsigned short);
+	m_payloadCapacity += 3 * sizeof(Dword) + sizeof(unsigned short);
 }
 
 // FUNCTION: LEMBALL 0x004168f0
 void CObjectChangeStateMess::AddData()
 {
 	CGameObjectMess::AddData();
-	Add(g_dwSimulationTimestamp);
-	Add((unsigned long) m_object->m_action);
-	Add((unsigned long) m_object->m_stateTimer);
+	Add((Dword) g_dwSimulationTimestamp);
+	Add((Dword) m_object->m_action);
+	Add((Dword) m_object->m_stateTimer);
 	Add((unsigned short) m_object->m_actionArgument);
 }
 

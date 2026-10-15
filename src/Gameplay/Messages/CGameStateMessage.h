@@ -31,10 +31,10 @@ public:
 private:
 	friend class CAI;
 
-	eGameStates m_state;       // 0x2c
-	eGameStateStages m_stage;  // 0x30
-	unsigned long m_levelTime; // 0x34
-	unsigned long m_score;     // 0x38
+	eGameStates m_state;      // 0x2c
+	eGameStateStages m_stage; // 0x30
+	Dword m_levelTime;        // 0x34
+	Dword m_score;            // 0x38
 };
 
 // SYNTHETIC: LEMBALL 0x00413df0

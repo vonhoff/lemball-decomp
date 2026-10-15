@@ -4,6 +4,7 @@
 
 #include "CBroadcastMessage.h"
 #include "Multiplayer/Transport/NetworkConstants.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x0045f3d0
 CMessReqConnect::CMessReqConnect(const char* p_header) : CBroadcastMessage(p_header)
@@ -24,7 +25,7 @@ void CMessReqConnect::GetData()
 // FUNCTION: LEMBALL 0x0045f460
 void CMessReqConnect::AddData()
 {
-	Add((unsigned long) (short) m_requestedPort);
+	Add((Dword) (short) m_requestedPort);
 	Add(m_connectionData, NETWORK_PORT_COUNT);
 	Add(m_peerName);
 }

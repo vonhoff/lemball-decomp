@@ -127,7 +127,7 @@
         "docs/message-codec.json",
         "docs/archive-entries.json"
       ],
-      "concrete_blocker": "CNetworkMessage::Get(unsigned long&) writes four bytes. A wider unsigned long would leave part of the result uninitialized. MOG serialized entries now retain their 36-byte layout on Windows x86 and Linux x64; runtime resource-ID and file-offset APIs still use unsigned long.",
+      "concrete_blocker": "Packet DWORD fields, scalar codecs and payload sizes now use an unsigned 32-bit type on Windows x86 and Linux x64; byte access order is preserved. MOG serialized entries retain their 36-byte layout on both targets. Runtime resource-ID, file-offset and timer APIs still use unsigned long; pointer-derived connection IDs remain x86-specific.",
       "completion": "Representative original resource and packet bytes decode and encode identically using explicit format widths; original-build layouts remain verified; host pointers and runtime state are not treated as serialized structures."
     },
     {

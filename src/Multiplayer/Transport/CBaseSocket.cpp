@@ -1,6 +1,7 @@
 #include "CBaseSocket.h"
 
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x0045f750
 CBaseSocket::CBaseSocket()
@@ -15,8 +16,8 @@ CBaseSocket::CBaseSocket()
 // FUNCTION: LEMBALL 0x0045f790
 void CBaseSocket::AddData()
 {
-	Add((unsigned long) m_packetHeader->m_magic);
-	Add((unsigned long) m_packetHeader->m_packetSize);
+	Add((Dword) m_packetHeader->m_magic);
+	Add((Dword) m_packetHeader->m_packetSize);
 	Add(m_packetHeader->m_messageId);
 	Add(m_packetHeader->m_packetSequence);
 	Add(m_packetHeader->m_subpacketSequence);

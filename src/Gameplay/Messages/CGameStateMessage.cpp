@@ -13,8 +13,8 @@ CGameStateMessage::CGameStateMessage() : CNetworkMessage(MESSAGE_GAME_STATE)
 // FUNCTION: LEMBALL 0x00410bb0
 void CGameStateMessage::AddData()
 {
-	Add((unsigned long) m_state);
-	Add((unsigned long) m_stage);
+	Add((Dword) m_state);
+	Add((Dword) m_stage);
 	Add(m_levelTime);
 	Add(m_score);
 }

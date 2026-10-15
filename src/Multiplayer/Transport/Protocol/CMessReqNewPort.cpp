@@ -4,6 +4,7 @@
 
 #include "CMessReqConnect.h"
 #include "Multiplayer/Transport/Packets/BasePacketHeader.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x0045f490
 CMessReqNewPort::CMessReqNewPort(const char* p_header) : CMessReqConnect(p_header)
@@ -22,7 +23,7 @@ void CMessReqNewPort::GetData()
 void CMessReqNewPort::AddData()
 {
 	CMessReqConnect::AddData();
-	Add((unsigned long) m_connectionId);
+	Add((Dword) m_connectionId);
 }
 
 // GLOBAL: LEMBALL 0x004a1e54

@@ -6,21 +6,22 @@
 #include "GameMessageIds.h"
 #include "Gameplay/Geometry/AICOORD.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00416bb0
 CObjectPosMess::CObjectPosMess() : CGameObjectMess(MESSAGE_OBJECT_POS)
 {
-	m_payloadCapacity += 4 * sizeof(unsigned long);
+	m_payloadCapacity += 4 * sizeof(Dword);
 }
 
 // FUNCTION: LEMBALL 0x00416bd0
 void CObjectPosMess::AddData()
 {
 	CGameObjectMess::AddData();
-	Add((unsigned long) (m_object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS));
-	Add((unsigned long) (m_object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS));
-	Add((unsigned long) (m_object->m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS));
-	Add((unsigned long) m_object->m_objectActive);
+	Add((Dword) (m_object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((Dword) (m_object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((Dword) (m_object->m_position.m_zFixed >> FIXED_POINT_FRACTION_BITS));
+	Add((Dword) m_object->m_objectActive);
 }
 
 // FUNCTION: LEMBALL 0x00416c30

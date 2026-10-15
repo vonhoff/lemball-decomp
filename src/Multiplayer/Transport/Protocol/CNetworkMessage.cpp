@@ -67,7 +67,7 @@ CNetworkMessage::~CNetworkMessage()
 }
 
 // FUNCTION: LEMBALL 0x0045ef10
-void CNetworkMessage::Add(unsigned long p_value)
+void CNetworkMessage::Add(Dword p_value)
 {
 	const unsigned char* value;
 
@@ -113,16 +113,16 @@ void CNetworkMessage::Add(const unsigned char* p_data, int p_length)
 }
 
 // FUNCTION: LEMBALL 0x0045eff0
-unsigned long CNetworkMessage::GetDWORD()
+CNetworkMessage::Dword CNetworkMessage::GetDWORD()
 {
-	unsigned long value;
+	Dword value;
 
 	Get(value);
 	return value;
 }
 
 // FUNCTION: LEMBALL 0x0045f010
-void CNetworkMessage::Get(unsigned long& p_value)
+void CNetworkMessage::Get(Dword& p_value)
 {
 	unsigned char* target;
 

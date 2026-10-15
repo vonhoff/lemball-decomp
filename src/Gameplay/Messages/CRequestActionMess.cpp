@@ -4,18 +4,19 @@
 #include "CRequestReplyMess.h"
 #include "GameMessageIds.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
 
 // FUNCTION: LEMBALL 0x00416a10
 CRequestActionMess::CRequestActionMess() : CGameObjectMess(MESSAGE_REQUEST_ACTION)
 {
-	m_payloadCapacity += sizeof(unsigned long);
+	m_payloadCapacity += sizeof(Dword);
 }
 
 // FUNCTION: LEMBALL 0x00416a30
 void CRequestActionMess::AddData()
 {
 	CGameObjectMess::AddData();
-	Add((unsigned long) m_object->m_requestedAction);
+	Add((Dword) m_object->m_requestedAction);
 }
 
 // FUNCTION: LEMBALL 0x00416a50

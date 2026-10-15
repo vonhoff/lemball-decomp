@@ -1,5 +1,7 @@
 #include "CHeaderMessage.h"
 
+#include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
+
 // FUNCTION: LEMBALL 0x00479540
 CHeaderMessage::CHeaderMessage()
 {
@@ -15,7 +17,7 @@ CHeaderMessage::CHeaderMessage()
 void CHeaderMessage::AddData()
 {
 	unsigned short sequence;
-	unsigned long value;
+	Dword value;
 
 	++m_sequenceState.m_sequence;
 	Add(m_sequenceState.m_sequence);

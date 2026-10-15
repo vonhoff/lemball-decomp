@@ -1,6 +1,8 @@
 #ifndef LEMBALL_VISOS_MESSAGING_CNETWORKMESSAGE_H
 #define LEMBALL_VISOS_MESSAGING_CNETWORKMESSAGE_H
 
+#include <limits.h>
+
 class CConnect;
 
 enum eNetworkMessageId {
@@ -16,6 +18,14 @@ enum eNetworkMessageId {
 // VTABLE: LEMBALL 0x004932c8
 class CNetworkMessage {
 public:
+#if ULONG_MAX == 0xffffffffUL
+	typedef unsigned long Dword;
+#elif UINT_MAX == 0xffffffffU
+	typedef unsigned int Dword;
+#else
+#error CNetworkMessage requires a 32-bit unsigned integer type
+#endif
+
 	CNetworkMessage(unsigned long p_messageId = NETWORK_MESSAGE_FILE_OPEN_COUNT)
 	{
 		m_messageId = p_messageId;
@@ -38,7 +48,7 @@ public:
 	friend class CFileBroadcast;
 	friend class CNetworkManager;
 	bool Set(unsigned char* p_data);
-	unsigned long GetDWORD();
+	Dword GetDWORD();
 	unsigned char GetBYTE();
 	unsigned short GetWORD();
 	virtual bool CheckMessage(const unsigned char* p_arg0); // vtable+0x00
@@ -50,7 +60,7 @@ public:
 	void Add(const char* p_text);
 	void Add(const unsigned char* p_data, int p_length);
 	void Add(unsigned char p_value);
-	void Add(unsigned long p_value);
+	void Add(Dword p_value);
 	void Add(unsigned short p_value);
 	void CloseDataStream();
 	void ConvertBYTE();
@@ -60,7 +70,7 @@ public:
 	void Get(const char*& p_text);
 	void Get(const unsigned char*& p_data, int p_length);
 	void Get(unsigned char& p_value);
-	void Get(unsigned long& p_value);
+	void Get(Dword& p_value);
 	void Get(unsigned short& p_value);
 	void GetCopy(char* p_buffer);
 	void GetCopy(unsigned char* p_buffer, int p_length);
