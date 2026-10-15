@@ -5,57 +5,41 @@
 [![Exact Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Fexact.json)](#matching)
 [![Fuzzy Match](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvonhoff%2Flemball-decomp%2Fbadges%2Ffuzzy.json)](#matching)
 
-This project is a matching decompilation of *Lemmings Paintball*, an action video game from the *Lemmings* franchise
-developed by Visual Sciences and published by Psygnosis in 1996 for Windows 95.
+This project is a matching decompilation of *Lemmings Paintball*, an action game in the *Lemmings* franchise developed
+by Visual Sciences and published by Psygnosis in 1996 for Windows 95.
 
-The goal is to reconstruct the game's codebase using idiomatic, maintainable C++ that preserves the original behavior
-and matches the original machine code as closely as possible. The resulting codebase will serve as a faithful reference
-and foundation for future ports.
+The goal is to reconstruct the game's codebase in idiomatic, maintainable C++ while preserving its original behavior and
+matching the original machine code as closely as possible. The resulting codebase will serve as a faithful reference and
+foundation for future ports.
 
 > [!NOTE]
-> This reconstruction exclusively targets 32-bit Windows and uses Microsoft Visual C++ 4.0. <br/>
-> For a modern, cross-platform version, see [lemball-portable](https://github.com/vonhoff/lemball-portable).
+> This project targets 32-bit Windows using Microsoft Visual C++ 4.0. For a modern, cross-platform version,
+see [lemball-portable](https://github.com/vonhoff/lemball-portable).
 
 ## Reconstruction
 
-The original function and class names were recovered from the Macintosh 68000 version, which retained Metrowerks and
-MacsBug debugging symbols. These provided over 2,800 original function names and revealed C++ class hierarchies
-throughout the game and engine.
+The Macintosh 68000 version retained Metrowerks and MacsBug debugging symbols, providing over 2,800 original function
+names and revealing C++ class hierarchies.
 
-The Windows executable contains no debugging symbols, so functions were matched between the two versions using strings,
-constants, algorithms, virtual tables, object layouts, and call relationships.
+Since the Windows executable lacks debugging symbols, functions were matched across versions using strings, constants,
+algorithms, virtual tables, object layouts, and call relationships.
 
 ## Matching
 
-Each function is compared against the original executable using [reccmp](https://github.com/isledecomp/reccmp).
+Functions are compared against the original executable using [reccmp](https://github.com/isledecomp/reccmp).
 
-- **Exact:** Non-stub functions with a raw 100% assembly comparison score.
-- **Fuzzy:** Raw assembly similarity, including equivalent functions with lower scores.
-- **Effective:** Non-stub raw 100% matches and reccmp's own equivalence results.
+- **Exact:** Non-stub functions with 100% raw assembly similarity.
+- **Fuzzy:** Raw assembly similarity, including equivalent functions.
+- **Effective:** Non-stub exact matches and reccmp equivalence results.
 
-Exact and fuzzy matching metrics are tracked on both [decomp.dev](https://decomp.dev/vonhoff/lemball-decomp)
+Exact and fuzzy metrics are tracked on [decomp.dev](https://decomp.dev/vonhoff/lemball-decomp)
 and [bytematch.dev](https://bytematch.dev/vonhoff/lemball-decomp).
-
-### Prerequisites
-
-Matching requires the built executable in `build-msvc400` and the original `LEMBALL.EXE` placed in `data`.
-
-SHA-256: `d6337b58ccaf98df728b1490812cad0f927802d2e2c5fc932d00961f97027f63`
-
-### Workflow
-
-1. Find target: `python tools/triage_targets.py`
-2. Rebuild and diff: `python tools/make_binary.py && python tools/check_function.py 0xADDR`
-3. Check source: `python tools/check_source.py`
-4. Update report: `python tools/make_report.py` (writes to `build-msvc400/report.json`)
 
 ## Building
 
-Requires Python 3.10+ and Git. Run commands from the repository root in PowerShell.
+Requires Python 3.10+, Git, and PowerShell.
 
-### Setup
-
-Create the Python environment, install dependencies, and download the MSVC 4.00 toolchain once:
+Install dependencies and the MSVC 4.0 toolchain:
 
 ```powershell
 python -m venv .decomp-venv
@@ -64,37 +48,29 @@ python -m pip install -r requirements.txt
 git clone https://github.com/vonhoff/MSVC400 msvc400
 ```
 
-### Build
-
-Activate the environment in each new shell, then build:
+Build the executable:
 
 ```powershell
 .\.decomp-venv\Scripts\Activate.ps1
 python tools/make_binary.py
 ```
 
-Pass `--disable-startup-checks` to `make_binary.py` to bypass the CD-ROM and installation checks.
+Use `--disable-startup-checks` to bypass CD-ROM and installation checks.
 
 ## References
 
-### Resources
-
-- [The Cutting Room Floor - Lemmings Paintball](https://tcrf.net/Lemmings_Paintball)
-- [Game Data Digs - Lemmings Paintball](https://datadigs.info/doku.php?id=wiki:games:lemmings_paintball)
+- [The Cutting Room Floor](https://tcrf.net/Lemmings_Paintball)
+- [Game Data Digs](https://datadigs.info/doku.php?id=wiki:games:lemmings_paintball)
 - [Reverse Engineering a DOS Game with Ghidra and Codex](https://alexbevi.com/blog/2026/03/14/reverse-engineering-a-dos-game-with-ghidra-and-codex)
-
-### Inspirations
-
 - [isledecomp/isle](https://github.com/isledecomp/isle)
 - [marijnvdwerf/legoland](https://github.com/marijnvdwerf/legoland)
 
 ## AI Disclosure
 
-This project uses AI for tooling, research, and code reconstruction. All code is manually reviewed.
+AI is used for research, tooling, and code reconstruction. All code is manually reviewed.
 
 ## Legal
 
-This is an unofficial reverse-engineering project not affiliated with or endorsed by the original rights holders.
-Original game assets are not included in this repository.
+This is an unofficial project unaffiliated with the original rights holders. Original game assets are not included.
 
-No license is granted for the reconstructed game code. Independent code is released under [the Unlicense](UNLICENSE).
+No license is granted for reconstructed game code. Independent code is released under [the Unlicense](UNLICENSE).
