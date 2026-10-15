@@ -16,7 +16,7 @@ const unsigned int RESOURCE_LIST_HEADER_UNSET = 0xffffffff;
 void CResBaseLIST::SetHeader()
 {
 	ResListHeader* header = (ResListHeader*) m_name;
-	m_totalSize = header->m_totalSize;
+	m_subresourceCount = header->m_subresourceCount;
 	m_headerSize = header->m_headerSize;
 	m_bodySize = header->m_bodySize;
 	m_vramEntryCount = VRAM_ENTRIES_NOT_TRACKED;
@@ -43,7 +43,7 @@ void CResBaseLIST::OnRead(unsigned char* p_source, unsigned char** p_data, unsig
 		unsigned int count;
 		bool directed;
 		unsigned char* dataCursor;
-		count = m_totalSize / m_listHeader->m_capacity;
+		count = m_subresourceCount / m_listHeader->m_capacity;
 		directed = false;
 		dataCursor = m_data;
 		if (m_vramReady == 0) {
@@ -77,10 +77,10 @@ void CResBaseLIST::LoadData()
 		if (!GetfVramLoaded()) {
 			unsigned int headerTotal = m_listHeader->m_currentIndex;
 			unsigned int count;
-			if (headerTotal != RESOURCE_LIST_HEADER_UNSET && m_totalSize != headerTotal) {
+			if (headerTotal != RESOURCE_LIST_HEADER_UNSET && m_subresourceCount != headerTotal) {
 				return;
 			}
-			count = m_totalSize / m_listHeader->m_capacity;
+			count = m_subresourceCount / m_listHeader->m_capacity;
 			if (m_vramReady == 0) {
 				AllocateResources(count);
 				CVSRange headerRange;
@@ -105,7 +105,7 @@ void CResBaseLIST::LoadData()
 bool CResBaseLIST::ForceLoadVram()
 {
 	if (!GetfVramLoaded()) {
-		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_capacity; i++) {
+		for (unsigned int i = 0; i < m_subresourceCount / m_listHeader->m_capacity; i++) {
 			if (!ForceLoadVram(i)) {
 				return false;
 			}
@@ -125,7 +125,7 @@ void CResBaseLIST::UnLoadData(bool p_force)
 		g_pActiveMogRes->DeallocateMem(m_data, 1);
 		m_data = NULL;
 	}
-	for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_capacity; i++) {
+	for (unsigned int i = 0; i < m_subresourceCount / m_listHeader->m_capacity; i++) {
 		UnLoadResources(i, p_force);
 	}
 	OnUnLoad();
@@ -135,7 +135,7 @@ void CResBaseLIST::UnLoadData(bool p_force)
 void CResBaseLIST::UnLoadVramData(bool p_force)
 {
 	if (GetfAnyVramLoaded()) {
-		for (unsigned int i = 0; i < m_totalSize / m_listHeader->m_capacity; i++) {
+		for (unsigned int i = 0; i < m_subresourceCount / m_listHeader->m_capacity; i++) {
 			UnLoadVramData(i, p_force);
 		}
 	}

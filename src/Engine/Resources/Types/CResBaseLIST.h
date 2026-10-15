@@ -6,7 +6,7 @@
 
 // SIZE 0x0c
 struct ResListHeader {
-	unsigned int m_totalSize;
+	unsigned int m_subresourceCount;
 	unsigned int m_headerSize;
 	unsigned int m_bodySize;
 };
@@ -51,18 +51,18 @@ public:
 	friend class CGraphicButton;
 
 private:
-	ResourceTypeList* m_listHeader; // 0x48
-	unsigned char* m_headerData;    // 0x4c
-	unsigned int m_unk0x50;         // 0x50
-	bool m_vramReady;               // 0x54
-	bool m_headerLoaded;            // 0x58
-	bool m_bodyLoaded;              // 0x5c
-	unsigned int m_vramLoadedCount; // 0x60
-	int m_vramEntryCount;           // 0x64
-	unsigned int m_vramSwappable;   // 0x68
-	unsigned int m_totalSize;       // 0x6c
-	unsigned int m_headerSize;      // 0x70
-	unsigned int m_bodySize;        // 0x74
+	ResourceTypeList* m_listHeader;  // 0x48
+	unsigned char* m_headerData;     // 0x4c
+	unsigned int m_unk0x50;          // 0x50
+	bool m_vramReady;                // 0x54
+	bool m_headerLoaded;             // 0x58
+	bool m_bodyLoaded;               // 0x5c
+	unsigned int m_vramLoadedCount;  // 0x60
+	int m_vramEntryCount;            // 0x64
+	unsigned int m_vramSwappable;    // 0x68
+	unsigned int m_subresourceCount; // 0x6c
+	unsigned int m_headerSize;       // 0x70
+	unsigned int m_bodySize;         // 0x74
 };
 
 // SYNTHETIC: LEMBALL 0x0045e700

@@ -161,7 +161,7 @@ unsigned long CAnimsManager::GetnAnims(unsigned long p_resourceId)
 	if (resource->m_chunkType == RESOURCE_CHUNK_ZRLE) {
 		return 1;
 	}
-	return ((CResBaseLIST*) resource)->m_totalSize;
+	return ((CResBaseLIST*) resource)->m_subresourceCount;
 }
 
 // FUNCTION: LEMBALL 0x00467570
