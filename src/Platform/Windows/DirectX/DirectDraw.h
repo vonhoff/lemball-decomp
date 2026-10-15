@@ -4,6 +4,7 @@
 #include "Platform/Windows/WindowsTypes.h"
 
 struct IDirectDraw;
+struct IUnknown;
 
 struct IDirectDrawPalette {
 	virtual long __stdcall QueryInterface(const void*, void**) = 0;
@@ -12,7 +13,7 @@ struct IDirectDrawPalette {
 	virtual long __stdcall GetCaps(unsigned long*) = 0;
 	virtual long __stdcall GetEntries(unsigned long, unsigned long, unsigned long, void*) = 0;
 	virtual long __stdcall Initialize(IDirectDraw*, unsigned long, void*) = 0;
-	virtual long __stdcall SetEntries(unsigned long, unsigned long, unsigned long, void*) = 0;
+	virtual long __stdcall SetEntries(unsigned long, unsigned long, unsigned long, PALETTEENTRY*) = 0;
 };
 
 struct DDBLTFX {
@@ -42,7 +43,7 @@ struct IDirectDrawSurface {
 	virtual unsigned long __stdcall Release() = 0;
 	virtual long __stdcall AddAttachedSurface(IDirectDrawSurface*) = 0;
 	virtual long __stdcall AddOverlayDirtyRect(void*) = 0;
-	virtual long __stdcall Blt(void*, IDirectDrawSurface*, void*, unsigned long, DDBLTFX*) = 0;
+	virtual long __stdcall Blt(RECT*, IDirectDrawSurface*, RECT*, unsigned long, DDBLTFX*) = 0;
 	virtual long __stdcall BltBatch(void*, unsigned long, unsigned long) = 0;
 	virtual long __stdcall BltFast(unsigned long, unsigned long, IDirectDrawSurface*, void*, unsigned long) = 0;
 	virtual long __stdcall DeleteAttachedSurface(unsigned long, IDirectDrawSurface*) = 0;
@@ -65,7 +66,7 @@ struct IDirectDrawSurface {
 	virtual long __stdcall GetSurfaceDesc(DDSURFACEDESC*) = 0;
 	virtual long __stdcall Initialize(IDirectDraw*, DDSURFACEDESC*) = 0;
 	virtual long __stdcall IsLost() = 0;
-	virtual long __stdcall Lock(void*, DDSURFACEDESC*, unsigned long, void*) = 0;
+	virtual long __stdcall Lock(RECT*, DDSURFACEDESC*, unsigned long, HANDLE) = 0;
 	virtual long __stdcall ReleaseDC(void*) = 0;
 	virtual long __stdcall Restore() = 0;
 	virtual long __stdcall SetClipper(void*) = 0;
@@ -85,8 +86,8 @@ struct IDirectDraw {
 	virtual unsigned long __stdcall Release() = 0;
 	virtual long __stdcall Compact() = 0;
 	virtual long __stdcall CreateClipper(unsigned long, void**, void*) = 0;
-	virtual long __stdcall CreatePalette(unsigned long, void*, IDirectDrawPalette**, void*) = 0;
-	virtual long __stdcall CreateSurface(DDSURFACEDESC*, IDirectDrawSurface**, void*) = 0;
+	virtual long __stdcall CreatePalette(unsigned long, PALETTEENTRY*, IDirectDrawPalette**, IUnknown*) = 0;
+	virtual long __stdcall CreateSurface(DDSURFACEDESC*, IDirectDrawSurface**, IUnknown*) = 0;
 	virtual long __stdcall DuplicateSurface(IDirectDrawSurface*, IDirectDrawSurface**) = 0;
 	virtual long __stdcall EnumDisplayModes(unsigned long,
 											DDSURFACEDESC*,

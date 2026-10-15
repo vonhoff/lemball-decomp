@@ -347,7 +347,7 @@ bool CDirectDrawDriver::CreatePalette(void* p_paletteDescription)
 	LOGPALETTE* palette = (LOGPALETTE*) p_paletteDescription;
 	effects.dwSize = sizeof(DDBLTFX);
 	effects.dwFillColor = 0;
-	IDirectDrawSurface* primary = (IDirectDrawSurface*) m_primarySurface;
+	IDirectDrawSurface* primary = m_primarySurface;
 	result = primary->Blt(NULL, NULL, NULL, DDBLT_COLORFILL, &effects);
 	if (result != 0) {
 		*g_pErrorOutput << "Direct Draw Initial rectangle blit failed : "
@@ -369,7 +369,7 @@ bool CDirectDrawDriver::CreatePalette(void* p_paletteDescription)
 							<< FormatUnknownDirectDrawError(result & DIRECT_DRAW_ERROR_CODE_MASK) << "\n";
 			return false;
 		}
-		primary = (IDirectDrawSurface*) m_primarySurface;
+		primary = m_primarySurface;
 		result = primary->SetPalette(m_paletteInterface);
 		if (result != 0) {
 			*g_pErrorOutput << "Direct Draw Set Palette failed: "
