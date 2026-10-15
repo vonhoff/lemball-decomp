@@ -207,7 +207,7 @@ private:
 	unsigned short m_levelVersion;                     // 0x54
 	unsigned short m_pad0x56;                          // 0x56
 	unsigned int m_gameplayEnabled;                    // 0x58
-	unsigned int m_gameplayStartDelay;                 // 0x5c
+	unsigned long m_gameplayStartDelay;                // 0x5c
 	unsigned int m_mapType;                            // 0x60
 	unsigned int m_networkMode;                        // 0x64
 	unsigned int m_started;                            // 0x68
@@ -217,7 +217,7 @@ private:
 	CPBNetworkGame* m_networkGame;                     // 0x78
 	unsigned int m_isHost;                             // 0x7c
 	unsigned int m_unk0x80;                            // 0x80
-	unsigned int m_lastNetworkSendCheckTick;           // 0x84
+	unsigned long m_lastNetworkSendCheckTick;          // 0x84
 	unsigned int m_clockSourceReady;                   // 0x88
 	CAnimSpecial* m_animSpecial;                       // 0x8c
 	int m_networkStartsX[4];                           // 0x90
@@ -228,7 +228,7 @@ private:
 	int m_unk0xd4;                                     // 0xd4
 	int m_paused;                                      // 0xd8
 	int m_clockStartPending;                           // 0xdc
-	int m_levelStartTick;                              // 0xe0
+	unsigned long m_levelStartTick;                    // 0xe0
 	int m_levelTimeRemaining;                          // 0xe4
 	int m_gameTime;                                    // 0xe8
 	int m_timeLimit;                                   // 0xec
@@ -236,7 +236,7 @@ private:
 	unsigned int m_levelStartScore;                    // 0xf4
 	int m_lemmingCount;                                // 0xf8
 	int m_flagCounts[2];                               // 0xfc
-	unsigned int m_gameOverDeadline;                   // 0x104
+	unsigned long m_gameOverDeadline;                  // 0x104
 	eGameStatus m_gameStatus;                          // 0x108
 	int m_isSinglePlayer;                              // 0x10c
 	CMap* m_map;                                       // 0x110

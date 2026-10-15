@@ -770,7 +770,7 @@ void CAI::Process(int p_paused)
 			m_clockSourceReady = 1;
 		}
 	}
-	unsigned int time;
+	unsigned long time;
 	if (m_networkMode != NETWORK_MODE_SINGLE_PLAYER && g_pActiveConnection != NULL &&
 		g_pActiveConnection->m_isHost != 0) {
 		time = g_dwRemoteGameTick;

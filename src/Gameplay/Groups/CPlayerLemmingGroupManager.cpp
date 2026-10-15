@@ -578,7 +578,7 @@ void CPlayerLemmingGroupManager::LoadLevel(unsigned char* p_data, unsigned long 
 		lemming->m_manager = manager;
 		AddPlayerLemmingToGroup(lemming, group);
 	}
-	unsigned int doorTime =
+	unsigned long doorTime =
 		(count * PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS + PLAYER_GROUP_FIRST_LEMMING_DELAY_MS) / GAME_TICK_MILLISECONDS;
 	if (g_pGenericGroupAI->m_gameplayStartDelay < doorTime) {
 		g_pGenericGroupAI->m_gameplayStartDelay = doorTime;
@@ -683,7 +683,7 @@ void CPlayerLemmingGroupManager::LoadAdditionalPlayerStartPositions(unsigned cha
 			CPlayerLemmingGroup* group = (CPlayerLemmingGroup*) CGenericGroupManager::GetNthGroup(i);
 			AddPlayerLemmingToGroup(lemming, group);
 		}
-		unsigned int doorTime =
+		unsigned long doorTime =
 			(m_lemmingCounts[i] * PLAYER_GROUP_LEMMING_SPAWN_INTERVAL_MS + PLAYER_GROUP_FIRST_LEMMING_DELAY_MS) /
 			GAME_TICK_MILLISECONDS;
 		if (g_pGenericGroupAI->m_gameplayStartDelay < doorTime) {
