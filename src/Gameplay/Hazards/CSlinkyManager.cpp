@@ -69,7 +69,7 @@ void CSlinkyManager::RemoveSlinkyByObject(CGameObject* p_object)
 	int index = 0;
 	if (0 < m_count) {
 		do {
-			if ((unsigned short) m_slinkies[index].GetId() == (unsigned short) p_object->GetId()) {
+			if (m_slinkies[index].GetId() == p_object->GetId()) {
 				m_slinkies[index].SetId(INVALID_OBJECT_ID);
 				for (int next = index + 1; next < m_count; next++) {
 					m_slinkies[next - 1] = m_slinkies[next];

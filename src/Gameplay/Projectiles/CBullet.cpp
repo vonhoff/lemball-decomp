@@ -202,7 +202,7 @@ bool CBullet::Process()
 				candidate = NULL;
 			hitFound:
 				CGameObject* hitObject = candidate;
-				if (hitObject != NULL && (unsigned short) hitObject->GetId() != m_sourceObjectId) {
+				if (hitObject != NULL && hitObject->GetId() != m_sourceObjectId) {
 					if (m_owner != OWNER_REMOTE_PLAYER || hitObject->m_objectType == OBJECT_PLAYER_2) {
 						hitObject->HitBullet(this);
 					}

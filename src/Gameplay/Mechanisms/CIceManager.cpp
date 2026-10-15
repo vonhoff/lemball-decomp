@@ -107,7 +107,7 @@ void CIceManager::Switch(swMessage p_message, int p_id)
 	int index = 0;
 	if (0 < m_count) {
 		do {
-			if ((unsigned short) m_ice[index].GetId() == p_id) {
+			if (m_ice[index].GetId() == p_id) {
 				break;
 			}
 			index++;

@@ -22,7 +22,7 @@ void CGameObjectMess::Send(CGlobalGameObject* p_object)
 void CGameObjectMess::AddData()
 {
 	Add((unsigned short) m_messageId);
-	Add((unsigned short) m_object->GetId());
+	Add(m_object->GetId());
 }
 
 // FUNCTION: LEMBALL 0x004168c0

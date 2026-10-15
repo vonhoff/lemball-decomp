@@ -179,7 +179,7 @@ void CLiftManager::Switch(swMessage p_message, int p_id, int p_legacyA, int p_le
 	int i = 0;
 	if (0 < m_count) {
 		while (true) {
-			if ((unsigned short) m_lifts[i].GetId() == p_id) {
+			if (m_lifts[i].GetId() == p_id) {
 				break;
 			}
 			i++;

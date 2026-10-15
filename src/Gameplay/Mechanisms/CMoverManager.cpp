@@ -161,7 +161,7 @@ void CMoverManager::Switch(swMessage p_message, int p_id)
 {
 	int index = 0;
 	while (index < m_count) {
-		if ((unsigned short) m_movers[index].GetId() == p_id) {
+		if (m_movers[index].GetId() == p_id) {
 			if (p_message == SW_MOVER) {
 				m_movers[index].Switch();
 			}

@@ -65,7 +65,7 @@ void CHandManager::ResetCount()
 void CHandManager::RemoveHand(CGameObject* p_object)
 {
 	int index = 0;
-	short id = p_object->GetId();
+	unsigned short id = p_object->GetId();
 	for (; index < m_count; index++) {
 		if (m_hands[index].GetId() == id) {
 			int next = index + 1;

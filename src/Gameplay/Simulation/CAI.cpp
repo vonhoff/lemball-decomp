@@ -1280,7 +1280,7 @@ void CAI::FixUpLevel()
 	int count = g_wObjectCount;
 	for (int i = 0; i < count; i++) {
 		CGameObject* object = g_pObjects[(unsigned short) i];
-		if (object->GetId() == (short) INVALID_OBJECT_ID) {
+		if (object->GetId() == INVALID_OBJECT_ID) {
 			object->SetId(CGameObject::NextId());
 		}
 	}

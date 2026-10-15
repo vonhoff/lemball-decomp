@@ -114,7 +114,7 @@ void CBaseObjectManager::GetData()
 		CGlobalGameObject* found = NULL;
 		for (int i = 0; i < g_wObjectCount; i++) {
 			CGameObject* obj = g_pObjects[(unsigned short) i];
-			if (obj != NULL && (unsigned short) obj->GetId() == id) {
+			if (obj != NULL && obj->GetId() == id) {
 				found = (CGlobalGameObject*) obj;
 				break;
 			}

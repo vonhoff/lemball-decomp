@@ -1945,7 +1945,7 @@
     {
       "address": 4200340,
       "target": 4285968,
-      "target_symbol": "?GetId@CGameObject@@QAEFXZ"
+      "target_symbol": "?GetId@CGameObject@@QAEGXZ"
     },
     {
       "address": 4200345,
@@ -11727,7 +11727,7 @@
           "original_instruction": 4235149,
           "original_bytes": "e80278ffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -11743,7 +11743,7 @@
           "original_instruction": 4235190,
           "original_bytes": "e8d977ffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 118,
@@ -12000,7 +12000,7 @@
           "original_instruction": 4239130,
           "original_bytes": "e87568ffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -12197,14 +12197,14 @@
           "original_instruction": 4242005,
           "original_bytes": "e83a5dffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 47,
           "original_instruction": 4242015,
           "original_bytes": "e8305dffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 106,
@@ -12881,7 +12881,7 @@
           "original_instruction": 4252017,
           "original_bytes": "e81e36ffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 128,
@@ -12951,7 +12951,7 @@
           "original_instruction": 4251985,
           "original_bytes": "e83e36ffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -12976,14 +12976,14 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CDoorManager.cpp.obj",
       "symbol": "?Switch@CDoorManager@@QAEXW4swMessage@@H@Z",
       "size": 88,
-      "fingerprint": "d13c5eee2e6c4511be19b9d1e3f1b80c1e46e959d981ec7b26ebde92f25c69ba",
+      "fingerprint": "a4e0daa22fcbe2ab213bc0f72089b4a4b0ad20e62fa634d9fdd0669e0d8e42dc",
       "references": [
         {
           "offset": 24,
           "original_instruction": 4253112,
           "original_bytes": "e8d731ffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 76,
@@ -13006,7 +13006,7 @@
           "original_instruction": 4253209,
           "original_bytes": "e87631ffff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -13061,7 +13061,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CDoorManager.cpp.obj",
       "symbol": "??_ECDoor@@UAEPAXI@Z",
       "size": 107,
-      "fingerprint": "ab2b21a547e4ede17c9044dde4608fc4ce815e25d5a14782a327cbbfe92d9aea",
+      "fingerprint": "0c0dc49132d23a1f1e7fac7930963bc68b47c849565b60eef59bd0147bc6adc0",
       "references": [
         {
           "offset": 48,
@@ -15048,7 +15048,7 @@
           "original_instruction": 4272081,
           "original_bytes": "e8bee7feff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 44,
@@ -16276,7 +16276,7 @@
           "original_instruction": 4286361,
           "original_bytes": "e8f6affeff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -16324,7 +16324,7 @@
           "original_instruction": 4286639,
           "original_bytes": "e8e0aefeff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -18319,7 +18319,7 @@
           "original_instruction": 4303246,
           "original_bytes": "e8016efeff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 693,
@@ -18436,7 +18436,7 @@
           "original_instruction": 4305411,
           "original_bytes": "e88c65feff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 101,
@@ -18663,7 +18663,7 @@
           "original_instruction": 4307295,
           "original_bytes": "e8305efeff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 65,
@@ -22422,7 +22422,7 @@
           "original_instruction": 4349736,
           "original_bytes": "e867b8fdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 89,
@@ -22452,7 +22452,7 @@
           "original_instruction": 4349870,
           "original_bytes": "e8e1b7fdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -23114,7 +23114,7 @@
           "original_instruction": 4358145,
           "original_bytes": "e88e97fdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 113,
@@ -23177,7 +23177,7 @@
           "original_instruction": 4358113,
           "original_bytes": "e8ae97fdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -24554,14 +24554,14 @@
           "original_instruction": 4379868,
           "original_bytes": "e8b342fdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 37,
           "original_instruction": 4379893,
           "original_bytes": "e89a42fdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         }
       ]
     },
@@ -24720,7 +24720,7 @@
           "original_instruction": 4382120,
           "original_bytes": "e8e739fdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 81,
@@ -24929,28 +24929,28 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?FindObjectsOnTopOfMe@CMover@@QAEXXZ",
       "size": 192,
-      "fingerprint": "e52ca0ba0b0b1f41c92709a3fafeb5f731738fd418a0faa46d7749ffed1d2c9a",
+      "fingerprint": "5abbc37dbb5438b0e61955e0f483aa6928b3dd41a3db6732921e68c5dbd0bc2c",
       "references": [
         {
           "offset": 84,
           "original_instruction": 4385236,
           "original_bytes": "e8bb2dfdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 97,
           "original_instruction": 4385251,
           "original_bytes": "e8ac2dfdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 111,
           "original_instruction": 4385263,
           "original_bytes": "e8a02dfdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 174,
@@ -25243,7 +25243,7 @@
           "original_instruction": 4388408,
           "original_bytes": "e85721fdff",
           "thunk": 4200340,
-          "source_symbol": "?GetId@CGameObject@@QAEFXZ"
+          "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
           "offset": 74,

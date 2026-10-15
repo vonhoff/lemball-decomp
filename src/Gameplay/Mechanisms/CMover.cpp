@@ -162,7 +162,7 @@ void CMover::FindObjectsOnTopOfMe()
 	if (objectCount > 0) {
 		do {
 			CGameObject* object = g_pObjects[(unsigned short) index];
-			if (object != NULL && object->GetId() != (short) INVALID_OBJECT_ID && GetId() != object->GetId() &&
+			if (object != NULL && object->GetId() != INVALID_OBJECT_ID && GetId() != object->GetId() &&
 				object->m_objectType != OBJECT_SHEEP) {
 				int objectX = object->m_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 				int objectY = object->m_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;

@@ -96,9 +96,9 @@ int CDoorManager::Add(unsigned short p_id,
 // FUNCTION: LEMBALL 0x0040e140
 void CDoorManager::RemoveDoorByObject(CDoor* p_door)
 {
-	unsigned short objectId = (unsigned short) p_door->GetId();
+	unsigned short objectId = p_door->GetId();
 	for (int index = 0; index < m_count; index++) {
-		if ((unsigned short) m_doors[index].GetId() == objectId) {
+		if (m_doors[index].GetId() == objectId) {
 			m_doors[index].Delete();
 			m_doors[index].SetId(INVALID_OBJECT_ID);
 			for (int next = index + 1; next < m_count; next++) {
@@ -145,7 +145,7 @@ void CDoorManager::Switch(swMessage p_message, int p_id)
 	int i = 0;
 	if (0 < m_count) {
 		while (true) {
-			if ((unsigned short) m_doors[i].GetId() == p_id) {
+			if (m_doors[i].GetId() == p_id) {
 				break;
 			}
 			i++;

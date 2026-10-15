@@ -61,7 +61,7 @@ public:
 	void ResetInstructions();
 	static short NextId();
 	static short NextLoadingId();
-	short GetId();
+	unsigned short GetId();
 	void Blocked();
 	unsigned short MapCheck(int p_x, int p_y);
 	virtual ~CGameObject();                                                        // vtable+0x00

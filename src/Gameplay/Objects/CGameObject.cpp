@@ -1241,7 +1241,7 @@ void CGameObject::Init(CAI* p_ai)
 }
 
 // FUNCTION: LEMBALL 0x00416610
-short CGameObject::GetId()
+unsigned short CGameObject::GetId()
 {
 	return m_linkedObjectId;
 }

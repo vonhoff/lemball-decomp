@@ -293,7 +293,7 @@ bool CIce::StepOn(const AICOORD& p_position, CGameObject* p_object)
 // FUNCTION: LEMBALL 0x0042d4d0
 void CIce::Leave(CPlayerLemming* p_lemming)
 {
-	short lemmingId = ((CGameObject*) p_lemming)->GetId();
+	unsigned short lemmingId = ((CGameObject*) p_lemming)->GetId();
 	int index = 0;
 	if (m_objectCount > 0) {
 		CGameObject** object = m_objects;

@@ -143,7 +143,7 @@ void CObjectManager::DeleteObjectAndLinkedTargets(CGlobalGameObject* p_object)
 			}
 			if (m_objects[linkedIndex]->m_objectType == OBJECT_CRATE) {
 				unsigned short contentsId = ((CCrate*) m_objects[linkedIndex])->m_contentsId;
-				if ((unsigned short) p_object->GetId() == contentsId) {
+				if (p_object->GetId() == contentsId) {
 					DeleteObjectAndLinkedTargets(m_objects[linkedIndex]);
 				}
 			}
@@ -345,7 +345,7 @@ void CObjectManager::RemoveById(short p_id)
 {
 	for (int index = 0; index < m_count; index++) {
 		CGlobalGameObject* object = m_objects[index];
-		if (object != NULL && object->GetId() == p_id) {
+		if (object != NULL && object->GetId() == (unsigned short) p_id) {
 			DeactivateObjectAtIndex(index);
 			return;
 		}

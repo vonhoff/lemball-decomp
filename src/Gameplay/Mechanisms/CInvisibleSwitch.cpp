@@ -141,7 +141,7 @@ void CInvisibleSwitch::AddObject(CGameObject* p_object)
 // FUNCTION: LEMBALL 0x00409fa0
 void CInvisibleSwitch::StepOn(const AICOORD& p_position, CGameObject* p_object)
 {
-	if (m_triggered == 0 && m_requestedAction == ACTION_READY && GetId() != (short) p_object->m_invisibleSwitchId) {
+	if (m_triggered == 0 && m_requestedAction == ACTION_READY && GetId() != p_object->m_invisibleSwitchId) {
 		int x = p_position.m_xFixed >> FIXED_POINT_FRACTION_BITS;
 		int y = p_position.m_yFixed >> FIXED_POINT_FRACTION_BITS;
 		if (x >= m_minCorner.m_x - 8 && x <= m_maxCorner.m_x + 7 && y >= m_minCorner.m_y - 8 &&
