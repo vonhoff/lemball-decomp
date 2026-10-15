@@ -26,7 +26,7 @@ unsigned char CRawRead::InputByte()
 }
 
 // FUNCTION: LEMBALL 0x0045bc40
-unsigned int CRawRead::InputDword()
+unsigned long CRawRead::InputDword()
 {
 	unsigned int value;
 	vsRead(g_pMogFile, &value, sizeof(value));

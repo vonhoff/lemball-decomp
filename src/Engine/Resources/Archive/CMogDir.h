@@ -31,16 +31,16 @@ public:
 	friend class CMogRes;
 
 private:
-	tagCHUNK m_root;                   // 0x00
-	tagCHUNK m_currentDir;             // 0x08
-	unsigned int m_directoryEndOffset; // 0x10
-	unsigned int m_payloadStartOffset; // 0x14
-	tagCHUNK m_first;                  // 0x18
-	tagCHUNK m_iterator;               // 0x20
-	int m_chunkCount;                  // 0x28
-	int m_loadedChunkCount;            // 0x2c
-	unsigned char* m_directoryData;    // 0x30
-	unsigned int m_unk0x34;            // 0x34
+	tagCHUNK m_root;                    // 0x00
+	tagCHUNK m_currentDir;              // 0x08
+	unsigned long m_directoryEndOffset; // 0x10
+	unsigned long m_payloadStartOffset; // 0x14
+	tagCHUNK m_first;                   // 0x18
+	tagCHUNK m_iterator;                // 0x20
+	int m_chunkCount;                   // 0x28
+	int m_loadedChunkCount;             // 0x2c
+	unsigned char* m_directoryData;     // 0x30
+	unsigned int m_unk0x34;             // 0x34
 };
 
 extern int g_emptyChunkIndex;

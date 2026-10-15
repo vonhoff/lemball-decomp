@@ -33,7 +33,7 @@ const int MOG_SEEK_FROM_START = 0;
 CMogDir::CMogDir(unsigned long p_fileOffset)
 {
 	tagCHUNK chunk;
-	unsigned int directoryDataSize;
+	unsigned long directoryDataSize;
 
 	int chunkIndex = g_emptyChunkIndex;
 	tagChunkInfo* chunkInfo = g_pEmptyChunkInfo;

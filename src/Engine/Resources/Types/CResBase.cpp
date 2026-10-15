@@ -160,7 +160,7 @@ void CResBase::UnLoad()
 // FUNCTION: LEMBALL 0x0045d1c0
 void CResBase::UnLoadData(bool p_force)
 {
-	unsigned int size;
+	unsigned long size;
 
 	if (m_loaded != 0) {
 		size = m_dataSize;
@@ -259,7 +259,7 @@ void CResBase::SetType()
 }
 
 // FUNCTION: LEMBALL 0x0045e650
-unsigned int CResBase::GetSizeUsed()
+unsigned long CResBase::GetSizeUsed()
 {
 	return m_dataSize;
 }

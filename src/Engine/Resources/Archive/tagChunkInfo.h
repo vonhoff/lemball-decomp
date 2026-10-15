@@ -14,15 +14,15 @@ struct tagChunkInfo {
 	void* operator new(size_t p_size) { return CMogloadArena::operator new(p_size); }
 	void operator delete(void* p_data) { CMogloadArena::operator delete(p_data); }
 
-	unsigned char* m_data;     // 0x00
-	CHUNKID m_type;            // 0x04
-	unsigned long m_id;        // 0x08
-	unsigned int m_fileOffset; // 0x0c
-	unsigned int m_size;       // 0x10
-	tagCHUNK m_next;           // 0x14
-	tagCHUNK m_child;          // 0x1c
-	CMogDir* m_directory;      // 0x24
-	char m_name[16];           // 0x28
+	unsigned char* m_data;      // 0x00
+	CHUNKID m_type;             // 0x04
+	unsigned long m_id;         // 0x08
+	unsigned long m_fileOffset; // 0x0c
+	unsigned long m_size;       // 0x10
+	tagCHUNK m_next;            // 0x14
+	tagCHUNK m_child;           // 0x1c
+	CMogDir* m_directory;       // 0x24
+	char m_name[16];            // 0x28
 };
 
 #endif

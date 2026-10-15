@@ -149,7 +149,7 @@ void CResBaseLIST::SetType()
 }
 
 // FUNCTION: LEMBALL 0x0045e690
-unsigned int CResBaseLIST::GetSizeUsed()
+unsigned long CResBaseLIST::GetSizeUsed()
 {
 	return m_bodySize;
 }

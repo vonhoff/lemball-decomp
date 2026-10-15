@@ -168,7 +168,7 @@ int CMogRes::KillLeastResource(unsigned long p_requiredSize)
 	int i = 0;
 	unsigned int bestRefs = RESOURCE_REFERENCE_COUNT_INITIAL_UPPER_BOUND;
 	int bestIndex = RESOURCE_INDEX_NONE;
-	unsigned int bestSize = 0;
+	unsigned long bestSize = 0;
 
 	if (m_resourceCount > i) {
 		do {
@@ -182,7 +182,7 @@ int CMogRes::KillLeastResource(unsigned long p_requiredSize)
 			CResBase* resource = m_resources[i];
 			if (resource->m_loaded != 0) {
 				if (resource->m_directUseCount == 0) {
-					unsigned int used = resource->GetSizeUsed();
+					unsigned long used = resource->GetSizeUsed();
 					unsigned int refs = m_resources[i]->m_referenceCount;
 					if ((used >= p_requiredSize && used > bestSize) || bestRefs > refs) {
 						bestRefs = refs;
@@ -227,7 +227,7 @@ int CMogRes::GetFreeHandle()
 unsigned char* CMogRes::AllocateMainMem(unsigned long p_size)
 {
 	unsigned char* memory;
-	unsigned int size = p_size;
+	unsigned long size = p_size;
 
 	do {
 		memory = (unsigned char*) CMogloadArena::operator new(size);

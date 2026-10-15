@@ -27,7 +27,7 @@ public:
 	virtual void OnLoad();                                                                      // vtable+0x2c
 	virtual void OnUnLoad();                                                                    // vtable+0x30
 	virtual void SetType();                                                                     // vtable+0x34
-	virtual unsigned int GetSizeUsed();                                                         // vtable+0x38
+	virtual unsigned long GetSizeUsed();                                                        // vtable+0x38
 	void DoLoad(unsigned long p_resourceId);
 	void Initialise();
 	void Lock()
@@ -76,8 +76,8 @@ protected:
 	bool m_vramSwappable;          // 0x1c
 	unsigned int m_unk0x20;        // 0x20
 	unsigned int m_age;            // 0x24
-	unsigned int m_dataSize;       // 0x28
-	unsigned int m_fileOffset;     // 0x2c
+	unsigned long m_dataSize;      // 0x28
+	unsigned long m_fileOffset;    // 0x2c
 	unsigned long m_resourceId;    // 0x30
 	const void* m_entryHeader;     // 0x34
 	unsigned char* m_data;         // 0x38

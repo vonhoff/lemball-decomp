@@ -35,7 +35,7 @@ public:
 	virtual void UnLoadData(bool p_force);                                                      // vtable+0x20
 	virtual void UnLoadVramData(bool p_force);                                                  // vtable+0x24
 	virtual void SetType();                                                                     // vtable+0x34
-	virtual unsigned int GetSizeUsed();                                                         // vtable+0x38
+	virtual unsigned long GetSizeUsed();                                                        // vtable+0x38
 	virtual bool ForceLoadVram(unsigned int p_index);                                           // vtable+0x3c
 	virtual void UnLoadVramData(unsigned long p_index, bool p_force);                           // vtable+0x40
 	virtual void AllocateResources(unsigned long p_count) = 0;                                  // vtable+0x44
@@ -61,8 +61,8 @@ private:
 	int m_vramEntryCount;            // 0x64
 	unsigned int m_vramSwappable;    // 0x68
 	unsigned int m_subresourceCount; // 0x6c
-	unsigned int m_headerSize;       // 0x70
-	unsigned int m_bodySize;         // 0x74
+	unsigned long m_headerSize;      // 0x70
+	unsigned long m_bodySize;        // 0x74
 };
 
 // SYNTHETIC: LEMBALL 0x0045e700
