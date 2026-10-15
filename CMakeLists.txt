@@ -22,23 +22,13 @@ file(GLOB_RECURSE LEMBALL_MSVC_SOURCES CONFIGURE_DEPENDS
 set(LEMBALL_SOURCES ${LEMBALL_DOMAIN_SOURCES} ${LEMBALL_WINDOWS_SOURCES} ${LEMBALL_MSVC_SOURCES})
 
 set(LEMBALL_RC "${CMAKE_CURRENT_SOURCE_DIR}/src/Platform/Windows/LEMBALL.RC")
-set(LEMBALL_GENERATED_RC "${CMAKE_BINARY_DIR}/icons/LEMBALL.RC")
 set(LEMBALL_RESOURCE "${CMAKE_BINARY_DIR}/LEMBALL.RES")
 get_filename_component(_lemball_cl_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
 get_filename_component(_lemball_msvc_root "${_lemball_cl_dir}" DIRECTORY)
 add_custom_command(
     OUTPUT "${LEMBALL_RESOURCE}"
-    COMMAND python "${CMAKE_CURRENT_SOURCE_DIR}/tools/extract_icons.py" "${LEMBALL_GENERATED_RC}"
-    COMMAND "${LEMBALL_RC_COMPILER}" /i "${_lemball_msvc_root}/include" /fo "${LEMBALL_RESOURCE}" "${LEMBALL_GENERATED_RC}"
+    COMMAND "${LEMBALL_RC_COMPILER}" /i "${_lemball_msvc_root}/include" /fo "${LEMBALL_RESOURCE}" "${LEMBALL_RC}"
     DEPENDS "${LEMBALL_RC}"
-        "${CMAKE_CURRENT_SOURCE_DIR}/tools/extract_icons.py"
-        "${CMAKE_CURRENT_SOURCE_DIR}/data/LEMBALL.EXE"
-    BYPRODUCTS "${LEMBALL_GENERATED_RC}"
-        "${CMAKE_BINARY_DIR}/icons/117.ico"
-        "${CMAKE_BINARY_DIR}/icons/118.ico"
-        "${CMAKE_BINARY_DIR}/icons/119.ico"
-        "${CMAKE_BINARY_DIR}/icons/120.ico"
-        "${CMAKE_BINARY_DIR}/icons/150.ico"
     VERBATIM
 )
 set_source_files_properties("${LEMBALL_RESOURCE}" PROPERTIES
