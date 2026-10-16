@@ -891,7 +891,7 @@ void CSurface::CopyDibBits(BITMAPINFOHEADER* p_header, unsigned char* p_bits)
 		source -= stride;
 	}
 	CVSSize size(m_windowRect.m_width, m_windowRect.m_height);
-	CVSRect rect(0, 0, &size);
+	CVSRect rect(0, 0, size);
 	rect.m_x = rect.m_y = 0;
 	m_changeList->Reset();
 	AddToChangeList(rect);
@@ -3286,7 +3286,7 @@ inline void CSurface::BlitZRLE(int p_x,
 	if (p_zrle->m_size.m_height * p_zrle->m_size.m_width == 0) {
 		return;
 	}
-	CVSRect destination((short) p_x, (short) p_y, &p_zrle->m_size);
+	CVSRect destination((short) p_x, (short) p_y, p_zrle->m_size);
 	if ((p_flags & ZRLE_DRAW_FLAG_ABSOLUTE_POSITION) == 0) {
 		static_cast<CVSPoint&>(destination).AddInPlace(&p_zrle->m_rasterPoint);
 	}

@@ -121,7 +121,7 @@ void CIntroAnimDrawer::Processing()
 		return;
 	}
 	if (m_startCountdown == 0) {
-		CVSRect introRect(0, 0, &m_display->m_rect);
+		CVSRect introRect(0, 0, m_display->m_rect);
 		introRect.m_x = (short) (introRect.m_width - 320) / 2;
 		short height = introRect.m_height;
 		CVSSize* introSize = &introRect;

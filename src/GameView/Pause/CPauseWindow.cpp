@@ -440,7 +440,7 @@ CVSRect CPauseWindow::CalculateWindow()
 		borderPositions[1].m_y = (short) (borderPositions[1].m_y + verticalCorner->m_height);
 	}
 
-	return CVSRect(position.m_x, position.m_y, &windowSize);
+	return CVSRect(position.m_x, position.m_y, windowSize);
 }
 
 // FUNCTION: LEMBALL 0x00444680

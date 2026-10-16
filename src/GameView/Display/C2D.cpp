@@ -4519,7 +4519,7 @@ void C2D::DrawObjects()
 	}
 	else if (m_scrollPending != 0 || m_redrawPending != 0) {
 		m_gdi->m_renderTarget->ResetScroll();
-		CVSRect fullRect(0, 0, &m_clipSize);
+		CVSRect fullRect(0, 0, m_clipSize);
 		if (m_redrawPending != 0) {
 			fullRect = CVSRect(0, 0, m_clipSize.m_width, m_clipSize.m_height);
 		}
