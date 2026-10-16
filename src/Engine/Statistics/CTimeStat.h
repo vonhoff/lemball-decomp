@@ -18,8 +18,8 @@ public:
 	friend class CGDIDevice;
 
 private:
-	unsigned int m_timingStart; // 0x20
-	bool m_timingActive;        // 0x24
+	unsigned long m_timingStart; // 0x20
+	bool m_timingActive;         // 0x24
 };
 
 #endif
