@@ -21,9 +21,6 @@
 #include "Application/SoundEffects.h"
 #include "Engine/Math/FixedPoint.h"
 
-#define PLAYER_ONE_RUNTIME_FLAGS 0x200
-#define PLAYER_TWO_RUNTIME_FLAGS 0x100
-
 #include "Engine/Math/CVSRect.h"
 #include "Engine/Math/FixedPointConversion.h"
 #include "Gameplay/Geometry/AICOORD.h"
@@ -34,6 +31,9 @@
 #include "Map/CGroundArray.h"
 #include "ObjectActions.h"
 #include "ObjectTypes.h"
+
+#define PLAYER_ONE_RUNTIME_FLAGS 0x200
+#define PLAYER_TWO_RUNTIME_FLAGS 0x100
 
 // GLOBAL: LEMBALL 0x0049cf4c
 unsigned short g_wNetworkLemmingIndex = 0;
