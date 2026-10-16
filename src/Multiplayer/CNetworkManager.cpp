@@ -48,12 +48,12 @@ CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler
 	if (p_filePeerName != NULL) {
 		networkLoaded = VSFNET_Init();
 		if (networkLoaded != 0) {
-			m_externalDriverLoaded = 1;
+			m_externalDriverLoaded = true;
 		}
 	}
 	if (p_filePeerName == NULL) {
 		networkLoaded = VSNET_Init();
-		m_localDriverLoaded = 1;
+		m_localDriverLoaded = true;
 	}
 	if (networkLoaded != 0) {
 		if (p_filePeerName != NULL) {
@@ -66,7 +66,7 @@ CNetworkManager::CNetworkManager(const char* p_filePeerName) : CBaseQueueHandler
 										 NETWORK_NONCRITICAL_MESSAGE_CAPACITY_BYTES);
 			m_networkInitialised = 0;
 			g_pActiveConnection = NULL;
-			m_killRequested = 0;
+			m_killRequested = false;
 		}
 	}
 }
@@ -160,7 +160,7 @@ int CNetworkManager::ProcessMsg(tagMESSAGE* p_message)
 					m_connections[slot] = request;
 					g_szGameName = g_pBaseFrontendDrawer != NULL ? g_szNetworkGameName : NULL;
 					m_gameMessages[slot].Send(m_connections[slot]);
-					m_connectionsChanged = 1;
+					m_connectionsChanged = true;
 					break;
 				}
 				connections++;
@@ -211,7 +211,7 @@ int CNetworkManager::ProcessMsg(tagMESSAGE* p_message)
 			if (g_pActiveConnection == connection) {
 				Kill();
 			}
-			m_connectionsChanged = 1;
+			m_connectionsChanged = true;
 		}
 		return 1;
 	}
@@ -249,7 +249,7 @@ void CNetworkManager::Broadcast(const char* p_address)
 // FUNCTION: LEMBALL 0x00452ab0
 void CNetworkManager::Kill()
 {
-	m_killRequested = 1;
+	m_killRequested = true;
 }
 
 // FUNCTION: LEMBALL 0x00452ac0
@@ -257,7 +257,7 @@ void CNetworkManager::GameProcess()
 {
 	if (m_killRequested != 0) {
 		g_pActiveConnection = NULL;
-		m_killRequested = 0;
+		m_killRequested = false;
 	}
 	if (g_pActiveConnection != NULL) {
 		if (g_pActiveConnection->CReadSocket::IsChanged(*m_gameStage)) {

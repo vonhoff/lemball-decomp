@@ -45,12 +45,12 @@ private:
 	unsigned int m_desiredGameState;                  // 0x48
 	unsigned int m_observedGameState;                 // 0x4c
 	unsigned long m_lastGameStateSendTime;            // 0x50
-	unsigned int m_connectionsChanged;                // 0x54
+	bool m_connectionsChanged;                        // 0x54
 	unsigned long m_broadcastStartTime;               // 0x58
 	unsigned int m_networkInitialised;                // 0x5c
-	unsigned int m_externalDriverLoaded;              // 0x60
-	unsigned int m_localDriverLoaded;                 // 0x64
-	unsigned int m_killRequested;                     // 0x68
+	bool m_externalDriverLoaded;                      // 0x60
+	bool m_localDriverLoaded;                         // 0x64
+	bool m_killRequested;                             // 0x68
 };
 
 extern CNetworkManager* g_pNetworkManager;

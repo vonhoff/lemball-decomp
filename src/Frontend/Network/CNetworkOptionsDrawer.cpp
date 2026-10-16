@@ -1022,7 +1022,7 @@ void CNetworkOptionsDrawer::Processing()
 		}
 		if (m_networkState == NETWORK_OPTIONS_HANDLERS_CURRENT) {
 			if (g_pNetworkManager->m_connectionsChanged != 0) {
-				g_pNetworkManager->m_connectionsChanged = 0;
+				g_pNetworkManager->m_connectionsChanged = false;
 				m_networkState = NETWORK_OPTIONS_HANDLERS_CURRENT;
 				m_backBufferNeeded = true;
 				InitialiseHandlers();
