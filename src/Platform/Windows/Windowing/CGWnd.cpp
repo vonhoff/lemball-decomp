@@ -110,13 +110,13 @@ void CGWnd::_OnCreate()
 	if ((style & WS_CHILD) != 0 && m_nativeWindow != NULL) {
 		style = GetWindowLongA(m_nativeWindow, GWL_STYLE);
 		if ((style & WS_CHILD) != 0) {
-			CVSPoint* createOrigin = &m_createRect->m_relativeTopLeft;
+			CVSPoint* createOrigin = &m_creationParent->m_relativeTopLeft;
 			localRect.m_x = localRect.m_x - createOrigin->m_x;
 			localRect.m_y = localRect.m_y - createOrigin->m_y;
 			CSurface* presentTarget = (*gdi)->m_renderTarget;
 			presentTarget->m_presentX = localRect.m_x;
 			presentTarget->m_presentY = localRect.m_y;
-			m_createRect->SetDontUpdateRect(localRect);
+			m_creationParent->SetDontUpdateRect(localRect);
 		}
 	}
 	unsigned int directScroll = 1;
@@ -141,7 +141,7 @@ void CGWnd::_OnDestroy()
 	if ((style & WS_CHILD) != 0 && m_nativeWindow != NULL) {
 		if ((GetWindowLongA(m_nativeWindow, GWL_STYLE) & WS_CHILD) != 0) {
 			CVSRect emptyRect(0, 0, 0, 0);
-			m_createRect->SetDontUpdateRect(emptyRect);
+			m_creationParent->SetDontUpdateRect(emptyRect);
 		}
 	}
 	CPVWnd::_OnDestroy();

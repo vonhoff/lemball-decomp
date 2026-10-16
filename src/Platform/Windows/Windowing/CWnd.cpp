@@ -214,8 +214,8 @@ long __stdcall CWnd::ProcessMessage(HWND p_hwnd, unsigned int p_message, unsigne
 		mouseX = (short) position.x;
 		mouseY = (short) position.y;
 		if ((window->GetStyle() & WS_CHILD) != 0 && g_pTargetGraphicsSystem->IsFullscreenDriver()) {
-			mouseX += window->m_createRect->m_relativeTopLeft.m_x;
-			mouseY += window->m_createRect->m_relativeTopLeft.m_y;
+			mouseX += window->m_creationParent->m_relativeTopLeft.m_x;
+			mouseY += window->m_creationParent->m_relativeTopLeft.m_y;
 		}
 		window->m_rect.m_x = mouseX;
 		window->m_rect.m_y = mouseY;
@@ -612,7 +612,7 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 	SetSizeStatus(2);
 	InitHotAreaList();
 	m_parent = p_parent;
-	m_createRect = p_parent;
+	m_creationParent = p_parent;
 
 	if (p_parent != NULL) {
 		styleFlags = GetStyle();

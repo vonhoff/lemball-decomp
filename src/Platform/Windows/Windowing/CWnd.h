@@ -63,7 +63,7 @@ private:
 	tagMenuList** m_menuLists;     // 0x3c
 	unsigned int m_menuResourceId; // 0x40
 	HWND m_nativeWindow;           // 0x44
-	CPVWnd* m_createRect;          // 0x48
+	CPVWnd* m_creationParent;      // 0x48
 };
 
 extern CWnd* g_pFocusWindow;
