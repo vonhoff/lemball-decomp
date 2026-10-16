@@ -1,6 +1,7 @@
 #ifndef LEMBALL_VIEWS_PAUSE_CPAUSEWINDOW_H
 #define LEMBALL_VIEWS_PAUSE_CPAUSEWINDOW_H
 
+#include "PauseWindowMessages.h"
 #include "../../Engine/Animation/CAnim.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Input/CHotAreaHandler.h"
@@ -24,15 +25,6 @@ class CPVGWnd;
 class CReceiveWindowState;
 class CResANIM;
 class CResFONT;
-
-enum ePauseWindowMessages {
-	PAUSE_MSG_PAUSED = 0,
-	PAUSE_MSG_PLEASE_WAIT = 1,
-	PAUSE_MSG_LOADING = 2,
-	PAUSE_MSG_ARE_YOU_SURE = 3,
-	PAUSE_MSG_CONNECTION_LOST = 4,
-	PAUSE_MSG_NONE = 5
-};
 
 enum ePauseConfirmationSelection {
 	PAUSE_CONFIRM_YES = 2

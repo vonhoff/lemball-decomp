@@ -25694,25 +25694,25 @@
       "caller": 4398288,
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Display/CMain2DDisplay.cpp.obj",
       "symbol": "?ProcessMsg@CMain2DDisplay@@UAEHPAUtagMESSAGE@@@Z",
-      "size": 480,
-      "fingerprint": "26c718118fcbbd27209dc9c736c1010b58791905963c624a14494101b5f97779",
+      "size": 476,
+      "fingerprint": "a7b3fd7b9bef22e5281fc7e40da5e9916837f4c6bc4e311f3576099368e48f1a",
       "references": [
         {
-          "offset": 54,
+          "offset": 51,
           "original_instruction": 4398339,
           "original_bytes": "e8c205fdff",
           "thunk": 4203210,
           "source_symbol": "?ToggleResolution@CMain2DDisplay@@QAEXXZ"
         },
         {
-          "offset": 365,
+          "offset": 362,
           "original_instruction": 4398640,
           "original_bytes": "68f1284000",
           "thunk": 4204785,
           "source_symbol": "?AboutDialogProc@@YGHPAXIIJ@Z"
         },
         {
-          "offset": 397,
+          "offset": 394,
           "original_instruction": 4398672,
           "original_bytes": "e87504fdff",
           "thunk": 4203210,
@@ -31554,7 +31554,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?DrawButton@CPanelButton@@UAEXXZ",
       "size": 790,
-      "fingerprint": "ac2a9cb6fdcab847187f3b129803d5046761935f5a65114cc1387c05f5b860d9",
+      "fingerprint": "5724c730f2c99eef777744f7e777fb7500d9ecb5c21524bdd4233b7beded3815",
       "references": [
         {
           "offset": 572,
@@ -31623,7 +31623,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Panel/CPanelButton.cpp.obj",
       "symbol": "?OnPressed@CPanelButton@@UAEXW4BUTTON_FLAGS@@@Z",
       "size": 454,
-      "fingerprint": "b63bbc64f570b93072475568345efa24af61d7d2ab2d0832016b4835227ffab7",
+      "fingerprint": "d5a45f9ecf4ee20a196b0f0141799dd95f31d04d94690088c84ee3cccb780859",
       "references": [
         {
           "offset": 186,
@@ -32036,7 +32036,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/GameView/Pause/CPauseWindow.cpp.obj",
       "symbol": "?CalculateWindow@CPauseWindow@@QAE?AVCVSRect@@XZ",
       "size": 1251,
-      "fingerprint": "1380e6bebee41b6db3079dd37cfae1003b2faedb62a361b6371fe36ddb12e93e",
+      "fingerprint": "e4c66618e13b7dd1104c01f18c107a8c06be8a3df78f2ef641a214bd8ed55ddc",
       "references": [
         {
           "offset": 672,

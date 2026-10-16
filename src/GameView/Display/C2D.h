@@ -1,7 +1,7 @@
 #ifndef LEMBALL_VIEWS_DISPLAY_C2D_H
 #define LEMBALL_VIEWS_DISPLAY_C2D_H
 
-#include "../Pause/CPauseWindow.h"
+#include "GameView/Pause/PauseWindowMessages.h"
 #include "Application/FlowProcesses.h"
 #include "Engine/Graphics/Primitives/CClipRect.h"
 #include "Engine/Graphics/Primitives/CCopyColourToBackBuff.h"
@@ -78,6 +78,7 @@ class CMain2DDisplay;
 class CMap;
 class CPadToButton;
 class CPanel;
+class CPauseWindow;
 class CPlayerLemming;
 class CTextManager;
 struct AnimSpecialEntry;
