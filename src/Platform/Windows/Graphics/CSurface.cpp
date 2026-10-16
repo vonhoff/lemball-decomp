@@ -885,19 +885,11 @@ void CSurface::CopyDibBits(BITMAPINFOHEADER* p_header, unsigned char* p_bits)
 	int copyHeight = m_windowRect.m_height <= p_header->biHeight ? m_windowRect.m_height : p_header->biHeight;
 	int stride = (int) ((p_header->biBitCount * (unsigned long) p_header->biWidth + 31) & ~31) / 8;
 	unsigned char* source = p_bits + (int) (((unsigned long) p_header->biHeight - 1) * stride);
-	int y = 0;
-copyRow:
-	if (y >= copyHeight) {
-		goto copiedRows;
-	}
-	{
+	for (int y = 0; y < copyHeight; y++) {
 		memcpy(m_lines[y], source, copyWidth);
 		copyHeight = m_windowRect.m_height <= p_header->biHeight ? m_windowRect.m_height : p_header->biHeight;
 		source -= stride;
-		y++;
-		goto copyRow;
 	}
-copiedRows:
 	CVSSize size(m_windowRect.m_width, m_windowRect.m_height);
 	CVSRect rect(0, 0, &size);
 	rect.m_x = rect.m_y = 0;
