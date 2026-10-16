@@ -34,7 +34,7 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	char path[256];
 	DWORD versionHandle;
 	unsigned int versionLength;
-	void* versionInfo;
+	VS_FIXEDFILEINFO* versionInfo;
 	unsigned long versionLow;
 	int valid;
 
@@ -67,14 +67,14 @@ CDirectSoundDevice::CDirectSoundDevice(int p_effectCapacity, int p_buffersPerEff
 	m_platform.m_library = LoadLibraryA("DSOUND.DLL");
 	if (m_platform.m_library != NULL) {
 		if (GetSystemDirectoryA(path, sizeof(path)) != 0) {
-			memcpy(path + strlen(path), "\\DSOUND.DLL", 12);
+			memcpy(path + strlen(path), "\\DSOUND.DLL", sizeof("\\DSOUND.DLL"));
 			DWORD size = GetFileVersionInfoSizeA(path, &versionHandle);
 			unsigned char* data = new unsigned char[size];
 			valid = GetFileVersionInfoA(path, 0, size, data);
 			if (valid != 0) {
-				VerQueryValueA(data, "\\", &versionInfo, &versionLength);
-				unsigned long versionHigh = ((VS_FIXEDFILEINFO*) versionInfo)->dwFileVersionMS;
-				versionLow = ((VS_FIXEDFILEINFO*) versionInfo)->dwFileVersionLS;
+				VerQueryValueA(data, "\\", (void**) &versionInfo, &versionLength);
+				unsigned long versionHigh = versionInfo->dwFileVersionMS;
+				versionLow = versionInfo->dwFileVersionLS;
 				unsigned short major = (unsigned short) (versionHigh >> 16);
 				unsigned short minor = (unsigned short) versionHigh;
 				CVSOStream& debug = *g_pDebugOutput << "DSOUND version ";
