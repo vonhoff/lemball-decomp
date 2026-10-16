@@ -125,25 +125,19 @@ CGame::CGame(char* p_runtimeFileName)
 	m_process = NULL;
 
 #if LEMBALL_ENFORCE_STARTUP_CHECKS
-	enum {
-		CD_PROMPT_BUTTONS_OK_CANCEL = 1,
-		CD_PROMPT_RESULT_OK = 1,
-		CD_PROMPT_RESULT_CANCEL = 2
-	};
-
 	if (g_pTargetPlatformServices->WriteRegistryFlag(g_szLemmingsPaintball, 1) == 0) {
-		MessageBoxA(NULL, g_szInstallPrompt, g_szPaintballNotInstalled, 0);
+		MessageBoxA(NULL, g_szInstallPrompt, g_szPaintballNotInstalled, MB_OK);
 		return;
 	}
 
 	int cdResponse = 0;
 	while (g_pTargetPlatformServices->GetCDDir(g_szVsMemDll) == NULL) {
-		cdResponse = MessageBoxA(NULL, g_szInsertCdPrompt, g_szUnableToFindCd, CD_PROMPT_BUTTONS_OK_CANCEL);
-		if (cdResponse != CD_PROMPT_RESULT_OK) {
+		cdResponse = MessageBoxA(NULL, g_szInsertCdPrompt, g_szUnableToFindCd, MB_OKCANCEL);
+		if (cdResponse != IDOK) {
 			break;
 		}
 	}
-	if (cdResponse == CD_PROMPT_RESULT_CANCEL) {
+	if (cdResponse == IDCANCEL) {
 		return;
 	}
 #endif
