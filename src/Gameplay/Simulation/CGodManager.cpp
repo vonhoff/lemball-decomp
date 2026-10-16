@@ -9,7 +9,7 @@
 #include "Gameplay/Objects/CBaseObjectManager.h"
 #include "Gameplay/Objects/CGlobalGameObject.h"
 #include "Gameplay/Objects/CViewData.h"
-#include "Multiplayer/Transport/CBaseCommonSocket.h"
+#include "Multiplayer/Transport/NetworkConstants.h"
 #include "Multiplayer/Transport/CBaseNetwork.h"
 #include "Multiplayer/Transport/CConnect.h"
 #include "Multiplayer/Transport/NetworkMode.h"

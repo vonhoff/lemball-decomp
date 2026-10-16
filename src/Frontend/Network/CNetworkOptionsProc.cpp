@@ -17,7 +17,6 @@
 #include "Platform/Windows/VsTime.h"
 #include "Frontend/CBaseFrontendProcess.h"
 #include "Multiplayer/Transport/Protocol/CNetworkMessage.h"
-#include "Multiplayer/Transport/CBaseCommonSocket.h"
 
 // FUNCTION: LEMBALL 0x00455050
 CNetworkOptionsProc::CNetworkOptionsProc(CGame* p_game) : CBaseFrontendProcess(p_game)
