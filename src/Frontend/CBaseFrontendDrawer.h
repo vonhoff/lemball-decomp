@@ -2,7 +2,7 @@
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDDRAWER_H
 
 #include "Application/FlowProcesses.h"
-#include "CUserActionMessage.h"
+#include "UserActions.h"
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Animation/CStaticAnim.h"
 #include "Engine/Math/CVSPoint.h"

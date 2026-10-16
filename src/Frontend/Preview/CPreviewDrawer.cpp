@@ -29,7 +29,7 @@
 #include "Engine/Graphics/Palettes/CBasePalManager.h"
 #include "Engine/Graphics/Palettes/CBaseRemap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CUserActionMessage.h"
+#include "Frontend/UserActions.h"
 #include "Engine/Resources/Types/CResPALETTE.h"
 
 class CGWnd;

@@ -35,7 +35,7 @@
 #include "Platform/Windows/Input/CCursor.h"
 #include "Application/FlowProcesses.h"
 #include "Application/SoundEffects.h"
-#include "CUserActionMessage.h"
+#include "UserActions.h"
 #include "tagCoordPair.h"
 #include "Engine/Animation/CAnimsManager.h"
 #include "Engine/Graphics/Primitives/CBigBitmap.h"

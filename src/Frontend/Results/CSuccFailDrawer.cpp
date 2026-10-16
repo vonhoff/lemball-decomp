@@ -33,7 +33,7 @@
 #include "Level/CLevelLoader.h"
 #include "Multiplayer/Transport/NetworkMode.h"
 #include "Platform/Windows/Windowing/CPVGWnd.h"
-#include "Frontend/CUserActionMessage.h"
+#include "Frontend/UserActions.h"
 #include "Engine/Resources/Types/CResFONT.h"
 #include "Multiplayer/CNetworkGameMessage.h"
 #include "Multiplayer/CNetworkManager.h"

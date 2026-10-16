@@ -2,9 +2,10 @@
 #define LEMBALL_FRONTEND_BASE_CBASEFRONTENDPROCESS_H
 
 #include "Application/CProcess.h"
-#include "CUserActionMessage.h"
+#include "UserActions.h"
 #include "Engine/Queues/CBaseQueueHandler.h"
 class CConnect;
+class CUserActionMessage;
 
 class CGame;
 class CReadPacket;

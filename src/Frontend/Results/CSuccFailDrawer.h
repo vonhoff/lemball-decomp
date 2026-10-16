@@ -5,7 +5,7 @@
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CUserActionMessage.h"
+#include "Frontend/UserActions.h"
 #include "Frontend/tagCoordPair.h"
 
 class CGDI;

@@ -3,7 +3,7 @@
 
 #include "Engine/Graphics/Primitives/CBigBitmap.h"
 #include "Frontend/CBaseFrontendDrawer.h"
-#include "Frontend/CUserActionMessage.h"
+#include "Frontend/UserActions.h"
 #include "Frontend/tagCoordPair.h"
 
 #define PREVIEW_LEVEL_NAME_LINE_COUNT 3
