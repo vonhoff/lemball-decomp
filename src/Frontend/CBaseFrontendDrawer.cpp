@@ -231,7 +231,7 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 	if (m_backBufferReady == 0) {
 		m_backBufferReady = true;
 	}
-	g_pCursor->SetActive(0);
+	g_pCursor->SetActive(false);
 	m_display->Render();
 	CVSRect source(0, 0, m_size.m_width, m_size.m_height);
 	const CVSSize* size = &source;
@@ -251,7 +251,7 @@ void CBaseFrontendDrawer::InitialiseBackBuffer()
 	if (m_gunController != NULL && gunActive != 0) {
 		m_gunController->ActivateButtons(1);
 	}
-	g_pCursor->SetActive(1);
+	g_pCursor->SetActive(true);
 }
 
 // FUNCTION: LEMBALL 0x00445a40

@@ -2,6 +2,7 @@
 #define LEMBALL_VISOS_GRAPHICS_CCURSOR_H
 
 #include "Engine/Input/CBaseCursor.h"
+#include "Platform/Windows/WindowsTypes.h"
 
 // SIZE 0xa4
 // VTABLE: LEMBALL 0x00499d58
@@ -15,7 +16,7 @@ public:
 	virtual ~CCursor();                 // vtable+0x04
 
 private:
-	void* m_systemCursor;      // 0x9c
+	HCURSOR m_systemCursor;    // 0x9c
 	unsigned int m_reservedA0; // 0xa0
 };
 

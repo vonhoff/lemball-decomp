@@ -51,7 +51,7 @@ CCDLoadAnim::CCDLoadAnim(CGDI* p_gdi, CMain2DDisplay* p_display) : CAnimsManager
 	m_display = p_display;
 	m_gdi = p_gdi;
 	m_points = new CVSPoint[5];
-	g_pCursor->SetActive(0);
+	g_pCursor->SetActive(false);
 	if (g_nCompactPrimaryContextLayout != 0) {
 		m_backgroundBitmap = CResBITMAP::Load(RES_FRONTEND_LOADING_LORES_PICTURE);
 		points = g_dwCdLoadAnimCompactPoints;

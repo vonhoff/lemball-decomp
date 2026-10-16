@@ -27,7 +27,7 @@ void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 	}
 	switch (p_cursorType) {
 	case CURSOR_DISPLAY_NONE:
-		g_pCursor->SetActive(0);
+		g_pCursor->SetActive(false);
 		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType]);
 		break;
 	case CURSOR_DISPLAY_HAND:
@@ -36,10 +36,10 @@ void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 		}
 		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType], p_frame);
 		if (g_cursorDisplayInited == 0) {
-			g_pCursor->m_mouseInput = 1;
+			g_pCursor->m_mouseInput = true;
 			g_cursorDisplayInited = 1;
 		}
-		g_pCursor->SetActive(1);
+		g_pCursor->SetActive(true);
 		cursor = g_pCursor;
 		g_pCursor->m_hotspot.m_x = 3;
 		cursor->m_hotspot.m_y = 3;
@@ -48,13 +48,13 @@ void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame)
 	case CURSOR_DISPLAY_HIDDEN:
 		g_pCursor->SetMainID(g_cursorResourceIds[p_cursorType]);
 		if (g_cursorDisplayInited == 0) {
-			g_pCursor->m_mouseInput = 1;
+			g_pCursor->m_mouseInput = true;
 			cursor = g_pCursor;
 			g_pCursor->m_hotspot.m_x = 3;
 			cursor->m_hotspot.m_y = 3;
 			g_cursorDisplayInited = 1;
 		}
-		g_pCursor->SetActive(1);
+		g_pCursor->SetActive(true);
 		break;
 	}
 }
@@ -89,12 +89,12 @@ void CCursor::KillSystemCursor()
 {
 	SetCursor(NULL);
 	ShowCursor(0);
-	m_systemCursorVisible = 0;
+	m_systemCursorVisible = false;
 }
 
 // FUNCTION: LEMBALL 0x00474c00
 void CCursor::RestoreSystemCursor()
 {
 	ShowCursor(1);
-	m_systemCursorVisible = 1;
+	m_systemCursorVisible = true;
 }

@@ -39,7 +39,7 @@ public:
 	void Draw(CGWnd* p_window);
 	void Initialise();
 	void Process();
-	void SetActive(unsigned int p_active);
+	void SetActive(bool p_active);
 	void SetMainID(unsigned long p_resourceId);
 	void SetMainID(unsigned long p_resourceId, int p_frame);
 	void SetPos(const CVSPoint& p_position);
@@ -49,33 +49,33 @@ public:
 	friend void CursorChangeType(eCursorDisplayType p_cursorType, int p_frame);
 
 private:
-	CVSPoint m_position;                // 0x10
-	CVSPoint m_hotspot;                 // 0x14
-	unsigned int m_active;              // 0x18
-	CZRLE* m_renderState;               // 0x1c
-	CResBase* m_resource;               // 0x20
-	int m_frame;                        // 0x24
-	unsigned long m_resourceId;         // 0x28
-	unsigned int m_mouseInput;          // 0x2c
-	unsigned int m_keyboardInput;       // 0x30
-	unsigned int m_changingCursor;      // 0x34
-	unsigned int m_drawn;               // 0x38
-	unsigned int m_systemCursorVisible; // 0x3c
-	CPopActive m_popActive;             // 0x40
-	CPushActive m_pushActive;           // 0x44
-	int m_acceleration;                 // 0x4c
-	int m_maxSpeed;                     // 0x50
-	int m_fixedX;                       // 0x54
-	int m_fixedY;                       // 0x58
-	int m_velocityX;                    // 0x5c
-	int m_velocityY;                    // 0x60
-	int m_directionX;                   // 0x64
-	int m_directionY;                   // 0x68
-	unsigned long m_lastInputX;         // 0x6c
-	unsigned long m_lastInputY;         // 0x70
-	CVSRect m_bounds;                   // 0x74
-	int m_keys[7];                      // 0x7c
-	unsigned int m_reserved98;          // 0x98
+	CVSPoint m_position;        // 0x10
+	CVSPoint m_hotspot;         // 0x14
+	bool m_active;              // 0x18
+	CZRLE* m_renderState;       // 0x1c
+	CResBase* m_resource;       // 0x20
+	int m_frame;                // 0x24
+	unsigned long m_resourceId; // 0x28
+	bool m_mouseInput;          // 0x2c
+	bool m_keyboardInput;       // 0x30
+	bool m_changingCursor;      // 0x34
+	bool m_drawn;               // 0x38
+	bool m_systemCursorVisible; // 0x3c
+	CPopActive m_popActive;     // 0x40
+	CPushActive m_pushActive;   // 0x44
+	int m_acceleration;         // 0x4c
+	int m_maxSpeed;             // 0x50
+	int m_fixedX;               // 0x54
+	int m_fixedY;               // 0x58
+	int m_velocityX;            // 0x5c
+	int m_velocityY;            // 0x60
+	int m_directionX;           // 0x64
+	int m_directionY;           // 0x68
+	unsigned long m_lastInputX; // 0x6c
+	unsigned long m_lastInputY; // 0x70
+	CVSRect m_bounds;           // 0x74
+	int m_keys[7];              // 0x7c
+	unsigned int m_reserved98;  // 0x98
 };
 
 // SYNTHETIC: LEMBALL 0x0046ba30

@@ -53,7 +53,7 @@ char g_szVisosBuildBuffer[80];
 CAboutScreen::CAboutScreen(CMain2DDisplay* p_display, CGDI* p_gdi, const CVSRect& p_rect)
 {
 	m_returnState = FLOW_NONE;
-	g_pCursor->SetActive(0);
+	g_pCursor->SetActive(false);
 	m_complete = false;
 	g_pMasterInputQueue->Attach(this, 0);
 	m_display = p_display;
@@ -87,7 +87,7 @@ CAboutScreen::~CAboutScreen()
 	}
 	m_aboutString->m_directUseCount = m_aboutString->m_directUseCount - 1;
 	m_aboutString->UnLoad();
-	g_pCursor->SetActive(1);
+	g_pCursor->SetActive(true);
 	g_pMogRes->CleanUpResources();
 }
 

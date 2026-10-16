@@ -98,12 +98,12 @@ void CBaseCursor::Initialise()
 		state->m_remap = NULL;
 	}
 	g_pMasterInputQueue->Attach(this, MASTER_INPUT_QUEUE_PRIORITY);
-	m_changingCursor = 0;
-	m_keyboardInput = 0;
-	m_mouseInput = 0;
-	m_active = 0;
-	m_drawn = 0;
-	m_systemCursorVisible = 1;
+	m_changingCursor = false;
+	m_keyboardInput = false;
+	m_mouseInput = false;
+	m_active = false;
+	m_drawn = false;
+	m_systemCursorVisible = true;
 	m_resource = NULL;
 	m_pushActive.m_activeMarker = 1;
 	m_keys[0] = 3;
@@ -262,7 +262,7 @@ void CBaseCursor::SetMainID(unsigned long p_resourceId)
 }
 
 // FUNCTION: LEMBALL 0x0046b370
-void CBaseCursor::SetActive(unsigned int p_active)
+void CBaseCursor::SetActive(bool p_active)
 {
 	if (m_active == p_active) {
 		return;
@@ -351,7 +351,7 @@ void CBaseCursor::Draw(CGWnd* p_window)
 	if (m_systemCursorVisible != 0) {
 		KillSystemCursor();
 	}
-	m_drawn = 1;
+	m_drawn = true;
 	if (m_resource == NULL) {
 		return;
 	}
@@ -450,7 +450,7 @@ void CBaseCursor::Process()
 			m_fixedY = clipped.m_yFixed;
 		}
 	}
-	m_drawn = 0;
+	m_drawn = false;
 }
 
 // FUNCTION: LEMBALL 0x0046ba20
