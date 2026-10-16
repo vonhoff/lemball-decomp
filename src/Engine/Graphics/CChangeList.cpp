@@ -240,28 +240,24 @@ found:
 	heightCells = 1;
 	widthCells = widthPixels / m_cellSize.m_width;
 	row = row + m_mapSize.m_width;
-	if (scanY + 1 < m_mapSize.m_height) {
-		while (scanY + heightCells < m_mapSize.m_height) {
-			mapWidth = m_mapSize.m_width;
-			probeX = startX;
-			if (probeX < mapWidth) {
-				while (probeX < mapWidth && row[probeX] == p_findMark) {
-					probeX = probeX + 1;
-				}
-			}
-			if (probeX - widthCells != startX) {
-				break;
-			}
-			heightCells = heightCells + 1;
-			probeX = startX;
-			if (widthCells > 0) {
-				do {
-					row[probeX] = p_replacementMark;
-					probeX = probeX + 1;
-				} while (probeX - startX < widthCells);
-			}
-			row = row + m_mapSize.m_width;
+	while (scanY + heightCells < m_mapSize.m_height) {
+		mapWidth = m_mapSize.m_width;
+		probeX = startX;
+		while (probeX < mapWidth && row[probeX] == p_findMark) {
+			probeX = probeX + 1;
 		}
+		if (probeX - widthCells != startX) {
+			break;
+		}
+		heightCells = heightCells + 1;
+		probeX = startX;
+		if (widthCells > 0) {
+			do {
+				row[probeX] = p_replacementMark;
+				probeX = probeX + 1;
+			} while (probeX - startX < widthCells);
+		}
+		row = row + m_mapSize.m_width;
 	}
 
 	CVSRect area;
