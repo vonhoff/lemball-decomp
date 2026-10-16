@@ -46,7 +46,7 @@ CGunButtons::CGunButtons(CGWnd* p_window,
 	m_window = p_window;
 	m_gdi = p_gdi;
 	m_active = 1;
-	range = (p_maximum - p_minimum) + 1;
+	range = (unsigned int) p_maximum - p_minimum + 1;
 	m_valueCount = range;
 	if (range <= 1) {
 		m_valueCount = 1;
@@ -155,7 +155,7 @@ int CGunButtons::ProcessMsg(tagMESSAGE* p_message)
 				g_pMasterInputQueue->Post(posted);
 				return 0;
 			}
-			nextValue = m_value + 1;
+			nextValue = (unsigned int) m_value + 1;
 			m_value = nextValue;
 			if (m_maximum < nextValue) {
 				m_value = m_minimum;
@@ -174,7 +174,7 @@ int CGunButtons::ProcessMsg(tagMESSAGE* p_message)
 				}
 			}
 			if (m_graphicButton != NULL) {
-				animId = m_animIds[m_value - m_minimum];
+				animId = m_animIds[(int) ((unsigned int) m_value - m_minimum)];
 				m_graphicButton->SetAnimID(animId);
 			}
 			else {
@@ -191,7 +191,7 @@ int CGunButtons::ProcessMsg(tagMESSAGE* p_message)
 				value = 0;
 			}
 			else {
-				value += maximum / 4;
+				value += (unsigned int) (maximum / 4);
 				if (value > maximum) {
 					value = maximum;
 				}
@@ -243,8 +243,10 @@ void CGunButtons::LoadFaces(unsigned long* p_animIds)
 		} while (i < m_valueCount);
 	}
 	if (m_mode == GUN_BUTTON_MODE_CYCLE) {
-		m_graphicButton =
-			new CGunButton(CVSPoint((short) m_x, (short) m_y), (CPVGWnd*) m_window, m_animIds[m_value - m_minimum], 3);
+		m_graphicButton = new CGunButton(CVSPoint((short) m_x, (short) m_y),
+										 (CPVGWnd*) m_window,
+										 m_animIds[(int) ((unsigned int) m_value - m_minimum)],
+										 3);
 		CSurface* surface = m_graphicButton->m_gdi->m_renderTarget;
 		m_graphicButton->SetAutoDraw(0);
 		surface->m_propagateChanges = false;

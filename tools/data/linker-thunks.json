@@ -34517,7 +34517,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunButtons.cpp.obj",
       "symbol": "?LoadFaces@CGunButtons@@QAEXPAK@Z",
       "size": 398,
-      "fingerprint": "4fc0f305698a26746cc93a13f97f5dbad1a75b8c956bb0622c0fba5b948ec158",
+      "fingerprint": "a60d4b1a4774ca68dcd650abaa06bceac440e5ffc9ae6a470ddd2dcd821ead8e",
       "references": [
         {
           "offset": 316,
