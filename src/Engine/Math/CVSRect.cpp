@@ -19,39 +19,23 @@ CVSRect* CVSRect::ExpandToInclude(const CVSRect& p_rect)
 	if (p_rect.m_width * p_rect.m_height == 0) {
 		return this;
 	}
-	{
-		short rectX = p_rect.m_x;
-		short left = m_x;
-		if (rectX < left) {
-			m_width = m_width + (left - rectX);
-			m_x = p_rect.m_x;
-		}
-		short sourceX = p_rect.m_x;
-		short rectWidth = p_rect.m_width;
-		left = m_x;
-		short rectRight = rectWidth + sourceX;
-		short right = m_width + left;
-		if (right < rectRight) {
-			m_width = (sourceX - left) + rectWidth;
-		}
+	if (p_rect.m_x < m_x) {
+		m_width += m_x - p_rect.m_x;
+		m_x = p_rect.m_x;
 	}
-	{
-		short rectY = p_rect.m_y;
-		short top = m_y;
-		if (rectY < top) {
-			m_height = m_height + (top - rectY);
-			m_y = p_rect.m_y;
-		}
-		short rectHeight = p_rect.m_height;
-		short sourceY = p_rect.m_y;
-		top = m_y;
-		short rectBottom = rectHeight + sourceY;
-		short bottom = m_height + top;
-		if (bottom < rectBottom) {
-			rectHeight -= top;
-			rectHeight += sourceY;
-			m_height = rectHeight;
-		}
+	short rectRight = p_rect.m_width + p_rect.m_x;
+	short right = m_width + m_x;
+	if (right < rectRight) {
+		m_width = p_rect.m_x - m_x + p_rect.m_width;
+	}
+	if (p_rect.m_y < m_y) {
+		m_height += m_y - p_rect.m_y;
+		m_y = p_rect.m_y;
+	}
+	short rectBottom = p_rect.m_height + p_rect.m_y;
+	short bottom = m_height + m_y;
+	if (bottom < rectBottom) {
+		m_height = p_rect.m_height - m_y + p_rect.m_y;
 	}
 	return this;
 }
