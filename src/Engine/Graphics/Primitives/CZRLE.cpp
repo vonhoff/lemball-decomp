@@ -1,14 +1,13 @@
 #include "CZRLE.h"
 
 #include "CGDI.h"
-#include "Engine/Resources/Types/CResBase.h"
 #include "Engine/Resources/Types/CResZRLE.h"
 #include "Platform/Windows/Graphics/CSurface.h"
 
 // FUNCTION: LEMBALL 0x00467ae0
 void CZRLE::Draw(CGDI* p_gdi)
 {
-	CResBase* resource = m_resource;
+	CResZRLE* resource = m_resource;
 	resource->Lock();
 	p_gdi->AddToList(this);
 }
@@ -16,6 +15,6 @@ void CZRLE::Draw(CGDI* p_gdi)
 // FUNCTION: LEMBALL 0x00467b10
 void CZRLE::Render(CGDI* p_gdi)
 {
-	p_gdi->m_renderTarget->Blit(this, (CResZRLE*) m_resource);
+	p_gdi->m_renderTarget->Blit(this, m_resource);
 	m_resource->m_directUseCount--;
 }

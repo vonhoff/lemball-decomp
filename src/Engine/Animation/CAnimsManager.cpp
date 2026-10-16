@@ -274,10 +274,10 @@ CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 		else {
 			zrle = m_zrlePrimitives + m_zrleCount++;
 		}
-		zrle->m_state = m_primitiveSequence;
+		zrle->m_depth = m_primitiveSequence;
 		zrle->m_x = p_position.m_x;
 		zrle->m_y = p_position.m_y;
-		zrle->m_resource = resource;
+		zrle->m_resource = sizeSource;
 		zrle->m_flags = p_drawFlags;
 		zrle->m_remap = p_remap;
 		zrle->Draw(m_gdi);
@@ -301,7 +301,7 @@ CVSRect CAnimsManager::DrawAnim(const CVSPoint& p_position,
 		else {
 			anim = m_animPrimitives + m_animCount++;
 		}
-		anim->m_state = m_primitiveSequence;
+		anim->m_depth = m_primitiveSequence;
 		anim->m_x = p_position.m_x;
 		anim->m_y = p_position.m_y;
 		anim->m_animResource = (CResANIM*) resource;

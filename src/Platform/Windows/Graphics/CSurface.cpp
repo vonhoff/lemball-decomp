@@ -3195,7 +3195,7 @@ void CSurface::Blit(CZRLE* p_primitive, CResZRLE* p_zrle)
 				 p_zrle,
 				 flags,
 				 p_primitive->m_remap,
-				 (unsigned short) p_primitive->m_state);
+				 (unsigned short) p_primitive->m_depth);
 	}
 	else {
 		BlitZRLE(p_primitive->m_x, p_primitive->m_y, p_zrle, flags, p_primitive->m_remap, 0);

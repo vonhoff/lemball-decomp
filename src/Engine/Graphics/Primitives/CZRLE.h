@@ -11,7 +11,7 @@ enum eZrleDrawFlag {
 	ZRLE_DRAW_FLAG_QUICK_Z_BUFFER = 0x80000
 };
 
-class CResBase;
+class CResZRLE;
 class CRemap;
 
 // SIZE 0x18
@@ -34,10 +34,10 @@ public:
 public:
 	short m_x;            // 0x04
 	short m_y;            // 0x06
-	CResBase* m_resource; // 0x08
+	CResZRLE* m_resource; // 0x08
 	unsigned int m_flags; // 0x0c
 	CRemap* m_remap;      // 0x10
-	unsigned int m_state; // 0x14
+	unsigned int m_depth; // 0x14
 };
 
 // SYNTHETIC: LEMBALL 0x00467ac0
