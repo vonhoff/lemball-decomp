@@ -15,6 +15,9 @@
 #include "Platform/Windows/Input/CCursor.h"
 #include "Platform/Windows/Windowing/CWnd.h"
 
+// GLOBAL: LEMBALL 0x004a818c
+unsigned int g_dwWindowQuitRequested;
+
 void* g_hApplicationIcon = NULL;
 
 // FUNCTION: LEMBALL 0x004564e0

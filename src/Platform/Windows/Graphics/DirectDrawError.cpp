@@ -7,9 +7,6 @@
 // GLOBAL: LEMBALL 0x004a0aa8
 static const char* g_directDrawErrorPrefix = "UNKNOWN DIRECT DRAW ERROR: ";
 
-// GLOBAL: LEMBALL 0x004a818c
-unsigned int g_dwWindowQuitRequested;
-
 // GLOBAL: LEMBALL 0x004a8190
 static char g_directDrawErrorText[0x100];
 
