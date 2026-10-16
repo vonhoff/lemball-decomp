@@ -4,6 +4,7 @@
 #include "PauseWindowMessages.h"
 #include "../../Engine/Animation/CAnim.h"
 #include "Engine/Graphics/Primitives/CSolidRect.h"
+#include "Engine/Input/CBaseCursor.h"
 #include "Engine/Input/CHotAreaHandler.h"
 #include "Engine/Math/CVSPoint.h"
 #include "Engine/Math/CVSRect.h"
@@ -64,7 +65,7 @@ public:
 private:
 	char** m_menuLabels;                   // 0x100
 	ePauseWindowMessages m_pauseMessage;   // 0x104
-	unsigned int m_cursorState;            // 0x108
+	eHandCursorFrame m_handCursorFrame;    // 0x108
 	bool m_lowResolution;                  // 0x10c
 	CReceiveWindowState* m_receiverState;  // 0x110
 	CPVGWnd* m_parentWindow;               // 0x114

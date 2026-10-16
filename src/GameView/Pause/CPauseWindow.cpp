@@ -452,7 +452,7 @@ CPauseWindow::CPauseWindow(CReceiveWindowState* p_receiverState,
 	m_receiverState = p_receiverState;
 	m_pauseMessage = p_pauseMessage;
 	m_parentWindow = p_parentWindow;
-	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	m_handCursorFrame = CURSOR_HAND_FRAME_DEFAULT;
 	m_borderAnimCount = 0;
 	Initialise();
 	Restart();
@@ -558,15 +558,15 @@ inline static bool ContainsMenuPoint(const CVSRect& p_rect, const CVSPoint& p_po
 void CPauseWindow::OnInside(const CVSPoint& p_point)
 {
 	int selection = m_minimumSelection;
-	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	m_handCursorFrame = CURSOR_HAND_FRAME_DEFAULT;
 	for (; selection < m_menuItemCount; selection++) {
 		if (ContainsMenuPoint(m_menuItemRects[selection], p_point - m_relativeTopLeft)) {
-			m_cursorState = CURSOR_HAND_FRAME_HOVER;
+			m_handCursorFrame = CURSOR_HAND_FRAME_HOVER;
 			m_selection = selection;
 			break;
 		}
 	}
-	CursorChangeType(CURSOR_DISPLAY_HAND, m_cursorState);
+	CursorChangeType(CURSOR_DISPLAY_HAND, m_handCursorFrame);
 }
 
 // FUNCTION: LEMBALL 0x00444b20
@@ -576,7 +576,7 @@ void CPauseWindow::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 		if (ContainsMenuPoint(m_menuItemRects[selection], p_point - m_relativeTopLeft)) {
 			m_receiverState->SetOptionSelection((eOptionSelections) (m_selection + 1));
 			m_selection = selection;
-			m_cursorState = CURSOR_HAND_FRAME_PRESSED;
+			m_handCursorFrame = CURSOR_HAND_FRAME_PRESSED;
 			CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_PRESSED);
 			g_pSoundView->PlayEffect(SFX_MOUSE_CLICK);
 			return;
@@ -587,14 +587,14 @@ void CPauseWindow::OnButtonDown(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 // FUNCTION: LEMBALL 0x00444bd0
 void CPauseWindow::OnButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
-	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	m_handCursorFrame = CURSOR_HAND_FRAME_DEFAULT;
 	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);
 }
 
 // FUNCTION: LEMBALL 0x00444bf0
 void CPauseWindow::OnExternalButtonUp(const CVSPoint& p_point, BUTTON_FLAGS p_flags)
 {
-	m_cursorState = CURSOR_HAND_FRAME_DEFAULT;
+	m_handCursorFrame = CURSOR_HAND_FRAME_DEFAULT;
 	CursorChangeType(CURSOR_DISPLAY_HAND, CURSOR_HAND_FRAME_DEFAULT);
 }
 
