@@ -55,9 +55,6 @@ bool CMasterInput::RemoveItem(CMasterInputItem* p_item)
 		if (node->m_item == p_item) {
 			if (index == 0) {
 				m_firstItem = node->m_next;
-				delete node;
-				--m_itemCount;
-				return true;
 			}
 			else {
 				previous->m_next = node->m_next;
