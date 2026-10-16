@@ -72,7 +72,7 @@ void CCursorMotion::Process()
 	if (m_horizontalActive) {
 		int elapsed = now - m_lastTickX;
 		m_lastTickX = now;
-		m_velocityX += m_accelerationX * elapsed / 20;
+		m_velocityX += (int) ((unsigned int) m_accelerationX * elapsed) / 20;
 		if (m_velocityX > CURSOR_MAX_VELOCITY_FIXED) {
 			m_velocityX = CURSOR_MAX_VELOCITY_FIXED;
 		}
@@ -83,7 +83,7 @@ void CCursorMotion::Process()
 	if (m_verticalActive) {
 		int elapsed = now - m_lastTickY;
 		m_lastTickY = now;
-		m_velocityY += m_accelerationY * elapsed / 20;
+		m_velocityY += (int) ((unsigned int) m_accelerationY * elapsed) / 20;
 		if (m_velocityY > CURSOR_MAX_VELOCITY_FIXED) {
 			m_velocityY = CURSOR_MAX_VELOCITY_FIXED;
 		}
@@ -93,8 +93,8 @@ void CCursorMotion::Process()
 	}
 	if (m_horizontalActive || m_verticalActive || m_positionDirty) {
 		if (m_horizontalActive || m_verticalActive) {
-			m_fixedX += m_velocityX;
-			m_fixedY += m_velocityY;
+			m_fixedX += (unsigned int) m_velocityX;
+			m_fixedY += (unsigned int) m_velocityY;
 		}
 		PostPosition();
 		m_positionDirty = 0;
