@@ -14,14 +14,7 @@ extern const int g_mazeCardinalNeighbors[10];
 extern const unsigned char g_mazeWalkMasks[32];
 
 // GLOBAL: LEMBALL 0x00495b10
-extern const unsigned char g_aChangeBitMasks[8][4] = {{0x80, 0, 0, 0},
-													  {0x40, 0, 0, 0},
-													  {0x20, 0, 0, 0},
-													  {0x10, 0, 0, 0},
-													  {0x08, 0, 0, 0},
-													  {0x04, 0, 0, 0},
-													  {0x02, 0, 0, 0},
-													  {0x01, 0, 0, 0}};
+extern const unsigned int g_aChangeBitMasks[8] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
 
 // GLOBAL: LEMBALL 0x00495b30
 const int g_mazeNeighborOffsetsX[10] = {-1, 0, 1, -1, 0, 1, -1, 0, 1, 0};
@@ -38,8 +31,6 @@ const unsigned char g_mazeWalkMasks[32] = {0, 1,  0, 8,   0, 4,  0, 2,  0, 0, 0,
 
 // GLOBAL: LEMBALL 0x0049cf58
 CMaze* g_pMaze = NULL;
-
-extern const unsigned char g_aChangeBitMasks[8][4];
 
 // FUNCTION: LEMBALL 0x00423090
 CMaze::CMaze(CMap* p_map)
@@ -190,7 +181,7 @@ void CMaze::UpdateChangeNext(int p_x, int p_y)
 		pOther = m_changeB + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
 	}
 
-	unsigned char mask = g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK][0];
+	unsigned char mask = g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK];
 	for (int y = yMin; y <= yMax; y++) {
 		unsigned char currentMask = mask;
 		unsigned char* pChangeRow = pChange;
@@ -311,7 +302,7 @@ bool CMaze::BIteration(bool& p_reached, bool& p_noChanges)
 	}
 
 	if (yMin <= yMax) {
-		unsigned char mask = g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK][0];
+		unsigned char mask = g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK];
 		int y = yMin;
 		do {
 			unsigned short* pDistance = m_distances[y] + xMin;
