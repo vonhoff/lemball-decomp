@@ -265,7 +265,7 @@ int CTextWnd::UpdateClientWidth()
 }
 
 // FUNCTION: LEMBALL 0x00474090
-void CTextWnd::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_arg2)
+void CTextWnd::ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_sizeType)
 {
 	RECT rect;
 	EnterCritical();
@@ -401,7 +401,7 @@ void CTextWnd::BeginSelection(int p_x, int p_y, unsigned int p_mouseFlags)
 }
 
 // FUNCTION: LEMBALL 0x004743b0
-void CTextWnd::EndSelection(unsigned int p_x, unsigned int p_y, unsigned int p_mouseFlags)
+void CTextWnd::EndSelection(int p_x, int p_y, unsigned int p_mouseFlags)
 {
 	EnterCritical();
 	if (m_selecting != 0) {

@@ -20,11 +20,11 @@ public:
 	void RedrawLines(int p_firstLine, int p_lineCount);
 	int UpdateVisibleRows();
 	int UpdateClientWidth();
-	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_arg2);
+	void ResizeToWholeRows(int p_clientWidth, int p_clientHeight, unsigned int p_sizeType);
 	void Paint(HDC p_dc, const tagPAINTSTRUCT* p_paint);
 	void Scroll(int p_scrollCode, int p_thumbPos);
 	void BeginSelection(int p_x, int p_y, unsigned int p_mouseFlags);
-	void EndSelection(unsigned int p_x, unsigned int p_y, unsigned int p_mouseFlags);
+	void EndSelection(int p_x, int p_y, unsigned int p_mouseFlags);
 	void SetSelectionHighlight(int p_selected);
 	void EnsureLineVisible(int p_line);
 	void UpdateSelection(int p_x, int p_y, unsigned int p_mouseFlags);
