@@ -30,6 +30,20 @@ public:
 		}
 		return false;
 	}
+	unsigned char* ChangeAddr(int p_x, int p_y)
+	{
+		if (m_changeSelect != 0) {
+			return m_changeA + ((p_y * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + p_x) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
+		}
+		return m_changeB + ((p_y * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + p_x) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
+	}
+	unsigned char* ChangeNextAddr(int p_x, int p_y)
+	{
+		if (m_changeSelect != 0) {
+			return m_changeB + ((p_y * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + p_x) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
+		}
+		return m_changeA + ((p_y * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + p_x) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
+	}
 	bool BIteration(bool& p_reached, bool& p_noChanges);
 	bool CalcNewDistance(int p_x, int p_y);
 	bool FindSquare(unsigned short p_distance, int& p_x, int& p_y);

@@ -164,22 +164,8 @@ void CMaze::UpdateChangeNext(int p_x, int p_y)
 		yMax = p_y;
 	}
 
-	unsigned char* pChange;
-	if (m_changeSelect != 0) {
-		pChange =
-			m_changeB + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
-	}
-	else {
-		pChange =
-			m_changeA + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
-	}
-	unsigned char* pOther;
-	if (m_changeSelect != 0) {
-		pOther = m_changeA + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
-	}
-	else {
-		pOther = m_changeB + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
-	}
+	unsigned char* pChange = ChangeNextAddr(xMin, yMin);
+	unsigned char* pOther = ChangeAddr(xMin, yMin);
 
 	unsigned char mask = g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK];
 	for (int y = yMin; y <= yMax; y++) {
@@ -291,15 +277,7 @@ bool CMaze::BIteration(bool& p_reached, bool& p_noChanges)
 		yMax = m_height - 1;
 	}
 
-	unsigned char* pChange;
-	if (m_changeSelect != 0) {
-		pChange =
-			m_changeA + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
-	}
-	else {
-		pChange =
-			m_changeB + ((yMin * MAZE_CHANGE_BITMAP_ROW_WIDTH_BITS + xMin) >> MAZE_CHANGE_BITMAP_BYTE_INDEX_SHIFT);
-	}
+	unsigned char* pChange = ChangeAddr(xMin, yMin);
 
 	if (yMin <= yMax) {
 		unsigned char mask = g_aChangeBitMasks[xMin & MAZE_CHANGE_BITMAP_BIT_INDEX_MASK];
