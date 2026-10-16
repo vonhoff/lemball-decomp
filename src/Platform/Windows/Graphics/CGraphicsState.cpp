@@ -45,9 +45,9 @@ static char* g_graphicsDriverErrors[] = {
 	"libraries"};
 
 // FUNCTION: LEMBALL 0x00457e10
-bool CGraphicsState::SelectDriver(int p_driverMode)
+bool CGraphicsState::SelectDriver(eGraphicsDriverMode p_driverMode)
 {
-	eGraphicsDriverMode resolvedDriverMode = (eGraphicsDriverMode) p_driverMode;
+	eGraphicsDriverMode resolvedDriverMode = p_driverMode;
 	if (p_driverMode < GFX_MODE_AUTO + 1) {
 		*g_pDebugOutput << "Initialising graphics device driver: " << g_graphicsDriverNames[p_driverMode] << "...\n";
 	}
@@ -129,7 +129,7 @@ void CGraphicsState::NotifyDriverChange()
 }
 
 // FUNCTION: LEMBALL 0x00458130
-bool CGraphicsState::ChangeDriver(int p_driverMode)
+bool CGraphicsState::ChangeDriver(eGraphicsDriverMode p_driverMode)
 {
 	if (m_driverMode != p_driverMode) {
 		if (g_pTargetGraphicsDriver != NULL) {

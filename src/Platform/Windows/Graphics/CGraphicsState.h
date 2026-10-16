@@ -22,9 +22,9 @@ struct CGraphicsState {
 	CGraphicsState() : m_targetWindow(0), m_fallbackWarningShown(false) {}
 	~CGraphicsState() { delete g_pTargetGraphicsDriver; }
 
-	bool SelectDriver(int p_driverMode);
+	bool SelectDriver(eGraphicsDriverMode p_driverMode);
 	void NotifyDriverChange();
-	bool ChangeDriver(int p_driverMode);
+	bool ChangeDriver(eGraphicsDriverMode p_driverMode);
 	bool IsFullscreenDriver();
 	bool IsDirectDrawDriver();
 	bool IsDisplayDibDriver();

@@ -15,7 +15,7 @@ class GrafPort;
 bool _GDI_Init()
 {
 	g_pTargetGraphicsSystem = new CGraphicsState();
-	g_pTargetGraphicsSystem->SelectDriver(8);
+	g_pTargetGraphicsSystem->SelectDriver(GFX_MODE_AUTO);
 	g_pGdiDevice = new CGDIDevice(g_preInitActive.m_flags);
 	g_pGdiHelperTarget = new CSurface((GrafPort*) NULL);
 	g_pCursor = new CCursor();
