@@ -57,7 +57,7 @@ void CPVWnd::SetDontUpdateRect(const CVSRect& p_rect)
 CPVWnd::CPVWnd()
 {
 	m_hotAreaList = NULL;
-	m_active = 1;
+	m_active = true;
 	if (g_windowInstanceCount++ == 0) {
 		g_pWindowOwnerList = new CList<CPVWnd, CListElement<CPVWnd> >;
 	}

@@ -97,7 +97,7 @@ private:
 	class CPVWnd* m_parent;                           // 0x20
 	CList<CPVWnd, CListElement<CPVWnd> > m_childList; // 0x24
 	unsigned int m_sizeStatus;                        // 0x30
-	unsigned int m_active;                            // 0x34
+	bool m_active;                                    // 0x34
 	int m_zoom;                                       // 0x38
 };
 
