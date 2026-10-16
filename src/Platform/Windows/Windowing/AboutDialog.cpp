@@ -2,8 +2,6 @@
 
 #include <string.h>
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <winver.h>
 
 #include "Engine/Sound/CSoundManager.h"
@@ -63,7 +61,7 @@ char g_szLemballHelpFile[20] = "lemball\\lemball.hlp";
 char g_szHelpContentsKey[12] = "CONTENTS";
 
 // FUNCTION: LEMBALL 0x00455f00
-void CenterWindowOnParent(void* p_window, void* p_parent)
+void CenterWindowOnParent(HWND p_window, HWND p_parent)
 {
 	RECT windowRect;
 	RECT parentRect;
@@ -77,16 +75,16 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 	int x;
 	int y;
 
-	GetWindowRect((HWND) p_window, &windowRect);
+	GetWindowRect(p_window, &windowRect);
 	width = (int) ((unsigned int) windowRect.right - windowRect.left);
 	height = (int) ((unsigned int) windowRect.bottom - windowRect.top);
-	GetWindowRect((HWND) p_parent, &parentRect);
+	GetWindowRect(p_parent, &parentRect);
 	parentWidth = (int) ((unsigned int) parentRect.right - parentRect.left);
 	parentHeight = (int) ((unsigned int) parentRect.bottom - parentRect.top);
-	dc = GetDC((HWND) p_window);
+	dc = GetDC(p_window);
 	screenWidth = GetDeviceCaps(dc, HORZRES);
 	screenHeight = GetDeviceCaps(dc, VERTRES);
-	ReleaseDC((HWND) p_window, dc);
+	ReleaseDC(p_window, dc);
 	x = (int) ((unsigned int) parentRect.left + (int) ((unsigned int) parentWidth - width) / 2);
 	if (x < 0) {
 		x = 0;
@@ -101,7 +99,7 @@ void CenterWindowOnParent(void* p_window, void* p_parent)
 	else if (screenHeight < (int) ((unsigned int) height + y)) {
 		y = (int) ((unsigned int) screenHeight - height);
 	}
-	SetWindowPos((HWND) p_window, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SetWindowPos(p_window, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
 // FUNCTION: LEMBALL 0x00455ff0
@@ -147,7 +145,7 @@ char* BuildAboutSystemInfo()
 }
 
 // FUNCTION: LEMBALL 0x00456100
-int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wParam, long p_lParam)
+BOOL __stdcall AboutDialogProc(HWND p_dlg, UINT p_msg, WPARAM p_wParam, LPARAM p_lParam)
 {
 	int controlId;
 	char* systemInfo;
@@ -183,10 +181,10 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 								   0,
 								   VARIABLE_PITCH | FF_SWISS,
 								   g_szAboutFontFace);
-		CenterWindowOnParent(p_dlg, GetWindow((HWND) p_dlg, GW_OWNER));
+		CenterWindowOnParent(p_dlg, GetWindow(p_dlg, GW_OWNER));
 		systemInfo = BuildAboutSystemInfo();
-		SetDlgItemTextA((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO, systemInfo);
-		SendMessageA(GetDlgItem((HWND) p_dlg, IDC_ABOUT_SYSTEM_INFO), WM_SETFONT, (unsigned int) g_hAboutFont, TRUE);
+		SetDlgItemTextA(p_dlg, IDC_ABOUT_SYSTEM_INFO, systemInfo);
+		SendMessageA(GetDlgItem(p_dlg, IDC_ABOUT_SYSTEM_INFO), WM_SETFONT, (unsigned int) g_hAboutFont, TRUE);
 		GetModuleFileNameA(g_pApplicationInstance, modulePath, sizeof(modulePath));
 		versionSize = GetFileVersionInfoSizeA(modulePath, &handle);
 		if (versionSize != 0) {
@@ -195,7 +193,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 			lstrcpyA(queryPath, g_szStringFileInfoPrefix);
 			queryEnd = queryPath + (unsigned short) lstrlenA(queryPath);
 			do {
-				GetDlgItemTextA((HWND) p_dlg, controlId, itemText, sizeof(itemText));
+				GetDlgItemTextA(p_dlg, controlId, itemText, sizeof(itemText));
 				*queryEnd = 0;
 				lstrcatA(queryPath, itemText);
 				queryLen = 0;
@@ -203,8 +201,8 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 				queryOk = VerQueryValueA(versionData, queryPath, &queryValue, &queryLen);
 				if (queryOk != 0 && queryLen != 0 && queryValue != NULL) {
 					lstrcpyA(itemText, (char*) queryValue);
-					SetDlgItemTextA((HWND) p_dlg, controlId, itemText);
-					SendMessageA(GetDlgItem((HWND) p_dlg, controlId), WM_SETFONT, (unsigned int) g_hAboutFont, TRUE);
+					SetDlgItemTextA(p_dlg, controlId, itemText);
+					SendMessageA(GetDlgItem(p_dlg, controlId), WM_SETFONT, (unsigned int) g_hAboutFont, TRUE);
 				}
 				controlId = controlId + 1;
 			} while (controlId <= IDC_ABOUT_LEGAL_TRADEMARKS);
@@ -213,7 +211,7 @@ int __stdcall AboutDialogProc(void* p_dlg, unsigned int p_msg, unsigned int p_wP
 		return 1;
 	case WM_COMMAND:
 		if ((short) p_wParam == IDOK || (short) p_wParam == IDCANCEL) {
-			EndDialog((HWND) p_dlg, 1);
+			EndDialog(p_dlg, 1);
 			DeleteObject(g_hAboutFont);
 			return 1;
 		}
