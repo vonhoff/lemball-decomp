@@ -20,7 +20,7 @@ extern int g_nMusicAvailable;
 extern int g_nEffectsAvailable;
 extern int g_nAnimationsAvailable;
 extern int g_nZoomAvailable;
-extern int g_nDisplayMode;
+extern int g_nSelectedSkill;
 
 extern int g_nSoundDebugRequested;
 extern int g_nStartupGraphicsDialogRequested;

@@ -64,23 +64,23 @@ CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_display, CGDI* p_gdi,
 	m_navigationButton = 0;
 	m_auxButtonState1 = 0;
 	m_auxButtonState0 = 0;
-	m_previousModeButton = 0;
-	m_nextModeButton = 0;
+	m_singlePlayerButtonState = 0;
+	m_multiplayerButtonState = 0;
 	switch (g_pGameStatus->m_skill) {
 	case SKILL_TRICKY:
-		m_selectedDisplayMode = 1;
+		m_selectedSkill = SKILL_TRICKY;
 		break;
 	case SKILL_TAXING:
-		m_selectedDisplayMode = 2;
+		m_selectedSkill = SKILL_TAXING;
 		break;
 	case SKILL_MAYHEM:
-		m_selectedDisplayMode = 3;
+		m_selectedSkill = SKILL_MAYHEM;
 		break;
 	case SKILL_FUN:
-		m_selectedDisplayMode = 0;
+		m_selectedSkill = SKILL_FUN;
 		break;
 	case SKILL_NETWORK:
-		m_selectedDisplayMode = 0;
+		m_selectedSkill = SKILL_FUN;
 		break;
 	}
 	g_pGameStatus->m_lastLevels[4] = 0;
@@ -93,31 +93,31 @@ CMainOptions1Drawer::CMainOptions1Drawer(CMain2DDisplay* p_display, CGDI* p_gdi,
 // FUNCTION: LEMBALL 0x00448300
 void CMainOptions1Drawer::Load()
 {
-	unsigned long* previousModeAnim;
-	unsigned long* playAnim;
-	unsigned long* nextModeAnim;
-	unsigned long* toggleAnim;
-	unsigned long* modeAnim;
-	unsigned long* quitAnim;
+	unsigned long* singlePlayerAnim;
+	unsigned long* optionsAnim;
+	unsigned long* multiplayerAnim;
+	unsigned long* resolutionAnim;
+	unsigned long* skillAnim;
+	unsigned long* passwordAnim;
 	int i;
 
 	if (m_mode != FRONTEND_LAYOUT_STANDARD) {
 		m_buttonLayout = g_anMainOptions1CompactButtonLayout;
-		previousModeAnim = &g_dwMainOptions1CompactAnimIds[0];
-		nextModeAnim = &g_dwMainOptions1CompactAnimIds[1];
-		toggleAnim = &g_dwMainOptions1CompactAnimIds[11];
-		playAnim = &g_dwMainOptions1CompactAnimIds[2];
-		modeAnim = &g_dwMainOptions1CompactAnimIds[6];
-		quitAnim = &g_dwMainOptions1CompactAnimIds[3];
+		singlePlayerAnim = &g_dwMainOptions1CompactAnimIds[0];
+		multiplayerAnim = &g_dwMainOptions1CompactAnimIds[1];
+		resolutionAnim = &g_dwMainOptions1CompactAnimIds[11];
+		optionsAnim = &g_dwMainOptions1CompactAnimIds[2];
+		skillAnim = &g_dwMainOptions1CompactAnimIds[6];
+		passwordAnim = &g_dwMainOptions1CompactAnimIds[3];
 	}
 	else {
 		m_buttonLayout = g_anMainOptions1ButtonLayout;
-		previousModeAnim = &g_dwMainOptions1AnimIds[0];
-		nextModeAnim = &g_dwMainOptions1AnimIds[1];
-		toggleAnim = &g_dwMainOptions1AnimIds[10];
-		playAnim = &g_dwMainOptions1AnimIds[2];
-		modeAnim = &g_dwMainOptions1AnimIds[5];
-		quitAnim = &g_dwMainOptions1AnimIds[4];
+		singlePlayerAnim = &g_dwMainOptions1AnimIds[0];
+		multiplayerAnim = &g_dwMainOptions1AnimIds[1];
+		resolutionAnim = &g_dwMainOptions1AnimIds[10];
+		optionsAnim = &g_dwMainOptions1AnimIds[2];
+		skillAnim = &g_dwMainOptions1AnimIds[5];
+		passwordAnim = &g_dwMainOptions1AnimIds[4];
 	}
 	for (i = 0; i < 1; i++) {
 		CResBITMAP* bitmap = m_backgroundBitmap;
@@ -130,16 +130,16 @@ void CMainOptions1Drawer::Load()
 	m_gunController = new CGunController((CGWnd*) m_display, m_gdi, 6, m_mode);
 	m_gunController->AddButton(m_buttonLayout[0],
 							   m_buttonLayout[1],
-							   previousModeAnim,
+							   singlePlayerAnim,
 							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
 							   0,
-							   &m_previousModeButton,
+							   &m_singlePlayerButtonState,
 							   MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW);
 	m_gunController->AddButton(m_buttonLayout[2],
 							   m_buttonLayout[3],
-							   playAnim,
+							   optionsAnim,
 							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
@@ -148,16 +148,16 @@ void CMainOptions1Drawer::Load()
 							   MAIN_OPTIONS1_BUTTON_MESSAGE_OPTIONS);
 	m_gunController->AddButton(m_buttonLayout[4],
 							   m_buttonLayout[5],
-							   nextModeAnim,
+							   multiplayerAnim,
 							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
 							   0,
-							   &m_nextModeButton,
+							   &m_multiplayerButtonState,
 							   MAIN_OPTIONS1_BUTTON_MESSAGE_NETWORK);
 	m_gunController->AddButton(m_buttonLayout[8],
 							   m_buttonLayout[9],
-							   toggleAnim,
+							   resolutionAnim,
 							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
@@ -166,16 +166,16 @@ void CMainOptions1Drawer::Load()
 							   MAIN_OPTIONS1_BUTTON_MESSAGE_RESOLUTION);
 	m_gunController->AddButton(m_buttonLayout[6],
 							   m_buttonLayout[7],
-							   modeAnim,
+							   skillAnim,
 							   GUN_BUTTON_CYCLE_VALUE,
-							   0,
-							   3,
-							   0,
-							   &m_selectedDisplayMode,
+							   SKILL_FUN,
+							   SKILL_MAYHEM,
+							   SKILL_FUN,
+							   &m_selectedSkill,
 							   BUTTON_ACTION_MESSAGE_UNASSIGNED);
 	m_gunController->AddButton(m_buttonLayout[10],
 							   m_buttonLayout[11],
-							   quitAnim,
+							   passwordAnim,
 							   GUN_BUTTON_POST_ACTION_MESSAGE,
 							   0,
 							   0,
@@ -199,7 +199,7 @@ CMainOptions1Drawer::~CMainOptions1Drawer()
 {
 	CGameStatus* status;
 
-	switch (m_selectedDisplayMode) {
+	switch (m_selectedSkill) {
 	case SKILL_FUN:
 		status = g_pGameStatus;
 		status->m_level = status->m_lastLevels[SKILL_FUN];
@@ -221,7 +221,7 @@ CMainOptions1Drawer::~CMainOptions1Drawer()
 		status->m_skill = SKILL_MAYHEM;
 		break;
 	}
-	g_nDisplayMode = m_selectedDisplayMode;
+	g_nSelectedSkill = m_selectedSkill;
 	if (m_loaded != 0) {
 		UnLoad();
 	}
@@ -236,7 +236,7 @@ void CMainOptions1Drawer::DrawBackGround()
 bool CMainOptions1Drawer::ProcessMessages(tagMESSAGE* p_message)
 {
 	int type;
-	int mode;
+	int skill;
 	CGameStatus* status;
 
 	type = p_message->m_type;
@@ -263,10 +263,10 @@ bool CMainOptions1Drawer::ProcessMessages(tagMESSAGE* p_message)
 			return true;
 		case MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW:
 		case MAIN_OPTIONS1_BUTTON_MESSAGE_NETWORK: {
-			mode = m_selectedDisplayMode;
+			skill = m_selectedSkill;
 			status = g_pGameStatus;
-			status->m_level = status->m_lastLevels[mode];
-			status->m_skill = mode;
+			status->m_level = status->m_lastLevels[skill];
+			status->m_skill = skill;
 			m_quitYet = true;
 			g_nFrontendAutoFlowToggle = 1;
 			if (p_message->m_code == MAIN_OPTIONS1_BUTTON_MESSAGE_PREVIEW) {

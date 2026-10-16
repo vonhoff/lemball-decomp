@@ -33,15 +33,15 @@ public:
 	virtual ~CMainOptions1Drawer();                      // vtable+0x00
 
 private:
-	unsigned long m_idleDeadline;          // 0x398
-	int* m_buttonLayout;                   // 0x39c
-	unsigned int m_previousModeButton;     // 0x3a0
-	unsigned int m_nextModeButton;         // 0x3a4
-	unsigned int m_auxButtonState0;        // 0x3a8
-	unsigned int m_auxButtonState1;        // 0x3ac
-	unsigned int m_toggleResolutionButton; // 0x3b0
-	int m_selectedDisplayMode;             // 0x3b4
-	unsigned int m_navigationButton;       // 0x3b8
+	unsigned long m_idleDeadline;           // 0x398
+	int* m_buttonLayout;                    // 0x39c
+	unsigned int m_singlePlayerButtonState; // 0x3a0
+	unsigned int m_multiplayerButtonState;  // 0x3a4
+	unsigned int m_auxButtonState0;         // 0x3a8
+	unsigned int m_auxButtonState1;         // 0x3ac
+	unsigned int m_toggleResolutionButton;  // 0x3b0
+	int m_selectedSkill;                    // 0x3b4
+	unsigned int m_navigationButton;        // 0x3b8
 };
 
 // SYNTHETIC: LEMBALL 0x00448a70

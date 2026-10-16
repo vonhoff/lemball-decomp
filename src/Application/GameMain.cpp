@@ -50,7 +50,7 @@ int g_nAnimationsAvailable = 0;
 int g_nZoomAvailable = 0;
 
 // GLOBAL: LEMBALL 0x004a6300
-int g_nDisplayMode = 0;
+int g_nSelectedSkill = SKILL_FUN;
 
 // GLOBAL: LEMBALL 0x004a1bcc
 CVSMath* g_pRandomSeed = NULL;
@@ -97,7 +97,7 @@ void SetGameDefaults()
 	g_nZoomAvailable = 1;
 	g_nZoomEnabled = 0;
 	graphicsSystem = g_pTargetGraphicsSystem;
-	g_nDisplayMode = 0;
+	g_nSelectedSkill = SKILL_FUN;
 	g_nEditLevelMode = 0;
 	g_nPlayLevelMode = 0;
 	switch (graphicsSystem->m_driverMode) {
