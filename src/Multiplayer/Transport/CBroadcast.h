@@ -6,7 +6,9 @@
 
 class CBasePacket;
 
-#define BROADCAST_ADDRESS_SPECIFIC 2
+enum {
+	BROADCAST_ADDRESS_SPECIFIC = 2
+};
 
 class CBroadcastMessage;
 class CNetworkAddress;
