@@ -6,7 +6,9 @@
 class AICOORD;
 class CTrapDoor;
 
-#define TRAP_DOOR_CAPACITY 8
+enum {
+	TRAP_DOOR_CAPACITY = 8
+};
 
 // SIZE 0x54
 // VTABLE: LEMBALL 0x004936c8
