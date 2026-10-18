@@ -11405,8 +11405,8 @@
       "caller": 4229200,
       "object": "CMakeFiles/LEMBALL.dir/src/Level/CLevelLoader.cpp.obj",
       "symbol": "?RetrievePreviewData@CLevelLoader@@SAXW4eSkill@@HPAUtPreviewData@@@Z",
-      "size": 686,
-      "fingerprint": "a70a6ebae84b720598e3bc515f0bd52b5e10b0ef391cd61dc48b328d8f5d9f38",
+      "size": 676,
+      "fingerprint": "9fa9e6615ddd782cbc89b7a8393586ef222f5fe9852c66bb9403f7f8fe8e7935",
       "references": [
         {
           "offset": 41,
@@ -11430,7 +11430,7 @@
           "source_symbol": "?GetNextBlockHeader@CLevelLoader@@SAPAUtagLoadBlockHeader@@PAU2@@Z"
         },
         {
-          "offset": 526,
+          "offset": 516,
           "original_instruction": 4229716,
           "original_bytes": "e8b2a7ffff",
           "thunk": 4207115,

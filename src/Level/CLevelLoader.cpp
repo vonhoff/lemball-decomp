@@ -38,11 +38,14 @@
 #include "Multiplayer/Transport/NetworkMode.h"
 #include "tPreviewData.h"
 
-#define LEVEL_AI_UNVERSIONED_DATA_BYTES (2 * sizeof(unsigned short))
-#define LEVEL_AI_LEGACY_LEMMING_COUNT 4
-#define LEVEL_AI_LEGACY_PLAYER_COUNT 1
-#define LEVEL_START_COORDINATE_WORDS 3
-#define LEVEL_REQUEST_FALLBACK 9999
+const unsigned int LEVEL_AI_UNVERSIONED_DATA_BYTES = 2 * sizeof(unsigned short);
+
+enum {
+	LEVEL_AI_LEGACY_LEMMING_COUNT = 4,
+	LEVEL_AI_LEGACY_PLAYER_COUNT = 1,
+	LEVEL_START_COORDINATE_WORDS = 3,
+	LEVEL_REQUEST_FALLBACK = 9999
+};
 
 extern char g_szNSkillFormat[];
 extern char g_szNLevelFormat[];
