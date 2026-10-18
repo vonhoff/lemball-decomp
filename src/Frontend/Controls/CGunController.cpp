@@ -92,7 +92,7 @@ CGunController::CGunController(CGWnd* p_window, CGDI* p_gdi, int p_arg2, unsigne
 	m_gdi = p_gdi;
 	m_nextMessageId = FRONTEND_CONTROL_MESSAGE_ID_BASE;
 	i = 0;
-	while (i < 8) {
+	while (i < GUN_CONTROLLER_SLOT_COUNT) {
 		m_junctions[i].m_y = GUN_JUNCTION_COORDINATE_UNASSIGNED;
 		m_junctions[i].m_leftX = GUN_JUNCTION_COORDINATE_UNASSIGNED;
 		m_junctions[i].m_direction = GUN_JUNCTION_UNASSIGNED;
@@ -191,7 +191,7 @@ CGunController::~CGunController()
 
 	g_pMasterInputQueue->Detach(this, 0);
 	i = 0;
-	while (i < 8) {
+	while (i < GUN_CONTROLLER_SLOT_COUNT) {
 		if (m_buttons[i] != NULL) {
 			delete m_buttons[i];
 		}
@@ -327,7 +327,7 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 		side = GUN_SIDE_RIGHT;
 	}
 	int junctionIndex = GUN_JUNCTION_INDEX_NOT_FOUND;
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < GUN_CONTROLLER_SLOT_COUNT; i++) {
 		if (m_junctions[i].m_direction != GUN_JUNCTION_UNASSIGNED && m_junctions[i].m_y == p_y) {
 			junctionIndex = i;
 		}
@@ -345,7 +345,7 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 		m_junctions[junctionIndex].m_rightX = p_x;
 		return;
 	}
-	for (int j = 0; j < 8; j++) {
+	for (int j = 0; j < GUN_CONTROLLER_SLOT_COUNT; j++) {
 		if (m_junctions[j].m_direction == GUN_JUNCTION_UNASSIGNED) {
 			m_junctions[j].m_y = p_y;
 			m_junctions[j].m_direction = side;
@@ -367,7 +367,7 @@ void CGunController::AddJunction(int p_x, int p_y, unsigned int p_side, unsigned
 void CGunController::DrawButtons(int p_firstState, int p_secondState)
 {
 	CGunButtons** button = m_buttons;
-	int remaining = 8;
+	int remaining = GUN_CONTROLLER_SLOT_COUNT;
 	do {
 		if (*button != NULL) {
 			(*button)->Draw(p_firstState, p_secondState);
@@ -518,7 +518,7 @@ void CGunController::MoveUp()
 	bestY = GUN_CONTROLLER_ABOVE_TOP_BOUNDARY_Y;
 	foundY = GUN_JUNCTION_COORDINATE_UNASSIGNED;
 	directionField = &m_junctions[0].m_direction;
-	remaining = 8;
+	remaining = GUN_CONTROLLER_SLOT_COUNT;
 	do {
 		direction = *directionField;
 		if (direction != GUN_JUNCTION_UNASSIGNED && (y = directionField[-2]) < m_targetY && bestY < y) {
@@ -553,7 +553,7 @@ void CGunController::MoveDown()
 	bestY = GUN_CONTROLLER_HIGHEST_SEARCH_Y;
 	foundY = GUN_JUNCTION_COORDINATE_UNASSIGNED;
 	junction = m_junctions;
-	remaining = 8;
+	remaining = GUN_CONTROLLER_SLOT_COUNT;
 	do {
 		direction = junction->m_direction;
 		if (direction != GUN_JUNCTION_UNASSIGNED && m_targetY < (y = junction->m_y) && y < bestY) {
@@ -582,7 +582,7 @@ void CGunController::MoveLeft()
 
 	if (m_currentSide == m_targetSide) {
 		i = 0;
-		while (i < 8) {
+		while (i < GUN_CONTROLLER_SLOT_COUNT) {
 			if (m_junctions[i].m_y == m_targetY &&
 				(m_junctions[i].m_direction == GUN_JUNCTION_LEFT || m_junctions[i].m_direction == GUN_JUNCTION_BOTH)) {
 				m_targetSide = GUN_SIDE_LEFT;
@@ -599,7 +599,7 @@ void CGunController::MoveRight()
 
 	if (m_currentSide == m_targetSide) {
 		i = 0;
-		while (i < 8) {
+		while (i < GUN_CONTROLLER_SLOT_COUNT) {
 			if (m_junctions[i].m_y == m_targetY &&
 				(m_junctions[i].m_direction == GUN_JUNCTION_RIGHT || m_junctions[i].m_direction == GUN_JUNCTION_BOTH)) {
 				m_targetSide = GUN_SIDE_RIGHT;
@@ -653,7 +653,7 @@ void CGunController::SelectOption()
 	m_selectionMessage.m_type = MESSAGE_BUTTON_RELEASED;
 	if (m_gunY == m_targetY && m_selectionState == GUN_SELECTION_IDLE) {
 		i = 0;
-		while (i < 8) {
+		while (i < GUN_CONTROLLER_SLOT_COUNT) {
 			if (m_junctions[i].m_y == m_targetY) {
 				if (m_targetSide == GUN_SIDE_LEFT) {
 					m_selectionMessage.m_code = (int) m_junctions[i].m_leftControlMessage;

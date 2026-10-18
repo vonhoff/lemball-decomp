@@ -25,6 +25,10 @@ class CPlayThruAnim;
 class CSpriteWindow;
 class CVSRect;
 
+enum {
+	GUN_CONTROLLER_SLOT_COUNT = 8
+};
+
 enum eGunSelectionState {
 	GUN_SELECTION_IDLE = 0,
 	GUN_SELECTION_TURNING = 1,
@@ -102,8 +106,8 @@ private:
 	unsigned long m_inputReadyTime;       // 0xd4
 	unsigned int m_selectedMessage;       // 0xd8
 	bool m_verticalMoving;                // 0xdc
-	GunControllerJunction m_junctions[8]; // 0xe0
-	CGunButtons* m_buttons[8];            // 0x1e0
+	GunControllerJunction m_junctions[GUN_CONTROLLER_SLOT_COUNT]; // 0xe0
+	CGunButtons* m_buttons[GUN_CONTROLLER_SLOT_COUNT];            // 0x1e0
 	CClipRect m_cursorRect[1];            // 0x200
 	CGDI* m_gdi;                          // 0x210
 	CGWnd* m_window;                      // 0x214
