@@ -12,8 +12,10 @@
 #include "Platform/Windows/Diagnostics/VsDebug.h"
 #include "Platform/Windows/Entry.h"
 
-#define TEXT_WINDOW_APPEND_MESSAGE (WM_USER + 32)
-#define TEXT_WINDOW_COPY_COMMAND 0x421
+enum {
+	TEXT_WINDOW_APPEND_MESSAGE = WM_USER + 32,
+	TEXT_WINDOW_COPY_COMMAND = 0x421
+};
 
 enum {
 	DEBUG_TEXT_WINDOW_LINE_CAPACITY = 0x2800,
