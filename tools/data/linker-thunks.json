@@ -24920,17 +24920,17 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?FindObjectsOnTopOfMe@CMover@@QAEXXZ",
       "size": 192,
-      "fingerprint": "3a7454619b1a60d233907cbf09499cb897a84d1d1e537ed72509f63d6f48a7af",
+      "fingerprint": "5abbc37dbb5438b0e61955e0f483aa6928b3dd41a3db6732921e68c5dbd0bc2c",
       "references": [
         {
-          "offset": 86,
+          "offset": 84,
           "original_instruction": 4385236,
           "original_bytes": "e8bb2dfdff",
           "thunk": 4200340,
           "source_symbol": "?GetId@CGameObject@@QAEGXZ"
         },
         {
-          "offset": 99,
+          "offset": 97,
           "original_instruction": 4385251,
           "original_bytes": "e8ac2dfdff",
           "thunk": 4200340,
@@ -24957,7 +24957,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?MoveOccupantsToDestination@CMover@@QAEXXZ",
       "size": 61,
-      "fingerprint": "c180c7fde3b28389aa891196538139f74d5b69fb38ab1b449130e138785cece0",
+      "fingerprint": "00f5b0886d747812e2a95b6c10e7c54ad61b6aebd93697a0fd2c662d67e82a5d",
       "references": [
         {
           "offset": 34,
@@ -24980,7 +24980,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?Process@CMover@@UAEHXZ",
       "size": 853,
-      "fingerprint": "a4616ed7f97bf68d32152999faf07f33fd4447a3d9621e66f55cbb684ae29ea5",
+      "fingerprint": "a68935dc713c9fa19c5bb30a1c37a445a6d272e3dba13704fe3187a9f1d32c40",
       "references": [
         {
           "offset": 52,
@@ -25080,7 +25080,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Mechanisms/CMover.cpp.obj",
       "symbol": "?GetOn@CMover@@QAEHPAVCGameObject@@@Z",
       "size": 334,
-      "fingerprint": "89f27452ac86e8cb2f551ed18f785ed6a7879fab54e303c368ab165a62db58b7",
+      "fingerprint": "553cd7185f47980c39b4a0003eedec73d8391624f4fbe74e5c069f7a7b4e889b",
       "references": [
         {
           "offset": 84,
