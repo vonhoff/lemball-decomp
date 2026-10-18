@@ -24,6 +24,7 @@ enum eNetOptsMessages {
 enum {
 	NETWORK_OPTIONS_PLAYER_ENTRY_COUNT = 10,
 	NETWORK_OPTIONS_VISIBLE_PLAYER_ROW_COUNT = 4,
+	NETWORK_OPTIONS_REMAP_COUNT = 6,
 	NETWORK_OPTIONS_NO_PLAYER_INDEX = -1
 };
 
@@ -146,7 +147,7 @@ private:
 	char* m_localComputerName;                  // 0x3e8
 	CBigBitmap m_bitmap;                        // 0x3ec
 	unsigned int m_unknown410;                  // 0x410
-	CRemap* m_remaps[6];                        // 0x414
+	CRemap* m_remaps[NETWORK_OPTIONS_REMAP_COUNT]; // 0x414
 	NetworkOptionsLayout* m_layoutTable;        // 0x42c
 	eNetOptsMessages m_pendingEvent;            // 0x430
 	unsigned int m_handlerCount;                // 0x434

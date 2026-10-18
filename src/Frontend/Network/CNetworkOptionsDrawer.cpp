@@ -114,7 +114,7 @@ unsigned char g_networkOptionsRemap4[8] = {0x02, 0xf1, 0x51, 0x8c, 0xad, 0x00, 0
 unsigned char g_networkOptionsRemap5[8] = {0x02, 0xf1, 0x51, 0xa8, 0x6c, 0x00, 0x00, 0x00};
 
 // GLOBAL: LEMBALL 0x004a02f0
-unsigned char* g_apNetworkOptionsRemaps[6] = {
+unsigned char* g_apNetworkOptionsRemaps[NETWORK_OPTIONS_REMAP_COUNT] = {
 	g_networkOptionsRemap0,
 	g_networkOptionsRemap1,
 	g_networkOptionsRemap2,
@@ -222,7 +222,7 @@ enum {
 };
 
 enum {
-	NETWORK_OPTIONS_REMAP_NONE = 6
+	NETWORK_OPTIONS_REMAP_NONE = NETWORK_OPTIONS_REMAP_COUNT
 };
 
 // FUNCTION: LEMBALL 0x00453280
@@ -1086,7 +1086,7 @@ void CNetworkOptionsDrawer::RegisterRemaps()
 		remaps++;
 		*(remaps - 1) =
 			g_pBasePalManager->RegisterRemap(m_display->m_paletteResourceId, *(mappings - 1), PALETTE_MAPPED);
-	} while (mappings < g_apNetworkOptionsRemaps + 6);
+	} while (mappings < g_apNetworkOptionsRemaps + NETWORK_OPTIONS_REMAP_COUNT);
 }
 
 // FUNCTION: LEMBALL 0x00454b10
@@ -1096,7 +1096,7 @@ void CNetworkOptionsDrawer::UnRegisterRemaps()
 	CRemap** remaps;
 
 	remaps = m_remaps;
-	i = 6;
+	i = NETWORK_OPTIONS_REMAP_COUNT;
 	do {
 		g_pBasePalManager->UnRegisterRemap(*remaps);
 		remaps = remaps + 1;
