@@ -483,7 +483,7 @@ void CSurface::Blit(CClipRect* p_clipRect)
 	else if ((int) p_clipRect->m_bounds.m_width * (int) p_clipRect->m_bounds.m_height != 0) {
 		clipRight = clip->m_x;
 		if (p_clipRect->m_bounds.m_x < clipRight) {
-			clip->m_width = (short) (clip->m_width + (clipRight - p_clipRect->m_bounds.m_x));
+			clip->m_width = clip->m_width + (clipRight - p_clipRect->m_bounds.m_x);
 			clip->m_x = p_clipRect->m_bounds.m_x;
 		}
 		short clipX;
@@ -499,16 +499,16 @@ void CSurface::Blit(CClipRect* p_clipRect)
 			clip->m_width = primitiveWidth;
 		}
 		if (p_clipRect->m_bounds.m_y < clip->m_y) {
-			clip->m_height = (short) (clip->m_height + (clip->m_y - p_clipRect->m_bounds.m_y));
+			clip->m_height = clip->m_height + (clip->m_y - p_clipRect->m_bounds.m_y);
 			clip->m_y = p_clipRect->m_bounds.m_y;
 		}
 		short primitiveY;
 		short primitiveHeight = p_clipRect->m_bounds.m_height;
 		primitiveY = p_clipRect->m_bounds.m_y;
-		short clipBottom = (short) (clip->m_height + clip->m_y);
-		short primitiveBottom = (short) (primitiveY + primitiveHeight);
+		short clipBottom = clip->m_height + clip->m_y;
+		short primitiveBottom = primitiveY + primitiveHeight;
 		if (clipBottom < primitiveBottom) {
-			clip->m_height = (short) ((primitiveHeight - clip->m_y) + primitiveY);
+			clip->m_height = (primitiveHeight - clip->m_y) + primitiveY;
 		}
 	}
 	CSurface* parent = m_parentSurface;
@@ -518,7 +518,7 @@ void CSurface::Blit(CClipRect* p_clipRect)
 		CVSRect* childClip = &m_clipRect;
 		clipRight = childClip->m_x;
 		if (clipRight < parentX) {
-			childClip->m_width = (short) (childClip->m_width + (clipRight - parentX));
+			childClip->m_width = childClip->m_width + (clipRight - parentX);
 			childClip->m_x = parentClip->m_x;
 		}
 		short parentWidth;
@@ -531,11 +531,11 @@ void CSurface::Blit(CClipRect* p_clipRect)
 			childClip->m_width = parentX;
 		}
 		if (childClip->m_y < parentClip->m_y) {
-			childClip->m_height = (short) (childClip->m_height + (childClip->m_y - parentClip->m_y));
+			childClip->m_height = childClip->m_height + (childClip->m_y - parentClip->m_y);
 			childClip->m_y = parentClip->m_y;
 		}
 		if ((short) (parentClip->m_y + parentClip->m_height) < (short) (childClip->m_height + childClip->m_y)) {
-			childClip->m_height = (short) ((parentClip->m_height - childClip->m_y) + parentClip->m_y);
+			childClip->m_height = (parentClip->m_height - childClip->m_y) + parentClip->m_y;
 		}
 		if (childClip->m_width <= 0 || childClip->m_height <= 0) {
 			childClip->m_height = 0;
@@ -1119,10 +1119,10 @@ void CSurface::CopyBackBuffToScreen(const CVSRect& p_rect)
 	if ((int) height * (int) width != 0) {
 		CVSRect rect(p_rect);
 		if ((int) (short) (rect.m_x + rect.m_width) > (int) CPVBackBuffSurface::m_allocatedWidth) {
-			rect.m_width = (short) (CPVBackBuffSurface::m_allocatedWidth - rect.m_x);
+			rect.m_width = CPVBackBuffSurface::m_allocatedWidth - rect.m_x;
 		}
 		if ((int) (short) (rect.m_height + rect.m_y) > (int) CPVBackBuffSurface::m_allocatedHeight) {
-			rect.m_height = (short) (CPVBackBuffSurface::m_allocatedHeight - rect.m_y);
+			rect.m_height = CPVBackBuffSurface::m_allocatedHeight - rect.m_y;
 		}
 		const CVSPoint* origin = &rect;
 		int x = origin->m_x;

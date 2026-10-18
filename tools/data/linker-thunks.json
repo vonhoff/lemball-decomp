@@ -37211,18 +37211,18 @@
       "caller": 4687856,
       "object": "CMakeFiles/LEMBALL.dir/src/Platform/Windows/Graphics/CSurface.cpp.obj",
       "symbol": "?Blit@CSurface@@UAEXPAVCBitmap@@PAVCResBITMAP@@@Z",
-      "size": 586,
-      "fingerprint": "e6908b4dce6f8f0fb971f02c13caa662d26a6ad929290b124a636647d1c4d927",
+      "size": 582,
+      "fingerprint": "f7d524f769fd49a40b95b1259161f8db20752038b007518ddcc2a696fb0c9ab5",
       "references": [
         {
-          "offset": 262,
+          "offset": 258,
           "original_instruction": 4688104,
           "original_bytes": "e85b99f8ff",
           "thunk": 4203080,
           "source_symbol": "??4CVSSize@@QAEAAU0@ABU0@@Z"
         },
         {
-          "offset": 276,
+          "offset": 272,
           "original_instruction": 4688118,
           "original_bytes": "e84d99f8ff",
           "thunk": 4203080,
