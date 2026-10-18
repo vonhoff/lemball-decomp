@@ -77,7 +77,7 @@ void CLift::Edit(int p_height,
 	m_activateType = p_activateType;
 	m_action = ACTION_READY;
 	m_activationLatched = LIFT_ACTIVATION_NOT_LATCHED;
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < LIFT_OBJECT_SLOT_COUNT; i++) {
 		m_objects[i] = NULL;
 	}
 	m_start.m_z = p_height;
@@ -257,7 +257,7 @@ bool CLift::Process()
 // FUNCTION: LEMBALL 0x00425440
 void CLift::CheckObjects()
 {
-	int count = 8;
+	int count = LIFT_OBJECT_SLOT_COUNT;
 	CGameObject** object = m_objects;
 	do {
 		if (*object != NULL) {
@@ -321,7 +321,7 @@ int CLift::StepOn(const AICOORD& p_position, CGameObject* p_object)
 				}
 				object++;
 				i++;
-			} while (i < 8);
+			} while (i < LIFT_OBJECT_SLOT_COUNT);
 		}
 	}
 	if (m_liftId == p_object->m_liftId) {
