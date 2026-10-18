@@ -142,20 +142,28 @@ static const int g_clipRowStepXByOrientation[4] = {1, 1, -1, -1};
 // GLOBAL: LEMBALL 0x00497268
 static const int g_clipRowStepYByOrientation[4] = {1, -1, -1, 1};
 
-extern const int g_anC2DHitBounds[11][4];
+// SIZE 0x10
+struct ObjectHitBounds {
+	int m_left;   // 0x00
+	int m_top;    // 0x04
+	int m_right;  // 0x08
+	int m_bottom; // 0x0c
+};
+
+extern const ObjectHitBounds g_objectHitBounds[11];
 
 // GLOBAL: LEMBALL 0x00496ec8
-const int g_anC2DHitBounds[11][4] = {{-8, -16, 8, 8},
-									 {-8, -12, 8, 4},
-									 {-28, -48, 20, 8},
-									 {-8, -16, 8, 2},
-									 {-10, -17, 8, 2},
-									 {-8, -32, 8, 32},
-									 {-10, -37, 36, 6},
-									 {-10, -48, 10, 0},
-									 {-16, -16, 15, 8},
-									 {-16, -16, 16, -8},
-									 {-13, -27, 15, 2}};
+const ObjectHitBounds g_objectHitBounds[11] = {{-8, -16, 8, 8},
+											   {-8, -12, 8, 4},
+											   {-28, -48, 20, 8},
+											   {-8, -16, 8, 2},
+											   {-10, -17, 8, 2},
+											   {-8, -32, 8, 32},
+											   {-10, -37, 36, 6},
+											   {-10, -48, 10, 0},
+											   {-16, -16, 15, 8},
+											   {-16, -16, 16, -8},
+											   {-13, -27, 15, 2}};
 
 // GLOBAL: LEMBALL 0x0049ea14
 int g_nMouseShapeGameX = 0;
@@ -220,8 +228,15 @@ static const SpriteOffset g_lemmingWaitOffsets[] = {{13, 25}, {10, 18}, {7, 14},
 static const SpriteOffset g_lemmingHitOffsets[] =
 	{{28, 25}, {24, 24}, {24, 31}, {19, 25}, {23, 24}, {25, 21}, {32, 36}, {25, 26}};
 
+// SIZE 0x08
+struct LemmingFireOffset {
+	int m_x; // 0x00
+	int m_y; // 0x04
+};
+
 // GLOBAL: LEMBALL 0x0049ee30
-static int g_lemmingFireOffsets[][2] = {{11, 9}, {8, 5}, {10, 5}, {16, 4}, {19, 4}, {26, 6}, {26, 9}, {14, 13}};
+static LemmingFireOffset g_lemmingFireOffsets[] =
+	{{11, 9}, {8, 5}, {10, 5}, {16, 4}, {19, 4}, {26, 6}, {26, 9}, {14, 13}};
 
 // GLOBAL: LEMBALL 0x0049ee78
 static unsigned long g_lemmingStandResources[] = {RES_GAME_LEMMINGSTANDNE,
@@ -971,75 +986,75 @@ bool C2D::FindGameObject(const CVSPoint& p_point, int& p_index, int p_preferLemm
 			int left, top, right, bottom;
 			switch (type) {
 			case OBJECT_PLAYER_2:
-				left = x + g_anC2DHitBounds[0][0];
-				top = y + g_anC2DHitBounds[0][1];
-				right = x + g_anC2DHitBounds[0][2];
-				bottom = y + g_anC2DHitBounds[0][3];
+				left = x + g_objectHitBounds[0].m_left;
+				top = y + g_objectHitBounds[0].m_top;
+				right = x + g_objectHitBounds[0].m_right;
+				bottom = y + g_objectHitBounds[0].m_bottom;
 				break;
 			case OBJECT_CATAPULT:
-				left = x + g_anC2DHitBounds[2][0];
-				top = y + g_anC2DHitBounds[2][1];
-				right = x + g_anC2DHitBounds[2][2];
-				bottom = y + g_anC2DHitBounds[2][3];
+				left = x + g_objectHitBounds[2].m_left;
+				top = y + g_objectHitBounds[2].m_top;
+				right = x + g_objectHitBounds[2].m_right;
+				bottom = y + g_objectHitBounds[2].m_bottom;
 				break;
 			case OBJECT_AMMO:
-				left = x + g_anC2DHitBounds[3][0];
-				top = y + g_anC2DHitBounds[3][1];
-				right = x + g_anC2DHitBounds[3][2];
-				bottom = y + g_anC2DHitBounds[3][3];
+				left = x + g_objectHitBounds[3].m_left;
+				top = y + g_objectHitBounds[3].m_top;
+				right = x + g_objectHitBounds[3].m_right;
+				bottom = y + g_objectHitBounds[3].m_bottom;
 				break;
 			case OBJECT_FLAG_2:
-				left = x + g_anC2DHitBounds[10][0];
-				top = y + g_anC2DHitBounds[10][1];
-				right = x + g_anC2DHitBounds[10][2];
-				bottom = y + g_anC2DHitBounds[10][3];
+				left = x + g_objectHitBounds[10].m_left;
+				top = y + g_objectHitBounds[10].m_top;
+				right = x + g_objectHitBounds[10].m_right;
+				bottom = y + g_objectHitBounds[10].m_bottom;
 				break;
 			case OBJECT_CRATE:
-				left = x + g_anC2DHitBounds[1][0];
-				top = y + g_anC2DHitBounds[1][1];
-				right = x + g_anC2DHitBounds[1][2];
-				bottom = y + g_anC2DHitBounds[1][3];
+				left = x + g_objectHitBounds[1].m_left;
+				top = y + g_objectHitBounds[1].m_top;
+				right = x + g_objectHitBounds[1].m_right;
+				bottom = y + g_objectHitBounds[1].m_bottom;
 				break;
 			case OBJECT_SWITCH:
-				left = x + g_anC2DHitBounds[4][0];
-				top = y + g_anC2DHitBounds[4][1];
-				right = x + g_anC2DHitBounds[4][2];
-				bottom = y + g_anC2DHitBounds[4][3];
+				left = x + g_objectHitBounds[4].m_left;
+				top = y + g_objectHitBounds[4].m_top;
+				right = x + g_objectHitBounds[4].m_right;
+				bottom = y + g_objectHitBounds[4].m_bottom;
 				break;
 			case OBJECT_KEY_1:
 			case OBJECT_KEY_2:
 			case OBJECT_KEY_3:
-				left = x + g_anC2DHitBounds[5][0];
-				top = y + g_anC2DHitBounds[5][1];
-				right = x + g_anC2DHitBounds[5][2];
-				bottom = y + g_anC2DHitBounds[5][3];
+				left = x + g_objectHitBounds[5].m_left;
+				top = y + g_objectHitBounds[5].m_top;
+				right = x + g_objectHitBounds[5].m_right;
+				bottom = y + g_objectHitBounds[5].m_bottom;
 				break;
 			case OBJECT_DUPLICATOR:
-				left = x + g_anC2DHitBounds[6][0];
-				top = y + g_anC2DHitBounds[6][1];
-				right = x + g_anC2DHitBounds[6][2];
-				bottom = y + g_anC2DHitBounds[6][3];
+				left = x + g_objectHitBounds[6].m_left;
+				top = y + g_objectHitBounds[6].m_top;
+				right = x + g_objectHitBounds[6].m_right;
+				bottom = y + g_objectHitBounds[6].m_bottom;
 				break;
 			case OBJECT_TRAMPOLINE:
-				left = x + g_anC2DHitBounds[9][0];
-				top = y + g_anC2DHitBounds[9][1];
-				right = x + g_anC2DHitBounds[9][2];
-				bottom = y + g_anC2DHitBounds[9][3];
+				left = x + g_objectHitBounds[9].m_left;
+				top = y + g_objectHitBounds[9].m_top;
+				right = x + g_objectHitBounds[9].m_right;
+				bottom = y + g_objectHitBounds[9].m_bottom;
 				break;
 			case OBJECT_BALLOON_0:
 			case OBJECT_BALLOON_2:
 			case OBJECT_BALLOON_4:
 			case OBJECT_BALLOON_6:
-				left = x + g_anC2DHitBounds[7][0];
-				top = y + g_anC2DHitBounds[7][1];
-				right = x + g_anC2DHitBounds[7][2];
-				bottom = y + g_anC2DHitBounds[7][3];
+				left = x + g_objectHitBounds[7].m_left;
+				top = y + g_objectHitBounds[7].m_top;
+				right = x + g_objectHitBounds[7].m_right;
+				bottom = y + g_objectHitBounds[7].m_bottom;
 				break;
 			case OBJECT_MOVER:
-				left = x + g_anC2DHitBounds[8][0];
-				top = y + g_anC2DHitBounds[8][1];
-				right = x + g_anC2DHitBounds[8][2];
-				bottom = y + g_anC2DHitBounds[8][3];
+				left = x + g_objectHitBounds[8].m_left;
+				top = y + g_objectHitBounds[8].m_top;
+				right = x + g_objectHitBounds[8].m_right;
+				bottom = y + g_objectHitBounds[8].m_bottom;
 				break;
 			default:
 				goto next;
@@ -2660,8 +2675,8 @@ void C2D::DrawLemming(CViewData& p_viewData, int p_objectNo, bool p_remapped)
 		break;
 	case ACTION_FIRING:
 		animationResourceId = g_lemmingFireResources[direction];
-		offsetY = g_lemmingFireOffsets[direction][1] + g_lemmingStandOffset.m_y;
-		offsetX = g_lemmingFireOffsets[direction][0] + g_lemmingStandOffset.m_x;
+		offsetY = g_lemmingFireOffsets[direction].m_y + g_lemmingStandOffset.m_y;
+		offsetX = g_lemmingFireOffsets[direction].m_x + g_lemmingStandOffset.m_x;
 		drawEquipment = 0;
 		break;
 	case ACTION_FLYING:
