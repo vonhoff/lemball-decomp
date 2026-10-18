@@ -19,6 +19,12 @@ class CBroadcast;
 class CConnect;
 class CNetworkAddress;
 
+enum {
+	TCPIP_MESSAGE_FORCE_PROCESS = 0x444,
+	TCPIP_TIMER_ID = 0x12345678,
+	TCPIP_TIMER_INTERVAL_MS = 10
+};
+
 // FUNCTION: LEMBALL 0x004713c0
 CTCPIPNetwork::CTCPIPNetwork() : CNetworkWnd("TCPIP Network", &g_tcpIpNetworkWindowClassRegistered)
 {
