@@ -33507,7 +33507,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Preview/CPreviewDrawer.cpp.obj",
       "symbol": "?Load@CPreviewDrawer@@UAEXXZ",
       "size": 756,
-      "fingerprint": "dc52332004fceb44ac38842bc7811d4a8575fd21c783b1a12f1252cc989b4173",
+      "fingerprint": "d993bb8c114a4e28ae2710b39fd438356129cc31eb2d10eab5581d631025a66f",
       "references": [
         {
           "offset": 541,
@@ -33759,7 +33759,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Preview/CPreviewDrawer.cpp.obj",
       "symbol": "?LoadLevelInformation@CPreviewDrawer@@QAEXXZ",
       "size": 729,
-      "fingerprint": "bb7cea5c5cf85657d90b68d9499f284f7fdb9f76969ea606a5ce721af9c69803",
+      "fingerprint": "478c15396514cacb28d83f9c7fe61963268d466bd69942eca516de7165e0c298",
       "references": [
         {
           "offset": 56,
