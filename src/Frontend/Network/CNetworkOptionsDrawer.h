@@ -37,7 +37,9 @@ enum eNetworkOptionsHandlerState {
 	NETWORK_OPTIONS_HANDLERS_STALE = 1
 };
 
-#define NETWORK_OPTIONS_ADDRESS_MAX_LENGTH 20
+enum {
+	NETWORK_OPTIONS_ADDRESS_MAX_LENGTH = 20
+};
 
 enum eEditingStage {
 	NETWORK_OPTIONS_EDIT_NONE = 0,

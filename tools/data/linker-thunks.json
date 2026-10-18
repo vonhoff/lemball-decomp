@@ -36107,7 +36107,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
       "symbol": "?DrawText@CNetworkOptionsDrawer@@UAEXXZ",
       "size": 1808,
-      "fingerprint": "1c3d0501c16c89eff3d60d3ced9a9dcc74c2b2a48147b69534f959df413578de",
+      "fingerprint": "cab8fde33fb62443ab8f0cdeecaf2026b904109da5fe3f5ae038db9d3bc2d381",
       "references": [
         {
           "offset": 1051,
@@ -36130,7 +36130,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
       "symbol": "?ProcessMessages@CNetworkOptionsDrawer@@UAEHPAUtagMESSAGE@@@Z",
       "size": 1162,
-      "fingerprint": "efac038eadf737ab4472819a35bbaf8b679b3dd2797592a70595b9080b3b70b4",
+      "fingerprint": "40d8522c396d61b8ad4a9b51bc81a101d5df3f2175fddd6e86c139521b1e318a",
       "references": [
         {
           "offset": 275,
@@ -36544,7 +36544,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsDrawer.cpp.obj",
       "symbol": "?ResetHandlers@CNetworkOptionsDrawer@@QAEXXZ",
       "size": 125,
-      "fingerprint": "72d10b5d87996a80bf69fc8fee8a8fd72aa09f41c8fb46326b4698aff93664e3",
+      "fingerprint": "cc535eef55cb3a647042918af7c9baf0908b1123970e1b043b4e586f415ad3b8",
       "references": [
         {
           "offset": 62,
@@ -36696,7 +36696,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Network/CNetworkOptionsProc.cpp.obj",
       "symbol": "?StopBroadcast@CNetworkOptionsProc@@QAEXXZ",
       "size": 198,
-      "fingerprint": "5971c4a54e3b516d0cbfcf038a7570659b72153645ee4087ed726dc42df29bd3",
+      "fingerprint": "1e6370271f196c9a000cc8a50febd5b972b5863b1ca451176a92c7b5d8b76c92",
       "references": [
         {
           "offset": 87,
