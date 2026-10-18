@@ -176,18 +176,9 @@ void CMap::CreateWalkBits()
 	int blockY;
 	int blockX;
 	unsigned short collision;
-	unsigned short z;
 	int firstHeight;
 	int secondHeight;
 	int westHeight;
-	int adjacentBlock;
-	int low;
-	int coordinate;
-	int nextBlock;
-	int blockCoordinate;
-	int currentBlockY;
-	int lowCoordinate;
-	int lowBlock;
 	unsigned char* walkBits;
 
 	blockY = 0;
@@ -207,19 +198,7 @@ void CMap::CreateWalkBits()
 						if ((collision & WALK_BLOCKING_COLLISION_MASK) == 0) {
 							collision = m_ground.GetZ(x, y - GROUND_BLOCK_PIXEL_HALF_SIZE);
 							firstHeight = collision;
-							coordinate = y - (GROUND_BLOCK_PIXEL_HALF_SIZE + 1);
-							blockCoordinate = x >> GROUND_BLOCK_PIXEL_SHIFT;
-							adjacentBlock = coordinate >> GROUND_BLOCK_PIXEL_SHIFT;
-							if ((x < 0) || (coordinate < 0) || m_ground.m_width <= blockCoordinate ||
-								m_ground.m_height <= adjacentBlock) {
-								z = 0;
-							}
-							else {
-								lowCoordinate = x & GROUND_BLOCK_PIXEL_MASK;
-								low = coordinate & GROUND_BLOCK_PIXEL_MASK;
-								z = m_ground.GetGroundCell(blockCoordinate, adjacentBlock)->GetZ(lowCoordinate, low);
-							}
-							secondHeight = z;
+							secondHeight = m_ground.GetZ(x, y - (GROUND_BLOCK_PIXEL_HALF_SIZE + 1));
 							if (secondHeight <= firstHeight + WALK_MAX_HEIGHT_STEP) {
 								*walkBits |= WALK_OUT_NORTH;
 							}
@@ -233,32 +212,8 @@ void CMap::CreateWalkBits()
 						collision = y < GROUND_BLOCK_PIXEL_HALF_SIZE ? GROUND_COLLISION_OUT_OF_BOUNDS
 																	 : m_ground.GetCollision(blockX + 1, blockY);
 						if ((collision & WALK_BLOCKING_COLLISION_MASK) == 0) {
-							coordinate = x + (GROUND_BLOCK_PIXEL_HALF_SIZE - 1);
-							currentBlockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-							blockCoordinate = coordinate >> GROUND_BLOCK_PIXEL_SHIFT;
-							if ((((coordinate < 0) || (y < 0)) || m_ground.m_width <= blockCoordinate) ||
-								m_ground.m_height <= currentBlockY) {
-								collision = 0;
-							}
-							else {
-								low = coordinate & GROUND_BLOCK_PIXEL_MASK;
-								lowCoordinate = y & GROUND_BLOCK_PIXEL_MASK;
-								collision =
-									m_ground.GetGroundCell(blockCoordinate, currentBlockY)->GetZ(low, lowCoordinate);
-							}
-							firstHeight = collision;
-							nextBlock = (x + GROUND_BLOCK_PIXEL_HALF_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
-							if (((((x + GROUND_BLOCK_PIXEL_HALF_SIZE) < 0) || (y < 0)) ||
-								 m_ground.m_width <= nextBlock) ||
-								(m_ground.m_height <= currentBlockY)) {
-								z = 0;
-							}
-							else {
-								lowCoordinate = y & GROUND_BLOCK_PIXEL_MASK;
-								lowBlock = 0;
-								z = m_ground.GetGroundCell(nextBlock, currentBlockY)->GetZ(lowBlock, lowCoordinate);
-							}
-							secondHeight = z;
+							firstHeight = m_ground.GetZ(x + (GROUND_BLOCK_PIXEL_HALF_SIZE - 1), y);
+							secondHeight = m_ground.GetZ(x + GROUND_BLOCK_PIXEL_HALF_SIZE, y);
 							if (secondHeight <= firstHeight + WALK_MAX_HEIGHT_STEP) {
 								*walkBits |= WALK_OUT_EAST;
 							}
@@ -272,32 +227,8 @@ void CMap::CreateWalkBits()
 						collision = x < GROUND_BLOCK_PIXEL_HALF_SIZE ? GROUND_COLLISION_OUT_OF_BOUNDS
 																	 : m_ground.GetCollision(blockX, blockY + 1);
 						if ((collision & WALK_BLOCKING_COLLISION_MASK) == 0) {
-							blockCoordinate = x >> GROUND_BLOCK_PIXEL_SHIFT;
-							nextBlock = (y + (GROUND_BLOCK_PIXEL_HALF_SIZE - 1)) >> GROUND_BLOCK_PIXEL_SHIFT;
-							if ((((x < 0) || ((y + (GROUND_BLOCK_PIXEL_HALF_SIZE - 1)) < 0)) ||
-								 m_ground.m_width <= blockCoordinate) ||
-								m_ground.m_height <= nextBlock) {
-								collision = 0;
-							}
-							else {
-								low = x & GROUND_BLOCK_PIXEL_MASK;
-								lowCoordinate = (y + (GROUND_BLOCK_PIXEL_HALF_SIZE - 1)) & GROUND_BLOCK_PIXEL_MASK;
-								collision =
-									m_ground.GetGroundCell(blockCoordinate, nextBlock)->GetZ(low, lowCoordinate);
-							}
-							firstHeight = collision;
-							nextBlock = (y + GROUND_BLOCK_PIXEL_HALF_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
-							if ((((x < 0) || ((y + GROUND_BLOCK_PIXEL_HALF_SIZE) < 0)) ||
-								 m_ground.m_width <= blockCoordinate) ||
-								m_ground.m_height <= nextBlock) {
-								z = 0;
-							}
-							else {
-								lowBlock = 0;
-								low = x & GROUND_BLOCK_PIXEL_MASK;
-								z = m_ground.GetGroundCell(blockCoordinate, nextBlock)->GetZ(low, lowBlock);
-							}
-							secondHeight = z;
+							firstHeight = m_ground.GetZ(x, y + (GROUND_BLOCK_PIXEL_HALF_SIZE - 1));
+							secondHeight = m_ground.GetZ(x, y + GROUND_BLOCK_PIXEL_HALF_SIZE);
 							if (secondHeight <= firstHeight + WALK_MAX_HEIGHT_STEP) {
 								*walkBits |= WALK_OUT_SOUTH;
 							}
@@ -311,35 +242,8 @@ void CMap::CreateWalkBits()
 						collision = y < GROUND_BLOCK_PIXEL_HALF_SIZE ? GROUND_COLLISION_OUT_OF_BOUNDS
 																	 : m_ground.GetCollision(blockX - 1, blockY);
 						if ((collision & WALK_BLOCKING_COLLISION_MASK) == 0) {
-							nextBlock = (x - GROUND_BLOCK_PIXEL_HALF_SIZE) >> GROUND_BLOCK_PIXEL_SHIFT;
-							currentBlockY = y >> GROUND_BLOCK_PIXEL_SHIFT;
-							if (((((x - GROUND_BLOCK_PIXEL_HALF_SIZE) < 0) || (y < 0)) ||
-								 m_ground.m_width <= nextBlock) ||
-								m_ground.m_height <= currentBlockY) {
-								collision = 0;
-							}
-							else {
-								lowCoordinate = y & GROUND_BLOCK_PIXEL_MASK;
-								lowBlock = 0;
-								collision =
-									m_ground.GetGroundCell(nextBlock, currentBlockY)->GetZ(lowBlock, lowCoordinate);
-							}
-							westHeight = collision;
-							nextBlock = (x - (GROUND_BLOCK_PIXEL_HALF_SIZE + 1)) >> GROUND_BLOCK_PIXEL_SHIFT;
-							if (((((x - (GROUND_BLOCK_PIXEL_HALF_SIZE + 1)) < 0) || (y < 0)) ||
-								 ((blockCoordinate = m_ground.m_width, blockCoordinate <= nextBlock) ||
-								  m_ground.m_height <= currentBlockY))) {
-								z = 0;
-							}
-							else {
-								int cellX = x - (GROUND_BLOCK_PIXEL_HALF_SIZE + 1);
-								int cellY = y;
-								cellX &= GROUND_BLOCK_PIXEL_MASK;
-								cellY &= GROUND_BLOCK_PIXEL_MASK;
-								z = (m_ground.m_ground + (unsigned int) blockCoordinate * currentBlockY + nextBlock)
-										->GetZ(cellX, cellY);
-							}
-							secondHeight = z;
+							westHeight = m_ground.GetZ(x - GROUND_BLOCK_PIXEL_HALF_SIZE, y);
+							secondHeight = m_ground.GetZ(x - (GROUND_BLOCK_PIXEL_HALF_SIZE + 1), y);
 							if (secondHeight <= westHeight + WALK_MAX_HEIGHT_STEP) {
 								*walkBits |= WALK_OUT_WEST;
 							}
