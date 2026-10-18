@@ -32320,7 +32320,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?InitialiseBackBuffer@CBaseFrontendDrawer@@QAEXXZ",
       "size": 345,
-      "fingerprint": "dd837e7c049fd768f43718398cc83c437044079659904fbdadfe50a03b03df7e",
+      "fingerprint": "2d86b7970defcabf79ae27c662e6ebbc3fbf87bf8d5d812b9cdd37bcc3d22484",
       "references": [
         {
           "offset": 51,
@@ -32337,18 +32337,18 @@
           "source_symbol": "?ActivateButtons@CGunController@@QAEXH@Z"
         },
         {
-          "offset": 298,
-          "original_instruction": 4479498,
-          "original_bytes": "e826bdfbff",
-          "thunk": 4200245,
-          "source_symbol": "?ActivateButtons@CHiliteController@@QAEXH@Z"
-        },
-        {
           "offset": 319,
           "original_instruction": 4479519,
           "original_bytes": "e81fc3fbff",
           "thunk": 4201795,
           "source_symbol": "?ActivateButtons@CGunController@@QAEXH@Z"
+        },
+        {
+          "offset": 298,
+          "original_instruction": 4479498,
+          "original_bytes": "e826bdfbff",
+          "thunk": 4200245,
+          "source_symbol": "?ActivateButtons@CHiliteController@@QAEXH@Z"
         }
       ]
     },
@@ -32423,18 +32423,18 @@
       "caller": 4480016,
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/CBaseFrontendDrawer.cpp.obj",
       "symbol": "?_DrawBackGround@CBaseFrontendDrawer@@QAEXXZ",
-      "size": 601,
-      "fingerprint": "892af23423060b242f495f2a85441b55297cdf924bf52b25100bb550399d1124",
+      "size": 602,
+      "fingerprint": "838aef1f737e8d4c0745f456ef970b22caa2fc234db2c95fa8c6617a607ee73a",
       "references": [
         {
-          "offset": 530,
+          "offset": 531,
           "original_instruction": 4480544,
           "original_bytes": "e8a6b4fbff",
           "thunk": 4199115,
           "source_symbol": "?DrawButtons@CGunController@@QAEXHH@Z"
         },
         {
-          "offset": 547,
+          "offset": 548,
           "original_instruction": 4480561,
           "original_bytes": "e8a8d8fbff",
           "thunk": 4208350,
@@ -33299,7 +33299,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Options/CMainOptions2Drawer.cpp.obj",
       "symbol": "?Load@CMainOptions2Drawer@@UAEXXZ",
       "size": 535,
-      "fingerprint": "9d39d09937d27cafc6dac48c1bba6c0db50ef3593001413fc1438bfbacd6b3c6",
+      "fingerprint": "cfa558252d897e85025f6df67d31fc3520eb56771369989655c45f248eef3ee6",
       "references": [
         {
           "offset": 254,
@@ -34426,7 +34426,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunButtons.cpp.obj",
       "symbol": "?LoadFaces@CGunButtons@@QAEXPAK@Z",
       "size": 398,
-      "fingerprint": "a60d4b1a4774ca68dcd650abaa06bceac440e5ffc9ae6a470ddd2dcd821ead8e",
+      "fingerprint": "4fc0f305698a26746cc93a13f97f5dbad1a75b8c956bb0622c0fba5b948ec158",
       "references": [
         {
           "offset": 316,
@@ -34534,7 +34534,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?AddButton@CGunController@@QAEXHHPAKIHHHPAXK@Z",
       "size": 201,
-      "fingerprint": "976a182be72ae0d426f535bce632e43b10503899a9eb9340c7ced3daf31973ef",
+      "fingerprint": "7656565e6388d4a89ca0aa2dedb17349d749735f3d9310235e0a368d8db9c0f9",
       "references": [
         {
           "offset": 98,
@@ -34580,7 +34580,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?DrawButtons@CGunController@@QAEXHH@Z",
       "size": 49,
-      "fingerprint": "038c833115ccacb9b5023c0368021e375ce27f92fe194a606ed9f98504781746",
+      "fingerprint": "32d91670f530c8e11fc3cc6765e619f3e483e8a092d9036dc2b4ed9277f624bf",
       "references": [
         {
           "offset": 31,
@@ -34596,7 +34596,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?DrawSpriteWindow@CGunController@@QAEXXZ",
       "size": 1352,
-      "fingerprint": "21723af1f75eed94626f11288aa919e1e06048c09d08649065c785c05a23d5fc",
+      "fingerprint": "d203d7a92e8ecd8a8fc79b148d97e5720e10c0294f20597ab9fabe3b4ffb4545",
       "references": [
         {
           "offset": 96,
@@ -34651,7 +34651,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?SelectOption@CGunController@@QAEXXZ",
       "size": 437,
-      "fingerprint": "d4374681163f35fb101e9f084afc3a93ad371fabbcda7f059db83ff67ed208f8",
+      "fingerprint": "7adee42de953dd02f52b2ae74e677488e6da8f6ac143e53ec748834818d1f654",
       "references": [
         {
           "offset": 424,
@@ -34667,7 +34667,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Frontend/Controls/CGunController.cpp.obj",
       "symbol": "?Process@CGunController@@QAEXXZ",
       "size": 494,
-      "fingerprint": "2333a4f8e648a6e17f22cd466de52f17f9148dae5528c09c20373ba56ff18185",
+      "fingerprint": "9d1a293f2413861a4efd8c7df1edda968feea58feb753ae6a80673839e021aa9",
       "references": [
         {
           "offset": 198,
