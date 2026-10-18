@@ -14210,7 +14210,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?RemoteGameState@CAI@@QAEXPAVCGameStateMessage@@@Z",
       "size": 772,
-      "fingerprint": "3392cba381b262da68e327bde1a313615dec1b9759e7fb7589040c2094d78770",
+      "fingerprint": "fd3e89cdc90d7126cac34eb8a86cc5096941826aab97fd39dd88320e18cbfa25",
       "references": [
         {
           "offset": 120,
@@ -14742,7 +14742,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?StepOn@CAI@@QAEXABVAICOORD@@PAVCGameObject@@G@Z",
       "size": 564,
-      "fingerprint": "1f04f168292ac6715561e78bcc8adbc7c7a332e6954674c7fe8209d0aef1e459",
+      "fingerprint": "94084e3a9804ad6daf6b147dd230eddea2499a0e7bd35afe2d5750bfbb2b384f",
       "references": [
         {
           "offset": 155,
@@ -14807,7 +14807,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?OpenDoor@CAI@@QAEHABVAICOORD@@PAVCGameObject@@G@Z",
       "size": 129,
-      "fingerprint": "60e7a31289f362432850205e5436d1749f0b3933209e68de97c58d5a14bc8b8b",
+      "fingerprint": "1391bbf6c2d948448f3800cc73412abb8db46b0cb7f86cb7ef564ead315fe574",
       "references": [
         {
           "offset": 110,
@@ -14887,7 +14887,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?SwitchMessage@CAI@@QAEXW4swMessage@@HHH@Z",
       "size": 196,
-      "fingerprint": "a7ac3d9f98e6874491e28d6d8736b7afea939c7ea2d801d3ca9979e5f5d82347",
+      "fingerprint": "28c66508628ac067016918d62b6cdfeac6d9cc42c15a60baca3af2445c32b853",
       "references": [
         {
           "offset": 50,
@@ -15041,7 +15041,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Simulation/CAI.cpp.obj",
       "symbol": "?FixUpLevel@CAI@@QAEXXZ",
       "size": 78,
-      "fingerprint": "16623ec0859dcab21315c348601586e854294e1dc2aed46e58d3b32479e0b92c",
+      "fingerprint": "f17afe4a7a17169922d0d50af44bc2bc942fb62d11d1dc42b2bc57a5808a008f",
       "references": [
         {
           "offset": 33,
