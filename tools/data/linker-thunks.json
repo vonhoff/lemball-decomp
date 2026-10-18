@@ -18413,7 +18413,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CObjectManager.cpp.obj",
       "symbol": "?ClearAllObjects@CObjectManager@@QAEXXZ",
       "size": 77,
-      "fingerprint": "6abbf35214dd8debca4d047f3c0acca0cf343cd20edccb166da14aac95e3091a",
+      "fingerprint": "084f37648d4f6ec7ee029a03679f5f3e0b670833bd63de03b3b718b2a1b90957",
       "references": [
         {
           "offset": 26,
@@ -18429,7 +18429,7 @@
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CObjectManager.cpp.obj",
       "symbol": "?DeleteObjectAndLinkedTargets@CObjectManager@@QAEXPAVCGlobalGameObject@@@Z",
       "size": 250,
-      "fingerprint": "2d90e35e1fed8396603b7819a657762a2d7e994372b482b7afe94ee5bff223b5",
+      "fingerprint": "a0cf0399933a08cd1b7c277b985ec1b503b035caedd85d13386b6bf7212456fe",
       "references": [
         {
           "offset": 82,
@@ -18699,8 +18699,8 @@
       "caller": 4307904,
       "object": "CMakeFiles/LEMBALL.dir/src/Gameplay/Objects/CObjectManager.cpp.obj",
       "symbol": "?LoadLevel@CObjectManager@@QAEXPAEKH@Z",
-      "size": 762,
-      "fingerprint": "e7025aac6076fc675e79f8730f4b57a9a50e8093041100c4a59ee79519fb9ac6",
+      "size": 774,
+      "fingerprint": "2b5331cf4f6ff894a0c41165d8439d1081ddec271d9133d016c10b37265ae604",
       "references": [
         {
           "offset": 33,
@@ -18717,77 +18717,77 @@
           "source_symbol": "?NextId@CGameObject@@SAFXZ"
         },
         {
-          "offset": 246,
+          "offset": 255,
           "original_instruction": 4308150,
           "original_bytes": "e86259feff",
           "thunk": 4199965,
           "source_symbol": "??0AICOORD@@QAE@ABV0@@Z"
         },
         {
-          "offset": 254,
+          "offset": 263,
           "original_instruction": 4308158,
           "original_bytes": "e87471feff",
           "thunk": 4206135,
           "source_symbol": "?Add@CObjectManager@@QAEPAVCGlobalGameObject@@GVAICOORD@@W4eObjectType@@G1@Z"
         },
         {
-          "offset": 328,
+          "offset": 337,
           "original_instruction": 4308232,
           "original_bytes": "e81059feff",
           "thunk": 4199965,
           "source_symbol": "??0AICOORD@@QAE@ABV0@@Z"
         },
         {
-          "offset": 336,
+          "offset": 345,
           "original_instruction": 4308240,
           "original_bytes": "e82271feff",
           "thunk": 4206135,
           "source_symbol": "?Add@CObjectManager@@QAEPAVCGlobalGameObject@@GVAICOORD@@W4eObjectType@@G1@Z"
         },
         {
-          "offset": 391,
+          "offset": 401,
           "original_instruction": 4308295,
           "original_bytes": "e80264feff",
           "thunk": 4202830,
           "source_symbol": "?NextId@CGameObject@@SAFXZ"
         },
         {
-          "offset": 427,
+          "offset": 437,
           "original_instruction": 4308331,
           "original_bytes": "e8ad58feff",
           "thunk": 4199965,
           "source_symbol": "??0AICOORD@@QAE@ABV0@@Z"
         },
         {
-          "offset": 435,
+          "offset": 445,
           "original_instruction": 4308339,
           "original_bytes": "e8bf70feff",
           "thunk": 4206135,
           "source_symbol": "?Add@CObjectManager@@QAEPAVCGlobalGameObject@@GVAICOORD@@W4eObjectType@@G1@Z"
         },
         {
-          "offset": 489,
+          "offset": 499,
           "original_instruction": 4308393,
           "original_bytes": "e86f58feff",
           "thunk": 4199965,
           "source_symbol": "??0AICOORD@@QAE@ABV0@@Z"
         },
         {
-          "offset": 497,
+          "offset": 507,
           "original_instruction": 4308401,
           "original_bytes": "e88170feff",
           "thunk": 4206135,
           "source_symbol": "?Add@CObjectManager@@QAEPAVCGlobalGameObject@@GVAICOORD@@W4eObjectType@@G1@Z"
         },
         {
-          "offset": 543,
+          "offset": 553,
           "original_instruction": 4308447,
           "original_bytes": "e8b158feff",
           "thunk": 4200085,
           "source_symbol": "?Load@CSwitch@@QAEPAEAAPAE@Z"
         },
         {
-          "offset": 647,
+          "offset": 659,
           "original_instruction": 4308551,
           "original_bytes": "e88472feff",
           "thunk": 4206800,

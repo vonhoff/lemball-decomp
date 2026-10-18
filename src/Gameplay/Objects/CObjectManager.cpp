@@ -27,6 +27,13 @@
 #include "Multiplayer/Transport/CConnect.h"
 #include "Level/LevelFormat.h"
 
+inline static unsigned short ReadObjectLevelWord(unsigned char*& p_data)
+{
+	unsigned short value = *(unsigned short*) p_data;
+	p_data += sizeof(value);
+	return value;
+}
+
 // GLOBAL: LEMBALL 0x004a74c0
 CObjectManager* g_pObjectManager;
 
@@ -454,9 +461,8 @@ CGlobalGameObject* CObjectManager::FindObjectInBounds(CVSRect* p_bounds, eObject
 void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, bool p_append)
 {
 	int switchIndex = 0;
-	unsigned short count = *(unsigned short*) p_data;
+	unsigned short count = ReadObjectLevelWord(p_data);
 	unsigned short id;
-	p_data += 2;
 	if (p_append == 0) {
 		Initialise(count);
 	}
@@ -464,20 +470,16 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, bo
 		unsigned int remaining = count;
 		do {
 			if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
-				id = *(unsigned short*) p_data;
-				p_data += 2;
+				id = ReadObjectLevelWord(p_data);
 			}
 			else {
 				id = CGameObject::NextId();
 			}
-			int x = *(unsigned short*) p_data;
-			p_data += 2;
-			int y = *(unsigned short*) p_data;
-			p_data += 2;
-			int z = *(unsigned short*) p_data;
-			p_data += 2;
-			eObjectType objectType = (eObjectType) * (unsigned short*) p_data;
-			p_data += 4;
+			int x = ReadObjectLevelWord(p_data);
+			int y = ReadObjectLevelWord(p_data);
+			int z = ReadObjectLevelWord(p_data);
+			eObjectType objectType = (eObjectType) ReadObjectLevelWord(p_data);
+			p_data += sizeof(unsigned short);
 			int fixedX = x << FIXED_POINT_FRACTION_BITS;
 			int fixedY = y << FIXED_POINT_FRACTION_BITS;
 			int fixedZ = z << FIXED_POINT_FRACTION_BITS;
@@ -501,8 +503,7 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, bo
 			case OBJECT_AMMO: {
 				unsigned short ammoCount;
 				if (m_ai->m_levelVersion >= LEVEL_VERSION_WITH_AMMO_COUNTS) {
-					ammoCount = *(unsigned short*) p_data;
-					p_data += 2;
+					ammoCount = ReadObjectLevelWord(p_data);
 				}
 				else {
 					ammoCount = 0;
@@ -514,12 +515,10 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, bo
 				break;
 			}
 			case OBJECT_CRATE: {
-				eObjectType contentsType = (eObjectType) * (unsigned short*) p_data;
-				p_data += 2;
+				eObjectType contentsType = (eObjectType) ReadObjectLevelWord(p_data);
 				unsigned short contentsId;
 				if (m_ai->m_levelVersion > LEVEL_VERSION_LAST_WITHOUT_OBJECT_IDS) {
-					contentsId = *(unsigned short*) p_data;
-					p_data += 2;
+					contentsId = ReadObjectLevelWord(p_data);
 				}
 				else {
 					contentsId = CGameObject::NextId();
@@ -549,14 +548,10 @@ void CObjectManager::LoadLevel(unsigned char* p_data, unsigned long p_length, bo
 					object->Load(p_data);
 				}
 				else {
-					int message = *(unsigned short*) p_data;
-					p_data += 2;
-					unsigned short legacyFirst = *(unsigned short*) p_data;
-					p_data += 2;
-					unsigned short legacyLast = *(unsigned short*) p_data;
-					p_data += 2;
-					unsigned short legacyAux = *(unsigned short*) p_data;
-					p_data += 2;
+					int message = ReadObjectLevelWord(p_data);
+					unsigned short legacyFirst = ReadObjectLevelWord(p_data);
+					unsigned short legacyLast = ReadObjectLevelWord(p_data);
+					unsigned short legacyAux = ReadObjectLevelWord(p_data);
 					if (p_append == 0) {
 						AddSwitch(id, x, y, z, message, legacyFirst, legacyLast, legacyAux);
 					}
