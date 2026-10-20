@@ -100,7 +100,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 		else {
 			while (length != 0) {
 				*dest++ = *source++;
-				*source = (unsigned char) (*source + 3);
+				*source = *source + 3;
 				length--;
 			}
 		}
@@ -114,7 +114,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 				do {
 					unsigned char high = *source++;
 					*dest++ = *source++;
-					*dest++ = (unsigned char) (high ^ PCM_8BIT_SIGN_BIT_MASK);
+					*dest++ = high ^ PCM_8BIT_SIGN_BIT_MASK;
 				} while (--length != 0);
 			}
 		}
@@ -124,7 +124,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 				unsigned char high = source[0];
 				source++;
 				*dest++ = *source++;
-				*dest++ = (unsigned char) (high ^ PCM_8BIT_SIGN_BIT_MASK);
+				*dest++ = high ^ PCM_8BIT_SIGN_BIT_MASK;
 				source += 2;
 			} while (--length != 0);
 		}
@@ -142,8 +142,8 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	}
 	format.nSamplesPerSec = p_sampleRate;
 	format.cbSize = 0;
-	format.nBlockAlign = (unsigned short) ((format.wBitsPerSample * format.nChannels) / 8);
-	format.nAvgBytesPerSec = p_sampleRate * (unsigned int) format.nChannels;
+	format.nBlockAlign = (format.wBitsPerSample * format.nChannels) / 8;
+	format.nAvgBytesPerSec = p_sampleRate * format.nChannels;
 	if (format.wBitsPerSample == PCM_SAMPLE_BITS_16) {
 		format.nAvgBytesPerSec *= 2;
 	}
