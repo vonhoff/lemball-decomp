@@ -80,7 +80,7 @@ private:
 	int m_level;                     // 0x00
 	unsigned int m_levelState;       // 0x04
 	int m_skill;                     // 0x08
-	unsigned int m_skillState;       // 0x0c
+	eGameResultMessage m_skillState; // 0x0c
 	char m_password[16];             // 0x10
 	bool m_cheats[GAME_CHEAT_COUNT]; // 0x20
 	int m_maxLevels[5];              // 0x28

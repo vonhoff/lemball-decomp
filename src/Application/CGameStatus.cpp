@@ -19,7 +19,7 @@ CGameStatus::CGameStatus()
 	m_level = zero;
 	m_levelState = zero;
 	m_skill = zero;
-	m_skillState = zero;
+	m_skillState = GAME_RESULT_MESSAGE_UNSET;
 	for (index = 0; index < GAME_CHEAT_COUNT; index++) {
 		m_cheats[index] = false;
 	}
