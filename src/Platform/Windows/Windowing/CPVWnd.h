@@ -7,7 +7,6 @@
 
 struct tagMenuList;
 class CHotAreaList;
-struct CVSSize;
 
 #define WINDOW_STYLE_HOT_AREA_LIST 0x800
 

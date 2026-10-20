@@ -6,10 +6,7 @@
 #include "Engine/Graphics/Primitives/CSolidRect.h"
 #include "Engine/Graphics/Primitives/CZBuffClear.h"
 
-class CGDI;
-class CPVWnd;
 struct WinGDrawState;
-class CVSRect;
 
 enum {
 	WINDOW_CLEAR_DEFAULT_COLOUR = -1

@@ -5,8 +5,6 @@
 #include "Engine/Strings/CString.h"
 #include "Platform/Windows/WindowsTypes.h"
 
-class CVSRect;
-
 // SIZE 0xbc
 // VTABLE: LEMBALL 0x00499f30
 class CAnimWnd : public CPVAnimWnd {

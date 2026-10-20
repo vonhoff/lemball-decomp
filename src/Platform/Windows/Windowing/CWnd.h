@@ -4,11 +4,6 @@
 #include "CPVWnd.h"
 #include "Platform/Windows/WindowsTypes.h"
 
-class CVSRect;
-
-struct CVSPoint;
-struct tagMenuList;
-
 enum eWindowStyleFlags {
 	WINDOW_STYLE_SHOW_ON_CREATE = 0x00000001,
 	WINDOW_STYLE_CHILD = 0x40000000,
