@@ -68,14 +68,7 @@ public:
 	void Restart();
 	void Setup();
 
-	friend class CNetworkOptionsDrawer;
-	friend class CIntroAnimDrawer;
-	friend class CMainOptions1Drawer;
-	friend class CMainOptions2Drawer;
 	friend class CMain2DDisplay;
-	friend class CPasswordDrawer;
-	friend class CSuccFailDrawer;
-	friend class CPreviewDrawer;
 
 protected:
 	CMain2DDisplay* m_display;             // 0x84
