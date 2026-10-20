@@ -169,7 +169,6 @@ public:
 	friend class CSlinky;
 	friend class CCursorMotion;
 	friend class CTrampolineManager;
-	friend class CTrapDoorManager;
 	friend class CRocketManager;
 	friend class CPaintGunManager;
 	friend class CMineManager;
@@ -178,19 +177,15 @@ public:
 	friend class CLiftManager;
 	friend class CHandManager;
 	friend class CIceManager;
-	friend class CBallManager;
 	friend class CDoorManager;
 	friend class CGodManager;
 	friend class CLevelLoader;
 	friend class CMoverManager;
-	friend class CInvisibleSwitchManager;
 	friend class CInvisibleSwitch;
-	friend class CFormationManager;
 	friend class CFlag;
 	friend class CSheep;
 	friend class CSheepGroupManager;
 	friend class CEnemyGroupManager;
-	friend class CNodeManager;
 	friend class CCollectableManager;
 	friend class CCollectable;
 	friend class CEnemy;

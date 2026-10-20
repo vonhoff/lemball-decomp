@@ -158,7 +158,7 @@ CGame::CGame(char* p_runtimeFileName)
 
 	m_mainDisplay = new CMain2DDisplay(this);
 
-	CDebugOStream stream(titleBuf, 80);
+	CDebugOStream stream(titleBuf, sizeof(titleBuf));
 	stream << g_szLemmingsPaintballTitle;
 
 	m_mainDisplay->Create(m_mainDisplay->GetUseRect(DISPLAY_COORDINATE_AUTO_CENTER, DISPLAY_COORDINATE_AUTO_CENTER),

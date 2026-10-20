@@ -43,11 +43,6 @@ enum {
 // VTABLE: LEMBALL 0x00499e58 CPVGDIBitmap
 class CSurface : public CPVScrollableSurface, public CPVZBuffSurface, public CPVBackBuffSurface {
 public:
-	friend class CPVButton;
-	friend class CGraphicButton;
-	friend class CGunButtons;
-	friend class CHiliteController;
-	friend class CPasswordDrawer;
 	CSurface(GrafPort* p_port);
 	CSurface(const CVSRect& p_rect, class CSurface* p_parentSurface);
 	bool ClipRect(CVSRect& p_rect, CVSRect* p_clipped);
@@ -139,9 +134,7 @@ public:
 	void CopyDibBits(BITMAPINFOHEADER* p_header, unsigned char* p_bits);
 	~CSurface();
 
-	friend class CBaseFrontendDrawer;
 	friend class CGWnd;
-	friend class CPVBackBuffSurface;
 
 private:
 	short m_presentX;                                         // 0xec

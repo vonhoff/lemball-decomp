@@ -26,13 +26,6 @@ public:
 	void Initialise();
 	void SetAnimID(unsigned long p_animId);
 
-	friend class CToggleButton;
-	friend class CGunButton;
-	friend class CGunButtons;
-	friend class CHiliteButtons;
-	friend class CPanel;
-	friend class CPanelPauseButton;
-
 private:
 	unsigned long m_animationId;    // 0x10c
 	unsigned long m_alignmentFlags; // 0x110

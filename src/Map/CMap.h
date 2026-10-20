@@ -54,40 +54,8 @@ public:
 	~CMap();
 
 	friend class CAI;
-	friend class CTrapDoor;
-	friend class CTrapDoorManager;
-	friend class CPlayerLemmingGroupManager;
-	friend class CBullet;
-	friend class CPlayerLemming;
-	friend class CTower;
-	friend class CEnemy;
-	friend class CAmmo;
-	friend class CKey;
-	friend class CBalloon;
-	friend class CCatapult;
-	friend class CCollectable;
-	friend class CCrate;
-	friend class CDuplicator;
-	friend class CBall;
-	friend class CFlag;
-	friend class CDoor;
-	friend class CIce;
-	friend class CInvisibleSwitch;
-	friend class CSwitch;
-	friend class CHand;
-	friend class CLift;
-	friend class CSlinky;
-	friend class CBalloonPost;
-	friend class CMover;
-	friend class CPaintGun;
-	friend class CMaze;
 	friend class CMine;
-	friend class CRocket;
-	friend class CLaser;
 	friend class C2D;
-	friend class CTrampoline;
-	friend class CGroundAnim;
-	friend class CGameObject;
 
 private:
 	unsigned int m_mapType;        // 0x00
