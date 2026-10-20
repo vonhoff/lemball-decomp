@@ -20,16 +20,6 @@ public:
 	// FUNCTION: LEMBALL 0x00447260
 	virtual ~CBigBitmap() {} // vtable+0x00
 
-	friend class CBaseFrontendDrawer;
-	friend class CMainOptions1Drawer;
-	friend class CMainOptions2Drawer;
-	friend class CPasswordDrawer;
-	friend class CPreviewDrawer;
-	friend class CSuccFailDrawer;
-	friend class CSurface;
-	friend class CCDLoadAnim;
-	friend class CAboutScreen;
-
 private:
 	unsigned int m_unknown1c; // 0x1c
 	short m_unknown20;        // 0x20
