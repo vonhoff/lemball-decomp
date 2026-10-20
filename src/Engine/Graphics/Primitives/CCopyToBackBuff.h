@@ -16,12 +16,6 @@ public:
 	// FUNCTION: LEMBALL 0x00439750
 	virtual ~CCopyToBackBuff() {} // vtable+0x00
 
-	friend class CBaseFrontendDrawer;
-	friend class CSurface;
-	friend class CCDLoadAnim;
-	friend class C2D;
-
-public:
 	CVSRect m_destination; // 0x08
 };
 

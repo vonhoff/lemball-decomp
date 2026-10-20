@@ -15,9 +15,6 @@ public:
 	// FUNCTION: LEMBALL 0x00439740
 	virtual ~CZBuffClear() {} // vtable+0x00
 
-	friend class CSurface;
-
-public:
 	unsigned int m_depth; // 0x04
 	CVSRect m_bounds;     // 0x08
 };
