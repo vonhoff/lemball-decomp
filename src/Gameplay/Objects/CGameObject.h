@@ -147,7 +147,6 @@ public:
 	void TurnToFaceDestination();
 	void UpdateCollision();
 
-	friend class CGameObjectMess;
 	friend class CLift;
 	friend class CBalloonPost;
 	friend class CBullet;
@@ -156,14 +155,6 @@ public:
 	friend class CObjectManager;
 	friend class CPlayerLemming;
 	friend class CGlobalGameObject;
-	friend class CObjectChangeStateMess;
-	friend class CObjectDiesMess;
-	friend class CObjectHitMess;
-	friend class CObjectPosMess;
-	friend class CRemoveObjectMess;
-	friend class CRequestActionMess;
-	friend class CRequestCancelMess;
-	friend class CRequestReplyMess;
 	friend class CGenericGroup;
 	friend class CSheepGroup;
 	friend class CPlayerLemmingGroup;

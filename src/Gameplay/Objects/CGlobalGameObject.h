@@ -37,13 +37,10 @@ public:
 
 	friend class CGameObjectMess;
 	friend class CObjectChangeStateMess;
-	friend class CObjectDiesMess;
 	friend class CObjectHitMess;
 	friend class CObjectManager;
 	friend class CObjectPosMess;
-	friend class CRemoveObjectMess;
 	friend class CRequestActionMess;
-	friend class CRequestCancelMess;
 	friend class CRequestReplyMess;
 	friend class CTrampolineManager;
 	friend class CCollectableManager;
