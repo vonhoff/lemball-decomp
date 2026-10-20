@@ -620,8 +620,8 @@ void CWnd::Create(const CVSRect& p_rect, CPVWnd* p_parent, char* p_title)
 			POINT screenPoint;
 			m_parent->AddChild(this);
 			const CVSRect& parentRect = m_parent->m_rect;
-			screenPoint.x = (LONG) ((int) parentRect.m_x + (int) p_rect.m_x);
-			screenPoint.y = (LONG) ((int) parentRect.m_y + (int) p_rect.m_y);
+			screenPoint.x = parentRect.m_x + p_rect.m_x;
+			screenPoint.y = parentRect.m_y + p_rect.m_y;
 			ClientToScreen(((CWnd*) m_parent)->m_nativeWindow, &screenPoint);
 			m_rect.m_x = (short) screenPoint.x;
 			m_rect.m_y = (short) screenPoint.y;
