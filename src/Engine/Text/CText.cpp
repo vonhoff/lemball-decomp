@@ -73,7 +73,7 @@ void CText::Draw(CGDI* p_gdi)
 void CText::NextPos()
 {
 	CVSSize step = m_useAdvance != 0 ? CVSSize(m_advanceX, m_advanceY) : m_glyph->m_size + CVSSize(1, 1);
-	unsigned int flags = m_flags;
+	unsigned long flags = m_flags;
 	if ((flags & TEXT_ADVANCE_USE_CUSTOM_OFFSETS) != 0) {
 		step += CVSSize(m_offsetX, m_offsetY);
 	}

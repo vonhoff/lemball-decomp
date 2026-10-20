@@ -49,7 +49,7 @@ protected:
 	const char* m_text;        // 0x08
 	short m_x;                 // 0x0c
 	short m_y;                 // 0x0e
-	unsigned int m_flags;      // 0x10
+	unsigned long m_flags;     // 0x10
 	CRemap* m_remap;           // 0x14
 	short m_offsetX;           // 0x18
 	short m_offsetY;           // 0x1a
