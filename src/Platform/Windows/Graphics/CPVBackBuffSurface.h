@@ -3,7 +3,6 @@
 
 #include "CPVGDIBitmap.h"
 #include "CPVSurface.h"
-class CVSRect;
 
 class CCopyToBackBuff;
 class CCopyColourToBackBuff;

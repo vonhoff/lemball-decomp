@@ -17,8 +17,6 @@ class CClipRect;
 class CScreenScroll;
 class CResPALETTE;
 class CSurface;
-struct CVSPoint;
-struct CVSSize;
 
 // SIZE 0x44
 // VTABLE: LEMBALL 0x00499508
