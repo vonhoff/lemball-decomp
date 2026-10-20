@@ -47,11 +47,7 @@ public:
 	void UnLoadAnims(unsigned long p_resourceId);
 	~CAnimsManager();
 
-	friend class CBaseFrontendDrawer;
 	friend class C2D;
-	friend class CGraphicButton;
-	friend class CGunController;
-	friend class CHiliteController;
 	friend class CPasswordDrawer;
 	friend class CLemmingAnimsManager;
 
