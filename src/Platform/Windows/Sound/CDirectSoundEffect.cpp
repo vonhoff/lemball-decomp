@@ -83,7 +83,7 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 									   unsigned int p_controlFlags)
 {
 	unsigned int length;
-	unsigned int downsample;
+	bool downsample;
 	unsigned long audioBytes[2];
 	void* audio[2];
 	DSBUFFERDESC description;
@@ -119,10 +119,10 @@ CDirectSoundEffect::CDirectSoundEffect(int p_bufferCount,
 	waveHeader.m_length = SwapBytes32(waveHeader.m_length);
 	waveHeader.m_sampleRate = SwapBytes32(waveHeader.m_sampleRate);
 	length = p_use16Bit != 0 ? waveHeader.m_length : waveHeader.m_length >> 1;
-	downsample = 0;
+	downsample = false;
 	if (waveHeader.m_sampleRate != p_sampleRate) {
 		length >>= 1;
-		downsample = 1;
+		downsample = true;
 	}
 	format.wFormatTag = 1;
 	format.nSamplesPerSec = p_sampleRate;

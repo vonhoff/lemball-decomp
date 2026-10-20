@@ -25,7 +25,7 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	unsigned int length;
 	MMRESULT result;
 	union {
-		unsigned int m_downsample;
+		bool m_downsample;
 		char m_errorText[MAXERRORLENGTH];
 	} work;
 
@@ -47,9 +47,9 @@ CWaveEffect::CWaveEffect(unsigned char* p_patch, HWAVEOUT p_waveOut, DWORD p_sam
 	if (p_use16Bit == 0) {
 		length >>= 1;
 	}
-	work.m_downsample = 0;
+	work.m_downsample = false;
 	if (waveHeader.m_sampleRate != p_sampleRate) {
-		work.m_downsample = 1;
+		work.m_downsample = true;
 		length >>= 1;
 	}
 	m_sampleHandle = GlobalAlloc(GMEM_MOVEABLE | GMEM_DDESHARE, length);
